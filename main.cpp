@@ -1,5 +1,8 @@
-﻿#include "WindowProcedure.h"
+﻿#include "Log.h"
+#include "ConvertString.h"
+#include "WindowProcedure.h"
 #include <cstdint>
+#include <format>
 #include <Windows.h>
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
@@ -22,7 +25,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// ウィンドウクラスを登録
 	RegisterClass(&wc);
 
-
 	// クライアント領域のサイズ
 	const int32_t kClientWidth = 1280;
 	const int32_t kClientHeight = 720;
@@ -32,7 +34,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// クライアント領域を基に実際のサイズ情報をwrcに反映させる
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
-
 
 	// ウィンドウの生成
 	HWND hwnd = CreateWindow(
@@ -52,8 +53,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// ウィンドウの表示
 	ShowWindow(hwnd, SW_SHOW);
 
+
 	// 出力ウィンドウへの文字出力
 	OutputDebugStringA("Hello,DirectX!\n");
+
+	std::wstring texturePath = L"./null.png";
+
+	std::string bufferString = WStringToString(texturePath);
+
+	texturePath = StringToWString(bufferString);
+
+	Log(std::format("enemyHp: {}, texturePath: {}, bufferString: {}\n", 10, WStringToString(texturePath), bufferString));
+
 
 	MSG msg{};
 

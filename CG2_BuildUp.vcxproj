@@ -80,10 +80,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConvertString.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WindowProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConvertString.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="WindowProcedure.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
