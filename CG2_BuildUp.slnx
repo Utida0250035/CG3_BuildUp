@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="CG2_BuildUp.vcxproj" Id="6bfa6d35-29bd-4661-997f-03c748a29768" />
+</Solution>
