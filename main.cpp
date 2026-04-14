@@ -64,6 +64,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 出力ウィンドウへの文字出力
 	OutputDebugStringA("Hello,DirectX!\n");
 
+
+	// ログ出力ファイルクラスの初期化
+	LogFile::GetInstance()->Initialize();
+
+	// ログ出力
+	LogFile::GetInstance()->Log("Hello,DirectX!\n");
+
+
 	std::wstring texturePath = L"./null.png";
 
 	std::string bufferString = WStringToString(texturePath);
