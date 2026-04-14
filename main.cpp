@@ -1,9 +1,16 @@
-﻿#include "Log.h"
-#include "ConvertString.h"
+﻿#include "ConvertString.h"
+#include "Log.h"
 #include "WindowProcedure.h"
 #include <cstdint>
 #include <format>
 #include <Windows.h>
+
+#include <cassert>
+#include <d3d12.h>
+#include <dxgi1_6.h>
+
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -64,6 +71,82 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	texturePath = StringToWString(bufferString);
 
 	Log(std::format("enemyHp: {}, texturePath: {}, bufferString: {}\n", 10, WStringToString(texturePath), bufferString));
+
+	IDXGIFactory7* dxgiFactory = nullptr;
+
+	// HRESULTはWindows系のエラーコード
+	// 関数が成功したかどうかをSUCCEEDEDマクロで判定できる
+	HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
+
+	/*
+	初期化の根本的な部分でエラーが出た場合は
+	プログラムの間違いか修正不可能である場合が多い
+	*/
+	assert(SUCCEEDED(hr));
+
+	// 使用するアダプタ用の変数
+	IDXGIAdapter4* useAdapter = nullptr;
+
+	for (UINT i = 0; dxgiFactory->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter)) != DXGI_ERROR_NOT_FOUND; ++i) {
+		// パフォーマンスが良い順にアダプタのリストを出させる 
+
+		// アダプターの情報を取得
+		DXGI_ADAPTER_DESC3 adapterDesc{};
+		hr = useAdapter->GetDesc3(&adapterDesc);
+
+		// アダプターの情報が取得できない場合はエラー
+		assert(SUCCEEDED(hr));
+
+		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
+			// ソフトウェアアダプタでなければ採用
+			
+			// 採用したアダプタの情報をログに出力
+			Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+
+			break;
+
+		}
+
+		// 次のアダプタへ
+		useAdapter = nullptr;
+
+	}
+
+	// 適切なアダプターが見当たらない場合は起動不可
+	assert(useAdapter != nullptr);
+
+
+	ID3D12Device* device = nullptr;
+
+	// 機能レベルとログ出力用の文字列
+	D3D_FEATURE_LEVEL featureLevels[] = {
+		D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
+	};
+
+	const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
+
+	for (size_t i = 0; i < _countof(featureLevels); ++i) {
+		// 機能レベルが高い順に、生成できるか試していく
+
+		hr = D3D12CreateDevice(useAdapter, featureLevels[i], IID_PPV_ARGS(&device));
+
+		if (SUCCEEDED(hr)) {
+			// 指定した機能レベルでデバイスが生成できた
+
+			// ログ出力
+			Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
+
+			break;
+
+		}
+
+	}
+
+	// デバイスの生成が成功しなかった場合は実行不可
+	assert(device != nullptr);
+
+	// 初期化完了のログを出す
+	Log("Complete create D3D12Device!!!\n");
 
 
 	MSG msg{};
