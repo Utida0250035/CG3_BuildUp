@@ -1,6 +1,7 @@
-﻿#pragma once
+#pragma once
 
 #include <string>
+#include <fstream>
 
 void Log(const std::string& message);
 

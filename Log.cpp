@@ -1,8 +1,7 @@
-﻿#include "Log.h"
+#include "Log.h"
 #include <filesystem>
 #include <chrono>
 #include <Windows.h>
-#include <fstream>
 
 void Log(const std::string& message) {
 
@@ -36,14 +35,10 @@ void LogFile::Initialize() {
 
 void LogFile::Log(const std::string& message) const {
 
-	// ファイルを出力用に開く
-	std::ofstream logStream(filePath_);
+	static std::ofstream logStream(filePath_, std::ios::app);
 
 	// ログをファイルに出力
 	logStream << message << std::endl;
-
-	// ファイルを閉じる
-	logStream.close();
 
 	// 出力ウィンドウにログを出力
 	OutputDebugStringA(message.c_str());
