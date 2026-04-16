@@ -10,7 +10,7 @@ std::wstring StringToWString(const std::string& str) {
 	int needSize = MultiByteToWideChar(CP_UTF8,
 		0,
 		str.c_str(),
-		str.length(),
+		static_cast<int>(str.length()),
 		nullptr,
 		0
 	);
@@ -24,9 +24,9 @@ std::wstring StringToWString(const std::string& str) {
 	MultiByteToWideChar(CP_UTF8,
 		0,
 		str.c_str(),
-		str.length(),
+		static_cast<int>(str.length()),
 		result.data(),
-		result.size()
+		static_cast<int>(result.size())
 	);
 
 	return result;
@@ -42,7 +42,7 @@ std::string WStringToString(const std::wstring& str) {
 		CP_ACP,
 		0,
 		str.c_str(),
-		str.length(),
+		static_cast<int>(str.length()),
 		nullptr,
 		0,
 		nullptr,
@@ -59,9 +59,9 @@ std::string WStringToString(const std::wstring& str) {
 		CP_ACP,
 		0,
 		str.c_str(),
-		str.length(),
+		static_cast<int>(str.length()),
 		result.data(),
-		result.size(),
+		static_cast<int>(result.size()),
 		nullptr,
 		nullptr
 	);
