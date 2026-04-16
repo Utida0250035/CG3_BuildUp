@@ -43,7 +43,7 @@ static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &miniDumpInformation, nullptr, nullptr);
 
 	/* 他に関連付けられているSEH例外ハンドラがあれば記述を追加する */
-	
+
 	return EXCEPTION_EXECUTE_HANDLER;
 
 }
@@ -146,7 +146,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
 			// ソフトウェアアダプタでなければ採用
-			
+
 			// 採用したアダプタの情報をログに出力
 			Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
 
@@ -194,6 +194,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// 初期化完了のログを出す
 	Log("Complete create D3D12Device!!!\n");
+
+	/*
 
 	// コマンドキューの生成
 	ID3D12CommandQueue* commandQueue = nullptr;
@@ -243,7 +245,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvDescriptorHeapDesc.NumDescriptors = 2;
 	hr = device->CreateDescriptorHeap(&rtvDescriptorHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap));
-	
+
 	// ディスクリプタヒープが生成できなかったら起動不可
 	assert(SUCCEEDED(hr));
 
@@ -251,7 +253,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// SwapChainからResourceを引っ張る
 	ID3D12Resource* swapChainResources[2] = { nullptr };
 	hr = swapChain->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0]));
-	
+
 	// うまくResourceを取得できなければ起動不可
 	assert(SUCCEEDED(hr));
 	hr = swapChain->GetBuffer(1, IID_PPV_ARGS(&swapChainResources[1]));
@@ -262,7 +264,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	
+
 	// ディスクリプタの先頭を取得
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 
@@ -294,7 +296,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	hr = commandList->Close();
 	assert(SUCCEEDED(hr));
 
-	
+
 	// GPUにコマンドリストを実行させる
 	ID3D12CommandList* commandLists[] = { commandList };
 	commandQueue->ExecuteCommandLists(1, commandLists);
@@ -308,6 +310,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	hr = commandList->Reset(commandAllocator, nullptr);
 	assert(SUCCEEDED(hr));
 
+	*/
+
+
+	LogFile::GetInstance()->Log("Hello ");
+
+	LogFile::GetInstance()->Log("World.\n");
 
 	MSG msg{};
 
