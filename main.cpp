@@ -1,4 +1,4 @@
-﻿#include "ConvertString.h"
+#include "ConvertString.h"
 #include "Log.h"
 #include "WindowProcedure.h"
 #include <cstdint>
@@ -12,7 +12,46 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#include <dbghelp.h>
+#pragma comment(lib, "Dbghelp.lib")
+
+#include <strsafe.h>
+
+static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
+
+	// Dumpsフォルダを作成
+	CreateDirectory(L"./Dumps", nullptr);
+
+	// 現在時刻を名前に入れたファイルをDumpsフォルダ以下に作成
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	wchar_t filePath[MAX_PATH] = { 0 };
+	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d_%02d-%02d_&02d-%02d-%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
+
+	// processId(このexeのId)とクラッシュ(例外)の発生した、threadIdを取得
+	DWORD processId = GetCurrentProcessId();
+	DWORD threadId = GetCurrentThreadId();
+
+	// 設定情報を入力
+	MINIDUMP_EXCEPTION_INFORMATION miniDumpInformation{ 0 };
+	miniDumpInformation.ThreadId = threadId;
+	miniDumpInformation.ExceptionPointers = exception;
+	miniDumpInformation.ClientPointers = TRUE;
+
+	// Dumpを出力(MiniDumpNormalフラグで最低限の情報を出力させるようにする)
+	MiniDumpWriteDump(GetCurrentProcess(), processId, dumpFileHandle, MiniDumpNormal, &miniDumpInformation, nullptr, nullptr);
+
+	/* 他に関連付けられているSEH例外ハンドラがあれば記述を追加する */
+	
+	return EXCEPTION_EXECUTE_HANDLER;
+
+}
+
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
+
+	// SEH例外が補足されなかった場合(Unhandled)に補足する関数を登録
+	SetUnhandledExceptionFilter(ExportDump);
 
 	// ウィンドウクラス
 	WNDCLASS wc{};
@@ -155,7 +194,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// 初期化完了のログを出す
 	Log("Complete create D3D12Device!!!\n");
-
 
 	MSG msg{};
 

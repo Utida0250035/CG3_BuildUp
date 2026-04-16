@@ -35,10 +35,13 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
-.dic
+*.dic
 
 logs/
-.log
+*.log
+
+Dumps/
+*.dmp
 
 
 # Visual Studio 2015/2017 cache/options directory
