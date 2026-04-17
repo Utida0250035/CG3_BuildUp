@@ -26,7 +26,7 @@ static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 	SYSTEMTIME time;
 	GetLocalTime(&time);
 	wchar_t filePath[MAX_PATH] = { 0 };
-	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d_%02d-%02d_&02d-%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
+	StringCchPrintfW(filePath, MAX_PATH, L"./Dumps/%04d_%02d-%02d_%02d-%02d.dmp", time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute);
 	HANDLE dumpFileHandle = CreateFile(filePath, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0);
 
 	// processId(このexeのId)とクラッシュ(例外)の発生した、threadIdを取得
@@ -418,6 +418,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			// GPUがここまでたどり着いたときにFenceの値を指定した値に代入するようにSignalを送る
 			commandQueue->Signal(fence, fenceValue);
+
+			if (fence->GetCompletedValue() < fenceValue) {
+
+				// 指定したsignalにたどり着くまでイベントを設定する
+				fence->SetEventOnCompletion(fenceValue, fenceEvent);
+
+				// イベント待つ
+				WaitForSingleObject(fenceEvent, INFINITE);
+			}
 
 			// GPUとOSに画面の交換を行なうよう通知する
 			swapChain->Present(1, 0);
