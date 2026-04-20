@@ -5,9 +5,13 @@
 #include <Windows.h>
 #include <d3d12.h>
 #include <dxgi1_6.h>
-
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+
+#include <dxcapi.h>
+#pragma comment(lib, "dxcompiler.lib")
+
+#include "Vector4.h"
 
 class AtrumEngine {
 
@@ -76,13 +80,78 @@ private:
 	// fenceEvent
 	HANDLE fenceEvent_{};
 
+
+	// DXC補助
+	IDxcUtils* dxcUtils_ = nullptr;
+
+	// DXCコンパイラ
+	IDxcCompiler3* dxcCompiler_ = nullptr;
+
+	// インクルードハンドラー
+	IDxcIncludeHandler* includeHandler_ = nullptr;
+
+	// RootSignature
+	ID3D12RootSignature* rootSignature_ = nullptr;
+
+	// RootSignatureの生成結果
+	ID3DBlob* signatureBlob_ = nullptr;
+
+	// RootSignatureのエラー結果
+	ID3DBlob* errorBlob_ = nullptr;
+
+	// inputLayoutの設定
+	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[1] = {};
+
+	// inputLayout
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
+
+	// BlendState
+	D3D12_BLEND_DESC blendDesc_{};
+
+	// RasterizerState
+	D3D12_RASTERIZER_DESC rasterizerDesc_{};
+
+	// vertexShaderのコンパイル結果
+	IDxcBlob* vertexShaderBlob_ = nullptr;
+
+	// pixelShaderのコンパイル結果
+	IDxcBlob* pixelShaderBlob_ = nullptr;
+
+	// PSOの設定
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipeLineStateDesc_{};
+
+	// PSO
+	ID3D12PipelineState* graphicsPipelineState_ = nullptr;
+
+	// 頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties_{};
+
+	// 頂点リソースの設定
+	D3D12_RESOURCE_DESC vertexResourceDesc_{};
+
+	// 頂点リソース
+	ID3D12Resource* vertexResource_ = nullptr;
+
+	// VertexBufferView
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+
+	// 頂点データ
+	Vector4* vertexData_ = nullptr;
+
+
+	// ビューポート
+	D3D12_VIEWPORT viewport_{};
+
+	// シザー矩形
+	D3D12_RECT scissorRect_{};
+
 	// メッセージ
 	MSG msg_{};
 
 	AtrumEngine() = default;
 
 	~AtrumEngine() = default;
-
+	
 	/// <summary>
 	/// 初期化処理 ウィンドウ作成
 	/// </summary>
@@ -106,7 +175,88 @@ private:
 	/// </summary>
 	void ErrorSuppressionDebug();
 
+	/// <summary>
+	/// 初期化処理 DXCの初期化 
+	/// </summary>
+	void InitDXC();
+
+	/// <summary>
+	/// Viewport の設定
+	/// </summary>
+	void SetUpViewport();
+
+	/// <summary>
+	/// シザー矩形の設定
+	/// </summary>
+	void SetUpScissorRect();
+
+	/// <summary>
+	/// ルートシグネチャの作成
+	/// </summary>
+	void MakeRootSignature();
+
+	/// <summary>
+	/// InputLayoutの設定
+	/// </summary>
+	void SetUpInputLayout();
+
+	/// <summary>
+	/// BlendStateの設定
+	/// </summary>
+	void SetUpBlendState();
+
+	/// <summary>
+	/// RasterizerStateの設定
+	/// </summary>
+	void SetUpRasterizerState();
+
+	/// <summary>
+	/// Shaderの準備
+	/// </summary>
+	void PrepareShader();
+
 public:
+
+	/* 三角形のみ描画可能になっている */
+
+	/// <summary>
+	/// PSOの生成
+	/// </summary>
+	void CreatePSO();
+
+	/// <summary>
+	/// VertexResourceの生成
+	/// </summary>
+	void CreateVertexResource();
+
+	/// <summary>
+	/// VertexBufferViewの作成
+	/// </summary>
+	void CreateVertexBufferView();
+
+	/// <summary>
+	/// VertexResourceにデータを書き込む
+	/// </summary>
+	void WriteVertexResource();
+
+	/// <summary>
+	/// 描画呼び出し(DrawCall)
+	/// </summary>
+	void DrawCall();
+
+
+public:
+
+	/// <summary>
+	/// Shaderのコンパイル
+	/// </summary>
+	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
+	/// <param name="profile"> コンパイルに使用するプロファイル </param>
+	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
+	IDxcBlob* CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile
+	);
 
 	/// <summary>
 	/// エンジンの初期化
@@ -131,7 +281,7 @@ public:
 	/// <summary>
 	/// ウィンドウのクリア
 	/// </summary>
-	void ClearWindow();
+	void UpdateWindow();
 
 	/// <summary>
 	/// エンジンの終了

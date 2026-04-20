@@ -10,7 +10,9 @@ class LogFile {
 private:
 
 	// ログ出力先ファイルのパス
-	std::string filePath_;
+	std::string filePath_ = "";
+
+	std::ofstream logStream_;
 
 	/// <summary>
 	/// コンストラクタ
@@ -20,7 +22,7 @@ private:
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~LogFile() = default;
+	~LogFile();
 
 public:
 
@@ -33,7 +35,7 @@ public:
 	/// ログ出力
 	/// </summary>
 	/// <param name="message"></param>
-	void Log(const std::string& message) const;
+	void Log(const std::string& message);
 
 	/// <summary>
 	/// インスタンス取得
