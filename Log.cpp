@@ -30,7 +30,7 @@ void LogFile::Initialize() {
 	// 時刻を使ってファイル名を決定
 	filePath_ = std::string("logs/") + dataString + ".log";
 
-	logStream_.open(filePath_);
+	logStream_.open(filePath_, std::ios::app);
 
 }
 
@@ -38,6 +38,7 @@ void LogFile::Log(const std::string& message) {
 
 	// ログをファイルに出力
 	logStream_ << message << std::endl;
+	logStream_.flush();
 
 	// 出力ウィンドウにログを出力
 	OutputDebugStringA(message.c_str());
