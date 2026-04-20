@@ -1,6 +1,10 @@
 #include "AtrumEngine.h"
+#include "Log.h"
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
+
+	// ログ出力ファイルの初期化
+	LogFile::GetInstance()->Initialize();
 
 	// エンジンインスタンスの取得
 	AtrumEngine* atrum = AtrumEngine::GetInstance();

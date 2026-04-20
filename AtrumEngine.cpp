@@ -656,9 +656,6 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->SetUpScissorRect();
 
-	// ログ出力ファイルの初期化
-	LogFile::GetInstance()->Initialize();
-
 	// ログ出力
 	LogFile::GetInstance()->Log("Hello, DirectX!");
 
