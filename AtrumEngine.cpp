@@ -1,6 +1,7 @@
-#include "ConvertString.h"
 #include "AtrumEngine.h"
+#include "ConvertString.h"
 #include "Log.h"
+#include "Vector4.h"
 #include "WindowProcedure.h"
 #include <cassert>
 #include <cstdint>
@@ -202,6 +203,322 @@ void AtrumEngine::ErrorSuppressionDebug() {
 
 }
 
+void AtrumEngine::InitDXC() {
+
+	//dxcCompilerを初期化
+	hr_ = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+	assert(SUCCEEDED(hr_));
+	hr_ = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+	assert(SUCCEEDED(hr_));
+
+	// includeに対応するための設定
+	hr_ = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+	assert(SUCCEEDED(hr_));
+
+}
+
+IDxcBlob* AtrumEngine::CompileShader(
+	const std::wstring& filePath,
+	const wchar_t* profile
+) {
+
+	// これからシェーダーをコンパイルする旨をログ出力
+	LogFile::GetInstance()->Log(WStringToString(std::format(L"Begin CompileShader, path:{}, profile:{}", filePath, profile)));
+
+	/*
+	hlslファイルを読む
+	*/
+	IDxcBlobEncoding* shaderSource = nullptr;
+	hr_ = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
+
+	// 読めなかったら止める
+	assert(SUCCEEDED(hr_));
+
+	// 読み込んだファイルの内容を設定する
+	DxcBuffer shaderSourceBuffer{};
+	shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
+	shaderSourceBuffer.Size = shaderSource->GetBufferSize();
+	// UTF8の文字コードであることを通知
+	shaderSourceBuffer.Encoding = DXC_CP_UTF8;
+
+
+	/*
+	コンパイルする
+	*/
+	LPCWSTR arguments[] = {
+
+		// コンパイル対象のhlslファイル名
+		filePath.c_str(),
+
+		// エントリーポイントの指定
+		L"-E", L"main",
+
+		// ShaderProfileの設定
+		L"-T", profile,
+
+		// デバッグ用の情報を埋め込む
+		L"-Zi", L"-Qembed_debug",
+
+		// 最適化を外しておく
+		L"-Od",
+
+		// メモリレイアウトは行優先
+		L"-Zpr"
+
+	};
+
+	// 実際にShaderをコンパイルする
+	IDxcResult* shaderResult = nullptr;
+	hr_ = dxcCompiler_->Compile(
+		// 読み込んだファイル
+		&shaderSourceBuffer,
+		// コンパイル設定
+		arguments,
+		// コンパイル設定の数
+		_countof(arguments),
+		// includeが含まれた諸々
+		includeHandler_,
+		// コンパイル結果
+		IID_PPV_ARGS(&shaderResult)
+	);
+
+	// コンパイルエラーではないがDXCが起動できない等の致命的な情報を感知
+	assert(SUCCEEDED(hr_));
+
+	/*
+	警告・エラーが出たらログ出力して止める
+	*/
+	IDxcBlobUtf8* shaderError = nullptr;
+	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+
+	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
+		// 警告・エラーがある場合はログ出力して止める
+
+		LogFile::GetInstance()->Log(shaderError->GetStringPointer());
+
+		assert(false);
+
+	}
+
+	/*
+	警告・エラーが無ければコンパイル結果を取得して返す
+	*/
+
+	// コンパイル結果から実行用のバイナリ部分を取得
+	IDxcBlob* shaderBlob = nullptr;
+	hr_ = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
+	assert(SUCCEEDED(hr_));
+
+	// 成功した旨のログ出力
+	LogFile::GetInstance()->Log(WStringToString(std::format(L"Compile Succeeded, path:{}, profile:{}", filePath, profile)));
+
+	// もう使わないリソースを解放
+	shaderSource->Release();
+	shaderResult->Release();
+
+	// 実行用のバイナリを返却
+	return shaderBlob;
+
+}
+
+void AtrumEngine::MakeRootSignature() {
+
+	// RootSignature作成
+	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
+	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	// シリアライズしてバイナリにする
+	hr_ = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob_, &errorBlob_);
+
+	if (FAILED(hr_)) {
+
+
+		LogFile::GetInstance()->Log(reinterpret_cast<char*>(errorBlob_->GetBufferPointer()));
+
+		assert(false);
+
+	}
+
+	// バイナリを基に生成
+	hr_ = device_->CreateRootSignature(0, signatureBlob_->GetBufferPointer(), signatureBlob_->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
+	assert(SUCCEEDED(hr_));
+
+}
+
+void AtrumEngine::SetUpInputLayout() {
+	// InputLayoutの設定
+
+	inputElementDescriptions_[0].SemanticName = "POSITION";
+	inputElementDescriptions_[0].SemanticIndex = 0;
+	inputElementDescriptions_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	inputElementDescriptions_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
+	inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
+	inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
+
+}
+
+void AtrumEngine::SetUpBlendState() {
+	// BlendStateの設定
+
+	// 全ての色要素を書き込む
+	blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+}
+
+void AtrumEngine::SetUpRasterizerState() {
+	// RasterizerStateの設定
+
+	// 裏面(時計回り)を表示しない
+	rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
+
+	// 三角形の中を塗りつぶす
+	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
+
+}
+
+void AtrumEngine::PrepareShader() {
+	// Shaderをコンパイルする
+
+	vertexShaderBlob_ = this->CompileShader(L"Object3d.VS.hlsl", L"vs_6_0");
+	assert(vertexShaderBlob_ != nullptr);
+
+	pixelShaderBlob_ = CompileShader(L"Object3d.PS.hlsl", L"ps_6_0");
+	assert(pixelShaderBlob_ != nullptr);
+
+}
+
+void AtrumEngine::CreatePSO() {
+
+	graphicsPipeLineStateDesc_.pRootSignature = rootSignature_;
+
+	graphicsPipeLineStateDesc_.InputLayout = inputLayoutDesc_;
+
+	graphicsPipeLineStateDesc_.VS = { vertexShaderBlob_->GetBufferPointer(), vertexShaderBlob_->GetBufferSize() };
+
+	graphicsPipeLineStateDesc_.PS = { pixelShaderBlob_->GetBufferPointer(), pixelShaderBlob_->GetBufferSize() };
+
+	graphicsPipeLineStateDesc_.BlendState = blendDesc_;
+
+	graphicsPipeLineStateDesc_.RasterizerState = rasterizerDesc_;
+
+	// 書き込むRTVの情報
+	graphicsPipeLineStateDesc_.NumRenderTargets = 1;
+	graphicsPipeLineStateDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+
+	// 利用するトポロジ(形状)のタイプ 三角形
+	graphicsPipeLineStateDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+	// どのように画面に色を打ち込むかの設定
+	graphicsPipeLineStateDesc_.SampleDesc.Count = 1;
+	graphicsPipeLineStateDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+	// 実際に生成
+	hr_ = device_->CreateGraphicsPipelineState(&graphicsPipeLineStateDesc_, IID_PPV_ARGS(&graphicsPipelineState_));
+	assert(SUCCEEDED(hr_));
+
+}
+
+void AtrumEngine::CreateVertexResource() {
+
+	// 頂点リソース用のヒープの設定
+	uploadHeapProperties_.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+	// バッファリソース テクスチャの場合はまた別の設定をする
+	vertexResourceDesc_.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	vertexResourceDesc_.Width = sizeof(Vector4) * 3;
+
+	// バッファの場合はこれらを1にする決まり
+	vertexResourceDesc_.Height = 1;
+	vertexResourceDesc_.DepthOrArraySize = 1;
+	vertexResourceDesc_.MipLevels = 1;
+	vertexResourceDesc_.SampleDesc.Count = 1;
+
+	// バッファの場合はコレにする決まり
+	vertexResourceDesc_.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	// 実際に頂点リソースを作る
+	hr_ = device_->CreateCommittedResource(&uploadHeapProperties_, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc_, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource_));
+	assert(SUCCEEDED(hr_));
+
+}
+
+void AtrumEngine::CreateVertexBufferView() {
+
+	// リソースの先頭のアドレスから使う
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+
+	// 使用するリソースのサイズは頂点3つ分のサイズ
+	vertexBufferView_.SizeInBytes = sizeof(Vector4) * 3;
+
+	// 1頂点当たりのサイズ
+	vertexBufferView_.StrideInBytes = sizeof(Vector4);
+
+}
+
+void AtrumEngine::WriteVertexResource() {
+	// 頂点リソースにデータを書き込む
+
+	// 書き込むためのアドレスを取得
+	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+
+	// 左下
+	vertexData_[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+
+	// 上
+	vertexData_[1] = { 0.0f, 0.5f, 0.0f, 1.0f };
+
+	// 右下
+	vertexData_[2] = { 0.5f, -0.5f, 0.0f, 1.0f };
+
+}
+
+void AtrumEngine::SetUpViewport() {
+	// クライアント領域のサイズと同等にして画面全体を表示領域とする
+
+	viewport_.Width = static_cast<FLOAT>(clientWidth_);
+	viewport_.Height = static_cast<float>(clientHeight_);
+	viewport_.TopLeftX = 0.0f;
+	viewport_.TopLeftY = 0.0f;
+	viewport_.MinDepth = 0.0f;
+	viewport_.MaxDepth = 1.0f;
+
+}
+
+void AtrumEngine::SetUpScissorRect() {
+
+	scissorRect_.left = 0;
+	scissorRect_.right = clientWidth_;
+	scissorRect_.top = 0;
+	scissorRect_.bottom = clientHeight_;
+
+}
+
+void AtrumEngine::DrawCall() {
+
+	// Viewportを設定
+	commandList_->RSSetViewports(1, &viewport_);
+	
+	// ScissorRectを設定
+	commandList_->RSSetScissorRects(1, &scissorRect_);
+
+	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
+	commandList_->SetGraphicsRootSignature(rootSignature_);
+	
+	// PSOを設定
+	commandList_->SetPipelineState(graphicsPipelineState_);
+
+	// VBVを設定
+	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// 描画(DrawCall) 3頂点で1つのインスタンス
+	commandList_->DrawInstanced(3, 1, 0, 0);
+
+}
+
 void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight) {
 
 	// SEH例外が補足されなかった場合(Unhandled)に補足する関数を登録
@@ -230,13 +547,13 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	プログラムの間違いか修正不可である場合が多い
 	*/
 	assert(SUCCEEDED(hr_));
-	
+
 	this->SelectAdapter();
 
 	this->CreateDevice();
 
 	// 初期化完了のログを出す
-	Log("Complete create D3D12Device!!!\n");
+	LogFile::GetInstance()->Log("Complete create D3D12Device!!!\n");
 
 
 	// コマンドキューの生成
@@ -323,6 +640,21 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
 	assert(fenceEvent_ != nullptr);
 
+	this->InitDXC();
+
+	this->MakeRootSignature();
+
+	this->SetUpInputLayout();
+	
+	this->SetUpBlendState();
+
+	this->SetUpRasterizerState();
+
+	this->PrepareShader();
+
+	this->SetUpViewport();
+
+	this->SetUpScissorRect();
 
 	// ログ出力ファイルの初期化
 	LogFile::GetInstance()->Initialize();
@@ -360,7 +692,7 @@ bool AtrumEngine::MessageForOs() {
 
 }
 
-void AtrumEngine::ClearWindow() {
+void AtrumEngine::UpdateWindow() {
 
 	// これから書き込むバックバッファのインデックスを取得
 	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
@@ -398,6 +730,10 @@ void AtrumEngine::ClearWindow() {
 	// 指定色で画面全体をクリアする
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
+
+
+	this->DrawCall();
+
 
 	// 画面に描く処理が終了し画面に映すため状態を遷移
 	// RenderTargetからPresentにする
@@ -453,7 +789,22 @@ void AtrumEngine::Finalize() {
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
 
-	// 解放処理
+	/* 解放処理 */
+
+	vertexResource_->Release();
+	graphicsPipelineState_->Release();
+	signatureBlob_->Release();
+
+	if (errorBlob_) {
+
+		errorBlob_->Release();
+
+	}
+
+	rootSignature_->Release();
+	pixelShaderBlob_->Release();
+	vertexShaderBlob_->Release();
+
 	CloseHandle(fenceEvent_);
 	fence_->Release();
 	rtvDescriptorHeap_->Release();

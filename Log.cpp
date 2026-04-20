@@ -9,7 +9,6 @@ void Log(const std::string& message) {
 
 }
 
-
 void LogFile::Initialize() {
 
 	// logsフォルダを作成
@@ -31,17 +30,22 @@ void LogFile::Initialize() {
 	// 時刻を使ってファイル名を決定
 	filePath_ = std::string("logs/") + dataString + ".log";
 
+	logStream_.open(filePath_);
+
 }
 
-void LogFile::Log(const std::string& message) const {
-
-	static std::ofstream logStream(filePath_, std::ios::app);
+void LogFile::Log(const std::string& message) {
 
 	// ログをファイルに出力
-	logStream << message << std::endl;
+	logStream_ << message << std::endl;
 
 	// 出力ウィンドウにログを出力
 	OutputDebugStringA(message.c_str());
 
 }
 
+LogFile::~LogFile() {
+
+	logStream_.close();
+
+}
