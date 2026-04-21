@@ -18,6 +18,8 @@
 #include <strsafe.h>
 #include <Windows.h>
 
+#include "DeltaTime.h"
+
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 
 	// Dumpsフォルダを作成
@@ -327,6 +329,20 @@ void AtrumEngine::MakeRootSignature() {
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
+	// RootParameter作成 複数設定できるため配列 今回は結果1つだけなため長さ1
+	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	// CBVを使う
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	// PixelShaderで使う
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	// レジスタ番号0にバインド
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	// ルートパラメータ配列へのポインタ
+	descriptionRootSignature.pParameters = rootParameters;
+	// 配列の長さ
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
 	// シリアライズしてバイナリにする
 	hr_ = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob_, &errorBlob_);
 
@@ -388,6 +404,47 @@ void AtrumEngine::PrepareShader() {
 
 }
 
+ID3D12Resource* AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
+
+	// リソース用のヒープの設定
+	uploadHeapProperties_.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+	D3D12_RESOURCE_DESC resourceDesc{};
+
+	// バッファリソース テクスチャの場合はまた別の設定をする
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	
+	resourceDesc.Width = sizeInBytes;
+
+	// バッファの場合はこれらを1にする決まり
+	resourceDesc.Height = 1;
+	resourceDesc.DepthOrArraySize = 1;
+	resourceDesc.MipLevels = 1;
+	resourceDesc.SampleDesc.Count = 1;
+
+	// バッファの場合はコレにする決まり
+	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+	// 実際にリソースを作る
+	ID3D12Resource* resource = nullptr;
+	hr_ = device_->CreateCommittedResource(&uploadHeapProperties_, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(hr_));
+
+	return resource;
+
+}
+
+void AtrumEngine::CreateMaterialResource() {
+
+	// マテリアル用のリソース作成 Color1つ分のサイズを用意
+	materialResource_ = CreateBufferResource(sizeof(Vector4));
+
+	// マテリアルにデータを書き込むためのアドレスを取得
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+
+}
+
+
 void AtrumEngine::CreatePSO() {
 
 	graphicsPipeLineStateDesc_.pRootSignature = rootSignature_;
@@ -421,25 +478,7 @@ void AtrumEngine::CreatePSO() {
 
 void AtrumEngine::CreateVertexResource() {
 
-	// 頂点リソース用のヒープの設定
-	uploadHeapProperties_.Type = D3D12_HEAP_TYPE_UPLOAD;
-
-	// バッファリソース テクスチャの場合はまた別の設定をする
-	vertexResourceDesc_.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	vertexResourceDesc_.Width = sizeof(Vector4) * 3;
-
-	// バッファの場合はこれらを1にする決まり
-	vertexResourceDesc_.Height = 1;
-	vertexResourceDesc_.DepthOrArraySize = 1;
-	vertexResourceDesc_.MipLevels = 1;
-	vertexResourceDesc_.SampleDesc.Count = 1;
-
-	// バッファの場合はコレにする決まり
-	vertexResourceDesc_.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-
-	// 実際に頂点リソースを作る
-	hr_ = device_->CreateCommittedResource(&uploadHeapProperties_, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc_, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource_));
-	assert(SUCCEEDED(hr_));
+	vertexResource_ = CreateBufferResource(sizeof(Vector4) * 3);
 
 }
 
@@ -470,6 +509,12 @@ void AtrumEngine::WriteVertexResource() {
 
 	// 右下
 	vertexData_[2] = { 0.5f, -0.5f, 0.0f, 1.0f };
+
+}
+
+void AtrumEngine::SetMaterialData(const Vector4& color) {
+	
+	*materialData_ = color;
 
 }
 
@@ -514,8 +559,18 @@ void AtrumEngine::DrawCall() {
 	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	// マテリアルCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+
 	// 描画(DrawCall) 3頂点で1つのインスタンス
 	commandList_->DrawInstanced(3, 1, 0, 0);
+
+}
+
+
+void AtrumEngine::SetFps(const float& fps) {
+
+	framePerSeconds_ = fps;
 
 }
 
@@ -656,6 +711,8 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->SetUpScissorRect();
 
+	this->CreateMaterialResource();
+
 	// ログ出力
 	LogFile::GetInstance()->Log("Hello, DirectX!");
 
@@ -686,6 +743,40 @@ bool AtrumEngine::MessageForOs() {
 	}
 
 	return false;
+
+}
+
+bool AtrumEngine::IsWaitForFrame() {
+
+	DeltaTime::GetInstance()->CalcDeltaTime();
+
+	countForNextFrame_ += DeltaTime::GetInstance()->GetDeltaTime();
+
+	if (countForNextFrame_ >= framePerSeconds_) {
+
+		return false;
+
+	}
+
+	return true;
+
+}
+
+bool AtrumEngine::IsExecuteFrame() {
+
+	if (this->MessageForOs()) {
+
+		return false;
+
+	}
+
+	if (this->IsWaitForFrame()) {
+
+		return false;
+
+	}
+
+	return true;
 
 }
 
@@ -788,6 +879,7 @@ void AtrumEngine::Finalize() {
 
 	/* 解放処理 */
 
+	materialResource_->Release();
 	vertexResource_->Release();
 	graphicsPipelineState_->Release();
 	signatureBlob_->Release();

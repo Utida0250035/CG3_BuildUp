@@ -126,9 +126,6 @@ private:
 	// 頂点リソース用のヒープの設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties_{};
 
-	// 頂点リソースの設定
-	D3D12_RESOURCE_DESC vertexResourceDesc_{};
-
 	// 頂点リソース
 	ID3D12Resource* vertexResource_ = nullptr;
 
@@ -138,6 +135,12 @@ private:
 	// 頂点データ
 	Vector4* vertexData_ = nullptr;
 
+	// MaterialResource
+	ID3D12Resource* materialResource_ = nullptr;
+
+	// MaterialData
+	Vector4* materialData_ = nullptr;
+
 
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
@@ -145,13 +148,25 @@ private:
 	// シザー矩形
 	D3D12_RECT scissorRect_{};
 
+	// 次フレームまでのカウント
+	float countForNextFrame_ = 0.0f;
+
+	// fps(フレーム/s)
+	float framePerSeconds_ = 0.0f;
+
 	// メッセージ
 	MSG msg_{};
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	AtrumEngine() = default;
 
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
 	~AtrumEngine() = default;
-	
+
 	/// <summary>
 	/// 初期化処理 ウィンドウ作成
 	/// </summary>
@@ -215,6 +230,19 @@ private:
 	/// </summary>
 	void PrepareShader();
 
+	/// <summary>
+	/// BufferResource作成
+	/// </summary>
+	/// <param name="device"> デバイス </param>
+	/// <param name="sizeInBytes"> Resourceのサイズ </param>
+	/// <returns> Resource </returns>
+	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+
+	/// <summary>
+	/// MaterialResourceの作成
+	/// </summary>
+	void CreateMaterialResource();
+
 public:
 
 	/* 三角形のみ描画可能になっている */
@@ -240,6 +268,12 @@ public:
 	void WriteVertexResource();
 
 	/// <summary>
+	/// Materialにデータ(色)を書き込む
+	/// </summary>
+	/// <param name="color"> 色(RGBA) 各値0.0fから1.0f </param>
+	void SetMaterialData(const Vector4& color);
+
+	/// <summary>
 	/// 描画呼び出し(DrawCall)
 	/// </summary>
 	void DrawCall();
@@ -258,6 +292,8 @@ public:
 		const wchar_t* profile
 	);
 
+	void SetFps(const float& fps);
+
 	/// <summary>
 	/// エンジンの初期化
 	/// </summary>
@@ -272,6 +308,8 @@ public:
 	/// <returns></returns>
 	bool IsProcess();
 
+private:
+
 	/// <summary>
 	/// OSへのメッセージ処理
 	/// </summary>
@@ -279,7 +317,21 @@ public:
 	bool MessageForOs();
 
 	/// <summary>
-	/// ウィンドウのクリア
+	/// 次フレーム待ちか
+	/// </summary>
+	/// <returns></returns>
+	bool IsWaitForFrame();
+
+public:
+
+	/// <summary>
+	/// フレーム実行の可否
+	/// </summary>
+	/// <returns> フレーム実行フラグ </returns>
+	bool IsExecuteFrame();
+
+	/// <summary>
+	/// ウィンドウの更新
 	/// </summary>
 	void UpdateWindow();
 
