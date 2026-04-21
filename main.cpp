@@ -10,7 +10,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	AtrumEngine* atrum = AtrumEngine::GetInstance();
 
 	// エンジンの初期化
-	atrum->Initialize("CG2", 1280, 720);
+	atrum->Initialize("CG2",1280, 720);
+
+	// fps設定
+	atrum->SetFps(0.016666f);
 
 
 	// PSOを生成
@@ -26,19 +29,30 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	atrum->WriteVertexResource();
 
 
+	// 三角形の色
+	Vector4 triangleColor = Vector4{0.0f, 0.1f, 0.1f, 1.0f};
+
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
 
-		if (!atrum->MessageForOs()) {
+		if (atrum->IsExecuteFrame()) {
 
 			/*============== メインループ =================*/
 
-			// 画面クリア
+			// 画面更新
 			atrum->UpdateWindow();
 
 			///
 			/// ↓ 更新ここから
 			///
+
+			triangleColor.x += 1.0f / 180.0f;
+
+			if (triangleColor.x >= 0.8f) {
+
+				triangleColor.x = 0.0f;
+
+			}
 
 			///
 			/// ↑更新ここまで
@@ -47,6 +61,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			///
 			/// ↓描画ここから
 			/// 
+
+			atrum->SetMaterialData(triangleColor);
 
 			///
 			/// ↑描画ここまで

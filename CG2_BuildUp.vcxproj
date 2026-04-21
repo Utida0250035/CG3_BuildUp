@@ -68,6 +68,8 @@
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalOptions>-HV 2021 -enable-16bit-types %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -95,6 +97,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalOptions>-HV 2021 -enable-16bit-types %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -104,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
   <ItemGroup>
     <ClCompile Include="ConvertString.cpp" />
     <ClCompile Include="AtrumEngine.cpp" />
+    <ClCompile Include="DeltaTime.cpp" />
     <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="WindowProcedure.cpp" />
@@ -111,12 +116,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
   <ItemGroup>
     <ClInclude Include="ConvertString.h" />
     <ClInclude Include="AtrumEngine.h" />
+    <ClInclude Include="DeltaTime.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="WindowProcedure.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Object.3d.PS.hlsl">
+    <FxCompile Include="Object3d.PS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
