@@ -171,7 +171,7 @@ private:
 	float countForNextFrame_ = 0.0f;
 
 	// fps(フレーム/s)
-	float framePerSeconds_ = 0.0f;
+	float secondsPerFrame_ = 0.0f;
 
 	// メッセージ
 	MSG msg_{};
@@ -322,7 +322,7 @@ public:
 		const wchar_t* profile
 	);
 
-	void SetFps(const float& fps);
+	void SetFps(const int32_t& fps);
 
 	/// <summary>
 	/// エンジンの初期化

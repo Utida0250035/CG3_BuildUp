@@ -600,9 +600,9 @@ void AtrumEngine::DrawCall() {
 }
 
 
-void AtrumEngine::SetFps(const float& fps) {
+void AtrumEngine::SetFps(const int32_t& fps) {
 
-	framePerSeconds_ = fps;
+	secondsPerFrame_ = 1.0f / static_cast<float>(fps);
 
 }
 
@@ -786,7 +786,7 @@ bool AtrumEngine::IsWaitForFrame() {
 
 	countForNextFrame_ += DeltaTime::GetInstance()->GetDeltaTime();
 
-	if (countForNextFrame_ >= framePerSeconds_) {
+	if (countForNextFrame_ >= secondsPerFrame_) {
 
 		return false;
 
