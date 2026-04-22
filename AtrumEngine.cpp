@@ -788,6 +788,14 @@ bool AtrumEngine::IsWaitForFrame() {
 
 	if (countForNextFrame_ >= secondsPerFrame_) {
 
+		countForNextFrame_ -= secondsPerFrame_;
+
+		if (countForNextFrame_ >= secondsPerFrame_) {
+
+			countForNextFrame_ = fmodf(countForNextFrame_, secondsPerFrame_);
+
+		}
+
 		return false;
 
 	}
@@ -913,6 +921,7 @@ void AtrumEngine::Finalize() {
 
 	/* 解放処理 */
 
+	wvpResource_->Release();
 	materialResource_->Release();
 	vertexResource_->Release();
 	graphicsPipelineState_->Release();
