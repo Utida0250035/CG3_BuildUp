@@ -13,7 +13,20 @@
 
 #include "Vector4.h"
 
+#include "Matrix3D.h"
+#include "Vector3.h"
+
 class AtrumEngine {
+
+public:
+
+	struct Transform {
+
+		Vector3 scale;
+		Vector3 rotate;
+		Vector3 translate;
+
+	};
 
 private:
 
@@ -138,8 +151,14 @@ private:
 	// MaterialResource
 	ID3D12Resource* materialResource_ = nullptr;
 
-	// MaterialData
+	// MaterialData 色データRGBA
 	Vector4* materialData_ = nullptr;
+
+	// WvpResource
+	ID3D12Resource* wvpResource_ = nullptr;
+
+	// WvpData 描画座標データ
+	Matrix4x4* wvpData_ = nullptr;
 
 
 	// ビューポート
@@ -243,6 +262,11 @@ private:
 	/// </summary>
 	void CreateMaterialResource();
 
+	/// <summary>
+	/// WvpResource(TransformationMatrix用のリソース)の作成
+	/// </summary>
+	void CreateWvpResource();
+
 public:
 
 	/* 三角形のみ描画可能になっている */
@@ -272,6 +296,12 @@ public:
 	/// </summary>
 	/// <param name="color"> 色(RGBA) 各値0.0fから1.0f </param>
 	void SetMaterialData(const Vector4& color);
+
+	/// <summary>
+	/// Wvpにデータ(WorldMatrix)を書き込む
+	/// </summary>
+	/// <param name="wvp"> WorldMatrix </param>
+	void SetWvpData(const Matrix4x4& wvp);
 
 	/// <summary>
 	/// 描画呼び出し(DrawCall)
@@ -357,5 +387,8 @@ public:
 
 	// コピーコンストラクタの削除
 	AtrumEngine(const AtrumEngine& source) = delete;
+
+
+	Matrix4x4 CreateWorldMatrix(const Transform& transform);
 
 };

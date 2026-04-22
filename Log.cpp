@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <chrono>
 #include <Windows.h>
+#include <format>
 
 void Log(const std::string& message) {
 

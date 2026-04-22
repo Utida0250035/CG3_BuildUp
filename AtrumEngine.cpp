@@ -17,8 +17,8 @@
 #include <string>
 #include <strsafe.h>
 #include <Windows.h>
-
 #include "DeltaTime.h"
+#include "Matrix3D.h"
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 
@@ -329,14 +329,22 @@ void AtrumEngine::MakeRootSignature() {
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// RootParameter作成 複数設定できるため配列 今回は結果1つだけなため長さ1
-	D3D12_ROOT_PARAMETER rootParameters[1] = {};
+	// RootParameter作成 [0]:PixelShaderのMaterial [1]:VertexShaderのTransform
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+
 	// CBVを使う
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	// PixelShaderで使う
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	// レジスタ番号0にバインド
 	rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	// CBVを使う
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	// VertexShaderで使う
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	// レジスタ番号0を使う
+	rootParameters[1].Descriptor.ShaderRegister = 0;
 
 	// ルートパラメータ配列へのポインタ
 	descriptionRootSignature.pParameters = rootParameters;
@@ -436,11 +444,26 @@ ID3D12Resource* AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 void AtrumEngine::CreateMaterialResource() {
 
-	// マテリアル用のリソース作成 Color1つ分のサイズを用意
+	// Color1つ分のサイズを用意
 	materialResource_ = CreateBufferResource(sizeof(Vector4));
 
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+
+	*materialData_ = {1.0f, 1.0f, 1.0f, 1.0f};
+
+}
+
+void AtrumEngine::CreateWvpResource() {
+
+	// Matrix4x4 1つ分のサイズを用意する
+	wvpResource_ = CreateBufferResource(sizeof(Matrix4x4));
+	
+	// データを書き込むためのアドレスを取得
+	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
+
+	// 単位行列を書き込んでおく
+	*wvpData_ = MakeIdentityMatrix4x4();
 
 }
 
@@ -518,6 +541,12 @@ void AtrumEngine::SetMaterialData(const Vector4& color) {
 
 }
 
+void AtrumEngine::SetWvpData(const Matrix4x4& wvp) {
+
+	*wvpData_ = wvp;
+
+}
+
 void AtrumEngine::SetUpViewport() {
 	// クライアント領域のサイズと同等にして画面全体を表示領域とする
 
@@ -561,6 +590,9 @@ void AtrumEngine::DrawCall() {
 
 	// マテリアルCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+
+	// WVP用のCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
 	commandList_->DrawInstanced(3, 1, 0, 0);
@@ -713,8 +745,10 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->CreateMaterialResource();
 
-	// ログ出力
-	LogFile::GetInstance()->Log("Hello, DirectX!");
+	this->CreateWvpResource();
+
+	// 初期化完了のログ出力
+	LogFile::GetInstance()->Log("Hello World!");
 
 }
 
@@ -926,5 +960,14 @@ void AtrumEngine::Finalize() {
 		debug->Release();
 
 	}
+
+}
+
+
+Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) {
+
+	Matrix4x4 result = MakeWorldMatrix(transform.translate, transform.scale, transform.rotate);
+
+	return result;
 
 }
