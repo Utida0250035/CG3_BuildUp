@@ -19,6 +19,7 @@
 #include <Windows.h>
 #include "DeltaTime.h"
 #include "Matrix3D.h"
+#include "ImGui.h"
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 
@@ -415,13 +416,14 @@ void AtrumEngine::PrepareShader() {
 ID3D12Resource* AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 	// リソース用のヒープの設定
-	uploadHeapProperties_.Type = D3D12_HEAP_TYPE_UPLOAD;
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
 
 	D3D12_RESOURCE_DESC resourceDesc{};
 
 	// バッファリソース テクスチャの場合はまた別の設定をする
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	
+
 	resourceDesc.Width = sizeInBytes;
 
 	// バッファの場合はこれらを1にする決まり
@@ -435,10 +437,35 @@ ID3D12Resource* AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 	// 実際にリソースを作る
 	ID3D12Resource* resource = nullptr;
-	hr_ = device_->CreateCommittedResource(&uploadHeapProperties_, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+	hr_ = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(hr_));
 
 	return resource;
+
+}
+
+ID3D12DescriptorHeap* AtrumEngine::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) {
+
+	ID3D12DescriptorHeap* descriptorHeap = nullptr;
+	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+	descriptorHeapDesc.Type = heapType;
+	descriptorHeapDesc.NumDescriptors = numDescriptors;
+
+	if (shaderVisible) {
+
+		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+	} else {
+
+		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	}
+
+	hr_ = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+
+	// ディスクリプタヒープが生成できなかったら起動不可
+	assert(SUCCEEDED(hr_));
+
+	return descriptorHeap;
 
 }
 
@@ -450,7 +477,7 @@ void AtrumEngine::CreateMaterialResource() {
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
-	*materialData_ = {1.0f, 1.0f, 1.0f, 1.0f};
+	*materialData_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 }
 
@@ -458,7 +485,7 @@ void AtrumEngine::CreateWvpResource() {
 
 	// Matrix4x4 1つ分のサイズを用意する
 	wvpResource_ = CreateBufferResource(sizeof(Matrix4x4));
-	
+
 	// データを書き込むためのアドレスを取得
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
 
@@ -536,7 +563,7 @@ void AtrumEngine::WriteVertexResource() {
 }
 
 void AtrumEngine::SetMaterialData(const Vector4& color) {
-	
+
 	*materialData_ = color;
 
 }
@@ -572,13 +599,13 @@ void AtrumEngine::DrawCall() {
 
 	// Viewportを設定
 	commandList_->RSSetViewports(1, &viewport_);
-	
+
 	// ScissorRectを設定
 	commandList_->RSSetScissorRects(1, &scissorRect_);
 
 	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
 	commandList_->SetGraphicsRootSignature(rootSignature_);
-	
+
 	// PSOを設定
 	commandList_->SetPipelineState(graphicsPipelineState_);
 
@@ -681,14 +708,10 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 
 	// RTVディスクリプタヒープの生成
-	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeapDesc{};
-	rtvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvDescriptorHeapDesc.NumDescriptors = 2;
-	hr_ = device_->CreateDescriptorHeap(&rtvDescriptorHeapDesc, IID_PPV_ARGS(&rtvDescriptorHeap_));
+	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 
-	// ディスクリプタヒープが生成できなかったら起動不可
-	assert(SUCCEEDED(hr_));
-
+	// SRVディスクリプタヒープの生成
+	srvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 
 	// SwapChainからResourceを引っ張る
 	hr_ = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
@@ -732,7 +755,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	this->MakeRootSignature();
 
 	this->SetUpInputLayout();
-	
+
 	this->SetUpBlendState();
 
 	this->SetUpRasterizerState();
@@ -746,6 +769,26 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	this->CreateMaterialResource();
 
 	this->CreateWvpResource();
+
+#ifdef USE_IMGUI
+
+	// ImGuiの初期化
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(hwnd_);
+	ImGui_ImplDX12_Init(
+		device_,
+		swapChainDesc.BufferCount,
+		rtvDesc.Format,
+		srvDescriptorHeap_,
+		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
+		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
+	);
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->Build();
+
+#endif
 
 	// 初期化完了のログ出力
 	LogFile::GetInstance()->Log("Hello World!");
@@ -789,12 +832,6 @@ bool AtrumEngine::IsWaitForFrame() {
 	if (countForNextFrame_ >= secondsPerFrame_) {
 
 		countForNextFrame_ -= secondsPerFrame_;
-
-		if (countForNextFrame_ >= secondsPerFrame_) {
-
-			countForNextFrame_ = fmodf(countForNextFrame_, secondsPerFrame_);
-
-		}
 
 		return false;
 
@@ -953,6 +990,14 @@ void AtrumEngine::Finalize() {
 #ifdef _DEBUG
 
 	debugController_->Release();
+
+#endif
+
+#ifdef USE_IMGUI
+
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 
 #endif
 

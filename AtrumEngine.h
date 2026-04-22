@@ -78,6 +78,9 @@ private:
 	// スワップチェーンリソース
 	ID3D12Resource* swapChainResources_[2] = { nullptr };
 
+	// SRV(Shader Resource View)ディスクリプタヒープ
+	ID3D12DescriptorHeap* srvDescriptorHeap_ = nullptr;
+
 	// RTV(Render Target View)ディスクリプタヒープ
 	ID3D12DescriptorHeap* rtvDescriptorHeap_ = nullptr;
 
@@ -135,9 +138,6 @@ private:
 
 	// PSO
 	ID3D12PipelineState* graphicsPipelineState_ = nullptr;
-
-	// 頂点リソース用のヒープの設定
-	D3D12_HEAP_PROPERTIES uploadHeapProperties_{};
 
 	// 頂点リソース
 	ID3D12Resource* vertexResource_ = nullptr;
@@ -256,6 +256,15 @@ private:
 	/// <param name="sizeInBytes"> Resourceのサイズ </param>
 	/// <returns> Resource </returns>
 	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+
+	/// <summary>
+	/// DescriptorHeap作成
+	/// </summary>
+	/// <param name="heapType"> Heapの種類 </param>
+	/// <param name="descriptorsNum"> Descriptorの数 </param>
+	/// <param name="shaderVisible"> Shaderに使用するか </param>
+	/// <returns></returns>
+	ID3D12DescriptorHeap* CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT descriptorsNum, bool shaderVisible);
 
 	/// <summary>
 	/// MaterialResourceの作成

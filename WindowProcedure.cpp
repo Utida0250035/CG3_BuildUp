@@ -1,6 +1,18 @@
-﻿#include "WindowProcedure.h"
+#include "WindowProcedure.h"
+#include "ImGui.h"
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+#ifdef USE_IMGUI
+
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam)) {
+
+		return true;
+
+	}
+
+#endif // USE_IMGUI
+
 
 	switch (msg) {
 
