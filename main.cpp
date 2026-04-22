@@ -14,7 +14,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	atrum->Initialize("CG2",1280, 720);
 
 	// fps設定
-	atrum->SetFps(0.016666f);
+	atrum->SetFps(60);
 
 
 	// PSOを生成
