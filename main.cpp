@@ -54,8 +54,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 三角形のTransform
 	Matrix4x4 triangleWorldMatrix = atrum->CreateWorldMatrix(triangleTransform);
 
-	// WvpMatrixを作る
-	Matrix4x4 worldViewProjectionMatrix = triangleWorldMatrix * viewMatrix * projectionMatrix;
+	// WvpMatrix
+	Matrix4x4 worldViewProjectionMatrix;
 
 
 	while (atrum->IsProcess()) {
@@ -65,8 +65,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			/*============== メインループ =================*/
 
-			// 画面更新
-			atrum->UpdateWindow();
+#ifdef USE_IMGUI
+
+			// ImGuiにフレーム開始を通知
+			atrum->ImGuiNewFrame();
+
+#endif
 
 			///
 			/// ↓ 更新ここから
@@ -88,6 +92,37 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
+#ifdef USE_IMGUI
+
+			ImGui::ShowDemoWindow();
+
+			ImGui::Begin("triangle");
+
+			ImGui::DragFloat3("scale", &triangleTransform.scale.x, 0.0625f);
+
+			ImGui::DragFloat3("rotate", &triangleTransform.rotate.x, 0.03125f);
+
+			ImGui::DragFloat3("translate", &triangleTransform.translate.x, 0.0625f);
+
+			ImGui::End();
+
+			ImGui::Begin("camera");
+
+			ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
+
+			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.0625f);
+
+			ImGui::End();
+
+#endif
+
+
+#ifdef USE_IMGUI
+
+			atrum->ImGuiRender();
+
+#endif
+
 			///
 			/// ↑更新ここまで
 			/// 
@@ -96,16 +131,34 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			/// ↓描画ここから
 			/// 
 
+			// カメラのワールド行列
+			cameraWorldMatrix = atrum->CreateWorldMatrix(cameraTransform);
+
+			// ビュー行列
+			viewMatrix = MatrixInverse(cameraWorldMatrix);
+
+			// 透視投影行列
+			projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+
+
+			// 三角形のワールド行列
 			triangleWorldMatrix = atrum->CreateWorldMatrix(triangleTransform);
 
-			worldViewProjectionMatrix = triangleWorldMatrix * viewMatrix * projectionMatrix;;
+			// 三角形のWVP行列
+			worldViewProjectionMatrix = triangleWorldMatrix * viewMatrix * projectionMatrix;
 
+			// 三角形のMaterialデータ設定
 			atrum->SetMaterialData(triangleColor);
+
+			// 三角形のWVPデータ設定
 			atrum->SetWvpData(worldViewProjectionMatrix);
 
 			///
 			/// ↑描画ここまで
 			/// 
+
+			// 画面更新
+			atrum->UpdateWindow();
 
 		}
 
