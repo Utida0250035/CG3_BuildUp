@@ -4,9 +4,6 @@
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
-	// ログ出力ファイルの初期化
-	LogFile::GetInstance()->Initialize();
-
 	// エンジンインスタンスの取得
 	AtrumEngine* atrum = AtrumEngine::GetInstance();
 
@@ -58,6 +55,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Matrix4x4 worldViewProjectionMatrix;
 
 
+	atrum->GetTexture("./REsources/Images/uvChecker.png");
+
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
 
@@ -96,6 +95,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::ShowDemoWindow();
 
+
 			ImGui::Begin("triangle");
 
 			ImGui::DragFloat3("scale", &triangleTransform.scale.x, 0.0625f);
@@ -104,20 +104,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::DragFloat3("translate", &triangleTransform.translate.x, 0.0625f);
 
+			ImGui::DragFloat4("RGBA", &triangleColor.x, 0.001f, 0.0f, 1.0f);
+
 			ImGui::End();
+
 
 			ImGui::Begin("camera");
 
 			ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
 
-			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.0625f);
+			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.03125f);
 
 			ImGui::End();
 
-#endif
-
-
-#ifdef USE_IMGUI
 
 			atrum->ImGuiRender();
 

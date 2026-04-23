@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 struct Vector3 {
 	float x;
@@ -91,8 +91,3 @@ inline Vector3 VectorNormalize(const Vector3& vector) {
 
 	return Vector3{ 0.0f, 0.0f, 0.0f };
 }
-
-static constexpr int kVectorPrintColumnWidth = 60;
-static constexpr int kVectorPrintRowHeight = 20;
-
-void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);

@@ -13,7 +13,7 @@ void Log(const std::string& message) {
 void LogFile::Initialize() {
 
 	// logsフォルダを作成
-	std::filesystem::create_directory("logs");
+	std::filesystem::create_directory("Logs");
 
 	// 現在UTC時刻を取得
 	std::chrono::system_clock::time_point nowTime = std::chrono::system_clock::now();

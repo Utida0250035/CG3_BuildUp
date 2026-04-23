@@ -643,6 +643,15 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// SEH例外が補足されなかった場合(Unhandled)に補足する関数を登録
 	SetUnhandledExceptionFilter(ExportDump);
 
+	// COMの初期化
+	hr_ = CoInitializeEx(0, COINIT_MULTITHREADED);
+
+	// COMの初期化が失敗したら起動不可
+	assert(SUCCEEDED(hr_));
+
+	// ログ出力ファイルの初期化
+	LogFile::GetInstance()->Initialize();
+
 	this->PrepareWindow(windowLabel, clientWidth, clientHeight);
 
 #ifdef _DEBUG
@@ -1033,6 +1042,11 @@ void AtrumEngine::Finalize() {
 
 #endif
 
+	/* */
+
+	// COMの終了処理
+	CoUninitialize();
+
 	CloseWindow(hwnd_);
 
 	// リソースリークチェック
@@ -1055,5 +1069,138 @@ Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) {
 	Matrix4x4 result = MakeWorldMatrix(transform.translate, transform.scale, transform.rotate);
 
 	return result;
+
+}
+
+
+DirectX::ScratchImage AtrumEngine::LoadTexture(const std::string& filePath) {
+
+	// テクスチャファイルを読んでプログラムで扱えるようにする
+	DirectX::ScratchImage image{};
+	std::wstring filePathBuffer = StringToWString(filePath);
+	hr_ = DirectX::LoadFromWICFile(filePathBuffer.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	assert(SUCCEEDED(hr_));
+
+	// ミップマップの作成
+	DirectX::ScratchImage mipImages{};
+	hr_ = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	assert(SUCCEEDED(hr_));
+
+	// ミップマップ付きのデータを返す
+	return mipImages;
+
+}
+
+ID3D12Resource* AtrumEngine::CreateTextureResource(const DirectX::TexMetadata& metaData) {
+
+	/* metaDataを基にResourceの設定 */
+	D3D12_RESOURCE_DESC resourceDesc{};
+	// Textureの幅
+	resourceDesc.Width = UINT(metaData.width);
+	// Textureの高さ
+	resourceDesc.Height = UINT(metaData.height);
+	// mipMapの数
+	resourceDesc.MipLevels = UINT16(metaData.mipLevels);
+	// 奥行き or 配列Textureの要素数
+	resourceDesc.DepthOrArraySize = UINT16(metaData.arraySize);
+	// TextureのFormat
+	resourceDesc.Format = metaData.format;
+	// サンプリングカウント 1固定
+	resourceDesc.SampleDesc.Count = 1;
+	// Textureの次元数 普段(画像)は2次元
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metaData.dimension);
+
+	/* 利用するHeapの設定 ※非常に特殊な運用 */
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	// 細かい設定を行なう
+	heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM;
+	// WriteBackポリシーでCPUへアクセス可能
+	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	// プロセッサの近くに配置
+	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+
+	/* Resourceの生成 */
+	ID3D12Resource* resource = nullptr;
+	hr_ = device_->CreateCommittedResource(
+		// Heapの設定
+		&heapProperties,
+		// Heapの特殊な設定 特に無し
+		D3D12_HEAP_FLAG_NONE,
+		// Resourceの設定
+		&resourceDesc,
+		// 初回のResourceState Textureは基本読むだけ
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		// Clear最適値 使わないのでnullptr
+		nullptr,
+		// 作成するResourceポインタへのポインタ
+		IID_PPV_ARGS(&resource)
+	);
+	assert(SUCCEEDED(hr_));
+
+	return resource;
+
+}
+
+void AtrumEngine::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& metaData) {
+
+	for (size_t mipLevel = 0; mipLevel < metaData.mipLevels; ++mipLevel) {
+		// 全mipMapについて処理
+
+		// MipMapLevelを指定して各Imageを取得
+		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
+
+		// Textureに転送
+		hr_ = texture->WriteToSubresource(
+			UINT(mipLevel),
+
+			// 全領域へコピー
+			nullptr,
+
+			// 元データアドレス
+			img->pixels,
+
+			// 1ラインサイズ
+			UINT(img->rowPitch),
+
+			// 1枚サイズ
+			UINT(img->slicePitch)
+		);
+		assert(SUCCEEDED(hr_));
+
+	}
+
+}
+
+void AtrumEngine::MakeShaderResourceView(ID3D12Resource* textureResource, const DirectX::TexMetadata& metaData) {
+
+	// metaDataを基にSRVの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metaData.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	// 2Dテクスチャ
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = UINT(metaData.mipLevels);
+
+	// SRVを作成するDescriptionHeapの場所を決める
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+	// 先頭はImGuiが使っているため次を使う
+	textureSrvHandleCPU.ptr += device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	textureSrvHandleGPU.ptr += device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	// SRVの作成
+	device_->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
+
+}
+
+void AtrumEngine::GetTexture(const std::string& filePath) {
+	
+	// Textureを読んで転送する
+	DirectX::ScratchImage mipImages = this->LoadTexture(filePath);
+	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
+	ID3D12Resource* textureResource = this->CreateTextureResource(metaData);
+	this->UploadTextureData(textureResource, mipImages, metaData);
+
+	// 実際にShaderResourceViewを作る
+	MakeShaderResourceView(textureResource, metaData);
 
 }

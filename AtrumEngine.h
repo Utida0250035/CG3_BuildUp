@@ -22,16 +22,23 @@
 
 #endif
 
+#include <DirectXTex/DirectXTex.h>
+
+#include "Vector2.h"
+
 class AtrumEngine {
 
 public:
 
 	struct Transform {
-
 		Vector3 scale;
 		Vector3 rotate;
 		Vector3 translate;
+	};
 
+	struct VertexData {
+		Vector4 position;
+		Vector2 texCoord;
 	};
 
 private:
@@ -417,7 +424,44 @@ public:
 	// コピーコンストラクタの削除
 	AtrumEngine(const AtrumEngine& source) = delete;
 
-
+	/// <summary>
+	/// ワールド行列の作成
+	/// </summary>
+	/// <param name="transform"> Transform </param>
+	/// <returns> ワールド行列 </returns>
 	Matrix4x4 CreateWorldMatrix(const Transform& transform);
+
+private:
+
+	/// <summary>
+	/// Textureデータの読み込み
+	/// </summary>
+	/// <param name="filePath"> ファイルパス </param>
+	/// <returns> MipMap付きデータ </returns>
+	DirectX::ScratchImage LoadTexture(const std::string& filePath);
+
+	/// <summary>
+	/// TextureResourceの作成
+	/// </summary>
+	/// <param name="metaData"></param>
+	/// <returns></returns>
+	ID3D12Resource* CreateTextureResource(const DirectX::TexMetadata& metaData);
+
+	/// <summary>
+	/// textureResourceにデータを転送する
+	/// </summary>
+	/// <param name="texture"></param>
+	/// <param name="mipImages"></param>
+	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& metaData);
+
+	/// <summary>
+	/// ShaderResourceViewの作成
+	/// </summary>
+	/// <param name="metaData"> Meta情報 </param>
+	void MakeShaderResourceView(ID3D12Resource* textureResource, const DirectX::TexMetadata& metaData);
+
+public:
+
+	void GetTexture(const std::string& filePath);
 
 };
