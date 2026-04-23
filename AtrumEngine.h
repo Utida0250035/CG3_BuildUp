@@ -16,6 +16,12 @@
 #include "Matrix3D.h"
 #include "Vector3.h"
 
+#ifdef USE_IMGUI
+
+#include "ImGui.h"
+
+#endif
+
 class AtrumEngine {
 
 public:
@@ -368,6 +374,20 @@ public:
 	/// </summary>
 	/// <returns> フレーム実行フラグ </returns>
 	bool IsExecuteFrame();
+
+#ifdef USE_IMGUI
+
+	/// <summary>
+	/// ImGuiにフレーム開始を通知
+	/// </summary>
+	void ImGuiNewFrame();
+
+	/// <summary>
+	/// ImGuiの内部コマンド生成
+	/// </summary>
+	void ImGuiRender();
+
+#endif
 
 	/// <summary>
 	/// ウィンドウの更新

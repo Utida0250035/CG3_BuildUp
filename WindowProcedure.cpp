@@ -1,5 +1,10 @@
 #include "WindowProcedure.h"
+
+#ifdef USE_IMGUI
+
 #include "ImGui.h"
+
+#endif
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 

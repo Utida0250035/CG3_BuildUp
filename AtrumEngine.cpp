@@ -19,7 +19,12 @@
 #include <Windows.h>
 #include "DeltaTime.h"
 #include "Matrix3D.h"
+
+#ifdef USE_IMGUI
+
 #include "ImGui.h"
+
+#endif
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 
@@ -735,7 +740,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	rtvHandles_[0] = rtvStartHandle;
 	device_->CreateRenderTargetView(swapChainResources_[0], &rtvDesc, rtvHandles_[0]);
 
-	// 2つめのディスクリプトハンドルを作る
+	// 2つめのRTVディスクリプタハンドルを作る
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	// 2つめのRTVを作る
@@ -859,6 +864,24 @@ bool AtrumEngine::IsExecuteFrame() {
 
 }
 
+#ifdef USE_IMGUI
+
+void AtrumEngine::ImGuiNewFrame() {
+
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+}
+
+void AtrumEngine::ImGuiRender() {
+
+	ImGui::Render();
+
+}
+
+#endif
+
 void AtrumEngine::UpdateWindow() {
 
 	// これから書き込むバックバッファのインデックスを取得
@@ -898,9 +921,18 @@ void AtrumEngine::UpdateWindow() {
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
 
+	// 描画用のDescriptorHeapの設定
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_ };
+	commandList_->SetDescriptorHeaps(1, descriptorHeaps);
 
 	this->DrawCall();
 
+#ifdef USE_IMGUI
+
+	// ImGuiの描画コマンドを積む
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_);
+
+#endif
 
 	// 画面に描く処理が終了し画面に映すため状態を遷移
 	// RenderTargetからPresentにする
@@ -958,6 +990,14 @@ void AtrumEngine::Finalize() {
 
 	/* 解放処理 */
 
+#ifdef USE_IMGUI
+
+	ImGui_ImplDX12_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
+
+#endif
+
 	wvpResource_->Release();
 	materialResource_->Release();
 	vertexResource_->Release();
@@ -990,14 +1030,6 @@ void AtrumEngine::Finalize() {
 #ifdef _DEBUG
 
 	debugController_->Release();
-
-#endif
-
-#ifdef USE_IMGUI
-
-	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
 
 #endif
 
