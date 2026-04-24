@@ -28,13 +28,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 
 	// 三角形の色
-	Vector4 triangleColor = Vector4{0.0f, 0.1f, 0.1f, 1.0f};
+	Vector4 triangleColor = Vector4{1.0f, 1.0f, 1.0f, 1.0f};
 
 	// 三角形の座標情報
 	AtrumEngine::Transform triangleTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f } };
-
-	// 三角形の回転速度
-	float triangleRotateSpeedY = 0.03f; //std::numbers::pi_v<float> * 0.03125f;
 
 
 	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -5.0f} };
@@ -54,8 +51,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// WvpMatrix
 	Matrix4x4 worldViewProjectionMatrix;
 
-
-	atrum->GetTexture("./REsources/Images/uvChecker.png");
+	atrum->GetTexture("./Resources/Images/uvChecker.png");
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -74,22 +70,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			///
 			/// ↓ 更新ここから
 			///
-
-			triangleColor.x += 1.0f / 180.0f;
-
-			if (triangleColor.x >= 0.8f) {
-
-				triangleColor.x = 0.0f;
-
-			}
-
-			triangleTransform.rotate.y += triangleRotateSpeedY;
-
-			if (triangleTransform.rotate.y >= 2.0f * std::numbers::pi_v<float>) {
-
-				triangleTransform.rotate.y -= 2.0f * std::numbers::pi_v<float>;
-
-			}
 
 #ifdef USE_IMGUI
 

@@ -128,8 +128,8 @@ private:
 	// RootSignatureのエラー結果
 	ID3DBlob* errorBlob_ = nullptr;
 
-	// inputLayoutの設定
-	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[1] = {};
+	// InputLayoutの設定
+	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
 
 	// inputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
@@ -159,7 +159,7 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	// 頂点データ
-	Vector4* vertexData_ = nullptr;
+	VertexData* vertexData_ = nullptr;
 
 	// MaterialResource
 	ID3D12Resource* materialResource_ = nullptr;
@@ -172,6 +172,9 @@ private:
 
 	// WvpData 描画座標データ
 	Matrix4x4* wvpData_ = nullptr;
+
+	// TextureResource
+	ID3D12Resource* textureResource_ = nullptr;
 
 
 	// ビューポート

@@ -42,7 +42,7 @@ void LogFile::Log(const std::string& message) {
 	logStream_.flush();
 
 	// 出力ウィンドウにログを出力
-	OutputDebugStringA(message.c_str());
+	OutputDebugStringA((message + "\n").c_str());
 
 }
 
