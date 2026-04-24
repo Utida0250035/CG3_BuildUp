@@ -455,7 +455,8 @@ private:
 	/// </summary>
 	/// <param name="texture"></param>
 	/// <param name="mipImages"></param>
-	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& metaData);
+	[[nodiscard]]
+	ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
 
 	/// <summary>
 	/// ShaderResourceViewの作成

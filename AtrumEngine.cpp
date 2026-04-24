@@ -25,6 +25,8 @@
 #include "ImGui.h"
 
 #endif
+#include <DirectXTex/d3dx12.h>
+#include <vector>
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 
@@ -1203,14 +1205,10 @@ ID3D12Resource* AtrumEngine::CreateTextureResource(const DirectX::TexMetadata& m
 	// Textureの次元数 普段(画像)は2次元
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metaData.dimension);
 
-	/* 利用するHeapの設定 ※非常に特殊な運用 */
+	/* 利用するHeapの設定 */
 	D3D12_HEAP_PROPERTIES heapProperties{};
-	// 細かい設定を行なう
-	heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM;
-	// WriteBackポリシーでCPUへアクセス可能
-	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	// プロセッサの近くに配置
-	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	// VRAM上に作成
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
 	/* Resourceの生成 */
 	ID3D12Resource* resource = nullptr;
@@ -1221,8 +1219,8 @@ ID3D12Resource* AtrumEngine::CreateTextureResource(const DirectX::TexMetadata& m
 		D3D12_HEAP_FLAG_NONE,
 		// Resourceの設定
 		&resourceDesc,
-		// 初回のResourceState Textureは基本読むだけ
-		D3D12_RESOURCE_STATE_GENERIC_READ,
+		// 初回のResourceState データ転送される設定
+		D3D12_RESOURCE_STATE_COPY_DEST,
 		// Clear最適値 使わないのでnullptr
 		nullptr,
 		// 作成するResourceポインタへのポインタ
@@ -1234,33 +1232,23 @@ ID3D12Resource* AtrumEngine::CreateTextureResource(const DirectX::TexMetadata& m
 
 }
 
-void AtrumEngine::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& metaData) {
+ID3D12Resource* AtrumEngine::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages) {
 
-	for (size_t mipLevel = 0; mipLevel < metaData.mipLevels; ++mipLevel) {
-		// 全mipMapについて処理
-
-		// MipMapLevelを指定して各Imageを取得
-		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
-
-		// Textureに転送
-		hr_ = texture->WriteToSubresource(
-			UINT(mipLevel),
-
-			// 全領域へコピー
-			nullptr,
-
-			// 元データアドレス
-			img->pixels,
-
-			// 1ラインサイズ
-			UINT(img->rowPitch),
-
-			// 1枚サイズ
-			UINT(img->slicePitch)
-		);
-		assert(SUCCEEDED(hr_));
-
-	}
+	std::vector<D3D12_SUBRESOURCE_DATA> subresources{};
+	DirectX::PrepareUpload(device_, mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
+	uint64_t intermediateSize = GetRequiredIntermediateSize(texture, 0, UINT(subresources.size()));
+	ID3D12Resource* intermediateResource = this->CreateBufferResource(intermediateSize);
+	UpdateSubresources(commandList_, texture, intermediateResource, 0, 0, UINT(subresources.size()), subresources.data());
+	// Textureへの転送後は利用できるよう、D3D12_RESOURCE_STATE_COPY_DESTからD3D12_RESOURCE_STATE_GENERIC_READへREsourceStateを変更する
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = texture;
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
+	commandList_->ResourceBarrier(1, &barrier);
+	return intermediateResource;
 
 }
 
@@ -1297,9 +1285,43 @@ void AtrumEngine::GetTexture(const std::string& filePath) {
 	}
 
 	textureResource_ = this->CreateTextureResource(metaData);
-	this->UploadTextureData(textureResource_, mipImages, metaData);
+	
+	// 中間リソースを用いた転送
+	ID3D12Resource* intermediateResource = this->UploadTextureData(textureResource_, mipImages);
+
+	// コマンドリストの内容を確定させる
+	hr_ = commandList_->Close();
+	assert(SUCCEEDED(hr_));
+
+	// GPUにコマンドリストを実行させる
+	ID3D12CommandList* commandLists[] = { commandList_ };
+	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	// fenceの値を更新
+	fenceValue_++;
+
+	// GPUがここまでたどり着いたときにFenceの値を指定した値に代入するようにSignalを送る
+	commandQueue_->Signal(fence_, fenceValue_);
+
+	if (fence_->GetCompletedValue() < fenceValue_) {
+
+		// 指定したsignalにたどり着くまでイベントを設定する
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+
+		// イベント待つ
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+
+	// 次のコマンドリストを準備
+	hr_ = commandAllocator_->Reset();
+	assert(SUCCEEDED(hr_));
+	hr_ = commandList_->Reset(commandAllocator_, nullptr);
+	assert(SUCCEEDED(hr_));
 
 	// 実際にShaderResourceViewを作る
 	MakeShaderResourceView(textureResource_, metaData);
+
+	// 中間リソースを解放
+	intermediateResource->Release();
 
 }
