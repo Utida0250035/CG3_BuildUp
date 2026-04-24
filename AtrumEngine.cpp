@@ -223,6 +223,8 @@ void AtrumEngine::InitDXC() {
 	hr_ = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 	assert(SUCCEEDED(hr_));
 
+	LogFile::GetInstance()->Log("Initialized DXC");
+
 }
 
 IDxcBlob* AtrumEngine::CompileShader(
@@ -304,6 +306,8 @@ IDxcBlob* AtrumEngine::CompileShader(
 
 		LogFile::GetInstance()->Log(shaderError->GetStringPointer());
 
+		shaderError->Release();
+
 		assert(false);
 
 	}
@@ -324,6 +328,8 @@ IDxcBlob* AtrumEngine::CompileShader(
 	shaderSource->Release();
 	shaderResult->Release();
 
+	LogFile::GetInstance()->Log("shader Compiled");
+
 	// 実行用のバイナリを返却
 	return shaderBlob;
 
@@ -336,7 +342,7 @@ void AtrumEngine::MakeRootSignature() {
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成 [0]:PixelShaderのMaterial [1]:VertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 
 	// CBVを使う
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
@@ -357,6 +363,47 @@ void AtrumEngine::MakeRootSignature() {
 	// 配列の長さ
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
 
+
+	// DescriptorRange
+	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	// 0から始まる
+	descriptorRange[0].BaseShaderRegister = 0;
+	// 数は1つ
+	descriptorRange[0].NumDescriptors = 1;
+	// SRVを使う
+	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	// Offsetを自動計算
+	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	// DescriptorTableを使う
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	// PixelShaderで使う
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	// Tableの中身の配列を指定
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
+	// Tableで利用する数
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	// バイリニアフィルタ
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	// 0~1の範囲外をリピート
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	// 比較しない
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	// ありったけのMipMapを使う
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+	// レジスタ番号0を使う
+	staticSamplers[0].ShaderRegister = 0;
+	// PixelShaderで使う
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	descriptionRootSignature.pStaticSamplers = staticSamplers;
+	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
+
 	// シリアライズしてバイナリにする
 	hr_ = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob_, &errorBlob_);
 
@@ -373,18 +420,26 @@ void AtrumEngine::MakeRootSignature() {
 	hr_ = device_->CreateRootSignature(0, signatureBlob_->GetBufferPointer(), signatureBlob_->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr_));
 
+	LogFile::GetInstance()->Log("Created RootSignature");
+
 }
 
 void AtrumEngine::SetUpInputLayout() {
-	// InputLayoutの設定
 
 	inputElementDescriptions_[0].SemanticName = "POSITION";
 	inputElementDescriptions_[0].SemanticIndex = 0;
 	inputElementDescriptions_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	inputElementDescriptions_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
+	inputElementDescriptions_[1].SemanticName = "TEXCOORD";
+	inputElementDescriptions_[1].SemanticIndex = 0;
+	inputElementDescriptions_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDescriptions_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
 	inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
 	inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
+
+	LogFile::GetInstance()->Log("Finished SetUp InputLayout");
 
 }
 
@@ -405,6 +460,8 @@ void AtrumEngine::SetUpRasterizerState() {
 	// 三角形の中を塗りつぶす
 	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
+	LogFile::GetInstance()->Log("Finished SetUp RasterizerState");
+
 }
 
 void AtrumEngine::PrepareShader() {
@@ -415,6 +472,8 @@ void AtrumEngine::PrepareShader() {
 
 	pixelShaderBlob_ = CompileShader(L"Object3d.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob_ != nullptr);
+
+	LogFile::GetInstance()->Log("Shader Prepared");
 
 }
 
@@ -445,6 +504,8 @@ ID3D12Resource* AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 	hr_ = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(hr_));
 
+	LogFile::GetInstance()->Log("Created BufferResource");
+
 	return resource;
 
 }
@@ -470,6 +531,8 @@ ID3D12DescriptorHeap* AtrumEngine::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TY
 	// ディスクリプタヒープが生成できなかったら起動不可
 	assert(SUCCEEDED(hr_));
 
+	LogFile::GetInstance()->Log("Created DescriptorHeap");
+
 	return descriptorHeap;
 
 }
@@ -484,6 +547,8 @@ void AtrumEngine::CreateMaterialResource() {
 
 	*materialData_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+	LogFile::GetInstance()->Log("Created MaterialResource");
+
 }
 
 void AtrumEngine::CreateWvpResource() {
@@ -496,6 +561,8 @@ void AtrumEngine::CreateWvpResource() {
 
 	// 単位行列を書き込んでおく
 	*wvpData_ = MakeIdentityMatrix4x4();
+
+	LogFile::GetInstance()->Log("Created WvpResource");
 
 }
 
@@ -529,11 +596,15 @@ void AtrumEngine::CreatePSO() {
 	hr_ = device_->CreateGraphicsPipelineState(&graphicsPipeLineStateDesc_, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr_));
 
+	LogFile::GetInstance()->Log("Created PSO");
+
 }
 
 void AtrumEngine::CreateVertexResource() {
 
-	vertexResource_ = CreateBufferResource(sizeof(Vector4) * 3);
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 3);
+
+	LogFile::GetInstance()->Log("Created VertexResource");
 
 }
 
@@ -543,10 +614,12 @@ void AtrumEngine::CreateVertexBufferView() {
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
 	// 使用するリソースのサイズは頂点3つ分のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(Vector4) * 3;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3;
 
 	// 1頂点当たりのサイズ
-	vertexBufferView_.StrideInBytes = sizeof(Vector4);
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+	LogFile::GetInstance()->Log("Created VertexBufferView");
 
 }
 
@@ -557,13 +630,18 @@ void AtrumEngine::WriteVertexResource() {
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 
 	// 左下
-	vertexData_[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+	vertexData_[0].position = { -0.5f, -0.5f, 0.0f, 1.0f };
+	vertexData_[0].texCoord = { 0.0f, 1.0f };
 
 	// 上
-	vertexData_[1] = { 0.0f, 0.5f, 0.0f, 1.0f };
+	vertexData_[1].position = { 0.0f, 0.5f, 0.0f, 1.0f };
+	vertexData_[1].texCoord = { 0.5f, 0.0f };
 
 	// 右下
-	vertexData_[2] = { 0.5f, -0.5f, 0.0f, 1.0f };
+	vertexData_[2].position = { 0.5f, -0.5f, 0.0f, 1.0f };
+	vertexData_[2].texCoord = { 1.0f, 1.0f };
+
+	LogFile::GetInstance()->Log("Wrote VertexResource");
 
 }
 
@@ -626,6 +704,12 @@ void AtrumEngine::DrawCall() {
 	// WVP用のCBufferの場所を設定
 	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+	textureSrvHandleGPU.ptr += device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+	commandList_->SetGraphicsRootDescriptorTable(2, textureSrvHandleGPU);
+
 	// 描画(DrawCall) 3頂点で1つのインスタンス
 	commandList_->DrawInstanced(3, 1, 0, 0);
 
@@ -642,6 +726,15 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// SEH例外が補足されなかった場合(Unhandled)に補足する関数を登録
 	SetUnhandledExceptionFilter(ExportDump);
+
+	// COMの初期化
+	hr_ = CoInitializeEx(0, COINIT_MULTITHREADED);
+
+	// COMの初期化が失敗したら起動不可
+	assert(SUCCEEDED(hr_));
+
+	// ログ出力ファイルの初期化
+	LogFile::GetInstance()->Initialize();
 
 	this->PrepareWindow(windowLabel, clientWidth, clientHeight);
 
@@ -998,10 +1091,16 @@ void AtrumEngine::Finalize() {
 
 #endif
 
+	textureResource_->Release();
 	wvpResource_->Release();
 	materialResource_->Release();
 	vertexResource_->Release();
 	graphicsPipelineState_->Release();
+
+	dxcUtils_->Release();
+	dxcCompiler_->Release();
+	includeHandler_->Release();
+
 	signatureBlob_->Release();
 
 	if (errorBlob_) {
@@ -1016,10 +1115,12 @@ void AtrumEngine::Finalize() {
 
 	CloseHandle(fenceEvent_);
 	fence_->Release();
+	srvDescriptorHeap_->Release();
 	rtvDescriptorHeap_->Release();
 	swapChainResources_[0]->Release();
 	swapChainResources_[1]->Release();
 	swapChain_->Release();
+
 	commandList_->Release();
 	commandAllocator_->Release();
 	commandQueue_->Release();
@@ -1032,6 +1133,12 @@ void AtrumEngine::Finalize() {
 	debugController_->Release();
 
 #endif
+
+	/* */
+
+	// COMの終了処理
+	CoUninitialize();
+
 
 	CloseWindow(hwnd_);
 
@@ -1055,5 +1162,144 @@ Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) {
 	Matrix4x4 result = MakeWorldMatrix(transform.translate, transform.scale, transform.rotate);
 
 	return result;
+
+}
+
+
+DirectX::ScratchImage AtrumEngine::LoadTexture(const std::string& filePath) {
+
+	// テクスチャファイルを読んでプログラムで扱えるようにする
+	DirectX::ScratchImage image{};
+	std::wstring filePathBuffer = StringToWString(filePath);
+	hr_ = DirectX::LoadFromWICFile(filePathBuffer.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB, nullptr, image);
+	assert(SUCCEEDED(hr_));
+
+	// ミップマップの作成
+	DirectX::ScratchImage mipImages{};
+	hr_ = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_SRGB, 0, mipImages);
+	assert(SUCCEEDED(hr_));
+
+	// ミップマップ付きのデータを返す
+	return mipImages;
+
+}
+
+ID3D12Resource* AtrumEngine::CreateTextureResource(const DirectX::TexMetadata& metaData) {
+
+	/* metaDataを基にResourceの設定 */
+	D3D12_RESOURCE_DESC resourceDesc{};
+	// Textureの幅
+	resourceDesc.Width = UINT(metaData.width);
+	// Textureの高さ
+	resourceDesc.Height = UINT(metaData.height);
+	// mipMapの数
+	resourceDesc.MipLevels = UINT16(metaData.mipLevels);
+	// 奥行き or 配列Textureの要素数
+	resourceDesc.DepthOrArraySize = UINT16(metaData.arraySize);
+	// TextureのFormat
+	resourceDesc.Format = metaData.format;
+	// サンプリングカウント 1固定
+	resourceDesc.SampleDesc.Count = 1;
+	// Textureの次元数 普段(画像)は2次元
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION(metaData.dimension);
+
+	/* 利用するHeapの設定 ※非常に特殊な運用 */
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	// 細かい設定を行なう
+	heapProperties.Type = D3D12_HEAP_TYPE_CUSTOM;
+	// WriteBackポリシーでCPUへアクセス可能
+	heapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	// プロセッサの近くに配置
+	heapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+
+	/* Resourceの生成 */
+	ID3D12Resource* resource = nullptr;
+	hr_ = device_->CreateCommittedResource(
+		// Heapの設定
+		&heapProperties,
+		// Heapの特殊な設定 特に無し
+		D3D12_HEAP_FLAG_NONE,
+		// Resourceの設定
+		&resourceDesc,
+		// 初回のResourceState Textureは基本読むだけ
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		// Clear最適値 使わないのでnullptr
+		nullptr,
+		// 作成するResourceポインタへのポインタ
+		IID_PPV_ARGS(&resource)
+	);
+	assert(SUCCEEDED(hr_));
+
+	return resource;
+
+}
+
+void AtrumEngine::UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& metaData) {
+
+	for (size_t mipLevel = 0; mipLevel < metaData.mipLevels; ++mipLevel) {
+		// 全mipMapについて処理
+
+		// MipMapLevelを指定して各Imageを取得
+		const DirectX::Image* img = mipImages.GetImage(mipLevel, 0, 0);
+
+		// Textureに転送
+		hr_ = texture->WriteToSubresource(
+			UINT(mipLevel),
+
+			// 全領域へコピー
+			nullptr,
+
+			// 元データアドレス
+			img->pixels,
+
+			// 1ラインサイズ
+			UINT(img->rowPitch),
+
+			// 1枚サイズ
+			UINT(img->slicePitch)
+		);
+		assert(SUCCEEDED(hr_));
+
+	}
+
+}
+
+void AtrumEngine::MakeShaderResourceView(ID3D12Resource* textureResource, const DirectX::TexMetadata& metaData) {
+	// metaDataを基にSRVの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = metaData.format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	// 2Dテクスチャ
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = UINT(metaData.mipLevels);
+
+	// SRVを作成するDescriptionHeapの場所を決める
+	D3D12_CPU_DESCRIPTOR_HANDLE textureSrvHandleCPU = srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	D3D12_GPU_DESCRIPTOR_HANDLE textureSrvHandleGPU = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+	// 先頭はImGuiが使っているため次を使う
+	textureSrvHandleCPU.ptr += device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	textureSrvHandleGPU.ptr += device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	// SRVの作成
+	device_->CreateShaderResourceView(textureResource, &srvDesc, textureSrvHandleCPU);
+
+}
+
+void AtrumEngine::GetTexture(const std::string& filePath) {
+
+	// Textureを読んで転送する
+	DirectX::ScratchImage mipImages = this->LoadTexture(filePath);
+	const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
+
+	if (textureResource_) {
+
+		textureResource_->Release();
+
+	}
+
+	textureResource_ = this->CreateTextureResource(metaData);
+	this->UploadTextureData(textureResource_, mipImages, metaData);
+
+	// 実際にShaderResourceViewを作る
+	MakeShaderResourceView(textureResource_, metaData);
 
 }

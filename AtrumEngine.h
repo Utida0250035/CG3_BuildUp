@@ -22,16 +22,23 @@
 
 #endif
 
+#include <DirectXTex/DirectXTex.h>
+
+#include "Vector2.h"
+
 class AtrumEngine {
 
 public:
 
 	struct Transform {
-
 		Vector3 scale;
 		Vector3 rotate;
 		Vector3 translate;
+	};
 
+	struct VertexData {
+		Vector4 position;
+		Vector2 texCoord;
 	};
 
 private:
@@ -121,8 +128,8 @@ private:
 	// RootSignatureのエラー結果
 	ID3DBlob* errorBlob_ = nullptr;
 
-	// inputLayoutの設定
-	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[1] = {};
+	// InputLayoutの設定
+	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
 
 	// inputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
@@ -152,7 +159,7 @@ private:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
 	// 頂点データ
-	Vector4* vertexData_ = nullptr;
+	VertexData* vertexData_ = nullptr;
 
 	// MaterialResource
 	ID3D12Resource* materialResource_ = nullptr;
@@ -165,6 +172,9 @@ private:
 
 	// WvpData 描画座標データ
 	Matrix4x4* wvpData_ = nullptr;
+
+	// TextureResource
+	ID3D12Resource* textureResource_ = nullptr;
 
 
 	// ビューポート
@@ -417,7 +427,44 @@ public:
 	// コピーコンストラクタの削除
 	AtrumEngine(const AtrumEngine& source) = delete;
 
-
+	/// <summary>
+	/// ワールド行列の作成
+	/// </summary>
+	/// <param name="transform"> Transform </param>
+	/// <returns> ワールド行列 </returns>
 	Matrix4x4 CreateWorldMatrix(const Transform& transform);
+
+private:
+
+	/// <summary>
+	/// Textureデータの読み込み
+	/// </summary>
+	/// <param name="filePath"> ファイルパス </param>
+	/// <returns> MipMap付きデータ </returns>
+	DirectX::ScratchImage LoadTexture(const std::string& filePath);
+
+	/// <summary>
+	/// TextureResourceの作成
+	/// </summary>
+	/// <param name="metaData"></param>
+	/// <returns></returns>
+	ID3D12Resource* CreateTextureResource(const DirectX::TexMetadata& metaData);
+
+	/// <summary>
+	/// textureResourceにデータを転送する
+	/// </summary>
+	/// <param name="texture"></param>
+	/// <param name="mipImages"></param>
+	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& metaData);
+
+	/// <summary>
+	/// ShaderResourceViewの作成
+	/// </summary>
+	/// <param name="metaData"> Meta情報 </param>
+	void MakeShaderResourceView(ID3D12Resource* textureResource, const DirectX::TexMetadata& metaData);
+
+public:
+
+	void GetTexture(const std::string& filePath);
 
 };
