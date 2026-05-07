@@ -26,6 +26,12 @@
 
 #include "Vector2.h"
 
+#include <wrl/client.h>
+
+#include <vector>
+
+#include <memory>
+
 class AtrumEngine {
 
 public:
@@ -39,6 +45,16 @@ public:
 	struct VertexData {
 		Vector4 position;
 		Vector2 texCoord;
+	};
+
+	struct Texture {
+
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
+		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU{};
+		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU{};
+
+		// 使用するSRVディスクリプタの番号
+		uint32_t srvIndex = 1;
 	};
 
 private:
@@ -91,8 +107,56 @@ private:
 	// スワップチェーンリソース
 	ID3D12Resource* swapChainResources_[2] = { nullptr };
 
+	class DescriptorIndexManager {
+	private:
+
+		// 次の空きディスクリプタの番号 0はImGui
+		uint32_t nextIndex_ = 1;
+
+		// 空いたディスクリプタの番号
+		std::vector<uint32_t> freeIndices_{};
+
+	public:
+
+		DescriptorIndexManager() = default;
+		~DescriptorIndexManager() = default;
+
+		uint32_t AllocateIndex() {
+
+			if (freeIndices_.empty()) {
+
+				auto index = nextIndex_;
+
+				nextIndex_++;
+
+				return index;
+
+			}
+
+			uint32_t index = freeIndices_.back();
+
+			freeIndices_.pop_back();
+
+			return index;
+
+		}
+
+		void Free(const uint32_t index) {
+
+			freeIndices_.push_back(index);
+
+		}
+
+	};
+
 	// SRV(Shader Resource View)ディスクリプタヒープ
 	ID3D12DescriptorHeap* srvDescriptorHeap_ = nullptr;
+
+	// SRVディスクリプタ番号管理
+	std::unique_ptr<DescriptorIndexManager> srvDescriptorIndexManager_ = nullptr;
+
+	// SRVハンドルサイズ
+	uint32_t srvHandleSize_ = 0;
 
 	// RTV(Render Target View)ディスクリプタヒープ
 	ID3D12DescriptorHeap* rtvDescriptorHeap_ = nullptr;
@@ -173,9 +237,11 @@ private:
 	// WvpData 描画座標データ
 	Matrix4x4* wvpData_ = nullptr;
 
-	// TextureResource
-	ID3D12Resource* textureResource_ = nullptr;
+	// Texture
+	std::vector<Texture> textures_{};
 
+	// TransitionBarrierの設定
+	D3D12_RESOURCE_BARRIER barrier_{};
 
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
@@ -312,11 +378,6 @@ public:
 	void CreateVertexBufferView();
 
 	/// <summary>
-	/// VertexResourceにデータを書き込む
-	/// </summary>
-	void WriteVertexResource();
-
-	/// <summary>
 	/// Materialにデータ(色)を書き込む
 	/// </summary>
 	/// <param name="color"> 色(RGBA) 各値0.0fから1.0f </param>
@@ -331,8 +392,7 @@ public:
 	/// <summary>
 	/// 描画呼び出し(DrawCall)
 	/// </summary>
-	void DrawCall();
-
+	void DrawTriangleCall(const uint32_t& textureIndex);
 
 public:
 
@@ -400,9 +460,14 @@ public:
 #endif
 
 	/// <summary>
-	/// ウィンドウの更新
+	/// 描画処理(前)
 	/// </summary>
-	void UpdateWindow();
+	void PreDraw();
+
+	/// <summary>
+	/// 描画処理(後)
+	/// </summary>
+	void PostDraw();
 
 	/// <summary>
 	/// エンジンの終了
@@ -450,22 +515,44 @@ private:
 	/// <returns></returns>
 	ID3D12Resource* CreateTextureResource(const DirectX::TexMetadata& metaData);
 
+	ID3D12Resource* CreateIntermediateResource(ID3D12Resource* texture);
+
 	/// <summary>
 	/// textureResourceにデータを転送する
 	/// </summary>
-	/// <param name="texture"></param>
-	/// <param name="mipImages"></param>
-	[[nodiscard]]
-	ID3D12Resource* UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages);
+	/// <param name="texture"> テクスチャポインタ </param>
+	/// <param name="mipImages"> MipMap付データ </param>
+	/// <param name="intermediateResource"> 中間リソース </param>
+	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
 
 	/// <summary>
 	/// ShaderResourceViewの作成
 	/// </summary>
 	/// <param name="metaData"> Meta情報 </param>
-	void MakeShaderResourceView(ID3D12Resource* textureResource, const DirectX::TexMetadata& metaData);
+	void MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData);
 
 public:
 
-	void GetTexture(const std::string& filePath);
+	/// <summary>
+	/// テクスチャの取得
+	/// </summary>
+	/// <param name="filePath"> テクスチャのファイルパス </param>
+	/// <returns> テクスチャ番号 </returns>
+	uint32_t GetTexture(const std::string& filePath);
+
+	/// <summary>
+	/// テクスチャ取得 改良版
+	/// </summary>
+	/// <param name="filePath"> テクスチャのファイルパス </param>
+	/// <returns> テクスチャ番号 </returns>
+	uint32_t GetTextureAdvanced(const std::string& filePath);
+
+	/// <summary>
+	/// 三角形の描画
+	/// </summary>
+	/// <param name="textureIndex"> テクスチャ番号 </param>
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform);
 
 };
+
+void LeakCheck();

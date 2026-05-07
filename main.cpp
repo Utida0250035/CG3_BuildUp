@@ -23,10 +23,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// vertexBufferViewを作成
 	atrum->CreateVertexBufferView();
 
-	// vertexResourceにデータを書き込む
-	atrum->WriteVertexResource();
-
-
 	// 三角形の色
 	Vector4 triangleColor = Vector4{1.0f, 1.0f, 1.0f, 1.0f};
 
@@ -36,22 +32,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -5.0f} };
 
-	// カメラのワールド行列
-	Matrix4x4 cameraWorldMatrix = atrum->CreateWorldMatrix(cameraTransform);
-
-	// ビュー行列
-	Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
-
-	// 透視投影行列
-	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
-
-	// 三角形のTransform
-	Matrix4x4 triangleWorldMatrix = atrum->CreateWorldMatrix(triangleTransform);
-
-	// WvpMatrix
-	Matrix4x4 worldViewProjectionMatrix;
-
-	atrum->GetTexture("./Resources/Images/uvChecker.png");
+	// テクスチャ取得
+	uint32_t triangleTexture = atrum->GetTexture("./Resources/Images/uvChecker.png");
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -110,34 +92,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			/// ↓描画ここから
 			/// 
 
-			// カメラのワールド行列
-			cameraWorldMatrix = atrum->CreateWorldMatrix(cameraTransform);
+			// 描画処理(前)
+			atrum->PreDraw();
 
-			// ビュー行列
-			viewMatrix = MatrixInverse(cameraWorldMatrix);
+			// 三角形の描画
+			atrum->DrawTriangle(triangleTexture, triangleColor, triangleTransform, cameraTransform);
 
-			// 透視投影行列
-			projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
-
-
-			// 三角形のワールド行列
-			triangleWorldMatrix = atrum->CreateWorldMatrix(triangleTransform);
-
-			// 三角形のWVP行列
-			worldViewProjectionMatrix = triangleWorldMatrix * viewMatrix * projectionMatrix;
-
-			// 三角形のMaterialデータ設定
-			atrum->SetMaterialData(triangleColor);
-
-			// 三角形のWVPデータ設定
-			atrum->SetWvpData(worldViewProjectionMatrix);
+			// 描画処理(後)
+			atrum->PostDraw();
 
 			///
 			/// ↑描画ここまで
 			/// 
-
-			// 画面更新
-			atrum->UpdateWindow();
 
 		}
 
@@ -148,6 +114,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/// 
 
 	atrum->Finalize();
+
+	LeakCheck();
 
 	return 0;
 

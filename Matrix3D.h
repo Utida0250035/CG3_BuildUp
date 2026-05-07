@@ -1,17 +1,6 @@
 #pragma once
-
-#if __has_include("Vector3.h")
-
 #include "Vector3.h"
 #include <cassert>
-
-#define HAS_VECTOR3 true
-
-#else
-
-#define HAS_VECTOR3 false
-
-#endif
 
 struct Matrix4x4 {
 	float m[4][4]{};
@@ -171,8 +160,6 @@ inline constexpr Matrix4x4 MakeIdentityMatrix4x4() {
 
 }
 
-#if HAS_VECTOR3
-
 
 inline constexpr Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 
@@ -209,7 +196,7 @@ inline constexpr Vector3 VectorTransform(const Vector3& vector, const Matrix4x4&
 	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2];
 	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + matrix.m[3][3];
 
-	assert(w != 0.0f && "Error: vector couuld not transform");
+	assert(w != 0.0f && "Error: vector could not transform");
 
 	result /= w;
 
@@ -223,35 +210,7 @@ Matrix4x4 MakeYRotateMatrix(const float& angle);
 
 Matrix4x4 MakeZRotateMatrix(const float& angle);
 
-Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale = Vector3{ 1.0f, 1.0f, 1.0f }, const Vector3& rotation = Vector3{0.0f, 0.0f, 0.0f});
-
-#endif
-
-#if HAS_KAMATA_ENGINE
-
-inline constexpr Matrix4x4 FromKamataEngine(const KamataEngine::Matrix4x4& source) {
-
-	return Matrix4x4{
-		source.m[0][0], source.m[0][1], source.m[0][2], source.m[0][3],
-		source.m[1][0], source.m[1][1], source.m[1][2], source.m[1][3],
-		source.m[2][0], source.m[2][1], source.m[2][2], source.m[2][3],
-		source.m[3][0], source.m[3][1], source.m[3][2], source.m[3][3]
-	};
-
-}
-
-inline constexpr KamataEngine::Matrix4x4 ToKamataEngine(const Matrix4x4& source) {
-
-	return KamataEngine::Matrix4x4{
-		source.m[0][0], source.m[0][1], source.m[0][2], source.m[0][3],
-		source.m[1][0], source.m[1][1], source.m[1][2], source.m[1][3],
-		source.m[2][0], source.m[2][1], source.m[2][2], source.m[2][3],
-		source.m[3][0], source.m[3][1], source.m[3][2], source.m[3][3]
-	};
-
-}
-
-#endif
+Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale, const Vector3& rotation);
 
 // 透視投影行列
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);

@@ -13,6 +13,8 @@ spelling_checkable_types = identifiers,comments
 
 # スペルミスをエラーとして扱う
 spelling_error_severity = error
+visual_studio_spell_check_severity = error
+dotnet_diagnostic.VSSpell001.severity = error
 
 # 自作除外辞書を使えるように標準の除外辞書設定をそのまま使用
 spelling_use_default_exclusion_dictionary = true
