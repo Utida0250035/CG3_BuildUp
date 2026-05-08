@@ -4,6 +4,8 @@
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
+	LeakChecker leakChecker;
+	
 	// エンジンインスタンスの取得
 	AtrumEngine* atrum = AtrumEngine::GetInstance();
 
@@ -115,7 +117,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	atrum->Finalize();
 
-	LeakCheck();
+	AtrumEngine::Destroy();
 
 	return 0;
 

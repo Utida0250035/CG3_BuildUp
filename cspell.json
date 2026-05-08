@@ -18,7 +18,8 @@
         "lpfn",
         "WNDCLASS",
         "HRESULT",
-        "dxcompiler"
+        "dxcompiler",
+        "RLDO"
     ],
     "ignorePaths": [
         "**/Externals/**"

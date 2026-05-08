@@ -32,7 +32,13 @@
 
 #include <memory>
 
+
 class AtrumEngine {
+
+private:
+
+	template<typename T>
+	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 public:
 
@@ -49,7 +55,7 @@ public:
 
 	struct Texture {
 
-		Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
+		ComPtr<ID3D12Resource> resource = nullptr;
 		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU{};
 		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU{};
 
@@ -77,35 +83,35 @@ private:
 	// Windows系エラーコード格納
 	HRESULT hr_{};
 
-#ifdef _DEBUG
-
-	ID3D12Debug1* debugController_ = nullptr;
-
-#endif
-
 	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
-	IDXGIFactory7* dxgiFactory_ = nullptr;
+	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 
 	// 使用するアダプタ用
-	IDXGIAdapter4* useAdapter_ = nullptr;
+	ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
 
 	// デバイス
-	ID3D12Device* device_ = nullptr;
+	ComPtr<ID3D12Device> device_ = nullptr;
 
 	// コマンドキュー
-	ID3D12CommandQueue* commandQueue_ = nullptr;
+	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
+
+	// コマンドアロケータの個数
+	inline static constexpr uint8_t kFrameCount_ = 2;
 
 	// コマンドアロケータ(コマンド割り当て担当)
-	ID3D12CommandAllocator* commandAllocator_ = nullptr;
+	ComPtr<ID3D12CommandAllocator> commandAllocators_[kFrameCount_] = { nullptr };
+
+	// 使用するコマンドアロケータの番号
+	uint8_t frameIndex_ = 0;
 
 	// コマンドリスト
-	ID3D12GraphicsCommandList* commandList_ = nullptr;
+	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 
 	// スワップチェーン
-	IDXGISwapChain4* swapChain_ = nullptr;
+	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 
 	// スワップチェーンリソース
-	ID3D12Resource* swapChainResources_[2] = { nullptr };
+	ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
 
 	class DescriptorIndexManager {
 	private:
@@ -150,7 +156,7 @@ private:
 	};
 
 	// SRV(Shader Resource View)ディスクリプタヒープ
-	ID3D12DescriptorHeap* srvDescriptorHeap_ = nullptr;
+	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
 
 	// SRVディスクリプタ番号管理
 	std::unique_ptr<DescriptorIndexManager> srvDescriptorIndexManager_ = nullptr;
@@ -159,38 +165,44 @@ private:
 	uint32_t srvHandleSize_ = 0;
 
 	// RTV(Render Target View)ディスクリプタヒープ
-	ID3D12DescriptorHeap* rtvDescriptorHeap_ = nullptr;
+	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 
 	// RTVディスクリプタハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
 
 	// フェンス
-	ID3D12Fence* fence_ = nullptr;
+	ComPtr<ID3D12Fence> fence_ = nullptr;
 
 	// フェンス値
-	uint64_t fenceValue_ = 0;
+	uint64_t fenceValues_[kFrameCount_] = { 0 };
+
+	// 総フェンス値
+	uint64_t totalFenceCount_ = 0;
 
 	// fenceEvent
 	HANDLE fenceEvent_{};
 
+	// フレーム内の中間リソース保存
+	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
+
 
 	// DXC補助
-	IDxcUtils* dxcUtils_ = nullptr;
+	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 
 	// DXCコンパイラ
-	IDxcCompiler3* dxcCompiler_ = nullptr;
+	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
 
 	// インクルードハンドラー
-	IDxcIncludeHandler* includeHandler_ = nullptr;
+	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
 	// RootSignature
-	ID3D12RootSignature* rootSignature_ = nullptr;
+	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 
 	// RootSignatureの生成結果
-	ID3DBlob* signatureBlob_ = nullptr;
+	ComPtr<ID3DBlob> signatureBlob_ = nullptr;
 
 	// RootSignatureのエラー結果
-	ID3DBlob* errorBlob_ = nullptr;
+	ComPtr<ID3DBlob> errorBlob_ = nullptr;
 
 	// InputLayoutの設定
 	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
@@ -205,19 +217,19 @@ private:
 	D3D12_RASTERIZER_DESC rasterizerDesc_{};
 
 	// vertexShaderのコンパイル結果
-	IDxcBlob* vertexShaderBlob_ = nullptr;
+	ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
 
 	// pixelShaderのコンパイル結果
-	IDxcBlob* pixelShaderBlob_ = nullptr;
+	ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
 
 	// PSOの設定
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipeLineStateDesc_{};
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc_{};
 
 	// PSO
-	ID3D12PipelineState* graphicsPipelineState_ = nullptr;
+	ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
 
 	// 頂点リソース
-	ID3D12Resource* vertexResource_ = nullptr;
+	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 
 	// VertexBufferView
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
@@ -226,13 +238,13 @@ private:
 	VertexData* vertexData_ = nullptr;
 
 	// MaterialResource
-	ID3D12Resource* materialResource_ = nullptr;
+	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
 	// MaterialData 色データRGBA
 	Vector4* materialData_ = nullptr;
 
 	// WvpResource
-	ID3D12Resource* wvpResource_ = nullptr;
+	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 
 	// WvpData 描画座標データ
 	Matrix4x4* wvpData_ = nullptr;
@@ -337,7 +349,7 @@ private:
 	/// <param name="device"> デバイス </param>
 	/// <param name="sizeInBytes"> Resourceのサイズ </param>
 	/// <returns> Resource </returns>
-	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	/// <summary>
 	/// DescriptorHeap作成
@@ -346,7 +358,7 @@ private:
 	/// <param name="descriptorsNum"> Descriptorの数 </param>
 	/// <param name="shaderVisible"> Shaderに使用するか </param>
 	/// <returns></returns>
-	ID3D12DescriptorHeap* CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT descriptorsNum, bool shaderVisible);
+	ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT descriptorsNum, bool shaderVisible);
 
 	/// <summary>
 	/// MaterialResourceの作成
@@ -474,15 +486,39 @@ public:
 	/// </summary>
 	void Finalize();
 
+private:
+
+	static AtrumEngine* instance_;
+
+public:
+
 	/// <summary>
 	/// インスタンスの取得
 	/// </summary>
 	/// <returns> AtrumEngineインスタンス </returns>
 	static AtrumEngine* GetInstance() {
 
-		static AtrumEngine instance;
+		if (!instance_) {
 
-		return &instance;
+			instance_ = new AtrumEngine();
+
+		}
+
+		return instance_;
+
+	}
+
+	/// <summary>
+	/// インスタンスの破棄
+	/// </summary>
+	static void Destroy() {
+
+		if (instance_) {
+
+			delete instance_;
+			instance_ = nullptr;
+
+		}
 
 	}
 
@@ -513,9 +549,15 @@ private:
 	/// </summary>
 	/// <param name="metaData"></param>
 	/// <returns></returns>
-	ID3D12Resource* CreateTextureResource(const DirectX::TexMetadata& metaData);
+	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
 
-	ID3D12Resource* CreateIntermediateResource(ID3D12Resource* texture);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="textureResource"></param>
+	/// <returns></returns>
+	ComPtr<ID3D12Resource> CreateIntermediateResource(const ComPtr<ID3D12Resource>& textureResource);
 
 	/// <summary>
 	/// textureResourceにデータを転送する
@@ -523,7 +565,7 @@ private:
 	/// <param name="texture"> テクスチャポインタ </param>
 	/// <param name="mipImages"> MipMap付データ </param>
 	/// <param name="intermediateResource"> 中間リソース </param>
-	void UploadTextureData(ID3D12Resource* texture, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
+	void UploadTextureData(const ComPtr<ID3D12Resource>& textureREsource, const DirectX::ScratchImage& mipImages, const ComPtr<ID3D12Resource>& intermediateResource);
 
 	/// <summary>
 	/// ShaderResourceViewの作成
@@ -541,13 +583,6 @@ public:
 	uint32_t GetTexture(const std::string& filePath);
 
 	/// <summary>
-	/// テクスチャ取得 改良版
-	/// </summary>
-	/// <param name="filePath"> テクスチャのファイルパス </param>
-	/// <returns> テクスチャ番号 </returns>
-	uint32_t GetTextureAdvanced(const std::string& filePath);
-
-	/// <summary>
 	/// 三角形の描画
 	/// </summary>
 	/// <param name="textureIndex"> テクスチャ番号 </param>
@@ -555,4 +590,8 @@ public:
 
 };
 
-void LeakCheck();
+struct LeakChecker {
+
+	~LeakChecker();
+
+};

@@ -2,7 +2,7 @@
 
 [*.{cpp,h,hlsl,hlsli}]
 
-# 文字セットをutf-8に指定
+# 文字セットをutf-8に設定
 charset = utf-8
 
 # 辞書を英語(英国)に固定する
