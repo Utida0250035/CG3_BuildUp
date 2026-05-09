@@ -1,0 +1,39 @@
+{
+    "version": "0.2",
+    "language": "en-us",
+    "words": [
+        "HINSTANCE",
+        "DXGI",
+        "dxgi",
+        "Atrum",
+        "atrum",
+        "hlsl",
+        "IDXGI",
+        "dxguid",
+        "OVERLAPPEDWINDOW",
+        "MINIDUMP",
+        "COINIT",
+        "Qembed",
+        "lpsz",
+        "lpfn",
+        "WNDCLASS",
+        "HRESULT",
+        "dxcompiler",
+        "RLDO"
+    ],
+    "ignorePaths": [
+        "**/Externals/**"
+    ],
+    "dictionaryDefinations": [
+        {
+            "name": "exclusionDictionary",
+            "path": "./exclusion.dic",
+            "addWords": true
+        }
+    ],
+    "dictionaries": [
+        "cpp",
+        "softwareTerms",
+        "exclusionDictionary"
+    ]
+}

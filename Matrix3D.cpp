@@ -106,8 +106,6 @@ Matrix4x4 MakeZRotateMatrix(const float& angle) {
 
 }
 
-#if HAS_VECTOR3
-
 Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale, const Vector3& rotation) {
 	float cx = cosf(rotation.x); float sx = sinf(rotation.x);
 	float cy = cosf(rotation.y); float sy = sinf(rotation.y);
@@ -153,8 +151,6 @@ Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale, cons
 
 	};
 }
-
-#endif
 
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
 
