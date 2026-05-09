@@ -6,7 +6,7 @@
 
 void Log(const std::string& message) {
 
-	OutputDebugStringA(message.c_str());
+	OutputDebugStringA(("\n" + message + "\n\n").c_str());
 
 }
 
@@ -38,11 +38,11 @@ void LogFile::Initialize() {
 void LogFile::Log(const std::string& message) {
 
 	// ログをファイルに出力
-	logStream_ << message << std::endl;
+	logStream_ << std::endl << message << std::endl;
 	logStream_.flush();
 
 	// 出力ウィンドウにログを出力
-	OutputDebugStringA((message + "\n").c_str());
+	OutputDebugStringA(("\n" + message + "\n\n").c_str());
 
 }
 

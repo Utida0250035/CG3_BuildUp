@@ -374,8 +374,6 @@ private:
 	/// </summary>
 	void CreateWvpResource();
 
-public:
-
 	/* 三角形のみ描画可能になっている */
 
 	/// <summary>
@@ -392,18 +390,6 @@ public:
 	/// VertexBufferViewの作成
 	/// </summary>
 	void CreateVertexBufferView();
-
-	/// <summary>
-	/// Materialにデータ(色)を書き込む
-	/// </summary>
-	/// <param name="color"> 色(RGBA) 各値0.0fから1.0f </param>
-	void SetMaterialData(const Vector4& color);
-
-	/// <summary>
-	/// Wvpにデータ(WorldMatrix)を書き込む
-	/// </summary>
-	/// <param name="wvp"> WorldMatrix </param>
-	void SetWvpData(const Matrix4x4& wvp);
 
 	/// <summary>
 	/// 描画呼び出し(DrawCall)

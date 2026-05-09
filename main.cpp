@@ -15,16 +15,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// fps設定
 	atrum->SetFps(60);
 
-
-	// PSOを生成
-	atrum->CreatePSO();
-
-	// VertexResourceを生成
-	atrum->CreateVertexResource();
-
-	// vertexBufferViewを作成
-	atrum->CreateVertexBufferView();
-
 	// 三角形の色
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
