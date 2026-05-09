@@ -5,12 +5,12 @@
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	LeakChecker leakChecker;
-	
+
 	// エンジンインスタンスの取得
 	AtrumEngine* atrum = AtrumEngine::GetInstance();
 
 	// エンジンの初期化
-	atrum->Initialize("CG2",1280, 720);
+	atrum->Initialize("CG2", 1280, 720);
 
 	// fps設定
 	atrum->SetFps(60);
@@ -26,7 +26,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	atrum->CreateVertexBufferView();
 
 	// 三角形の色
-	Vector4 triangleColor = Vector4{1.0f, 1.0f, 1.0f, 1.0f};
+	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 	// 三角形の座標情報
 	AtrumEngine::Transform triangleTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f } };
@@ -40,7 +40,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
 
-		if (atrum->IsExecuteFrame()) {
+		if (atrum->IsFrameExecute()) {
 
 			/*============== メインループ =================*/
 

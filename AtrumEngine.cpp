@@ -17,7 +17,6 @@
 #include <string>
 #include <strsafe.h>
 #include <Windows.h>
-#include "DeltaTime.h"
 #include "Matrix3D.h"
 
 #ifdef USE_IMGUI
@@ -29,6 +28,8 @@
 #endif
 #include <DirectXTex/d3dx12.h>
 #include <vector>
+
+#include <memory>
 
 AtrumEngine* AtrumEngine::instance_ = nullptr;
 
@@ -906,6 +907,9 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 #endif
 
+	// 時間差分マネージャーの生成
+	deltaTimeManager_.reset(new DeltaTime());
+
 	// 初期化完了のログ出力
 	LogFile::GetInstance()->Log("Hello World!");
 
@@ -941,9 +945,9 @@ bool AtrumEngine::MessageForOs() {
 
 bool AtrumEngine::IsWaitForFrame() {
 
-	DeltaTime::GetInstance()->CalcDeltaTime();
+	deltaTimeManager_->CalcDeltaTime();
 
-	countForNextFrame_ += DeltaTime::GetInstance()->GetDeltaTime();
+	countForNextFrame_ += deltaTimeManager_->GetDeltaTime();
 
 	if (countForNextFrame_ >= secondsPerFrame_) {
 
@@ -957,7 +961,7 @@ bool AtrumEngine::IsWaitForFrame() {
 
 }
 
-bool AtrumEngine::IsExecuteFrame() {
+bool AtrumEngine::IsFrameExecute() {
 
 	if (this->MessageForOs()) {
 
@@ -1398,8 +1402,8 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
-	// 6. 次のフレームの準備 (Signal & Wait)
-	// 現在のフレームが「いつ終わるか」を Signal し、
+	// 次のフレームの準備
+	// 現在のフレームが「いつ終わるか」を Signal
 	// 「次に使う予定のアロケータ」が解放されているかを確認して Wait する
 
 	// 現在のフレームに完了番号を割り振って Signal
@@ -1409,13 +1413,13 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	// インデックスを次へ進める
 	frameIndex_ = (frameIndex_ + 1) % kFrameCount_;
 
-	// 「これから使うアロケータ（次のインデックス）」が、前回の実行を終えているか確認
+	// これから使うアロケータが前回の実行を終えているか確認
 	if (fence_->GetCompletedValue() < fenceValues_[frameIndex_]) {
 		fence_->SetEventOnCompletion(fenceValues_[frameIndex_], fenceEvent_);
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
 
-	// 次のフレーム用のアロケータとリストをリセット（安全が保証されている）
+	// 次のフレーム用のアロケータとリストをリセット
 	hr_ = commandAllocators_[frameIndex_]->Reset();
 	assert(SUCCEEDED(hr_));
 	hr_ = commandList_->Reset(commandAllocators_[frameIndex_].Get(), nullptr);

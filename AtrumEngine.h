@@ -11,6 +11,7 @@
 #include <dxcapi.h>
 #pragma comment(lib, "dxcompiler.lib")
 
+#include "DeltaTime.h"
 #include "Vector4.h"
 
 #include "Matrix3D.h"
@@ -31,9 +32,9 @@
 #include <vector>
 
 #include <memory>
+#include <map>
 
-
-class AtrumEngine {
+class AtrumEngine final {
 
 private:
 
@@ -267,6 +268,9 @@ private:
 	// fps(フレーム/s)
 	float secondsPerFrame_ = 0.0f;
 
+	// 時間差分
+	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
+
 	// メッセージ
 	MSG msg_{};
 
@@ -455,7 +459,7 @@ public:
 	/// フレーム実行の可否
 	/// </summary>
 	/// <returns> フレーム実行フラグ </returns>
-	bool IsExecuteFrame();
+	bool IsFrameExecute();
 
 #ifdef USE_IMGUI
 
