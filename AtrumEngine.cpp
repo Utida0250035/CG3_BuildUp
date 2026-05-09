@@ -474,6 +474,19 @@ void AtrumEngine::SetUpRasterizerState() {
 
 }
 
+void AtrumEngine::SetUpDepthStencilState() {
+
+	// Depthの機能を有効化する
+	depthStencilDesc_.DepthEnable = true;
+
+	// 書き込みする
+	depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+
+	// 比較関数をLessEqualとする(近ければ描画される)
+	depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+}
+
 void AtrumEngine::PrepareShader() {
 	// Shaderをコンパイルする
 
@@ -550,7 +563,7 @@ ComPtr<ID3D12DescriptorHeap> AtrumEngine::CreateDescriptorHeap(D3D12_DESCRIPTOR_
 void AtrumEngine::CreateMaterialResource() {
 
 	// Color1つ分のサイズを用意
-	materialResource_ = CreateBufferResource(sizeof(Vector4) * 1024);
+	materialResource_ = CreateBufferResource(sizeof(Vector4) * 16);
 
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
@@ -561,8 +574,8 @@ void AtrumEngine::CreateMaterialResource() {
 
 void AtrumEngine::CreateWvpResource() {
 
-	// Matrix4x4 1つ分のサイズを用意する
-	wvpResource_ = CreateBufferResource(sizeof(Matrix4x4));
+	// Matrix4x4 1024個分のサイズを用意する
+	wvpResource_ = CreateBufferResource(sizeof(Matrix4x4) * 16);
 
 	// データを書き込むためのアドレスを取得
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
@@ -577,17 +590,27 @@ void AtrumEngine::CreateWvpResource() {
 
 void AtrumEngine::CreatePSO() {
 
+	// ルートシグネチャを設定
 	graphicsPipelineStateDesc_.pRootSignature = rootSignature_.Get();
 
+	// InputLayout
 	graphicsPipelineStateDesc_.InputLayout = inputLayoutDesc_;
 
+	// VertexShader
 	graphicsPipelineStateDesc_.VS = { vertexShaderBlob_->GetBufferPointer(), vertexShaderBlob_->GetBufferSize() };
 
+	// PixelShader
 	graphicsPipelineStateDesc_.PS = { pixelShaderBlob_->GetBufferPointer(), pixelShaderBlob_->GetBufferSize() };
 
+	// Blendの設定
 	graphicsPipelineStateDesc_.BlendState = blendDesc_;
 
+	// Rasterizerの設定
 	graphicsPipelineStateDesc_.RasterizerState = rasterizerDesc_;
+
+	// DepthStencilの設定
+	graphicsPipelineStateDesc_.DepthStencilState = depthStencilDesc_;
+	graphicsPipelineStateDesc_.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	// 書き込むRTVの情報
 	graphicsPipelineStateDesc_.NumRenderTargets = 1;
@@ -610,7 +633,7 @@ void AtrumEngine::CreatePSO() {
 
 void AtrumEngine::CreateVertexResource() {
 
-	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 3 * 1024);
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 3 * 16);
 
 	// データを書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
@@ -625,7 +648,7 @@ void AtrumEngine::CreateVertexBufferView() {
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
 	// 使用するリソースのサイズは 頂点3つ分 * 1024 のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * 1024;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * 16;
 
 	// 1頂点当たりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -657,30 +680,6 @@ void AtrumEngine::SetUpScissorRect() {
 
 void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
-	// Viewportを設定
-	commandList_->RSSetViewports(1, &viewport_);
-
-	// ScissorRectを設定
-	commandList_->RSSetScissorRects(1, &scissorRect_);
-
-	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
-
-	// PSOを設定
-	commandList_->SetPipelineState(graphicsPipelineState_.Get());
-
-	// VBVを設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-
-	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// マテリアルCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-
-	// WVP用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
-
 	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle{};
 
 	textureHandle.ptr = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart().ptr + textureIndex * srvHandleSize_;
@@ -689,7 +688,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	commandList_->SetGraphicsRootDescriptorTable(2, textureHandle);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandList_->DrawInstanced(3, 1, 0, 0);
+	commandList_->DrawInstanced(3, 1, triangleCount_ * 3, 0);
 
 }
 
@@ -861,6 +860,8 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->SetUpRasterizerState();
 
+	this->SetUpDepthStencilState();
+
 	this->PrepareShader();
 
 	this->SetUpViewport();
@@ -880,6 +881,20 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	srvDescriptorIndexManager_.reset(new DescriptorIndexManager());
 
 	srvHandleSize_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+	depthStencilResource_ = this->CreateDepthStencilResource(clientWidth_, clientHeight_);
+
+	dsvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+
+	// DSVの設定
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+	// Format 基本Resourceに合わせる
+	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	// 2dTexture
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	// DSVHeapの先頭にDSVを作る
+	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
+
 
 #ifdef USE_IMGUI
 
@@ -1019,8 +1034,12 @@ void AtrumEngine::PreDraw() {
 	// TransitionBarrierを張る
 	commandList_->ResourceBarrier(1, &barrier_);
 
-	// 描画先のRTVを設定
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, nullptr);
+	// 描画先のRTVとDSVを設定
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
+
+	// 指定した深度(1.0f)で画面全体をクリアする
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	// 指定色で画面全体をクリアする
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
@@ -1029,6 +1048,30 @@ void AtrumEngine::PreDraw() {
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
 	commandList_->SetDescriptorHeaps(1, descriptorHeaps);
+
+	// Viewportを設定
+	commandList_->RSSetViewports(1, &viewport_);
+
+	// ScissorRectを設定
+	commandList_->RSSetScissorRects(1, &scissorRect_);
+
+	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
+	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
+
+	// PSOを設定
+	commandList_->SetPipelineState(graphicsPipelineState_.Get());
+
+	// VBVを設定
+	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// マテリアルCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+
+	// WVP用のCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 
 }
 
@@ -1091,6 +1134,9 @@ void AtrumEngine::PostDraw() {
 	assert(SUCCEEDED(hr_));
 	hr_ = commandList_.Get()->Reset(commandAllocators_[frameIndex_].Get(), nullptr);
 	assert(SUCCEEDED(hr_));
+
+	// 三角形のカウントをリセット
+	triangleCount_ = 0;
 
 }
 
@@ -1199,6 +1245,61 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateTextureResource(const DirectX::TexMeta
 		// 作成するResourceポインタへのポインタ
 		IID_PPV_ARGS(&resource)
 	);
+	assert(SUCCEEDED(hr_));
+
+	return resource;
+
+}
+
+ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, int32_t height) {
+
+	D3D12_RESOURCE_DESC resourceDesc{};
+	// Textureの幅
+	resourceDesc.Width = width;
+	// Textureの高さ
+	resourceDesc.Height = height;
+	// MipMapの数
+	resourceDesc.MipLevels = 1;
+	// 奥行き or 配列Textureの要素数
+	resourceDesc.DepthOrArraySize = 1;
+	// DepthStencilとして利用可能なフォーマット
+	resourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	// サンプリングカウント 1固定
+	resourceDesc.SampleDesc.Count = 1;
+	// 2次元
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	// DepthStencilとして使う通知
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+
+	// 利用するHeapの設定
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	// VRAM上に作る
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	// 深度値のクリア設定
+	D3D12_CLEAR_VALUE depthClearValue{};
+	// 1.0f(最大値)でクリア
+	depthClearValue.DepthStencil.Depth = 1.0f;
+	// フォーマット リソースと合わせる
+	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	// Resourceの生成
+	ComPtr<ID3D12Resource> resource = nullptr;
+	hr_ = device_->CreateCommittedResource(
+		// heapの設定
+		&heapProperties,
+		// Heapの特殊な設定 無し
+		D3D12_HEAP_FLAG_NONE,
+		// Resourceの設定
+		&resourceDesc,
+		// 深度値を書き込む状態にしておく
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		// Clear最適値
+		&depthClearValue,
+		// 作成するResourceポインタへのポインタ
+		IID_PPV_ARGS(&resource)
+	);
+
 	assert(SUCCEEDED(hr_));
 
 	return resource;
@@ -1435,7 +1536,7 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 }
 
-void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& color, const Transform& triangleTransform, const Transform& cameraTransform) {
+void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& color, const Transform& triangleTransform, const Transform& cameraTransform, const VertexData vertexData[3]) {
 
 	// カメラのワールド行列
 	Matrix4x4 cameraWorldMatrix = this->CreateWorldMatrix(cameraTransform);
@@ -1449,26 +1550,29 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 	// 三角形のTransform
 	Matrix4x4 triangleWorldMatrix = this->CreateWorldMatrix(triangleTransform);
 
-	// Wvp行列
-	*wvpData_ = triangleWorldMatrix * viewMatrix * projectionMatrix;;
+	// 1. 書き込み先のアドレスを計算 (256バイトアライメントを考慮)
+	size_t offset = triangleCount_ * 256;
+
+	// CPU上のマッピング済みアドレスにオフセットを加えて書き込み
+	auto* targetWvp = reinterpret_cast<Matrix4x4*>(reinterpret_cast<uint8_t*>(wvpData_) + offset);
+	*targetWvp = triangleWorldMatrix * viewMatrix * projectionMatrix;
+
+	auto* targetMaterial = reinterpret_cast<Vector4*>(reinterpret_cast<uint8_t*>(materialData_) + offset);
+	*targetMaterial = color;
 
 	// 左下
-	vertexData_[0].position = Vector4{ -0.5f, -0.5f, 0.0f, 1.0f };
-	vertexData_[0].texCoord = Vector2{ 0.0f, 1.0f };
+	vertexData_[triangleCount_ * 3] = vertexData[0];
 
 	// 上
-	vertexData_[1].position = Vector4{ 0.0f, 0.5f, 0.0f, 1.0f };
-	vertexData_[1].texCoord = Vector2{ 0.5f, 0.0f };
+	vertexData_[triangleCount_ * 3 + 1] = vertexData[1];
 
 	// 右下
-	vertexData_[2].position = Vector4{ 0.5f, -0.5f, 0.0f, 1.0f };
-	vertexData_[2].texCoord = Vector2{ 1.0f, 1.0f };
-
-	// マテリアルの設定
-	*materialData_ = color;
+	vertexData_[triangleCount_ * 3 + 2] = vertexData[2];
 
 	// 描画
-	DrawTriangleCall(textureIndex);
+	this->DrawTriangleCall(textureIndex);
+
+	triangleCount_++;
 
 }
 

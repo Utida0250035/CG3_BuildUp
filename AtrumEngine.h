@@ -217,6 +217,9 @@ private:
 	// RasterizerState
 	D3D12_RASTERIZER_DESC rasterizerDesc_{};
 
+	// DepthStencilState
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
+
 	// vertexShaderのコンパイル結果
 	ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
 
@@ -238,6 +241,9 @@ private:
 	// 頂点データ
 	VertexData* vertexData_ = nullptr;
 
+	// 頂点データの使用番号
+	uint32_t triangleCount_ = 0;
+
 	// MaterialResource
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
@@ -246,6 +252,12 @@ private:
 
 	// WvpResource
 	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
+
+	// DSVディスクリプタヒープ DSV(Depth Stencil View)
+	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
+
+	// DepthStencilResource
+	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
 	// WvpData 描画座標データ
 	Matrix4x4* wvpData_ = nullptr;
@@ -343,6 +355,11 @@ private:
 	void SetUpRasterizerState();
 
 	/// <summary>
+	/// DepthStencilStateの設定
+	/// </summary>
+	void SetUpDepthStencilState();
+
+	/// <summary>
 	/// Shaderの準備
 	/// </summary>
 	void PrepareShader();
@@ -390,6 +407,8 @@ private:
 	/// VertexBufferViewの作成
 	/// </summary>
 	void CreateVertexBufferView();
+
+public:
 
 	/// <summary>
 	/// 描画呼び出し(DrawCall)
@@ -541,7 +560,6 @@ private:
 	/// <returns></returns>
 	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
 
-
 	/// <summary>
 	/// 
 	/// </summary>
@@ -576,7 +594,16 @@ public:
 	/// 三角形の描画
 	/// </summary>
 	/// <param name="textureIndex"> テクスチャ番号 </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform);
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const VertexData vertexData[3]);
+
+
+	/// <summary>
+	/// DepthStencilResourceの作成
+	/// </summary>
+	/// <param name="width"> 幅 </param>
+	/// <param name="height"> 高さ </param>
+	/// <returns> DepthStencilResource </returns>
+	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
 };
 
