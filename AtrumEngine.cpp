@@ -132,7 +132,7 @@ void AtrumEngine::SelectAdapter() {
 			// ソフトウェアアダプタでなければ採用
 
 			// 採用したアダプタの情報をログに出力
-			Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+			LogFile::GetInstance()->Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
 
 			break;
 
@@ -166,7 +166,7 @@ void AtrumEngine::CreateDevice() {
 
 			// ログ出力
 
-			Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
+			LogFile::GetInstance()->Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
 
 			break;
 
@@ -634,18 +634,6 @@ void AtrumEngine::CreateVertexBufferView() {
 
 }
 
-void AtrumEngine::SetMaterialData(const Vector4& color) {
-
-	*materialData_ = color;
-
-}
-
-void AtrumEngine::SetWvpData(const Matrix4x4& wvp) {
-
-	*wvpData_ = wvp;
-
-}
-
 void AtrumEngine::SetUpViewport() {
 	// クライアント領域のサイズと同等にして画面全体を表示領域とする
 
@@ -757,7 +745,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	this->CreateDevice();
 
 	// 初期化完了のログを出す
-	LogFile::GetInstance()->Log("Complete create D3D12Device!!!\n");
+	LogFile::GetInstance()->Log("Complete create D3D12Device!!!");
 
 
 	// コマンドキューの生成
@@ -882,6 +870,12 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	this->CreateMaterialResource();
 
 	this->CreateWvpResource();
+
+	this->CreatePSO();
+
+	this->CreateVertexResource();
+
+	this->CreateVertexBufferView();
 
 	srvDescriptorIndexManager_.reset(new DescriptorIndexManager());
 
@@ -1480,7 +1474,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 
 LeakChecker::~LeakChecker() {
 
-	OutputDebugStringA("leakCheck\n");
+	OutputDebugStringA("\nleakCheck\n\n");
 
 	Microsoft::WRL::ComPtr<IDXGIDebug1> debug;
 
