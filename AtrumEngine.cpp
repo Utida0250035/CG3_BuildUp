@@ -563,7 +563,7 @@ ComPtr<ID3D12DescriptorHeap> AtrumEngine::CreateDescriptorHeap(D3D12_DESCRIPTOR_
 void AtrumEngine::CreateMaterialResource() {
 
 	// Color1つ分のサイズを用意
-	materialResource_ = CreateBufferResource(sizeof(Vector4) * 16);
+	materialResource_ = this->CreateBufferResource(sizeof(Vector4) * 16);
 
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
@@ -575,7 +575,7 @@ void AtrumEngine::CreateMaterialResource() {
 void AtrumEngine::CreateWvpResource() {
 
 	// Matrix4x4 1024個分のサイズを用意する
-	wvpResource_ = CreateBufferResource(sizeof(Matrix4x4) * 16);
+	wvpResource_ = this->CreateBufferResource(sizeof(Matrix4x4) * 16);
 
 	// データを書き込むためのアドレスを取得
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
@@ -633,7 +633,7 @@ void AtrumEngine::CreatePSO() {
 
 void AtrumEngine::CreateVertexResource() {
 
-	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 3 * 16);
+	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * 16);
 
 	// データを書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
@@ -654,6 +654,68 @@ void AtrumEngine::CreateVertexBufferView() {
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	LogFile::GetInstance()->Log("Created VertexBufferView");
+
+}
+
+void AtrumEngine::CreateSpriteVertexResource() {
+
+	spriteVertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 6 * 8);
+
+	spriteVertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteVertexData_));
+
+	/* 1枚目の三角形 */
+
+	// 左下
+	spriteVertexData_[0].position = { 0.0f, 360.0f, 0.0f, 1.0f };
+	spriteVertexData_[0].texCoord = { 0.0f, 1.0f };
+
+	// 左上
+	spriteVertexData_[1].position = { 0.0f, 0.0f, 0.0f, 1.0f };
+	spriteVertexData_[1].texCoord = { 0.0f, 0.0f };
+
+	// 右下
+	spriteVertexData_[2].position = { 640.0f, 360.0f, 0.0f, 1.0f };
+	spriteVertexData_[2].texCoord = { 1.0f, 1.0f };
+
+	/* 2枚目の三角形 */
+
+	// 左上
+	spriteVertexData_[3].position = {0.0f, 0.0f, 0.0f, 1.0f};
+	spriteVertexData_[3].texCoord = { 0.0f, 0.0f };
+
+	// 右上
+	spriteVertexData_[4].position = { 640.0f, 0.0f, 0.0f, 1.0f };
+	spriteVertexData_[4].texCoord = { 1.0f, 0.0f };
+
+	// 右下
+	spriteVertexData_[5].position = { 640.0f, 360.0f, 0.0f, 1.0f };
+	spriteVertexData_[5].texCoord = { 1.0f, 1.0f };
+
+}
+
+void AtrumEngine::CreateSpriteVertexBufferView() {
+
+	// リソースの先頭のアドレスから使う
+	spriteVertexBufferView_.BufferLocation = spriteVertexResource_->GetGPUVirtualAddress();
+
+	// 使用するリソースのサイズ
+	spriteVertexBufferView_.SizeInBytes = sizeof(VertexData) * 6 * 8;
+
+	// 1頂点当たりのサイズ
+	spriteVertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+}
+
+void AtrumEngine::CreateSpriteTransformationResource() {
+
+	// 4x4行列1つ分のサイズを用意する
+	spriteTransformationMatrixResource_ = this->CreateBufferResource(sizeof(Matrix4x4) * 8);
+
+	// データを書き込むためのアドレス取得
+	spriteTransformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteTransformData_));
+
+	// 単位行列を書き込んでおく
+	*spriteTransformData_ = MakeIdentityMatrix4x4();
 
 }
 
@@ -895,6 +957,20 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// DSVHeapの先頭にDSVを作る
 	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 
+
+	/* Sprite */
+
+	// sprite用 TransformationMatrixResourceの生成
+	this->CreateSpriteTransformationResource();
+
+	// Sprite用 VertexResourceの生成
+	this->CreateSpriteVertexResource();
+
+	// Sprite用 VertexBufferViewの生成
+	this->CreateSpriteVertexBufferView();
+
+
+	/* ImGui */
 
 #ifdef USE_IMGUI
 
@@ -1584,6 +1660,33 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 	this->DrawTriangleCall(textureIndex);
 
 	triangleCount_++;
+
+}
+
+void AtrumEngine::DrawSprite(const Transform& transform) {
+
+	Matrix4x4 worldMatrix = this->CreateWorldMatrix(transform);
+	
+	Matrix4x4 viewMatrix = MakeIdentityMatrix4x4();
+	
+	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, static_cast<float>(clientWidth_), static_cast<float>(clientHeight_), 0.0f, 100.0f );
+	
+	*spriteTransformData_ = worldMatrix * viewMatrix * projectionMatrix;
+
+	DrawSpriteCall();
+
+}
+
+void AtrumEngine::DrawSpriteCall() {
+
+	// Spriteの描画 変更が必要なものだけ変更
+	commandList_->IASetVertexBuffers(0, 1, &spriteVertexBufferView_);
+	
+	// TransformationMatrixCBufferの場所を設定
+	commandList_->SetGraphicsRootConstantBufferView(1, spriteTransformationMatrixResource_->GetGPUVirtualAddress());
+
+	// DrawCall
+	commandList_->DrawInstanced(6, 1, 0, 0);
 
 }
 

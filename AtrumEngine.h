@@ -83,10 +83,12 @@ private:
 	// ウィンドウハンドル
 	HWND hwnd_{};
 
+
 	/* エラー処理 */
 
-	// Windows系エラーコード格納
+	// Windowsエラーコード格納
 	HRESULT hr_{};
+
 
 	/* DirectX インターフェース */
 
@@ -296,6 +298,18 @@ private:
 	// スプライト用のVertexBufferView
 	D3D12_VERTEX_BUFFER_VIEW spriteVertexBufferView_{};
 
+	// Sprite用 頂点データ
+	VertexData* spriteVertexData_ = nullptr;
+
+
+	/* Sprite用 Transform */
+
+	// Sprite用のTransformMatrix用のリソース
+	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
+
+	// Sprite用 Transformデータ
+	Matrix4x4* spriteTransformData_ = nullptr;
+
 
 	/* Material */
 
@@ -473,9 +487,6 @@ private:
 	/// </summary>
 	void CreateWvpResource();
 
-
-	/* 三角形のみ描画可能になっている */
-
 	/// <summary>
 	/// PSOの生成
 	/// </summary>
@@ -491,15 +502,30 @@ private:
 	/// </summary>
 	void CreateVertexBufferView();
 
-	/**/
-
-
-public:
+	/// <summary>
+	/// Sprite用VertexResourceの生成
+	/// </summary>
+	void CreateSpriteVertexResource();
 
 	/// <summary>
-	/// 描画呼び出し(DrawCall)
+	/// Sprite用VertexBufferViewの生成
+	/// </summary>
+	void CreateSpriteVertexBufferView();
+
+	/// <summary>
+	/// Sprite用TransformResourceの生成
+	/// </summary>
+	void CreateSpriteTransformationResource();
+
+	/// <summary>
+	/// 三角形の描画呼び出し
 	/// </summary>
 	void DrawTriangleCall(const uint32_t& textureIndex);
+
+	/// <summary>
+	/// Spriteの描画呼び出し
+	/// </summary>
+	void DrawSpriteCall();
 
 public:
 
@@ -684,6 +710,10 @@ public:
 	/// 三角形の描画
 	/// </summary>
 	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="triangleTransform"> 三角形の座標情報 </param>
+	/// <param name="cameraTransform"> カメラの座標情報 </param>
+	/// <param name="vertexData"> 三角形のローカル頂点データ </param>
 	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const VertexData vertexData[3]);
 
 
@@ -694,6 +724,22 @@ public:
 	/// <param name="height"> 高さ </param>
 	/// <returns> DepthStencilResource </returns>
 	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
+
+
+	/// <summary>
+	/// Spriteの描画
+	/// </summary>
+	/// <param name="transform"> Spriteの位置情報 </param>
+	void DrawSprite(const Transform& transform);
+
+
+	/* ゲッター */
+
+	/// <summary>
+	/// ゲッター デバイス
+	/// </summary>
+	/// <returns> デバイスへの参照 </returns>
+	ComPtr<ID3D12Device>& GetDevice() { return device_; }
 
 };
 

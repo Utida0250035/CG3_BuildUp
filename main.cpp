@@ -15,17 +15,28 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// fps設定
 	atrum->SetFps(60);
 
+	/* 3dカメラ */
+
+	// カメラの座標情報
+	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -5.0f} };
+
+
+	/* 三角形 */
+
 	// 三角形の色
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 	// 三角形の座標情報
 	AtrumEngine::Transform triangleTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f } };
 
-	// カメラの座標情報
-	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -5.0f} };
-
 	// テクスチャ取得
 	uint32_t triangleTexture = atrum->GetTexture("./Resources/Images/uvChecker.png");
+
+
+	/* Sprite */
+
+	// Spriteの座標情報
+	AtrumEngine::Transform spriteTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f} };
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -72,6 +83,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::End();
 
 
+			ImGui::Begin("Sprite");
+
+			ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.0625f);
+
+			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
+
+			ImGui::DragFloat3("translate", &spriteTransform.translate.x, 0.0625f);
+
+			ImGui::End();
+
+
 			atrum->ImGuiRender();
 
 #endif
@@ -112,6 +134,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			// 三角形の描画
 			atrum->DrawTriangle(triangleTexture, triangleColor, triangleTransform, cameraTransform, vertexData);
+
+			// Spriteの描画
+			atrum->DrawSprite(spriteTransform);
 
 			// 描画処理(後)
 			atrum->PostDraw();
