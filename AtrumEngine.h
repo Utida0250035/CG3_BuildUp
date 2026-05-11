@@ -286,9 +286,11 @@ private:
 	// 頂点データ
 	VertexData* vertexData_ = nullptr;
 
-	// 頂点データの使用番号
-	uint32_t triangleCount_ = 0;
+	// 画面上に描画済みの三角形の数
+	uint32_t triangleDrewCount_ = 0;
 
+	// 画面上の三角形の最大描画数
+	const uint32_t triangleMaxDrawCount_ = 1024;
 
 	/* スプライト用 Vertex */
 
@@ -523,6 +525,12 @@ private:
 	void DrawTriangleCall(const uint32_t& textureIndex);
 
 	/// <summary>
+	/// 板の描画呼び出し
+	/// </summary>
+	/// <param name="textureIndex"></param>
+	void DrawPlateCall(const uint32_t& textureIndex);
+
+	/// <summary>
 	/// Spriteの描画呼び出し
 	/// </summary>
 	void DrawSpriteCall();
@@ -705,7 +713,6 @@ public:
 	uint32_t GetTexture(const std::string& filePath);
 
 
-
 	/// <summary>
 	/// 三角形の描画
 	/// </summary>
@@ -715,6 +722,15 @@ public:
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ </param>
 	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const VertexData vertexData[3]);
+
+	/// <summary>
+	/// 板の描画
+	/// </summary>
+	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="plateTransform"> 板の座標情報 </param>
+	/// <param name="vertexData"> 板のローカル頂点データ </param>
+	void DrawPlate(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& plateTransform, const Transform& cameraTransform, const VertexData vertexData[4]);
 
 
 	/// <summary>

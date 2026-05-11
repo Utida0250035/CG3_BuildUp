@@ -575,7 +575,7 @@ void AtrumEngine::CreateMaterialResource() {
 void AtrumEngine::CreateWvpResource() {
 
 	// Matrix4x4 1024個分のサイズを用意する
-	wvpResource_ = this->CreateBufferResource(sizeof(Matrix4x4) * 16);
+	wvpResource_ = this->CreateBufferResource(sizeof(Matrix4x4) * triangleMaxDrawCount_);
 
 	// データを書き込むためのアドレスを取得
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
@@ -633,7 +633,7 @@ void AtrumEngine::CreatePSO() {
 
 void AtrumEngine::CreateVertexResource() {
 
-	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * 16);
+	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * triangleMaxDrawCount_);
 
 	// データを書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
@@ -647,8 +647,8 @@ void AtrumEngine::CreateVertexBufferView() {
 	// リソースの先頭のアドレスから使う
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
-	// 使用するリソースのサイズは 頂点3つ分 * 1024 のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * 16;
+	// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 *triangleMaxDrawCount_;
 
 	// 1頂点当たりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -750,10 +750,23 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	commandList_->SetGraphicsRootDescriptorTable(2, textureHandle);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandList_->DrawInstanced(3, 1, triangleCount_ * 3, 0);
+	commandList_->DrawInstanced(3, 1, triangleDrewCount_ * 3, 0);
 
 }
 
+void AtrumEngine::DrawPlateCall(const uint32_t& textureIndex) {
+
+	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle{};
+
+	textureHandle.ptr = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart().ptr + textureIndex * srvHandleSize_;
+
+	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+	commandList_->SetGraphicsRootDescriptorTable(2, textureHandle);
+
+	// 描画(DrawCall) 6頂点で1つのインスタンス
+	commandList_->DrawInstanced(6, 1, triangleDrewCount_ * 3, 0);
+
+}
 
 void AtrumEngine::SetFps(const int32_t& fps) {
 
@@ -1212,7 +1225,7 @@ void AtrumEngine::PostDraw() {
 	assert(SUCCEEDED(hr_));
 
 	// 三角形のカウントをリセット
-	triangleCount_ = 0;
+	triangleDrewCount_ = 0;
 
 }
 
@@ -1638,7 +1651,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 	Matrix4x4 triangleWorldMatrix = this->CreateWorldMatrix(triangleTransform);
 
 	// 1. 書き込み先のアドレスを計算 (256バイトアライメントを考慮)
-	size_t offset = triangleCount_ * 256;
+	size_t offset = triangleDrewCount_ * 256;
 
 	// CPU上のマッピング済みアドレスにオフセットを加えて書き込み
 	auto* targetWvp = reinterpret_cast<Matrix4x4*>(reinterpret_cast<uint8_t*>(wvpData_) + offset);
@@ -1648,18 +1661,73 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 	*targetMaterial = color;
 
 	// 左下
-	vertexData_[triangleCount_ * 3] = vertexData[0];
+	vertexData_[triangleDrewCount_ * 3] = vertexData[0];
 
 	// 上
-	vertexData_[triangleCount_ * 3 + 1] = vertexData[1];
+	vertexData_[triangleDrewCount_ * 3 + 1] = vertexData[1];
 
 	// 右下
-	vertexData_[triangleCount_ * 3 + 2] = vertexData[2];
+	vertexData_[triangleDrewCount_ * 3 + 2] = vertexData[2];
 
 	// 描画
 	this->DrawTriangleCall(textureIndex);
 
-	triangleCount_++;
+	triangleDrewCount_++;
+
+}
+
+void AtrumEngine::DrawPlate(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& plateTransform, const Transform& cameraTransform, const VertexData vertexData[4]) {
+
+	// カメラのワールド行列
+	Matrix4x4 cameraWorldMatrix = this->CreateWorldMatrix(cameraTransform);
+
+	// ビュー行列
+	Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
+
+	// 透視投影行列
+	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+
+	// 三角形のTransform
+	Matrix4x4 triangleWorldMatrix = this->CreateWorldMatrix(plateTransform);
+
+	// 1. 書き込み先のアドレスを計算 (256バイトアライメントを考慮)
+	size_t offset = triangleDrewCount_ * 256;
+
+	// CPU上のマッピング済みアドレスにオフセットを加えて書き込み
+	auto* targetWvp = reinterpret_cast<Matrix4x4*>(reinterpret_cast<uint8_t*>(wvpData_) + offset);
+	*targetWvp = triangleWorldMatrix * viewMatrix * projectionMatrix;
+
+	auto* targetMaterial = reinterpret_cast<Vector4*>(reinterpret_cast<uint8_t*>(materialData_) + offset);
+	*targetMaterial = textureColor;
+
+	/* 1枚目の三角形 */
+
+	uint32_t vertexCount = triangleDrewCount_ * 3;
+
+	// 左下
+	vertexData_[vertexCount++] = vertexData[0];
+
+	// 左上
+	vertexData_[vertexCount++] = vertexData[1];
+
+	// 右下
+	vertexData_[vertexCount++] = vertexData[2];
+
+	/* 2枚目の三角形 */
+
+	// 左上
+	vertexData_[vertexCount++] = vertexData[1];
+
+	// 右上
+	vertexData_[vertexCount++] = vertexData[3];
+
+	// 右下
+	vertexData_[vertexCount++] = vertexData[2];
+
+	// 描画
+	this->DrawPlateCall(textureIndex);
+
+	triangleDrewCount_+= 2;
 
 }
 
