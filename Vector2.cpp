@@ -3,6 +3,6 @@
 
 float VectorLength(const Vector2& me) {
 
-	return sqrtf(me.x * me.x + me.y * me.y);
+	return std::sqrt(me.x * me.x + me.y * me.y);
 
 }

@@ -65,10 +65,10 @@ Matrix4x4 MakeXRotateMatrix(const float& angle) {
 	result.m[0][0] = 1.0f;
 	result.m[3][3] = 1.0f;
 
-	result.m[1][1] = cosf(angle);
-	result.m[1][2] = sinf(angle);
-	result.m[2][1] = -sinf(angle);
-	result.m[2][2] = cosf(angle);
+	result.m[1][1] = std::cos(angle);
+	result.m[1][2] = std::sin(angle);
+	result.m[2][1] = -std::sin(angle);
+	result.m[2][2] = std::cos(angle);
 
 	return result;
 
@@ -81,10 +81,10 @@ Matrix4x4 MakeYRotateMatrix(const float& angle) {
 	result.m[1][1] = 1.0f;
 	result.m[3][3] = 1.0f;
 
-	result.m[0][0] = cosf(angle);
-	result.m[0][2] = sinf(angle);
-	result.m[2][0] = -sinf(angle);
-	result.m[2][2] = cosf(angle);
+	result.m[0][0] = std::cos(angle);
+	result.m[0][2] = std::sin(angle);
+	result.m[2][0] = -std::sin(angle);
+	result.m[2][2] = std::cos(angle);
 
 	return result;
 
@@ -97,19 +97,19 @@ Matrix4x4 MakeZRotateMatrix(const float& angle) {
 	result.m[2][2] = 1.0f;
 	result.m[3][3] = 1.0f;
 
-	result.m[0][0] = cosf(angle);
-	result.m[0][1] = sinf(angle);
-	result.m[1][0] = -sinf(angle);
-	result.m[1][1] = cosf(angle);
+	result.m[0][0] = std::cos(angle);
+	result.m[0][1] = std::sin(angle);
+	result.m[1][0] = -std::sin(angle);
+	result.m[1][1] = std::cos(angle);
 
 	return result;
 
 }
 
 Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale, const Vector3& rotation) {
-	float cx = cosf(rotation.x); float sx = sinf(rotation.x);
-	float cy = cosf(rotation.y); float sy = sinf(rotation.y);
-	float cz = cosf(rotation.z); float sz = sinf(rotation.z);
+	float cx = std::cos(rotation.x); float sx = std::sin(rotation.x);
+	float cy = std::cos(rotation.y); float sy = std::sin(rotation.y);
+	float cz = std::cos(rotation.z); float sz = std::sin(rotation.z);
 
 	return Matrix4x4{
 
@@ -154,7 +154,7 @@ Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale, cons
 
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip) {
 
-	float cotangent = 1.0f / (tan(fovY * 0.5f));
+	float cotangent = 1.0f / (std::tan(fovY * 0.5f));
 
 	Matrix4x4 result{};
 

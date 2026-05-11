@@ -15,28 +15,49 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// fps設定
 	atrum->SetFps(60);
 
+	/* テクスチャ */
+
+	uint32_t textureWhite4x4 = atrum->GetTexture("./Resources/Images/white4x4.png");
+
 	/* 3dカメラ */
 
 	// カメラの座標情報
-	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -5.0f} };
+	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -500.0f} };
 
 
-	/* 三角形 */
+	/* 矩形 */
 
-	// 三角形の色
-	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+	// 矩形の色
+	Vector4 rectColor{ 1.0f, 1.0f, 1.0f, 1.0f };
 
-	// 三角形の座標情報
-	AtrumEngine::Transform triangleTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f } };
+	// 矩形の座標情報
+	AtrumEngine::Transform rectTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{640.0f, 360.0f, 0.0f} };
 
-	// テクスチャ取得
-	uint32_t triangleTexture = atrum->GetTexture("./Resources/Images/uvChecker.png");
+	// 矩形のテクスチャ
+	uint32_t rectTexture = textureWhite4x4;
+
+	/* 線分 */
+
+	// 線分の色
+	Vector4 lineSegmentColor{ 1.0f, 1.0f, 0.1f, 1.0f };
+
+	// 線のテクスチャ
+	uint32_t lineSegmentTexture = textureWhite4x4;
 
 
-	/* Sprite */
+	/* 背景 */
 
-	// Spriteの座標情報
-	AtrumEngine::Transform spriteTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f} };
+	// 背景の色
+	Vector4 backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+	// 背景の座標情報
+	AtrumEngine::Transform backgroundTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{640.0f, 360.0f, 0.0f} };
+
+	// 背景のサイズ
+	Vector2 backgroundSize{ 1280.0f, 720.0f };
+
+	uint32_t backgroundTexture = textureWhite4x4;
+
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -58,19 +79,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #ifdef USE_IMGUI
 
-			ImGui::ShowDemoWindow();
-
-			ImGui::Begin("camera");
-
-			ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
-
-			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.03125f);
-
-			ImGui::End();
 
 
 			atrum->ImGuiRender();
-
 #endif
 
 			///
@@ -84,31 +95,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			// 描画処理(前)
 			atrum->PreDraw();
 
-			AtrumEngine::VertexData vertexData[3]{};
-			// 左下
-			vertexData[0].position = Vector4{ -0.5f, -0.5f, 0.0f, 1.0f };
-			vertexData[0].texCoord = Vector2{ 0.0f, 1.0f };
-			// 上
-			vertexData[1].position = Vector4{ 0.0f, 0.5f, 0.0f, 1.0f };
-			vertexData[1].texCoord = Vector2{ 0.5f, 0.0f };
-			// 右下
-			vertexData[2].position = Vector4{ 0.5f, -0.5f, 0.0f, 1.0f };
-			vertexData[2].texCoord = Vector2{ 1.0f, 1.0f };
 
-			// 三角形の描画
-			atrum->DrawTriangle(triangleTexture, triangleColor, triangleTransform, cameraTransform, vertexData);
+			// Sprite準備
+			atrum->PrepareSprite();
 
-			vertexData[0].position = { -0.5f, -0.5f, 0.5f, 1.0f };
-			vertexData[0].texCoord = { 0.0f, 1.0f };
-			
-			vertexData[1].position = { 0.0f, 0.0f, 0.0f, 1.0f};
-			vertexData[1].texCoord = { 0.5f ,0.0f };
+			atrum->DrawSpriteRect(backgroundTexture, backgroundColor, backgroundTransform, backgroundSize);
 
-			vertexData[2].position = { 0.5f, -0.5f, -0.5f, 1.0f};
-			vertexData[2].texCoord = { 1.0f, 1.0f };
+			atrum->DrawSpriteLine(lineSegmentTexture, lineSegmentColor, Vector2{ 32.0f, 32.0f }, Vector2{ 128.0f, 128.0f }, 4.0f);
 
-			// 三角形の描画
-			atrum->DrawTriangle(triangleTexture, triangleColor, triangleTransform, cameraTransform, vertexData);
+			// 矩形の描画
+			atrum->DrawSpriteRect(rectTexture, rectColor, rectTransform, Vector2{ 128.0f, 128.0f });
 
 			// 描画処理(後)
 			atrum->PostDraw();
