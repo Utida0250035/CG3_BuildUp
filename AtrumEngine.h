@@ -66,6 +66,8 @@ public:
 
 private:
 
+	/* Window */
+
 	// ウィンドウクラス
 	WNDCLASS wc_{};
 
@@ -81,8 +83,14 @@ private:
 	// ウィンドウハンドル
 	HWND hwnd_{};
 
-	// Windows系エラーコード格納
+
+	/* エラー処理 */
+
+	// Windowsエラーコード格納
 	HRESULT hr_{};
+
+
+	/* DirectX インターフェース */
 
 	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
@@ -108,13 +116,18 @@ private:
 	// コマンドリスト
 	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 
+
+	/* SwapChain SwapChainResource */
+
 	// スワップチェーン
 	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 
 	// スワップチェーンリソース
 	ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
 
+
 	class DescriptorIndexManager {
+		/* ディスクリプタ管理補助クラス */
 	private:
 
 		// 次の空きディスクリプタの番号 0はImGui
@@ -156,6 +169,9 @@ private:
 
 	};
 
+
+	/* SRV */
+
 	// SRV(Shader Resource View)ディスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
 
@@ -165,11 +181,17 @@ private:
 	// SRVハンドルサイズ
 	uint32_t srvHandleSize_ = 0;
 
+
+	/* RTV */
+
 	// RTV(Render Target View)ディスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 
 	// RTVディスクリプタハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
+
+
+	/* フェンス / フェンスイベント */
 
 	// フェンス
 	ComPtr<ID3D12Fence> fence_ = nullptr;
@@ -183,9 +205,14 @@ private:
 	// fenceEvent
 	HANDLE fenceEvent_{};
 
+
+	/* 中間リソース */
+
 	// フレーム内の中間リソース保存
 	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
+
+	/* DirectX 補助 / コンパイラ 等 */
 
 	// DXC補助
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
@@ -196,6 +223,9 @@ private:
 	// インクルードハンドラー
 	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
+
+	/* RootSignature */
+
 	// RootSignature
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 
@@ -205,11 +235,17 @@ private:
 	// RootSignatureのエラー結果
 	ComPtr<ID3DBlob> errorBlob_ = nullptr;
 
+
+	/* InputLayout */
+
 	// InputLayoutの設定
 	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
 
 	// inputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
+
+
+	/* 描画State系 */
 
 	// BlendState
 	D3D12_BLEND_DESC blendDesc_{};
@@ -220,17 +256,26 @@ private:
 	// DepthStencilState
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
 
+
+	/* VertexShader / PixelShader コンパイル結果 */
+
 	// vertexShaderのコンパイル結果
 	ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
 
 	// pixelShaderのコンパイル結果
 	ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
 
+
+	/* PSO */
+
 	// PSOの設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc_{};
 
 	// PSO
 	ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
+
+
+	/* Vertex */
 
 	// 頂点リソース
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
@@ -244,14 +289,47 @@ private:
 	// 頂点データの使用番号
 	uint32_t triangleCount_ = 0;
 
+
+	/* スプライト用 Vertex */
+
+	// スプライト用のVertexResource
+	ComPtr<ID3D12Resource> spriteVertexResource_ = nullptr;
+
+	// スプライト用のVertexBufferView
+	D3D12_VERTEX_BUFFER_VIEW spriteVertexBufferView_{};
+
+	// Sprite用 頂点データ
+	VertexData* spriteVertexData_ = nullptr;
+
+
+	/* Sprite用 Transform */
+
+	// Sprite用のTransformMatrix用のリソース
+	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
+
+	// Sprite用 Transformデータ
+	Matrix4x4* spriteTransformData_ = nullptr;
+
+
+	/* Material */
+
 	// MaterialResource
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
 	// MaterialData 色データRGBA
 	Vector4* materialData_ = nullptr;
 
+
+	/* WVP */
+
 	// WvpResource
 	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
+
+	// WvpData 描画座標データ
+	Matrix4x4* wvpData_ = nullptr;
+
+
+	/* depthStencil */
 
 	// DSVディスクリプタヒープ DSV(Depth Stencil View)
 	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
@@ -259,20 +337,32 @@ private:
 	// DepthStencilResource
 	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-	// WvpData 描画座標データ
-	Matrix4x4* wvpData_ = nullptr;
+
+	/* テクスチャ */
+
+	// Texture番号テーブル
+	std::map<std::string, uint32_t> textureIndexTable_{};
 
 	// Texture
 	std::vector<Texture> textures_{};
 
+
+	/* バリア */
+
 	// TransitionBarrierの設定
 	D3D12_RESOURCE_BARRIER barrier_{};
+
+
+	/* ウィンドウサイズ */
 
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
 
 	// シザー矩形
 	D3D12_RECT scissorRect_{};
+
+
+	/* 時間管理 */
 
 	// 次フレームまでのカウント
 	float countForNextFrame_ = 0.0f;
@@ -283,8 +373,14 @@ private:
 	// 時間差分
 	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
 
+
+	/* OSとのやり取り */
+
 	// メッセージ
 	MSG msg_{};
+
+	/**/
+
 
 	/// <summary>
 	/// コンストラクタ
@@ -335,11 +431,6 @@ private:
 	void SetUpScissorRect();
 
 	/// <summary>
-	/// ルートシグネチャの作成
-	/// </summary>
-	void MakeRootSignature();
-
-	/// <summary>
 	/// InputLayoutの設定
 	/// </summary>
 	void SetUpInputLayout();
@@ -358,6 +449,11 @@ private:
 	/// DepthStencilStateの設定
 	/// </summary>
 	void SetUpDepthStencilState();
+
+	/// <summary>
+	/// ルートシグネチャの作成
+	/// </summary>
+	void MakeRootSignature();
 
 	/// <summary>
 	/// Shaderの準備
@@ -391,8 +487,6 @@ private:
 	/// </summary>
 	void CreateWvpResource();
 
-	/* 三角形のみ描画可能になっている */
-
 	/// <summary>
 	/// PSOの生成
 	/// </summary>
@@ -408,12 +502,30 @@ private:
 	/// </summary>
 	void CreateVertexBufferView();
 
-public:
+	/// <summary>
+	/// Sprite用VertexResourceの生成
+	/// </summary>
+	void CreateSpriteVertexResource();
 
 	/// <summary>
-	/// 描画呼び出し(DrawCall)
+	/// Sprite用VertexBufferViewの生成
+	/// </summary>
+	void CreateSpriteVertexBufferView();
+
+	/// <summary>
+	/// Sprite用TransformResourceの生成
+	/// </summary>
+	void CreateSpriteTransformationResource();
+
+	/// <summary>
+	/// 三角形の描画呼び出し
 	/// </summary>
 	void DrawTriangleCall(const uint32_t& textureIndex);
+
+	/// <summary>
+	/// Spriteの描画呼び出し
+	/// </summary>
+	void DrawSpriteCall();
 
 public:
 
@@ -544,6 +656,8 @@ public:
 	/// <returns> ワールド行列 </returns>
 	Matrix4x4 CreateWorldMatrix(const Transform& transform);
 
+
+
 private:
 
 	/// <summary>
@@ -590,10 +704,16 @@ public:
 	/// <returns> テクスチャ番号 </returns>
 	uint32_t GetTexture(const std::string& filePath);
 
+
+
 	/// <summary>
 	/// 三角形の描画
 	/// </summary>
 	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="triangleTransform"> 三角形の座標情報 </param>
+	/// <param name="cameraTransform"> カメラの座標情報 </param>
+	/// <param name="vertexData"> 三角形のローカル頂点データ </param>
 	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const VertexData vertexData[3]);
 
 
@@ -604,6 +724,22 @@ public:
 	/// <param name="height"> 高さ </param>
 	/// <returns> DepthStencilResource </returns>
 	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
+
+
+	/// <summary>
+	/// Spriteの描画
+	/// </summary>
+	/// <param name="transform"> Spriteの位置情報 </param>
+	void DrawSprite(const Transform& transform);
+
+
+	/* ゲッター */
+
+	/// <summary>
+	/// ゲッター デバイス
+	/// </summary>
+	/// <returns> デバイスへの参照 </returns>
+	ComPtr<ID3D12Device>& GetDevice() { return device_; }
 
 };
 
