@@ -66,6 +66,8 @@ public:
 
 private:
 
+	/* Window */
+
 	// ウィンドウクラス
 	WNDCLASS wc_{};
 
@@ -81,8 +83,12 @@ private:
 	// ウィンドウハンドル
 	HWND hwnd_{};
 
+	/* エラー処理 */
+
 	// Windows系エラーコード格納
 	HRESULT hr_{};
+
+	/* DirectX インターフェース */
 
 	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
@@ -108,13 +114,18 @@ private:
 	// コマンドリスト
 	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 
+
+	/* SwapChain SwapChainResource */
+
 	// スワップチェーン
 	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
 
 	// スワップチェーンリソース
 	ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
 
+
 	class DescriptorIndexManager {
+		/* ディスクリプタ管理補助クラス */
 	private:
 
 		// 次の空きディスクリプタの番号 0はImGui
@@ -156,6 +167,9 @@ private:
 
 	};
 
+
+	/* SRV */
+
 	// SRV(Shader Resource View)ディスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
 
@@ -165,11 +179,17 @@ private:
 	// SRVハンドルサイズ
 	uint32_t srvHandleSize_ = 0;
 
+
+	/* RTV */
+
 	// RTV(Render Target View)ディスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
 
 	// RTVディスクリプタハンドル
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
+
+
+	/* フェンス / フェンスイベント */
 
 	// フェンス
 	ComPtr<ID3D12Fence> fence_ = nullptr;
@@ -183,9 +203,14 @@ private:
 	// fenceEvent
 	HANDLE fenceEvent_{};
 
+
+	/* 中間リソース */
+
 	// フレーム内の中間リソース保存
 	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
+
+	/* DirectX 補助 / コンパイラ 等 */
 
 	// DXC補助
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
@@ -196,6 +221,9 @@ private:
 	// インクルードハンドラー
 	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
+
+	/* RootSignature */
+
 	// RootSignature
 	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 
@@ -205,11 +233,17 @@ private:
 	// RootSignatureのエラー結果
 	ComPtr<ID3DBlob> errorBlob_ = nullptr;
 
+
+	/* InputLayout */
+
 	// InputLayoutの設定
 	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
 
 	// inputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
+
+
+	/* 描画State系 */
 
 	// BlendState
 	D3D12_BLEND_DESC blendDesc_{};
@@ -220,17 +254,26 @@ private:
 	// DepthStencilState
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
 
+
+	/* VertexShader / PixelShader コンパイル結果 */
+
 	// vertexShaderのコンパイル結果
 	ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
 
 	// pixelShaderのコンパイル結果
 	ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
 
+
+	/* PSO */
+
 	// PSOの設定
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc_{};
 
 	// PSO
 	ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
+
+
+	/* Vertex */
 
 	// 頂点リソース
 	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
@@ -244,14 +287,35 @@ private:
 	// 頂点データの使用番号
 	uint32_t triangleCount_ = 0;
 
+
+	/* スプライト用 Vertex */
+
+	// スプライト用のVertexResource
+	ComPtr<ID3D12Resource> spriteVertexResource_ = nullptr;
+
+	// スプライト用のVertexBufferView
+	D3D12_VERTEX_BUFFER_VIEW spriteVertexBufferView_{};
+
+
+	/* Material */
+
 	// MaterialResource
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
 	// MaterialData 色データRGBA
 	Vector4* materialData_ = nullptr;
 
+
+	/* WVP */
+
 	// WvpResource
 	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
+
+	// WvpData 描画座標データ
+	Matrix4x4* wvpData_ = nullptr;
+
+
+	/* depthStencil */
 
 	// DSVディスクリプタヒープ DSV(Depth Stencil View)
 	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
@@ -259,20 +323,32 @@ private:
 	// DepthStencilResource
 	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-	// WvpData 描画座標データ
-	Matrix4x4* wvpData_ = nullptr;
+
+	/* テクスチャ */
+
+	// Texture番号テーブル
+	std::map<std::string, uint32_t> textureIndexTable_{};
 
 	// Texture
 	std::vector<Texture> textures_{};
 
+
+	/* バリア */
+
 	// TransitionBarrierの設定
 	D3D12_RESOURCE_BARRIER barrier_{};
+
+
+	/* ウィンドウサイズ */
 
 	// ビューポート
 	D3D12_VIEWPORT viewport_{};
 
 	// シザー矩形
 	D3D12_RECT scissorRect_{};
+
+
+	/* 時間管理 */
 
 	// 次フレームまでのカウント
 	float countForNextFrame_ = 0.0f;
@@ -283,8 +359,14 @@ private:
 	// 時間差分
 	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
 
+
+	/* OSとのやり取り */
+
 	// メッセージ
 	MSG msg_{};
+
+	/**/
+
 
 	/// <summary>
 	/// コンストラクタ
@@ -335,11 +417,6 @@ private:
 	void SetUpScissorRect();
 
 	/// <summary>
-	/// ルートシグネチャの作成
-	/// </summary>
-	void MakeRootSignature();
-
-	/// <summary>
 	/// InputLayoutの設定
 	/// </summary>
 	void SetUpInputLayout();
@@ -358,6 +435,11 @@ private:
 	/// DepthStencilStateの設定
 	/// </summary>
 	void SetUpDepthStencilState();
+
+	/// <summary>
+	/// ルートシグネチャの作成
+	/// </summary>
+	void MakeRootSignature();
 
 	/// <summary>
 	/// Shaderの準備
@@ -391,6 +473,7 @@ private:
 	/// </summary>
 	void CreateWvpResource();
 
+
 	/* 三角形のみ描画可能になっている */
 
 	/// <summary>
@@ -407,6 +490,9 @@ private:
 	/// VertexBufferViewの作成
 	/// </summary>
 	void CreateVertexBufferView();
+
+	/**/
+
 
 public:
 
@@ -544,6 +630,8 @@ public:
 	/// <returns> ワールド行列 </returns>
 	Matrix4x4 CreateWorldMatrix(const Transform& transform);
 
+
+
 private:
 
 	/// <summary>
@@ -589,6 +677,8 @@ public:
 	/// <param name="filePath"> テクスチャのファイルパス </param>
 	/// <returns> テクスチャ番号 </returns>
 	uint32_t GetTexture(const std::string& filePath);
+
+
 
 	/// <summary>
 	/// 三角形の描画

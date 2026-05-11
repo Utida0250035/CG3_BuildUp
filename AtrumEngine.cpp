@@ -1476,6 +1476,14 @@ void AtrumEngine::MakeShaderResourceView(Texture& texture, const DirectX::TexMet
 
 uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
+	auto search = textureIndexTable_.find(filePath);
+
+	if (search != textureIndexTable_.end()) {
+
+		return search->second;
+
+	}
+
 	Texture texture;
 
 	// Textureを読んで転送する
@@ -1525,6 +1533,9 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 	// 中間リソースを一時保存
 	temporaryResources_.emplace_back(intermediateResource);
+
+	// ファイル名と番号を格納
+	textureIndexTable_.emplace(filePath, texture.srvIndex);
 
 	// 配列に所有権を移動
 	textures_.emplace_back(std::move(texture));
