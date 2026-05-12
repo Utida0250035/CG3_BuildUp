@@ -2,15 +2,16 @@
 
 #include "Vector2.h"
 
-struct OBB {
+typedef struct OrientedBoundingBox {
 	// 中心
 	Vector2 center;
+	// 各軸の長さ(幅, 高さ)
+	Vector2 size;
+	// 各軸の長さの半分
+	Vector2 halfSize;
 	// 正規化された方向ベクトル(ローカル右、ローカル上)
 	Vector2 axis[2];
-	// 各軸(幅、高さ)の半分の長さ
-	Vector2 halfSize;
-
-};
+} OBB;
 
 /// <summary>
 /// ワールド座標をOBBローカル座標に変換

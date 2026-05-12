@@ -114,6 +114,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bezier.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="ConvertString.cpp" />
     <ClCompile Include="AtrumEngine.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
@@ -154,6 +156,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="WindowProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bezier.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="ConvertString.h" />
     <ClInclude Include="AtrumEngine.h" />
     <ClInclude Include="DeltaTime.h" />
