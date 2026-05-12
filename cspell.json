@@ -20,7 +20,8 @@
         "HRESULT",
         "dxcompiler",
         "RLDO",
-        "ICONERROR"
+        "ICONERROR",
+        "AABB"
     ],
     "ignorePaths": [
         "**/Externals/**"

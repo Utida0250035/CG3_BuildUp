@@ -1,6 +1,15 @@
 #include "AtrumEngine.h"
+#include "Bezier.h"
+#include "Collision.h"
 #include "Log.h"
+#include "OBB.h"
 #include <numbers>
+
+struct ObbObject {
+	RigidBodyOBB body{};
+
+	bool isExist = false;
+};
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -24,6 +33,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// カメラの座標情報
 	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -500.0f} };
 
+	/* ベジェ曲線 */
+
+	// 線の色
+	Vector4 lineSegmentColor{ 1.0f, 1.0f, 0.1f, 1.0f };
+
+	// 線のテクスチャ
+	uint32_t lineSegmentTexture = textureWhite4x4;
+
+	// 分割数
+	uint32_t divide = 64;
+
+	// 分割されたt
+	float dividedT = 0.015625f;
+
+	// 3つの制御点
+	Vector2 controlPoints[3]{ Vector2{256.0f, 256.0f}, Vector2{640.0f, 640.0f}, Vector2{1024.0f, 512.0f} };
+
 
 	/* 矩形 */
 
@@ -36,13 +62,49 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
 
-	/* 線分 */
+	Vector2 boxSize{ 32.0f, 32.0f };
 
-	// 線分の色
-	Vector4 lineSegmentColor{ 1.0f, 1.0f, 0.1f, 1.0f };
+	ObbObject boxes[32]{};
 
-	// 線のテクスチャ
-	uint32_t lineSegmentTexture = textureWhite4x4;
+	{
+
+		int xRange = static_cast<int>(controlPoints[2].x - controlPoints[0].x);
+
+		int randX = 0;
+		int randY = 0;
+
+		for (auto& obj : boxes) {
+
+			auto& body = obj.body;
+
+			body.axis[0] = Vector2{ 1.0f, 0.0f };
+			body.axis[1] = Vector2{ 0.0f, 1.0f };
+
+			body.size = boxSize;
+			body.halfSize = obj.body.size * 0.5f;
+
+			randX = rand() % xRange + static_cast<int>(controlPoints[0].x);
+			randY = rand() % 32 - 64;
+
+			body.center = Vector2{ static_cast<float>(randX), static_cast<float>(randY)};
+
+			body.angularVelocity = 0.0f;
+
+			body.velocity = Vector2{ 0.0f, 0.0f };
+
+			obj.isExist = true;
+
+		}
+
+	}
+
+	/* 重力(下向き) */
+
+	// 重力加速度
+	float gravity = 0.0625f;
+
+	// 終端速度
+	float terminalSpeed = 3.0f;
 
 
 	/* 背景 */
@@ -77,9 +139,72 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			/// ↓ 更新ここから
 			///
 
+			for (auto& obj : boxes) {
+
+				if (!obj.isExist) {
+
+					continue;
+
+				}
+
+				auto& body = obj.body;
+
+				body.velocity.y += gravity;
+
+				if (body.velocity.y >= terminalSpeed) {
+
+					body.velocity.y = terminalSpeed;
+
+				}
+
+				// 平行運動
+				body.center += body.velocity;
+
+				if (body.center.x < -body.size.x || body.center.x > 1280.0f + body.size.x) {
+
+					obj.isExist = false;
+					continue;
+
+				}
+
+				if (body.center.y > 720.0f + body.size.y) {
+
+					obj.isExist = false;
+					continue;
+
+				}
+
+				// 回転運動
+				float theta = body.CalculateAngle();
+				theta += body.angularVelocity;
+				body.UpdateAxis(theta);
+
+				// 当たり判定 / 衝突応答
+				ResolveRigidBodyObbBezierResponse(body, controlPoints);
+
+			}
+
 #ifdef USE_IMGUI
 
+			ImGui::Begin("existCount");
 
+			uint32_t existCount = 0;
+
+			for (const auto& obj : boxes) {
+
+				if (!obj.isExist) {
+
+					continue;
+
+				}
+
+				existCount++;
+
+			}
+
+			ImGui::Text("%d", existCount);
+
+			ImGui::End();
 
 			atrum->ImGuiRender();
 #endif
@@ -101,10 +226,42 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			atrum->DrawSpriteRect(backgroundTexture, backgroundColor, backgroundTransform, backgroundSize);
 
-			atrum->DrawSpriteLine(lineSegmentTexture, lineSegmentColor, Vector2{ 32.0f, 32.0f }, Vector2{ 128.0f, 128.0f }, 4.0f);
+			Vector2 passPoint0 = controlPoints[0];
+			Vector2 passPoint1{};
 
-			// 矩形の描画
-			atrum->DrawSpriteRect(rectTexture, rectColor, rectTransform, Vector2{ 128.0f, 128.0f });
+			float t = 0.0f;
+
+			for (uint32_t i = 0; i < divide; i++) {
+
+				t += dividedT;
+
+				passPoint1 = CalcBezier2(controlPoints, t);
+
+				atrum->DrawSpriteLine(lineSegmentTexture, lineSegmentColor, passPoint0, passPoint1, 4.0f);
+
+				passPoint0 = passPoint1;
+
+			}
+
+			for (auto& obj : boxes) {
+
+				if (!obj.isExist) {
+
+					continue;
+
+				}
+
+				auto& body = obj.body;
+
+				rectTransform.translate.x = body.center.x;
+				rectTransform.translate.y = body.center.y;
+
+				rectTransform.rotate.z = body.CalculateAngle();
+
+				// 矩形の描画
+				atrum->DrawSpriteRect(rectTexture, rectColor, rectTransform, body.size);
+
+			}
 
 			// 描画処理(後)
 			atrum->PostDraw();
