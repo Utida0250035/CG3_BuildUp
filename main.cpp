@@ -67,7 +67,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
 
-	Vector2 boxSize{ 32.0f, 32.0f };
+	Vector2 boxSize{ 32.0f, 128.0f };
 
 	ObbObject boxes[8]{};
 
@@ -220,8 +220,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				boxes[0].body.velocity = Vector2{};
 
 			}
-
-			float angularVel = boxes[0].body.angularVelocity * 180.0f;
 
 			ImGui::DragFloat("angularVelocity", &boxes[0].body.angularVelocity);
 

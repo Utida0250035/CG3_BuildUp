@@ -26,7 +26,7 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
         return false;
     }
 
-    if (depth >= 8) {
+    if (depth >= 64) {
         // 十分な精度に達したらtを確定
 
         hitT = (t1 + t2) * 0.5f;
