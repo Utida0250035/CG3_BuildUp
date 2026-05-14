@@ -166,7 +166,7 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         if (overlap > 0.0f) {
 
             // 位置補正（めり込み解消）
-            body.center += normal * (overlap + 1.25f);
+            body.center += normal * (overlap + 0.5f);
 
         }
 
@@ -188,13 +188,13 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
 
         if (vn > 0.0f) {
 
-            body.velocity *= 0.99f;
-            body.angularVelocity *= 0.99f;
-
             // 離れていく方向なら処理しない
             return false;
 
         }
+
+        body.velocity *= 0.75f;
+        body.angularVelocity *= 0.75f;
 
         // 剛体の衝突公式: j = -(1+e)v / (1/m + (r x n)^2 / I)
         float invMass = 1.0f / body.mass;
