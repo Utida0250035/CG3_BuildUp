@@ -60,14 +60,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vector4 rectColorWhite{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 	// 矩形の色(赤)
-	Vector4 rectColorRed{ 1.0f, 0.25f, 0.25f, 1.0f };
+	Vector4 rectColorRed{ 1.0f, 0.1f, 0.1f, 1.0f };
+
+	Vector4 rectColorGreen{ 0.1f, 1.0f, 0.1f, 1.0f };
 
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
 
 	Vector2 boxSize{ 32.0f, 32.0f };
 
-	ObbObject boxes[32]{};
+	ObbObject boxes[8]{};
 
 	{
 
@@ -96,6 +98,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			body.velocity = Vector2{ 0.0f, 0.0f };
 
 			obj.isExist = true;
+
+			obj.color = rectColorWhite;
 
 			body.UpdateInertiaMoment();
 
@@ -183,8 +187,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				float theta = body.CalculateAngle();
 				theta += body.angularVelocity;
 				body.UpdateAxis(theta);
-
-				obj.color = rectColorWhite;
 
 				// 当たり判定 / 衝突応答
 				if (ResolveRigidBodyObbBezierResponse(body, controlPoints)) {
@@ -281,6 +283,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				rectTransform.translate.y = body.center.y;
 
 				rectTransform.rotate.z = body.CalculateAngle();
+
+				// 矩形の描画
+				atrum->DrawSpriteRect(rectTexture, rectColorGreen, rectTransform, body.size * 1.1f);
 
 				// 矩形の描画
 				atrum->DrawSpriteRect(rectTexture, obj.color, rectTransform, body.size);
