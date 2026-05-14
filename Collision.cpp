@@ -23,7 +23,9 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
     // 十分な精度に達したらtを確定
     if (depth >= 8) {
         hitT = (t1 + t2) * 0.5f;
+
         return true;
+
     }
 
     // 分割して再帰探索
@@ -86,7 +88,7 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
     
     if (CheckCollision(body, pBezier, 0.0f, 1.0f, 0, hitT)) {
 
-    // 衝突点と法線の取得
+        // 衝突点と法線の取得
         Vector2 contactPoint = CalcBezier2(pBezier, hitT);
         Vector2 localContact = body.ToLocal(contactPoint);
 
@@ -97,13 +99,46 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         float dx = body.halfSize.x - std::abs(localContact.x);
         float dy = body.halfSize.y - std::abs(localContact.y);
 
+        float overlap = 0.0f;
+
         if (dx < dy) {
 
             normal = body.axis[0] * (localContact.x > 0 ? 1.0f : -1.0f);
 
+            overlap = dx;
+
         } else {
 
             normal = body.axis[1] * (localContact.y > 0 ? 1.0f : -1.0f);
+
+            overlap = dy;
+
+        }
+
+        if (overlap > body.size.x) {
+
+            if (overlap > body.size.y) {
+
+                return;
+
+            }
+
+        }
+
+        // 衝突した面からOBBを外に押し出す方向に法線の向きを固定する
+
+        Vector2 towardCenter = body.center - contactPoint;
+
+        if (VectorDot(normal, towardCenter) < 0) {
+
+            normal *= -1.0f;
+
+        }
+
+        if (overlap > 0.0f) {
+
+            // 位置補正（めり込み解消）
+            body.center += normal * (overlap + 3.0f);
 
         }
 
@@ -123,7 +158,10 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         float e = 0.4f; // 反発係数
         float vn = VectorDot(velocityAtPoint, normal);
 
-        if (vn > 0.0f) {
+        if (vn >= 0.0f) {
+
+            body.velocity *= 0.99f;
+            body.angularVelocity *= 0.99f;
 
             // 離れていく方向なら処理しない
             return;
@@ -143,9 +181,6 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         // トルクによる角速度の変化: Δω = (r x impulse) / I
         float torque = r.x * impulse.y - r.y * impulse.x;
         body.angularVelocity += torque * invInertia;
-
-        // 位置補正（めり込み解消）
-        body.center += normal * (dx < dy ? dx : dy);
 
     }
 

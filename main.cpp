@@ -91,7 +91,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			obj.isExist = true;
 
-			//body.UpdateInertiaMoment();
+			body.UpdateInertiaMoment();
 
 		}
 
@@ -188,6 +188,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Begin("box[0]");
 
 			ImGui::DragFloat2("pos", &boxes[0].body.center.x);
+
+			ImGui::DragFloat2("velocity", &boxes[0].body.velocity.x);
 
 			ImGui::Checkbox("isExist", &boxes[0].isExist);
 
