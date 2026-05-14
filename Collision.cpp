@@ -1,5 +1,6 @@
 #include "Collision.h"
 #include <algorithm>
+#include <numbers>
 
 // OBBとベジェ曲線の交差判定（再帰）
 bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT) {
@@ -183,7 +184,7 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         Vector2 velocityAtPoint = body.velocity + Vector2{ -body.angularVelocity * r.y, body.angularVelocity * r.x };
 
         // 3. インパルス j の計算
-        float e = 0.4f; // 反発係数
+        float e = 0.8f; // 反発係数
         float vn = VectorDot(velocityAtPoint, normal);
 
         if (vn > 0.0f) {
@@ -193,8 +194,8 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
 
         }
 
-        body.velocity *= 0.75f;
-        body.angularVelocity *= 0.75f;
+        body.velocity *= 0.99f;
+        body.angularVelocity *= 0.99f;
 
         // 剛体の衝突公式: j = -(1+e)v / (1/m + (r x n)^2 / I)
         float invMass = 1.0f / body.mass;
@@ -209,6 +210,12 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         // トルクによる角速度の変化: Δω = (r x impulse) / I
         float torque = r.x * impulse.y - r.y * impulse.x;
         body.angularVelocity += torque * invInertia;
+
+        if (VectorLengthSquare(body.velocity) <= 0.01f) {
+
+            body.velocity = Vector2{};
+
+        }
 
         return true;
 

@@ -203,9 +203,71 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::DragFloat2("pos", &boxes[0].body.center.x);
 
+			ImGui::SmallButton("resetPos");
+
+			if (ImGui::IsItemActivated()) {
+
+				boxes[0].body.center = Vector2{};
+
+			}
+
 			ImGui::DragFloat2("velocity", &boxes[0].body.velocity.x);
 
+			ImGui::SmallButton("resetVel");
+
+			if (ImGui::IsItemActivated()) {
+
+				boxes[0].body.velocity = Vector2{};
+
+			}
+
+			float angularVel = boxes[0].body.angularVelocity * 180.0f;
+
+			ImGui::DragFloat("angularVelocity", &boxes[0].body.angularVelocity);
+
+			ImGui::SmallButton("resetAngularVel");
+
+			if (ImGui::IsItemActivated()) {
+
+				boxes[0].body.angularVelocity = 0.0f;
+
+			}
+
 			ImGui::Checkbox("isExist", &boxes[0].isExist);
+
+			ImGui::SmallButton("resetAll");
+
+			if(ImGui::IsItemActivated()) {
+
+				boxes[0].body.angularVelocity = 0.0f;
+				boxes[0].body.velocity = Vector2{};
+
+				boxes[0].body.center = Vector2{};
+
+			}
+
+			ImGui::End();
+
+			ImGui::Begin("allBox");
+
+			ImGui::SmallButton("resetAll");
+
+			if (ImGui::IsItemActivated()) {
+
+				for (auto& obj : boxes) {
+
+					obj.isExist = false;
+
+					auto& body = obj.body;
+
+					body.angularVelocity = 0.0f;
+					body.center = Vector2{};
+					body.velocity = Vector2{};
+					body.UpdateAxis(0.0f);
+
+				}
+
+			}
 
 			ImGui::End();
 
