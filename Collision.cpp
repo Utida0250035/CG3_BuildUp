@@ -3,44 +3,68 @@
 
 // OBBとベジェ曲線の交差判定（再帰）
 bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT) {
-    // 現在の区間(t1-t2)における3つの点を取得
-    Vector2 points[3] = { CalcBezier2(p, t1), CalcBezier2(p, (t1 + t2) * 0.5f), CalcBezier2(p, t2) };
 
-    // OBBローカル空間でのバウンディングボックス(AABB)を計算
-    float minX = 1e9f, minY = 1e9f, maxX = -1e9f, maxY = -1e9f;
-    for (int i = 0; i < 3; ++i) {
-        Vector2 lp = obb.ToLocal(points[i]);
-        minX = std::min(minX, lp.x); maxX = std::max(maxX, lp.x);
-        minY = std::min(minY, lp.y); maxY = std::max(maxY, lp.y);
-    }
+    // 区間の開始点
+    Vector2 pStart = CalcBezier2(p, t1);
 
-    // OBBの範囲（-halfSize ～ +halfSize）と重なっているか
+    // 区間の中間点
+    Vector2 pMid = CalcBezier2(p, (t1 + t2) * 0.5f);
+    
+    // 区間の終点
+    Vector2 pEnd = CalcBezier2(p, t2);
+
+    // AABBの計算に制御点(p[1])のその区間での影響を含める（簡易的にはpMidで代用せず、p[1]を考慮）
+    float minX = std::min({ obb.ToLocal(pStart).x, obb.ToLocal(pEnd).x, obb.ToLocal(pMid).x });
+    float maxX = std::max({ obb.ToLocal(pStart).x, obb.ToLocal(pEnd).x, obb.ToLocal(pMid).x });
+    float minY = std::min({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
+    float maxY = std::max({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
+
+    // OBB範囲外なら即座に抜ける
     if (minX > obb.halfSize.x || maxX < -obb.halfSize.x ||
         minY > obb.halfSize.y || maxY < -obb.halfSize.y) {
         return false;
     }
 
-    // 十分な精度に達したらtを確定
     if (depth >= 8) {
+        // 十分な精度に達したらtを確定
+
         hitT = (t1 + t2) * 0.5f;
-
         return true;
-
     }
 
-    // 分割して再帰探索
     float mid = (t1 + t2) * 0.5f;
-    if (CheckCollision(obb, p, t1, mid, depth + 1, hitT)) {
-     
-        return true;
 
+    // 重心(obb.center)に近い方の区間を優先して探索する
+    float d1 = VectorLengthSquare((CalcBezier2(p, (t1 + mid) * 0.5f) - obb.center));
+    float d2 = VectorLengthSquare((CalcBezier2(p, (mid + t2) * 0.5f) - obb.center));
+
+    if (d1 < d2) {
+
+        if (CheckCollision(obb, p, t1, mid, depth + 1, hitT)) {
+            return true;
+        }
+
+        if (CheckCollision(obb, p, mid, t2, depth + 1, hitT)) { 
+            return true; 
+        }
+
+    } else {
+        
+        if (CheckCollision(obb, p, mid, t2, depth + 1, hitT)) { 
+            return true;
+        }
+        
+        if (CheckCollision(obb, p, t1, mid, depth + 1, hitT)) {
+            return true;
+        }
+    
     }
 
-    return CheckCollision(obb, p, mid, t2, depth + 1, hitT);
+    return false;
 
 }
 
-void ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
+bool ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
 
     float hitT = 0.0f;
 
@@ -68,7 +92,7 @@ void ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
         }
 
         // 4. 位置補正 (めり込み解消)
-        obb.center = obb.center + normal * (overlap + 0.01f);
+        obb.center = obb.center + normal * (overlap + 1.25f);
 
         // 5. 速度の反射 (物理応答)
         float restitution = 0.4f; // 跳ね返り係数
@@ -78,11 +102,15 @@ void ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
             velocity = velocity - normal * (vn * (1.0f + restitution));
         }
 
+        return true;
+
     }
+
+    return false;
 
 }
 
-void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier[3]) {
+bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier[3]) {
 
     float hitT = 0.0f;
     
@@ -119,7 +147,7 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
 
             if (overlap > body.size.y) {
 
-                return;
+                return false;
 
             }
 
@@ -138,7 +166,7 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         if (overlap > 0.0f) {
 
             // 位置補正（めり込み解消）
-            body.center += normal * (overlap + 3.0f);
+            body.center += normal * (overlap + 1.25f);
 
         }
 
@@ -158,13 +186,13 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         float e = 0.4f; // 反発係数
         float vn = VectorDot(velocityAtPoint, normal);
 
-        if (vn >= 0.0f) {
+        if (vn > 0.0f) {
 
             body.velocity *= 0.99f;
             body.angularVelocity *= 0.99f;
 
             // 離れていく方向なら処理しない
-            return;
+            return false;
 
         }
 
@@ -182,6 +210,10 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         float torque = r.x * impulse.y - r.y * impulse.x;
         body.angularVelocity += torque * invInertia;
 
+        return true;
+
     }
+
+    return false;
 
 }

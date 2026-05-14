@@ -9,6 +9,9 @@ struct ObbObject {
 	RigidBodyOBB body{};
 
 	bool isExist = false;
+
+	Vector4 color{};
+
 };
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
@@ -53,8 +56,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* 矩形 */
 
-	// 矩形の色
-	Vector4 rectColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+	// 矩形の色(白)
+	Vector4 rectColorWhite{ 1.0f, 1.0f, 1.0f, 1.0f };
+
+	// 矩形の色(赤)
+	Vector4 rectColorRed{ 1.0f, 0.25f, 0.25f, 1.0f };
 
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
@@ -178,8 +184,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				theta += body.angularVelocity;
 				body.UpdateAxis(theta);
 
+				obj.color = rectColorWhite;
+
 				// 当たり判定 / 衝突応答
-				ResolveRigidBodyObbBezierResponse(body, controlPoints);
+				if (ResolveRigidBodyObbBezierResponse(body, controlPoints)) {
+
+					obj.color = rectColorRed;
+
+				}
 
 			}
 
@@ -271,7 +283,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				rectTransform.rotate.z = body.CalculateAngle();
 
 				// 矩形の描画
-				atrum->DrawSpriteRect(rectTexture, rectColor, rectTransform, body.size);
+				atrum->DrawSpriteRect(rectTexture, obj.color, rectTransform, body.size);
 
 			}
 

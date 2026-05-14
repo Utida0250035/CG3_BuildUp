@@ -5,6 +5,6 @@
 
 bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT);
 
-void ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]);
+bool ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]);
 
-void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier[3]);
+bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier[3]);
