@@ -24,7 +24,7 @@ float OBB::CalculateAngle() {
 
 }
 
-void RigidBodyOBB::CalculateInertiaMoment() {
+void RigidBodyOBB::UpdateInertiaMoment() {
 
 	inertiaMoment = (1.0f / 12.0f) * mass * VectorLengthSquare(size);
 

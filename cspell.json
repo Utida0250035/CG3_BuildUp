@@ -21,7 +21,8 @@
         "dxcompiler",
         "RLDO",
         "ICONERROR",
-        "AABB"
+        "AABB",
+        "ZERODIVIDE"
     ],
     "ignorePaths": [
         "**/Externals/**"

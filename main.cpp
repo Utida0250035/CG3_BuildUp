@@ -48,16 +48,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float dividedT = 0.015625f;
 
 	// 3つの制御点
-	Vector2 controlPoints[3]{ Vector2{256.0f, 256.0f}, Vector2{640.0f, 640.0f}, Vector2{1024.0f, 512.0f} };
+	Vector2 controlPoints[3] = { Vector2{256.0f, 256.0f}, Vector2{640.0f, 640.0f}, Vector2{1024.0f, 512.0f} };
 
 
 	/* 矩形 */
 
 	// 矩形の色
 	Vector4 rectColor{ 1.0f, 1.0f, 1.0f, 1.0f };
-
-	// 矩形の座標情報
-	AtrumEngine::Transform rectTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{640.0f, 360.0f, 0.0f} };
 
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
@@ -81,7 +78,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			body.axis[1] = Vector2{ 0.0f, 1.0f };
 
 			body.size = boxSize;
-			body.halfSize = obj.body.size * 0.5f;
+			body.halfSize = boxSize * 0.5f;
 
 			randX = rand() % xRange + static_cast<int>(controlPoints[0].x);
 			randY = rand() % 32 - 64;
@@ -93,6 +90,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			body.velocity = Vector2{ 0.0f, 0.0f };
 
 			obj.isExist = true;
+
+			//body.UpdateInertiaMoment();
 
 		}
 
@@ -113,7 +112,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vector4 backgroundColor{ 0.0f, 0.0f, 0.0f, 1.0f };
 
 	// 背景の座標情報
-	AtrumEngine::Transform backgroundTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{640.0f, 360.0f, 0.0f} };
+	AtrumEngine::Transform backgroundTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{640.0f, 360.0f, -1000.0f} };
 
 	// 背景のサイズ
 	Vector2 backgroundSize{ 1280.0f, 720.0f };
@@ -186,6 +185,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #ifdef USE_IMGUI
 
+			ImGui::Begin("box[0]");
+
+			ImGui::DragFloat2("pos", &boxes[0].body.center.x);
+
+			ImGui::Checkbox("isExist", &boxes[0].isExist);
+
+			ImGui::End();
+
 			ImGui::Begin("existCount");
 
 			uint32_t existCount = 0;
@@ -237,11 +244,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 				passPoint1 = CalcBezier2(controlPoints, t);
 
-				atrum->DrawSpriteLine(lineSegmentTexture, lineSegmentColor, passPoint0, passPoint1, 4.0f);
+				atrum->DrawSpriteLine(lineSegmentTexture, lineSegmentColor, passPoint0, passPoint1, 4.0f, -50.0f);
 
 				passPoint0 = passPoint1;
 
 			}
+
+			// 矩形の座標情報
+			AtrumEngine::Transform rectTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{0.0f, 0.0f, 0.0f} };
 
 			for (auto& obj : boxes) {
 

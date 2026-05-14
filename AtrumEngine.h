@@ -774,7 +774,7 @@ public:
 	/// <param name="start"> 始点 </param>
 	/// <param name="end"> 終点 </param>
 	/// <param name="width"> 太さ </param>
-	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width);
+	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
 
 
 	/// <summary>

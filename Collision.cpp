@@ -81,7 +81,7 @@ void ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
 }
 
 void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier[3]) {
-   
+
     float hitT = 0.0f;
     
     if (CheckCollision(body, pBezier, 0.0f, 1.0f, 0, hitT)) {
@@ -123,7 +123,7 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         float e = 0.4f; // 反発係数
         float vn = VectorDot(velocityAtPoint, normal);
 
-        if (vn >= 0) {
+        if (vn > 0.0f) {
 
             // 離れていく方向なら処理しない
             return;
@@ -145,7 +145,7 @@ void ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         body.angularVelocity += torque * invInertia;
 
         // 位置補正（めり込み解消）
-        body.center = body.center + normal * (dx < dy ? dx : dy);
+        body.center += normal * (dx < dy ? dx : dy);
 
     }
 

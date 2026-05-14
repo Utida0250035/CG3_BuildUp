@@ -26,11 +26,13 @@
 #include <d3d12sdklayers.h>
 
 #endif
+
 #include <DirectXTex/d3dx12.h>
 #include <vector>
 
 #include <memory>
 #include <filesystem>
+#include <cfloat>
 
 AtrumEngine* AtrumEngine::instance_ = nullptr;
 
@@ -646,7 +648,7 @@ void AtrumEngine::CreateVertexBufferView() {
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
 	// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 *triangleMaxDrawCount_;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * triangleMaxDrawCount_;
 
 	// 1頂点当たりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -987,6 +989,16 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	);
 	ImGuiIO& io = ImGui::GetIO();
 	io.Fonts->Build();
+
+#endif
+
+#ifdef _DEBUG
+
+	// 浮動小数点例外を有効にする
+	unsigned int currentControl;
+	// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) を有効化
+	_controlfp_s(&currentControl, 0u, _MCW_EM);
+	_controlfp_s(&currentControl, static_cast<unsigned int>(~(_EM_ZERODIVIDE | _EM_INVALID)), _MCW_EM);
 
 #endif
 
@@ -1706,15 +1718,15 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 	// 左下
 	spriteVertexData_[vertexCount].texCoord = { 0.0f, 1.0f };
-	spriteVertexData_[vertexCount++].position = {-halfSize.x, halfSize.y, 0.0f, 1.0f};
+	spriteVertexData_[vertexCount++].position = { -halfSize.x, halfSize.y, 0.0f, 1.0f };
 
 	// 左上
 	spriteVertexData_[vertexCount].texCoord = { 0.0f, 0.0f };
-	spriteVertexData_[vertexCount++].position = {-halfSize.x, -halfSize.y, 0.0f, 1.0f};
+	spriteVertexData_[vertexCount++].position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
 
 	// 右下
-	spriteVertexData_[vertexCount].texCoord = {1.0f, 1.0f};
-	spriteVertexData_[vertexCount++].position = {halfSize.x, halfSize.y, 0.0f, 1.0f};
+	spriteVertexData_[vertexCount].texCoord = { 1.0f, 1.0f };
+	spriteVertexData_[vertexCount++].position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
 
 	/* 2枚目の三角形 */
 
@@ -1739,7 +1751,7 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 }
 
-void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width) {
+void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ) {
 
 	Vector2 difference = end - start;
 	float length = VectorLength(difference);
@@ -1747,11 +1759,11 @@ void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& te
 	Vector2 rectPos = start + difference * 0.5f;
 
 	Transform rectTransform{};
-	rectTransform.translate = { rectPos.x, rectPos.y, 0.0f };
+	rectTransform.translate = { rectPos.x, rectPos.y, posZ };
 	rectTransform.scale = { 1.0f, 1.0f, 1.0f };
-	rectTransform.rotate = {0.0f, 0.0f, std::atan2(difference.y, difference.x)};
+	rectTransform.rotate = { 0.0f, 0.0f, std::atan2(difference.y, difference.x) };
 
-	DrawSpriteRect(textureIndex, textureColor, rectTransform, Vector2{length, width});
+	DrawSpriteRect(textureIndex, textureColor, rectTransform, Vector2{ length, width });
 
 }
 

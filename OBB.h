@@ -27,6 +27,6 @@ struct RigidBodyOBB : public OBB {
 	float mass = 1.0f;
 	float inertiaMoment;
 
-	void CalculateInertiaMoment();
+	void UpdateInertiaMoment();
 
 };
