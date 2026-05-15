@@ -26,7 +26,7 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
         return false;
     }
 
-    if (depth >= 64) {
+    if (depth >= 8) {
         // 十分な精度に達したらtを確定
 
         hitT = (t1 + t2) * 0.5f;
@@ -59,6 +59,97 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
             return true;
         }
     
+    }
+
+    return false;
+
+}
+
+// OBBとベジェ曲線の交差判定（再帰）詳細版
+bool CheckCollisionDetailed(const OBB& obb, const Vector2 p[3], float& t1, float& t2, int depth) {
+
+    // 区間の開始点
+    Vector2 pStart = CalcBezier2(p, t1);
+
+    // 区間の中間点
+    Vector2 pMid = CalcBezier2(p, (t1 + t2) * 0.5f);
+
+    // 区間の終点
+    Vector2 pEnd = CalcBezier2(p, t2);
+
+    // AABBの計算に制御点(p[1])のその区間での影響を含める（簡易的にはpMidで代用せず、p[1]を考慮）
+    float minX = std::min({ obb.ToLocal(pStart).x, obb.ToLocal(pEnd).x, obb.ToLocal(pMid).x });
+    float maxX = std::max({ obb.ToLocal(pStart).x, obb.ToLocal(pEnd).x, obb.ToLocal(pMid).x });
+    float minY = std::min({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
+    float maxY = std::max({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
+
+    // OBB範囲外なら即座に抜ける
+    if (minX > obb.halfSize.x || maxX < -obb.halfSize.x ||
+        minY > obb.halfSize.y || maxY < -obb.halfSize.y) {
+        return false;
+    }
+
+    if (depth >= 8) {
+        // 十分な精度に達したらtを確定
+        return true;
+    }
+
+    float mid = (t1 + t2) * 0.5f;
+
+    // 重心(obb.center)に近い方の区間を優先して探索する
+    float d1 = VectorLengthSquare((CalcBezier2(p, (t1 + mid) * 0.5f) - obb.center));
+    float d2 = VectorLengthSquare((CalcBezier2(p, (mid + t2) * 0.5f) - obb.center));
+
+    float t1Temp = 0.0f;
+    float t2Temp = 0.0f;
+
+    // 矩形に近い区間を優先して判定する
+    if (d1 < d2) {
+
+        t2Temp = t2;
+
+        t2 = mid;
+
+        if (CheckCollisionDetailed(obb, p, t1, t2, depth + 1)) {
+            return true;
+        }
+
+        t2 = t2Temp;
+
+
+        t1Temp = t1;
+
+        t1 = mid;
+
+        if (CheckCollisionDetailed(obb, p, t1, t2, depth + 1)) {
+            return true;
+        }
+
+        t1 = t1Temp;
+
+    } else {
+
+        t1Temp = t1;
+
+        t1 = mid;
+
+        if (CheckCollisionDetailed(obb, p, t1, t2, depth + 1)) {
+            return true;
+        }
+
+        t1 = t1Temp;
+
+
+        t2Temp = t2;
+
+        t2 = mid;
+
+        if (CheckCollisionDetailed(obb, p, t1, mid, depth + 1)) {
+            return true;
+        }
+
+        t2 = t2Temp;
+
     }
 
     return false;
@@ -194,6 +285,14 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
 
         }
 
+
+        if (VectorLengthSquare(body.velocity) <= 1.0f) {
+
+            e = 0.0f;
+            body.velocity = Vector2{};
+
+        }
+
         body.velocity *= 0.99f;
         body.angularVelocity *= 0.99f;
 
@@ -211,16 +310,158 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
         float torque = r.x * impulse.y - r.y * impulse.x;
         body.angularVelocity += torque * invInertia;
 
-        if (VectorLengthSquare(body.velocity) <= 0.01f) {
+        return true;
 
-            body.velocity = Vector2{};
+    }
+
+    return false;
+
+}
+
+bool ResolveRigidBodyObbBezierResponseDetailed(RigidBodyOBB& body, const Vector2 pBezier[3]) {
+
+    float t1 = 0.0f;
+
+    float t2 = 1.0f;
+
+    if (CheckCollisionDetailed(body, pBezier, t1, t2, 0)) {
+
+
+
+        // 衝突点の取得
+        Vector2 segmentStart = CalcBezier2(pBezier, t1);
+        Vector2 segmentEnd = CalcBezier2(pBezier, t2);
+
+        Vector2 corners[4]{};
+
+        body.GetWorldCorners(corners);
+
+        for (auto& corner : corners) {
+
+            ProcessPointToSegment(body, corner, segmentStart, segmentEnd);
 
         }
+
+        ProcessPointToOBBEdges(body, segmentStart);
+        ProcessPointToOBBEdges(body, segmentEnd);
 
         return true;
 
     }
 
     return false;
+
+}
+
+void ProcessPointToSegment(RigidBodyOBB& body, const Vector2& point, const Vector2& segmentStart, const Vector2& segmentEnd) {
+    Vector2 segment = segmentEnd - segmentStart;
+    Vector2 relative = point - segmentStart;
+
+    // 線分上の最近接点への射影係数 t
+    float t = std::clamp(VectorDot(relative,segment) / VectorLengthSquare(segment), 0.0f, 1.0f);
+    Vector2 closestPoint = segmentStart + segment * t;
+    Vector2 diff = point - closestPoint;
+    float dist = VectorLength(diff);
+
+    // めり込み判定（微小な厚みを考慮）
+    const float thickness = 0.5f;
+    if (dist < thickness && dist > 0.0f) {
+        Vector2 normal = diff / dist; // 点を押し出す方向
+
+        // 法線の向きを重心方向で補正（上面なら上へ）
+        if (VectorDot(normal,(body.center - closestPoint)) < 0) {
+            normal = normal * -1.0f;
+        }
+
+        float overlap = thickness - dist;
+        ApplyImpulse(body, point, normal, overlap, 0.8f, 0.8f, 0.05f);
+    }
+}
+
+void ProcessPointToOBBEdges(RigidBodyOBB& body, const Vector2& pWorld) {
+    // ローカル座標への変換
+    Vector2 local = body.ToLocal(pWorld);
+
+    // 侵入判定 (IsPointInOBB)
+    float dx = body.halfSize.x - std::abs(local.x);
+    float dy = body.halfSize.y - std::abs(local.y);
+
+    if (dx > 0 && dy > 0) {
+        // 侵入している
+
+        Vector2 normal;
+        float overlap;
+
+        // 3. 左右と上下、どちらの辺に近いか（めり込みが浅い方へ押し出す）
+        if (dx < dy) {
+            // 左右の辺
+            float side = (local.x > 0 ? 1.0f : -1.0f);
+            normal = body.axis[0] * side;
+            overlap = dx;
+        } else {
+            // 上下の辺
+            float side = (local.y > 0 ? 1.0f : -1.0f);
+            normal = body.axis[1] * side;
+            overlap = dy;
+        }
+
+        // 衝突応答の適用
+        // 点 P が止まっている地面側だとすると、押し返されるのは body（矩形）側
+        // 法線は「点から矩形の外へ向かう向き」にする必要がある
+        Vector2 towardCenter = body.center - pWorld;
+        if (VectorDot(normal,towardCenter) < 0) {
+            normal = normal * -1.0f;
+        }
+
+        // 第三引数は「衝突が起きたワールド座標」として pWorld を渡す
+        ApplyImpulse(body, pWorld, normal, overlap, 0.8f, 0.8f, 0.05f);
+    }
+}
+
+void ApplyImpulse(RigidBodyOBB& body, const Vector2& hitPoint, const Vector2& normal, const float overlap, const float restitution, const float boundPercent, const float AllowRange) {
+
+    // 位置補正 (疑似的な射影法)
+    
+    // めり込んでいる分だけ、即座に押し出す
+    Vector2 correction = normal * (std::max(overlap - AllowRange, 0.0f) * boundPercent);
+    body.center += correction;
+
+    // 衝突点での相対速度の計算
+    
+    // 重心から衝突点へのベクトル
+    Vector2 r = hitPoint - body.center;
+
+    // 衝突点の速度 = 平行移動速度 + (角速度 * 腕の長さの垂直ベクトル)
+    Vector2 contactPointVelocity = body.velocity + Vector2{ -body.angularVelocity * r.y, body.angularVelocity * r.x };
+
+    // 法線方向の相対速度 (接近しているか離れているか)
+    float vn = VectorDot(contactPointVelocity, normal);
+
+    // 既に離れる方向に動いている（vn > 0）なら、速度変化（衝撃）は適用しない
+    if (vn > 0) {
+        return;
+    }
+
+    // 反発係数を用いた衝撃量の計算
+
+    // 慣性モーメントを考慮した質量（スカラー）
+    // 衝突点にどれだけ「力が伝わりにくいか」を計算する
+    // cp = (r × n)^2 / I (2D外積の自乗 / 慣性モーメント)
+    float rCrossN = r.x * normal.y - r.y * normal.x;
+    float impulseSum = (1.0f / body.mass) + (rCrossN * rCrossN) / body.inertiaMoment;
+
+    // 衝撃量 j の算出
+    float j = -(1.0f + restitution) * vn;
+    j /= impulseSum;
+
+    // 速度と角速度の更新
+
+    Vector2 impulse = normal * j;
+
+    // 平行移動速度の更新: v = v + J/m
+    body.velocity += impulse * (1.0f / body.mass);
+
+    // 角速度の更新: ω = ω + (r × J) / I
+    body.angularVelocity += (r.x * impulse.y - r.y * impulse.x) / body.inertiaMoment;
 
 }

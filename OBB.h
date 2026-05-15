@@ -16,27 +16,11 @@ typedef struct OrientedBoundingBox {
 
 	void UpdateAxis(float theta);
 
-	float CalculateAngle();
+	float CalculateAngle()const;
 
-	bool IsPointInOBB(const Vector2& point) const {
+	bool IsPointInOBB(const Vector2& point) const;
 
-		// 各軸（axis[0], axis[1]）に投影してローカル座標を求める
-		Vector2 localPoint = ToLocal(point);
-
-		if (std::abs(localPoint.x) <= halfSize.x) {
-
-			if (std::abs(localPoint.y) <= halfSize.y) {
-				// ローカル座標の絶対値が halfSize 以内なら内部
-				
-				return true;
-
-			}
-
-		}
-
-		return false;
-
-	}
+	void GetWorldCorners(Vector2 corners[4]) const;
 
 } OBB;
 
