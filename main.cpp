@@ -116,7 +116,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float gravity = 0.0625f;
 
 	// 終端速度
-	float terminalSpeed = 3.0f;
+	float terminalSpeed = 5.0f;
 
 
 	/* 背景 */
@@ -192,7 +192,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				body.UpdateAxis(theta);
 
 				// 当たり判定 / 衝突応答
-				if (ResolveRigidBodyObbBezierResponseDetailed(body, controlPoints, 0.8f, 0.8f, 0.05f, 12)) {
+				if (ResolveRigidBodyObbBezierResponseDetailed(body, controlPoints, 0.8f, 0.8f, 0.05f, 8)) {
 
 					obj.color = rectColorRed;
 
@@ -335,6 +335,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				}
 
 			}
+			
+			ImGui::DragFloat("gravity", &gravity);
+
+			ImGui::DragFloat("terminalSpeed", &terminalSpeed);
 
 			ImGui::End();
 

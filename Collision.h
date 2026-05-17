@@ -17,7 +17,7 @@ void ProcessPointToSegment(RigidBodyOBB& body, const Vector2& point, const Vecto
 
 void ProcessPointToSegmentInBezier(RigidBodyOBB& body, const Vector2& point, const Vector2 pBezier[3], float t1, float t2, float restitution, float reboundPercent, float allowRange);
 
-void ProcessPointToOBBEdges(RigidBodyOBB& body, const Vector2& pWorld);
+void ProcessPointToOBBEdges(RigidBodyOBB& body, const Vector2& pWorl, const float restitution, const float boundPercent, const float allowRange);
 
 void ProcessPointInBezierToOBBEdges(RigidBodyOBB& body, const Vector2 pBezier[3], float t, float restitution, float reboundPercent, float allowRange);
 

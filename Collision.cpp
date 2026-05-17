@@ -144,7 +144,7 @@ bool CheckCollisionDetailed(const OBB& obb, const Vector2& obbVertexPos, const V
 
 		t2 = mid;
 
-		if (CheckCollisionDetailed(obb, obbVertexPos, pBezier, t1, mid, depthCount + 1, depth)) {
+		if (CheckCollisionDetailed(obb, obbVertexPos, pBezier, t1, t2, depthCount + 1, depth)) {
 			return true;
 		}
 
@@ -329,6 +329,10 @@ bool ResolveRigidBodyObbBezierResponseDetailed(RigidBodyOBB& body, const Vector2
 	float t1 = 0.0f;
 	float t2 = 1.0f;
 
+	ProcessPointToOBBEdges(body, CalcBezier2(pBezier, 0.0f), restitution, boundPercent, allowRange);
+
+	ProcessPointToOBBEdges(body, CalcBezier2(pBezier, 1.0f), restitution, boundPercent, allowRange);
+
 	for (auto& corner : corners) {
 
 		// t1, t3をリセット
@@ -416,7 +420,7 @@ void ProcessPointToSegmentInBezier(RigidBodyOBB& body, const Vector2& point, con
 
 		}
 
-					// 重心方向を向くように補正
+		// 重心方向を向くように補正
 		if (VectorDot(normal, body.center - point) < 0) {
 			normal = normal * -1.0f;
 		}
@@ -428,7 +432,7 @@ void ProcessPointToSegmentInBezier(RigidBodyOBB& body, const Vector2& point, con
 
 }
 
-void ProcessPointToOBBEdges(RigidBodyOBB& body, const Vector2& pWorld) {
+void ProcessPointToOBBEdges(RigidBodyOBB& body, const Vector2& pWorld, const float restitution, const float boundPercent, const float allowRange) {
 	// ローカル座標への変換
 	Vector2 local = body.ToLocal(pWorld);
 
@@ -464,8 +468,10 @@ void ProcessPointToOBBEdges(RigidBodyOBB& body, const Vector2& pWorld) {
 		}
 
 		// 第三引数は「衝突が起きたワールド座標」として pWorld を渡す
-		ApplyImpulse(body, pWorld, normal, overlap, 0.8f, 0.8f, 0.05f);
+		ApplyImpulse(body, pWorld, normal, overlap, restitution, boundPercent, allowRange);
+
 	}
+
 }
 
 void ProcessPointInBezierToOBBEdges(RigidBodyOBB& body, const Vector2 pBezier[3], float t, float restitution, float boundPercent, float allowRange) {
