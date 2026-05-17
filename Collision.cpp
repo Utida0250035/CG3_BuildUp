@@ -21,8 +21,8 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
 	float maxY = std::max({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
 
 	// OBB範囲外なら即座に抜ける
-	if (minX > obb.halfSize.x || maxX < -obb.halfSize.x ||
-		minY > obb.halfSize.y || maxY < -obb.halfSize.y) {
+	if (minX > obb.halfSize.x + 1.0f || maxX < -obb.halfSize.x - 1.0f ||
+		minY > obb.halfSize.y + 1.0f || maxY < -obb.halfSize.y - 1.0f) {
 		return false;
 	}
 
