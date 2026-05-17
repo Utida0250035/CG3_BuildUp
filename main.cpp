@@ -211,6 +211,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
+			ImGui::DragFloat2("size", &boxes[0].body.size.x);
+
+			if (ImGui::IsItemActive()) {
+
+				boxes[0].body.halfSize = boxes[0].body.size * 0.5f;
+
+				boxes[0].body.UpdateInertiaMoment();
+
+			}
+
 			ImGui::DragFloat2("velocity", &boxes[0].body.velocity.x);
 
 			ImGui::SmallButton("resetVel");
@@ -231,6 +241,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
+			float angle = boxes[0].body.CalculateAngle();
+
+			ImGui::DragFloat("angle", &angle);
+
+			boxes[0].body.UpdateAxis(angle);
+
+			ImGui::SmallButton("resetAngle");
+
+			if (ImGui::IsItemActivated()) {
+
+				boxes[0].body.UpdateAxis(0.0f);
+
+			}
+
 			ImGui::Checkbox("isExist", &boxes[0].isExist);
 
 			ImGui::SmallButton("resetAll");
@@ -239,7 +263,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 				boxes[0].body.angularVelocity = 0.0f;
 				boxes[0].body.velocity = Vector2{};
-
+				boxes[0].body.UpdateAxis(0.0f);
 				boxes[0].body.center = Vector2{};
 
 			}
