@@ -83,9 +83,9 @@ bool CheckCollisionDetailed(const OBB& obb, const Vector2& obbVertexPos, const V
 	float minY = std::min({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
 	float maxY = std::max({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
 
-	// OBB範囲外なら即座に抜ける
-	if (minX > obb.halfSize.x || maxX < -obb.halfSize.x ||
-		minY > obb.halfSize.y || maxY < -obb.halfSize.y) {
+	// AABB範囲外なら即座に抜ける
+	if (minX > obb.halfSize.x + 1.0f || maxX < -obb.halfSize.x - 1.0f ||
+		minY > obb.halfSize.y + 1.0f || maxY < -obb.halfSize.y - 1.0f) {
 		return false;
 	}
 
@@ -388,27 +388,40 @@ void ProcessPointToSegmentInBezier(RigidBodyOBB& body, const Vector2& point, con
 	// 線分上の最近接点への射影係数 t
 	float t = std::clamp(VectorDot(relative, segment) / VectorLengthSquare(segment), 0.0f, 1.0f);
 	Vector2 closestPoint = segmentStart + segment * t;
-	Vector2 diff = point - closestPoint;
-	float dist = VectorLength(diff);
+	Vector2 difference = point - closestPoint;
+	float distance = VectorLength(difference);
 
 	// めり込み判定（微小な厚みを考慮）
 	const float thickness = 0.5f;
 
-	// --- 中略 (closestPoint や dist の計算はそのまま) ---
 	float localT = std::clamp(VectorDot(relative, segment) / VectorLengthSquare(segment), 0.0f, 1.0f);
-	float actualT = t1 + (t2 - t1) * localT; // 線分上の位置から、ベジェ全体の t を逆算
+	
+	// 線分上の位置から、ベジェ全体の t を逆算
+	float actualT = t1 + (t2 - t1) * localT;
 
-	if (dist < thickness && dist > 0.0f) {
-		// 【修正】線分から作るのではなく、曲線の微分から法線を作る
-		Vector2 tangent = CalcBezier2Tangent(pBezier, actualT);
-		Vector2 normal = VectorNormalize(Vector2{ -tangent.y, tangent.x });
+	if (distance < thickness && distance > 0.0f) {
 
-		// 重心方向を向くように補正
+		Vector2 normal;
+
+		if (t1 <= 0.001f || t2 >= 0.999f) {
+			
+			// 点と点の衝突として扱う 
+			normal = difference / distance;
+
+		} else {
+
+			// 線分から作るのではなく、曲線の微分から法線を作る
+			Vector2 tangent = CalcBezier2Tangent(pBezier, actualT);
+			normal = VectorNormalize(Vector2{ -tangent.y, tangent.x });
+
+		}
+
+					// 重心方向を向くように補正
 		if (VectorDot(normal, body.center - point) < 0) {
 			normal = normal * -1.0f;
 		}
 
-		float overlap = thickness - dist;
+		float overlap = thickness - distance;
 		ApplyImpulse(body, point, normal, overlap, restitution, boundPercent, allowRange);
 
 	}
@@ -469,7 +482,7 @@ void ProcessPointInBezierToOBBEdges(RigidBodyOBB& body, const Vector2 pBezier[3]
 	float dx = body.halfSize.x - std::abs(local.x);
 	float dy = body.halfSize.y - std::abs(local.y);
 
-	Vector2 localNormal = {VectorDot(smoothNormal, body.axis[0]), VectorDot(smoothNormal, body.axis[1])};
+	Vector2 localNormal = { VectorDot(smoothNormal, body.axis[0]), VectorDot(smoothNormal, body.axis[1]) };
 
 	if (dx > 0 && dy > 0) {
 		// 侵入している

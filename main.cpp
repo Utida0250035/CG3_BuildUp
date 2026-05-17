@@ -27,6 +27,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// fps設定
 	atrum->SetFps(60);
 
+	// 乱数シード生成
+	srand( static_cast<unsigned int>(time(nullptr)));
+
 	/* テクスチャ */
 
 	uint32_t textureWhite4x4 = atrum->GetTexture("./Resources/Images/white4x4.png");
@@ -67,7 +70,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
 
-	Vector2 boxSize{ 32.0f, 128.0f };
+	Vector2 boxSize{ 32.0f, 32.0f };
 
 	ObbObject boxes[8]{};
 
@@ -86,7 +89,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			body.axis[1] = Vector2{ 0.0f, 1.0f };
 
 			body.size = boxSize;
-			body.halfSize = boxSize * 0.5f;
+			body.halfSize = body.size * 0.5f;
 
 			randX = rand() % xRange + static_cast<int>(controlPoints[0].x);
 			randY = rand() % 32 - 64;
@@ -189,7 +192,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				body.UpdateAxis(theta);
 
 				// 当たり判定 / 衝突応答
-				if (ResolveRigidBodyObbBezierResponseDetailed(body, controlPoints, 0.8f, 0.8f, 0.05f, 10)) {
+				if (ResolveRigidBodyObbBezierResponseDetailed(body, controlPoints, 0.8f, 0.8f, 0.05f, 12)) {
 
 					obj.color = rectColorRed;
 
@@ -307,8 +310,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					body.axis[0] = Vector2{ 1.0f, 0.0f };
 					body.axis[1] = Vector2{ 0.0f, 1.0f };
 
-					body.size = boxSize;
-					body.halfSize = boxSize * 0.5f;
+					randX = rand() % 96 + 32;
+
+					randY = rand() % 96 + 32;
+
+					body.size = { static_cast<float>(randX), static_cast<float>(randY)};
+					body.halfSize = body.size * 0.5f;
 
 					randX = rand() % xRange + static_cast<int>(controlPoints[0].x);
 					randY = rand() % 32 - 64;
