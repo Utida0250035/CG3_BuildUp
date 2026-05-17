@@ -291,6 +291,44 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
+			ImGui::SmallButton("generate");
+
+			if (ImGui::IsItemActivated()) {
+
+				int xRange = static_cast<int>(controlPoints[2].x - controlPoints[0].x);
+
+				int randX = 0;
+				int randY = 0;
+
+				for (auto& obj : boxes) {
+
+					auto& body = obj.body;
+
+					body.axis[0] = Vector2{ 1.0f, 0.0f };
+					body.axis[1] = Vector2{ 0.0f, 1.0f };
+
+					body.size = boxSize;
+					body.halfSize = boxSize * 0.5f;
+
+					randX = rand() % xRange + static_cast<int>(controlPoints[0].x);
+					randY = rand() % 32 - 64;
+
+					body.center = Vector2{ static_cast<float>(randX), static_cast<float>(randY) };
+
+					body.angularVelocity = 0.0f;
+
+					body.velocity = Vector2{ 0.0f, 0.0f };
+
+					obj.isExist = true;
+
+					obj.color = rectColorWhite;
+
+					body.UpdateInertiaMoment();
+
+				}
+
+			}
+
 			ImGui::End();
 
 			ImGui::Begin("existCount");
