@@ -553,7 +553,7 @@ void ApplyImpulse(RigidBodyOBB& body, const Vector2& hitPoint, const Vector2& no
 	// 慣性モーメントを考慮した質量（スカラー）
 	// 衝突点にどれだけ「力が伝わりにくいか」を計算する
 	// cp = (r × n)^2 / I (2D外積の自乗 / 慣性モーメント)
-	float rCrossN = r.x * normal.y - r.y * normal.x;
+	float rCrossN = VectorCross(r, normal);
 	float impulseSum = (1.0f / body.mass) + (rCrossN * rCrossN) / body.inertiaMoment;
 
 	// 衝撃量 j の算出
