@@ -5,15 +5,6 @@
 #include "OBB.h"
 #include <numbers>
 
-struct ObbObject {
-	RigidBodyOBB body{};
-
-	bool isExist = false;
-
-	Vector4 color{};
-
-};
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	LeakChecker leakChecker;
