@@ -54,7 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float dividedT = 0.015625f;
 
 	// 3つの制御点
-	Vector2 controlPoints[3] = { Vector2{256.0f, 256.0f}, Vector2{640.0f, 640.0f}, Vector2{1024.0f, 512.0f} };
+	Vector2 controlPoints[3] = { Vector2{256.0f, 128.0f}, Vector2{640.0f, 640.0f}, Vector2{1024.0f, 256.0f} };
 
 
 	/* 矩形 */
@@ -70,9 +70,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// 矩形のテクスチャ
 	uint32_t rectTexture = textureWhite4x4;
 
-	Vector2 boxSize{ 32.0f, 32.0f };
+	Vector2 boxSize{ 16.0f, 16.0f };
 
-	ObbObject boxes[8]{};
+	ObbObject boxes[128]{};
 
 	{
 
@@ -192,7 +192,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				body.UpdateAxis(theta);
 
 				// 当たり判定 / 衝突応答
-				if (ResolveRigidBodyObbBezierResponseDetailed(body, controlPoints, 0.8f, 0.8f, 0.05f, 8)) {
+				if (ResolveRigidBodyObbBezierResponseDetailed(body, controlPoints, 0.8f, 0.8f, 0.5f, 8)) {
 
 					obj.color = rectColorRed;
 
@@ -294,7 +294,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
-			ImGui::SmallButton("generate");
+			ImGui::SmallButton("generate(randSize)");
 
 			if (ImGui::IsItemActivated()) {
 
@@ -335,12 +335,53 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				}
 
 			}
+
+			ImGui::SmallButton("generate(defaultSize)");
+
+			if (ImGui::IsItemActivated()) {
+
+				int xRange = static_cast<int>(controlPoints[2].x - controlPoints[0].x);
+
+				int randX = 0;
+				int randY = 0;
+
+				for (auto& obj : boxes) {
+
+					auto& body = obj.body;
+
+					body.axis[0] = Vector2{ 1.0f, 0.0f };
+					body.axis[1] = Vector2{ 0.0f, 1.0f };
+
+					body.size = boxSize;
+					body.halfSize = body.size * 0.5f;
+
+					randX = rand() % xRange + static_cast<int>(controlPoints[0].x);
+					randY = rand() % 32 - 64;
+
+					body.center = Vector2{ static_cast<float>(randX), static_cast<float>(randY) };
+
+					body.angularVelocity = 0.0f;
+
+					body.velocity = Vector2{ 0.0f, 0.0f };
+
+					obj.isExist = true;
+
+					obj.color = rectColorWhite;
+
+					body.UpdateInertiaMoment();
+
+				}
+
+			}
 			
 			ImGui::DragFloat("gravity", &gravity);
 
 			ImGui::DragFloat("terminalSpeed", &terminalSpeed);
 
+			ImGui::DragFloat2("defaultSize", &boxSize.x);
+
 			ImGui::End();
+
 
 			ImGui::Begin("existCount");
 
@@ -359,6 +400,39 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			}
 
 			ImGui::Text("%d", existCount);
+
+			ImGui::End();
+
+
+			ImGui::Begin("bezier");
+
+			for (size_t i = 0; i < 3; i++) {
+
+				ImGui::DragFloat2(std::string("controlPoint[" + std::to_string(i) + "]").c_str(), &controlPoints[i].x);
+
+			}
+			
+			Vector2 preOrigin = controlPoints[0];
+
+			ImGui::DragFloat2("bezierOrigin", &controlPoints[0].x);
+
+			Vector2 moveDiff = controlPoints[0] - preOrigin;
+
+			bool isFirstIndex = true;
+
+			for (auto& controlPoint : controlPoints) {
+
+				if (isFirstIndex) {
+
+					isFirstIndex = false;
+
+					continue;
+
+				}
+
+				controlPoint += moveDiff;
+
+			}
 
 			ImGui::End();
 

@@ -104,7 +104,7 @@ void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& c
 		wc_.lpszClassName,
 		StringToWString(windowLabel).c_str(),
 		WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT,
+		CW_USEDEFAULT & ~WS_THICKFRAME & ~WS_SIZEBOX,
 		CW_USEDEFAULT,
 		wrc_.right - wrc_.left,
 		wrc_.bottom - wrc_.top,
