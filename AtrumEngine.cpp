@@ -119,69 +119,6 @@ void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& c
 
 }
 
-//void AtrumEngine::SelectAdapter() {
-//
-//	for (UINT i = 0; dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter_)) != DXGI_ERROR_NOT_FOUND; ++i) {
-//		// パフォーマンスが良い順にアダプタのリストを出させる 
-//
-//		// アダプターの情報を取得
-//		DXGI_ADAPTER_DESC3 adapterDesc{};
-//		hr_ = useAdapter_->GetDesc3(&adapterDesc);
-//
-//		// アダプターの情報が取得できない場合はエラー
-//		assert(SUCCEEDED(hr_));
-//
-//		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-//			// ソフトウェアアダプタでなければ採用
-//
-//			// 採用したアダプタの情報をログに出力
-//			LogFile::GetInstance()->Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
-//
-//			break;
-//
-//		}
-//
-//		// 次のアダプタへ
-//		useAdapter_ = nullptr;
-//
-//	}
-//
-//	// 適切なアダプターが見当たらない場合は起動不可
-//	assert(useAdapter_ != nullptr);
-//
-//}
-//
-//void AtrumEngine::CreateDevice() {
-//
-//	D3D_FEATURE_LEVEL featureLevels[] = {
-//		D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
-//	};
-//
-//	const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
-//
-//	for (size_t i = 0; i < _countof(featureLevels); ++i) {
-//		// 機能レベルが高い順に、生成できるか試していく
-//
-//		hr_ = D3D12CreateDevice(useAdapter_.Get(), featureLevels[i], IID_PPV_ARGS(&device_));
-//
-//		if (SUCCEEDED(hr_)) {
-//			// 指定した機能レベルでデバイスが生成できた
-//
-//			// ログ出力
-//
-//			LogFile::GetInstance()->Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
-//
-//			break;
-//
-//		}
-//
-//	}
-//
-//	// デバイスの生成が成功しなかった場合は実行不可
-//	assert(device_ != nullptr);
-//
-//}
-
 void AtrumEngine::ErrorSuppressionDebug() {
 
 #ifdef _DEBUG

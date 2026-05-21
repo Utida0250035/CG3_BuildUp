@@ -95,15 +95,6 @@ private:
 
 	/* DirectX RenderDevice */
 
-	//// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
-	//ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
-
-	//// 使用するアダプタ用
-	//ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
-
-	//// デバイス
-	//ComPtr<ID3D12Device> device_ = nullptr;
-
 	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 
 
@@ -791,15 +782,6 @@ public:
 	/// <param name="height"> 高さ </param>
 	/// <returns> DepthStencilResource </returns>
 	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
-
-
-	///* ゲッター */
-
-	///// <summary>
-	///// ゲッター デバイス
-	///// </summary>
-	///// <returns> デバイスへの参照 </returns>
-	//ComPtr<ID3D12Device>& GetDevice() { return device_; }
 
 };
 
