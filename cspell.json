@@ -19,7 +19,10 @@
         "WNDCLASS",
         "HRESULT",
         "dxcompiler",
-        "RLDO"
+        "RLDO",
+        "ICONERROR",
+        "AABB",
+        "ZERODIVIDE"
     ],
     "ignorePaths": [
         "**/Externals/**"

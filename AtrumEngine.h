@@ -30,6 +30,7 @@
 #include <wrl/client.h>
 
 #include <vector>
+#include <array>
 
 #include <memory>
 #include <map>
@@ -286,30 +287,21 @@ private:
 	// 頂点データ
 	VertexData* vertexData_ = nullptr;
 
-	// 頂点データの使用番号
-	uint32_t triangleCount_ = 0;
+	// 画面上に描画済みの三角形の数
+	uint32_t triangleDrewCount_ = 0;
 
+	// 画面上の三角形の最大描画数
+	const uint32_t triangleMaxDrawCount_ = 1024;
 
-	/* スプライト用 Vertex */
+	struct WvpData {
+		Matrix4x4 data{};
+		float padding[48]{};
+	};
 
-	// スプライト用のVertexResource
-	ComPtr<ID3D12Resource> spriteVertexResource_ = nullptr;
-
-	// スプライト用のVertexBufferView
-	D3D12_VERTEX_BUFFER_VIEW spriteVertexBufferView_{};
-
-	// Sprite用 頂点データ
-	VertexData* spriteVertexData_ = nullptr;
-
-
-	/* Sprite用 Transform */
-
-	// Sprite用のTransformMatrix用のリソース
-	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
-
-	// Sprite用 Transformデータ
-	Matrix4x4* spriteTransformData_ = nullptr;
-
+	struct MaterialData {
+		Vector4 data{};
+		float padding[60]{};
+	};
 
 	/* Material */
 
@@ -317,7 +309,7 @@ private:
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
 
 	// MaterialData 色データRGBA
-	Vector4* materialData_ = nullptr;
+	MaterialData* materialData_ = nullptr;
 
 
 	/* WVP */
@@ -326,7 +318,12 @@ private:
 	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 
 	// WvpData 描画座標データ
-	Matrix4x4* wvpData_ = nullptr;
+	WvpData* wvpData_ = nullptr;
+
+
+	/* constantBufferCount */
+
+	uint32_t constantBufferCount_ = 0;
 
 
 	/* depthStencil */
@@ -337,6 +334,42 @@ private:
 	// DepthStencilResource
 	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
+
+	/* Sprite用 Vertex */
+
+	// Sprite用のVertexResource
+	ComPtr<ID3D12Resource> spriteVertexResource_ = nullptr;
+
+	// Sprite用のVertexBufferView
+	D3D12_VERTEX_BUFFER_VIEW spriteVertexBufferView_{};
+
+	// Sprite用 頂点データ
+	VertexData* spriteVertexData_ = nullptr;
+
+	uint32_t spriteTriangleDrewCount_;
+
+	const uint32_t spriteTriangleMaxDrawCount_ = 1024;
+
+	/* Sprite用 Material */
+
+	// MaterialResource
+	ComPtr<ID3D12Resource> spriteMaterialResource_ = nullptr;
+
+	// MaterialData
+	MaterialData* spriteMaterialData_ = nullptr;
+
+
+	/* Sprite用 Transform */
+
+	// Sprite用のTransformMatrix用のリソース
+	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
+
+	// Sprite用 Transformデータ
+	WvpData* spriteTransformData_ = nullptr;
+
+	/* Sprite用 constantBufferCount */
+
+	uint32_t spriteConstantBufferCount_ = 0;
 
 	/* テクスチャ */
 
@@ -513,6 +546,11 @@ private:
 	void CreateSpriteVertexBufferView();
 
 	/// <summary>
+	/// Sprite用MaterialResourceの生成
+	/// </summary>
+	void CreateSpriteMaterialResource();
+
+	/// <summary>
 	/// Sprite用TransformResourceの生成
 	/// </summary>
 	void CreateSpriteTransformationResource();
@@ -525,7 +563,7 @@ private:
 	/// <summary>
 	/// Spriteの描画呼び出し
 	/// </summary>
-	void DrawSpriteCall();
+	void DrawSpriteCall(const uint32_t& textureIndex);
 
 public:
 
@@ -705,7 +743,6 @@ public:
 	uint32_t GetTexture(const std::string& filePath);
 
 
-
 	/// <summary>
 	/// 三角形の描画
 	/// </summary>
@@ -713,8 +750,31 @@ public:
 	/// <param name="textureColor"> テクスチャ色(補正) </param>
 	/// <param name="triangleTransform"> 三角形の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
-	/// <param name="vertexData"> 三角形のローカル頂点データ </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const VertexData vertexData[3]);
+	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData);
+
+	/// <summary>
+	/// Spriteの準備
+	/// </summary>
+	void PrepareSprite();
+
+	/// <summary>
+	/// 2D矩形の描画
+	/// </summary>
+	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="plateTransform"> 板の座標情報 </param>
+	void DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& rectTransform, const Vector2& rectSize);
+
+	/// <summary>
+	/// 2D線の描画
+	/// </summary>
+	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="start"> 始点 </param>
+	/// <param name="end"> 終点 </param>
+	/// <param name="width"> 太さ </param>
+	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
 
 
 	/// <summary>
@@ -724,13 +784,6 @@ public:
 	/// <param name="height"> 高さ </param>
 	/// <returns> DepthStencilResource </returns>
 	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
-
-
-	/// <summary>
-	/// Spriteの描画
-	/// </summary>
-	/// <param name="transform"> Spriteの位置情報 </param>
-	void DrawSprite(const Transform& transform);
 
 
 	/* ゲッター */
