@@ -32,13 +32,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* テクスチャ */
 
-	uint32_t textureWhite4x4 = atrum->GetTexture("./Resources/Images/white4x4.png");
+	uint32_t textureUvChecker = atrum->GetTexture("./Resources/Images/uvChecker.png");
+	//uint32_t textureWhite4x4 = atrum->GetTexture("./Resources/Images/white4x4.png");
 
 	/* 3dカメラ */
 
 	// カメラの座標情報
 	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -500.0f} };
 
+	/* Sprite */
+	
+	AtrumEngine::Transform spriteTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{256.0f, 128.0f} };
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -60,6 +64,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #ifdef USE_IMGUI
 
+			ImGui::Begin("spriteTransform");
+
+			ImGui::DragFloat3("scale", &spriteTransform.scale.x);
+			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x);
+			ImGui::DragFloat3("translate", &spriteTransform.translate.x);
+
+			ImGui::End();
+
 			atrum->ImGuiRender();
 
 #endif
@@ -80,7 +92,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			// Sprite準備
 			atrum->PrepareSprite();
 
-
+			atrum->DrawSpriteRect(textureUvChecker, Vector4{ 1.0f, 1.0f, 1.0f, 1.0f }, spriteTransform, Vector2{512.0f, 256.0f});
 
 			// 描画処理(後)
 			atrum->PostDraw();

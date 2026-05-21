@@ -1,5 +1,7 @@
 #pragma once
 
+#include "RenderDevice.h"
+
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -87,20 +89,25 @@ private:
 
 	/* エラー処理 */
 
-	// Windowsエラーコード格納
+	// Windowsエラーハンドル
 	HRESULT hr_{};
 
 
-	/* DirectX インターフェース */
+	/* DirectX RenderDevice */
 
-	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
-	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
+	//// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
+	//ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 
-	// 使用するアダプタ用
-	ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
+	//// 使用するアダプタ用
+	//ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
 
-	// デバイス
-	ComPtr<ID3D12Device> device_ = nullptr;
+	//// デバイス
+	//ComPtr<ID3D12Device> device_ = nullptr;
+
+	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
+
+
+	/* DirectX Command */
 
 	// コマンドキュー
 	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
@@ -213,7 +220,7 @@ private:
 	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
 
-	/* DirectX 補助 / コンパイラ 等 */
+	/* DirectXShaderCompiler 補助 / コンパイラ本体 */
 
 	// DXC補助
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
@@ -246,7 +253,7 @@ private:
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
 
 
-	/* 描画State系 */
+	/* 描画State */
 
 	// BlendState
 	D3D12_BLEND_DESC blendDesc_{};
@@ -436,12 +443,12 @@ private:
 	/// <summary>
 	/// 初期化処理 アダプターの選択
 	/// </summary>
-	void SelectAdapter();
+	//void SelectAdapter();
 
 	/// <summary>
 	/// 初期化処理 デバイスの作成
 	/// </summary>
-	void CreateDevice();
+	//void CreateDevice();
 
 	/// <summary>
 	/// 初期化処理 エラー抑制 デバッグ用
@@ -786,13 +793,13 @@ public:
 	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
 
-	/* ゲッター */
+	///* ゲッター */
 
-	/// <summary>
-	/// ゲッター デバイス
-	/// </summary>
-	/// <returns> デバイスへの参照 </returns>
-	ComPtr<ID3D12Device>& GetDevice() { return device_; }
+	///// <summary>
+	///// ゲッター デバイス
+	///// </summary>
+	///// <returns> デバイスへの参照 </returns>
+	//ComPtr<ID3D12Device>& GetDevice() { return device_; }
 
 };
 

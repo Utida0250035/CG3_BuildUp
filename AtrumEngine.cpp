@@ -119,68 +119,68 @@ void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& c
 
 }
 
-void AtrumEngine::SelectAdapter() {
-
-	for (UINT i = 0; dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter_)) != DXGI_ERROR_NOT_FOUND; ++i) {
-		// パフォーマンスが良い順にアダプタのリストを出させる 
-
-		// アダプターの情報を取得
-		DXGI_ADAPTER_DESC3 adapterDesc{};
-		hr_ = useAdapter_->GetDesc3(&adapterDesc);
-
-		// アダプターの情報が取得できない場合はエラー
-		assert(SUCCEEDED(hr_));
-
-		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
-			// ソフトウェアアダプタでなければ採用
-
-			// 採用したアダプタの情報をログに出力
-			LogFile::GetInstance()->Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
-
-			break;
-
-		}
-
-		// 次のアダプタへ
-		useAdapter_ = nullptr;
-
-	}
-
-	// 適切なアダプターが見当たらない場合は起動不可
-	assert(useAdapter_ != nullptr);
-
-}
-
-void AtrumEngine::CreateDevice() {
-
-	D3D_FEATURE_LEVEL featureLevels[] = {
-		D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
-	};
-
-	const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
-
-	for (size_t i = 0; i < _countof(featureLevels); ++i) {
-		// 機能レベルが高い順に、生成できるか試していく
-
-		hr_ = D3D12CreateDevice(useAdapter_.Get(), featureLevels[i], IID_PPV_ARGS(&device_));
-
-		if (SUCCEEDED(hr_)) {
-			// 指定した機能レベルでデバイスが生成できた
-
-			// ログ出力
-
-			LogFile::GetInstance()->Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
-
-			break;
-
-		}
-
-	}
-
-	// デバイスの生成が成功しなかった場合は実行不可
-	assert(device_ != nullptr);
-
-}
+//void AtrumEngine::SelectAdapter() {
+//
+//	for (UINT i = 0; dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter_)) != DXGI_ERROR_NOT_FOUND; ++i) {
+//		// パフォーマンスが良い順にアダプタのリストを出させる 
+//
+//		// アダプターの情報を取得
+//		DXGI_ADAPTER_DESC3 adapterDesc{};
+//		hr_ = useAdapter_->GetDesc3(&adapterDesc);
+//
+//		// アダプターの情報が取得できない場合はエラー
+//		assert(SUCCEEDED(hr_));
+//
+//		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
+//			// ソフトウェアアダプタでなければ採用
+//
+//			// 採用したアダプタの情報をログに出力
+//			LogFile::GetInstance()->Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+//
+//			break;
+//
+//		}
+//
+//		// 次のアダプタへ
+//		useAdapter_ = nullptr;
+//
+//	}
+//
+//	// 適切なアダプターが見当たらない場合は起動不可
+//	assert(useAdapter_ != nullptr);
+//
+//}
+//
+//void AtrumEngine::CreateDevice() {
+//
+//	D3D_FEATURE_LEVEL featureLevels[] = {
+//		D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
+//	};
+//
+//	const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
+//
+//	for (size_t i = 0; i < _countof(featureLevels); ++i) {
+//		// 機能レベルが高い順に、生成できるか試していく
+//
+//		hr_ = D3D12CreateDevice(useAdapter_.Get(), featureLevels[i], IID_PPV_ARGS(&device_));
+//
+//		if (SUCCEEDED(hr_)) {
+//			// 指定した機能レベルでデバイスが生成できた
+//
+//			// ログ出力
+//
+//			LogFile::GetInstance()->Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
+//
+//			break;
+//
+//		}
+//
+//	}
+//
+//	// デバイスの生成が成功しなかった場合は実行不可
+//	assert(device_ != nullptr);
+//
+//}
 
 void AtrumEngine::ErrorSuppressionDebug() {
 
@@ -188,7 +188,7 @@ void AtrumEngine::ErrorSuppressionDebug() {
 
 	ID3D12InfoQueue* infoQueue = nullptr;
 
-	if (SUCCEEDED(device_->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+	if (SUCCEEDED(renderDevice_->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 
 		// 深刻なエラー時に止まる
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
@@ -430,7 +430,7 @@ void AtrumEngine::MakeRootSignature() {
 	}
 
 	// バイナリを基に生成
-	hr_ = device_->CreateRootSignature(0, signatureBlob_->GetBufferPointer(), signatureBlob_->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
+	hr_ = renderDevice_->GetDevice()->CreateRootSignature(0, signatureBlob_->GetBufferPointer(), signatureBlob_->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 	assert(SUCCEEDED(hr_));
 
 	LogFile::GetInstance()->Log("Created RootSignature");
@@ -527,7 +527,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 	// 実際にリソースを作る
 	ComPtr<ID3D12Resource> resource = nullptr;
-	hr_ = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(hr_));
 
 	LogFile::GetInstance()->Log("Created BufferResource");
@@ -552,7 +552,7 @@ ComPtr<ID3D12DescriptorHeap> AtrumEngine::CreateDescriptorHeap(D3D12_DESCRIPTOR_
 		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	}
 
-	hr_ = device_->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
+	hr_ = renderDevice_->GetDevice()->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
 
 	// ディスクリプタヒープが生成できなかったら起動不可
 	assert(SUCCEEDED(hr_));
@@ -624,7 +624,7 @@ void AtrumEngine::CreatePSO() {
 	graphicsPipelineStateDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
 	// 実際に生成
-	hr_ = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc_, IID_PPV_ARGS(&graphicsPipelineState_));
+	hr_ = renderDevice_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc_, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(hr_));
 
 	LogFile::GetInstance()->Log("Created PSO");
@@ -790,25 +790,30 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->PrepareWindow(windowLabel, clientWidth, clientHeight);
 
-	hr_ = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
+	//hr_ = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
 
-	/*
-	初期化の根本的な段階でエラーが出た場合は
-	プログラムの間違いか修正不可である場合が多い
-	*/
-	assert(SUCCEEDED(hr_));
+	///*
+	//初期化の根本的な段階でエラーが出た場合は
+	//プログラムの間違いか修正不可である場合が多い
+	//*/
+	//assert(SUCCEEDED(hr_));
 
-	this->SelectAdapter();
+	//this->SelectAdapter();
 
-	this->CreateDevice();
+	//this->CreateDevice();
 
-	// 初期化完了のログを出す
-	LogFile::GetInstance()->Log("Complete create D3D12Device!!!");
+	// レンダリングデバイスの生成
+	renderDevice_.reset(new RenderDevice());
+	// レンダリングデバイスの初期化
+	renderDevice_->Initialize();
+
+	// デバイス初期化完了のログを出す
+	LogFile::GetInstance()->Log("Complete Init RenderDevice");
 
 
 	// コマンドキューの生成
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-	hr_ = device_->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
+	hr_ = renderDevice_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
 
 	// コマンドキューの生成がうまくいかなかったら起動できない
 	assert(SUCCEEDED(hr_));
@@ -820,7 +825,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	for (auto& commandAllocator : commandAllocators_) {
 
 		// コマンドアロケータの生成
-		hr_ = device_->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
+		hr_ = renderDevice_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
 
 		// コマンドアロケータの生成がうまくいかなかったら起動不可
 		assert(SUCCEEDED(hr_));
@@ -831,7 +836,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	}
 
 	// コマンドリストの生成
-	hr_ = device_->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators_[frameIndex_].Get(), nullptr, IID_PPV_ARGS(&commandList_));
+	hr_ = renderDevice_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators_[frameIndex_].Get(), nullptr, IID_PPV_ARGS(&commandList_));
 
 	// コマンドリストの生成がうまくいかなかったら起動不可
 	assert(SUCCEEDED(hr_));
@@ -850,7 +855,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
 	// コマンドキュー、ウィンドウハンドル、設定を渡してスワップチェーンを生成
-	hr_ = dxgiFactory_->CreateSwapChainForHwnd(commandQueue_.Get(), hwnd_, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
+	hr_ = renderDevice_->GetDxgiFactory()->CreateSwapChainForHwnd(commandQueue_.Get(), hwnd_, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(hr_));
 
 	// RTVディスクリプタヒープの生成
@@ -892,17 +897,17 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// 1つめのRTV作成
 	rtvHandles_[0] = rtvStartHandle;
-	device_->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc, rtvHandles_[0]);
+	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc, rtvHandles_[0]);
 
 	// 2つめのRTVディスクリプタハンドルを作る
-	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	rtvHandles_[1].ptr = rtvHandles_[0].ptr + renderDevice_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	// 2つめのRTVを作る
-	device_->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc, rtvHandles_[1]);
+	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc, rtvHandles_[1]);
 
 
 	// 初期値0でFenceを作成
-	hr_ = device_->CreateFence(fenceValues_[frameIndex_], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	hr_ = renderDevice_->GetDevice()->CreateFence(fenceValues_[frameIndex_], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	assert(SUCCEEDED(hr_));
 
 	// fenceのSignalを待つためのイベントを作成する
@@ -939,7 +944,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	srvDescriptorIndexManager_.reset(new DescriptorIndexManager());
 
-	srvHandleSize_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	srvHandleSize_ = renderDevice_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	depthStencilResource_ = this->CreateDepthStencilResource(clientWidth_, clientHeight_);
 
@@ -952,7 +957,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// 2dTexture
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	// DSVHeapの先頭にDSVを作る
-	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
+	renderDevice_->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
 
 
 	/* Sprite */
@@ -980,7 +985,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	ImGui::StyleColorsDark();
 	ImGui_ImplWin32_Init(hwnd_);
 	ImGui_ImplDX12_Init(
-		device_.Get(),
+		renderDevice_->GetDevice().Get(),
 		swapChainDesc.BufferCount,
 		rtvDesc.Format,
 		srvDescriptorHeap_.Get(),
@@ -1334,7 +1339,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateTextureResource(const DirectX::TexMeta
 
 	/* Resourceの生成 */
 	ComPtr<ID3D12Resource> resource = nullptr;
-	hr_ = device_->CreateCommittedResource(
+	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(
 		// Heapの設定
 		&heapProperties,
 		// Heapの特殊な設定 特に無し
@@ -1388,7 +1393,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, in
 
 	// Resourceの生成
 	ComPtr<ID3D12Resource> resource = nullptr;
-	hr_ = device_->CreateCommittedResource(
+	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(
 		// heapの設定
 		&heapProperties,
 		// Heapの特殊な設定 無し
@@ -1418,7 +1423,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const ComPtr<ID3D
 	/*GPU上のレイアウトに基づき、必要な総書き込みサイズを計算*/
 	// GetCopyableFootPrints()は、テクスチャの各サブリソースが
 	// UPLOADバッファ上でどこに配置されるべきか(オフセットやピッチ)を計算する
-	device_->GetCopyableFootprints(
+	renderDevice_->GetDevice()->GetCopyableFootprints(
 		// テクスチャの情報をもとにする
 		&texDesc,
 		// 最初のサブリソースインデックス
@@ -1458,7 +1463,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const ComPtr<ID3D
 	bufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 	ComPtr<ID3D12Resource> intermediateResource = nullptr;
-	hr_ = device_->CreateCommittedResource(
+	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&bufferDesc,
@@ -1485,7 +1490,7 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 	UINT64 totalBytes = 0;
 
 	D3D12_RESOURCE_DESC desc = textureResource->GetDesc();
-	device_->GetCopyableFootprints(
+	renderDevice_->GetDevice()->GetCopyableFootprints(
 		&desc,
 		0,
 		subresourceCount,
@@ -1573,7 +1578,7 @@ void AtrumEngine::MakeShaderResourceView(Texture& texture, const DirectX::TexMet
 	texture.srvHandleGPU.ptr += texture.srvIndex * srvHandleSize_;
 
 	// SRVの作成
-	device_->CreateShaderResourceView(texture.resource.Get(), &srvDesc, texture.srvHandleCPU);
+	renderDevice_->GetDevice()->CreateShaderResourceView(texture.resource.Get(), &srvDesc, texture.srvHandleCPU);
 
 }
 
