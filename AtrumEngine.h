@@ -95,22 +95,18 @@ private:
 
 	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 
-
-	/* SwapChain に属する */
-
-	// コマンドアロケータの個数
-	inline static constexpr uint8_t kBackBufferCount_ = 2;
-
-	// 使用するコマンドアロケータの番号
-	uint8_t backBufferIndex_ = 0;
-
-
 	/* Command */
 
-	// コマンド前後関係
-	std::unique_ptr<CommandContext> commandContext_ = nullptr;
+	// コマンド経路(Direct)
+	std::unique_ptr<CommandContext> commandContextDirect_ = nullptr;
 
 	/* SwapChain */
+
+	// コマンドアロケータの個数
+	inline static constexpr UINT kBackBufferCount_ = 2u;
+
+	// 使用するコマンドアロケータの番号
+	UINT backBufferIndex_ = 0u;
 
 	// スワップチェーン
 	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;

@@ -7,6 +7,10 @@ void CommandContext::CreateCommandQueue(ComPtr<ID3D12Device>& device) {
 
 	// コマンドキューの生成
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
+	commandQueueDesc.Type = type_;
+	commandQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+	commandQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	commandQueueDesc.NodeMask = 0;
 	hr = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
 
 	// コマンドキューの生成がうまくいかなかったら起動できない
@@ -19,16 +23,16 @@ void CommandContext::CreateCommandQueue(ComPtr<ID3D12Device>& device) {
 
 }
 
-void CommandContext::CreateCommandAllocators(ComPtr<ID3D12Device>& device, const uint32_t frameCount) {
+void CommandContext::CreateCommandAllocators(ComPtr<ID3D12Device>& device, const UINT backBufferCount) {
 
 	HRESULT hr;
 
-	commandAllocators_.resize(static_cast<size_t>(frameCount));
+	commandAllocators_.resize(static_cast<size_t>(backBufferCount));
 
 	for (auto& commandAllocator : commandAllocators_) {
 
 		// コマンドアロケータの生成
-		hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
+		hr = device->CreateCommandAllocator(type_, IID_PPV_ARGS(&commandAllocator));
 
 		// コマンドアロケータの生成がうまくいかなかったら起動不可
 		assert(SUCCEEDED(hr));
@@ -47,7 +51,7 @@ void CommandContext::CreateCommandList(ComPtr<ID3D12Device>& device) {
 	HRESULT hr;
 
 	// コマンドリストの生成
-	hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators_[0].Get(), nullptr, IID_PPV_ARGS(&commandList_));
+	hr = device->CreateCommandList(0, type_, commandAllocators_[0].Get(), nullptr, IID_PPV_ARGS(&commandList_));
 
 	// コマンドリストの生成がうまくいかなかったら起動不可
 	assert(SUCCEEDED(hr));
@@ -59,11 +63,13 @@ void CommandContext::CreateCommandList(ComPtr<ID3D12Device>& device) {
 
 }
 
-void CommandContext::Initialize(ComPtr<ID3D12Device>& device, uint32_t frameCount) {
+void CommandContext::Initialize(ComPtr<ID3D12Device>& device, const UINT backBufferCount, const D3D12_COMMAND_LIST_TYPE type) {
+
+	type_ = type;
 
 	this->CreateCommandQueue(device);
 
-	this->CreateCommandAllocators(device, frameCount);
+	this->CreateCommandAllocators(device, backBufferCount);
 
 	this->CreateCommandList(device);
 

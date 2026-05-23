@@ -28,6 +28,9 @@ private:
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+	// Type
+	D3D12_COMMAND_LIST_TYPE type_ = D3D12_COMMAND_LIST_TYPE_NONE;
+
 	// コマンドキュー
 	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
 
@@ -40,13 +43,13 @@ private:
 
 	void CreateCommandQueue(ComPtr<ID3D12Device>& device);
 
-	void CreateCommandAllocators(ComPtr<ID3D12Device>& device, const uint32_t frameCount);
+	void CreateCommandAllocators(ComPtr<ID3D12Device>& device, const UINT backBufferContext);
 
 	void CreateCommandList(ComPtr<ID3D12Device>& device);
 
 public:
 
-	void Initialize(ComPtr<ID3D12Device>& device, uint32_t frameCount);
+	void Initialize(ComPtr<ID3D12Device>& device, const UINT beckBufferContext, const D3D12_COMMAND_LIST_TYPE type);
 
 	/* ゲッター */
 
@@ -55,5 +58,7 @@ public:
 	std::vector<ComPtr<ID3D12CommandAllocator>>& GetCommandAllocators() { return commandAllocators_; }
 
 	ComPtr<ID3D12GraphicsCommandList>& GetCommandList() { return commandList_; }
+
+	D3D12_COMMAND_LIST_TYPE GetType()const { return type_; }
 
 };
