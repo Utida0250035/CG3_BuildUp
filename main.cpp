@@ -24,7 +24,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* テクスチャ */
 
 	uint32_t textureUvChecker = atrum->GetTexture("./Resources/Images/uvChecker.png");
-	//uint32_t textureWhite4x4 = atrum->GetTexture("./Resources/Images/white4x4.png");
 
 	/* 3dカメラ */
 

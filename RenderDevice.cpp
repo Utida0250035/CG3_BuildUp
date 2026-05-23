@@ -97,4 +97,8 @@ void RenderDevice::Initialize() {
 	this->SelectAdapter();
 
 	this->CreateDevice();
+
+	// デバイス初期化完了のログを出す
+	LogFile::GetInstance()->Log("Complete Init RenderDevice");
+
 }

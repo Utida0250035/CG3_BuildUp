@@ -1,7 +1,7 @@
 #pragma once
-
+#include "DeltaTime.h"
+#include "CommandContext.h"
 #include "RenderDevice.h"
-
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -12,8 +12,6 @@
 
 #include <dxcapi.h>
 #pragma comment(lib, "dxcompiler.lib")
-
-#include "DeltaTime.h"
 #include "Vector4.h"
 
 #include "Matrix3D.h"
@@ -93,30 +91,26 @@ private:
 	HRESULT hr_{};
 
 
-	/* DirectX RenderDevice */
+	/* RenderDevice */
 
 	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 
 
-	/* DirectX Command */
-
-	// コマンドキュー
-	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
+	/* SwapChain に属する */
 
 	// コマンドアロケータの個数
-	inline static constexpr uint8_t kFrameCount_ = 2;
-
-	// コマンドアロケータ(コマンド割り当て担当)
-	ComPtr<ID3D12CommandAllocator> commandAllocators_[kFrameCount_] = { nullptr };
+	inline static constexpr uint8_t kBackBufferCount_ = 2;
 
 	// 使用するコマンドアロケータの番号
-	uint8_t frameIndex_ = 0;
-
-	// コマンドリスト
-	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
+	uint8_t backBufferIndex_ = 0;
 
 
-	/* SwapChain SwapChainResource */
+	/* Command */
+
+	// コマンド前後関係
+	std::unique_ptr<CommandContext> commandContext_ = nullptr;
+
+	/* SwapChain */
 
 	// スワップチェーン
 	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
@@ -125,8 +119,9 @@ private:
 	ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
 
 
+	/* ディスクリプタ管理補助 */
+
 	class DescriptorIndexManager {
-		/* ディスクリプタ管理補助クラス */
 	private:
 
 		// 次の空きディスクリプタの番号 0はImGui
@@ -196,7 +191,7 @@ private:
 	ComPtr<ID3D12Fence> fence_ = nullptr;
 
 	// フェンス値
-	uint64_t fenceValues_[kFrameCount_] = { 0 };
+	uint64_t fenceValues_[kBackBufferCount_] = { 0 };
 
 	// 総フェンス値
 	uint64_t totalFenceCount_ = 0;
@@ -430,16 +425,6 @@ private:
 	/// <param name="clientWidth"> ウィンドウの横幅 </param>
 	/// <param name="clientHeight"> ウィンドウの縦幅 </param>
 	void PrepareWindow(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
-
-	/// <summary>
-	/// 初期化処理 アダプターの選択
-	/// </summary>
-	//void SelectAdapter();
-
-	/// <summary>
-	/// 初期化処理 デバイスの作成
-	/// </summary>
-	//void CreateDevice();
 
 	/// <summary>
 	/// 初期化処理 エラー抑制 デバッグ用

@@ -1,4 +1,6 @@
 #include "AtrumEngine.h"
+#include "CommandContext.h"
+#include "RenderDevice.h"
 #include "ConvertString.h"
 #include "Log.h"
 #include "Vector4.h"
@@ -667,14 +669,14 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(WvpData));
 
 	// GPUに設定
-	commandList_->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
+	commandContext_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
 	// --- Material (Color) のアドレス計算 ---
 	// ※こちらも定数バッファなら同様に256バイトずつずらす必要があります
 	D3D12_GPU_VIRTUAL_ADDRESS materialBaseAddr = materialResource_->GetGPUVirtualAddress();
 	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBaseAddr + (constantBufferCount_ * sizeof(MaterialData));
 
-	commandList_->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+	commandContext_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
 
 	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle{};
@@ -682,10 +684,10 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	textureHandle.ptr = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart().ptr + textureIndex * srvHandleSize_;
 
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
-	commandList_->SetGraphicsRootDescriptorTable(2, textureHandle);
+	commandContext_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandList_->DrawInstanced(3, 1, triangleDrewCount_ * 3, 0);
+	commandContext_->GetCommandList()->DrawInstanced(3, 1, triangleDrewCount_ * 3, 0);
 
 }
 
@@ -727,59 +729,17 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->PrepareWindow(windowLabel, clientWidth, clientHeight);
 
-	//hr_ = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
-
-	///*
-	//初期化の根本的な段階でエラーが出た場合は
-	//プログラムの間違いか修正不可である場合が多い
-	//*/
-	//assert(SUCCEEDED(hr_));
-
-	//this->SelectAdapter();
-
-	//this->CreateDevice();
-
-	// レンダリングデバイスの生成
+	// レンダリングデバイスを生成
 	renderDevice_.reset(new RenderDevice());
-	// レンダリングデバイスの初期化
+	// レンダリングデバイスを初期化
 	renderDevice_->Initialize();
 
-	// デバイス初期化完了のログを出す
-	LogFile::GetInstance()->Log("Complete Init RenderDevice");
 
+	// コマンド前後関係を生成
+	commandContext_.reset(new CommandContext);
+	// コマンド前後関係を初期化
+	commandContext_->Initialize(renderDevice_->GetDevice(), kBackBufferCount_);
 
-	// コマンドキューの生成
-	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
-	hr_ = renderDevice_->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
-
-	// コマンドキューの生成がうまくいかなかったら起動できない
-	assert(SUCCEEDED(hr_));
-
-	hr_ = commandQueue_->SetName(L"commandQueue");
-	assert(SUCCEEDED(hr_));
-
-
-	for (auto& commandAllocator : commandAllocators_) {
-
-		// コマンドアロケータの生成
-		hr_ = renderDevice_->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator));
-
-		// コマンドアロケータの生成がうまくいかなかったら起動不可
-		assert(SUCCEEDED(hr_));
-
-		hr_ = commandAllocator->SetName(L"commandAllocator");
-		assert(SUCCEEDED(hr_));
-
-	}
-
-	// コマンドリストの生成
-	hr_ = renderDevice_->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators_[frameIndex_].Get(), nullptr, IID_PPV_ARGS(&commandList_));
-
-	// コマンドリストの生成がうまくいかなかったら起動不可
-	assert(SUCCEEDED(hr_));
-
-	hr_ = commandList_->SetName(L"commandList");
-	assert(SUCCEEDED(hr_));
 
 	// スワップチェーンに渡す情報
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
@@ -792,7 +752,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
 	// コマンドキュー、ウィンドウハンドル、設定を渡してスワップチェーンを生成
-	hr_ = renderDevice_->GetDxgiFactory()->CreateSwapChainForHwnd(commandQueue_.Get(), hwnd_, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
+	hr_ = renderDevice_->GetDxgiFactory()->CreateSwapChainForHwnd(commandContext_->GetCommandQueue().Get(), hwnd_, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(hr_));
 
 	// RTVディスクリプタヒープの生成
@@ -844,7 +804,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 
 	// 初期値0でFenceを作成
-	hr_ = renderDevice_->GetDevice()->CreateFence(fenceValues_[frameIndex_], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	hr_ = renderDevice_->GetDevice()->CreateFence(fenceValues_[backBufferIndex_], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	assert(SUCCEEDED(hr_));
 
 	// fenceのSignalを待つためのイベントを作成する
@@ -1060,46 +1020,46 @@ void AtrumEngine::PreDraw() {
 	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	// TransitionBarrierを張る
-	commandList_->ResourceBarrier(1, &barrier_);
+	commandContext_->GetCommandList()->ResourceBarrier(1, &barrier_);
 
 	// 描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
+	commandContext_->GetCommandList()->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
 
 	// 指定した深度(1.0f)で画面全体をクリアする
-	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	commandContext_->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	// 指定色で画面全体をクリアする
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
-	commandList_->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
+	commandContext_->GetCommandList()->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
-	commandList_->SetDescriptorHeaps(1, descriptorHeaps);
+	commandContext_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 	// Viewportを設定
-	commandList_->RSSetViewports(1, &viewport_);
+	commandContext_->GetCommandList()->RSSetViewports(1, &viewport_);
 
 	// ScissorRectを設定
-	commandList_->RSSetScissorRects(1, &scissorRect_);
+	commandContext_->GetCommandList()->RSSetScissorRects(1, &scissorRect_);
 
 	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
+	commandContext_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
 
 	// PSOを設定
-	commandList_->SetPipelineState(graphicsPipelineState_.Get());
+	commandContext_->GetCommandList()->SetPipelineState(graphicsPipelineState_.Get());
 
 	// VBVを設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	commandContext_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	commandContext_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// マテリアルCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	commandContext_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
 	// WVP用のCBufferの場所を設定
-	commandList_->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	commandContext_->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
 
 
 }
@@ -1109,7 +1069,7 @@ void AtrumEngine::PostDraw() {
 #ifdef USE_IMGUI
 
 	// ImGuiの描画コマンドを積む
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList_.Get());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandContext_->GetCommandList().Get());
 
 #endif
 
@@ -1119,29 +1079,29 @@ void AtrumEngine::PostDraw() {
 	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 
 	// TransitionBarrierを張る
-	commandList_->ResourceBarrier(1, &barrier_);
+	commandContext_->GetCommandList()->ResourceBarrier(1, &barrier_);
 
 	// コマンドリストの内容を確定させる
-	hr_ = commandList_->Close();
+	hr_ = commandContext_->GetCommandList()->Close();
 	assert(SUCCEEDED(hr_));
 
 	// GPUにコマンドリストを実行させる
-	ID3D12CommandList* commandLists[] = { commandList_.Get() };
-	commandQueue_->ExecuteCommandLists(1, commandLists);
+	ID3D12CommandList* commandLists[] = { commandContext_->GetCommandList().Get() };
+	commandContext_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	// fenceの値を更新
-	fenceValues_[frameIndex_] = ++totalFenceCount_;
+	fenceValues_[backBufferIndex_] = ++totalFenceCount_;
 
 	// GPUがここまでたどり着いたときにFenceの値を指定した値に代入するようにSignalを送る
-	commandQueue_->Signal(fence_.Get(), fenceValues_[frameIndex_]);
+	commandContext_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[backBufferIndex_]);
 
 	// 次のフレーム番号へ進む
-	frameIndex_ = (frameIndex_ + 1) % kFrameCount_;
+	backBufferIndex_ = (backBufferIndex_ + 1) % kBackBufferCount_;
 
-	if (fence_->GetCompletedValue() < fenceValues_[frameIndex_]) {
+	if (fence_->GetCompletedValue() < fenceValues_[backBufferIndex_]) {
 
 		// 指定したsignalにたどり着くまでイベントを設定する
-		fence_->SetEventOnCompletion(fenceValues_[frameIndex_], fenceEvent_);
+		fence_->SetEventOnCompletion(fenceValues_[backBufferIndex_], fenceEvent_);
 
 		// イベント待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
@@ -1159,9 +1119,9 @@ void AtrumEngine::PostDraw() {
 
 	// 次のフレーム用のコマンドリストを準備
 
-	hr_ = commandAllocators_[frameIndex_].Get()->Reset();
+	hr_ = commandContext_->GetCommandAllocators()[backBufferIndex_].Get()->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandList_.Get()->Reset(commandAllocators_[frameIndex_].Get(), nullptr);
+	hr_ = commandContext_->GetCommandList().Get()->Reset(commandContext_->GetCommandAllocators()[backBufferIndex_].Get(), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 三角形のカウントをリセット
@@ -1176,13 +1136,13 @@ void AtrumEngine::PostDraw() {
 
 void AtrumEngine::Finalize() {
 
-	fenceValues_[frameIndex_]++;
-	commandQueue_->Signal(fence_.Get(), fenceValues_[frameIndex_]);
+	fenceValues_[backBufferIndex_]++;
+	commandContext_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[backBufferIndex_]);
 
-	if (fence_->GetCompletedValue() < fenceValues_[frameIndex_]) {
+	if (fence_->GetCompletedValue() < fenceValues_[backBufferIndex_]) {
 		// GPUの完了を待つ
 
-		fence_->SetEventOnCompletion(fenceValues_[frameIndex_], fenceEvent_);
+		fence_->SetEventOnCompletion(fenceValues_[backBufferIndex_], fenceEvent_);
 		WaitForSingleObject(fenceEvent_, INFINITE);
 
 	}
@@ -1481,7 +1441,7 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 		sourceLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 		sourceLocation.PlacedFootprint = layouts[i];
 
-		commandList_->CopyTextureRegion(&destinationLocation, 0, 0, 0, &sourceLocation, nullptr);
+		commandContext_->GetCommandList()->CopyTextureRegion(&destinationLocation, 0, 0, 0, &sourceLocation, nullptr);
 
 	}
 
@@ -1493,7 +1453,7 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
-	commandList_->ResourceBarrier(1, &barrier);
+	commandContext_->GetCommandList()->ResourceBarrier(1, &barrier);
 
 }
 
@@ -1545,34 +1505,34 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	this->UploadTextureData(texture.resource, mipImages, intermediateResource);
 
 	// コマンドリストの内容を確定させる
-	hr_ = commandList_->Close();
+	hr_ = commandContext_->GetCommandList()->Close();
 	assert(SUCCEEDED(hr_));
 
 	// GPUにコマンドリストを実行させる
-	ID3D12CommandList* commandLists[] = { commandList_.Get() };
-	commandQueue_->ExecuteCommandLists(1, commandLists);
+	ID3D12CommandList* commandLists[] = { commandContext_->GetCommandList().Get() };
+	commandContext_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	// 次のフレームの準備
 	// 現在のフレームが「いつ終わるか」を Signal
 	// 「次に使う予定のアロケータ」が解放されているかを確認して Wait する
 
 	// 現在のフレームに完了番号を割り振って Signal
-	fenceValues_[frameIndex_] = ++totalFenceCount_;
-	commandQueue_->Signal(fence_.Get(), fenceValues_[frameIndex_]);
+	fenceValues_[backBufferIndex_] = ++totalFenceCount_;
+	commandContext_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[backBufferIndex_]);
 
 	// インデックスを次へ進める
-	frameIndex_ = (frameIndex_ + 1) % kFrameCount_;
+	backBufferIndex_ = (backBufferIndex_ + 1) % kBackBufferCount_;
 
 	// これから使うアロケータが前回の実行を終えているか確認
-	if (fence_->GetCompletedValue() < fenceValues_[frameIndex_]) {
-		fence_->SetEventOnCompletion(fenceValues_[frameIndex_], fenceEvent_);
+	if (fence_->GetCompletedValue() < fenceValues_[backBufferIndex_]) {
+		fence_->SetEventOnCompletion(fenceValues_[backBufferIndex_], fenceEvent_);
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
 
 	// 次のフレーム用のアロケータとリストをリセット
-	hr_ = commandAllocators_[frameIndex_]->Reset();
+	hr_ = commandContext_->GetCommandAllocators()[backBufferIndex_]->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandList_->Reset(commandAllocators_[frameIndex_].Get(), nullptr);
+	hr_ = commandContext_->GetCommandList()->Reset(commandContext_->GetCommandAllocators()[backBufferIndex_].Get(), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 実際にShaderResourceViewを作る
@@ -1633,7 +1593,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 
 void AtrumEngine::PrepareSprite() {
 
-	commandList_->IASetVertexBuffers(0, 1, &spriteVertexBufferView_);
+	commandContext_->GetCommandList()->IASetVertexBuffers(0, 1, &spriteVertexBufferView_);
 
 }
 
@@ -1720,23 +1680,23 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (spriteConstantBufferCount_ * sizeof(WvpData));
 
 	// GPUに設定
-	commandList_->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
+	commandContext_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
 
 	D3D12_GPU_VIRTUAL_ADDRESS materialBaseAddr = spriteMaterialResource_->GetGPUVirtualAddress();
 	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBaseAddr + (spriteConstantBufferCount_ * sizeof(MaterialData));
 
-	commandList_->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+	commandContext_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
 	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle{};
 
 	textureHandle.ptr = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart().ptr + textureIndex * srvHandleSize_;
 
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
-	commandList_->SetGraphicsRootDescriptorTable(2, textureHandle);
+	commandContext_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle);
 
 	// 描画(DrawCall) 6頂点で1つのインスタンス
-	commandList_->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);
+	commandContext_->GetCommandList()->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);
 
 }
 
