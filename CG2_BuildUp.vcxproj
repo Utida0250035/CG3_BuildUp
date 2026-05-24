@@ -120,6 +120,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="ConvertString.cpp" />
     <ClCompile Include="AtrumEngine.cpp" />
     <ClCompile Include="DeltaTime.cpp" />
+    <ClCompile Include="DescriptorAllocator.cpp" />
     <ClCompile Include="RenderDevice.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -153,6 +154,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix3D.cpp" />
     <ClCompile Include="OBB.cpp" />
+    <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="Vector3.cpp" />
     <ClCompile Include="WindowProcedure.cpp" />
@@ -164,6 +166,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="ConvertString.h" />
     <ClInclude Include="AtrumEngine.h" />
     <ClInclude Include="DeltaTime.h" />
+    <ClInclude Include="DescriptorAllocator.h" />
     <ClInclude Include="RenderDevice.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
@@ -177,6 +180,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Log.h" />
     <ClInclude Include="Matrix3D.h" />
     <ClInclude Include="OBB.h" />
+    <ClInclude Include="SwapChain.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />

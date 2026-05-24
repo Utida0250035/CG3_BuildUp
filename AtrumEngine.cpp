@@ -738,7 +738,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// 描画コマンド経路を生成
 	commandContextDirect_.reset(new CommandContext);
 	// 描画コマンド経路を初期化
-	commandContextDirect_->Initialize(renderDevice_->GetDevice(), kBackBufferCount_, D3D12_COMMAND_LIST_TYPE_DIRECT);
+	commandContextDirect_->Initialize(renderDevice_->GetDevice(), kBackBufferCount, D3D12_COMMAND_LIST_TYPE_DIRECT);
 
 
 	// スワップチェーンに渡す情報
@@ -748,7 +748,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.BufferCount = 2;
+	swapChainDesc.BufferCount = kBackBufferCount;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
 	// コマンドキュー、ウィンドウハンドル、設定を渡してスワップチェーンを生成
@@ -756,14 +756,14 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	assert(SUCCEEDED(hr_));
 
 	// RTVディスクリプタヒープの生成
-	rtvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+	rtvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
 
 	hr_ = rtvDescriptorHeap_->SetName(L"rtvDescriptorHeap");
 	assert(SUCCEEDED(hr_));
 
 
 	// SRVディスクリプタヒープの生成
-	srvDescriptorHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 
 	hr_ = srvDescriptorHeap_->SetName(L"srvDescriptorHeap");
 	assert(SUCCEEDED(hr_));
@@ -839,7 +839,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->CreateVertexBufferView();
 
-	srvDescriptorIndexManager_.reset(new DescriptorIndexManager());
+	srvDescriptorIndexManager_.reset(new DescriptorAllocator());
 
 	srvHandleSize_ = renderDevice_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 

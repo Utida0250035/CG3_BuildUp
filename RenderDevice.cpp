@@ -86,6 +86,8 @@ void RenderDevice::CreateDevice() {
 	// デバイスの生成が成功しなかった場合は実行不可
 	assert(device_ != nullptr);
 
+	device_->SetName(L"device");
+
 	LogFile::GetInstance()->Log("Created ID3D12Device");
 
 }
