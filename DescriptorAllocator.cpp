@@ -23,6 +23,10 @@ DescriptorAllocator::DescriptorHandle DescriptorAllocator::Allocate() {
 
 	DescriptorHandle handle;
 	handle.index = index;
+	handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
+	handle.gpu.ptr = gpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
+
+	return handle;
 
 }
 

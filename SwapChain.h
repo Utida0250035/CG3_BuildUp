@@ -30,6 +30,14 @@ private:
 
 public:
 
-	void Initialize(ComPtr<ID3D12Device>& device, ComPtr<IDXGIFactory4>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd, std::unique_ptr<DescriptorAllocator>& rtvAllocator);
+	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory4>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd);
+
+	void UpdateBackBufferIndex();
+
+	/* ゲッター */
+
+	ComPtr<IDXGISwapChain4>& GetSwapChain() { return swapChain_; }
+	ComPtr<ID3D12Resource>& GetSwapChainResourceCurrent() { return swapChainResources_[backBufferIndex_]; }
+	UINT GetBackBufferIndex() const {return backBufferIndex_};
 
 };

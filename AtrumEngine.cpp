@@ -755,19 +755,6 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	hr_ = renderDevice_->GetDxgiFactory()->CreateSwapChainForHwnd(commandContextDirect_->GetCommandQueue().Get(), hwnd_, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(hr_));
 
-	// RTVディスクリプタヒープの生成
-	rtvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
-
-	hr_ = rtvDescriptorHeap_->SetName(L"rtvDescriptorHeap");
-	assert(SUCCEEDED(hr_));
-
-
-	// SRVディスクリプタヒープの生成
-	srvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
-
-	hr_ = srvDescriptorHeap_->SetName(L"srvDescriptorHeap");
-	assert(SUCCEEDED(hr_));
-
 	// SwapChainからResourceを引っ張る
 	hr_ = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
 	// うまくResourceを取得できなければ起動不可
@@ -780,6 +767,19 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	assert(SUCCEEDED(hr_));
 
 	hr_ = swapChainResources_[1]->SetName(L"swapChainResource1");
+	assert(SUCCEEDED(hr_));
+
+	// RTVディスクリプタヒープの生成
+	rtvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+
+	hr_ = rtvDescriptorHeap_->SetName(L"rtvDescriptorHeap");
+	assert(SUCCEEDED(hr_));
+
+
+	// SRVディスクリプタヒープの生成
+	srvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+
+	hr_ = srvDescriptorHeap_->SetName(L"srvDescriptorHeap");
 	assert(SUCCEEDED(hr_));
 
 
