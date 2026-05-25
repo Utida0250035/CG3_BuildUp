@@ -21,6 +21,8 @@ private:
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+	bool isInitialized_ = false;
+
 	// 使用するコマンドアロケータの番号
 	UINT backBufferIndex_ = 0u;
 

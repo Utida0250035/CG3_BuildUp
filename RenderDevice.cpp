@@ -7,6 +7,8 @@
 
 void RenderDevice::CreateDxgiFactory() {
 
+	assert(!isInitialized_ && "CreateDxgiFactory() is initializeHelper");
+
 	HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
 
 	/*
@@ -20,6 +22,8 @@ void RenderDevice::CreateDxgiFactory() {
 }
 
 void RenderDevice::SelectAdapter() {
+
+	assert(!isInitialized_ && "SelectAdapter() is initializeHelper");
 
 	HRESULT hr;
 
@@ -56,6 +60,8 @@ void RenderDevice::SelectAdapter() {
 }
 
 void RenderDevice::CreateDevice() {
+
+	assert(!isInitialized_ && "CreateDevice() is initializeHelper");
 
 	D3D_FEATURE_LEVEL featureLevels[] = {
 	D3D_FEATURE_LEVEL_12_2, D3D_FEATURE_LEVEL_12_1, D3D_FEATURE_LEVEL_12_0
@@ -94,6 +100,8 @@ void RenderDevice::CreateDevice() {
 
 void RenderDevice::Initialize() {
 
+	assert(!isInitialized_ && "RenderDevice is already initialized");
+
 	this->CreateDxgiFactory();
 	
 	this->SelectAdapter();
@@ -102,5 +110,7 @@ void RenderDevice::Initialize() {
 
 	// デバイス初期化完了のログを出す
 	LogFile::GetInstance()->Log("Complete Init RenderDevice");
+
+	isInitialized_ = true;
 
 }

@@ -4,6 +4,8 @@
 
 void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<ID3D12Device>& device, ComPtr<IDXGIFactory7>& dxgiFactory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd, const std::unique_ptr<DescriptorAllocator>& rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc) {
 
+	assert(!isInitialized_ && "SwapChain is already initialized");
+
 	// スワップチェーンに渡す情報
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
 	swapChainDesc.Width = clientWidth;
@@ -46,9 +48,13 @@ void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight
 
 	}
 
+	isInitialized_ = true;
+
 }
 
 void SwapChain::UpdateBackBufferIndex() {
+
+	assert(isInitialized_ && "SwapChain is not initialized");
 
 	backBufferIndex_ = swapChain_->GetCurrentBackBufferIndex();
 

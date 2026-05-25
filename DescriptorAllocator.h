@@ -27,6 +27,8 @@ public:
 
 private:
 
+	bool isInitialized_ = false;
+
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -38,8 +40,8 @@ private:
 	// 空いたディスクリプタの番号
 	std::vector<uint32_t> freeIndices_{};
 
-	// ディスクリプタヒープの種類
-	D3D12_DESCRIPTOR_HEAP_TYPE type_;
+	// ディスクリプタヒープの種類 初期値は種類数(無効な種類)
+	D3D12_DESCRIPTOR_HEAP_TYPE type_ = D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES;
 
 	// 作成したディスクリプタの個数
 	uint32_t maxDescriptors_ = 0;

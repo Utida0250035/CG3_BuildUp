@@ -17,6 +17,8 @@ private:
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+	bool isInitialized_ = false;
+
 	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
 	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 

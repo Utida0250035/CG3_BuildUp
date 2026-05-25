@@ -4,6 +4,8 @@
 
 void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptors, const bool isShaderVisible, std::wstring descriptorName, ComPtr<ID3D12Device>& device) {
 
+	assert(!isInitialized_ && "DescriptorAllocator is already initialized");
+
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
 	descriptorHeapDesc.Type = descriptorType;
 	descriptorHeapDesc.NumDescriptors = maxDescriptors;
@@ -37,9 +39,13 @@ void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptor
 
 	LogFile::GetInstance()->Log("Created " + WStringToString(descriptorName));
 
+	isInitialized_ = true;
+
 }
 
 DescriptorAllocator::DescriptorHandle DescriptorAllocator::Allocate() {
+
+	assert(isInitialized_ && "DescriptorAllocator is not initialized");
 
 	uint32_t index = 0;
 
@@ -73,6 +79,8 @@ DescriptorAllocator::DescriptorHandle DescriptorAllocator::Allocate() {
 
 DescriptorAllocator::DescriptorHandle DescriptorAllocator::GetHandle(const uint32_t index) {
 
+	assert(isInitialized_ && "DescriptorAllocator is not initialized");
+
 	DescriptorHandle handle{};
 
 	handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * index);
@@ -84,6 +92,8 @@ DescriptorAllocator::DescriptorHandle DescriptorAllocator::GetHandle(const uint3
 }
 
 void DescriptorAllocator::Free(const uint32_t index) {
+
+	assert(isInitialized_ && "DescriptorAllocator is not initialized");
 
 	freeIndices_.push_back(index);
 

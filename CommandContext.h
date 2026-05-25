@@ -25,6 +25,8 @@ class CommandContext {
 
 private:
 
+	bool isInitialized_ = false;
+
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 

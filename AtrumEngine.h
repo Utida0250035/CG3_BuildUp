@@ -4,6 +4,7 @@
 #include "RenderDevice.h"
 #include "SwapChain.h"
 #include "DescriptorAllocator.h"
+#include "Fence.h"
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -69,6 +70,9 @@ public:
 
 private:
 
+	// 初期化済フラグ
+	bool isInitialized_ = false;
+
 	/* Window */
 
 	// ウィンドウクラス
@@ -119,17 +123,7 @@ private:
 
 	/* フェンス / フェンスイベント */
 
-	// フェンス
-	ComPtr<ID3D12Fence> fence_ = nullptr;
-
-	// フェンス値
-	uint64_t fenceValues_[SwapChain::kBackBufferCount] = { 0 };
-
-	// 総フェンス値
-	uint64_t totalFenceCount_ = 0;
-
-	// fenceEvent
-	HANDLE fenceEvent_{};
+	std::unique_ptr<Fence> fenceManager_ = nullptr;
 
 
 	/* 中間リソース */
@@ -369,42 +363,53 @@ private:
 	void InitDXC();
 
 	/// <summary>
-	/// Viewport の設定
+	/// 初期化処理 Viewport の設定
 	/// </summary>
 	void SetUpViewport();
 
 	/// <summary>
-	/// シザー矩形の設定
+	/// 初期化処理 シザー矩形の設定
 	/// </summary>
 	void SetUpScissorRect();
 
 	/// <summary>
-	/// InputLayoutの設定
+	/// 初期化処理 InputLayoutの設定
 	/// </summary>
 	void SetUpInputLayout();
 
 	/// <summary>
-	/// BlendStateの設定
+	/// 初期化処理 BlendStateの設定
 	/// </summary>
 	void SetUpBlendState();
 
 	/// <summary>
-	/// RasterizerStateの設定
+	/// 初期化処理 RasterizerStateの設定
 	/// </summary>
 	void SetUpRasterizerState();
 
 	/// <summary>
-	/// DepthStencilStateの設定
+	/// 初期化処理 DepthStencilStateの設定
 	/// </summary>
 	void SetUpDepthStencilState();
 
 	/// <summary>
-	/// ルートシグネチャの作成
+	/// 初期化処理 ルートシグネチャの作成
 	/// </summary>
 	void MakeRootSignature();
 
 	/// <summary>
-	/// Shaderの準備
+	/// 初期化処理 Shaderのコンパイル
+	/// </summary>
+	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
+	/// <param name="profile"> コンパイルに使用するプロファイル </param>
+	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
+	IDxcBlob* CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile
+	);
+
+	/// <summary>
+	/// 初期化処理 Shaderの準備
 	/// </summary>
 	void PrepareShader();
 
@@ -417,49 +422,57 @@ private:
 	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	/// <summary>
-	/// MaterialResourceの作成
+	/// 初期化処理 MaterialResourceの作成
 	/// </summary>
 	void CreateMaterialResource();
 
 	/// <summary>
-	/// WvpResource(TransformationMatrix用のリソース)の作成
+	/// 初期化処理 WvpResource(TransformationMatrix用のリソース)の作成
 	/// </summary>
 	void CreateWvpResource();
 
 	/// <summary>
-	/// PSOの生成
+	/// 初期化処理 PSOの生成
 	/// </summary>
 	void CreatePSO();
 
 	/// <summary>
-	/// VertexResourceの生成
+	/// 初期化処理 VertexResourceの生成
 	/// </summary>
 	void CreateVertexResource();
 
 	/// <summary>
-	/// VertexBufferViewの作成
+	/// 初期化処理 VertexBufferViewの作成
 	/// </summary>
 	void CreateVertexBufferView();
 
 	/// <summary>
-	/// Sprite用VertexResourceの生成
+	/// 初期化処理 Sprite用VertexResourceの生成
 	/// </summary>
 	void CreateSpriteVertexResource();
 
 	/// <summary>
-	/// Sprite用VertexBufferViewの生成
+	/// 初期化処理 Sprite用VertexBufferViewの生成
 	/// </summary>
 	void CreateSpriteVertexBufferView();
 
 	/// <summary>
-	/// Sprite用MaterialResourceの生成
+	/// 初期化処理 Sprite用MaterialResourceの生成
 	/// </summary>
 	void CreateSpriteMaterialResource();
 
 	/// <summary>
-	/// Sprite用TransformResourceの生成
+	/// 初期化処理 Sprite用TransformResourceの生成
 	/// </summary>
 	void CreateSpriteTransformationResource();
+
+	/// <summary>
+	/// 初期化処理 DepthStencilResourceの作成
+	/// </summary>
+	/// <param name="width"> 幅 </param>
+	/// <param name="height"> 高さ </param>
+	/// <returns> DepthStencilResource </returns>
+	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
 	/// <summary>
 	/// 三角形の描画呼び出し
@@ -472,17 +485,6 @@ private:
 	void DrawSpriteCall(const uint32_t& textureIndex);
 
 public:
-
-	/// <summary>
-	/// Shaderのコンパイル
-	/// </summary>
-	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
-	/// <param name="profile"> コンパイルに使用するプロファイル </param>
-	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
-	IDxcBlob* CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile
-	);
 
 	void SetFps(const int32_t& fps);
 
@@ -681,15 +683,6 @@ public:
 	/// <param name="end"> 終点 </param>
 	/// <param name="width"> 太さ </param>
 	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
-
-
-	/// <summary>
-	/// DepthStencilResourceの作成
-	/// </summary>
-	/// <param name="width"> 幅 </param>
-	/// <param name="height"> 高さ </param>
-	/// <returns> DepthStencilResource </returns>
-	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
 };
 
