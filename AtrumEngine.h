@@ -1,5 +1,10 @@
 #pragma once
-
+#include "DeltaTime.h"
+#include "CommandContext.h"
+#include "RenderDevice.h"
+#include "SwapChain.h"
+#include "DescriptorAllocator.h"
+#include "Fence.h"
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -10,8 +15,6 @@
 
 #include <dxcapi.h>
 #pragma comment(lib, "dxcompiler.lib")
-
-#include "DeltaTime.h"
 #include "Vector4.h"
 
 #include "Matrix3D.h"
@@ -67,6 +70,9 @@ public:
 
 private:
 
+	// 初期化済フラグ
+	bool isInitialized_ = false;
+
 	/* Window */
 
 	// ウィンドウクラス
@@ -87,124 +93,37 @@ private:
 
 	/* エラー処理 */
 
-	// Windowsエラーコード格納
+	// Windowsエラーハンドル
 	HRESULT hr_{};
 
 
-	/* DirectX インターフェース */
+	/* RenderDevice */
 
-	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
-	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
+	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 
-	// 使用するアダプタ用
-	ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
+	/* Command */
 
-	// デバイス
-	ComPtr<ID3D12Device> device_ = nullptr;
+	// コマンド経路(Direct)
+	std::unique_ptr<CommandContext> commandContextDirect_ = nullptr;
 
-	// コマンドキュー
-	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
+	/* SwapChain */
 
-	// コマンドアロケータの個数
-	inline static constexpr uint8_t kFrameCount_ = 2;
-
-	// コマンドアロケータ(コマンド割り当て担当)
-	ComPtr<ID3D12CommandAllocator> commandAllocators_[kFrameCount_] = { nullptr };
-
-	// 使用するコマンドアロケータの番号
-	uint8_t frameIndex_ = 0;
-
-	// コマンドリスト
-	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
-
-
-	/* SwapChain SwapChainResource */
-
-	// スワップチェーン
-	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
-
-	// スワップチェーンリソース
-	ComPtr<ID3D12Resource> swapChainResources_[2] = { nullptr };
-
-
-	class DescriptorIndexManager {
-		/* ディスクリプタ管理補助クラス */
-	private:
-
-		// 次の空きディスクリプタの番号 0はImGui
-		uint32_t nextIndex_ = 1;
-
-		// 空いたディスクリプタの番号
-		std::vector<uint32_t> freeIndices_{};
-
-	public:
-
-		DescriptorIndexManager() = default;
-		~DescriptorIndexManager() = default;
-
-		uint32_t AllocateIndex() {
-
-			if (freeIndices_.empty()) {
-
-				auto index = nextIndex_;
-
-				nextIndex_++;
-
-				return index;
-
-			}
-
-			uint32_t index = freeIndices_.back();
-
-			freeIndices_.pop_back();
-
-			return index;
-
-		}
-
-		void Free(const uint32_t index) {
-
-			freeIndices_.push_back(index);
-
-		}
-
-	};
+	std::unique_ptr<SwapChain> swapChainManager_ = nullptr;
 
 
 	/* SRV */
 
-	// SRV(Shader Resource View)ディスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
-
-	// SRVディスクリプタ番号管理
-	std::unique_ptr<DescriptorIndexManager> srvDescriptorIndexManager_ = nullptr;
-
-	// SRVハンドルサイズ
-	uint32_t srvHandleSize_ = 0;
+	std::unique_ptr<DescriptorAllocator> srvAllocator_ = nullptr;
 
 
 	/* RTV */
 
-	// RTV(Render Target View)ディスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
-
-	// RTVディスクリプタハンドル
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
+	std::unique_ptr<DescriptorAllocator> rtvAllocator_ = nullptr;
 
 
 	/* フェンス / フェンスイベント */
 
-	// フェンス
-	ComPtr<ID3D12Fence> fence_ = nullptr;
-
-	// フェンス値
-	uint64_t fenceValues_[kFrameCount_] = { 0 };
-
-	// 総フェンス値
-	uint64_t totalFenceCount_ = 0;
-
-	// fenceEvent
-	HANDLE fenceEvent_{};
+	std::unique_ptr<Fence> fenceManager_ = nullptr;
 
 
 	/* 中間リソース */
@@ -213,7 +132,7 @@ private:
 	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
 
-	/* DirectX 補助 / コンパイラ 等 */
+	/* DirectXShaderCompiler 補助 / コンパイラ本体 */
 
 	// DXC補助
 	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
@@ -246,7 +165,7 @@ private:
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
 
 
-	/* 描画State系 */
+	/* 描画State */
 
 	// BlendState
 	D3D12_BLEND_DESC blendDesc_{};
@@ -328,8 +247,8 @@ private:
 
 	/* depthStencil */
 
-	// DSVディスクリプタヒープ DSV(Depth Stencil View)
-	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
+	// DSVディスクリプタヒープ(Depth Stencil View)
+	std::unique_ptr<DescriptorAllocator> dsvAllocator_ = nullptr;
 
 	// DepthStencilResource
 	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
@@ -434,16 +353,6 @@ private:
 	void PrepareWindow(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
 
 	/// <summary>
-	/// 初期化処理 アダプターの選択
-	/// </summary>
-	void SelectAdapter();
-
-	/// <summary>
-	/// 初期化処理 デバイスの作成
-	/// </summary>
-	void CreateDevice();
-
-	/// <summary>
 	/// 初期化処理 エラー抑制 デバッグ用
 	/// </summary>
 	void ErrorSuppressionDebug();
@@ -454,42 +363,53 @@ private:
 	void InitDXC();
 
 	/// <summary>
-	/// Viewport の設定
+	/// 初期化処理 Viewport の設定
 	/// </summary>
 	void SetUpViewport();
 
 	/// <summary>
-	/// シザー矩形の設定
+	/// 初期化処理 シザー矩形の設定
 	/// </summary>
 	void SetUpScissorRect();
 
 	/// <summary>
-	/// InputLayoutの設定
+	/// 初期化処理 InputLayoutの設定
 	/// </summary>
 	void SetUpInputLayout();
 
 	/// <summary>
-	/// BlendStateの設定
+	/// 初期化処理 BlendStateの設定
 	/// </summary>
 	void SetUpBlendState();
 
 	/// <summary>
-	/// RasterizerStateの設定
+	/// 初期化処理 RasterizerStateの設定
 	/// </summary>
 	void SetUpRasterizerState();
 
 	/// <summary>
-	/// DepthStencilStateの設定
+	/// 初期化処理 DepthStencilStateの設定
 	/// </summary>
 	void SetUpDepthStencilState();
 
 	/// <summary>
-	/// ルートシグネチャの作成
+	/// 初期化処理 ルートシグネチャの作成
 	/// </summary>
 	void MakeRootSignature();
 
 	/// <summary>
-	/// Shaderの準備
+	/// 初期化処理 Shaderのコンパイル
+	/// </summary>
+	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
+	/// <param name="profile"> コンパイルに使用するプロファイル </param>
+	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
+	IDxcBlob* CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile
+	);
+
+	/// <summary>
+	/// 初期化処理 Shaderの準備
 	/// </summary>
 	void PrepareShader();
 
@@ -502,58 +422,57 @@ private:
 	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	/// <summary>
-	/// DescriptorHeap作成
-	/// </summary>
-	/// <param name="heapType"> Heapの種類 </param>
-	/// <param name="descriptorsNum"> Descriptorの数 </param>
-	/// <param name="shaderVisible"> Shaderに使用するか </param>
-	/// <returns></returns>
-	ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT descriptorsNum, bool shaderVisible);
-
-	/// <summary>
-	/// MaterialResourceの作成
+	/// 初期化処理 MaterialResourceの作成
 	/// </summary>
 	void CreateMaterialResource();
 
 	/// <summary>
-	/// WvpResource(TransformationMatrix用のリソース)の作成
+	/// 初期化処理 WvpResource(TransformationMatrix用のリソース)の作成
 	/// </summary>
 	void CreateWvpResource();
 
 	/// <summary>
-	/// PSOの生成
+	/// 初期化処理 PSOの生成
 	/// </summary>
 	void CreatePSO();
 
 	/// <summary>
-	/// VertexResourceの生成
+	/// 初期化処理 VertexResourceの生成
 	/// </summary>
 	void CreateVertexResource();
 
 	/// <summary>
-	/// VertexBufferViewの作成
+	/// 初期化処理 VertexBufferViewの作成
 	/// </summary>
 	void CreateVertexBufferView();
 
 	/// <summary>
-	/// Sprite用VertexResourceの生成
+	/// 初期化処理 Sprite用VertexResourceの生成
 	/// </summary>
 	void CreateSpriteVertexResource();
 
 	/// <summary>
-	/// Sprite用VertexBufferViewの生成
+	/// 初期化処理 Sprite用VertexBufferViewの生成
 	/// </summary>
 	void CreateSpriteVertexBufferView();
 
 	/// <summary>
-	/// Sprite用MaterialResourceの生成
+	/// 初期化処理 Sprite用MaterialResourceの生成
 	/// </summary>
 	void CreateSpriteMaterialResource();
 
 	/// <summary>
-	/// Sprite用TransformResourceの生成
+	/// 初期化処理 Sprite用TransformResourceの生成
 	/// </summary>
 	void CreateSpriteTransformationResource();
+
+	/// <summary>
+	/// 初期化処理 DepthStencilResourceの作成
+	/// </summary>
+	/// <param name="width"> 幅 </param>
+	/// <param name="height"> 高さ </param>
+	/// <returns> DepthStencilResource </returns>
+	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
 	/// <summary>
 	/// 三角形の描画呼び出し
@@ -566,17 +485,6 @@ private:
 	void DrawSpriteCall(const uint32_t& textureIndex);
 
 public:
-
-	/// <summary>
-	/// Shaderのコンパイル
-	/// </summary>
-	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
-	/// <param name="profile"> コンパイルに使用するプロファイル </param>
-	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
-	IDxcBlob* CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile
-	);
 
 	void SetFps(const int32_t& fps);
 
@@ -775,24 +683,6 @@ public:
 	/// <param name="end"> 終点 </param>
 	/// <param name="width"> 太さ </param>
 	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
-
-
-	/// <summary>
-	/// DepthStencilResourceの作成
-	/// </summary>
-	/// <param name="width"> 幅 </param>
-	/// <param name="height"> 高さ </param>
-	/// <returns> DepthStencilResource </returns>
-	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
-
-
-	/* ゲッター */
-
-	/// <summary>
-	/// ゲッター デバイス
-	/// </summary>
-	/// <returns> デバイスへの参照 </returns>
-	ComPtr<ID3D12Device>& GetDevice() { return device_; }
 
 };
 
