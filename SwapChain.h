@@ -11,13 +11,15 @@
 
 class SwapChain {
 
+public:
+
+	// コマンドアロケータの個数
+	inline static constexpr UINT kBackBufferCount = 2u;
+
 private:
 
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
-
-	// コマンドアロケータの個数
-	inline static constexpr UINT kBackBufferCount = 2u;
 
 	// 使用するコマンドアロケータの番号
 	UINT backBufferIndex_ = 0u;
@@ -30,7 +32,7 @@ private:
 
 public:
 
-	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory4>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd);
+	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory7>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd);
 
 	void UpdateBackBufferIndex();
 
@@ -38,6 +40,7 @@ public:
 
 	ComPtr<IDXGISwapChain4>& GetSwapChain() { return swapChain_; }
 	ComPtr<ID3D12Resource>& GetSwapChainResourceCurrent() { return swapChainResources_[backBufferIndex_]; }
-	UINT GetBackBufferIndex() const {return backBufferIndex_};
+	ComPtr<ID3D12Resource>& GetSwapChainResource(const size_t index) { return swapChainResources_[index]; }
+	UINT GetBackBufferIndex() const { return backBufferIndex_; }
 
 };

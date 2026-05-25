@@ -738,36 +738,11 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// 描画コマンド経路を生成
 	commandContextDirect_.reset(new CommandContext);
 	// 描画コマンド経路を初期化
-	commandContextDirect_->Initialize(renderDevice_->GetDevice(), kBackBufferCount, D3D12_COMMAND_LIST_TYPE_DIRECT);
+	commandContextDirect_->Initialize(renderDevice_->GetDevice(), SwapChain::kBackBufferCount, D3D12_COMMAND_LIST_TYPE_DIRECT);
 
+	swapChainManager_.reset(new SwapChain());
+	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_);
 
-	// スワップチェーンに渡す情報
-	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
-	swapChainDesc.Width = clientWidth_;
-	swapChainDesc.Height = clientHeight_;
-	swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	swapChainDesc.SampleDesc.Count = 1;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.BufferCount = kBackBufferCount;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-
-	// コマンドキュー、ウィンドウハンドル、設定を渡してスワップチェーンを生成
-	hr_ = renderDevice_->GetDxgiFactory()->CreateSwapChainForHwnd(commandContextDirect_->GetCommandQueue().Get(), hwnd_, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
-	assert(SUCCEEDED(hr_));
-
-	// SwapChainからResourceを引っ張る
-	hr_ = swapChain_->GetBuffer(0, IID_PPV_ARGS(&swapChainResources_[0]));
-	// うまくResourceを取得できなければ起動不可
-	assert(SUCCEEDED(hr_));
-
-	hr_ = swapChainResources_[0]->SetName(L"swapChainResource0");
-	assert(SUCCEEDED(hr_));
-
-	hr_ = swapChain_->GetBuffer(1, IID_PPV_ARGS(&swapChainResources_[1]));
-	assert(SUCCEEDED(hr_));
-
-	hr_ = swapChainResources_[1]->SetName(L"swapChainResource1");
-	assert(SUCCEEDED(hr_));
 
 	// RTVディスクリプタヒープの生成
 	rtvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
@@ -794,17 +769,17 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// 1つめのRTV作成
 	rtvHandles_[0] = rtvStartHandle;
-	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainResources_[0].Get(), &rtvDesc, rtvHandles_[0]);
+	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainManager_->GetSwapChainResource(0).Get(), &rtvDesc, rtvHandles_[0]);
 
 	// 2つめのRTVディスクリプタハンドルを作る
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + renderDevice_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	// 2つめのRTVを作る
-	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainResources_[1].Get(), &rtvDesc, rtvHandles_[1]);
+	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainManager_->GetSwapChainResource(1).Get(), &rtvDesc, rtvHandles_[1]);
 
 
 	// 初期値0でFenceを作成
-	hr_ = renderDevice_->GetDevice()->CreateFence(fenceValues_[backBufferIndex_], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	hr_ = renderDevice_->GetDevice()->CreateFence(fenceValues_[swapChainManager_->GetBackBufferIndex()], D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	assert(SUCCEEDED(hr_));
 
 	// fenceのSignalを待つためのイベントを作成する
@@ -883,7 +858,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	ImGui_ImplWin32_Init(hwnd_);
 	ImGui_ImplDX12_Init(
 		renderDevice_->GetDevice().Get(),
-		swapChainDesc.BufferCount,
+		SwapChain::kBackBufferCount,
 		rtvDesc.Format,
 		srvDescriptorHeap_.Get(),
 		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
@@ -996,13 +971,7 @@ void AtrumEngine::ImGuiRender() {
 
 void AtrumEngine::PreDraw() {
 
-	// これから書き込むバックバッファのインデックスを取得
-	UINT backBufferIndex = swapChain_->GetCurrentBackBufferIndex();
-
-
-	// デバッグ用
-	assert(swapChainResources_[backBufferIndex] != nullptr);
-	assert(rtvHandles_[backBufferIndex].ptr != 0);
+	swapChainManager_->UpdateBackBufferIndex();
 
 	// 今回のバリアの型はTransition
 	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -1011,7 +980,7 @@ void AtrumEngine::PreDraw() {
 	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
 	// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
-	barrier_.Transition.pResource = swapChainResources_[backBufferIndex].Get();
+	barrier_.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
 
 	// 遷移前(現在)のResourceState
 	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
@@ -1024,14 +993,14 @@ void AtrumEngine::PreDraw() {
 
 	// 描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	commandContextDirect_->GetCommandList()->OMSetRenderTargets(1, &rtvHandles_[backBufferIndex], false, &dsvHandle);
+	commandContextDirect_->GetCommandList()->OMSetRenderTargets(1, &rtvHandles_[swapChainManager_->GetBackBufferIndex()], false, &dsvHandle);
 
 	// 指定した深度(1.0f)で画面全体をクリアする
 	commandContextDirect_->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	// 指定色で画面全体をクリアする
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
-	commandContextDirect_->GetCommandList()->ClearRenderTargetView(rtvHandles_[backBufferIndex], clearColor, 0, nullptr);
+	commandContextDirect_->GetCommandList()->ClearRenderTargetView(rtvHandles_[swapChainManager_->GetBackBufferIndex()], clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
 	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
@@ -1090,18 +1059,18 @@ void AtrumEngine::PostDraw() {
 	commandContextDirect_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	// fenceの値を更新
-	fenceValues_[backBufferIndex_] = ++totalFenceCount_;
+	fenceValues_[swapChainManager_->GetBackBufferIndex()] = ++totalFenceCount_;
 
 	// GPUがここまでたどり着いたときにFenceの値を指定した値に代入するようにSignalを送る
-	commandContextDirect_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[backBufferIndex_]);
+	commandContextDirect_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[swapChainManager_->GetBackBufferIndex()]);
 
 	// 次のフレーム番号を取得する
-	backBufferIndex_ = swapChain_->GetCurrentBackBufferIndex();
+	swapChainManager_->UpdateBackBufferIndex();
 
-	if (fence_->GetCompletedValue() < fenceValues_[backBufferIndex_]) {
+	if (fence_->GetCompletedValue() < fenceValues_[swapChainManager_->GetBackBufferIndex()]) {
 
 		// 指定したsignalにたどり着くまでイベントを設定する
-		fence_->SetEventOnCompletion(fenceValues_[backBufferIndex_], fenceEvent_);
+		fence_->SetEventOnCompletion(fenceValues_[swapChainManager_->GetBackBufferIndex()], fenceEvent_);
 
 		// イベント待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
@@ -1115,13 +1084,13 @@ void AtrumEngine::PostDraw() {
 	}
 
 	// GPUとOSに画面の交換を行なうよう通知する
-	swapChain_->Present(1, 0);
+	swapChainManager_->GetSwapChain()->Present(1, 0);
 
 	// 次のフレーム用のコマンドリストを準備
 
-	hr_ = commandContextDirect_->GetCommandAllocators()[backBufferIndex_].Get()->Reset();
+	hr_ = commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get()->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList().Get()->Reset(commandContextDirect_->GetCommandAllocators()[backBufferIndex_].Get(), nullptr);
+	hr_ = commandContextDirect_->GetCommandList().Get()->Reset(commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get(), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 三角形のカウントをリセット
@@ -1136,13 +1105,13 @@ void AtrumEngine::PostDraw() {
 
 void AtrumEngine::Finalize() {
 
-	fenceValues_[backBufferIndex_]++;
-	commandContextDirect_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[backBufferIndex_]);
+	fenceValues_[swapChainManager_->GetBackBufferIndex()]++;
+	commandContextDirect_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[swapChainManager_->GetBackBufferIndex()]);
 
-	if (fence_->GetCompletedValue() < fenceValues_[backBufferIndex_]) {
+	if (fence_->GetCompletedValue() < fenceValues_[swapChainManager_->GetBackBufferIndex()]) {
 		// GPUの完了を待つ
 
-		fence_->SetEventOnCompletion(fenceValues_[backBufferIndex_], fenceEvent_);
+		fence_->SetEventOnCompletion(fenceValues_[swapChainManager_->GetBackBufferIndex()], fenceEvent_);
 		WaitForSingleObject(fenceEvent_, INFINITE);
 
 	}
@@ -1517,22 +1486,22 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	// 「次に使う予定のアロケータ」が解放されているかを確認して Wait する
 
 	// 現在のフレームに完了番号を割り振って Signal
-	fenceValues_[backBufferIndex_] = ++totalFenceCount_;
-	commandContextDirect_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[backBufferIndex_]);
+	fenceValues_[swapChainManager_->GetBackBufferIndex()] = ++totalFenceCount_;
+	commandContextDirect_->GetCommandQueue()->Signal(fence_.Get(), fenceValues_[swapChainManager_->GetBackBufferIndex()]);
 
 	// 次のフレームのインデックスを取得する
-	backBufferIndex_ = swapChain_->GetCurrentBackBufferIndex();
+	swapChainManager_->UpdateBackBufferIndex();
 
 	// これから使うアロケータが前回の実行を終えているか確認
-	if (fence_->GetCompletedValue() < fenceValues_[backBufferIndex_]) {
-		fence_->SetEventOnCompletion(fenceValues_[backBufferIndex_], fenceEvent_);
+	if (fence_->GetCompletedValue() < fenceValues_[swapChainManager_->GetBackBufferIndex()]) {
+		fence_->SetEventOnCompletion(fenceValues_[swapChainManager_->GetBackBufferIndex()], fenceEvent_);
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
 
 	// 次のフレーム用のアロケータとリストをリセット
-	hr_ = commandContextDirect_->GetCommandAllocators()[backBufferIndex_]->Reset();
+	hr_ = commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()]->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocators()[backBufferIndex_].Get(), nullptr);
+	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get(), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 実際にShaderResourceViewを作る

@@ -1,7 +1,7 @@
 #include "SwapChain.h"
 #include <string>
 
-void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory4>& dxgiFactory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd) {
+void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory7>& dxgiFactory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd) {
 
 	// スワップチェーンに渡す情報
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
@@ -19,6 +19,11 @@ void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight
 
 	for (UINT i = 0; i < kBackBufferCount; ++i) {
 
+		// バッファの取得
+		hr = swapChain_->GetBuffer(i, IID_PPV_ARGS(&swapChainResources_[i]));
+		assert(SUCCEEDED(hr));
+
+		// バッファの命名
 		hr = swapChainResources_[i]->SetName((L"swapChainResource" + std::to_wstring(i)).c_str());
 		assert(SUCCEEDED(hr));
 

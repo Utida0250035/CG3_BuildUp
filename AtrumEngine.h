@@ -2,6 +2,7 @@
 #include "DeltaTime.h"
 #include "CommandContext.h"
 #include "RenderDevice.h"
+#include "SwapChain.h"
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -102,17 +103,7 @@ private:
 
 	/* SwapChain */
 
-	// コマンドアロケータの個数
-	inline static constexpr UINT kBackBufferCount = 2u;
-
-	// 使用するコマンドアロケータの番号
-	UINT backBufferIndex_ = 0u;
-
-	// スワップチェーン
-	ComPtr<IDXGISwapChain4> swapChain_ = nullptr;
-
-	// スワップチェーンリソース
-	ComPtr<ID3D12Resource> swapChainResources_[kBackBufferCount] = { nullptr };
+	std::unique_ptr<SwapChain> swapChainManager_ = nullptr;
 
 
 	/* ディスクリプタ管理補助 */
@@ -187,7 +178,7 @@ private:
 	ComPtr<ID3D12Fence> fence_ = nullptr;
 
 	// フェンス値
-	uint64_t fenceValues_[kBackBufferCount] = { 0 };
+	uint64_t fenceValues_[SwapChain::kBackBufferCount] = { 0 };
 
 	// 総フェンス値
 	uint64_t totalFenceCount_ = 0;
