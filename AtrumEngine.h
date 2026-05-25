@@ -3,6 +3,7 @@
 #include "CommandContext.h"
 #include "RenderDevice.h"
 #include "SwapChain.h"
+#include "DescriptorAllocator.h"
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -106,70 +107,14 @@ private:
 	std::unique_ptr<SwapChain> swapChainManager_ = nullptr;
 
 
-	/* ディスクリプタ管理補助 */
-
-	class DescriptorAllocator {
-	private:
-
-		// 次の空きディスクリプタの番号 0はImGui
-		uint32_t nextIndex_ = 1;
-
-		// 空いたディスクリプタの番号
-		std::vector<uint32_t> freeIndices_{};
-
-	public:
-
-		DescriptorAllocator() = default;
-		~DescriptorAllocator() = default;
-
-		uint32_t AllocateIndex() {
-
-			if (freeIndices_.empty()) {
-
-				auto index = nextIndex_;
-
-				nextIndex_++;
-
-				return index;
-
-			}
-
-			uint32_t index = freeIndices_.back();
-
-			freeIndices_.pop_back();
-
-			return index;
-
-		}
-
-		void Free(const uint32_t index) {
-
-			freeIndices_.push_back(index);
-
-		}
-
-	};
-
-
 	/* SRV */
 
-	// SRV(Shader Resource View)ディスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
-
-	// SRVディスクリプタ番号管理
-	std::unique_ptr<DescriptorAllocator> srvDescriptorIndexManager_ = nullptr;
-
-	// SRVハンドルサイズ
-	uint32_t srvHandleSize_ = 0;
+	std::unique_ptr<DescriptorAllocator> srvAllocator_ = nullptr;
 
 
 	/* RTV */
 
-	// RTV(Render Target View)ディスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> rtvDescriptorHeap_ = nullptr;
-
-	// RTVディスクリプタハンドル
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2]{};
+	std::unique_ptr<DescriptorAllocator> rtvAllocator_ = nullptr;
 
 
 	/* フェンス / フェンスイベント */
@@ -308,8 +253,8 @@ private:
 
 	/* depthStencil */
 
-	// DSVディスクリプタヒープ DSV(Depth Stencil View)
-	ComPtr<ID3D12DescriptorHeap> dsvDescriptorHeap_ = nullptr;
+	// DSVディスクリプタヒープ(Depth Stencil View)
+	std::unique_ptr<DescriptorAllocator> dsvAllocator_ = nullptr;
 
 	// DepthStencilResource
 	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
@@ -470,15 +415,6 @@ private:
 	/// <param name="sizeInBytes"> Resourceのサイズ </param>
 	/// <returns> Resource </returns>
 	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
-
-	/// <summary>
-	/// DescriptorHeap作成
-	/// </summary>
-	/// <param name="heapType"> Heapの種類 </param>
-	/// <param name="descriptorsNum"> Descriptorの数 </param>
-	/// <param name="shaderVisible"> Shaderに使用するか </param>
-	/// <returns></returns>
-	ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT descriptorsNum, bool shaderVisible);
 
 	/// <summary>
 	/// MaterialResourceの作成

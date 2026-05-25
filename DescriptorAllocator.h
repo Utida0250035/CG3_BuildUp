@@ -9,6 +9,7 @@
 #include <vector>
 #include <cassert>
 #include <wrl/client.h>
+#include <string>
 
 class DescriptorAllocator {
 
@@ -30,7 +31,7 @@ private:
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	// ディスクリプタヒープ
-	ComPtr<ID3D12DescriptorHeap> srvDescriptorHeap_ = nullptr;
+	ComPtr<ID3D12DescriptorHeap> descriptorHeap_ = nullptr;
 
 	// 次の未使用ディスクリプタの番号
 	uint32_t nextIndex_ = 0;
@@ -55,8 +56,14 @@ public:
 	DescriptorAllocator() = default;
 	~DescriptorAllocator() = default;
 
-	DescriptorHandle Allocate();
+	void Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptors, const bool isShaderVisible, const std::wstring descriptorName, ComPtr<ID3D12Device>& device);
 
+	DescriptorHandle Allocate();
+	DescriptorHandle GetHandle(const uint32_t index);
 	void Free(const uint32_t index);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuStart()const { return cpuStart_; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGpuStart()const { return gpuStart_; }
+	ComPtr<ID3D12DescriptorHeap>& GetDescriptorHeap() { return descriptorHeap_; }
 
 };

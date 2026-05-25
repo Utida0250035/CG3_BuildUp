@@ -1,7 +1,8 @@
 #include "SwapChain.h"
+#include "Log.h"
 #include <string>
 
-void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory7>& dxgiFactory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd) {
+void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<ID3D12Device>& device, ComPtr<IDXGIFactory7>& dxgiFactory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd, const std::unique_ptr<DescriptorAllocator>& rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc) {
 
 	// スワップチェーンに渡す情報
 	DXGI_SWAP_CHAIN_DESC1 swapChainDesc{};
@@ -26,6 +27,22 @@ void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight
 		// バッファの命名
 		hr = swapChainResources_[i]->SetName((L"swapChainResource" + std::to_wstring(i)).c_str());
 		assert(SUCCEEDED(hr));
+
+	}
+
+	LogFile::GetInstance()->Log("Created SwapChain");
+
+	rtvAllocator->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, kBackBufferCount, false, L"rtvDescriptors", device);
+
+
+
+	for (uint32_t i = 0; i < kBackBufferCount; ++i) {
+
+		DescriptorAllocator::DescriptorHandle handle = rtvAllocator->GetHandle(i);
+
+		rtvHandles_[i] = handle.cpu;
+
+		device->CreateRenderTargetView(swapChainResources_[i].Get(), &rtvDesc, rtvHandles_[i]);
 
 	}
 

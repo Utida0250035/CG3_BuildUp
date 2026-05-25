@@ -475,33 +475,6 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 }
 
-ComPtr<ID3D12DescriptorHeap> AtrumEngine::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible) {
-
-	ComPtr<ID3D12DescriptorHeap> descriptorHeap = nullptr;
-	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
-	descriptorHeapDesc.Type = heapType;
-	descriptorHeapDesc.NumDescriptors = numDescriptors;
-
-	if (shaderVisible) {
-
-		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-
-	} else {
-
-		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	}
-
-	hr_ = renderDevice_->GetDevice()->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap));
-
-	// ディスクリプタヒープが生成できなかったら起動不可
-	assert(SUCCEEDED(hr_));
-
-	LogFile::GetInstance()->Log("Created DescriptorHeap");
-
-	return descriptorHeap;
-
-}
-
 void AtrumEngine::CreateMaterialResource() {
 
 	// Color * maxCount分サイズを用意
@@ -678,13 +651,12 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
+	DescriptorAllocator::DescriptorHandle textureHandle{};
 
-	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle{};
-
-	textureHandle.ptr = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart().ptr + textureIndex * srvHandleSize_;
+	textureHandle = srvAllocator_->GetHandle(textureIndex);
 
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
-	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle);
+	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
 	commandContextDirect_->GetCommandList()->DrawInstanced(3, 1, triangleDrewCount_ * 3, 0);
@@ -730,52 +702,31 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	this->PrepareWindow(windowLabel, clientWidth, clientHeight);
 
 	// レンダリングデバイスを生成
-	renderDevice_.reset(new RenderDevice());
+	renderDevice_ = std::make_unique<RenderDevice>();
 	// レンダリングデバイスを初期化
 	renderDevice_->Initialize();
 
 
 	// 描画コマンド経路を生成
-	commandContextDirect_.reset(new CommandContext);
+	commandContextDirect_ = std::make_unique<CommandContext>();
 	// 描画コマンド経路を初期化
 	commandContextDirect_->Initialize(renderDevice_->GetDevice(), SwapChain::kBackBufferCount, D3D12_COMMAND_LIST_TYPE_DIRECT);
 
-	swapChainManager_.reset(new SwapChain());
-	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_);
 
-
-	// RTVディスクリプタヒープの生成
-	rtvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
-
-	hr_ = rtvDescriptorHeap_->SetName(L"rtvDescriptorHeap");
-	assert(SUCCEEDED(hr_));
-
-
-	// SRVディスクリプタヒープの生成
-	srvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
-
-	hr_ = srvDescriptorHeap_->SetName(L"srvDescriptorHeap");
-	assert(SUCCEEDED(hr_));
-
-
+	swapChainManager_ = std::make_unique<SwapChain>();
+	rtvAllocator_ = std::make_unique<DescriptorAllocator>();
+	
 	// RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-	// ディスクリプタの先頭を取得
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvStartHandle = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_, rtvAllocator_, rtvDesc);
 
 
-	// 1つめのRTV作成
-	rtvHandles_[0] = rtvStartHandle;
-	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainManager_->GetSwapChainResource(0).Get(), &rtvDesc, rtvHandles_[0]);
-
-	// 2つめのRTVディスクリプタハンドルを作る
-	rtvHandles_[1].ptr = rtvHandles_[0].ptr + renderDevice_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	// 2つめのRTVを作る
-	renderDevice_->GetDevice()->CreateRenderTargetView(swapChainManager_->GetSwapChainResource(1).Get(), &rtvDesc, rtvHandles_[1]);
+	// SRVディスクリプタヒープの生成
+	srvAllocator_ = std::make_unique<DescriptorAllocator>();
+	srvAllocator_->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true, L"srvDescriptors", renderDevice_->GetDevice());
 
 
 	// 初期値0でFenceを作成
@@ -814,13 +765,10 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	this->CreateVertexBufferView();
 
-	srvDescriptorIndexManager_.reset(new DescriptorAllocator());
-
-	srvHandleSize_ = renderDevice_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
 	depthStencilResource_ = this->CreateDepthStencilResource(clientWidth_, clientHeight_);
 
-	dsvDescriptorHeap_ = this->CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	dsvAllocator_ = std::make_unique<DescriptorAllocator>();
+	dsvAllocator_->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false, L"dsvDescriptor", renderDevice_->GetDevice());
 
 	// DSVの設定
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
@@ -829,7 +777,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// 2dTexture
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 	// DSVHeapの先頭にDSVを作る
-	renderDevice_->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart());
+	renderDevice_->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, dsvAllocator_->GetCpuStart());
 
 
 	/* Sprite */
@@ -852,19 +800,30 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 #ifdef USE_IMGUI
 
 	// ImGuiの初期化
+	
 	IMGUI_CHECKVERSION();
+	
 	ImGui::CreateContext();
+	
 	ImGui::StyleColorsDark();
+	
 	ImGui_ImplWin32_Init(hwnd_);
+	
+	DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
+
+	imguiSrvHandle = srvAllocator_->Allocate();
+
 	ImGui_ImplDX12_Init(
 		renderDevice_->GetDevice().Get(),
 		SwapChain::kBackBufferCount,
 		rtvDesc.Format,
-		srvDescriptorHeap_.Get(),
-		srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart(),
-		srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart()
+		srvAllocator_->GetDescriptorHeap().Get(),
+		imguiSrvHandle.cpu,
+		imguiSrvHandle.gpu
 	);
+
 	ImGuiIO& io = ImGui::GetIO();
+	
 	io.Fonts->Build();
 
 #endif
@@ -873,8 +832,12 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// 浮動小数点例外を有効にする
 	unsigned int currentControl;
+
+
 	// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) を有効化
+	
 	_controlfp_s(&currentControl, 0u, _MCW_EM);
+	
 	_controlfp_s(&currentControl, static_cast<unsigned int>(~(_EM_ZERODIVIDE | _EM_INVALID)), _MCW_EM);
 
 #endif
@@ -992,18 +955,18 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier_);
 
 	// 描画先のRTVとDSVを設定
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	commandContextDirect_->GetCommandList()->OMSetRenderTargets(1, &rtvHandles_[swapChainManager_->GetBackBufferIndex()], false, &dsvHandle);
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvAllocator_->GetCpuStart();
+	commandContextDirect_->GetCommandList()->OMSetRenderTargets(1, swapChainManager_->PGetRtvHandleCurrent(), false, &dsvHandle);
 
 	// 指定した深度(1.0f)で画面全体をクリアする
 	commandContextDirect_->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	// 指定色で画面全体をクリアする
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 1.0f };
-	commandContextDirect_->GetCommandList()->ClearRenderTargetView(rtvHandles_[swapChainManager_->GetBackBufferIndex()], clearColor, 0, nullptr);
+	commandContextDirect_->GetCommandList()->ClearRenderTargetView(swapChainManager_->GetRtvHandleCurrent(), clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvDescriptorHeap_.Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap().Get()};
 	commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 	// Viewportを設定
@@ -1427,21 +1390,25 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 }
 
 void AtrumEngine::MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData) {
+	
 	// metaDataを基にSRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metaData.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	
 	// 2Dテクスチャ
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = UINT(metaData.mipLevels);
 
 	// SRVを作成するDescriptionHeapの場所を決める
-	texture.srvHandleCPU = srvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	texture.srvHandleGPU = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+	
+	DescriptorAllocator::DescriptorHandle handle{};
 
-	texture.srvIndex = srvDescriptorIndexManager_->AllocateIndex();
-	texture.srvHandleCPU.ptr += texture.srvIndex * srvHandleSize_;
-	texture.srvHandleGPU.ptr += texture.srvIndex * srvHandleSize_;
+	handle = srvAllocator_->Allocate();
+
+	texture.srvHandleCPU = handle.cpu;
+	texture.srvHandleGPU = handle.gpu;
+	texture.srvIndex = handle.index;
 
 	// SRVの作成
 	renderDevice_->GetDevice()->CreateShaderResourceView(texture.resource.Get(), &srvDesc, texture.srvHandleCPU);
@@ -1657,12 +1624,11 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
-	D3D12_GPU_DESCRIPTOR_HANDLE textureHandle{};
-
-	textureHandle.ptr = srvDescriptorHeap_->GetGPUDescriptorHandleForHeapStart().ptr + textureIndex * srvHandleSize_;
+	DescriptorAllocator::DescriptorHandle textureHandle{};
+	textureHandle = srvAllocator_->GetHandle(textureIndex);
 
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
-	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle);
+	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 6頂点で1つのインスタンス
 	commandContextDirect_->GetCommandList()->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);

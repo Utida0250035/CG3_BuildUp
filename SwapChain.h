@@ -30,9 +30,12 @@ private:
 	// スワップチェーンリソース
 	ComPtr<ID3D12Resource> swapChainResources_[kBackBufferCount] = { nullptr };
 
+	// RTVディスクリプタハンドル
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[kBackBufferCount]{};
+
 public:
 
-	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<IDXGIFactory7>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd);
+	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<ID3D12Device>& device, ComPtr<IDXGIFactory7>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd, const std::unique_ptr<DescriptorAllocator>& rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc);
 
 	void UpdateBackBufferIndex();
 
@@ -42,5 +45,8 @@ public:
 	ComPtr<ID3D12Resource>& GetSwapChainResourceCurrent() { return swapChainResources_[backBufferIndex_]; }
 	ComPtr<ID3D12Resource>& GetSwapChainResource(const size_t index) { return swapChainResources_[index]; }
 	UINT GetBackBufferIndex() const { return backBufferIndex_; }
+	D3D12_CPU_DESCRIPTOR_HANDLE* PGetRtvHandles() { return rtvHandles_; }
+	D3D12_CPU_DESCRIPTOR_HANDLE* PGetRtvHandleCurrent() { return &rtvHandles_[backBufferIndex_]; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetRtvHandleCurrent() const { return rtvHandles_[backBufferIndex_]; }
 
 };
