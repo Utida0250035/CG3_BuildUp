@@ -5,7 +5,7 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #include <cassert>
 #include <wrl/client.h>
