@@ -28,7 +28,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* 3dカメラ */
 
 	// カメラの座標情報
-	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -300.0f} };
+	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -50.0f} };
 
 	/* Triangle */
 
@@ -37,16 +37,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	
 	std::array<AtrumEngine::VertexData, 3> triangleVertexData = {
-		Vector4{-50.0f, -50.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f},
-		Vector4{0.0f, 50.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f},
-		Vector4{50.0f, -50.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}
+		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f},
+		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f},
+		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}
 	};
 
 	/* Sphere */
 
 	AtrumEngine::Transform sphereTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 	Vector4 sphereColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	float sphereRadius = 50.0f;
+	float sphereRadius = 5.0f;
 
 	/* Sprite */
 	
@@ -73,6 +73,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			///
 
 #ifdef USE_IMGUI
+
+			ImGui::Begin("camera");
+
+			ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.03125f);
+
+			ImGui::End();
 
 			ImGui::Begin("triangle");
 
