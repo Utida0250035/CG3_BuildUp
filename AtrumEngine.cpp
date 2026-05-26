@@ -1,4 +1,5 @@
 #include "AtrumEngine.h"
+#include "StaticCast.h"
 #include "CommandContext.h"
 #include "RenderDevice.h"
 #include "ConvertString.h"
@@ -35,6 +36,7 @@
 #include <memory>
 #include <filesystem>
 #include <cfloat>
+#include <numbers>
 
 AtrumEngine* AtrumEngine::instance_ = nullptr;
 
@@ -681,6 +683,8 @@ void AtrumEngine::SetUpScissorRect() {
 
 void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
+	assert(isInitialized_ && "AtrumEngine is not initialized");
+
 	// --- TransformMatrix (WVP) のアドレス計算 ---
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
 
@@ -706,6 +710,46 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
 	commandContextDirect_->GetCommandList()->DrawInstanced(3, 1, triangleDrewCount_ * 3, 0);
+
+	triangleDrewCount_++;
+
+	constantBufferCount_++;
+
+}
+
+void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere) {
+
+	assert(isInitialized_ && "AtrumEngine is not initialized");
+
+	// --- TransformMatrix (WVP) のアドレス計算 ---
+	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
+
+	// offset = インデックス × 256バイト
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(WvpData));
+
+	// GPUに設定
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
+
+	// --- Material (Color) のアドレス計算 ---
+	// ※こちらも定数バッファなら同様に256バイトずつずらす必要があります
+	D3D12_GPU_VIRTUAL_ADDRESS materialBaseAddr = materialResource_->GetGPUVirtualAddress();
+	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBaseAddr + (constantBufferCount_ * sizeof(MaterialData));
+
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+
+	DescriptorAllocator::DescriptorHandle textureHandle{};
+
+	textureHandle = srvAllocator_->GetHandle(textureIndex);
+
+	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+	// 描画(DrawCall) 3頂点で1つのインスタンス
+	commandContextDirect_->GetCommandList()->DrawInstanced(triangleCountInSphere * 3, 1, triangleDrewCount_ * 3, 0);
+
+	triangleDrewCount_ += triangleCountInSphere;
+
+	constantBufferCount_++;
 
 }
 
@@ -1546,7 +1590,7 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 }
 
-void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& color, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData) {
+void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1563,9 +1607,9 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 	Matrix4x4 triangleWorldMatrix = this->CreateWorldMatrix(triangleTransform);
 
 	// CPU上のマッピング済みアドレスにオフセットを加えて書き込み
-	wvpData_[triangleDrewCount_].data = triangleWorldMatrix * viewMatrix * projectionMatrix;
+	wvpData_[constantBufferCount_].data = triangleWorldMatrix * viewMatrix * projectionMatrix;
 
-	materialData_[triangleDrewCount_].data = color;
+	materialData_[constantBufferCount_].data = textureColor;
 
 	// 左下
 	vertexData_[triangleDrewCount_ * 3] = vertexData[0];
@@ -1579,11 +1623,86 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& colo
 	// 描画
 	this->DrawTriangleCall(textureIndex);
 
-	triangleDrewCount_++;
+}
 
-	constantBufferCount_++;
+void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision) {
+
+	assert(isInitialized_ && "AtrumEngine is not initialized");
+
+	// カメラのワールド行列
+	Matrix4x4 cameraWorldMatrix = this->CreateWorldMatrix(cameraTransform);
+
+	// ビュー行列
+	Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
+
+	// 透視投影行列
+	Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+
+	// 球のTransform
+	Matrix4x4 sphereWorldMatrix = this->CreateWorldMatrix(sphereTransform);
+
+	wvpData_[constantBufferCount_].data = sphereWorldMatrix * viewMatrix * projectionMatrix;
+
+	materialData_[constantBufferCount_].data = textureColor;
+
+	const float kLonEvery = std::numbers::pi_v<float> *2.0f / Float(subdivision);
+	const float kLatEvery = std::numbers::pi_v<float> / Float(subdivision);
+
+	VertexData pointA{}, pointB{}, pointC{}, pointD{};
+
+	float lat = 0.0f;
+	float lon = 0.0f;
+
+	uint32_t vertexDataIndex = triangleDrewCount_ * 3;
+
+	uint32_t triangleCountInSphere = 0;
+
+	for (size_t latIndex = 0; latIndex < subdivision; ++latIndex) {
+
+		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * Float(latIndex);
+
+		for (size_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
+
+			lon = static_cast<float>(lonIndex) * kLonEvery;
+
+			pointA.position = Vector4{ cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon), 0.0f } * radius;
+			pointA.position.w = 1.0f;
+			pointA.texCoord = Vector2{Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision)};
+
+			pointB.position = Vector4{ cos(lat + kLatEvery) * cos(lon), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon), 0.0f } * radius;
+			pointB.position.w = 1.0f;
+			pointB.texCoord = Vector2{ Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
+
+			pointC.position = Vector4{ cos(lat) * cos(lon + kLonEvery), sin(lat), cos(lat) * sin(lon + kLonEvery) , 0.0f} * radius;
+			pointC.position.w = 1.0f;
+			pointC.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision) };
+
+			pointD.position = Vector4{ cos(lat + kLatEvery) * cos(lon + kLonEvery), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon + kLonEvery), 0.0f } * radius;
+			pointD.position.w = 1.0f;
+			pointD.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
+
+			vertexData_[vertexDataIndex++] = pointC;
+
+			vertexData_[vertexDataIndex++] = pointA;
+			
+			vertexData_[vertexDataIndex++] = pointB;
+			
+			vertexData_[vertexDataIndex++] = pointB;
+			
+			vertexData_[vertexDataIndex++] = pointD;
+			
+			vertexData_[vertexDataIndex++] = pointC;
+
+			triangleCountInSphere += 2;
+		
+		}
+
+	}
+
+	this->DrawSphereCall(textureIndex, triangleCountInSphere);
 
 }
+
 
 void AtrumEngine::PrepareSprite() {
 
@@ -1601,7 +1720,7 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 	Matrix4x4 viewMatrix = MakeIdentityMatrix4x4();
 
 	// 透視投影行列
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, static_cast<float>(clientWidth_), static_cast<float>(clientHeight_), 0.0f, 100.0f);
+	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, Float(clientWidth_), Float(clientHeight_), 0.0f, 100.0f);
 
 	// 三角形のTransform
 	Matrix4x4 worldMatrix = this->CreateWorldMatrix(rectTransform);
@@ -1644,10 +1763,6 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 	// 描画
 	this->DrawSpriteCall(textureIndex);
-
-	spriteTriangleDrewCount_ += 2;
-
-	spriteConstantBufferCount_++;
 
 }
 
@@ -1698,6 +1813,10 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	// 描画(DrawCall) 6頂点で1つのインスタンス
 	commandContextDirect_->GetCommandList()->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);
+
+	spriteTriangleDrewCount_ += 2;
+
+	spriteConstantBufferCount_++;
 
 }
 
