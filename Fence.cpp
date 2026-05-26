@@ -9,7 +9,7 @@ void Fence::Initialize(ComPtr<ID3D12Device>& device, const uint32_t backBufferCo
 	// fenceValues_の要素数をバッファ数に合わせて全要素を0で初期化
 	fenceValues_.resize(static_cast<size_t>(backBufferCount), 0u);
 
-	HRESULT hr = device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	[[maybe_unused]]HRESULT hr = device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 	assert(SUCCEEDED(hr));
 
 	fenceEvent_ = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -29,7 +29,7 @@ void Fence::Signal(ComPtr<ID3D12CommandQueue>& commandQueue, const uint32_t back
 	totalFenceCount_++;
 	fenceValues_[backBufferIndex] = totalFenceCount_;
 
-	HRESULT hr = commandQueue->Signal(fence_.Get(), totalFenceCount_);
+	[[maybe_unused]]HRESULT hr = commandQueue->Signal(fence_.Get(), totalFenceCount_);
 	assert(SUCCEEDED(hr));
 
 }
@@ -45,7 +45,7 @@ void Fence::WaitForNextBuffer(const uint32_t nextBackBufferIndex) {
 
 	if (fence_->GetCompletedValue() < targetValue) {
 
-		HRESULT hr = fence_->SetEventOnCompletion(targetValue, fenceEvent_);
+		[[maybe_unused]]HRESULT hr = fence_->SetEventOnCompletion(targetValue, fenceEvent_);
 		assert(SUCCEEDED(hr));
 		WaitForSingleObject(fenceEvent_, INFINITE);
 
@@ -62,7 +62,7 @@ void Fence::ForceSyncGPU(ComPtr<ID3D12CommandQueue>& commandQueue) {
 
 	if (fence_->GetCompletedValue() < totalFenceCount_) {
 
-		HRESULT hr = fence_->SetEventOnCompletion(totalFenceCount_, fenceEvent_);
+		[[maybe_unused]]HRESULT hr = fence_->SetEventOnCompletion(totalFenceCount_, fenceEvent_);
 		assert(SUCCEEDED(hr));
 		WaitForSingleObject(fenceEvent_, INFINITE);
 
