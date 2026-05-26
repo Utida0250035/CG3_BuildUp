@@ -402,6 +402,11 @@ void AtrumEngine::SetUpInputLayout() {
 	inputElementDescriptions_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescriptions_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
+	inputElementDescriptions_[2].SemanticName = "NORMAL";
+	inputElementDescriptions_[2].SemanticIndex = 0;
+	inputElementDescriptions_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDescriptions_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+
 	inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
 	inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
 
@@ -519,10 +524,10 @@ void AtrumEngine::CreateWvpResource() {
 	assert(!isInitialized_ && "CreateWvpResource() is initializeHelper");
 
 	// Matrix4x4 maxCount個分のサイズを用意する
-	wvpResource_ = this->CreateBufferResource(sizeof(WvpData) * triangleMaxDrawCount_);
+	wvpResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * triangleMaxDrawCount_);
 
 	// データを書き込むためのアドレスを取得
-	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
+	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationData_));
 
 	LogFile::GetInstance()->Log("Created WvpResource");
 
@@ -639,6 +644,8 @@ void AtrumEngine::CreateSpriteMaterialResource() {
 	// マテリアルにデータを書き込むためのアドレスを取得
 	spriteMaterialResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteMaterialData_));
 
+	spriteMaterialData_->enableLighting = false;
+
 	LogFile::GetInstance()->Log("Created MaterialResource");
 
 }
@@ -648,7 +655,7 @@ void AtrumEngine::CreateSpriteTransformationResource() {
 	assert(!isInitialized_ && "CreateSpriteTransformationResource() is initializeHelper");
 
 	// 4x4行列 maxCount個分のサイズを用意する
-	spriteTransformationMatrixResource_ = this->CreateBufferResource(sizeof(WvpData) * spriteTriangleMaxDrawCount_);
+	spriteTransformationMatrixResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * spriteTriangleMaxDrawCount_);
 
 	// データを書き込むためのアドレス取得
 	spriteTransformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteTransformData_));
@@ -689,7 +696,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
 
 	// offset = インデックス × 256バイト
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(WvpData));
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(TransformationMatrix));
 
 	// GPUに設定
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
@@ -725,7 +732,7 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& t
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
 
 	// offset = インデックス × 256バイト
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(WvpData));
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(TransformationMatrix));
 
 	// GPUに設定
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
@@ -1607,7 +1614,8 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 	Matrix4x4 triangleWorldMatrix = this->CreateWorldMatrix(triangleTransform);
 
 	// CPU上のマッピング済みアドレスにオフセットを加えて書き込み
-	wvpData_[constantBufferCount_].data = triangleWorldMatrix * viewMatrix * projectionMatrix;
+	transformationData_[constantBufferCount_].wvp = triangleWorldMatrix * viewMatrix * projectionMatrix;
+	transformationData_[constantBufferCount_].world = triangleWorldMatrix;
 
 	materialData_[constantBufferCount_].data = textureColor;
 
@@ -1641,7 +1649,8 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 	// 球のTransform
 	Matrix4x4 sphereWorldMatrix = this->CreateWorldMatrix(sphereTransform);
 
-	wvpData_[constantBufferCount_].data = sphereWorldMatrix * viewMatrix * projectionMatrix;
+	transformationData_[constantBufferCount_].wvp = sphereWorldMatrix * viewMatrix * projectionMatrix;
+	transformationData_[constantBufferCount_].world = sphereWorldMatrix;
 
 	materialData_[constantBufferCount_].data = textureColor;
 
@@ -1668,18 +1677,22 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 			pointA.position = Vector4{ cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon), 0.0f } * radius;
 			pointA.position.w = 1.0f;
 			pointA.texCoord = Vector2{Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision)};
+			pointA.normal = VectorNormalize(Vector3{ pointA.position.x, pointA.position.y, pointA.position.z });
 
 			pointB.position = Vector4{ cos(lat + kLatEvery) * cos(lon), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon), 0.0f } * radius;
 			pointB.position.w = 1.0f;
 			pointB.texCoord = Vector2{ Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
+			pointB.normal = VectorNormalize(Vector3{ pointB.position.x, pointB.position.y, pointB.position.z });
 
 			pointC.position = Vector4{ cos(lat) * cos(lon + kLonEvery), sin(lat), cos(lat) * sin(lon + kLonEvery) , 0.0f} * radius;
 			pointC.position.w = 1.0f;
 			pointC.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision) };
+			pointC.normal = VectorNormalize(Vector3{ pointC.position.x, pointC.position.y, pointC.position.z });
 
 			pointD.position = Vector4{ cos(lat + kLatEvery) * cos(lon + kLonEvery), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon + kLonEvery), 0.0f } * radius;
 			pointD.position.w = 1.0f;
 			pointD.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
+			pointD.normal = VectorNormalize(Vector3{ pointD.position.x, pointD.position.y, pointD.position.z });
 
 			vertexData_[vertexDataIndex++] = pointC;
 
@@ -1725,7 +1738,8 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 	// 三角形のTransform
 	Matrix4x4 worldMatrix = this->CreateWorldMatrix(rectTransform);
 
-	spriteTransformData_[spriteConstantBufferCount_].data = worldMatrix * viewMatrix * projectionMatrix;
+	spriteTransformData_[spriteConstantBufferCount_].wvp = worldMatrix * viewMatrix * projectionMatrix;
+	spriteTransformData_[spriteConstantBufferCount_].world = worldMatrix;
 
 	spriteMaterialData_[spriteConstantBufferCount_].data = textureColor;
 
@@ -1735,12 +1749,16 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 	Vector2 halfSize = rectSize * 0.5f;
 
+	Vector3 normal = Vector3{ 0.0f, 0.0f, -1.0f };
+
 	// 左下
 	spriteVertexData_[vertexCount].texCoord = { 0.0f, 1.0f };
+	spriteVertexData_[vertexCount].normal = normal;
 	spriteVertexData_[vertexCount++].position = { -halfSize.x, halfSize.y, 0.0f, 1.0f };
 
 	// 左上
 	spriteVertexData_[vertexCount].texCoord = { 0.0f, 0.0f };
+	spriteVertexData_[vertexCount].normal = normal;
 	spriteVertexData_[vertexCount++].position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
 
 	// 右下
@@ -1751,14 +1769,17 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 	// 左上
 	spriteVertexData_[vertexCount].texCoord = { 0.0f, 0.0f };
+	spriteVertexData_[vertexCount].normal = normal;
 	spriteVertexData_[vertexCount++].position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
 
 	// 右上
 	spriteVertexData_[vertexCount].texCoord = { 1.0f, 0.0f };
+	spriteVertexData_[vertexCount].normal = normal;
 	spriteVertexData_[vertexCount++].position = { halfSize.x, -halfSize.y, 0.0f, 1.0f };
 
 	// 右下
 	spriteVertexData_[vertexCount].texCoord = { 1.0f, 1.0f };
+	spriteVertexData_[vertexCount].normal = normal;
 	spriteVertexData_[vertexCount++].position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
 
 	// 描画
@@ -1794,7 +1815,7 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = spriteTransformationMatrixResource_->GetGPUVirtualAddress();
 
 	// offset = インデックス × 256バイト
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (spriteConstantBufferCount_ * sizeof(WvpData));
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (spriteConstantBufferCount_ * sizeof(TransformationMatrix));
 
 	// GPUに設定
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);

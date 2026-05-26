@@ -56,6 +56,7 @@ public:
 	struct VertexData {
 		Vector4 position;
 		Vector2 texCoord;
+		Vector3 normal;
 	};
 
 	struct Texture {
@@ -159,7 +160,7 @@ private:
 	/* InputLayout */
 
 	// InputLayoutの設定
-	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[3]{};
 
 	// inputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
@@ -212,17 +213,27 @@ private:
 	// 画面上の三角形の最大描画数
 	const uint32_t triangleMaxDrawCount_ = 1024;
 
-	struct WvpData {
-		Matrix4x4 data{};
-		float padding[48]{};
-	};
+	struct TransformationMatrix {
+		Matrix4x4 wvp{};
+		Matrix4x4 world{};
 
-	struct MaterialData {
-		Vector4 data{};
-		float padding[60]{};
+		// 4 * 16 + 4 * 16 = 128
+		// (256 - 128) / 4
+		// ConstantBuffer用の詰め物
+		int32_t padding[32]{};
 	};
 
 	/* Material */
+
+	struct MaterialData {
+		Vector4 data{};
+		int32_t enableLighting;
+
+		// 4 * 4 + 4 = 20
+		// (256 - 20) / 4
+		// CpnstantBuffer用の詰め物
+		int32_t padding[59]{};
+	};
 
 	// MaterialResource
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
@@ -237,7 +248,7 @@ private:
 	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
 
 	// WvpData 描画座標データ
-	WvpData* wvpData_ = nullptr;
+	TransformationMatrix* transformationData_ = nullptr;
 
 
 	/* constantBufferCount */
@@ -284,7 +295,7 @@ private:
 	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
 
 	// Sprite用 Transformデータ
-	WvpData* spriteTransformData_ = nullptr;
+	TransformationMatrix* spriteTransformData_ = nullptr;
 
 	/* Sprite用 constantBufferCount */
 
