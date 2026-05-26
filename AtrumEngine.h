@@ -480,6 +480,11 @@ private:
 	void DrawTriangleCall(const uint32_t& textureIndex);
 
 	/// <summary>
+	/// 球の描画呼び出し
+	/// </summary>
+	void DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere);
+
+	/// <summary>
 	/// Spriteの描画呼び出し
 	/// </summary>
 	void DrawSpriteCall(const uint32_t& textureIndex);
@@ -660,6 +665,16 @@ public:
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
 	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData);
+
+	/// <summary>
+	/// 球の描画
+	/// </summary>
+	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="triangleTransform"> 球の座標情報 </param>
+	/// <param name="cameraTransform"> カメラの座標情報 </param>
+	/// <param name="vertexData"> 球の半径 </param>
+	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision);
 
 	/// <summary>
 	/// Spriteの準備
