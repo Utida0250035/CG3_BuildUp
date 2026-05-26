@@ -24,6 +24,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* テクスチャ */
 
 	uint32_t textureUvChecker = atrum->GetTexture("./Resources/Images/uvChecker.png");
+	uint32_t textureMonsterBall = atrum->GetTexture("./Resources/Images/monsterBall.png");
+	uint32_t textureUvCheckerExtra = atrum->GetTexture("./Resources/Images/uvChecker.png");
 
 	/* 3dカメラ */
 
@@ -144,12 +146,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData);
 
-			atrum->DrawSphere(textureUvChecker, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16);
+			atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16);
 
 			// Sprite準備
 			atrum->PrepareSprite();
 
-			atrum->DrawSpriteRect(textureUvChecker, spriteColor, spriteTransform, spriteSize);
+			atrum->DrawSpriteRect(textureUvCheckerExtra, spriteColor, spriteTransform, spriteSize);
 
 			// 描画処理(後)
 			atrum->PostDraw();
