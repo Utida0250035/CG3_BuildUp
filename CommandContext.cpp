@@ -5,7 +5,7 @@ void CommandContext::CreateCommandQueue(ComPtr<ID3D12Device>& device) {
 
 	assert(!isInitialized_ && "CreateCommandQueue() is initializeHelper");
 
-	HRESULT hr;
+	[[maybe_unused]]HRESULT hr;
 
 	// コマンドキューの生成
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
@@ -29,7 +29,7 @@ void CommandContext::CreateCommandAllocators(ComPtr<ID3D12Device>& device, const
 
 	assert(!isInitialized_ && "CreateCommandAllocators() is initializeHelper");
 
-	HRESULT hr;
+	[[maybe_unused]]HRESULT hr;
 
 	commandAllocators_.resize(static_cast<size_t>(backBufferCount));
 
@@ -54,7 +54,7 @@ void CommandContext::CreateCommandList(ComPtr<ID3D12Device>& device) {
 
 	assert(!isInitialized_ && "CreateCommandList() is initializeHelper");
 
-	HRESULT hr;
+	[[maybe_unused]]HRESULT hr;
 
 	// コマンドリストの生成
 	hr = device->CreateCommandList(0, type_, commandAllocators_[0].Get(), nullptr, IID_PPV_ARGS(&commandList_));

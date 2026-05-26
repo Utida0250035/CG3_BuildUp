@@ -24,7 +24,7 @@ void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptor
 
 	}
 
-	HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap_));
+	[[maybe_unused]]HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap_));
 
 	// ディスクリプタヒープが生成できなかったら起動不可
 	assert(SUCCEEDED(hr));

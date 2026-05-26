@@ -94,7 +94,7 @@ private:
 	/* エラー処理 */
 
 	// Windowsエラーハンドル
-	HRESULT hr_{};
+	[[maybe_unused]]HRESULT hr_{};
 
 
 	/* RenderDevice */

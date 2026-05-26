@@ -9,7 +9,7 @@ void RenderDevice::CreateDxgiFactory() {
 
 	assert(!isInitialized_ && "CreateDxgiFactory() is initializeHelper");
 
-	HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
+	[[maybe_unused]]HRESULT hr = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory_));
 
 	/*
 	初期化の根本的な段階でエラーが出た場合は
@@ -25,7 +25,7 @@ void RenderDevice::SelectAdapter() {
 
 	assert(!isInitialized_ && "SelectAdapter() is initializeHelper");
 
-	HRESULT hr;
+	[[maybe_unused]]HRESULT hr;
 
 	for (UINT i = 0; dxgiFactory_->EnumAdapterByGpuPreference(i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&useAdapter_)) != DXGI_ERROR_NOT_FOUND; ++i) {
 		// パフォーマンスが良い順にアダプタのリストを出させる 
@@ -69,7 +69,7 @@ void RenderDevice::CreateDevice() {
 
 	const char* featureLevelStrings[] = { "12.2", "12.1", "12.0" };
 
-	HRESULT hr;
+	[[maybe_unused]]HRESULT hr;
 
 	for (size_t i = 0; i < _countof(featureLevels); ++i) {
 		// 機能レベルが高い順に、生成できるか試していく
