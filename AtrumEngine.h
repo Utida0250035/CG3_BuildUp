@@ -260,7 +260,7 @@ private:
 	/* WVP */
 
 	// WvpResource
-	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
+	ComPtr<ID3D12Resource> transformationResource_ = nullptr;
 
 	// WvpData 描画座標データ
 	TransformationMatrix* transformationData_ = nullptr;
@@ -463,7 +463,7 @@ private:
 	/// <summary>
 	/// 初期化処理 WvpResource(TransformationMatrix用のリソース)の作成
 	/// </summary>
-	void CreateWvpResource();
+	void CreateTransformationResource();
 
 	/// <summary>
 	/// 初期化処理 PSOの生成

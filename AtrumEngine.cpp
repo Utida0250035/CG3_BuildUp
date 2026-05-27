@@ -527,15 +527,15 @@ void AtrumEngine::CreateMaterialResource() {
 
 }
 
-void AtrumEngine::CreateWvpResource() {
+void AtrumEngine::CreateTransformationResource() {
 
 	assert(!isInitialized_ && "CreateWvpResource() is initializeHelper");
 
 	// Matrix4x4 maxCount個分のサイズを用意する
-	wvpResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kTriangleMaxDrawCount);
+	transformationResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
-	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationData_));
+	transformationResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationData_));
 
 	LogFile::GetInstance()->Log("Created WvpResource");
 
@@ -722,7 +722,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Triangle)");
 
 	// --- TransformMatrix (WVP) のアドレス計算 ---
-	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
+	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = transformationResource_->GetGPUVirtualAddress();
 
 	// offset = インデックス × 256バイト
 	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(TransformationMatrix));
@@ -761,7 +761,7 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& t
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
 
 	// --- TransformMatrix (WVP) のアドレス計算 ---
-	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
+	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = transformationResource_->GetGPUVirtualAddress();
 
 	// offset = インデックス × 256バイト
 	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(TransformationMatrix));
@@ -863,36 +863,55 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	fenceManager_ = std::make_unique<Fence>();
 	fenceManager_->Initialize(renderDevice_->GetDevice(), SwapChain::kBackBufferCount);
 
+	// DXCの初期化
 	this->InitDXC();
 
+	// ルートシグネチャの作成
 	this->MakeRootSignature();
 
+	// InputLayoutの設定
 	this->SetUpInputLayout();
 
+	// BlendStateの設定
 	this->SetUpBlendState();
 
+	// RasterizerStateの設定
 	this->SetUpRasterizerState();
 
+	// DepthStencilStateの設定
 	this->SetUpDepthStencilState();
 
+	// シェーダーの用意
 	this->PrepareShader();
 
+	// ビューポートの設定
 	this->SetUpViewport();
 
+	// シザー矩形の設定
 	this->SetUpScissorRect();
 
+	// MaterialResourceの生成
 	this->CreateMaterialResource();
 
-	this->CreateWvpResource();
+	// TransformationResourceの生成
+	this->CreateTransformationResource();
 
+	// PSOの生成
 	this->CreatePSO();
 
+	// VertexResourceの生成
 	this->CreateVertexResource();
 
+	// VertexBufferViewの生成
 	this->CreateVertexBufferView();
 
+	// 平行光源リソースの生成
+	this->CreateDirectionalLightResource();
+
+	// 深度ステンシルリソースの生成
 	depthStencilResource_ = this->CreateDepthStencilResource(clientWidth_, clientHeight_);
 
+	// 深度ステンシルディスクリプタの生成
 	dsvAllocator_ = std::make_unique<DescriptorAllocator>();
 	dsvAllocator_->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false, L"dsvDescriptor", renderDevice_->GetDevice());
 
@@ -1133,7 +1152,7 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
 	// WVP用のCBufferの場所を設定
-	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, wvpResource_->GetGPUVirtualAddress());
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
 
 
 }

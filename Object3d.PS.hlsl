@@ -4,7 +4,7 @@
 struct DirectionalLight {
 	float32_t4 color;
 	float32_t3 direction;
-	float32_t intensity;
+	float intensity;
 };
 
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
@@ -29,10 +29,10 @@ PixelShaderOutput main(VertexShaderOutput input) {
 	
 	float32_t4 textureColor = gTexture.Sample(gSampler, input.texCoord);
 	
-	if (!gMaterial.enableLighting) {
+	if (gMaterial.enableLighting) {
 		
-		float cos = saturate(normalize(input.normal), gDirectionalLight.direction);
-		output.color = gMaterial.color * textureColor * cos * gDirectionalLight.insensity;
+		float cos = saturate(dot(normalize(input.normal), -gDirectionalLight.direction));
+		output.color = gMaterial.color * textureColor * cos * gDirectionalLight.intensity;
 		
 	} else {
 		
