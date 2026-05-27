@@ -306,7 +306,7 @@ void AtrumEngine::MakeRootSignature() {
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	// RootParameter作成 [0]:PixelShaderのMaterial [1]:VertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 
 	// CBVを使う
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
@@ -321,6 +321,14 @@ void AtrumEngine::MakeRootSignature() {
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	// レジスタ番号0を使う
 	rootParameters[1].Descriptor.ShaderRegister = 0;
+
+	// CBVを使う
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	// PixelShaderで使う
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	// レジスタ番号1を使う
+	rootParameters[3].Descriptor.ShaderRegister = 1;
+	
 
 	// ルートパラメータ配列へのポインタ
 	descriptionRootSignature.pParameters = rootParameters;
@@ -415,9 +423,9 @@ void AtrumEngine::SetUpInputLayout() {
 }
 
 void AtrumEngine::SetUpBlendState() {
-	
+
 	assert(!isInitialized_ && "SetUpBlendState() is initializeHelper");
-	
+
 	// BlendStateの設定
 
 	// 全ての色要素を書き込む
@@ -583,6 +591,7 @@ void AtrumEngine::CreateVertexResource() {
 
 	assert(!isInitialized_ && "CreateVertexResource() is initializeHelper");
 
+	// 三角形最大数 * 3 * データ1つ分のサイズ
 	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
@@ -606,6 +615,23 @@ void AtrumEngine::CreateVertexBufferView() {
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	LogFile::GetInstance()->Log("Created VertexBufferView");
+
+}
+
+void AtrumEngine::CreateDirectionalLightResource() {
+
+	assert(!isInitialized_ && "CreateDirectionalLightResource() is initializeHelper");
+
+	// Data1つ * triangleMaxCount のサイズを用意
+	directionalLightResource_ = this->CreateBufferResource(sizeof(DirectionalLightData) * kTriangleMaxDrawCount);
+
+	// データを書き込むためのアドレスを取得
+	directionalLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
+
+	// デフォルト値
+	directionalLightData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	directionalLightData_->direction = { 0.0f, -1.0f, 0.0f };
+	directionalLightData_->intensity = 1.0f;
 
 }
 
@@ -820,7 +846,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	swapChainManager_ = std::make_unique<SwapChain>();
 	rtvAllocator_ = std::make_unique<DescriptorAllocator>();
-	
+
 	// RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -900,15 +926,15 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 #ifdef USE_IMGUI
 
 	// ImGuiの初期化
-	
+
 	IMGUI_CHECKVERSION();
-	
+
 	ImGui::CreateContext();
-	
+
 	ImGui::StyleColorsDark();
-	
+
 	ImGui_ImplWin32_Init(hwnd_);
-	
+
 	DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
 
 	imguiSrvHandle = srvAllocator_->Allocate();
@@ -923,7 +949,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	);
 
 	ImGuiIO& io = ImGui::GetIO();
-	
+
 	io.Fonts->Build();
 
 #endif
@@ -935,9 +961,9 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 
 	// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) を有効化
-	
+
 	_controlfp_s(&currentControl, 0u, _MCW_EM);
-	
+
 	_controlfp_s(&currentControl, static_cast<unsigned int>(~(_EM_ZERODIVIDE | _EM_INVALID)), _MCW_EM);
 
 #endif
@@ -1082,7 +1108,7 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->ClearRenderTargetView(swapChainManager_->GetRtvHandleCurrent(), clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap().Get()};
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap().Get() };
 	commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 	// Viewportを設定
@@ -1143,7 +1169,7 @@ void AtrumEngine::PostDraw() {
 
 	// 次のフレーム番号を取得する
 	swapChainManager_->UpdateBackBufferIndex();
-	
+
 	fenceManager_->WaitForNextBuffer(swapChainManager_->GetBackBufferIndex());
 
 	if (!temporaryResources_.empty()) {
@@ -1503,20 +1529,20 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 }
 
 void AtrumEngine::MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData) {
-	
+
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
 	// metaDataを基にSRVの設定
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = metaData.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	
+
 	// 2Dテクスチャ
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = UINT(metaData.mipLevels);
 
 	// SRVを作成するDescriptionHeapの場所を決める
-	
+
 	DescriptorAllocator::DescriptorHandle handle{};
 
 	handle = srvAllocator_->Allocate();
@@ -1606,7 +1632,7 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 }
 
-void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData) {
+void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1628,6 +1654,17 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 
 	materialData_[constantBufferCount_].data = textureColor;
 
+	if (directionalLightData.has_value()) {
+
+		directionalLightData_[constantBufferCount_] = directionalLightData.value();
+		materialData_[constantBufferCount_].enableLighting = true;
+
+	} else {
+
+		materialData_[constantBufferCount_].enableLighting = false;
+
+	}
+
 	// 左下
 	vertexData_[triangleDrewCount_ * 3] = vertexData[0];
 
@@ -1642,7 +1679,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 
 }
 
-void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision) {
+void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1662,6 +1699,17 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 	transformationData_[constantBufferCount_].world = sphereWorldMatrix;
 
 	materialData_[constantBufferCount_].data = textureColor;
+
+	if (directionalLightData.has_value()) {
+
+		directionalLightData_[constantBufferCount_] = directionalLightData.value();
+		materialData_[constantBufferCount_].enableLighting = true;
+
+	} else {
+
+		materialData_[constantBufferCount_].enableLighting = false;
+
+	}
 
 	const float kLonEvery = std::numbers::pi_v<float> *2.0f / Float(subdivision);
 	const float kLatEvery = std::numbers::pi_v<float> / Float(subdivision);
@@ -1685,7 +1733,7 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 			pointA.position = Vector4{ cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon), 0.0f } * radius;
 			pointA.position.w = 1.0f;
-			pointA.texCoord = Vector2{Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision)};
+			pointA.texCoord = Vector2{ Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision) };
 			pointA.normal = VectorNormalize(Vector3{ pointA.position.x, pointA.position.y, pointA.position.z });
 
 			pointB.position = Vector4{ cos(lat + kLatEvery) * cos(lon), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon), 0.0f } * radius;
@@ -1693,7 +1741,7 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 			pointB.texCoord = Vector2{ Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
 			pointB.normal = VectorNormalize(Vector3{ pointB.position.x, pointB.position.y, pointB.position.z });
 
-			pointC.position = Vector4{ cos(lat) * cos(lon + kLonEvery), sin(lat), cos(lat) * sin(lon + kLonEvery) , 0.0f} * radius;
+			pointC.position = Vector4{ cos(lat) * cos(lon + kLonEvery), sin(lat), cos(lat) * sin(lon + kLonEvery) , 0.0f } * radius;
 			pointC.position.w = 1.0f;
 			pointC.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision) };
 			pointC.normal = VectorNormalize(Vector3{ pointC.position.x, pointC.position.y, pointC.position.z });
@@ -1706,17 +1754,17 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 			vertexData_[vertexDataIndex++] = pointC;
 
 			vertexData_[vertexDataIndex++] = pointA;
-			
+
 			vertexData_[vertexDataIndex++] = pointB;
-			
+
 			vertexData_[vertexDataIndex++] = pointB;
-			
+
 			vertexData_[vertexDataIndex++] = pointD;
-			
+
 			vertexData_[vertexDataIndex++] = pointC;
 
 			triangleCountInSphere += 2;
-		
+
 		}
 
 	}
@@ -1731,6 +1779,8 @@ void AtrumEngine::PrepareSprite() {
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
 	commandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, &spriteVertexBufferView_);
+
+	spriteMaterialData_->enableLighting = false;
 
 }
 
