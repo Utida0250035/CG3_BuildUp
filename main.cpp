@@ -19,7 +19,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	atrum->SetFps(60);
 
 	// 乱数シード生成
-	srand( static_cast<unsigned int>(time(nullptr)));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	/* テクスチャ */
 
@@ -35,13 +35,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* Triangle */
 
 	AtrumEngine::Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
-	
+
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	
+
 	std::array<AtrumEngine::VertexData, 3> triangleVertexData = {
-		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f},
-		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f},
-		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}
+		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f},
+		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f}, Vector3{0.0f, 0.0f, -1.0f},
+		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f}
 	};
 
 	/* Sphere */
@@ -51,10 +51,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	float sphereRadius = 5.0f;
 
 	/* Sprite */
-	
+
 	AtrumEngine::Transform spriteTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{256.0f, 128.0f} };
 	Vector4 spriteColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	Vector2 spriteSize = Vector2{ 512.0f, 256.0f };
+
+	/* DirectionalLight */
+
+	AtrumEngine::DirectionalLightData directionalLightData = AtrumEngine::DirectionalLightData{
+		.color = Vector4{1.0f, 1.0f, 1.0f, 1.0f},
+		.direction = Vector3{0.0f, -1.0f, 0.0f},
+		.intensity = 10.0f
+	};
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -83,6 +91,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::End();
 
+			ImGui::Begin("directionalLight");
+
+			ImGui::DragFloat4("color", &directionalLightData.color.x, 0.03125f);
+
+			ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
+
+			if (ImGui::IsItemActive()) {
+
+				directionalLightData.direction = VectorNormalize(directionalLightData.direction);
+
+			}
+
+			ImGui::DragFloat("intensity", &directionalLightData.intensity, 0.03125f);
+
+			ImGui::End();
+
 			ImGui::Begin("triangle");
 
 			ImGui::Text("transform");
@@ -92,7 +116,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("color, vertexData");
 			ImGui::DragFloat4("color", &triangleColor.x, 0.03125f, 0.0f, 1.0f);
-			
+
 			for (size_t i = 0; i < 3; ++i) {
 
 				ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangleVertexData[i].position.x, 0.03125f);
@@ -108,7 +132,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::DragFloat3("scale", &sphereTransform.scale.x, 0.03125f);
 			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, 0.03125f);
 			ImGui::DragFloat3("translate", &sphereTransform.translate.x, 0.03125f);
-			
+
 			ImGui::Text("color, radius");
 			ImGui::DragFloat4("color", &sphereColor.x, 0.03125f, 0.0f, 1.0f);
 			ImGui::DragFloat("radius", &sphereRadius);
@@ -122,7 +146,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.03125f);
 			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
 			ImGui::DragFloat3("translate", &spriteTransform.translate.x);
-			
+
 			ImGui::Text("color, size");
 			ImGui::DragFloat4("color", &spriteColor.x, 0.03125f, 0.0f, 1.0f);
 			ImGui::DragFloat2("size", &spriteSize.x);
@@ -144,9 +168,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			// 描画処理(前)
 			atrum->PreDraw();
 
-			atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData);
+			atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
 
-			atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16);
+			atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16, directionalLightData);
 
 			// Sprite準備
 			atrum->PrepareSprite();

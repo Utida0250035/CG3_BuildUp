@@ -37,6 +37,7 @@
 
 #include <memory>
 #include <map>
+#include <optional>
 
 class AtrumEngine final {
 
@@ -56,6 +57,7 @@ public:
 	struct VertexData {
 		Vector4 position;
 		Vector2 texCoord;
+		Vector3 normal;
 	};
 
 	struct Texture {
@@ -66,6 +68,20 @@ public:
 
 		// 使用するSRVディスクリプタの番号
 		uint32_t srvIndex = 1;
+	};
+
+	struct DirectionalLightData {
+		// 平行光源の色
+		Vector4 color;
+		// 平行光源の向き
+		Vector3 direction;
+		// 平行光源の輝度
+		float intensity;
+
+		// 4 * 4 + 4* 3 + 4 = 32
+		// 残り224バイト分
+		int32_t padding[56];
+
 	};
 
 private:
@@ -159,7 +175,7 @@ private:
 	/* InputLayout */
 
 	// InputLayoutの設定
-	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[2]{};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[3]{};
 
 	// inputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
@@ -210,19 +226,29 @@ private:
 	uint32_t triangleDrewCount_ = 0;
 
 	// 画面上の三角形の最大描画数
-	const uint32_t triangleMaxDrawCount_ = 1024;
+	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
 
-	struct WvpData {
-		Matrix4x4 data{};
-		float padding[48]{};
-	};
+	struct TransformationMatrix {
+		Matrix4x4 wvp{};
+		Matrix4x4 world{};
 
-	struct MaterialData {
-		Vector4 data{};
-		float padding[60]{};
+		// 4 * 16 + 4 * 16 = 128
+		// (256 - 128) / 4
+		// ConstantBuffer用の詰め物
+		int32_t padding[32]{};
 	};
 
 	/* Material */
+
+	struct MaterialData {
+		Vector4 data{};
+		int32_t enableLighting;
+
+		// 4 * 4 + 4 = 20
+		// (256 - 20) / 4
+		// CpnstantBuffer用の詰め物
+		int32_t padding[59]{};
+	};
 
 	// MaterialResource
 	ComPtr<ID3D12Resource> materialResource_ = nullptr;
@@ -234,10 +260,18 @@ private:
 	/* WVP */
 
 	// WvpResource
-	ComPtr<ID3D12Resource> wvpResource_ = nullptr;
+	ComPtr<ID3D12Resource> transformationResource_ = nullptr;
 
 	// WvpData 描画座標データ
-	WvpData* wvpData_ = nullptr;
+	TransformationMatrix* transformationData_ = nullptr;
+
+	/* DirectionalLight(3D専用) */
+
+	// 平行光源Resource
+	ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
+
+	// 平行光源Data
+	DirectionalLightData* directionalLightData_ = nullptr;
 
 
 	/* constantBufferCount */
@@ -267,7 +301,7 @@ private:
 
 	uint32_t spriteTriangleDrewCount_;
 
-	const uint32_t spriteTriangleMaxDrawCount_ = 1024;
+	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
 
 	/* Sprite用 Material */
 
@@ -284,7 +318,7 @@ private:
 	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
 
 	// Sprite用 Transformデータ
-	WvpData* spriteTransformData_ = nullptr;
+	TransformationMatrix* spriteTransformData_ = nullptr;
 
 	/* Sprite用 constantBufferCount */
 
@@ -429,7 +463,7 @@ private:
 	/// <summary>
 	/// 初期化処理 WvpResource(TransformationMatrix用のリソース)の作成
 	/// </summary>
-	void CreateWvpResource();
+	void CreateTransformationResource();
 
 	/// <summary>
 	/// 初期化処理 PSOの生成
@@ -445,6 +479,11 @@ private:
 	/// 初期化処理 VertexBufferViewの作成
 	/// </summary>
 	void CreateVertexBufferView();
+
+	/// <summary>
+	/// 初期化処理 平行光源Resourceの作成
+	/// </summary>
+	void CreateDirectionalLightResource();
 
 	/// <summary>
 	/// 初期化処理 Sprite用VertexResourceの生成
@@ -664,7 +703,7 @@ public:
 	/// <param name="triangleTransform"> 三角形の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData);
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
 
 	/// <summary>
 	/// 球の描画
@@ -674,7 +713,7 @@ public:
 	/// <param name="triangleTransform"> 球の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 球の半径 </param>
-	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision);
+	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
 
 	/// <summary>
 	/// Spriteの準備
