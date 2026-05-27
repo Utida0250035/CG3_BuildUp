@@ -721,21 +721,21 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	assert(triangleDrewCount_ + 1 < kTriangleMaxDrawCount && "triangleCount over maxCount(Triangle)");
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Triangle)");
 
-	// --- TransformMatrix (WVP) のアドレス計算 ---
-	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = transformationResource_->GetGPUVirtualAddress();
-
-	// offset = インデックス × 256バイト
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(TransformationMatrix));
+	// TransformMatrix (WVP) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationMatrix));
 
 	// GPUに設定
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
-	// --- Material (Color) のアドレス計算 ---
-	// ※こちらも定数バッファなら同様に256バイトずつずらす必要があります
-	D3D12_GPU_VIRTUAL_ADDRESS materialBaseAddr = materialResource_->GetGPUVirtualAddress();
-	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBaseAddr + (constantBufferCount_ * sizeof(MaterialData));
+	// Material (Color) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
 
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+
+	// 平行光源データのアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS directionalLightOffsetAddr = directionalLightResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(DirectionalLightData));
+	// GPUに設定(rootParameter3)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightOffsetAddr);
 
 	DescriptorAllocator::DescriptorHandle textureHandle{};
 
@@ -760,21 +760,20 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& t
 	assert(triangleDrewCount_ + triangleCountInSphere < kTriangleMaxDrawCount && "triangleCount over maxCount(Sphere)");
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
 
-	// --- TransformMatrix (WVP) のアドレス計算 ---
-	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = transformationResource_->GetGPUVirtualAddress();
-
-	// offset = インデックス × 256バイト
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (constantBufferCount_ * sizeof(TransformationMatrix));
-
-	// GPUに設定
+	// TransformMatrix (WVP) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationMatrix));
+	// GPUに設定(rootParameter0)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
-	// --- Material (Color) のアドレス計算 ---
-	// ※こちらも定数バッファなら同様に256バイトずつずらす必要があります
-	D3D12_GPU_VIRTUAL_ADDRESS materialBaseAddr = materialResource_->GetGPUVirtualAddress();
-	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBaseAddr + (constantBufferCount_ * sizeof(MaterialData));
-
+	// Material (Color) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
+	// GPUに設定(rootParameter1)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+
+	// 平行光源データのアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS directionalLightOffsetAddr = directionalLightResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(DirectionalLightData));
+	// GPUに設定(rootParameter3)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightOffsetAddr);
 
 	DescriptorAllocator::DescriptorHandle textureHandle{};
 
@@ -1912,8 +1911,6 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
-
-	assert(spriteTriangleDrewCount_ < 1024);
 
 	// 描画(DrawCall) 6頂点で1つのインスタンス
 	commandContextDirect_->GetCommandList()->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);

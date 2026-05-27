@@ -91,6 +91,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::End();
 
+			ImGui::Begin("directionalLight");
+
+			ImGui::DragFloat4("color", &directionalLightData.color.x, 0.03125f);
+
+			ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
+
+			if (ImGui::IsItemActive()) {
+
+				directionalLightData.direction = VectorNormalize(directionalLightData.direction);
+
+			}
+
+			ImGui::DragFloat("intensity", &directionalLightData.intensity, 0.03125f);
+
+			ImGui::End();
+
 			ImGui::Begin("triangle");
 
 			ImGui::Text("transform");
