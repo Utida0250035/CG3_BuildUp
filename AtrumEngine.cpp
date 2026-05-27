@@ -510,7 +510,7 @@ void AtrumEngine::CreateMaterialResource() {
 	assert(!isInitialized_ && "CreateMaterialResource() is initializeHelper");
 
 	// Color * maxCount分サイズを用意
-	materialResource_ = this->CreateBufferResource(sizeof(MaterialData) * triangleMaxDrawCount_);
+	materialResource_ = this->CreateBufferResource(sizeof(MaterialData) * kTriangleMaxDrawCount);
 
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
@@ -524,7 +524,7 @@ void AtrumEngine::CreateWvpResource() {
 	assert(!isInitialized_ && "CreateWvpResource() is initializeHelper");
 
 	// Matrix4x4 maxCount個分のサイズを用意する
-	wvpResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * triangleMaxDrawCount_);
+	wvpResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationData_));
@@ -583,7 +583,7 @@ void AtrumEngine::CreateVertexResource() {
 
 	assert(!isInitialized_ && "CreateVertexResource() is initializeHelper");
 
-	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * triangleMaxDrawCount_);
+	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
@@ -600,7 +600,7 @@ void AtrumEngine::CreateVertexBufferView() {
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
 	// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * triangleMaxDrawCount_;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * kTriangleMaxDrawCount;
 
 	// 1頂点当たりのサイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -613,7 +613,7 @@ void AtrumEngine::CreateSpriteVertexResource() {
 
 	assert(!isInitialized_ && "CreateSpriteVertexResource() is initializeHelper");
 
-	spriteVertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * spriteTriangleMaxDrawCount_);
+	spriteVertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * kSpriteTriangleMaxDrawCount);
 
 	spriteVertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteVertexData_));
 
@@ -627,7 +627,7 @@ void AtrumEngine::CreateSpriteVertexBufferView() {
 	spriteVertexBufferView_.BufferLocation = spriteVertexResource_->GetGPUVirtualAddress();
 
 	// 使用するリソースのサイズ
-	spriteVertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * spriteTriangleMaxDrawCount_;
+	spriteVertexBufferView_.SizeInBytes = sizeof(VertexData) * 3 * kSpriteTriangleMaxDrawCount;
 
 	// 1頂点当たりのサイズ
 	spriteVertexBufferView_.StrideInBytes = sizeof(VertexData);
@@ -639,7 +639,7 @@ void AtrumEngine::CreateSpriteMaterialResource() {
 	assert(!isInitialized_ && "CreateSpriteMaterialResource() is initializeHelper");
 
 	// Color maxCount個分のサイズを用意
-	spriteMaterialResource_ = this->CreateBufferResource(sizeof(MaterialData) * spriteTriangleMaxDrawCount_);
+	spriteMaterialResource_ = this->CreateBufferResource(sizeof(MaterialData) * kSpriteTriangleMaxDrawCount);
 
 	// マテリアルにデータを書き込むためのアドレスを取得
 	spriteMaterialResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteMaterialData_));
@@ -655,7 +655,7 @@ void AtrumEngine::CreateSpriteTransformationResource() {
 	assert(!isInitialized_ && "CreateSpriteTransformationResource() is initializeHelper");
 
 	// 4x4行列 maxCount個分のサイズを用意する
-	spriteTransformationMatrixResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * spriteTriangleMaxDrawCount_);
+	spriteTransformationMatrixResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kSpriteTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレス取得
 	spriteTransformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteTransformData_));
@@ -692,6 +692,9 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
+	assert(triangleDrewCount_ + 1 < kTriangleMaxDrawCount && "triangleCount over maxCount(Triangle)");
+	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Triangle)");
+
 	// --- TransformMatrix (WVP) のアドレス計算 ---
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
 
@@ -727,6 +730,9 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
+
+	assert(triangleDrewCount_ + triangleCountInSphere < kTriangleMaxDrawCount && "triangleCount over maxCount(Sphere)");
+	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
 
 	// --- TransformMatrix (WVP) のアドレス計算 ---
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = wvpResource_->GetGPUVirtualAddress();
@@ -1528,6 +1534,9 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
+	// これから追加するテクスチャがImGui込みのsrvDescriptorHeapに収まらなければエラー
+	assert(textures_.size() + 1 < srvAllocator_->GetMaxDescriptorCount() - 1 && "srvDescriptorHeap is over maxCount");
+
 	auto search = textureIndexTable_.find(filePath);
 
 	if (search != textureIndexTable_.end()) {
@@ -1811,6 +1820,9 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
+	assert(spriteTriangleDrewCount_ + 2 < kSpriteTriangleMaxDrawCount && "spriteTriangleCount over maxCount");
+	assert(spriteConstantBufferCount_ + 1 < kSpriteTriangleMaxDrawCount && "spriteConstantBufferCount over maxCount");
+
 	// --- TransformMatrix (WVP) のアドレス計算 ---
 	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = spriteTransformationMatrixResource_->GetGPUVirtualAddress();
 
@@ -1831,6 +1843,8 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+	assert(spriteTriangleDrewCount_ < 1024);
 
 	// 描画(DrawCall) 6頂点で1つのインスタンス
 	commandContextDirect_->GetCommandList()->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);

@@ -2,16 +2,16 @@
 #include "Log.h"
 #include "ConvertString.h"
 
-void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptors, const bool isShaderVisible, std::wstring descriptorName, ComPtr<ID3D12Device>& device) {
+void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, std::wstring descriptorName, ComPtr<ID3D12Device>& device) {
 
 	assert(!isInitialized_ && "DescriptorAllocator is already initialized");
 
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
 	descriptorHeapDesc.Type = descriptorType;
-	descriptorHeapDesc.NumDescriptors = maxDescriptors;
+	descriptorHeapDesc.NumDescriptors = maxDescriptorCount;
 
 	type_ = descriptorType;
-	maxDescriptors_ = maxDescriptors;
+	maxDescriptorCount_ = maxDescriptorCount;
 	descriptorSize_ = device->GetDescriptorHandleIncrementSize(type_);
 
 	if (isShaderVisible) {
@@ -52,7 +52,7 @@ DescriptorAllocator::DescriptorHandle DescriptorAllocator::Allocate() {
 	if (freeIndices_.empty()) {
 
 		// 上限チェック
-		assert(nextIndex_ < maxDescriptors_ && "Descriptor Heap is full");
+		assert(nextIndex_ < maxDescriptorCount_ && "Descriptor Heap is full");
 
 		index = nextIndex_;
 

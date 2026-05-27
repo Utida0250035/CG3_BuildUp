@@ -44,7 +44,7 @@ private:
 	D3D12_DESCRIPTOR_HEAP_TYPE type_ = D3D12_DESCRIPTOR_HEAP_TYPE_NUM_TYPES;
 
 	// 作成したディスクリプタの個数
-	uint32_t maxDescriptors_ = 0;
+	uint32_t maxDescriptorCount_ = 0;
 	// ディスクリプタのサイズ
 	uint32_t descriptorSize_ = 0;
 
@@ -58,12 +58,13 @@ public:
 	DescriptorAllocator() = default;
 	~DescriptorAllocator() = default;
 
-	void Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptors, const bool isShaderVisible, const std::wstring descriptorName, ComPtr<ID3D12Device>& device);
+	void Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, const std::wstring descriptorName, ComPtr<ID3D12Device>& device);
 
 	DescriptorHandle Allocate();
 	DescriptorHandle GetHandle(const uint32_t index);
 	void Free(const uint32_t index);
 
+	uint32_t GetMaxDescriptorCount() const { return maxDescriptorCount_; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuStart()const { return cpuStart_; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGpuStart()const { return gpuStart_; }
 	ComPtr<ID3D12DescriptorHeap>& GetDescriptorHeap() { return descriptorHeap_; }

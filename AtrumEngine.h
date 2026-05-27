@@ -211,7 +211,7 @@ private:
 	uint32_t triangleDrewCount_ = 0;
 
 	// 画面上の三角形の最大描画数
-	const uint32_t triangleMaxDrawCount_ = 1024;
+	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
 
 	struct TransformationMatrix {
 		Matrix4x4 wvp{};
@@ -278,7 +278,7 @@ private:
 
 	uint32_t spriteTriangleDrewCount_;
 
-	const uint32_t spriteTriangleMaxDrawCount_ = 1024;
+	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
 
 	/* Sprite用 Material */
 
