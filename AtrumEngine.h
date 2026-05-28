@@ -229,8 +229,8 @@ private:
 	// 頂点データ
 	VertexData* vertexData_ = nullptr;
 
-	// 画面上に描画済みの三角形の数
-	uint32_t triangleDrewCount_ = 0;
+	// 画面上に描画済みの頂点の数
+	uint32_t vertexDrewCount_ = 0;
 
 	// 画面上の三角形の最大描画数
 	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
@@ -306,18 +306,25 @@ private:
 	// Sprite用 頂点データ
 	VertexData* spriteVertexData_ = nullptr;
 
-	uint32_t spriteTriangleDrewCount_;
-
-	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
+	// Sprite用 総描画頂点数のカウント
+	uint32_t spriteVertexDrewCount_ = 0;
 
 	
 	/* Sprite用 頂点インデックス */
 
-	// IndexResource
+	// Sprite用 IndexResource
 	ComPtr<ID3D12Resource> spriteIndexResource_ = nullptr;
 	
-	// IndesData
+	// Sprite用 IndesData
 	uint32_t* spriteIndexData_ = nullptr;
+
+	// Sprite用 IndexBufferView
+	D3D12_INDEX_BUFFER_VIEW spriteIndexBufferView_{};
+
+	// Sprite用 頂点インデックスのカウント
+	uint32_t spriteVertexIndexCount_ = 0;
+
+	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
 
 
 	/* Sprite用 Material */
@@ -332,7 +339,7 @@ private:
 	/* Sprite用 Transform */
 
 	// Sprite用のTransformMatrix用のリソース
-	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
+	ComPtr<ID3D12Resource> spriteTransformationResource_ = nullptr;
 
 	// Sprite用 Transformデータ
 	TransformationMatrix* spriteTransformData_ = nullptr;
@@ -511,6 +518,16 @@ private:
 	/// 初期化処理 Sprite用VertexBufferViewの生成
 	/// </summary>
 	void CreateSpriteVertexBufferView();
+
+	/// <summary>
+	/// 初期化処理 Sprite用IndexResourceの生成
+	/// </summary>
+	void CreateSpriteIndexResource();
+	
+	/// <summary>
+	/// 初期化処理 Sprite用IndexBufferViewの生成
+	/// </summary>
+	void CreateSpriteIndexBufferView();
 
 	/// <summary>
 	/// 初期化処理 Sprite用MaterialResourceの生成

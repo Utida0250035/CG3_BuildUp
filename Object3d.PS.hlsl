@@ -30,6 +30,7 @@ struct PixelShaderOutput {
 PixelShaderOutput main(VertexShaderOutput input) {
 	PixelShaderOutput output;
 	
+	uint instanceID = InstanceID();
 	float32_t4 textureColor = gTexture.Sample(gSampler, input.texCoord);
 	float nDotL = dot(normalize(input.normal), -gDirectionalLight.direction);
 	float cos = 0.0f;
