@@ -310,6 +310,16 @@ private:
 
 	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
 
+	
+	/* Sprite用 頂点インデックス */
+
+	// IndexResource
+	ComPtr<ID3D12Resource> spriteIndexResource_ = nullptr;
+	
+	// IndesData
+	uint32_t* spriteIndexData_ = nullptr;
+
+
 	/* Sprite用 Material */
 
 	// MaterialResource
@@ -676,7 +686,7 @@ private:
 	/// </summary>
 	/// <param name="textureResource"></param>
 	/// <returns></returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(const ComPtr<ID3D12Resource>& textureResource);
+	ComPtr<ID3D12Resource> CreateIntermediateResource(ID3D12Resource* textureResource);
 
 	/// <summary>
 	/// textureResourceにデータを転送する
@@ -684,7 +694,7 @@ private:
 	/// <param name="texture"> テクスチャポインタ </param>
 	/// <param name="mipImages"> MipMap付データ </param>
 	/// <param name="intermediateResource"> 中間リソース </param>
-	void UploadTextureData(const ComPtr<ID3D12Resource>& textureREsource, const DirectX::ScratchImage& mipImages, const ComPtr<ID3D12Resource>& intermediateResource);
+	void UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
 
 	/// <summary>
 	/// ShaderResourceViewの作成

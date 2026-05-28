@@ -1,7 +1,7 @@
 #include "CommandContext.h"
 #include "Log.h"
 
-void CommandContext::CreateCommandQueue(ComPtr<ID3D12Device>& device) {
+void CommandContext::CreateCommandQueue(ID3D12Device* device) {
 
 	assert(!isInitialized_ && "CreateCommandQueue() is initializeHelper");
 
@@ -25,7 +25,7 @@ void CommandContext::CreateCommandQueue(ComPtr<ID3D12Device>& device) {
 
 }
 
-void CommandContext::CreateCommandAllocators(ComPtr<ID3D12Device>& device, const UINT backBufferCount) {
+void CommandContext::CreateCommandAllocators(ID3D12Device* device, const UINT backBufferCount) {
 
 	assert(!isInitialized_ && "CreateCommandAllocators() is initializeHelper");
 
@@ -50,7 +50,7 @@ void CommandContext::CreateCommandAllocators(ComPtr<ID3D12Device>& device, const
 
 }
 
-void CommandContext::CreateCommandList(ComPtr<ID3D12Device>& device) {
+void CommandContext::CreateCommandList(ID3D12Device* device) {
 
 	assert(!isInitialized_ && "CreateCommandList() is initializeHelper");
 
@@ -69,7 +69,7 @@ void CommandContext::CreateCommandList(ComPtr<ID3D12Device>& device) {
 
 }
 
-void CommandContext::Initialize(ComPtr<ID3D12Device>& device, const UINT backBufferCount, const D3D12_COMMAND_LIST_TYPE type) {
+void CommandContext::Initialize(ID3D12Device* device, const UINT backBufferCount, const D3D12_COMMAND_LIST_TYPE type) {
 
 	assert(!isInitialized_ && "CommandContext is already initialized");
 

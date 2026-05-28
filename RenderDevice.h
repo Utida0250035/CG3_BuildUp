@@ -61,13 +61,13 @@ public:
 	/// <summary>
 	/// ゲッター Device
 	/// </summary>
-	/// <returns> Deviceへの参照 </returns>
-	ComPtr<ID3D12Device>& GetDevice() { return device_; }
+	/// <returns> Device </returns>
+	ID3D12Device* GetDevice() { return device_.Get(); }
 
 	/// <summary>
 	/// ゲッター DxgiFactory
 	/// </summary>
-	/// <returns> Dxgifactpryへの参照 </returns>
-	ComPtr<IDXGIFactory7>& GetDxgiFactory() { return dxgiFactory_; }
+	/// <returns> DxgiFactpry </returns>
+	IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
 
 };

@@ -2,7 +2,7 @@
 #include "Log.h"
 #include <string>
 
-void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<ID3D12Device>& device, ComPtr<IDXGIFactory7>& dxgiFactory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd, const std::unique_ptr<DescriptorAllocator>& rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc) {
+void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight, ID3D12Device* device, IDXGIFactory7* dxgiFactory, ID3D12CommandQueue* commandQueue, HWND hwnd, DescriptorAllocator* rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc){
 
 	assert(!isInitialized_ && "SwapChain is already initialized");
 
@@ -17,7 +17,7 @@ void SwapChain::Initialize(const int32_t clientWidth, const int32_t clientHeight
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 
 	// コマンドキュー、ウィンドウハンドル、設定を渡してスワップチェーンを生成
-	[[maybe_unused]]HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue.Get(), hwnd, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
+	[[maybe_unused]] HRESULT hr = dxgiFactory->CreateSwapChainForHwnd(commandQueue, hwnd, &swapChainDesc, nullptr, nullptr, reinterpret_cast<IDXGISwapChain1**>(swapChain_.GetAddressOf()));
 	assert(SUCCEEDED(hr));
 
 	for (UINT i = 0; i < kBackBufferCount; ++i) {

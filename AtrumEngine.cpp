@@ -851,7 +851,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_, rtvAllocator_, rtvDesc);
+	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_, rtvAllocator_.get(), rtvDesc);
 
 
 	// SRVディスクリプタヒープの生成
@@ -958,10 +958,10 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	imguiSrvHandle = srvAllocator_->Allocate();
 
 	ImGui_ImplDX12_Init(
-		renderDevice_->GetDevice().Get(),
+		renderDevice_->GetDevice(),
 		SwapChain::kBackBufferCount,
 		rtvDesc.Format,
-		srvAllocator_->GetDescriptorHeap().Get(),
+		srvAllocator_->GetDescriptorHeap(),
 		imguiSrvHandle.cpu,
 		imguiSrvHandle.gpu
 	);
@@ -1126,7 +1126,7 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->ClearRenderTargetView(swapChainManager_->GetRtvHandleCurrent(), clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap().Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap() };
 	commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 	// Viewportを設定
@@ -1163,7 +1163,7 @@ void AtrumEngine::PostDraw() {
 #ifdef USE_IMGUI
 
 	// ImGuiの描画コマンドを積む
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandContextDirect_->GetCommandList().Get());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandContextDirect_->GetCommandList());
 
 #endif
 
@@ -1180,7 +1180,7 @@ void AtrumEngine::PostDraw() {
 	assert(SUCCEEDED(hr_));
 
 	// GPUにコマンドリストを実行させる
-	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList().Get() };
+	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList() };
 	commandContextDirect_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	fenceManager_->Signal(commandContextDirect_->GetCommandQueue(), swapChainManager_->GetBackBufferIndex());
@@ -1202,9 +1202,9 @@ void AtrumEngine::PostDraw() {
 
 	// 次のフレーム用のコマンドリストを準備
 
-	hr_ = commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get()->Reset();
+	hr_ = commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex())->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList().Get()->Reset(commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get(), nullptr);
+	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 三角形のカウントをリセット
@@ -1396,7 +1396,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, in
 
 }
 
-ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const ComPtr<ID3D12Resource>& textureResource) {
+ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(ID3D12Resource* textureResource) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1462,7 +1462,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const ComPtr<ID3D
 
 }
 
-void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResource, const DirectX::ScratchImage& mipImages, const ComPtr<ID3D12Resource>& intermediateResource) {
+void AtrumEngine::UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1521,12 +1521,12 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 	for (UINT i = 0; i < subresourceCount; ++i) {
 
 		D3D12_TEXTURE_COPY_LOCATION destinationLocation{};
-		destinationLocation.pResource = textureResource.Get();
+		destinationLocation.pResource = textureResource;
 		destinationLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 		destinationLocation.SubresourceIndex = i;
 
 		D3D12_TEXTURE_COPY_LOCATION sourceLocation{};
-		sourceLocation.pResource = intermediateResource.Get();
+		sourceLocation.pResource = intermediateResource;
 		sourceLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 		sourceLocation.PlacedFootprint = layouts[i];
 
@@ -1538,7 +1538,7 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = textureResource.Get();
+	barrier.Transition.pResource = textureResource;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -1599,17 +1599,17 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 	assert(texture.resource);
 
-	ComPtr<ID3D12Resource> intermediateResource = this->CreateIntermediateResource(texture.resource);
+	ComPtr<ID3D12Resource> intermediateResource = this->CreateIntermediateResource(texture.resource.Get());
 
 	// 中間リソースを用いた転送
-	this->UploadTextureData(texture.resource, mipImages, intermediateResource);
+	this->UploadTextureData(texture.resource.Get(), mipImages, intermediateResource.Get());
 
 	// コマンドリストの内容を確定させる
 	hr_ = commandContextDirect_->GetCommandList()->Close();
 	assert(SUCCEEDED(hr_));
 
 	// GPUにコマンドリストを実行させる
-	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList().Get() };
+	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList() };
 	commandContextDirect_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	// 次のフレームの準備
@@ -1626,9 +1626,9 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	fenceManager_->WaitForNextBuffer(swapChainManager_->GetBackBufferIndex());
 
 	// 次のフレーム用のアロケータとリストをリセット
-	hr_ = commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()]->Reset();
+	hr_ = commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex())->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get(), nullptr);
+	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 実際にShaderResourceViewを作る
