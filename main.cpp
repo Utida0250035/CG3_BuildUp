@@ -61,8 +61,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	AtrumEngine::DirectionalLightData directionalLightData = AtrumEngine::DirectionalLightData{
 		.color = Vector4{1.0f, 1.0f, 1.0f, 1.0f},
 		.direction = Vector3{0.0f, -1.0f, 0.0f},
-		.intensity = 10.0f
+		.intensity = 10.0f,
+		.lightModel = AtrumEngine::LightModel::HalfLambert
 	};
+
+	bool isLightingEnable = true;
 
 	while (atrum->IsProcess()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -104,6 +107,30 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			}
 
 			ImGui::DragFloat("intensity", &directionalLightData.intensity, 0.03125f);
+
+			ImGui::Checkbox("isLightingEnable", &isLightingEnable);
+
+			if (isLightingEnable) {
+
+				int lightMode = static_cast<int>(directionalLightData.lightModel);
+
+				ImGui::Selectable("lambert", lightMode == 0);
+				if (ImGui::IsItemActivated()) {
+
+					lightMode = 0;
+
+				}
+
+				ImGui::Selectable ("halfLambert", lightMode == 1);
+				if (ImGui::IsItemActivated()) {
+
+					lightMode = 1;
+
+				}
+
+				directionalLightData.lightModel = static_cast<AtrumEngine::LightModel>(lightMode);
+
+			}
 
 			ImGui::End();
 
@@ -168,9 +195,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			// 描画処理(前)
 			atrum->PreDraw();
 
-			atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
+			if (isLightingEnable) {
 
-			atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16, directionalLightData);
+				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
+
+				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16, directionalLightData);
+
+			} else {
+
+				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData);
+
+				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16);
+
+			}
 
 			// Sprite準備
 			atrum->PrepareSprite();

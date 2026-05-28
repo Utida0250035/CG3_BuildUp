@@ -70,6 +70,11 @@ public:
 		uint32_t srvIndex = 1;
 	};
 
+	enum class LightModel : uint32_t {
+		Lambert,
+		HalfLambert
+	};
+
 	struct DirectionalLightData {
 		// 平行光源の色
 		Vector4 color;
@@ -77,10 +82,12 @@ public:
 		Vector3 direction;
 		// 平行光源の輝度
 		float intensity;
+		// 光源の種類
+		LightModel lightModel;
 
-		// 4 * 4 + 4* 3 + 4 = 32
-		// 残り224バイト分
-		int32_t padding[56];
+		// 4 * 4 + 4* 3 + 4 + 4 = 36
+		// 残り220バイト分
+		int32_t padding[55];
 
 	};
 
