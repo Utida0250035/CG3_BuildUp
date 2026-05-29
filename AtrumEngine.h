@@ -229,8 +229,8 @@ private:
 	// 頂点データ
 	VertexData* vertexData_ = nullptr;
 
-	// 画面上に描画済みの三角形の数
-	uint32_t triangleDrewCount_ = 0;
+	// 画面上に描画済みの頂点の数
+	uint32_t vertexDrewCount_ = 0;
 
 	// 画面上の三角形の最大描画数
 	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
@@ -244,6 +244,21 @@ private:
 		// ConstantBuffer用の詰め物
 		int32_t padding[32]{};
 	};
+
+	/* 頂点インデックス */
+
+	// インデックスリソース
+	ComPtr<ID3D12Resource> indexResource_ = nullptr;
+
+	// IndexBufferView
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
+	// 頂点インデックスデータ
+	uint32_t* indexData_ = nullptr;
+
+	// 頂点インデックスカウント
+	uint32_t vertexIndexDrewCount_ = 0;
+
 
 	/* Material */
 
@@ -306,9 +321,26 @@ private:
 	// Sprite用 頂点データ
 	VertexData* spriteVertexData_ = nullptr;
 
-	uint32_t spriteTriangleDrewCount_;
+	// Sprite用 総描画頂点数のカウント
+	uint32_t spriteVertexDrewCount_ = 0;
+
+	
+	/* Sprite用 頂点インデックス */
+
+	// Sprite用 IndexResource
+	ComPtr<ID3D12Resource> spriteIndexResource_ = nullptr;
+	
+	// Sprite用 IndesData
+	uint32_t* spriteIndexData_ = nullptr;
+
+	// Sprite用 IndexBufferView
+	D3D12_INDEX_BUFFER_VIEW spriteIndexBufferView_{};
+
+	// Sprite用 頂点インデックスのカウント
+	uint32_t spriteVertexIndexCount_ = 0;
 
 	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
+
 
 	/* Sprite用 Material */
 
@@ -322,7 +354,7 @@ private:
 	/* Sprite用 Transform */
 
 	// Sprite用のTransformMatrix用のリソース
-	ComPtr<ID3D12Resource> spriteTransformationMatrixResource_ = nullptr;
+	ComPtr<ID3D12Resource> spriteTransformationResource_ = nullptr;
 
 	// Sprite用 Transformデータ
 	TransformationMatrix* spriteTransformData_ = nullptr;
@@ -488,6 +520,16 @@ private:
 	void CreateVertexBufferView();
 
 	/// <summary>
+	/// 初期化処理 IndexResourceの生成
+	/// </summary>
+	void CreateIndexResource();
+
+	/// <summary>
+	/// 初期化処理 IndexBufferViewの生成
+	/// </summary>
+	void CreateIndexBufferView();
+
+	/// <summary>
 	/// 初期化処理 平行光源Resourceの作成
 	/// </summary>
 	void CreateDirectionalLightResource();
@@ -501,6 +543,16 @@ private:
 	/// 初期化処理 Sprite用VertexBufferViewの生成
 	/// </summary>
 	void CreateSpriteVertexBufferView();
+
+	/// <summary>
+	/// 初期化処理 Sprite用IndexResourceの生成
+	/// </summary>
+	void CreateSpriteIndexResource();
+	
+	/// <summary>
+	/// 初期化処理 Sprite用IndexBufferViewの生成
+	/// </summary>
+	void CreateSpriteIndexBufferView();
 
 	/// <summary>
 	/// 初期化処理 Sprite用MaterialResourceの生成
@@ -528,7 +580,7 @@ private:
 	/// <summary>
 	/// 球の描画呼び出し
 	/// </summary>
-	void DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere);
+	void DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere);
 
 	/// <summary>
 	/// Spriteの描画呼び出し
@@ -676,7 +728,7 @@ private:
 	/// </summary>
 	/// <param name="textureResource"></param>
 	/// <returns></returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(const ComPtr<ID3D12Resource>& textureResource);
+	ComPtr<ID3D12Resource> CreateIntermediateResource(ID3D12Resource* textureResource);
 
 	/// <summary>
 	/// textureResourceにデータを転送する
@@ -684,7 +736,7 @@ private:
 	/// <param name="texture"> テクスチャポインタ </param>
 	/// <param name="mipImages"> MipMap付データ </param>
 	/// <param name="intermediateResource"> 中間リソース </param>
-	void UploadTextureData(const ComPtr<ID3D12Resource>& textureREsource, const DirectX::ScratchImage& mipImages, const ComPtr<ID3D12Resource>& intermediateResource);
+	void UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
 
 	/// <summary>
 	/// ShaderResourceViewの作成

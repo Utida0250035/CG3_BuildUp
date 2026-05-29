@@ -214,6 +214,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			atrum->DrawSpriteRect(textureUvCheckerExtra, spriteColor, spriteTransform, spriteSize);
 
+			atrum->DrawSpriteRect(textureUvChecker, Vector4{1.0f, 1.0f, 1.0f, 1.0f}, spriteTransform, spriteSize * 0.5f);
+
 			// 描画処理(後)
 			atrum->PostDraw();
 

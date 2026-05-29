@@ -1,7 +1,7 @@
 #include "Fence.h"
 #include <cassert>
 
-void Fence::Initialize(ComPtr<ID3D12Device>& device, const uint32_t backBufferCount) {
+void Fence::Initialize(ID3D12Device* device, const uint32_t backBufferCount) {
 
 	assert(!isInitialized_ && "Fence is already initialized");
 	assert(backBufferCount > 0 && "BufferCount must be bigger than 0");
@@ -19,7 +19,7 @@ void Fence::Initialize(ComPtr<ID3D12Device>& device, const uint32_t backBufferCo
 
 }
 
-void Fence::Signal(ComPtr<ID3D12CommandQueue>& commandQueue, const uint32_t backBufferIndex) {
+void Fence::Signal(ID3D12CommandQueue* commandQueue, const uint32_t backBufferIndex) {
 
 	assert(isInitialized_ && "Fence is not initialized");
 
@@ -53,7 +53,7 @@ void Fence::WaitForNextBuffer(const uint32_t nextBackBufferIndex) {
 
 }
 
-void Fence::ForceSyncGPU(ComPtr<ID3D12CommandQueue>& commandQueue) {
+void Fence::ForceSyncGPU(ID3D12CommandQueue* commandQueue) {
 
 	assert(isInitialized_ && "Fence is not initialized");
 

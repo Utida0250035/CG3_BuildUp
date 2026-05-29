@@ -2,7 +2,7 @@
 #include "Log.h"
 #include "ConvertString.h"
 
-void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, std::wstring descriptorName, ComPtr<ID3D12Device>& device) {
+void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, std::wstring descriptorName, ID3D12Device* device) {
 
 	assert(!isInitialized_ && "DescriptorAllocator is already initialized");
 

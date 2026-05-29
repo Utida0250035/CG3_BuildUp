@@ -328,7 +328,7 @@ void AtrumEngine::MakeRootSignature() {
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	// レジスタ番号1を使う
 	rootParameters[3].Descriptor.ShaderRegister = 1;
-	
+
 
 	// ルートパラメータ配列へのポインタ
 	descriptionRootSignature.pParameters = rootParameters;
@@ -618,6 +618,34 @@ void AtrumEngine::CreateVertexBufferView() {
 
 }
 
+void AtrumEngine::CreateIndexResource() {
+
+	assert(!isInitialized_ && "CreateIndexResource() is initializeHelper");
+
+	// 頂点インデックスリソースの生成
+	indexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kTriangleMaxDrawCount);
+
+	// リソースへの書き込み用アドレスを取得
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+
+}
+
+void AtrumEngine::CreateIndexBufferView() {
+
+	assert(!isInitialized_ && "CreateIndexBufferView() is initializeHelper");
+
+	// リソースの先頭のアドレスから使う
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+
+	// 使用するリソースのサイズ 大雑把に三角形の描画上限数*3 本来は頂点数
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * 3 * kTriangleMaxDrawCount;
+
+	// 1番号当たりのサイズ
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+}
+
+
 void AtrumEngine::CreateDirectionalLightResource() {
 
 	assert(!isInitialized_ && "CreateDirectionalLightResource() is initializeHelper");
@@ -660,6 +688,33 @@ void AtrumEngine::CreateSpriteVertexBufferView() {
 
 }
 
+void AtrumEngine::CreateSpriteIndexResource() {
+
+	assert(!isInitialized_ && "CreateSpriteIndexResource() is initializeHelper");
+
+	// 頂点インデックスリソースの生成
+	spriteIndexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kSpriteTriangleMaxDrawCount);
+
+	// リソースへの書き込み用アドレスを取得
+	spriteIndexResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteIndexData_));
+
+}
+
+void AtrumEngine::CreateSpriteIndexBufferView() {
+
+	assert(!isInitialized_ && "CreateSpriteIndexBufferView() is initializeHelper");
+
+	// リソースの先頭のアドレスから使う
+	spriteIndexBufferView_.BufferLocation = spriteIndexResource_->GetGPUVirtualAddress();
+
+	// 使用するリソースのサイズ 大雑把に三角形の描画上限数*3 本来は頂点数
+	spriteIndexBufferView_.SizeInBytes = sizeof(uint32_t) * 3 * kSpriteTriangleMaxDrawCount;
+
+	// 1番号当たりのサイズ
+	spriteIndexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+}
+
 void AtrumEngine::CreateSpriteMaterialResource() {
 
 	assert(!isInitialized_ && "CreateSpriteMaterialResource() is initializeHelper");
@@ -681,10 +736,10 @@ void AtrumEngine::CreateSpriteTransformationResource() {
 	assert(!isInitialized_ && "CreateSpriteTransformationResource() is initializeHelper");
 
 	// 4x4行列 maxCount個分のサイズを用意する
-	spriteTransformationMatrixResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kSpriteTriangleMaxDrawCount);
+	spriteTransformationResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kSpriteTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレス取得
-	spriteTransformationMatrixResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteTransformData_));
+	spriteTransformationResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteTransformData_));
 
 }
 
@@ -718,18 +773,17 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	assert(triangleDrewCount_ + 1 < kTriangleMaxDrawCount && "triangleCount over maxCount(Triangle)");
+	assert(vertexDrewCount_ + 1 < kTriangleMaxDrawCount && "triangleCount over maxCount(Triangle)");
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Triangle)");
 
 	// TransformMatrix (WVP) のアドレス計算
 	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationMatrix));
-
-	// GPUに設定
+	// GPUに設定(rootParameter0)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
 	// Material (Color) のアドレス計算
 	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
-
+	// GPUに設定(rootParameter1)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
 	// 平行光源データのアドレス計算
@@ -741,23 +795,24 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 	textureHandle = srvAllocator_->GetHandle(textureIndex);
 
-	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+	// SRVのDescriptorTableの先頭を設定 rootParameter[2]
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawInstanced(3, 1, triangleDrewCount_ * 3, 0);
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(3, 1, vertexIndexDrewCount_, vertexDrewCount_, 0);
 
-	triangleDrewCount_++;
+	vertexDrewCount_ += 3;
+	vertexIndexDrewCount_ += 3;
 
 	constantBufferCount_++;
 
 }
 
-void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere) {
+void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	assert(triangleDrewCount_ + triangleCountInSphere < kTriangleMaxDrawCount && "triangleCount over maxCount(Sphere)");
+	assert(vertexIndexDrewCount_ + indexDataCountInSphere < kTriangleMaxDrawCount * 3 && "triangleCount over maxCount(Sphere)");
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
 
 	// TransformMatrix (WVP) のアドレス計算
@@ -783,9 +838,11 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& t
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawInstanced(triangleCountInSphere * 3, 1, triangleDrewCount_ * 3, 0);
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(indexDataCountInSphere, 1, vertexIndexDrewCount_, vertexDrewCount_, 0);
 
-	triangleDrewCount_ += triangleCountInSphere;
+	vertexIndexDrewCount_ += indexDataCountInSphere;
+
+	vertexDrewCount_ += vertexCountInSphere;
 
 	constantBufferCount_++;
 
@@ -851,7 +908,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_, rtvAllocator_, rtvDesc);
+	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_, rtvAllocator_.get(), rtvDesc);
 
 
 	// SRVディスクリプタヒープの生成
@@ -904,6 +961,12 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// VertexBufferViewの生成
 	this->CreateVertexBufferView();
 
+	// IndexResourceの生成
+	this->CreateIndexResource();
+
+	// IndexBufferViewの生成
+	this->CreateIndexBufferView();
+
 	// 平行光源リソースの生成
 	this->CreateDirectionalLightResource();
 
@@ -938,6 +1001,11 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// Sprite用 VertexBufferViewの生成
 	this->CreateSpriteVertexBufferView();
 
+	// Sprite用 IndexResourceの生成
+	this->CreateSpriteIndexResource();
+
+	// Sprite用 IndexBufferViewの生成
+	this->CreateSpriteIndexBufferView();
 
 	/* ImGui */
 
@@ -958,10 +1026,10 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	imguiSrvHandle = srvAllocator_->Allocate();
 
 	ImGui_ImplDX12_Init(
-		renderDevice_->GetDevice().Get(),
+		renderDevice_->GetDevice(),
 		SwapChain::kBackBufferCount,
 		rtvDesc.Format,
-		srvAllocator_->GetDescriptorHeap().Get(),
+		srvAllocator_->GetDescriptorHeap(),
 		imguiSrvHandle.cpu,
 		imguiSrvHandle.gpu
 	);
@@ -1126,7 +1194,7 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->ClearRenderTargetView(swapChainManager_->GetRtvHandleCurrent(), clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
-	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap().Get() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { srvAllocator_->GetDescriptorHeap() };
 	commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 	// Viewportを設定
@@ -1144,15 +1212,20 @@ void AtrumEngine::PreDraw() {
 	// VBVを設定
 	commandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+	// IBVを設定
+	commandContextDirect_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
+
 	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
 	commandContextDirect_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// マテリアルCBufferの場所を設定
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
 
-	// WVP用のCBufferの場所を設定
+	// Transformation用のCBufferの場所を設定
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
 
+	// directionalLight用のCBufferの場所を設定
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightResource_->GetGPUVirtualAddress());
 
 }
 
@@ -1163,7 +1236,7 @@ void AtrumEngine::PostDraw() {
 #ifdef USE_IMGUI
 
 	// ImGuiの描画コマンドを積む
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandContextDirect_->GetCommandList().Get());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandContextDirect_->GetCommandList());
 
 #endif
 
@@ -1180,7 +1253,7 @@ void AtrumEngine::PostDraw() {
 	assert(SUCCEEDED(hr_));
 
 	// GPUにコマンドリストを実行させる
-	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList().Get() };
+	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList() };
 	commandContextDirect_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	fenceManager_->Signal(commandContextDirect_->GetCommandQueue(), swapChainManager_->GetBackBufferIndex());
@@ -1202,14 +1275,19 @@ void AtrumEngine::PostDraw() {
 
 	// 次のフレーム用のコマンドリストを準備
 
-	hr_ = commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get()->Reset();
+	hr_ = commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex())->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList().Get()->Reset(commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get(), nullptr);
+	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
 	assert(SUCCEEDED(hr_));
 
-	// 三角形のカウントをリセット
-	triangleDrewCount_ = 0;
-	spriteTriangleDrewCount_ = 0;
+
+	// 描画頂点数のカウントをリセット
+	spriteVertexDrewCount_ = 0;
+	vertexDrewCount_ = 0;
+
+	// 頂点インデックス数のカウントをリセット
+	spriteVertexIndexCount_ = 0;
+	vertexIndexDrewCount_ = 0;
 
 	// 定数バッファのカウントをリセット
 	constantBufferCount_ = 0;
@@ -1396,7 +1474,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, in
 
 }
 
-ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const ComPtr<ID3D12Resource>& textureResource) {
+ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(ID3D12Resource* textureResource) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1462,7 +1540,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const ComPtr<ID3D
 
 }
 
-void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResource, const DirectX::ScratchImage& mipImages, const ComPtr<ID3D12Resource>& intermediateResource) {
+void AtrumEngine::UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1521,12 +1599,12 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 	for (UINT i = 0; i < subresourceCount; ++i) {
 
 		D3D12_TEXTURE_COPY_LOCATION destinationLocation{};
-		destinationLocation.pResource = textureResource.Get();
+		destinationLocation.pResource = textureResource;
 		destinationLocation.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
 		destinationLocation.SubresourceIndex = i;
 
 		D3D12_TEXTURE_COPY_LOCATION sourceLocation{};
-		sourceLocation.pResource = intermediateResource.Get();
+		sourceLocation.pResource = intermediateResource;
 		sourceLocation.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
 		sourceLocation.PlacedFootprint = layouts[i];
 
@@ -1538,7 +1616,7 @@ void AtrumEngine::UploadTextureData(const ComPtr<ID3D12Resource>& textureResourc
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	barrier.Transition.pResource = textureResource.Get();
+	barrier.Transition.pResource = textureResource;
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
@@ -1599,17 +1677,17 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 	assert(texture.resource);
 
-	ComPtr<ID3D12Resource> intermediateResource = this->CreateIntermediateResource(texture.resource);
+	ComPtr<ID3D12Resource> intermediateResource = this->CreateIntermediateResource(texture.resource.Get());
 
 	// 中間リソースを用いた転送
-	this->UploadTextureData(texture.resource, mipImages, intermediateResource);
+	this->UploadTextureData(texture.resource.Get(), mipImages, intermediateResource.Get());
 
 	// コマンドリストの内容を確定させる
 	hr_ = commandContextDirect_->GetCommandList()->Close();
 	assert(SUCCEEDED(hr_));
 
 	// GPUにコマンドリストを実行させる
-	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList().Get() };
+	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList() };
 	commandContextDirect_->GetCommandQueue()->ExecuteCommandLists(1, commandLists);
 
 	// 次のフレームの準備
@@ -1626,9 +1704,9 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	fenceManager_->WaitForNextBuffer(swapChainManager_->GetBackBufferIndex());
 
 	// 次のフレーム用のアロケータとリストをリセット
-	hr_ = commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()]->Reset();
+	hr_ = commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex())->Reset();
 	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocators()[swapChainManager_->GetBackBufferIndex()].Get(), nullptr);
+	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
 	assert(SUCCEEDED(hr_));
 
 	// 実際にShaderResourceViewを作る
@@ -1684,13 +1762,15 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 	}
 
 	// 左下
-	vertexData_[triangleDrewCount_ * 3] = vertexData[0];
-
+	vertexData_[vertexDrewCount_] = vertexData[0];
 	// 上
-	vertexData_[triangleDrewCount_ * 3 + 1] = vertexData[1];
-
+	vertexData_[vertexDrewCount_ + 1] = vertexData[1];
 	// 右下
-	vertexData_[triangleDrewCount_ * 3 + 2] = vertexData[2];
+	vertexData_[vertexDrewCount_ + 2] = vertexData[2];
+
+	indexData_[vertexIndexDrewCount_] = 0;
+	indexData_[vertexIndexDrewCount_ + 1] = 1;
+	indexData_[vertexIndexDrewCount_ + 2] = 2;
 
 	// 描画
 	this->DrawTriangleCall(textureIndex);
@@ -1737,15 +1817,15 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 	float lat = 0.0f;
 	float lon = 0.0f;
 
-	uint32_t vertexDataIndex = triangleDrewCount_ * 3;
+	uint32_t vertexDataCount = vertexDrewCount_;
+	uint32_t indexDataCount = vertexIndexDrewCount_;
+	uint32_t boardCountInSphere = 0;
 
-	uint32_t triangleCountInSphere = 0;
-
-	for (size_t latIndex = 0; latIndex < subdivision; ++latIndex) {
+	for (uint32_t latIndex = 0; latIndex < subdivision; ++latIndex) {
 
 		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * Float(latIndex);
 
-		for (size_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
+		for (uint32_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
 
 			lon = static_cast<float>(lonIndex) * kLonEvery;
 
@@ -1769,25 +1849,35 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 			pointD.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
 			pointD.normal = VectorNormalize(Vector3{ pointD.position.x, pointD.position.y, pointD.position.z });
 
-			vertexData_[vertexDataIndex++] = pointC;
 
-			vertexData_[vertexDataIndex++] = pointA;
+			vertexData_[vertexDataCount++] = pointA;
 
-			vertexData_[vertexDataIndex++] = pointB;
+			vertexData_[vertexDataCount++] = pointB;
 
-			vertexData_[vertexDataIndex++] = pointB;
+			vertexData_[vertexDataCount++] = pointC;
 
-			vertexData_[vertexDataIndex++] = pointD;
+			vertexData_[vertexDataCount++] = pointD;
 
-			vertexData_[vertexDataIndex++] = pointC;
+			// インスタンス内で頂点インデックスを0から数える
+			indexData_[indexDataCount++] = boardCountInSphere * 4;
 
-			triangleCountInSphere += 2;
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 1;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 2;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 1;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 3;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 2;
+
+			boardCountInSphere++;
 
 		}
 
 	}
 
-	this->DrawSphereCall(textureIndex, triangleCountInSphere);
+	this->DrawSphereCall(textureIndex, indexDataCount - vertexIndexDrewCount_, vertexDataCount - vertexDrewCount_);
 
 }
 
@@ -1796,8 +1886,19 @@ void AtrumEngine::PrepareSprite() {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
+	// VertexBufferView(VBV)を設定
 	commandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, &spriteVertexBufferView_);
 
+	// IndexBufferView(IBV)を設定
+	commandContextDirect_->GetCommandList()->IASetIndexBuffer(&spriteIndexBufferView_);
+
+	// トランスフォームの定数バッファの最初のアドレスを設定
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, spriteTransformationResource_->GetGPUVirtualAddress());
+
+	// マテリアルの定数バッファの最初のアドレスを設定
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, spriteMaterialResource_->GetGPUVirtualAddress());
+
+	// ライティングを無効化
 	spriteMaterialData_->enableLighting = false;
 
 }
@@ -1822,11 +1923,13 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 	/* 1枚目の三角形 */
 
-	uint32_t vertexCount = spriteTriangleDrewCount_ * 3;
+	uint32_t vertexCount = spriteVertexDrewCount_;
 
 	Vector2 halfSize = rectSize * 0.5f;
 
 	Vector3 normal = Vector3{ 0.0f, 0.0f, -1.0f };
+
+	uint32_t indexCount = spriteVertexIndexCount_;
 
 	// 左下
 	spriteVertexData_[vertexCount].texCoord = { 0.0f, 1.0f };
@@ -1842,22 +1945,18 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 	spriteVertexData_[vertexCount].texCoord = { 1.0f, 1.0f };
 	spriteVertexData_[vertexCount++].position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
 
-	/* 2枚目の三角形 */
-
-	// 左上
-	spriteVertexData_[vertexCount].texCoord = { 0.0f, 0.0f };
-	spriteVertexData_[vertexCount].normal = normal;
-	spriteVertexData_[vertexCount++].position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
-
 	// 右上
 	spriteVertexData_[vertexCount].texCoord = { 1.0f, 0.0f };
 	spriteVertexData_[vertexCount].normal = normal;
 	spriteVertexData_[vertexCount++].position = { halfSize.x, -halfSize.y, 0.0f, 1.0f };
 
-	// 右下
-	spriteVertexData_[vertexCount].texCoord = { 1.0f, 1.0f };
-	spriteVertexData_[vertexCount].normal = normal;
-	spriteVertexData_[vertexCount++].position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
+	// インスタンス内で頂点インデックスを0から数える
+	spriteIndexData_[indexCount++] = 0;
+	spriteIndexData_[indexCount++] = 1;
+	spriteIndexData_[indexCount++] = 2;
+	spriteIndexData_[indexCount++] = 1;
+	spriteIndexData_[indexCount++] = 3;
+	spriteIndexData_[indexCount++] = 2;
 
 	// 描画
 	this->DrawSpriteCall(textureIndex);
@@ -1888,22 +1987,17 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	assert(spriteTriangleDrewCount_ + 2 < kSpriteTriangleMaxDrawCount && "spriteTriangleCount over maxCount");
+	assert(spriteVertexIndexCount_ + 6 < kSpriteTriangleMaxDrawCount * 3 && "spriteVertexIndexCount over maxCount");
 	assert(spriteConstantBufferCount_ + 1 < kSpriteTriangleMaxDrawCount && "spriteConstantBufferCount over maxCount");
 
-	// --- TransformMatrix (WVP) のアドレス計算 ---
-	D3D12_GPU_VIRTUAL_ADDRESS transformBaseAddr = spriteTransformationMatrixResource_->GetGPUVirtualAddress();
-
-	// offset = インデックス × 256バイト
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformBaseAddr + (spriteConstantBufferCount_ * sizeof(TransformationMatrix));
-
-	// GPUに設定
+	// TransformMatrix (WVP) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = spriteTransformationResource_->GetGPUVirtualAddress() + (spriteConstantBufferCount_ * sizeof(TransformationMatrix));
+	// GPUに設定(rootParameter0)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
-
-	D3D12_GPU_VIRTUAL_ADDRESS materialBaseAddr = spriteMaterialResource_->GetGPUVirtualAddress();
-	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBaseAddr + (spriteConstantBufferCount_ * sizeof(MaterialData));
-
+	// Material (Color) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = spriteMaterialResource_->GetGPUVirtualAddress() + (spriteConstantBufferCount_ * sizeof(MaterialData));
+	// GPUに設定(rootParameter1)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
 	DescriptorAllocator::DescriptorHandle textureHandle{};
@@ -1912,10 +2006,12 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
-	// 描画(DrawCall) 6頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawInstanced(6, 1, spriteTriangleDrewCount_ * 3, 0);
+	// 描画(DrawCall) 6頂点インデックスで1つのインスタンス
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(6, 1, spriteVertexIndexCount_, spriteVertexDrewCount_, 0);
 
-	spriteTriangleDrewCount_ += 2;
+	spriteVertexIndexCount_ += 6;
+
+	spriteVertexDrewCount_ += 4;
 
 	spriteConstantBufferCount_++;
 

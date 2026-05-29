@@ -43,23 +43,23 @@ private:
 	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 
 
-	void CreateCommandQueue(ComPtr<ID3D12Device>& device);
+	void CreateCommandQueue(ID3D12Device* device);
 
-	void CreateCommandAllocators(ComPtr<ID3D12Device>& device, const UINT backBufferContext);
+	void CreateCommandAllocators(ID3D12Device* device, const UINT backBufferContext);
 
-	void CreateCommandList(ComPtr<ID3D12Device>& device);
+	void CreateCommandList(ID3D12Device* device);
 
 public:
 
-	void Initialize(ComPtr<ID3D12Device>& device, const UINT beckBufferContext, const D3D12_COMMAND_LIST_TYPE type);
+	void Initialize(ID3D12Device* device, const UINT beckBufferContext, const D3D12_COMMAND_LIST_TYPE type);
 
 	/* ゲッター */
 
-	ComPtr<ID3D12CommandQueue>& GetCommandQueue() { return commandQueue_; }
+	ID3D12CommandQueue* GetCommandQueue() { return commandQueue_.Get(); }
 
-	std::vector<ComPtr<ID3D12CommandAllocator>>& GetCommandAllocators() { return commandAllocators_; }
+	ID3D12CommandAllocator* GetCommandAllocator(const size_t index) { return commandAllocators_[index].Get(); }
 
-	ComPtr<ID3D12GraphicsCommandList>& GetCommandList() { return commandList_; }
+	ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
 
 	D3D12_COMMAND_LIST_TYPE GetType()const { return type_; }
 

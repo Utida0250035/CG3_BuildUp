@@ -58,7 +58,7 @@ public:
 	DescriptorAllocator() = default;
 	~DescriptorAllocator() = default;
 
-	void Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, const std::wstring descriptorName, ComPtr<ID3D12Device>& device);
+	void Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, const std::wstring descriptorName, ID3D12Device* device);
 
 	DescriptorHandle Allocate();
 	DescriptorHandle GetHandle(const uint32_t index);
@@ -67,6 +67,6 @@ public:
 	uint32_t GetMaxDescriptorCount() const { return maxDescriptorCount_; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuStart()const { return cpuStart_; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGpuStart()const { return gpuStart_; }
-	ComPtr<ID3D12DescriptorHeap>& GetDescriptorHeap() { return descriptorHeap_; }
+	ID3D12DescriptorHeap* GetDescriptorHeap() { return descriptorHeap_.Get(); }
 
 };

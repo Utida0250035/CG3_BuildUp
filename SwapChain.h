@@ -37,7 +37,7 @@ private:
 
 public:
 
-	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ComPtr<ID3D12Device>& device, ComPtr<IDXGIFactory7>& factory, ComPtr<ID3D12CommandQueue>& commandQueue, HWND hwnd, const std::unique_ptr<DescriptorAllocator>& rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc);
+	void Initialize(const int32_t clientWidth, const int32_t clientHeight, ID3D12Device* device, IDXGIFactory7* dxgiFactory, ID3D12CommandQueue* commandQueue, HWND hwnd, DescriptorAllocator* rtvAllocator, const D3D12_RENDER_TARGET_VIEW_DESC& rtvDesc);
 
 	void UpdateBackBufferIndex();
 
