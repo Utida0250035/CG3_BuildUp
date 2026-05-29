@@ -245,6 +245,21 @@ private:
 		int32_t padding[32]{};
 	};
 
+	/* 頂点インデックス */
+
+	// インデックスリソース
+	ComPtr<ID3D12Resource> indexResource_ = nullptr;
+
+	// IndexBufferView
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+
+	// 頂点インデックスデータ
+	uint32_t* indexData_ = nullptr;
+
+	// 頂点インデックスカウント
+	uint32_t vertexIndexDrewCount_ = 0;
+
+
 	/* Material */
 
 	struct MaterialData {
@@ -505,6 +520,16 @@ private:
 	void CreateVertexBufferView();
 
 	/// <summary>
+	/// 初期化処理 IndexResourceの生成
+	/// </summary>
+	void CreateIndexResource();
+
+	/// <summary>
+	/// 初期化処理 IndexBufferViewの生成
+	/// </summary>
+	void CreateIndexBufferView();
+
+	/// <summary>
 	/// 初期化処理 平行光源Resourceの作成
 	/// </summary>
 	void CreateDirectionalLightResource();
@@ -555,7 +580,7 @@ private:
 	/// <summary>
 	/// 球の描画呼び出し
 	/// </summary>
-	void DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere);
+	void DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere);
 
 	/// <summary>
 	/// Spriteの描画呼び出し

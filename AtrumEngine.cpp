@@ -328,7 +328,7 @@ void AtrumEngine::MakeRootSignature() {
 	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	// レジスタ番号1を使う
 	rootParameters[3].Descriptor.ShaderRegister = 1;
-	
+
 
 	// ルートパラメータ配列へのポインタ
 	descriptionRootSignature.pParameters = rootParameters;
@@ -618,6 +618,34 @@ void AtrumEngine::CreateVertexBufferView() {
 
 }
 
+void AtrumEngine::CreateIndexResource() {
+
+	assert(!isInitialized_ && "CreateIndexResource() is initializeHelper");
+
+	// 頂点インデックスリソースの生成
+	indexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kTriangleMaxDrawCount);
+
+	// リソースへの書き込み用アドレスを取得
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+
+}
+
+void AtrumEngine::CreateIndexBufferView() {
+
+	assert(!isInitialized_ && "CreateIndexBufferView() is initializeHelper");
+
+	// リソースの先頭のアドレスから使う
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+
+	// 使用するリソースのサイズ 大雑把に三角形の描画上限数*3 本来は頂点数
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * 3 * kTriangleMaxDrawCount;
+
+	// 1番号当たりのサイズ
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+}
+
+
 void AtrumEngine::CreateDirectionalLightResource() {
 
 	assert(!isInitialized_ && "CreateDirectionalLightResource() is initializeHelper");
@@ -665,7 +693,7 @@ void AtrumEngine::CreateSpriteIndexResource() {
 	assert(!isInitialized_ && "CreateSpriteIndexResource() is initializeHelper");
 
 	// 頂点インデックスリソースの生成
-	spriteIndexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kTriangleMaxDrawCount);
+	spriteIndexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kSpriteTriangleMaxDrawCount);
 
 	// リソースへの書き込み用アドレスを取得
 	spriteIndexResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteIndexData_));
@@ -771,19 +799,20 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawInstanced(3, 1, vertexDrewCount_ * 3, 0);
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(3, 1, vertexIndexDrewCount_, vertexDrewCount_, 0);
 
-	vertexDrewCount_++;
+	vertexDrewCount_ += 3;
+	vertexIndexDrewCount_ += 3;
 
 	constantBufferCount_++;
 
 }
 
-void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& triangleCountInSphere) {
+void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	assert(vertexDrewCount_ + triangleCountInSphere < kTriangleMaxDrawCount && "triangleCount over maxCount(Sphere)");
+	assert(vertexIndexDrewCount_ + indexDataCountInSphere < kTriangleMaxDrawCount * 3 && "triangleCount over maxCount(Sphere)");
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
 
 	// TransformMatrix (WVP) のアドレス計算
@@ -809,9 +838,11 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& t
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawInstanced(triangleCountInSphere * 3, 1, vertexDrewCount_ * 3, 0);
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(indexDataCountInSphere, 1, vertexIndexDrewCount_, vertexDrewCount_, 0);
 
-	vertexDrewCount_ += triangleCountInSphere;
+	vertexIndexDrewCount_ += indexDataCountInSphere;
+
+	vertexDrewCount_ += vertexCountInSphere;
 
 	constantBufferCount_++;
 
@@ -929,6 +960,12 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// VertexBufferViewの生成
 	this->CreateVertexBufferView();
+
+	// IndexResourceの生成
+	this->CreateIndexResource();
+
+	// IndexBufferViewの生成
+	this->CreateIndexBufferView();
 
 	// 平行光源リソースの生成
 	this->CreateDirectionalLightResource();
@@ -1175,6 +1212,9 @@ void AtrumEngine::PreDraw() {
 	// VBVを設定
 	commandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+	// IBVを設定
+	commandContextDirect_->GetCommandList()->IASetIndexBuffer(&indexBufferView_);
+
 	// 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
 	commandContextDirect_->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -1240,14 +1280,14 @@ void AtrumEngine::PostDraw() {
 	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
 	assert(SUCCEEDED(hr_));
 
-	// 三角形のカウントをリセット
-	vertexDrewCount_ = 0;
 
 	// 描画頂点数のカウントをリセット
 	spriteVertexDrewCount_ = 0;
+	vertexDrewCount_ = 0;
 
 	// 頂点インデックス数のカウントをリセット
 	spriteVertexIndexCount_ = 0;
+	vertexIndexDrewCount_ = 0;
 
 	// 定数バッファのカウントをリセット
 	constantBufferCount_ = 0;
@@ -1722,13 +1762,15 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 	}
 
 	// 左下
-	vertexData_[vertexDrewCount_ * 3] = vertexData[0];
-
+	vertexData_[vertexDrewCount_] = vertexData[0];
 	// 上
-	vertexData_[vertexDrewCount_ * 3 + 1] = vertexData[1];
-
+	vertexData_[vertexDrewCount_ + 1] = vertexData[1];
 	// 右下
-	vertexData_[vertexDrewCount_ * 3 + 2] = vertexData[2];
+	vertexData_[vertexDrewCount_ + 2] = vertexData[2];
+
+	indexData_[vertexIndexDrewCount_] = 0;
+	indexData_[vertexIndexDrewCount_ + 1] = 1;
+	indexData_[vertexIndexDrewCount_ + 2] = 2;
 
 	// 描画
 	this->DrawTriangleCall(textureIndex);
@@ -1775,15 +1817,15 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 	float lat = 0.0f;
 	float lon = 0.0f;
 
-	uint32_t vertexDataIndex = vertexDrewCount_ * 3;
+	uint32_t vertexDataCount = vertexDrewCount_;
+	uint32_t indexDataCount = vertexIndexDrewCount_;
+	uint32_t boardCountInSphere = 0;
 
-	uint32_t triangleCountInSphere = 0;
-
-	for (size_t latIndex = 0; latIndex < subdivision; ++latIndex) {
+	for (uint32_t latIndex = 0; latIndex < subdivision; ++latIndex) {
 
 		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * Float(latIndex);
 
-		for (size_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
+		for (uint32_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
 
 			lon = static_cast<float>(lonIndex) * kLonEvery;
 
@@ -1807,25 +1849,35 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 			pointD.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
 			pointD.normal = VectorNormalize(Vector3{ pointD.position.x, pointD.position.y, pointD.position.z });
 
-			vertexData_[vertexDataIndex++] = pointC;
 
-			vertexData_[vertexDataIndex++] = pointA;
+			vertexData_[vertexDataCount++] = pointA;
 
-			vertexData_[vertexDataIndex++] = pointB;
+			vertexData_[vertexDataCount++] = pointB;
 
-			vertexData_[vertexDataIndex++] = pointB;
+			vertexData_[vertexDataCount++] = pointC;
 
-			vertexData_[vertexDataIndex++] = pointD;
+			vertexData_[vertexDataCount++] = pointD;
 
-			vertexData_[vertexDataIndex++] = pointC;
+			// インスタンス内で頂点インデックスを0から数える
+			indexData_[indexDataCount++] = boardCountInSphere * 4;
 
-			triangleCountInSphere += 2;
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 1;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 2;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 1;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 3;
+
+			indexData_[indexDataCount++] = boardCountInSphere * 4 + 2;
+
+			boardCountInSphere++;
 
 		}
 
 	}
 
-	this->DrawSphereCall(textureIndex, triangleCountInSphere);
+	this->DrawSphereCall(textureIndex, indexDataCount - vertexIndexDrewCount_, vertexDataCount - vertexDrewCount_);
 
 }
 
