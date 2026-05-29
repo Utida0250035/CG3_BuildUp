@@ -1,6 +1,7 @@
 {
     "version": "0.2",
-    "language": "en-us",
+    "language": "en",
+    "enablecomment": true,
     "words": [
         "HINSTANCE",
         "DXGI",
@@ -24,10 +25,13 @@
         "AABB",
         "ZERODIVIDE"
     ],
+    "flagwords": [
+        "cpnstant"
+    ],
     "ignorePaths": [
         "**/Externals/**"
     ],
-    "dictionaryDefinations": [
+    "dictionaryDefinitions": [
         {
             "name": "exclusionDictionary",
             "path": "./exclusion.dic",

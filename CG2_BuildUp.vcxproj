@@ -79,7 +79,7 @@
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>cspell "./**/*.{cpp, h, hlsl, hlsli}"</Command>
+      <Command>cspell "./**/*.{cpp, h, hlsl, hlsli}" "*.{cpp, h, hlsl, hlsli}"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -112,6 +112,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>cspell "./**/*.{cpp, h, hlsl, hlsli}" "*.{cpp, h, hlsl, hlsli}"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bezier.cpp" />
