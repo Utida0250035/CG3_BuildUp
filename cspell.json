@@ -23,10 +23,12 @@
         "RLDO",
         "ICONERROR",
         "AABB",
-        "ZERODIVIDE"
+        "ZERODIVIDE",
+        "hlsli"
     ],
     "flagwords": [
-        "cpnstant"
+        "roat",
+        "Roat"
     ],
     "ignorePaths": [
         "**/Externals/**"

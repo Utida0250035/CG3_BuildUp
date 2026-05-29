@@ -67,7 +67,7 @@ public:
 	/// <summary>
 	/// ゲッター DxgiFactory
 	/// </summary>
-	/// <returns> DxgiFactpry </returns>
+	/// <returns> DxgiFactory </returns>
 	IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
 
 };

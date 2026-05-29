@@ -268,7 +268,7 @@ private:
 
 		// 4 * 4 + 4 = 20
 		// (256 - 20) / 4
-		// CpnstantBuffer用の詰め物
+		// ConstantBuffer用の詰め物
 		int32_t padding[59]{};
 	};
 
