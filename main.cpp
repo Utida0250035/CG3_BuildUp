@@ -37,6 +37,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	AtrumEngine::Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+	AtrumEngine::Transform triangleUvTransform{};
 
 	std::array<AtrumEngine::VertexData, 3> triangleVertexData = {
 		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f},
@@ -48,12 +49,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	AtrumEngine::Transform sphereTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 	Vector4 sphereColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+	AtrumEngine::Transform sphereUvTransform{};
 	float sphereRadius = 5.0f;
 
 	/* Sprite */
 
 	AtrumEngine::Transform spriteTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{256.0f, 128.0f} };
 	Vector4 spriteColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+	AtrumEngine::Transform spriteUvTransform{};
 	Vector2 spriteSize = Vector2{ 512.0f, 256.0f };
 
 	/* DirectionalLight */
@@ -151,18 +154,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("uvScale", &triangleUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("uvRotate", &triangleUvTransform.rotate.z, 0.03125f);
+			ImGui::DragFloat2("uvTranslate", &triangleUvTransform.translate.x, 0.03125f);
+
 			ImGui::End();
+
 
 			ImGui::Begin("sphere");
 
 			ImGui::Text("transform");
-			ImGui::DragFloat3("scale", &sphereTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &sphereTransform.translate.x, 0.03125f);
+			ImGui::DragFloat2("scale", &sphereTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("rotate", &sphereTransform.rotate.z, 0.03125f);
+			ImGui::DragFloat2("translate", &sphereTransform.translate.x, 0.03125f);
 
 			ImGui::Text("color, radius");
 			ImGui::DragFloat4("color", &sphereColor.x, 0.03125f, 0.0f, 1.0f);
 			ImGui::DragFloat("radius", &sphereRadius);
+
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("uvScale", &sphereUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("uvRotate", &sphereUvTransform.rotate.z, 0.03125f);
+			ImGui::DragFloat2("uvTranslate", &sphereUvTransform.translate.x, 0.03125f);
 
 			ImGui::End();
 
@@ -177,6 +193,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Text("color, size");
 			ImGui::DragFloat4("color", &spriteColor.x, 0.03125f, 0.0f, 1.0f);
 			ImGui::DragFloat2("size", &spriteSize.x);
+
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("uvScale", &spriteUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("uvRotate", &spriteUvTransform.rotate.z, 0.03125f);
+			ImGui::DragFloat2("uvTranslate", &spriteUvTransform.translate.x, 0.03125f);
 
 			ImGui::End();
 
@@ -197,24 +219,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			if (isLightingEnable) {
 
-				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
+				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
 
-				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16, directionalLightData);
+				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, 16, directionalLightData);
 
 			} else {
 
-				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleTransform, cameraTransform, triangleVertexData);
+				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData);
 
-				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereTransform, cameraTransform, sphereRadius, 16);
+				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, 16);
 
 			}
 
 			// Sprite準備
 			atrum->PrepareSprite();
 
-			atrum->DrawSpriteRect(textureUvCheckerExtra, spriteColor, spriteTransform, spriteSize);
-
-			atrum->DrawSpriteRect(textureUvChecker, Vector4{1.0f, 1.0f, 1.0f, 1.0f}, spriteTransform, spriteSize * 0.5f);
+			atrum->DrawSpriteRect(textureUvCheckerExtra, spriteColor, spriteUvTransform, spriteTransform, spriteSize);
 
 			// 描画処理(後)
 			atrum->PostDraw();
