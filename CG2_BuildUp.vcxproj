@@ -62,7 +62,7 @@
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Externals;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -96,7 +96,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <Optimization>MinSpace</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)externals</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,15 +117,24 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bezier.cpp" />
-    <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="CommandContext.cpp" />
-    <ClCompile Include="ConvertString.cpp" />
-    <ClCompile Include="AtrumEngine.cpp" />
-    <ClCompile Include="DeltaTime.cpp" />
-    <ClCompile Include="DescriptorAllocator.cpp" />
-    <ClCompile Include="Fence.cpp" />
-    <ClCompile Include="RenderDevice.cpp" />
+    <ClCompile Include="Codes\Source\AtrumEngine.cpp" />
+    <ClCompile Include="Codes\Source\Bezier.cpp" />
+    <ClCompile Include="Codes\Source\Collision.cpp" />
+    <ClCompile Include="Codes\Source\CommandContext.cpp" />
+    <ClCompile Include="Codes\Source\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\DeltaTime.cpp" />
+    <ClCompile Include="Codes\Source\DescriptorAllocator.cpp" />
+    <ClCompile Include="Codes\Source\Fence.cpp" />
+    <ClCompile Include="Codes\Source\Log.cpp" />
+    <ClCompile Include="Codes\Source\main.cpp" />
+    <ClCompile Include="Codes\Source\Matrix3D.cpp" />
+    <ClCompile Include="Codes\Source\OBB.cpp" />
+    <ClCompile Include="Codes\Source\RenderDevice.cpp" />
+    <ClCompile Include="Codes\Source\SwapChain.cpp" />
+    <ClCompile Include="Codes\Source\Vector2.cpp" />
+    <ClCompile Include="Codes\Source\Vector3.cpp" />
+    <ClCompile Include="Codes\Source\Vector4.cpp" />
+    <ClCompile Include="Codes\Source\WindowProcedure.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -154,27 +163,27 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Log.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Matrix3D.cpp" />
-    <ClCompile Include="OBB.cpp" />
-    <ClCompile Include="SwapChain.cpp" />
-    <ClCompile Include="Vector2.cpp" />
-    <ClCompile Include="Vector3.cpp" />
-    <ClCompile Include="Vector4.cpp" />
-    <ClCompile Include="WindowProcedure.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bezier.h" />
-    <ClInclude Include="StaticCast.h" />
-    <ClInclude Include="Collision.h" />
-    <ClInclude Include="CommandContext.h" />
-    <ClInclude Include="ConvertString.h" />
-    <ClInclude Include="AtrumEngine.h" />
-    <ClInclude Include="DeltaTime.h" />
-    <ClInclude Include="DescriptorAllocator.h" />
-    <ClInclude Include="Fence.h" />
-    <ClInclude Include="RenderDevice.h" />
+    <ClInclude Include="Codes\Include\AtrumEngine.h" />
+    <ClInclude Include="Codes\Include\Bezier.h" />
+    <ClInclude Include="Codes\Include\Collision.h" />
+    <ClInclude Include="Codes\Include\CommandContext.h" />
+    <ClInclude Include="Codes\Include\ConvertString.h" />
+    <ClInclude Include="Codes\Include\DeltaTime.h" />
+    <ClInclude Include="Codes\Include\DescriptorAllocator.h" />
+    <ClInclude Include="Codes\Include\Fence.h" />
+    <ClInclude Include="Codes\Include\ImGui.h" />
+    <ClInclude Include="Codes\Include\Log.h" />
+    <ClInclude Include="Codes\Include\Matrix3D.h" />
+    <ClInclude Include="Codes\Include\OBB.h" />
+    <ClInclude Include="Codes\Include\RenderDevice.h" />
+    <ClInclude Include="Codes\Include\StaticCast.h" />
+    <ClInclude Include="Codes\Include\SwapChain.h" />
+    <ClInclude Include="Codes\Include\Vector2.h" />
+    <ClInclude Include="Codes\Include\Vector3.h" />
+    <ClInclude Include="Codes\Include\Vector4.h" />
+    <ClInclude Include="Codes\Include\WindowProcedure.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
     <ClInclude Include="externals\imgui\imgui_impl_dx12.h" />
@@ -183,15 +192,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="ImGui.h" />
-    <ClInclude Include="Log.h" />
-    <ClInclude Include="Matrix3D.h" />
-    <ClInclude Include="OBB.h" />
-    <ClInclude Include="SwapChain.h" />
-    <ClInclude Include="Vector2.h" />
-    <ClInclude Include="Vector3.h" />
-    <ClInclude Include="Vector4.h" />
-    <ClInclude Include="WindowProcedure.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">

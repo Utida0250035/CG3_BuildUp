@@ -23,9 +23,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* テクスチャ */
 
-	uint32_t textureUvChecker = atrum->GetTexture("./Resources/Images/uvChecker.png");
-	uint32_t textureMonsterBall = atrum->GetTexture("./Resources/Images/monsterBall.png");
-	uint32_t textureUvCheckerExtra = atrum->GetTexture("./Resources/Images/uvChecker.png");
+	uint32_t textureUvChecker = atrum->GetTexture("./Resources/Images/ForStudy/uvChecker.png");
+	uint32_t textureMonsterBall = atrum->GetTexture("./Resources/Images/ForStudy/monsterBall.png");
+	uint32_t textureUvCheckerExtra = atrum->GetTexture("./Resources/Images/ForStudy/uvChecker.png");
 
 	/* 3dカメラ */
 
