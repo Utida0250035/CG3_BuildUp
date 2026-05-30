@@ -523,6 +523,8 @@ void AtrumEngine::CreateMaterialResource() {
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 
+	materialData_->uvTransform = MakeIdentityMatrix4x4();
+
 	LogFile::GetInstance()->Log("Created MaterialResource");
 
 }
@@ -725,7 +727,9 @@ void AtrumEngine::CreateSpriteMaterialResource() {
 	// マテリアルにデータを書き込むためのアドレスを取得
 	spriteMaterialResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteMaterialData_));
 
-	spriteMaterialData_->enableLighting = false;
+	spriteMaterialData_->inLightingEnable = false;
+
+	spriteMaterialData_->uvTransform = MakeIdentityMatrix4x4();
 
 	LogFile::GetInstance()->Log("Created MaterialResource");
 
@@ -1728,7 +1732,7 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 }
 
-void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData) {
+void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1748,16 +1752,21 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 	transformationData_[constantBufferCount_].wvp = triangleWorldMatrix * viewMatrix * projectionMatrix;
 	transformationData_[constantBufferCount_].world = triangleWorldMatrix;
 
-	materialData_[constantBufferCount_].data = textureColor;
+	materialData_[constantBufferCount_].color = textureColor;
+
+	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
+	uvTransformMatrix *= MakeZRotateMatrix(uvTransform.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform.translate);
+	materialData_[constantBufferCount_].uvTransform = uvTransformMatrix;
 
 	if (directionalLightData.has_value()) {
 
 		directionalLightData_[constantBufferCount_] = directionalLightData.value();
-		materialData_[constantBufferCount_].enableLighting = true;
+		materialData_[constantBufferCount_].inLightingEnable = true;
 
 	} else {
 
-		materialData_[constantBufferCount_].enableLighting = false;
+		materialData_[constantBufferCount_].inLightingEnable = false;
 
 	}
 
@@ -1777,7 +1786,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 
 }
 
-void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData) {
+void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1796,16 +1805,21 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 	transformationData_[constantBufferCount_].wvp = sphereWorldMatrix * viewMatrix * projectionMatrix;
 	transformationData_[constantBufferCount_].world = sphereWorldMatrix;
 
-	materialData_[constantBufferCount_].data = textureColor;
+	materialData_[constantBufferCount_].color = textureColor;
+
+	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
+	uvTransformMatrix *= MakeZRotateMatrix(uvTransform.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform.translate);
+	materialData_[constantBufferCount_].uvTransform = uvTransformMatrix;
 
 	if (directionalLightData.has_value()) {
 
 		directionalLightData_[constantBufferCount_] = directionalLightData.value();
-		materialData_[constantBufferCount_].enableLighting = true;
+		materialData_[constantBufferCount_].inLightingEnable = true;
 
 	} else {
 
-		materialData_[constantBufferCount_].enableLighting = false;
+		materialData_[constantBufferCount_].inLightingEnable = false;
 
 	}
 
@@ -1899,11 +1913,11 @@ void AtrumEngine::PrepareSprite() {
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, spriteMaterialResource_->GetGPUVirtualAddress());
 
 	// ライティングを無効化
-	spriteMaterialData_->enableLighting = false;
+	spriteMaterialData_->inLightingEnable = false;
 
 }
 
-void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& rectTransform, const Vector2& rectSize) {
+void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1919,7 +1933,12 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 	spriteTransformData_[spriteConstantBufferCount_].wvp = worldMatrix * viewMatrix * projectionMatrix;
 	spriteTransformData_[spriteConstantBufferCount_].world = worldMatrix;
 
-	spriteMaterialData_[spriteConstantBufferCount_].data = textureColor;
+	spriteMaterialData_[spriteConstantBufferCount_].color = textureColor;
+
+	Matrix4x4 uvTransformData = MakeScaleMatrix(uvTransform.scale);
+	uvTransformData *= MakeZRotateMatrix(uvTransform.rotate.z);
+	uvTransformData *= MakeTranslateMatrix(uvTransform.translate);
+	spriteMaterialData_[spriteConstantBufferCount_].uvTransform = uvTransformData;
 
 	/* 1枚目の三角形 */
 
@@ -1963,7 +1982,7 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 }
 
-void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ) {
+void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1977,7 +1996,7 @@ void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& te
 	rectTransform.scale = { 1.0f, 1.0f, 1.0f };
 	rectTransform.rotate = { 0.0f, 0.0f, std::atan2(difference.y, difference.x) };
 
-	DrawSpriteRect(textureIndex, textureColor, rectTransform, Vector2{ length, width });
+	DrawSpriteRect(textureIndex, textureColor, uvTransform, rectTransform, Vector2{ length, width });
 
 }
 

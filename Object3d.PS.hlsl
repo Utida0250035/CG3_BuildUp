@@ -14,6 +14,7 @@ ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 
 struct Material {
 	float32_t4 color;
+	float32_t4x4 uvTransform;
 	int32_t isLightingEnable;
 };
 
@@ -30,9 +31,11 @@ struct PixelShaderOutput {
 PixelShaderOutput main(VertexShaderOutput input) {
 	PixelShaderOutput output;
 	
-	uint instanceID = InstanceID();
+	float2 uvOffset = input.texCoord.xy - 0.5f;
 	
-	float32_t4 textureColor = gTexture.SampleLevel(gSampler, input.texCoord, 0);
+	float2 transformedUV = mul(uvOffset, (float2x2)gMaterial.uvTransform);
+	transformedUV += 0.5f + gMaterial.uvTransform._41_42;
+	float32_t4 textureColor = gTexture.SampleLevel(gSampler, transformedUV, 0);
 	float nDotL = dot(normalize(input.normal), -gDirectionalLight.direction);
 	float cos = 0.0f;
 	

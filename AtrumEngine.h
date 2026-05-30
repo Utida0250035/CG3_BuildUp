@@ -49,9 +49,9 @@ private:
 public:
 
 	struct Transform {
-		Vector3 scale;
-		Vector3 rotate;
-		Vector3 translate;
+		Vector3 scale{1.0f, 1.0f, 1.0f};
+		Vector3 rotate{};
+		Vector3 translate{};
 	};
 
 	struct VertexData {
@@ -85,9 +85,9 @@ public:
 		// 光源の種類
 		LightModel lightModel;
 
-		// 4 * 4 + 4* 3 + 4 + 4 = 36
+		// 16 + 12 + 4 + 4 = 36
 		// 残り220バイト分
-		int32_t padding[55];
+		float padding[55];
 
 	};
 
@@ -242,7 +242,7 @@ private:
 		// 4 * 16 + 4 * 16 = 128
 		// (256 - 128) / 4
 		// ConstantBuffer用の詰め物
-		int32_t padding[32]{};
+		float padding[32]{};
 	};
 
 	/* 頂点インデックス */
@@ -263,13 +263,11 @@ private:
 	/* Material */
 
 	struct MaterialData {
-		Vector4 data{};
-		int32_t enableLighting;
-
-		// 4 * 4 + 4 = 20
-		// (256 - 20) / 4
+		Vector4 color{};
+		Matrix4x4 uvTransform{};
+		int32_t inLightingEnable;
 		// ConstantBuffer用の詰め物
-		int32_t padding[59]{};
+		float padding[43]{};
 	};
 
 	// MaterialResource
@@ -762,7 +760,7 @@ public:
 	/// <param name="triangleTransform"> 三角形の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
 
 	/// <summary>
 	/// 球の描画
@@ -772,7 +770,7 @@ public:
 	/// <param name="triangleTransform"> 球の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 球の半径 </param>
-	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
+	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
 
 	/// <summary>
 	/// Spriteの準備
@@ -785,7 +783,7 @@ public:
 	/// <param name="textureIndex"> テクスチャ番号 </param>
 	/// <param name="textureColor"> テクスチャ色(補正) </param>
 	/// <param name="plateTransform"> 板の座標情報 </param>
-	void DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& rectTransform, const Vector2& rectSize);
+	void DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize);
 
 	/// <summary>
 	/// 2D線の描画
@@ -795,7 +793,7 @@ public:
 	/// <param name="start"> 始点 </param>
 	/// <param name="end"> 終点 </param>
 	/// <param name="width"> 太さ </param>
-	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
+	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
 
 };
 
