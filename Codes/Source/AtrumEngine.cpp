@@ -5,6 +5,7 @@
 #include "ConvertString.h"
 #include "Log.h"
 #include "Vector4.h"
+#include "Hash64.h"
 #include "WindowProcedure.h"
 #include <cassert>
 #include <cstdint>
@@ -37,6 +38,8 @@
 #include <filesystem>
 #include <cfloat>
 #include <numbers>
+#include <fstream>
+#include <sstream>
 
 AtrumEngine* AtrumEngine::instance_ = nullptr;
 
@@ -2000,8 +2003,6 @@ void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& te
 
 }
 
-
-
 void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
@@ -2033,6 +2034,118 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 	spriteVertexDrewCount_ += 4;
 
 	spriteConstantBufferCount_++;
+
+}
+
+AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath) {
+
+	// 戻り値用
+	AssetMeshData assetMeshData;
+	// 位置
+	std::vector<Vector4> positions;
+	// 法線
+	std::vector<Vector3> normals;
+	// テクスチャ座標
+	std::vector<Vector2> texCoords;
+	// ファイル1行分
+	std::string line;
+	
+	// ファイルからの入力
+	std::ifstream file(filePath);
+	// 開けなかったらエラー
+	assert(file.is_open());
+
+	while (std::getline(file, line)) {
+
+		std::string identifier;
+		std::stringstream s(line);
+
+		// 先頭の識別子を読む
+		s >> identifier;
+
+		switch (hash64_str(identifier.c_str())) {
+			case "v"_hash64:
+			{// ローカル変数用スコープ
+
+				Vector4 position;
+
+				s >> position.x >> position.y >> position.z;
+				position.w = 1.0f;
+
+				positions.push_back(position);
+
+				break;
+
+			}
+
+			case "vt"_hash64:
+			{
+
+				Vector2 texCoord;
+				s >> texCoord.x >> texCoord.y;
+
+				texCoords.push_back(texCoord);
+
+				break;
+
+			}
+
+			case "vn"_hash64:
+			{
+
+				Vector3 normal;
+				s >> normal.x >> normal.y >> normal.z;
+
+				normals.push_back(normal);
+
+				break;
+
+			}
+
+			case "f"_hash64:
+			{
+
+				// 面は三角形限定 その他は未対応
+
+				for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
+
+					std::string vertexDefinition;
+					s >> vertexDefinition;
+
+					// 頂点の要素へのIndexは「位置/UV/法線」で格納されている
+					// 分解してIndexを取得
+					std::istringstream v(vertexDefinition);
+					uint32_t elementIndices[3]{};
+
+					for (int32_t element = 0; element < 3; ++element) {
+
+						std::string index;
+						// /(スラッシュ)区切りでIndexを読んでいく
+						std::getline(v, index, '/');
+						elementIndices[element] = std::stoi(index);
+
+					}
+
+					Vector4 position = positions[elementIndices[0] - 1];
+					Vector2 texCoord = texCoords[elementIndices[1] - 1];
+					Vector3 normal = normals[elementIndices[2] - 1];
+
+					VertexData vertexData = { position, texCoord, normal };
+
+					assetMeshData.vertices.push_back(vertexData);
+
+				}
+
+				break;
+
+			}
+
+		}
+
+
+	}
+
+	return assetMeshData;
 
 }
 

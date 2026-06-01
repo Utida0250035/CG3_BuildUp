@@ -361,10 +361,32 @@ private:
 
 	uint32_t spriteConstantBufferCount_ = 0;
 
+
+	/* Asset用 Mesh */
+	struct AssetMeshData {
+
+		std::vector<VertexData> vertices;
+
+	};
+	/* Asset用 Material */
+	struct AssetMaterialData {
+
+		std::string textureFilePath;
+
+	};
+	/* Asset用 Model */
+	struct AssetModelData {
+		AssetMeshData mesh;
+		AssetMaterialData material;
+	};
+
+	// Asset用 Modelテーブル キーと弱参照
+	std::unordered_map<uint64_t, std::weak_ptr<AssetModelData>> assetModelTable_;
+
 	/* テクスチャ */
 
 	// Texture番号テーブル
-	std::map<std::string, uint32_t> textureIndexTable_{};
+	std::unordered_map<std::string, uint32_t> textureIndexTable_{};
 
 	// Texture
 	std::vector<Texture> textures_{};
@@ -794,6 +816,13 @@ public:
 	/// <param name="end"> 終点 </param>
 	/// <param name="width"> 太さ </param>
 	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
+
+	/// <summary>
+	/// objファイルの読み込み
+	/// </summary>
+	/// <param name="filePath"> ファイルパス </param>
+	/// <returns> メッシュデータ </returns>
+	AssetMeshData LoadObjFile(const  std::string& filePath);
 
 };
 
