@@ -1,8 +1,15 @@
 #include "Object3d.hlsli"
 
 struct TransformationMatrix {
+	// 16 * n[B]
+	
+	// 4
 	float32_t4x4 WVP;
+	// 4
 	float32_t4x4 world;
+	
+	// 8
+	float4 padding[8];
 };
 
 ConstantBuffer<TransformationMatrix> gTransformMatrix : register(b0);
