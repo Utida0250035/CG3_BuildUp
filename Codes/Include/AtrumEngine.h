@@ -903,7 +903,7 @@ public:
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
 	/// <returns> メッシュデータ </returns>
-	AssetMeshData LoadObjFile(const std::string& filePath);
+	std::shared_ptr<AssetMeshData> LoadObjFile(const std::string& filePath);
 
 	/// <summary>
 	/// 3Dモデルの生成

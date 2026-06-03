@@ -2050,10 +2050,10 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 }
 
-AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath) {
+std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std::string& filePath) {
 
 	// 戻り値用
-	AssetMeshData assetMeshData;
+	std::shared_ptr<AssetMeshData> assetMeshData = std::make_shared<AssetMeshData>();
 	// 位置
 	std::vector<Vector4> positions;
 	// 法線
@@ -2062,10 +2062,6 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 	std::vector<Vector2> texCoords;
 	// ファイル1行分
 	std::string line;
-	// 頂点リソース
-	ComPtr<ID3D12Resource> vertexResource = this->CreateDefaultBuffer(sizeof(VertexData) * assetMeshData.vertices.size());
-	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
 	// ファイルからの入力
 	std::ifstream file(filePath);
@@ -2149,7 +2145,7 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 
 					VertexData vertexData = { position, texCoord, normal };
 
-					assetMeshData.vertices.push_back(vertexData);
+					assetMeshData->vertices.push_back(vertexData);
 
 				}
 
@@ -2162,7 +2158,39 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 
 	}
 
-	ComPtr<ID3D12Resource> intermediateResource = ;
+	size_t bufferSize = sizeof(VertexData) * assetMeshData->vertices.size();
+
+	// 頂点リソース
+	ComPtr<ID3D12Resource> vertexResource = this->CreateDefaultBuffer(bufferSize);
+
+	ComPtr<ID3D12Resource> intermediateResource = CreateIntermediateResource(bufferSize);
+
+	void* pData = nullptr;
+
+	[[maybe_unused]]HRESULT hr = intermediateResource->Map(0u, nullptr, &pData);
+
+	if (SUCCEEDED(hr)) {
+
+		std::memcpy(pData, assetMeshData->vertices.data(), bufferSize);
+		intermediateResource->Unmap(0u, nullptr);
+
+	} else {
+
+		assert(false && "LoadObjFile() failed");
+
+	}
+
+	commandContextDirect_->GetCommandList()->CopyBufferRegion(
+		assetMeshData->vertexResource_.Get(), 0u,
+		intermediateResource.Get(), 0u,
+		static_cast<UINT64>(bufferSize)
+	);
+
+	
+
+	assetMeshTable_.emplace(hash64_str(filePath.c_str()), assetMeshData);
+
+	temporaryResources_.emplace_back(intermediateResource);
 
 	return assetMeshData;
 
@@ -2170,8 +2198,12 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 
 std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& objFilePath, const std::string& mtlFilePath) {
 
+	std::weak_ptr<AssetModel> assetModelData(std::make_shared<AssetModel>());
+
 	// メッシュデータ
-	AssetMeshData assetMeshData = LoadObjFile(objFilePath);
+	std::shared_ptr<AssetMeshData> assetMeshData = LoadObjFile(objFilePath);
+
+	assetMeshTable_.emplace(hash64_str(objFilePath.c_str()), assetMeshData);
 
 	// マテリアルデータ
 	AssetMaterialData assetMaterialData{};
@@ -2185,18 +2217,20 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::str
 	TransformationData* transformationData = nullptr;
 	transformationResource->Map(0u, nullptr, reinterpret_cast<void**>(&transformationData));
 
+	Vector4 filterColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+
 #ifdef _DEBUG
 
 	// モデルデータ作成 デバッグ用パス含む
 	std::weak_ptr<AssetModel> assetModelData(
-		std::make_shared<AssetModel>(materialResource, materialData, transformationResource, transformationData, assetMeshData, assetMaterialData, objFilePath, mtlFilePath)
+		std::make_shared<AssetModel>(transformationResource, transformationData, assetMeshData, assetMaterialData, filterColor, objFilePath, mtlFilePath)
 	);
 
 #else
 
 	// モデルデータ作成
 	std::weak_ptr<AssetModelData> assetModelData(
-		std::make_shared<AssetModelData>(assetMeshData, assetMaterialData)
+		std::make_shared<AssetModelData>(transformationResource, transformationData, assetMeshData, assetMaterialData, filterColor)
 	);
 
 #endif
