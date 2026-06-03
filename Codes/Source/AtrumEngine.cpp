@@ -1168,25 +1168,23 @@ void AtrumEngine::PreDraw() {
 
 	swapChainManager_->UpdateBackBufferIndex();
 
-	D3D12_RESOURCE_BARRIER barrier;
-
 	// 今回のバリアの型はTransition
-	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 
 	// フラグをNoneにしておく
-	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 
 	// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
-	barrier.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
+	barrier_.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
 
 	// 遷移前(現在)のResourceState
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 
 	// 遷移後のResourceState
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	// TransitionBarrierを張る
-	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
+	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier_);
 
 	// 描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvAllocator_->GetCpuStart();
@@ -1246,15 +1244,13 @@ void AtrumEngine::PostDraw() {
 
 #endif
 
-	D3D12_RESOURCE_BARRIER barrier;
-
 	// 画面に描く処理が終了し画面に映すため状態を遷移
 	// RenderTargetからPresentにする
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 
 	// TransitionBarrierを張る
-	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
+	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier_);
 
 	// コマンドリストの内容を確定させる
 	hr_ = commandContextDirect_->GetCommandList()->Close();
