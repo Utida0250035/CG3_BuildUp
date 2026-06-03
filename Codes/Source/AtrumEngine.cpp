@@ -1249,7 +1249,6 @@ void AtrumEngine::PostDraw() {
 
 #endif
 
-
 	D3D12_RESOURCE_BARRIER barrier{};
 
 	// バリアの種類
