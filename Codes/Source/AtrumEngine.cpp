@@ -1168,13 +1168,16 @@ void AtrumEngine::PreDraw() {
 
 	swapChainManager_->UpdateBackBufferIndex();
 
-	D3D12_RESOURCE_BARRIER barrier;
-
-	// 今回のバリアの型はTransition
+	D3D12_RESOURCE_BARRIER barrier{};
+	
+	// バリアの種類
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-	// フラグをNoneにしておく
+	
+	// バリアフラグ
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	
+	// サブリソース
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 	// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
 	barrier.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
@@ -1246,7 +1249,20 @@ void AtrumEngine::PostDraw() {
 
 #endif
 
-	D3D12_RESOURCE_BARRIER barrier;
+
+	D3D12_RESOURCE_BARRIER barrier{};
+
+	// バリアの種類
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+	// バリアフラグ
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	// サブリソース
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
+	barrier.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
 
 	// 画面に描く処理が終了し画面に映すため状態を遷移
 	// RenderTargetからPresentにする
