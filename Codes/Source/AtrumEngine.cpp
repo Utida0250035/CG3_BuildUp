@@ -1168,23 +1168,28 @@ void AtrumEngine::PreDraw() {
 
 	swapChainManager_->UpdateBackBufferIndex();
 
-	// 今回のバリアの型はTransition
-	barrier_.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-
-	// フラグをNoneにしておく
-	barrier_.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	D3D12_RESOURCE_BARRIER barrier{};
+	
+	// バリアの種類
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	
+	// バリアフラグ
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	
+	// サブリソース
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
 	// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
-	barrier_.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
+	barrier.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
 
 	// 遷移前(現在)のResourceState
-	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 
 	// 遷移後のResourceState
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	// TransitionBarrierを張る
-	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier_);
+	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
 
 	// 描画先のRTVとDSVを設定
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = dsvAllocator_->GetCpuStart();
@@ -1244,13 +1249,27 @@ void AtrumEngine::PostDraw() {
 
 #endif
 
+	D3D12_RESOURCE_BARRIER barrier{};
+
+	// バリアの種類
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+
+	// バリアフラグ
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+
+	// サブリソース
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+
+	// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
+	barrier.Transition.pResource = swapChainManager_->GetSwapChainResourceCurrent().Get();
+
 	// 画面に描く処理が終了し画面に映すため状態を遷移
 	// RenderTargetからPresentにする
-	barrier_.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrier_.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 
 	// TransitionBarrierを張る
-	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier_);
+	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
 
 	// コマンドリストの内容を確定させる
 	hr_ = commandContextDirect_->GetCommandList()->Close();
