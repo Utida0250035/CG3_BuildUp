@@ -36,7 +36,7 @@
 #include <array>
 
 #include <memory>
-#include <map>
+#include <unordered_map>
 #include <optional>
 
 class AtrumEngine final {
@@ -49,7 +49,7 @@ private:
 public:
 
 	struct Transform {
-		Vector3 scale{1.0f, 1.0f, 1.0f};
+		Vector3 scale{ 1.0f, 1.0f, 1.0f };
 		Vector3 rotate{};
 		Vector3 translate{};
 	};
@@ -117,7 +117,7 @@ private:
 	/* エラー処理 */
 
 	// Windowsエラーハンドル
-	[[maybe_unused]]HRESULT hr_{};
+	[[maybe_unused]] HRESULT hr_{};
 
 
 	/* RenderDevice */
@@ -235,7 +235,7 @@ private:
 	// 画面上の三角形の最大描画数
 	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
 
-	struct TransformationMatrix {
+	struct TransformationData {
 		Matrix4x4 wvp{};
 		Matrix4x4 world{};
 
@@ -265,7 +265,7 @@ private:
 	struct MaterialData {
 		Vector4 color{};
 		Matrix4x4 uvTransform{};
-		int32_t inLightingEnable;
+		int32_t inLightingEnable = false;
 		// ConstantBuffer用の詰め物
 		float padding[43]{};
 	};
@@ -283,7 +283,7 @@ private:
 	ComPtr<ID3D12Resource> transformationResource_ = nullptr;
 
 	// WvpData 描画座標データ
-	TransformationMatrix* transformationData_ = nullptr;
+	TransformationData* transformationData_ = nullptr;
 
 	/* DirectionalLight(3D専用) */
 
@@ -322,12 +322,12 @@ private:
 	// Sprite用 総描画頂点数のカウント
 	uint32_t spriteVertexDrewCount_ = 0;
 
-	
+
 	/* Sprite用 頂点インデックス */
 
 	// Sprite用 IndexResource
 	ComPtr<ID3D12Resource> spriteIndexResource_ = nullptr;
-	
+
 	// Sprite用 IndesData
 	uint32_t* spriteIndexData_ = nullptr;
 
@@ -355,38 +355,96 @@ private:
 	ComPtr<ID3D12Resource> spriteTransformationResource_ = nullptr;
 
 	// Sprite用 Transformデータ
-	TransformationMatrix* spriteTransformData_ = nullptr;
+	TransformationData* spriteTransformData_ = nullptr;
 
 	/* Sprite用 constantBufferCount */
 
 	uint32_t spriteConstantBufferCount_ = 0;
 
-
 	/* Asset用 Mesh */
 	struct AssetMeshData {
 
+		// 頂点データ
 		std::vector<VertexData> vertices;
 
+		// 頂点リソース
+		ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+
+		// 頂点バッファビュー
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+
 	};
+
 	/* Asset用 Material */
 	struct AssetMaterialData {
 
+		// テクスチャのファイルパスのハッシュ
+		uint64_t textureFileHash;
+
+#ifdef _DEBUG
+
+		// テクスチャのファイルパス
 		std::string textureFilePath;
 
-	};
-	/* Asset用 Model */
-	struct AssetModelData {
-		AssetMeshData mesh;
-		AssetMaterialData material;
+#endif
+
+		// マテリアルリソース
+		ComPtr<ID3D12Resource> materialResource_ = nullptr;
+
+		// マテリアルデータ
+		MaterialData* materialData = nullptr;
+
 	};
 
-	// Asset用 Modelテーブル キーと弱参照
-	std::unordered_map<uint64_t, std::weak_ptr<AssetModelData>> assetModelTable_;
+public:
+
+	/* Asset用 Model */
+	class AssetModel {
+
+	private:
+
+		// 座標変換リソース
+		ComPtr<ID3D12Resource> transformationResource_ = nullptr;
+		// 座標変換データ
+		TransformationData* transformationData_ = nullptr;
+
+		// objファイルからのメッシュ
+		std::shared_ptr<AssetMeshData> mesh_ = nullptr;
+		// mtlファイルからのマテリアル
+		std::shared_ptr<AssetMaterialData> material_ = nullptr;
+
+		// フィルターカラー
+		Vector4 filterColor_{ 1.0f, 1.0f, 1.0f, 1.0f };
+
+#ifdef _DEBUG
+
+		std::string objFilePathDebug_ = "";
+		std::string mtlFilePathDebug_ = "";
+
+#endif
+
+	public:
+
+		void Draw(ID3D12CommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddr);
+
+	};
+
+private:
+
+	// 3DモデルAsset用 Meshテーブル
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshTable_{};
+
+	// 3DモデルAsset用 Materialテーブル
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialData_{};
+
+	// 3DモデルAsset用 Modelテーブル
+	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelTable_{};
+
 
 	/* テクスチャ */
 
-	// Texture番号テーブル
-	std::unordered_map<std::string, uint32_t> textureIndexTable_{};
+	// Textureのsrv番号テーブル
+	std::unordered_map<uint64_t, uint32_t> textureIndexTable_{};
 
 	// Texture
 	std::vector<Texture> textures_{};
@@ -512,7 +570,23 @@ private:
 	/// <param name="device"> デバイス </param>
 	/// <param name="sizeInBytes"> Resourceのサイズ </param>
 	/// <returns> Resource </returns>
-	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES resourceState);
+
+	/// <summary>
+	/// UploadBuffer作成
+	/// </summary>
+	/// <param name="device"> デバイス </param>
+	/// <param name="sizeInBytes"> Bufferのサイズ </param>
+	/// <returns> Resource </returns>
+	ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes);
+
+	/// <summary>
+	/// DefaultBuffer作成
+	/// </summary>
+	/// <param name="device"> デバイス </param>
+	/// <param name="sizeInBytes"> Bufferのサイズ </param>
+	/// <returns> Resource </returns>
+	ComPtr<ID3D12Resource> CreateDefaultBuffer(size_t sizeInBytes);
 
 	/// <summary>
 	/// 初期化処理 MaterialResourceの作成
@@ -568,7 +642,7 @@ private:
 	/// 初期化処理 Sprite用IndexResourceの生成
 	/// </summary>
 	void CreateSpriteIndexResource();
-	
+
 	/// <summary>
 	/// 初期化処理 Sprite用IndexBufferViewの生成
 	/// </summary>
@@ -730,6 +804,13 @@ public:
 private:
 
 	/// <summary>
+	/// 中間リソース生成の汎用関数
+	/// </summary>
+	/// <param name="resourceSize"> 中間リソースのサイズ </param>
+	/// <returns> 中間リソース </returns>
+	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t resourceSize);
+
+	/// <summary>
 	/// Textureデータの読み込み
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
@@ -744,11 +825,11 @@ private:
 	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
 
 	/// <summary>
-	/// 
+	/// テクスチャ読み込み用中間リソースの作成
 	/// </summary>
 	/// <param name="textureResource"></param>
 	/// <returns></returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(ID3D12Resource* textureResource);
+	ComPtr<ID3D12Resource> CreateTextureIntermediateResource(ID3D12Resource* textureResource);
 
 	/// <summary>
 	/// textureResourceにデータを転送する
@@ -822,7 +903,22 @@ public:
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
 	/// <returns> メッシュデータ </returns>
-	AssetMeshData LoadObjFile(const  std::string& filePath);
+	AssetMeshData LoadObjFile(const std::string& filePath);
+
+	/// <summary>
+	/// 3Dモデルの生成
+	/// </summary>
+	/// <param name="objFilePath"> objファイルのパス </param>
+	/// <returns> 管理番号(ハッシュ) </returns>
+	std::shared_ptr<AssetModel> CreateModel(const std::string& objFilePath, const std::string& mtlFilePath);
+
+	/// <summary>
+	/// 3Dモデルの取得||新規作成
+	/// </summary>
+	/// <param name="objFilePath"></param>
+	/// <param name="mtlFilePath"></param>
+	/// <returns></returns>
+	std::shared_ptr<AssetModel> GetModel(const std::string& objFilePath, const std::string& mtlFilePath);
 
 };
 

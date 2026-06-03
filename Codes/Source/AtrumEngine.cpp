@@ -483,11 +483,11 @@ void AtrumEngine::PrepareShader() {
 
 }
 
-ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
+ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES resourceState) {
 
 	// リソース用のヒープの設定
 	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	uploadHeapProperties.Type = heapType;
 
 	D3D12_RESOURCE_DESC resourceDesc{};
 
@@ -507,7 +507,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 	// 実際にリソースを作る
 	ComPtr<ID3D12Resource> resource = nullptr;
-	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, resourceState, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(hr_));
 
 	LogFile::GetInstance()->Log("Created BufferResource");
@@ -516,15 +516,28 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes) {
 
 }
 
+ComPtr<ID3D12Resource> AtrumEngine::CreateUploadBuffer(size_t sizeInBytes) {
+
+	return CreateBufferResource(sizeInBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ);
+
+}
+
+
+ComPtr<ID3D12Resource> AtrumEngine::CreateDefaultBuffer(size_t sizeInBytes) {
+
+	return CreateBufferResource(sizeInBytes, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COPY_DEST);
+
+}
+
 void AtrumEngine::CreateMaterialResource() {
 
 	assert(!isInitialized_ && "CreateMaterialResource() is initializeHelper");
 
 	// Color * maxCount分サイズを用意
-	materialResource_ = this->CreateBufferResource(sizeof(MaterialData) * kTriangleMaxDrawCount);
+	materialResource_ = this->CreateUploadBuffer(sizeof(MaterialData) * kTriangleMaxDrawCount);
 
 	// マテリアルにデータを書き込むためのアドレスを取得
-	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	materialResource_->Map(0u, nullptr, reinterpret_cast<void**>(&materialData_));
 
 	materialData_->uvTransform = MakeIdentityMatrix4x4();
 
@@ -537,7 +550,7 @@ void AtrumEngine::CreateTransformationResource() {
 	assert(!isInitialized_ && "CreateWvpResource() is initializeHelper");
 
 	// Matrix4x4 maxCount個分のサイズを用意する
-	transformationResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kTriangleMaxDrawCount);
+	transformationResource_ = this->CreateUploadBuffer(sizeof(TransformationData) * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
 	transformationResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationData_));
@@ -597,7 +610,7 @@ void AtrumEngine::CreateVertexResource() {
 	assert(!isInitialized_ && "CreateVertexResource() is initializeHelper");
 
 	// 三角形最大数 * 3 * データ1つ分のサイズ
-	vertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * kTriangleMaxDrawCount);
+	vertexResource_ = this->CreateUploadBuffer(sizeof(VertexData) * 3 * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
 	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
@@ -628,7 +641,7 @@ void AtrumEngine::CreateIndexResource() {
 	assert(!isInitialized_ && "CreateIndexResource() is initializeHelper");
 
 	// 頂点インデックスリソースの生成
-	indexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kTriangleMaxDrawCount);
+	indexResource_ = this->CreateUploadBuffer(sizeof(uint32_t) * 3 * kTriangleMaxDrawCount);
 
 	// リソースへの書き込み用アドレスを取得
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
@@ -656,7 +669,7 @@ void AtrumEngine::CreateDirectionalLightResource() {
 	assert(!isInitialized_ && "CreateDirectionalLightResource() is initializeHelper");
 
 	// Data1つ * triangleMaxCount のサイズを用意
-	directionalLightResource_ = this->CreateBufferResource(sizeof(DirectionalLightData) * kTriangleMaxDrawCount);
+	directionalLightResource_ = this->CreateUploadBuffer(sizeof(DirectionalLightData) * kTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレスを取得
 	directionalLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
@@ -672,7 +685,7 @@ void AtrumEngine::CreateSpriteVertexResource() {
 
 	assert(!isInitialized_ && "CreateSpriteVertexResource() is initializeHelper");
 
-	spriteVertexResource_ = this->CreateBufferResource(sizeof(VertexData) * 3 * kSpriteTriangleMaxDrawCount);
+	spriteVertexResource_ = this->CreateUploadBuffer(sizeof(VertexData) * 3 * kSpriteTriangleMaxDrawCount);
 
 	spriteVertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteVertexData_));
 
@@ -698,7 +711,7 @@ void AtrumEngine::CreateSpriteIndexResource() {
 	assert(!isInitialized_ && "CreateSpriteIndexResource() is initializeHelper");
 
 	// 頂点インデックスリソースの生成
-	spriteIndexResource_ = this->CreateBufferResource(sizeof(uint32_t) * 3 * kSpriteTriangleMaxDrawCount);
+	spriteIndexResource_ = this->CreateUploadBuffer(sizeof(uint32_t) * 3 * kSpriteTriangleMaxDrawCount);
 
 	// リソースへの書き込み用アドレスを取得
 	spriteIndexResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteIndexData_));
@@ -725,7 +738,7 @@ void AtrumEngine::CreateSpriteMaterialResource() {
 	assert(!isInitialized_ && "CreateSpriteMaterialResource() is initializeHelper");
 
 	// Color maxCount個分のサイズを用意
-	spriteMaterialResource_ = this->CreateBufferResource(sizeof(MaterialData) * kSpriteTriangleMaxDrawCount);
+	spriteMaterialResource_ = this->CreateUploadBuffer(sizeof(MaterialData) * kSpriteTriangleMaxDrawCount);
 
 	// マテリアルにデータを書き込むためのアドレスを取得
 	spriteMaterialResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteMaterialData_));
@@ -743,7 +756,7 @@ void AtrumEngine::CreateSpriteTransformationResource() {
 	assert(!isInitialized_ && "CreateSpriteTransformationResource() is initializeHelper");
 
 	// 4x4行列 maxCount個分のサイズを用意する
-	spriteTransformationResource_ = this->CreateBufferResource(sizeof(TransformationMatrix) * kSpriteTriangleMaxDrawCount);
+	spriteTransformationResource_ = this->CreateUploadBuffer(sizeof(TransformationData) * kSpriteTriangleMaxDrawCount);
 
 	// データを書き込むためのアドレス取得
 	spriteTransformationResource_->Map(0, nullptr, reinterpret_cast<void**>(&spriteTransformData_));
@@ -784,7 +797,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Triangle)");
 
 	// TransformMatrix (WVP) のアドレス計算
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationMatrix));
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationData));
 	// GPUに設定(rootParameter0)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
@@ -823,7 +836,7 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& i
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
 
 	// TransformMatrix (WVP) のアドレス計算
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationMatrix));
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationResource_->GetGPUVirtualAddress() + (constantBufferCount_ * sizeof(TransformationData));
 	// GPUに設定(rootParameter0)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
@@ -1481,7 +1494,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, in
 
 }
 
-ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(ID3D12Resource* textureResource) {
+ComPtr<ID3D12Resource> AtrumEngine::CreateTextureIntermediateResource(ID3D12Resource* textureResource) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1666,7 +1679,7 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	// これから追加するテクスチャがImGui込みのsrvDescriptorHeapに収まらなければエラー
 	assert(textures_.size() + 1 < srvAllocator_->GetMaxDescriptorCount() - 1 && "srvDescriptorHeap is over maxCount");
 
-	auto search = textureIndexTable_.find(filePath);
+	auto search = textureIndexTable_.find(hash64_str(filePath.c_str()));
 
 	if (search != textureIndexTable_.end()) {
 
@@ -1684,7 +1697,7 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 	assert(texture.resource);
 
-	ComPtr<ID3D12Resource> intermediateResource = this->CreateIntermediateResource(texture.resource.Get());
+	ComPtr<ID3D12Resource> intermediateResource = this->CreateTextureIntermediateResource(texture.resource.Get());
 
 	// 中間リソースを用いた転送
 	this->UploadTextureData(texture.resource.Get(), mipImages, intermediateResource.Get());
@@ -1722,8 +1735,8 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 	// 中間リソースを一時保存
 	temporaryResources_.emplace_back(intermediateResource);
 
-	// ファイル名と番号を格納
-	textureIndexTable_.emplace(filePath, texture.srvIndex);
+	// ファイル名からのハッシュとSRV番号を格納
+	textureIndexTable_.emplace(hash64_str(filePath.c_str()), texture.srvIndex);
 
 	// 配列に所有権を移動
 	textures_.emplace_back(texture);
@@ -2011,7 +2024,7 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 	assert(spriteConstantBufferCount_ + 1 < kSpriteTriangleMaxDrawCount && "spriteConstantBufferCount over maxCount");
 
 	// TransformMatrix (WVP) のアドレス計算
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = spriteTransformationResource_->GetGPUVirtualAddress() + (spriteConstantBufferCount_ * sizeof(TransformationMatrix));
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = spriteTransformationResource_->GetGPUVirtualAddress() + (spriteConstantBufferCount_ * sizeof(TransformationData));
 	// GPUに設定(rootParameter0)
 	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
@@ -2049,7 +2062,11 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 	std::vector<Vector2> texCoords;
 	// ファイル1行分
 	std::string line;
-	
+	// 頂点リソース
+	ComPtr<ID3D12Resource> vertexResource = this->CreateDefaultBuffer(sizeof(VertexData) * assetMeshData.vertices.size());
+	// 頂点バッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+
 	// ファイルからの入力
 	std::ifstream file(filePath);
 	// 開けなかったらエラー
@@ -2105,7 +2122,7 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 			case "f"_hash64:
 			{
 
-				// 面は三角形限定 その他は未対応
+				// 三角形の集合に限定 その他は対応しない
 
 				for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
 
@@ -2145,7 +2162,79 @@ AtrumEngine::AssetMeshData AtrumEngine::LoadObjFile(const  std::string& filePath
 
 	}
 
+	ComPtr<ID3D12Resource> intermediateResource = ;
+
 	return assetMeshData;
+
+}
+
+std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& objFilePath, const std::string& mtlFilePath) {
+
+	// メッシュデータ
+	AssetMeshData assetMeshData = LoadObjFile(objFilePath);
+
+	// マテリアルデータ
+	AssetMaterialData assetMaterialData{};
+
+	// マテリアルリソース
+	ComPtr<ID3D12Resource> materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
+
+	// 座標変換リソース
+	ComPtr<ID3D12Resource> transformationResource = this->CreateUploadBuffer(sizeof(TransformationData));
+
+	TransformationData* transformationData = nullptr;
+	transformationResource->Map(0u, nullptr, reinterpret_cast<void**>(&transformationData));
+
+#ifdef _DEBUG
+
+	// モデルデータ作成 デバッグ用パス含む
+	std::weak_ptr<AssetModel> assetModelData(
+		std::make_shared<AssetModel>(materialResource, materialData, transformationResource, transformationData, assetMeshData, assetMaterialData, objFilePath, mtlFilePath)
+	);
+
+#else
+
+	// モデルデータ作成
+	std::weak_ptr<AssetModelData> assetModelData(
+		std::make_shared<AssetModelData>(assetMeshData, assetMaterialData)
+	);
+
+#endif
+
+	// ファイル名(区切り連結)のハッシュ化
+	uint64_t manageHash = hash64_str((objFilePath + "|" + mtlFilePath).c_str());
+
+	// モデルテーブルへ追加
+	assetModelTable_.emplace(manageHash, assetModelData);
+
+	
+	// モデルデータを参照元へ戻す
+	return assetModelData.lock();
+
+}
+
+std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::GetModel(const std::string& objFilePath, const std::string& mtlFilePath) {
+
+	// キー検索
+	auto search = assetModelTable_.find(hash64_str((objFilePath + "|" + mtlFilePath).c_str()));
+
+	if (search != assetModelTable_.end()) {
+		// 該当要素がモデルテーブルに見つかった場合
+
+		if (search->second.lock()) {
+			// 値が空でなければ戻り値とする
+
+			return search->second.lock();
+
+		}
+
+		// 値が空なら要素を消去する
+		assetModelTable_.erase(search);
+
+	}
+
+	// 無ければ新しく作って戻り値とする
+	return this->CreateModel(objFilePath, mtlFilePath);
 
 }
 
