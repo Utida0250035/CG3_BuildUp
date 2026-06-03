@@ -370,12 +370,6 @@ private:
 	std::vector<Texture> textures_{};
 
 
-	/* バリア */
-
-	// TransitionBarrierの設定
-	D3D12_RESOURCE_BARRIER barrier_{};
-
-
 	/* ウィンドウサイズ */
 
 	// ビューポート
