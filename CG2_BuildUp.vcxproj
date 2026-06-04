@@ -173,6 +173,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\DeltaTime.h" />
     <ClInclude Include="Codes\Include\DescriptorAllocator.h" />
     <ClInclude Include="Codes\Include\Fence.h" />
+    <ClInclude Include="Codes\Include\Hash64.h" />
     <ClInclude Include="Codes\Include\ImGui.h" />
     <ClInclude Include="Codes\Include\Log.h" />
     <ClInclude Include="Codes\Include\Matrix3D.h" />
@@ -192,7 +193,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Hash64.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">

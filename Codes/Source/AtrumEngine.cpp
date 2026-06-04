@@ -43,6 +43,7 @@
 
 AtrumEngine* AtrumEngine::instance_ = nullptr;
 
+
 template<typename T>
 using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -525,7 +526,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateUploadBuffer(size_t sizeInBytes) {
 
 ComPtr<ID3D12Resource> AtrumEngine::CreateDefaultBuffer(size_t sizeInBytes) {
 
-	return CreateBufferResource(sizeInBytes, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COPY_DEST);
+	return CreateBufferResource(sizeInBytes, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_COMMON);
 
 }
 
@@ -1185,13 +1186,13 @@ void AtrumEngine::PreDraw() {
 	swapChainManager_->UpdateBackBufferIndex();
 
 	D3D12_RESOURCE_BARRIER barrier{};
-	
+
 	// バリアの種類
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	
+
 	// バリアフラグ
 	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	
+
 	// サブリソース
 	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 
@@ -1376,6 +1377,45 @@ Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) {
 
 }
 
+ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const size_t intermediateSize, const D3D12_RESOURCE_STATES resourceState) {
+
+	assert(isInitialized_ && "AtrumEngine is not initialized");
+
+	/* 受け取ったサイズでUPLOADヒープのリソースを作成 */
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+	D3D12_RESOURCE_DESC bufferDesc{};
+	bufferDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	bufferDesc.Alignment = 0;
+
+	// 受け取ったサイズを指定
+	bufferDesc.Width = intermediateSize;
+
+	bufferDesc.Height = 1;
+	bufferDesc.DepthOrArraySize = 1;
+	bufferDesc.MipLevels = 1;
+	bufferDesc.Format = DXGI_FORMAT_UNKNOWN;
+	bufferDesc.SampleDesc.Count = 1;
+	bufferDesc.SampleDesc.Quality = 0;
+	bufferDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	bufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	ComPtr<ID3D12Resource> intermediateResource = nullptr;
+	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&bufferDesc,
+		resourceState,
+		nullptr,
+		IID_PPV_ARGS(&intermediateResource)
+	);
+
+	assert(SUCCEEDED(hr_));
+
+	return intermediateResource;
+
+}
 
 DirectX::ScratchImage AtrumEngine::LoadTexture(const std::string& filePath) {
 
@@ -1543,39 +1583,8 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateTextureIntermediateResource(ID3D12Reso
 		&intermediateSize
 	);
 
-	/* 受け取ったサイズでUPLOADヒープのリソースを作成 */
-	D3D12_HEAP_PROPERTIES heapProperties{};
-	heapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-
-	D3D12_RESOURCE_DESC bufferDesc{};
-	bufferDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	bufferDesc.Alignment = 0;
-
-	// 受け取ったサイズを指定
-	bufferDesc.Width = intermediateSize;
-
-	bufferDesc.Height = 1;
-	bufferDesc.DepthOrArraySize = 1;
-	bufferDesc.MipLevels = 1;
-	bufferDesc.Format = DXGI_FORMAT_UNKNOWN;
-	bufferDesc.SampleDesc.Count = 1;
-	bufferDesc.SampleDesc.Quality = 0;
-	bufferDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	bufferDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-
-	ComPtr<ID3D12Resource> intermediateResource = nullptr;
-	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(
-		&heapProperties,
-		D3D12_HEAP_FLAG_NONE,
-		&bufferDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&intermediateResource)
-	);
-
-	assert(SUCCEEDED(hr_));
-
-	return intermediateResource;
+	// 受け取ったサイズのUPLOADヒープのリソースを生成して参照元へ
+	return this->CreateIntermediateResource(intermediateSize, D3D12_RESOURCE_STATE_GENERIC_READ);
 
 }
 
@@ -2069,7 +2078,7 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 }
 
-std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std::string& filePath) {
+std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::string& directoryPath, const std::string& fileName) {
 
 	// 戻り値用
 	std::shared_ptr<AssetMeshData> assetMeshData = std::make_shared<AssetMeshData>();
@@ -2081,6 +2090,9 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 	std::vector<Vector2> texCoords;
 	// ファイル1行分
 	std::string line;
+
+	// ファイルのパス
+	std::string filePath = directoryPath + "/" + fileName;
 
 	// ファイルからの入力
 	std::ifstream file(filePath);
@@ -2104,6 +2116,8 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 				s >> position.x >> position.y >> position.z;
 				position.w = 1.0f;
 
+				position.x *= -1.0f;
+
 				positions.push_back(position);
 
 				break;
@@ -2115,6 +2129,8 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 
 				Vector2 texCoord;
 				s >> texCoord.x >> texCoord.y;
+
+				texCoord.y = 1.0f - texCoord.y;
 
 				texCoords.push_back(texCoord);
 
@@ -2128,6 +2144,8 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 				Vector3 normal;
 				s >> normal.x >> normal.y >> normal.z;
 
+				normal.x *= -1.0f;
+
 				normals.push_back(normal);
 
 				break;
@@ -2136,6 +2154,8 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 
 			case "f"_hash64:
 			{
+
+				VertexData triangle[3]{};
 
 				// 三角形の集合に限定 その他は対応しない
 
@@ -2159,14 +2179,19 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 					}
 
 					Vector4 position = positions[elementIndices[0] - 1];
+					position.x *= -1.0f;
+
 					Vector2 texCoord = texCoords[elementIndices[1] - 1];
 					Vector3 normal = normals[elementIndices[2] - 1];
+					normal.x *= -1.0f;
 
-					VertexData vertexData = { position, texCoord, normal };
-
-					assetMeshData->vertices.push_back(vertexData);
+					triangle[faceVertex] = { position, texCoord, normal };
 
 				}
+
+				assetMeshData->vertices.push_back(triangle[2]);
+				assetMeshData->vertices.push_back(triangle[1]);
+				assetMeshData->vertices.push_back(triangle[0]);
 
 				break;
 
@@ -2179,14 +2204,12 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 
 	size_t bufferSize = sizeof(VertexData) * assetMeshData->vertices.size();
 
-	// 頂点リソース
-	ComPtr<ID3D12Resource> vertexResource = this->CreateDefaultBuffer(bufferSize);
-
-	ComPtr<ID3D12Resource> intermediateResource = CreateIntermediateResource(bufferSize);
+	assetMeshData->vertexResource = CreateDefaultBuffer(bufferSize);
+	ComPtr<ID3D12Resource> intermediateResource = CreateIntermediateResource(bufferSize, D3D12_RESOURCE_STATE_COPY_SOURCE);
 
 	void* pData = nullptr;
 
-	[[maybe_unused]]HRESULT hr = intermediateResource->Map(0u, nullptr, &pData);
+	HRESULT hr = intermediateResource->Map(0u, nullptr, &pData);
 
 	if (SUCCEEDED(hr)) {
 
@@ -2200,12 +2223,22 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 	}
 
 	commandContextDirect_->GetCommandList()->CopyBufferRegion(
-		assetMeshData->vertexResource_.Get(), 0u,
+		assetMeshData->vertexResource.Get(), 0u,
 		intermediateResource.Get(), 0u,
 		static_cast<UINT64>(bufferSize)
 	);
 
-	
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		assetMeshData->vertexResource.Get(),
+		D3D12_RESOURCE_STATE_COMMON,
+		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
+	);
+
+	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
+
+	assetMeshData->vertexBufferView.BufferLocation = assetMeshData->vertexResource->GetGPUVirtualAddress();
+	assetMeshData->vertexBufferView.SizeInBytes = static_cast<UINT>(bufferSize);
+	assetMeshData->vertexBufferView.StrideInBytes = sizeof(VertexData);
 
 	assetMeshTable_.emplace(hash64_str(filePath.c_str()), assetMeshData);
 
@@ -2215,61 +2248,97 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const  std:
 
 }
 
-std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& objFilePath, const std::string& mtlFilePath) {
+std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName) {
 
-	std::weak_ptr<AssetModel> assetModelData(std::make_shared<AssetModel>());
+	// 戻り値用
+	std::shared_ptr<AssetMaterialData> assetMaterialData = std::make_shared<AssetMaterialData>();
 
-	// メッシュデータ
-	std::shared_ptr<AssetMeshData> assetMeshData = LoadObjFile(objFilePath);
+	// ファイルの1行読み込みしょ
+	std::string line;
 
-	assetMeshTable_.emplace(hash64_str(objFilePath.c_str()), assetMeshData);
+	// ファイルのパス
+	std::string filePath = directoryPath + "/" + fileName;
 
-	// マテリアルデータ
-	AssetMaterialData assetMaterialData{};
+	// ファイルからの入力
+	std::fstream file(filePath);
+	// ファイルが開けなければエラー
+	assert(file.is_open());
 
-	// マテリアルリソース
-	ComPtr<ID3D12Resource> materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
+	std::string textureFilePath;
 
-	// 座標変換リソース
-	ComPtr<ID3D12Resource> transformationResource = this->CreateUploadBuffer(sizeof(TransformationData));
+	while (std::getline(file, line)) {
 
-	TransformationData* transformationData = nullptr;
-	transformationResource->Map(0u, nullptr, reinterpret_cast<void**>(&transformationData));
+		std::string identifier;
+		std::istringstream s(line);
 
-	Vector4 filterColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+		s >> identifier;
+
+		if (hash64_str(identifier.c_str()) == "map_kd"_hash64) {
+
+			std::string textureFileName;
+			s >> textureFileName;
+
+			// 連結してファイルパスにする
+			textureFilePath = directoryPath + "/" + textureFileName;
+
+			assetMaterialData->textureFileHash = hash64_str(textureFilePath);
 
 #ifdef _DEBUG
 
-	// モデルデータ作成 デバッグ用パス含む
-	std::weak_ptr<AssetModel> assetModelData(
-		std::make_shared<AssetModel>(transformationResource, transformationData, assetMeshData, assetMaterialData, filterColor, objFilePath, mtlFilePath)
-	);
+			assetMaterialData->textureFilePath = textureFilePath;
 
-#else
+#endif
 
-	// モデルデータ作成
-	std::weak_ptr<AssetModelData> assetModelData(
-		std::make_shared<AssetModelData>(transformationResource, transformationData, assetMeshData, assetMaterialData, filterColor)
-	);
+			assetMaterialData->
+
+		}
+
+	}
+
+}
+
+std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl , const std::string& mtlFileName) {
+
+	std::shared_ptr<AssetModel> assetModelData = std::make_shared<AssetModel>();
+
+	std::shared_ptr<AssetMeshData> assetMeshData = LoadObjFile(directoryPathObj, objFileName);
+	assetModelData->mesh_ = assetMeshData;
+	assetMeshTable_.emplace(hash64_str(directoryPathObj + objFileName), assetMeshData);
+
+	// マテリアルデータ
+	std::shared_ptr<AssetMaterialData> assetMaterialData = nullptr;
+	assetModelData->material_ = assetMaterialData;
+
+	// 座標変換リソース
+	ComPtr<ID3D12Resource> transformationResource = this->CreateUploadBuffer(sizeof(TransformationData));
+	TransformationData* transformationData = nullptr;
+	transformationResource->Map(0u, nullptr, reinterpret_cast<void**>(&transformationData));
+
+	assetModelData->transformationResource_ = transformationResource;
+	assetModelData->transformationData_ = transformationData;
+
+#ifdef _DEBUG
+
+	assetModelData->mtlFilePathDebug_ = mtlFileName;
+	assetModelData->objFilePathDebug_ = objFileName;
 
 #endif
 
 	// ファイル名(区切り連結)のハッシュ化
-	uint64_t manageHash = hash64_str((objFilePath + "|" + mtlFilePath).c_str());
+	uint64_t manageHash = hash64_str((objFileName + "|" + mtlFileName).c_str());
 
 	// モデルテーブルへ追加
 	assetModelTable_.emplace(manageHash, assetModelData);
 
-	
 	// モデルデータを参照元へ戻す
-	return assetModelData.lock();
+	return assetModelData;
 
 }
 
-std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::GetModel(const std::string& objFilePath, const std::string& mtlFilePath) {
+std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName) {
 
 	// キー検索
-	auto search = assetModelTable_.find(hash64_str((objFilePath + "|" + mtlFilePath).c_str()));
+	auto search = assetModelTable_.find(hash64_str((directoryPathObj + "/" + objFileName + "|" + directoryPathMtl + "/" + mtlFileName).c_str()));
 
 	if (search != assetModelTable_.end()) {
 		// 該当要素がモデルテーブルに見つかった場合
@@ -2287,7 +2356,7 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::GetModel(const std::string
 	}
 
 	// 無ければ新しく作って戻り値とする
-	return this->CreateModel(objFilePath, mtlFilePath);
+	return this->CreateModel(directoryPathObj, objFileName, directoryPathMtl, mtlFileName);
 
 }
 
@@ -2304,5 +2373,6 @@ LeakChecker::~LeakChecker() {
 		debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
 
 	}
+
 
 }

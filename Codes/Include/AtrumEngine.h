@@ -39,6 +39,8 @@
 #include <unordered_map>
 #include <optional>
 
+namespace fs = std::filesystem;
+
 class AtrumEngine final {
 
 private:
@@ -368,10 +370,10 @@ private:
 		std::vector<VertexData> vertices;
 
 		// 頂点リソース
-		ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+		ComPtr<ID3D12Resource> vertexResource = nullptr;
 
 		// 頂点バッファビュー
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
 	};
 
@@ -389,10 +391,17 @@ private:
 #endif
 
 		// マテリアルリソース
-		ComPtr<ID3D12Resource> materialResource_ = nullptr;
+		ComPtr<ID3D12Resource> materialResource = nullptr;
 
 		// マテリアルデータ
 		MaterialData* materialData = nullptr;
+
+	};
+
+	struct AssetMashNode {
+
+		std::shared_ptr<AssetMeshData> mesh;
+		std::shared_ptr<AssetMaterialData> material;
 
 	};
 
@@ -402,6 +411,8 @@ public:
 	class AssetModel {
 
 	private:
+
+		friend AtrumEngine;
 
 		// 座標変換リソース
 		ComPtr<ID3D12Resource> transformationResource_ = nullptr;
@@ -413,9 +424,6 @@ public:
 		// mtlファイルからのマテリアル
 		std::shared_ptr<AssetMaterialData> material_ = nullptr;
 
-		// フィルターカラー
-		Vector4 filterColor_{ 1.0f, 1.0f, 1.0f, 1.0f };
-
 #ifdef _DEBUG
 
 		std::string objFilePathDebug_ = "";
@@ -425,7 +433,37 @@ public:
 
 	public:
 
-		void Draw(ID3D12CommandList* commandList, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddr);
+		void Draw(AtrumEngine* atrum, const Transform& transform, const Transform& cameraTransform) {
+
+			// カメラのワールド行列
+			Matrix4x4 cameraWorldMatrix = atrum->CreateWorldMatrix(cameraTransform);
+
+			// ビュー行列
+			Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
+
+			// 透視投影行列
+			Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+
+			// 三角形のTransform
+			Matrix4x4 worldMatrix = atrum->CreateWorldMatrix(transform);
+
+			auto commandList = atrum->commandContextDirect_->GetCommandList();
+
+			transformationData_->world = worldMatrix;
+
+			transformationData_->wvp = worldMatrix * viewMatrix * projectionMatrix;
+
+			commandList->SetGraphicsRootConstantBufferView(0, atrum->materialResource_->GetGPUVirtualAddress());
+
+			commandList->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
+
+			commandList->SetGraphicsRootConstantBufferView(3, atrum->directionalLightResource_->GetGPUVirtualAddress());
+
+			commandList->IASetVertexBuffers(0u, 1u, &mesh_->vertexBufferView);
+
+			commandList->DrawInstanced(static_cast<UINT>(mesh_->vertices.size()), 1, 0, 0);
+
+		}
 
 	};
 
@@ -448,12 +486,6 @@ private:
 
 	// Texture
 	std::vector<Texture> textures_{};
-
-
-	/* バリア */
-
-	// TransitionBarrierの設定
-	D3D12_RESOURCE_BARRIER barrier_{};
 
 
 	/* ウィンドウサイズ */
@@ -808,7 +840,7 @@ private:
 	/// </summary>
 	/// <param name="resourceSize"> 中間リソースのサイズ </param>
 	/// <returns> 中間リソース </returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t resourceSize);
+	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t intermediateSize, const D3D12_RESOURCE_STATES resourceState);
 
 	/// <summary>
 	/// Textureデータの読み込み
@@ -898,27 +930,30 @@ public:
 	/// <param name="width"> 太さ </param>
 	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
 
+
 	/// <summary>
 	/// objファイルの読み込み
 	/// </summary>
 	/// <param name="filePath"> ファイルパス </param>
 	/// <returns> メッシュデータ </returns>
-	std::shared_ptr<AssetMeshData> LoadObjFile(const std::string& filePath);
+	std::shared_ptr<AssetMeshData> LoadObjFile(const std::string& directoryPath, const std::string& fileName);
+
+	std::shared_ptr<AssetMaterialData> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
 
 	/// <summary>
 	/// 3Dモデルの生成
 	/// </summary>
 	/// <param name="objFilePath"> objファイルのパス </param>
 	/// <returns> 管理番号(ハッシュ) </returns>
-	std::shared_ptr<AssetModel> CreateModel(const std::string& objFilePath, const std::string& mtlFilePath);
+	std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl ,const std::string& mtlFileName);
 
 	/// <summary>
-	/// 3Dモデルの取得||新規作成
+	/// 3Dモデルの取得||新規生成
 	/// </summary>
 	/// <param name="objFilePath"></param>
 	/// <param name="mtlFilePath"></param>
 	/// <returns></returns>
-	std::shared_ptr<AssetModel> GetModel(const std::string& objFilePath, const std::string& mtlFilePath);
+	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
 };
 

@@ -1,4 +1,5 @@
 #include "Log.h"
+#include "ConvertString.h"
 #include <filesystem>
 #include <chrono>
 #include <Windows.h>
@@ -43,6 +44,17 @@ void LogFile::Log(const std::string& message) {
 
 	// 出力ウィンドウにログを出力
 	OutputDebugStringA(("\n" + message + "\n\n").c_str());
+
+}
+
+void LogFile::Log(const std::wstring& message) {
+
+	// ログをファイルに出力
+	logStream_ << std::endl << WStringToString(message) << std::endl;
+	logStream_.flush();
+
+	// 出力ウィンドウにログを出力
+	OutputDebugStringA(("\n" + WStringToString(message) + "\n\n").c_str());
 
 }
 

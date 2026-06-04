@@ -52,6 +52,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	AtrumEngine::Transform sphereUvTransform{};
 	float sphereRadius = 5.0f;
 
+	/* 3dModel */
+
+	auto model = atrum->CreateModel("./Resources/Objects/ForStudy/plane.obj", "./Resources/Objects/ForStudy/plane.mtl");
+	AtrumEngine::Transform modelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
+	modelTransform.translate.z = -49.0f;
+
 	/* Sprite */
 
 	AtrumEngine::Transform spriteTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{256.0f, 128.0f} };
@@ -182,6 +188,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::End();
 
+			ImGui::Begin("planeModel");
+
+			ImGui::Text("transform");
+			ImGui::DragFloat3("scale", &modelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &modelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &modelTransform.translate.x, 0.03125f);
+
+			ImGui::End();
+
 
 			ImGui::Begin("sprite");
 
@@ -217,6 +232,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			// 描画処理(前)
 			atrum->PreDraw();
 
+			// 三角形と球(作成型モデル)の描画
+
 			if (isLightingEnable) {
 
 				atrum->DrawTriangle(textureUvChecker, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
@@ -230,6 +247,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				atrum->DrawSphere(textureMonsterBall, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, 16);
 
 			}
+
+			// 読み込み型モデル描画
+
+			model->Draw(atrum, modelTransform, cameraTransform);
 
 			// Sprite準備
 			atrum->PrepareSprite();
