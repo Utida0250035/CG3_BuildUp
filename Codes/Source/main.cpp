@@ -54,7 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* 3dModel */
 
-	auto model = atrum->CreateModel("./Resources/Objects/ForStudy/plane.obj", "./Resources/Objects/ForStudy/plane.mtl");
+	auto model = atrum->CreateModel("./Resources/Objects/ForStudy", "plane.obj", "./Resources/Objects/ForStudy", "plane.mtl");
 	AtrumEngine::Transform modelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 	modelTransform.translate.z = -49.0f;
 
@@ -172,9 +172,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Begin("sphere");
 
 			ImGui::Text("transform");
-			ImGui::DragFloat2("scale", &sphereTransform.scale.x, 0.03125f);
-			ImGui::DragFloat("rotate", &sphereTransform.rotate.z, 0.03125f);
-			ImGui::DragFloat2("translate", &sphereTransform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &sphereTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &sphereTransform.translate.x, 0.03125f);
 
 			ImGui::Text("color, radius");
 			ImGui::DragFloat4("color", &sphereColor.x, 0.03125f, 0.0f, 1.0f);

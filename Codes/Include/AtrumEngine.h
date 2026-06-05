@@ -381,12 +381,15 @@ private:
 	struct AssetMaterialData {
 
 		// テクスチャのファイルパスのハッシュ
-		uint64_t textureFileHash;
+		uint64_t textureFileHash = 0u;
+
+		// srvディスクリプタヒープ上の番号
+		uint32_t textureSrvIndex = 0u;
 
 #ifdef _DEBUG
 
 		// テクスチャのファイルパス
-		std::string textureFilePath;
+		std::string textureFilePath = "";
 
 #endif
 
@@ -398,7 +401,7 @@ private:
 
 	};
 
-	struct AssetMashNode {
+	struct AssetMeshNode {
 
 		std::shared_ptr<AssetMeshData> mesh;
 		std::shared_ptr<AssetMaterialData> material;
@@ -418,6 +421,11 @@ public:
 		ComPtr<ID3D12Resource> transformationResource_ = nullptr;
 		// 座標変換データ
 		TransformationData* transformationData_ = nullptr;
+
+		// メッシュの塊の添え字検索
+		//std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
+		// メッシュと対応マテリアルの塊
+		//std::vector<AssetMeshNode> meshNodes_{};
 
 		// objファイルからのメッシュ
 		std::shared_ptr<AssetMeshData> mesh_ = nullptr;
@@ -453,7 +461,14 @@ public:
 
 			transformationData_->wvp = worldMatrix * viewMatrix * projectionMatrix;
 
-			commandList->SetGraphicsRootConstantBufferView(0, atrum->materialResource_->GetGPUVirtualAddress());
+			DescriptorAllocator::DescriptorHandle textureHandle{};
+
+			textureHandle = atrum->srvAllocator_->GetHandle(material_->textureSrvIndex);
+
+			// SRVのDescriptorTableの先頭を設定 rootParameter[2]
+			atrum->commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+			commandList->SetGraphicsRootConstantBufferView(0, material_->materialResource->GetGPUVirtualAddress());
 
 			commandList->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
 
@@ -729,7 +744,7 @@ public:
 	/// ×ボタンが押されていないかどうか
 	/// </summary>
 	/// <returns></returns>
-	bool IsProcess();
+	bool IsProcess() const;
 
 private:
 
@@ -758,12 +773,12 @@ public:
 	/// <summary>
 	/// ImGuiにフレーム開始を通知
 	/// </summary>
-	void ImGuiNewFrame();
+	void ImGuiNewFrame() const;
 
 	/// <summary>
 	/// ImGuiの内部コマンド生成
 	/// </summary>
-	void ImGuiRender();
+	void ImGuiRender() const;
 
 #endif
 
@@ -829,7 +844,7 @@ public:
 	/// </summary>
 	/// <param name="transform"> Transform </param>
 	/// <returns> ワールド行列 </returns>
-	Matrix4x4 CreateWorldMatrix(const Transform& transform);
+	Matrix4x4 CreateWorldMatrix(const Transform& transform) const;
 
 
 

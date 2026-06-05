@@ -1085,7 +1085,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 }
 
-bool AtrumEngine::IsProcess() {
+bool AtrumEngine::IsProcess() const {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1159,7 +1159,7 @@ bool AtrumEngine::IsFrameExecute() {
 
 #ifdef USE_IMGUI
 
-void AtrumEngine::ImGuiNewFrame() {
+void AtrumEngine::ImGuiNewFrame() const {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1169,7 +1169,7 @@ void AtrumEngine::ImGuiNewFrame() {
 
 }
 
-void AtrumEngine::ImGuiRender() {
+void AtrumEngine::ImGuiRender() const {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1367,7 +1367,7 @@ void AtrumEngine::Finalize() {
 }
 
 
-Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) {
+Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) const {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -2080,8 +2080,12 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::string& directoryPath, const std::string& fileName) {
 
+	// 戻り値用 mtl部分は空
+	//std::vector<AssetMeshNode> assetMeshNodes{};
+
 	// 戻り値用
 	std::shared_ptr<AssetMeshData> assetMeshData = std::make_shared<AssetMeshData>();
+
 	// 位置
 	std::vector<Vector4> positions;
 	// 法線
@@ -2111,7 +2115,7 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 			case "v"_hash64:
 			{// ローカル変数用スコープ
 
-				Vector4 position;
+				Vector4 position{};
 
 				s >> position.x >> position.y >> position.z;
 				position.w = 1.0f;
@@ -2127,7 +2131,7 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 			case "vt"_hash64:
 			{
 
-				Vector2 texCoord;
+				Vector2 texCoord{};
 				s >> texCoord.x >> texCoord.y;
 
 				texCoord.y = 1.0f - texCoord.y;
@@ -2141,7 +2145,7 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 			case "vn"_hash64:
 			{
 
-				Vector3 normal;
+				Vector3 normal{};
 				s >> normal.x >> normal.y >> normal.z;
 
 				normal.x *= -1.0f;
@@ -2167,9 +2171,9 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 					// 頂点の要素へのIndexは「位置/UV/法線」で格納されている
 					// 分解してIndexを取得
 					std::istringstream v(vertexDefinition);
-					uint32_t elementIndices[3]{};
+					size_t elementIndices[3]{};
 
-					for (int32_t element = 0; element < 3; ++element) {
+					for (size_t element = 0; element < 3; ++element) {
 
 						std::string index;
 						// /(スラッシュ)区切りでIndexを読んでいく
@@ -2253,7 +2257,12 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 	// 戻り値用
 	std::shared_ptr<AssetMaterialData> assetMaterialData = std::make_shared<AssetMaterialData>();
 
-	// ファイルの1行読み込みしょ
+	// マテリアルリソースの生成
+	assetMaterialData->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
+	// 書き込み用アドレスの確保
+	assetMaterialData->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterialData->materialData));
+
+	// ファイルの1行読み込み
 	std::string line;
 
 	// ファイルのパス
@@ -2273,27 +2282,74 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 
 		s >> identifier;
 
-		if (hash64_str(identifier.c_str()) == "map_kd"_hash64) {
+		switch(hash64_str(identifier)){
+		
+			case "map_Kd"_hash64:
+			{
 
-			std::string textureFileName;
-			s >> textureFileName;
+				std::string textureFileName;
+				s >> textureFileName;
 
-			// 連結してファイルパスにする
-			textureFilePath = directoryPath + "/" + textureFileName;
+				// 連結してファイルパスにする
+				textureFilePath = directoryPath + "/" + textureFileName;
 
-			assetMaterialData->textureFileHash = hash64_str(textureFilePath);
+				assetMaterialData->textureFileHash = hash64_str(textureFilePath);
 
 #ifdef _DEBUG
 
-			assetMaterialData->textureFilePath = textureFilePath;
+				assetMaterialData->textureFilePath = textureFilePath;
 
 #endif
 
-			assetMaterialData->
+				assetMaterialData->textureSrvIndex = this->GetTexture(textureFilePath);
 
+
+				break;
+
+			}
+
+			case "Kd"_hash64:
+			{
+
+				Vector4 color{};
+
+				s >> color.x >> color.y >> color.z;
+				color.w = 1.0f;
+
+				assetMaterialData->materialData->color = color;
+
+				break;
+
+			}
+
+			case "illum"_hash64:
+			{
+
+				UINT illum = 0u;
+
+				s >> illum;
+
+				if (illum > 0u) {
+
+					assetMaterialData->materialData->inLightingEnable = true;
+
+				} else {
+
+					assetMaterialData->materialData->inLightingEnable = false;
+
+				}
+
+			}
+		
 		}
 
 	}
+
+	Transform uvTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
+
+	assetMaterialData->materialData->uvTransform = MakeScaleMatrix(Vector3{ 1.0f, 1.0f, 1.0f }) * MakeZRotateMatrix(0.0f) * MakeTranslateMatrix(Vector3{});
+
+	return assetMaterialData;
 
 }
 
@@ -2306,7 +2362,7 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::str
 	assetMeshTable_.emplace(hash64_str(directoryPathObj + objFileName), assetMeshData);
 
 	// マテリアルデータ
-	std::shared_ptr<AssetMaterialData> assetMaterialData = nullptr;
+	std::shared_ptr<AssetMaterialData> assetMaterialData = LoadMaterialTemplateFile(directoryPathMtl, mtlFileName);
 	assetModelData->material_ = assetMaterialData;
 
 	// 座標変換リソース
