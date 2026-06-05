@@ -266,7 +266,7 @@ private:
 
 	struct MaterialData {
 		Vector4 color{};
-		Matrix4x4 uvTransform{};
+		Matrix4x4 uvTransformMatrix{};
 		int32_t inLightingEnable = false;
 		// ConstantBuffer用の詰め物
 		float padding[43]{};
@@ -375,29 +375,36 @@ private:
 		// 頂点バッファビュー
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
+#ifdef _DEBUG
+
+		// データ名
+		std::string name;
+
+#endif
+
 	};
 
 	/* Asset用 Material */
 	struct AssetMaterialData {
 
-		// テクスチャのファイルパスのハッシュ
-		uint64_t textureFileHash = 0u;
-
 		// srvディスクリプタヒープ上の番号
 		uint32_t textureSrvIndex = 0u;
-
-#ifdef _DEBUG
-
-		// テクスチャのファイルパス
-		std::string textureFilePath = "";
-
-#endif
 
 		// マテリアルリソース
 		ComPtr<ID3D12Resource> materialResource = nullptr;
 
 		// マテリアルデータ
 		MaterialData* materialData = nullptr;
+
+#ifdef _DEBUG
+
+		// テクスチャのファイルパス
+		std::string textureFilePathDebug = "";
+
+		// データ名
+		std::string name;
+
+#endif
 
 	};
 
@@ -423,14 +430,9 @@ public:
 		TransformationData* transformationData_ = nullptr;
 
 		// メッシュの塊の添え字検索
-		//std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
+		std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
 		// メッシュと対応マテリアルの塊
-		//std::vector<AssetMeshNode> meshNodes_{};
-
-		// objファイルからのメッシュ
-		std::shared_ptr<AssetMeshData> mesh_ = nullptr;
-		// mtlファイルからのマテリアル
-		std::shared_ptr<AssetMaterialData> material_ = nullptr;
+		std::vector<AssetMeshNode> meshNodes_{};
 
 #ifdef _DEBUG
 
@@ -461,22 +463,27 @@ public:
 
 			transformationData_->wvp = worldMatrix * viewMatrix * projectionMatrix;
 
-			DescriptorAllocator::DescriptorHandle textureHandle{};
-
-			textureHandle = atrum->srvAllocator_->GetHandle(material_->textureSrvIndex);
-
-			// SRVのDescriptorTableの先頭を設定 rootParameter[2]
-			atrum->commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
-
-			commandList->SetGraphicsRootConstantBufferView(0, material_->materialResource->GetGPUVirtualAddress());
-
 			commandList->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
 
 			commandList->SetGraphicsRootConstantBufferView(3, atrum->directionalLightResource_->GetGPUVirtualAddress());
 
-			commandList->IASetVertexBuffers(0u, 1u, &mesh_->vertexBufferView);
 
-			commandList->DrawInstanced(static_cast<UINT>(mesh_->vertices.size()), 1, 0, 0);
+			DescriptorAllocator::DescriptorHandle textureHandle{};
+
+			for (auto& meshNode : meshNodes_) {
+
+				textureHandle = atrum->srvAllocator_->GetHandle(meshNode.material->textureSrvIndex);
+
+				// SRVのDescriptorTableの先頭を設定 rootParameter[2]
+				atrum->commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+				commandList->SetGraphicsRootConstantBufferView(0, meshNode.material->materialResource->GetGPUVirtualAddress());
+
+				commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
+
+				commandList->DrawInstanced(static_cast<UINT>(meshNode.mesh->vertices.size()), 1, 0, 0);
+
+			}
 
 		}
 
@@ -488,7 +495,7 @@ private:
 	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshTable_{};
 
 	// 3DモデルAsset用 Materialテーブル
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialData_{};
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialTable_{};
 
 	// 3DモデルAsset用 Modelテーブル
 	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelTable_{};
@@ -855,7 +862,7 @@ private:
 	/// </summary>
 	/// <param name="resourceSize"> 中間リソースのサイズ </param>
 	/// <returns> 中間リソース </returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t intermediateSize, const D3D12_RESOURCE_STATES resourceState);
+	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t intermediateSize);
 
 	/// <summary>
 	/// Textureデータの読み込み
@@ -949,11 +956,18 @@ public:
 	/// <summary>
 	/// objファイルの読み込み
 	/// </summary>
-	/// <param name="filePath"> ファイルパス </param>
+	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
+	/// <param name="fileName"> ファイル名 </param>
 	/// <returns> メッシュデータ </returns>
-	std::shared_ptr<AssetMeshData> LoadObjFile(const std::string& directoryPath, const std::string& fileName);
+	std::vector<AssetMeshNode> LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames);
 
-	std::shared_ptr<AssetMaterialData> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
+	/// <summary>
+	/// mtlファイルの読み込み
+	/// </summary>
+	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
+	/// <param name="fileName"> ファイル名 </param>
+	/// <returns> マテリアルデータのテーブル </returns>
+	std::unordered_map<uint64_t, std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
 
 	/// <summary>
 	/// 3Dモデルの生成

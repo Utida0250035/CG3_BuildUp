@@ -25,7 +25,9 @@
         "AABB",
         "ZERODIVIDE",
         "hlsli",
-        "illum"
+        "illum",
+        "usemtl",
+        "newmtl"
     ],
     "flagwords": [
         "roat",

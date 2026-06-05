@@ -540,7 +540,7 @@ void AtrumEngine::CreateMaterialResource() {
 	// マテリアルにデータを書き込むためのアドレスを取得
 	materialResource_->Map(0u, nullptr, reinterpret_cast<void**>(&materialData_));
 
-	materialData_->uvTransform = MakeIdentityMatrix4x4();
+	materialData_->uvTransformMatrix = MakeIdentityMatrix4x4();
 
 	LogFile::GetInstance()->Log("Created MaterialResource");
 
@@ -746,7 +746,7 @@ void AtrumEngine::CreateSpriteMaterialResource() {
 
 	spriteMaterialData_->inLightingEnable = false;
 
-	spriteMaterialData_->uvTransform = MakeIdentityMatrix4x4();
+	spriteMaterialData_->uvTransformMatrix = MakeIdentityMatrix4x4();
 
 	LogFile::GetInstance()->Log("Created MaterialResource");
 
@@ -1377,7 +1377,7 @@ Matrix4x4 AtrumEngine::CreateWorldMatrix(const Transform& transform) const {
 
 }
 
-ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const size_t intermediateSize, const D3D12_RESOURCE_STATES resourceState) {
+ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const size_t intermediateSize) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -1406,7 +1406,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateIntermediateResource(const size_t inte
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&bufferDesc,
-		resourceState,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&intermediateResource)
 	);
@@ -1584,7 +1584,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateTextureIntermediateResource(ID3D12Reso
 	);
 
 	// 受け取ったサイズのUPLOADヒープのリソースを生成して参照元へ
-	return this->CreateIntermediateResource(intermediateSize, D3D12_RESOURCE_STATE_GENERIC_READ);
+	return this->CreateIntermediateResource(intermediateSize);
 
 }
 
@@ -1801,7 +1801,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
 	uvTransformMatrix *= MakeZRotateMatrix(uvTransform.rotate.z);
 	uvTransformMatrix *= MakeTranslateMatrix(uvTransform.translate);
-	materialData_[constantBufferCount_].uvTransform = uvTransformMatrix;
+	materialData_[constantBufferCount_].uvTransformMatrix = uvTransformMatrix;
 
 	if (directionalLightData.has_value()) {
 
@@ -1854,7 +1854,7 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
 	uvTransformMatrix *= MakeZRotateMatrix(uvTransform.rotate.z);
 	uvTransformMatrix *= MakeTranslateMatrix(uvTransform.translate);
-	materialData_[constantBufferCount_].uvTransform = uvTransformMatrix;
+	materialData_[constantBufferCount_].uvTransformMatrix = uvTransformMatrix;
 
 	if (directionalLightData.has_value()) {
 
@@ -1982,7 +1982,7 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 	Matrix4x4 uvTransformData = MakeScaleMatrix(uvTransform.scale);
 	uvTransformData *= MakeZRotateMatrix(uvTransform.rotate.z);
 	uvTransformData *= MakeTranslateMatrix(uvTransform.translate);
-	spriteMaterialData_[spriteConstantBufferCount_].uvTransform = uvTransformData;
+	spriteMaterialData_[spriteConstantBufferCount_].uvTransformMatrix = uvTransformData;
 
 	/* 1枚目の三角形 */
 
@@ -2078,20 +2078,21 @@ void AtrumEngine::DrawSpriteCall(const uint32_t& textureIndex) {
 
 }
 
-std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::string& directoryPath, const std::string& fileName) {
+std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames) {
 
 	// 戻り値用 mtl部分は空
-	//std::vector<AssetMeshNode> assetMeshNodes{};
+	std::vector<AssetMeshNode> assetMeshNodes{};
 
-	// 戻り値用
+	// メッシュ生成用
 	std::shared_ptr<AssetMeshData> assetMeshData = std::make_shared<AssetMeshData>();
 
 	// 位置
-	std::vector<Vector4> positions;
+	std::vector<Vector4> positions{};
 	// 法線
-	std::vector<Vector3> normals;
+	std::vector<Vector3> normals{};
 	// テクスチャ座標
-	std::vector<Vector2> texCoords;
+	std::vector<Vector2> texCoords{};
+
 	// ファイル1行分
 	std::string line;
 
@@ -2103,6 +2104,11 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 	// 開けなかったらエラー
 	assert(file.is_open());
 
+	bool isMeshExist = false;
+	bool isSkippedUsemtl = false;
+
+	std::string meshName = "";
+
 	while (std::getline(file, line)) {
 
 		std::string identifier;
@@ -2112,8 +2118,57 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 		s >> identifier;
 
 		switch (hash64_str(identifier.c_str())) {
+			case "o"_hash64:
+			{
+
+				if (isSkippedUsemtl) {
+					// usemtlを飛ばしたあとなら
+
+					// 飛ばしフラグを折る
+					isSkippedUsemtl = false;
+
+					// メッシュの既存フラグを折る
+					isMeshExist = false;
+
+				}
+
+				if (isMeshExist) {
+
+					break;
+
+				}
+
+				meshName.clear();
+
+				s >> meshName;
+
+				meshName = filePath + "?" + meshName;
+
+				auto search = assetMeshTable_.find(hash64_str(meshName));
+
+				if(search != assetMeshTable_.end()) {
+					// メッシュが作成済テーブルに存在する場合
+
+					// メッシュ作成完了 配列に保存
+					assetMeshNodes.emplace_back(search->second.lock(), nullptr);
+
+					// 既存フラグを立てて次のusemtlまで処理を飛ばす
+					isMeshExist = true;
+
+				}
+
+				break;
+
+			}
+
 			case "v"_hash64:
-			{// ローカル変数用スコープ
+			{
+
+				if (isMeshExist) {
+
+					break;
+
+				}
 
 				Vector4 position{};
 
@@ -2131,6 +2186,12 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 			case "vt"_hash64:
 			{
 
+				if (isMeshExist) {
+
+					break;
+
+				}
+
 				Vector2 texCoord{};
 				s >> texCoord.x >> texCoord.y;
 
@@ -2145,7 +2206,13 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 			case "vn"_hash64:
 			{
 
-				Vector3 normal{};
+				if (isMeshExist) {
+
+					break;
+
+				}
+
+				Vector3 normal{ 0.0f, 1.0f, 0.0f };
 				s >> normal.x >> normal.y >> normal.z;
 
 				normal.x *= -1.0f;
@@ -2158,6 +2225,12 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 
 			case "f"_hash64:
 			{
+
+				if (isMeshExist) {
+
+					break;
+
+				}
 
 				VertexData triangle[3]{};
 
@@ -2193,9 +2266,39 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 
 				}
 
-				assetMeshData->vertices.push_back(triangle[2]);
-				assetMeshData->vertices.push_back(triangle[1]);
-				assetMeshData->vertices.push_back(triangle[0]);
+				assetMeshNodes.back().mesh->vertices.push_back(triangle[2]);
+				assetMeshNodes.back().mesh->vertices.push_back(triangle[1]);
+				assetMeshNodes.back().mesh->vertices.push_back(triangle[0]);
+
+				break;
+
+			}
+
+			case "usemtl"_hash64:
+			{
+
+				if (isMeshExist) {
+
+					isSkippedUsemtl = true;
+
+					break;
+
+				}
+
+				std::string mtlName{};
+
+				s >> mtlName;
+
+				useMaterialNames.emplace_back(std::move(mtlName));
+
+				// メッシュのポインタを配列に保存
+				assetMeshNodes.emplace_back(assetMeshData, nullptr);
+
+				// メッシュのポインタを作成済みテーブルに保存
+				assetMeshTable_.emplace(hash64_str(meshName), assetMeshData);
+
+				// 解放・再生成して次に備える
+				assetMeshData.reset(new AssetMeshData());
 
 				break;
 
@@ -2206,61 +2309,76 @@ std::shared_ptr<AtrumEngine::AssetMeshData> AtrumEngine::LoadObjFile(const std::
 
 	}
 
-	size_t bufferSize = sizeof(VertexData) * assetMeshData->vertices.size();
 
-	assetMeshData->vertexResource = CreateDefaultBuffer(bufferSize);
-	ComPtr<ID3D12Resource> intermediateResource = CreateIntermediateResource(bufferSize, D3D12_RESOURCE_STATE_COPY_SOURCE);
+	size_t bufferSize = 0;
 
-	void* pData = nullptr;
+	HRESULT hr;
 
-	HRESULT hr = intermediateResource->Map(0u, nullptr, &pData);
+	for (auto& meshNode : assetMeshNodes) {
 
-	if (SUCCEEDED(hr)) {
+		auto& mesh = meshNode.mesh;
 
-		std::memcpy(pData, assetMeshData->vertices.data(), bufferSize);
-		intermediateResource->Unmap(0u, nullptr);
+		if (mesh->vertexResource) {
 
-	} else {
+			continue;
 
-		assert(false && "LoadObjFile() failed");
+		}
+
+		bufferSize = sizeof(VertexData) * mesh->vertices.size();
+
+		mesh->vertexResource = CreateDefaultBuffer(bufferSize);
+		ComPtr<ID3D12Resource> intermediateResource = CreateIntermediateResource(bufferSize);
+
+		void* pData = nullptr;
+
+		hr = intermediateResource->Map(0u, nullptr, &pData);
+
+		if (SUCCEEDED(hr)) {
+
+			std::memcpy(pData, mesh->vertices.data(), bufferSize);
+			intermediateResource->Unmap(0u, nullptr);
+
+		} else {
+
+			assert(false && "LoadObjFile() failed");
+
+		}
+
+		commandContextDirect_->GetCommandList()->CopyBufferRegion(
+			mesh->vertexResource.Get(), 0u,
+			intermediateResource.Get(), 0u,
+			static_cast<UINT64>(bufferSize)
+		);
+
+		auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+			mesh->vertexResource.Get(),
+			D3D12_RESOURCE_STATE_COMMON,
+			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
+		);
+
+		commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
+
+		mesh->vertexBufferView.BufferLocation = mesh->vertexResource->GetGPUVirtualAddress();
+		mesh->vertexBufferView.SizeInBytes = static_cast<UINT>(bufferSize);
+		mesh->vertexBufferView.StrideInBytes = sizeof(VertexData);
+
+		assetMeshTable_.emplace(hash64_str(filePath.c_str()), mesh);
+
+		temporaryResources_.emplace_back(intermediateResource);
 
 	}
 
-	commandContextDirect_->GetCommandList()->CopyBufferRegion(
-		assetMeshData->vertexResource.Get(), 0u,
-		intermediateResource.Get(), 0u,
-		static_cast<UINT64>(bufferSize)
-	);
-
-	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		assetMeshData->vertexResource.Get(),
-		D3D12_RESOURCE_STATE_COMMON,
-		D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
-	);
-
-	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
-
-	assetMeshData->vertexBufferView.BufferLocation = assetMeshData->vertexResource->GetGPUVirtualAddress();
-	assetMeshData->vertexBufferView.SizeInBytes = static_cast<UINT>(bufferSize);
-	assetMeshData->vertexBufferView.StrideInBytes = sizeof(VertexData);
-
-	assetMeshTable_.emplace(hash64_str(filePath.c_str()), assetMeshData);
-
-	temporaryResources_.emplace_back(intermediateResource);
-
-	return assetMeshData;
+	return assetMeshNodes;
 
 }
 
-std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName) {
+std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> AtrumEngine::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName) {
 
 	// 戻り値用
-	std::shared_ptr<AssetMaterialData> assetMaterialData = std::make_shared<AssetMaterialData>();
+	std::unordered_map<uint64_t, std::shared_ptr<AssetMaterialData>> assetMaterialMap{};
 
-	// マテリアルリソースの生成
-	assetMaterialData->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
-	// 書き込み用アドレスの確保
-	assetMaterialData->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterialData->materialData));
+	// マテリアルデータ生成用
+	std::shared_ptr<AssetMaterialData> assetMaterial = nullptr;
 
 	// ファイルの1行読み込み
 	std::string line;
@@ -2275,6 +2393,12 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 
 	std::string textureFilePath;
 
+	bool isMaterialExist = false;
+
+	bool isMaterialUseTexture = false;
+
+	std::string mtlName = "";
+
 	while (std::getline(file, line)) {
 
 		std::string identifier;
@@ -2282,10 +2406,16 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 
 		s >> identifier;
 
-		switch(hash64_str(identifier)){
-		
+		switch (hash64_str(identifier)) {
+
 			case "map_Kd"_hash64:
 			{
+
+				if (isMaterialExist) {
+
+					break;
+
+				}
 
 				std::string textureFileName;
 				s >> textureFileName;
@@ -2293,16 +2423,20 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 				// 連結してファイルパスにする
 				textureFilePath = directoryPath + "/" + textureFileName;
 
-				assetMaterialData->textureFileHash = hash64_str(textureFilePath);
+				// ファイルパスを基にテクスチャ取得
+				assetMaterial->textureSrvIndex = this->GetTexture(textureFilePath);
+
+				assetMaterialMap.emplace(hash64_str(mtlName), assetMaterial);
+
+				isMaterialUseTexture = true;
 
 #ifdef _DEBUG
 
-				assetMaterialData->textureFilePath = textureFilePath;
+				assetMaterial->textureFilePathDebug = textureFilePath;
 
 #endif
 
-				assetMaterialData->textureSrvIndex = this->GetTexture(textureFilePath);
-
+				assetMaterialTable_.emplace();
 
 				break;
 
@@ -2311,12 +2445,23 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 			case "Kd"_hash64:
 			{
 
+				if (isMaterialExist) {
+
+					break;
+
+				}
+
 				Vector4 color{};
 
 				s >> color.x >> color.y >> color.z;
 				color.w = 1.0f;
 
-				assetMaterialData->materialData->color = color;
+				// マテリアルリソースの生成
+				assetMaterial->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
+				// 書き込み用アドレスの確保
+				assetMaterial->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterial->materialData));
+
+				assetMaterial->materialData->color = color;
 
 				break;
 
@@ -2325,53 +2470,120 @@ std::shared_ptr<AtrumEngine::AssetMaterialData> AtrumEngine::LoadMaterialTemplat
 			case "illum"_hash64:
 			{
 
+				if (isMaterialExist) {
+
+					break;
+
+				}
+
 				UINT illum = 0u;
 
 				s >> illum;
 
 				if (illum > 0u) {
 
-					assetMaterialData->materialData->inLightingEnable = true;
+					assetMaterial->materialData->inLightingEnable = true;
 
 				} else {
 
-					assetMaterialData->materialData->inLightingEnable = false;
+					assetMaterial->materialData->inLightingEnable = false;
 
 				}
 
+				break;
+
 			}
-		
+
+			case "newmtl"_hash64:
+			{
+
+				if (assetMaterial) {
+
+					if (isMaterialUseTexture) {
+
+						isMaterialUseTexture = false;
+
+					} else {
+						// マテリアルの作成が完了していない(テクスチャが貼られていない)場合
+
+						assetMaterial->textureSrvIndex = this->GetTexture("./Resources/Images/white4x4.png");
+
+						// マテリアルリソースの生成
+						assetMaterial->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
+						// 書き込み用アドレスの確保
+						assetMaterial->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterial->materialData));
+
+#ifdef _DEBUG
+						assetMaterial->textureFilePathDebug = "./Resources/Images/white4x4.png";
+#endif
+
+						assetMaterialMap.emplace(hash64_str(mtlName), assetMaterial);
+
+					}
+
+				}
+
+				isMaterialExist = false;
+
+				assetMaterial.reset(new AssetMaterialData());
+
+				mtlName.clear();
+
+				s >> mtlName;
+
+				mtlName = filePath + "?" + mtlName;
+
+				auto search = assetMaterialTable_.find(hash64_str(mtlName));
+
+				if (search != assetMaterialTable_.end()) {
+
+					assetMaterialMap.emplace(hash64_str(mtlName), search->second.lock());
+
+					isMaterialExist = true;
+
+				}
+
+				break;
+
+			}
+
 		}
 
 	}
 
 	Transform uvTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 
-	assetMaterialData->materialData->uvTransform = MakeScaleMatrix(Vector3{ 1.0f, 1.0f, 1.0f }) * MakeZRotateMatrix(0.0f) * MakeTranslateMatrix(Vector3{});
+	assetMaterial->materialData->uvTransformMatrix = MakeScaleMatrix(Vector3{ 1.0f, 1.0f, 1.0f }) * MakeZRotateMatrix(0.0f) * MakeTranslateMatrix(Vector3{});
 
-	return assetMaterialData;
+	return assetMaterialMap;
 
 }
 
-std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl , const std::string& mtlFileName) {
+std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName) {
 
 	std::shared_ptr<AssetModel> assetModelData = std::make_shared<AssetModel>();
 
-	std::shared_ptr<AssetMeshData> assetMeshData = LoadObjFile(directoryPathObj, objFileName);
-	assetModelData->mesh_ = assetMeshData;
-	assetMeshTable_.emplace(hash64_str(directoryPathObj + objFileName), assetMeshData);
+	std::vector<std::string> useMaterialNames{};
+
+	// メッシュデータ
+	assetModelData->meshNodes_ = LoadObjFile(directoryPathObj, objFileName, useMaterialNames);
 
 	// マテリアルデータ
-	std::shared_ptr<AssetMaterialData> assetMaterialData = LoadMaterialTemplateFile(directoryPathMtl, mtlFileName);
-	assetModelData->material_ = assetMaterialData;
+	std::unordered_map<uint64_t, std::shared_ptr<AssetMaterialData>> assetMaterialMap = LoadMaterialTemplateFile(directoryPathMtl, mtlFileName);
 
-	// 座標変換リソース
-	ComPtr<ID3D12Resource> transformationResource = this->CreateUploadBuffer(sizeof(TransformationData));
-	TransformationData* transformationData = nullptr;
-	transformationResource->Map(0u, nullptr, reinterpret_cast<void**>(&transformationData));
+	for (size_t i = 0; i < assetModelData->meshNodes_.size(); ++i) {
 
-	assetModelData->transformationResource_ = transformationResource;
-	assetModelData->transformationData_ = transformationData;
+		auto search = assetMaterialMap.find(hash64_str(directoryPathMtl + "/" + mtlFileName + "?" + useMaterialNames[i]));
+
+		assert(search != assetMaterialMap.end());
+
+		assetModelData->meshNodes_[i].material = search->second;
+
+	}
+
+	// 座標変換リソース・データ
+	assetModelData->transformationResource_ = this->CreateUploadBuffer(sizeof(TransformationData));
+	assetModelData->transformationResource_->Map(0u, nullptr, reinterpret_cast<void**>(&assetModelData->transformationData_));
 
 #ifdef _DEBUG
 
