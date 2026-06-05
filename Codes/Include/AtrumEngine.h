@@ -5,6 +5,7 @@
 #include "SwapChain.h"
 #include "DescriptorAllocator.h"
 #include "Fence.h"
+#include "StaticCast.h"
 #include <cstdint>
 #include <string>
 #include <Windows.h>
@@ -369,11 +370,13 @@ private:
 	// Texture
 	std::vector<Texture> textures_{};
 
+	/* 射影行列 */
 
-	/* バリア */
-
-	// TransitionBarrierの設定
-	D3D12_RESOURCE_BARRIER barrier_{};
+	// 透視投影
+	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+	
+	// 正射影
+	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, Float(clientWidth_), Float(clientHeight_), 0.0f, 100.0f);
 
 
 	/* ウィンドウサイズ */
@@ -757,9 +760,11 @@ public:
 	/// </summary>
 	/// <param name="textureIndex"> テクスチャ番号 </param>
 	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="uvTransform"> uv座標情報 </param> 
 	/// <param name="triangleTransform"> 三角形の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
+	/// <param name="directionalLightData"> 平行光源データ(option) </param>
 	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
 
 	/// <summary>
@@ -767,10 +772,24 @@ public:
 	/// </summary>
 	/// <param name="textureIndex"> テクスチャ番号 </param>
 	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="uvTransform"> uv座標情報 </param> 
 	/// <param name="triangleTransform"> 球の座標情報 </param>
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 球の半径 </param>
+	/// <param name="directionalLightData"> 平行光源データ(option) </param>
 	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
+
+	/// <summary>
+	/// 正四面体の描画
+	/// </summary>
+	/// <param name="textureIndex"> テクスチャ番号 </param>
+	/// <param name="textureColor"> テクスチャ色(補正) </param>
+	/// <param name="uvTransform"> uv座標情報 </param> 
+	/// <param name="sphereTransform"></param>
+	/// <param name="cameraTransform"></param>
+	/// <param name="centerToVertices"></param>
+	/// <param name="directionalLightData"></param>
+	void DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const Transform& cameraTransform, const float centerToVertices, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
 
 	/// <summary>
 	/// Spriteの準備
