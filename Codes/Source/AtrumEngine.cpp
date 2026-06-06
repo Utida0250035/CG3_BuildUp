@@ -795,7 +795,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	assert(vertexDrewCount_ + 1 < kTriangleMaxDrawCount && "triangleCount over maxCount(Triangle)");
+	assert(vertexDrewCount_ + 1 < kTriangleMaxDrawCount * 3 && "triangleCount over maxCount(Triangle)");
 	assert(constantBufferCount_ + 1 < kTriangleMaxDrawCount && "constantBufferCount over maxCount(Triangle)");
 
 	// TransformMatrix (WVP) のアドレス計算
@@ -915,6 +915,21 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// レンダリングデバイスを初期化
 	renderDevice_->Initialize();
 
+#ifdef _DEBUG
+
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (SUCCEEDED(renderDevice_->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+
+		// 致命的なエラー時にブレーク
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
+		// 通常のエラー時にブレーク
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
+		// 警告時にブレーク
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
+
+	}
+
+#endif
 
 	// 描画コマンド経路を生成
 	commandContextDirect_ = std::make_unique<CommandContext>();
@@ -1217,7 +1232,7 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	// 指定色で画面全体をクリアする
-	float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	float clearColor[] = { 0.0625f, 0.1875f, 0.125f, 1.0f };
 	commandContextDirect_->GetCommandList()->ClearRenderTargetView(swapChainManager_->GetRtvHandleCurrent(), clearColor, 0, nullptr);
 
 	// 描画用のDescriptorHeapの設定
@@ -2227,18 +2242,26 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 
 				meshName = filePath + "?" + meshName;
 
-				auto search = assetMeshTable_.find(hash64_str(meshName));
+				auto search = assetMeshMap_.find(hash64_str(meshName));
 
-				if(search != assetMeshTable_.end()) {
+				if(search != assetMeshMap_.end()) {
 					// メッシュが作成済テーブルに存在する場合
 
 					// メッシュ作成完了 配列に保存
 					assetMeshNodes.emplace_back(search->second.lock(), nullptr);
 
+					useMaterialNames.emplace_back("");
+
 					// 既存フラグを立てて次のusemtlまで処理を飛ばす
 					isMeshExist = true;
 
+					LogFile::GetInstance()->Log("GetMeshFromTable: " + meshName);
+
+					break;
+
 				}
+
+				LogFile::GetInstance()->Log("LoadMesh: " + meshName);
 
 				break;
 
@@ -2258,8 +2281,6 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 				s >> position.x >> position.y >> position.z;
 				position.w = 1.0f;
 
-				position.x *= -1.0f;
-
 				positions.push_back(position);
 
 				break;
@@ -2278,8 +2299,6 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 				Vector2 texCoord{};
 				s >> texCoord.x >> texCoord.y;
 
-				texCoord.y = 1.0f - texCoord.y;
-
 				texCoords.push_back(texCoord);
 
 				break;
@@ -2297,8 +2316,6 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 
 				Vector3 normal{ 0.0f, 1.0f, 0.0f };
 				s >> normal.x >> normal.y >> normal.z;
-
-				normal.x *= -1.0f;
 
 				normals.push_back(normal);
 
@@ -2339,11 +2356,13 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 					}
 
 					Vector4 position = positions[elementIndices[0] - 1];
-					position.x *= -1.0f;
+					position.z *= -1.0f;
 
 					Vector2 texCoord = texCoords[elementIndices[1] - 1];
+					texCoord.y = 1.0f - texCoord.y;
+					
 					Vector3 normal = normals[elementIndices[2] - 1];
-					normal.x *= -1.0f;
+					normal.z *= -1.0f;
 
 					triangle[faceVertex] = { position, texCoord, normal };
 
@@ -2378,7 +2397,7 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 				assetMeshNodes.emplace_back(assetMeshData, nullptr);
 
 				// メッシュのポインタを作成済みテーブルに保存
-				assetMeshTable_.emplace(hash64_str(meshName), assetMeshData);
+				assetMeshMap_.emplace(hash64_str(meshName), assetMeshData);
 
 				// 解放・再生成して次に備える
 				assetMeshData.reset(new AssetMeshData());
@@ -2435,7 +2454,7 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 
 		auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
 			mesh->vertexResource.Get(),
-			D3D12_RESOURCE_STATE_COMMON,
+			D3D12_RESOURCE_STATE_COPY_DEST,
 			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER
 		);
 
@@ -2445,7 +2464,7 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 		mesh->vertexBufferView.SizeInBytes = static_cast<UINT>(bufferSize);
 		mesh->vertexBufferView.StrideInBytes = sizeof(VertexData);
 
-		assetMeshTable_.emplace(hash64_str(filePath.c_str()), mesh);
+		assetMeshMap_.emplace(hash64_str(filePath.c_str()), mesh);
 
 		temporaryResources_.emplace_back(intermediateResource);
 
@@ -2455,13 +2474,19 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 
 }
 
-std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> AtrumEngine::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName) {
+std::vector<std::shared_ptr<AtrumEngine::AssetMaterialData>> AtrumEngine::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName) {
 
 	// 戻り値用
-	std::unordered_map<uint64_t, std::shared_ptr<AssetMaterialData>> assetMaterialMap{};
+	std::vector<std::shared_ptr<AssetMaterialData>> assetMaterialData{};
 
 	// マテリアルデータ生成用
 	std::shared_ptr<AssetMaterialData> assetMaterial = nullptr;
+
+	// 色読み込み用
+	std::vector<Vector4> colors{};
+
+	// ライティングフラグ読み込み用
+	std::vector<bool> lightingEnableData{};
 
 	// ファイルの1行読み込み
 	std::string line;
@@ -2509,7 +2534,9 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 				// ファイルパスを基にテクスチャ取得
 				assetMaterial->textureSrvIndex = this->GetTexture(textureFilePath);
 
-				assetMaterialMap.emplace(hash64_str(mtlName), assetMaterial);
+				assetMaterialData.emplace_back(assetMaterial);
+
+				assetMaterialMap_.emplace(hash64_str(mtlName), assetMaterial);
 
 				isMaterialUseTexture = true;
 
@@ -2518,8 +2545,6 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 				assetMaterial->textureFilePathDebug = textureFilePath;
 
 #endif
-
-				assetMaterialTable_.emplace();
 
 				break;
 
@@ -2539,12 +2564,7 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 				s >> color.x >> color.y >> color.z;
 				color.w = 1.0f;
 
-				// マテリアルリソースの生成
-				assetMaterial->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
-				// 書き込み用アドレスの確保
-				assetMaterial->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterial->materialData));
-
-				assetMaterial->materialData->color = color;
+				colors.emplace_back(std::move(color));
 
 				break;
 
@@ -2565,11 +2585,11 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 
 				if (illum > 0u) {
 
-					assetMaterial->materialData->inLightingEnable = true;
+					lightingEnableData.emplace_back(true);
 
 				} else {
 
-					assetMaterial->materialData->inLightingEnable = false;
+					lightingEnableData.emplace_back(false);
 
 				}
 
@@ -2589,24 +2609,22 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 					} else {
 						// マテリアルの作成が完了していない(テクスチャが貼られていない)場合
 
-						assetMaterial->textureSrvIndex = this->GetTexture("./Resources/Images/white4x4.png");
+						colors.push_back(Vec4White());
 
-						// マテリアルリソースの生成
-						assetMaterial->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
-						// 書き込み用アドレスの確保
-						assetMaterial->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterial->materialData));
 
 #ifdef _DEBUG
 						assetMaterial->textureFilePathDebug = "./Resources/Images/white4x4.png";
 #endif
 
-						assetMaterialMap.emplace(hash64_str(mtlName), assetMaterial);
+						assetMaterialData.emplace_back(assetMaterial);
+
+						assetMaterialMap_.emplace(hash64_str(mtlName), assetMaterial);
 
 					}
 
-				}
+					isMaterialExist = false;
 
-				isMaterialExist = false;
+				}
 
 				assetMaterial.reset(new AssetMaterialData());
 
@@ -2616,15 +2634,27 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 
 				mtlName = filePath + "?" + mtlName;
 
-				auto search = assetMaterialTable_.find(hash64_str(mtlName));
+				auto search = assetMaterialMap_.find(hash64_str(mtlName));
 
-				if (search != assetMaterialTable_.end()) {
+				if (search != assetMaterialMap_.end()) {
 
-					assetMaterialMap.emplace(hash64_str(mtlName), search->second.lock());
+					assert(search->second.lock());
+
+					assetMaterialData.emplace_back(search->second.lock());
+
+					// 色配列に空データを追加
+					colors.emplace_back();
+
+					// ライティングフラグ配列に空データを追加
+					lightingEnableData.emplace_back(false);
 
 					isMaterialExist = true;
 
+					LogFile::GetInstance()->Log("GetMtlFromTable: " + mtlName);
+
 				}
+
+				LogFile::GetInstance()->Log("LoadMtl: " + mtlName);
 
 				break;
 
@@ -2634,11 +2664,31 @@ std::unordered_map<uint64_t, std::shared_ptr<AtrumEngine::AssetMaterialData>> At
 
 	}
 
-	Transform uvTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
+	assert(assetMaterialData.size() == colors.size());
+	assert(assetMaterialData.size() == lightingEnableData.size());
 
-	assetMaterial->materialData->uvTransformMatrix = MakeScaleMatrix(Vector3{ 1.0f, 1.0f, 1.0f }) * MakeZRotateMatrix(0.0f) * MakeTranslateMatrix(Vector3{});
+	for (size_t i = 0; i < assetMaterialData.size(); ++i) {
 
-	return assetMaterialMap;
+		if (assetMaterialData[i]->materialResource) {
+
+			continue;
+
+		}
+
+		// マテリアルリソースの生成
+		assetMaterialData[i]->materialResource = this->CreateUploadBuffer(sizeof(MaterialData));
+		// 書き込み用アドレスの確保
+		assetMaterialData[i]->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterialData[i]->materialData));
+
+		assetMaterialData[i]->materialData->uvTransformMatrix = MakeIdentityMatrix4x4();
+
+		assetMaterialData[i]->materialData->color = colors[i];
+
+		assetMaterialData[i]->materialData->inLightingEnable = lightingEnableData[i];
+
+	}
+
+	return assetMaterialData;
 
 }
 
@@ -2651,18 +2701,20 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::str
 	// メッシュデータ
 	assetModelData->meshNodes_ = LoadObjFile(directoryPathObj, objFileName, useMaterialNames);
 
-	// マテリアルデータ
-	std::unordered_map<uint64_t, std::shared_ptr<AssetMaterialData>> assetMaterialMap = LoadMaterialTemplateFile(directoryPathMtl, mtlFileName);
+	// マテリアルデータの寿命保証
+	std::vector<std::shared_ptr<AssetMaterialData>> assetMaterialData = LoadMaterialTemplateFile(directoryPathMtl, mtlFileName);
 
 	for (size_t i = 0; i < assetModelData->meshNodes_.size(); ++i) {
 
-		auto search = assetMaterialMap.find(hash64_str(directoryPathMtl + "/" + mtlFileName + "?" + useMaterialNames[i]));
+		auto search = assetMaterialMap_.find(hash64_str(directoryPathMtl + "/" + mtlFileName + "?" + useMaterialNames[i]));
 
-		assert(search != assetMaterialMap.end());
+		assert(search != assetMaterialMap_.end());
 
-		assetModelData->meshNodes_[i].material = search->second;
+		assetModelData->meshNodes_[i].material = search->second.lock();
 
 	}
+
+	assetMaterialData.clear();
 
 	// 座標変換リソース・データ
 	assetModelData->transformationResource_ = this->CreateUploadBuffer(sizeof(TransformationData));
@@ -2679,7 +2731,7 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::str
 	uint64_t manageHash = hash64_str((objFileName + "|" + mtlFileName).c_str());
 
 	// モデルテーブルへ追加
-	assetModelTable_.emplace(manageHash, assetModelData);
+	assetModelMap_.emplace(manageHash, assetModelData);
 
 	// モデルデータを参照元へ戻す
 	return assetModelData;
@@ -2689,9 +2741,9 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::str
 std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName) {
 
 	// キー検索
-	auto search = assetModelTable_.find(hash64_str((directoryPathObj + "/" + objFileName + "|" + directoryPathMtl + "/" + mtlFileName).c_str()));
+	auto search = assetModelMap_.find(hash64_str((directoryPathObj + "/" + objFileName + "|" + directoryPathMtl + "/" + mtlFileName).c_str()));
 
-	if (search != assetModelTable_.end()) {
+	if (search != assetModelMap_.end()) {
 		// 該当要素がモデルテーブルに見つかった場合
 
 		if (search->second.lock()) {
@@ -2702,7 +2754,7 @@ std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::GetModel(const std::string
 		}
 
 		// 値が空なら要素を消去する
-		assetModelTable_.erase(search);
+		assetModelMap_.erase(search);
 
 	}
 

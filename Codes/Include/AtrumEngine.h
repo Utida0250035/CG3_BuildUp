@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "DeltaTime.h"
 #include "CommandContext.h"
 #include "RenderDevice.h"
@@ -236,7 +236,7 @@ private:
 	uint32_t vertexDrewCount_ = 0;
 
 	// 画面上の三角形の最大描画数
-	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
+	inline static constexpr uint32_t kTriangleMaxDrawCount = 4096;
 
 	struct TransformationData {
 		Matrix4x4 wvp{};
@@ -488,18 +488,38 @@ public:
 
 		}
 
+#ifdef _DEBUG
+
+	public:
+
+		std::string GetTexturePath() {
+
+			std::string result{};
+
+			for (const auto& meshNode : meshNodes_) {
+
+				result += "\n" + meshNode.material->textureFilePathDebug;
+
+			}
+
+			return result;
+
+		}
+
+#endif
+
 	};
 
 private:
 
-	// 3DモデルAsset用 Meshテーブル
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshTable_{};
+	// 3DモデルAsset用 Meshマップ
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshMap_{};
 
-	// 3DモデルAsset用 Materialテーブル
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialTable_{};
+	// 3DモデルAsset用 Materialマップ
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialMap_{};
 
-	// 3DモデルAsset用 Modelテーブル
-	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelTable_{};
+	// 3DモデルAsset用 Modelマップ
+	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelMap_{};
 
 
 	/* テクスチャ */
@@ -514,7 +534,7 @@ private:
 
 	// 透視投影
 	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
-	
+
 	// 正射影
 	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, Float(clientWidth_), Float(clientHeight_), 0.0f, 100.0f);
 
@@ -991,15 +1011,15 @@ public:
 	/// </summary>
 	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
 	/// <param name="fileName"> ファイル名 </param>
-	/// <returns> マテリアルデータのテーブル </returns>
-	std::unordered_map<uint64_t, std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
+	/// <returns> 寿命保証用マテリアルデータ配列 </returns>
+	std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
 
 	/// <summary>
 	/// 3Dモデルの生成
 	/// </summary>
 	/// <param name="objFilePath"> objファイルのパス </param>
 	/// <returns> 管理番号(ハッシュ) </returns>
-	std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl ,const std::string& mtlFileName);
+	std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
 	/// <summary>
 	/// 3Dモデルの取得||新規生成
