@@ -34,8 +34,14 @@ public:
 	/// <summary>
 	/// ログ出力
 	/// </summary>
-	/// <param name="message"></param>
+	/// <param name="message"> 文字列 </param>
 	void Log(const std::string& message);
+
+	/// <summary>
+	/// ログ出力
+	/// </summary>
+	/// <param name="message"> 文字列(wide) </param>
+	void Log(const std::wstring& message);
 
 	/// <summary>
 	/// インスタンス取得

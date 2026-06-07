@@ -24,7 +24,10 @@
         "ICONERROR",
         "AABB",
         "ZERODIVIDE",
-        "hlsli"
+        "hlsli",
+        "illum",
+        "usemtl",
+        "newmtl"
     ],
     "flagwords": [
         "roat",

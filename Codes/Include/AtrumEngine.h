@@ -37,8 +37,10 @@
 #include <array>
 
 #include <memory>
-#include <map>
+#include <unordered_map>
 #include <optional>
+
+namespace fs = std::filesystem;
 
 class AtrumEngine final {
 
@@ -50,7 +52,7 @@ private:
 public:
 
 	struct Transform {
-		Vector3 scale{1.0f, 1.0f, 1.0f};
+		Vector3 scale{ 1.0f, 1.0f, 1.0f };
 		Vector3 rotate{};
 		Vector3 translate{};
 	};
@@ -118,7 +120,7 @@ private:
 	/* エラー処理 */
 
 	// Windowsエラーハンドル
-	[[maybe_unused]]HRESULT hr_{};
+	[[maybe_unused]] HRESULT hr_{};
 
 
 	/* RenderDevice */
@@ -234,9 +236,9 @@ private:
 	uint32_t vertexDrewCount_ = 0;
 
 	// 画面上の三角形の最大描画数
-	inline static constexpr uint32_t kTriangleMaxDrawCount = 1024;
+	inline static constexpr uint32_t kTriangleMaxDrawCount = 4096;
 
-	struct TransformationMatrix {
+	struct TransformationData {
 		Matrix4x4 wvp{};
 		Matrix4x4 world{};
 
@@ -265,8 +267,8 @@ private:
 
 	struct MaterialData {
 		Vector4 color{};
-		Matrix4x4 uvTransform{};
-		int32_t inLightingEnable;
+		Matrix4x4 uvTransformMatrix{};
+		int32_t inLightingEnable = false;
 		// ConstantBuffer用の詰め物
 		float padding[43]{};
 	};
@@ -284,7 +286,7 @@ private:
 	ComPtr<ID3D12Resource> transformationResource_ = nullptr;
 
 	// WvpData 描画座標データ
-	TransformationMatrix* transformationData_ = nullptr;
+	TransformationData* transformationData_ = nullptr;
 
 	/* DirectionalLight(3D専用) */
 
@@ -323,12 +325,12 @@ private:
 	// Sprite用 総描画頂点数のカウント
 	uint32_t spriteVertexDrewCount_ = 0;
 
-	
+
 	/* Sprite用 頂点インデックス */
 
 	// Sprite用 IndexResource
 	ComPtr<ID3D12Resource> spriteIndexResource_ = nullptr;
-	
+
 	// Sprite用 IndesData
 	uint32_t* spriteIndexData_ = nullptr;
 
@@ -356,16 +358,174 @@ private:
 	ComPtr<ID3D12Resource> spriteTransformationResource_ = nullptr;
 
 	// Sprite用 Transformデータ
-	TransformationMatrix* spriteTransformData_ = nullptr;
+	TransformationData* spriteTransformData_ = nullptr;
 
 	/* Sprite用 constantBufferCount */
 
 	uint32_t spriteConstantBufferCount_ = 0;
 
+	/* Asset用 Mesh */
+	struct AssetMeshData {
+
+		// 頂点データ
+		std::vector<VertexData> vertices;
+
+		// 頂点リソース
+		ComPtr<ID3D12Resource> vertexResource = nullptr;
+
+		// 頂点バッファビュー
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+
+#ifdef _DEBUG
+
+		// データ名
+		std::string name;
+
+#endif
+
+	};
+
+	/* Asset用 Material */
+	struct AssetMaterialData {
+
+		// srvディスクリプタヒープ上の番号
+		uint32_t textureSrvIndex = 0u;
+
+		// マテリアルリソース
+		ComPtr<ID3D12Resource> materialResource = nullptr;
+
+		// マテリアルデータ
+		MaterialData* materialData = nullptr;
+
+#ifdef _DEBUG
+
+		// テクスチャのファイルパス
+		std::string textureFilePathDebug = "";
+
+		// データ名
+		std::string name;
+
+#endif
+
+	};
+
+	struct AssetMeshNode {
+
+		std::shared_ptr<AssetMeshData> mesh;
+		std::shared_ptr<AssetMaterialData> material;
+
+	};
+
+public:
+
+	/* Asset用 Model */
+	class AssetModel {
+
+	private:
+
+		friend AtrumEngine;
+
+		// 座標変換リソース
+		ComPtr<ID3D12Resource> transformationResource_ = nullptr;
+		// 座標変換データ
+		TransformationData* transformationData_ = nullptr;
+
+		// メッシュの塊の添え字検索
+		std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
+		// メッシュと対応マテリアルの塊
+		std::vector<AssetMeshNode> meshNodes_{};
+
+#ifdef _DEBUG
+
+		std::string objFilePathDebug_ = "";
+		std::string mtlFilePathDebug_ = "";
+
+#endif
+
+	public:
+
+		void Draw(AtrumEngine* atrum, const Transform& transform, const Transform& cameraTransform) {
+
+			// カメラのワールド行列
+			Matrix4x4 cameraWorldMatrix = atrum->CreateWorldMatrix(cameraTransform);
+
+			// ビュー行列
+			Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
+
+			// 透視投影行列
+			Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+
+			// 三角形のTransform
+			Matrix4x4 worldMatrix = atrum->CreateWorldMatrix(transform);
+
+			auto commandList = atrum->commandContextDirect_->GetCommandList();
+
+			transformationData_->world = worldMatrix;
+
+			transformationData_->wvp = worldMatrix * viewMatrix * projectionMatrix;
+
+			commandList->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
+
+			commandList->SetGraphicsRootConstantBufferView(3, atrum->directionalLightResource_->GetGPUVirtualAddress());
+
+
+			DescriptorAllocator::DescriptorHandle textureHandle{};
+
+			for (auto& meshNode : meshNodes_) {
+
+				textureHandle = atrum->srvAllocator_->GetHandle(meshNode.material->textureSrvIndex);
+
+				// SRVのDescriptorTableの先頭を設定 rootParameter[2]
+				atrum->commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+				commandList->SetGraphicsRootConstantBufferView(0, meshNode.material->materialResource->GetGPUVirtualAddress());
+
+				commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
+
+				commandList->DrawInstanced(static_cast<UINT>(meshNode.mesh->vertices.size()), 1, 0, 0);
+
+			}
+
+		}
+
+#ifdef _DEBUG
+
+	public:
+
+		std::string GetTexturePath() {
+
+			std::string result{};
+
+			for (const auto& meshNode : meshNodes_) {
+
+				result += "\n" + meshNode.material->textureFilePathDebug;
+
+			}
+
+			return result;
+
+		}
+
+#endif
+
+	};
+
+private:
+
+	// 3DモデルAsset用 Meshマップ
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshMap_{};
+
+	// 3DモデルAsset用 Materialマップ
+	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialMap_{};
+
+	// 3DモデルAsset用 Modelマップ
+	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelMap_{};
+
+
 	/* テクスチャ */
 
-	// Texture番号テーブル
-	std::map<std::string, uint32_t> textureIndexTable_{};
+	// Textureのsrv番号テーブル
+	std::unordered_map<uint64_t, uint32_t> textureIndexTable_{};
 
 	// Texture
 	std::vector<Texture> textures_{};
@@ -374,7 +534,7 @@ private:
 
 	// 透視投影
 	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
-	
+
 	// 正射影
 	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, Float(clientWidth_), Float(clientHeight_), 0.0f, 100.0f);
 
@@ -493,7 +653,23 @@ private:
 	/// <param name="device"> デバイス </param>
 	/// <param name="sizeInBytes"> Resourceのサイズ </param>
 	/// <returns> Resource </returns>
-	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES resourceState);
+
+	/// <summary>
+	/// UploadBuffer作成
+	/// </summary>
+	/// <param name="device"> デバイス </param>
+	/// <param name="sizeInBytes"> Bufferのサイズ </param>
+	/// <returns> Resource </returns>
+	ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes);
+
+	/// <summary>
+	/// DefaultBuffer作成
+	/// </summary>
+	/// <param name="device"> デバイス </param>
+	/// <param name="sizeInBytes"> Bufferのサイズ </param>
+	/// <returns> Resource </returns>
+	ComPtr<ID3D12Resource> CreateDefaultBuffer(size_t sizeInBytes);
 
 	/// <summary>
 	/// 初期化処理 MaterialResourceの作成
@@ -549,7 +725,7 @@ private:
 	/// 初期化処理 Sprite用IndexResourceの生成
 	/// </summary>
 	void CreateSpriteIndexResource();
-	
+
 	/// <summary>
 	/// 初期化処理 Sprite用IndexBufferViewの生成
 	/// </summary>
@@ -604,7 +780,7 @@ public:
 	/// ×ボタンが押されていないかどうか
 	/// </summary>
 	/// <returns></returns>
-	bool IsProcess();
+	bool IsProcess() const;
 
 private:
 
@@ -633,12 +809,12 @@ public:
 	/// <summary>
 	/// ImGuiにフレーム開始を通知
 	/// </summary>
-	void ImGuiNewFrame();
+	void ImGuiNewFrame() const;
 
 	/// <summary>
 	/// ImGuiの内部コマンド生成
 	/// </summary>
-	void ImGuiRender();
+	void ImGuiRender() const;
 
 #endif
 
@@ -704,11 +880,18 @@ public:
 	/// </summary>
 	/// <param name="transform"> Transform </param>
 	/// <returns> ワールド行列 </returns>
-	Matrix4x4 CreateWorldMatrix(const Transform& transform);
+	Matrix4x4 CreateWorldMatrix(const Transform& transform) const;
 
 
 
 private:
+
+	/// <summary>
+	/// 中間リソース生成の汎用関数
+	/// </summary>
+	/// <param name="resourceSize"> 中間リソースのサイズ </param>
+	/// <returns> 中間リソース </returns>
+	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t intermediateSize);
 
 	/// <summary>
 	/// Textureデータの読み込み
@@ -725,11 +908,11 @@ private:
 	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
 
 	/// <summary>
-	/// 
+	/// テクスチャ読み込み用中間リソースの作成
 	/// </summary>
 	/// <param name="textureResource"></param>
 	/// <returns></returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(ID3D12Resource* textureResource);
+	ComPtr<ID3D12Resource> CreateTextureIntermediateResource(ID3D12Resource* textureResource);
 
 	/// <summary>
 	/// textureResourceにデータを転送する
@@ -813,6 +996,38 @@ public:
 	/// <param name="end"> 終点 </param>
 	/// <param name="width"> 太さ </param>
 	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
+
+
+	/// <summary>
+	/// objファイルの読み込み
+	/// </summary>
+	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
+	/// <param name="fileName"> ファイル名 </param>
+	/// <returns> メッシュデータ </returns>
+	std::vector<AssetMeshNode> LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames);
+
+	/// <summary>
+	/// mtlファイルの読み込み
+	/// </summary>
+	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
+	/// <param name="fileName"> ファイル名 </param>
+	/// <returns> 寿命保証用マテリアルデータ配列 </returns>
+	std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
+
+	/// <summary>
+	/// 3Dモデルの生成
+	/// </summary>
+	/// <param name="objFilePath"> objファイルのパス </param>
+	/// <returns> 管理番号(ハッシュ) </returns>
+	std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+
+	/// <summary>
+	/// 3Dモデルの取得||新規生成
+	/// </summary>
+	/// <param name="objFilePath"></param>
+	/// <param name="mtlFilePath"></param>
+	/// <returns></returns>
+	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
 };
 

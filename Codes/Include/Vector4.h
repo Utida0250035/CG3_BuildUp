@@ -92,3 +92,15 @@ inline Vector4 VectorNormalize(const Vector4& vector) {
 	return Vector4{ 0.0f, 0.0f, 0.0f, 0.0f };
 
 }
+
+inline constexpr Vector4 Vec4White() {
+
+	return Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+
+}
+
+inline constexpr Vector4 Vec4BLACK() {
+
+	return Vector4{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+}
