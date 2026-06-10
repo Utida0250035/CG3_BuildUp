@@ -1,0 +1,13 @@
+{
+  "name": "atrum-engine-cspell",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "lint:spell": "cspell \"**/*.{h,cpp,hlsl,hlsli}\""
+  },
+  "devDependencies": {
+    "async": "^9.0.0",
+    "cspell": "^8.0.0"
+  }
+}
