@@ -1,6 +1,6 @@
 {
     "version": "0.2",
-    "language": "en",
+    "language": "en-us",
     "checkComments": true,
     "ignorePaths": [
         ".node_env/**/*",
@@ -9,7 +9,8 @@
         "**/x64/**/*",
         "**/*.vcxproj*",
         "**/Dumps/**/*",
-        ".cspell/**/*"
+        ".cspell/**/*",
+        "**/*.cmd"
     ],
     "files": [
         "**/*.{cpp,h,hlsl,hlsli,txt,md}"

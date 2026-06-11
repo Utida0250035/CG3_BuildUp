@@ -23,11 +23,11 @@ if %errorlevel% neq 0 (
     exit 0
 )
 
-echo [3/4] node_modules check...
-
 echo npm found.
 
-if exist "node_modules" (
+echo [3/4] node_modules check...
+
+if not exist "node_modules" (
     echo node_modules\ is not exist.
     pause
     exit 0
@@ -35,4 +35,17 @@ if exist "node_modules" (
 
 echo node_modules\ found.
 
+echo [4/4]run checkers...
+
+:: different process
+start "" cmd /k "call npm run lint:spell"
+
+:: different process
+call ".\.checkers\run.cmd"
+
+:: 
+call npm run lint:spell
+
 pause
+
+exit %errorlevel%
