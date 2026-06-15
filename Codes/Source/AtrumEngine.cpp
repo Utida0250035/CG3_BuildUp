@@ -2411,6 +2411,7 @@ std::vector<AtrumEngine::AssetMeshNode> AtrumEngine::LoadObjFile(const std::stri
 
 	}
 
+	file.close();
 
 	size_t bufferSize = 0;
 
@@ -2693,6 +2694,10 @@ std::vector<std::shared_ptr<AtrumEngine::AssetMaterialData>> AtrumEngine::LoadMa
 }
 
 std::shared_ptr<AtrumEngine::AssetModel> AtrumEngine::CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName) {
+
+	assert(fs::exists(directoryPathObj + "/" + objFileName));
+
+	assert(fs::exists(directoryPathMtl + "/" + mtlFileName));
 
 	std::shared_ptr<AssetModel> assetModelData = std::make_shared<AssetModel>();
 

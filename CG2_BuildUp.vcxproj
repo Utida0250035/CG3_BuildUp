@@ -120,6 +120,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Codes\Source\AtrumEngine.cpp" />
+    <ClCompile Include="Codes\Source\Audio.cpp" />
     <ClCompile Include="Codes\Source\Bezier.cpp" />
     <ClCompile Include="Codes\Source\Collision.cpp" />
     <ClCompile Include="Codes\Source\CommandContext.cpp" />
@@ -162,6 +163,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
+    <ClInclude Include="Codes\Include\Audio.h" />
     <ClInclude Include="Codes\Include\Bezier.h" />
     <ClInclude Include="Codes\Include\Collision.h" />
     <ClInclude Include="Codes\Include\CommandContext.h" />
