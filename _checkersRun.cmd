@@ -1,4 +1,7 @@
 @echo off
+
+chcp 65001 >nul
+
 setlocal
 
 echo [1/4] Node.js check...
@@ -8,7 +11,6 @@ call node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo node -v FAILED.
     echo Node.js is not found or not in PATH.
-    pause
     exit 0
 )
 
@@ -19,7 +21,6 @@ call npm -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo npm -v FAILED.
     echo npm is not found.
-    pause
     exit 0
 )
 
@@ -29,7 +30,6 @@ echo [3/4] node_modules check...
 
 if not exist "node_modules" (
     echo node_modules\ is not exist.
-    pause
     exit 0
 )
 
@@ -41,11 +41,9 @@ echo [4/4]run checkers...
 start "" cmd /k "call npm run lint:spell"
 
 :: different process
-call ".\.checkers\run.cmd"
+start "" ".\.checkers\run.cmd"
 
-:: 
-call npm run lint:spell
+:: spell check(mainProcess)
+call npm run lint:spell >&2
 
-pause
-
-exit %errorlevel%
+ exit /b %errorlevel%

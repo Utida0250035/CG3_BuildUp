@@ -379,3 +379,4 @@ imgui.ini
 **/*/.node_env/
 **/*/node_modules/
 .cspellcache
+/nul

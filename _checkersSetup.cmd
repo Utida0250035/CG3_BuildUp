@@ -55,8 +55,8 @@ if "%HOOKS_PATH%"==".husky" (
     echo [INFO] Husky ‚ğ‰Šú‰»‚µ‚Ü‚·...
     call npx husky init
     echo [INFO] setup pre-commit...
-    echo export PATH="./node_modules/.bin:$PATH"
-    echo npm run lint:spell > .husky/pre-commit
+    echo export PATH="./node_modules/.bin:$PATH" > .husky/pre-commit
+    echo cmd.exe //c call "_checkersRun.cmd" >> .husky/pre-commit
 
 )
 

@@ -10,7 +10,8 @@
         "**/*.vcxproj*",
         "**/Dumps/**/*",
         ".cspell/**/*",
-        "**/*.cmd"
+        "**/*.cmd",
+        "**/*/nul"
     ],
     "files": [
         "**/*.{cpp,h,hlsl,hlsli,txt,md}"
@@ -23,5 +24,14 @@
             "name": "myDictionary",
             "path": "./exclusion.dic"
         }
+    ],
+    "patterns": [
+        {
+            "name": "full-width-alphanumeric",
+            "regexp": "[Ａ-Ｚａ-ｚ０-９]"
+        }
+    ],
+    "rejectRegExpList": [
+        "full-width-alphanumeric"
     ]
 }

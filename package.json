@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "lint:spell": "cspell \"**/*\""
+    "lint:spell": "cspell --no-must-find-files --no-progress \"**/*\""
   },
   "devDependencies": {
     "husky": "^9.0.0",
