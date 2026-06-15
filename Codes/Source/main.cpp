@@ -5,7 +5,9 @@
 #include "Log.h"
 #include "OBB.h"
 #include "StaticCast.h"
+#include "Audio.h"
 #include <numbers>
+#include <memory>
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -33,6 +35,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	uint32_t textureWhite = atrum->GetTexture(textureFilePaths[2]);
 
+	/* 音源 */
+
+	std::unique_ptr<Audio> audio = std::make_unique<Audio>();
+	audio->Initialize();
+
+	size_t seAlarm = audio->SoundGetWave("./Resources/Audios/Alarm01.wav");
+
+	audio->SoundPlayWave(seAlarm);
 
 	/* 3dカメラ */
 

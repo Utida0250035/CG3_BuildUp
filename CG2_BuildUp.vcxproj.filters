@@ -31,6 +31,7 @@
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp" />
     <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="Codes\Source\Audio.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -61,6 +62,7 @@
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
     <ClInclude Include="Externals\imgui\imgui_impl_dx12.h" />
     <ClInclude Include="Externals\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="Codes\Include\Audio.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />
