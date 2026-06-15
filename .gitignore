@@ -372,4 +372,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# ImGui.NET - auto-generated configuration file
 imgui.ini
+
+#cspell auto generated file
+**/*/.node_env/
+**/*/node_modules/
+.cspellcache
+/nul

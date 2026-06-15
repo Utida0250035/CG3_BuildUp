@@ -1,51 +1,37 @@
 {
     "version": "0.2",
-    "language": "en",
-    "enablecomment": true,
-    "words": [
-        "HINSTANCE",
-        "DXGI",
-        "dxgi",
-        "Atrum",
-        "atrum",
-        "hlsl",
-        "IDXGI",
-        "dxguid",
-        "OVERLAPPEDWINDOW",
-        "MINIDUMP",
-        "COINIT",
-        "Qembed",
-        "lpsz",
-        "lpfn",
-        "WNDCLASS",
-        "HRESULT",
-        "dxcompiler",
-        "RLDO",
-        "ICONERROR",
-        "AABB",
-        "ZERODIVIDE",
-        "hlsli",
-        "illum",
-        "usemtl",
-        "newmtl"
-    ],
-    "flagwords": [
-        "roat",
-        "Roat"
-    ],
+    "language": "en-us",
+    "checkComments": true,
     "ignorePaths": [
-        "**/Externals/**"
+        ".node_env/**/*",
+        "node_modules/**/*",
+        "**/Externals/**/*",
+        "**/x64/**/*",
+        "**/*.vcxproj*",
+        "**/Dumps/**/*",
+        ".cspell/**/*",
+        "**/*.cmd",
+        "**/*/nul"
+    ],
+    "files": [
+        "**/*.{cpp,h,hlsl,hlsli,txt,md}"
+    ],
+    "dictionaries": [
+        "myDictionary"
     ],
     "dictionaryDefinitions": [
         {
-            "name": "exclusionDictionary",
-            "path": "./exclusion.dic",
-            "addWords": true
+            "name": "myDictionary",
+            "path": "./exclusion.dic"
         }
     ],
-    "dictionaries": [
-        "cpp",
-        "softwareTerms",
-        "exclusionDictionary"
+    "patterns": [
+        {
+            "name": "full-width-alphanumeric",
+            "regexp": "[Ａ-Ｚａ-ｚ０-９]"
+        }
+    ],
+    "rejectRegExpList": [
+        "full-width-alphanumeric"
     ]
 }

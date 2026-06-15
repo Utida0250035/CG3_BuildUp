@@ -1,0 +1,47 @@
+{
+    "exclude_dirs": [
+        "node_modules",
+        "dist",
+        "build",
+        "coverage",
+        "logs",
+        "temp",
+        "tmp",
+        ".git",
+        ".vscode",
+        ".idea",
+        ".DS_Store",
+        ".cspell",
+        ".vscode",
+        ".vs",
+        "bin",
+        "x64",
+        "Externals",
+        ".naming_check",
+        "CG2_BuildUp"
+    ],
+    "exclude_files": [
+        "*.log",
+        "*.tmp",
+        "*.temp",
+        "*.bak",
+        "*.backup",
+        "*.swp",
+        "*.swo",
+        "*.DS_Store"
+    ],
+    "target_extensions": [
+        ".cpp",
+        ".h",
+        ".hlsl",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".bmp",
+        ".obj",
+        ".txt",
+        ".md",
+        ".json"
+    ]
+}

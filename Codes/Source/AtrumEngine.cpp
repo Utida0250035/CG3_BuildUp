@@ -1978,22 +1978,22 @@ void AtrumEngine::DrawRegularTetrahedron(const uint32_t& textureIndex, const Vec
 
 	VertexData totalVertices[12] = {
 
-		// 面1：(1, 0, 2) の面
+		// 面1(1, 0, 2) の面
 		{ vertices[1], Vector2(0.0f, 1.0f) }, // 左下
 		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
 		{ vertices[2], Vector2(1.0f, 1.0f) }, // 右下
 
-		// 面2：(2, 0, 3) の面
+		// 面2(2, 0, 3) の面
 		{ vertices[2], Vector2(0.0f, 1.0f) }, // 左下
 		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
 		{ vertices[3], Vector2(1.0f, 1.0f) }, // 右下
 
-		// 面3：(3, 0, 1) の面
+		// 面3(3, 0, 1) の面
 		{ vertices[3], Vector2(0.0f, 1.0f) }, // 左下
 		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
 		{ vertices[1], Vector2(1.0f, 1.0f) }, // 右下
 
-		// 面4：(3, 2, 1) の面（底面
+		// 面4(3, 2, 1) の面（底面
 		{ vertices[3], Vector2(0.0f, 1.0f) }, // 左下
 		{ vertices[2], Vector2(0.5f, 0.0f) }, // 上
 		{ vertices[1], Vector2(1.0f, 1.0f) }  // 右下
