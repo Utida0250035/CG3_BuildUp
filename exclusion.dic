@@ -25,3 +25,8 @@ usemtl
 newmtl
 xaudio
 WAVEFORMATEX
+mfplat
+mfreadwrite
+mfuuid
+READERF
+ENDOFSTREAM
