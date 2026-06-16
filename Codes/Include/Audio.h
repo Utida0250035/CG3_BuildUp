@@ -1,5 +1,6 @@
 #pragma once
 
+
 #include <xaudio2.h>
 #pragma comment(lib, "xaudio2.lib")
 #include <wrl/client.h>
@@ -15,6 +16,8 @@ private:
 
 	ComPtr<IXAudio2> xAudio2_ = nullptr;
 	IXAudio2MasteringVoice* masterVoice_ = nullptr;
+
+#pragma pack(push, 1)
 
 	struct ChunkHeader {
 		char id[4];
@@ -35,36 +38,32 @@ private:
 		// 波形フォーマット
 		WAVEFORMATEX wfEx;
 		// バッファの先頭アドレス
-		BYTE* pBuffer;
+		std::vector<BYTE> pBuffer;
 		// バッファのサイズ
 		unsigned int bufferSize;
 
-		~SoundData() {
-
-			delete[] pBuffer;
-			
-			pBuffer = nullptr;
-
-			bufferSize = 0;
-
-			wfEx = {};
-
-		}
-
 	};
+
+#pragma pack(pop)
 
 	std::vector<std::unique_ptr<SoundData>> soundDataStorage_{};
 	std::unordered_map<uint64_t, size_t> soundIndexMap_{};
 
-	size_t SoundLoadWave(const char* filePath);
+	size_t SeLoadWave(const char* filePath);
+
+	size_t SeLoadMp3(const char* filePath);
 
 public:
 
 	void Initialize();
 
-	size_t SoundGetWave(const char* filePath);
+	size_t SeGetWave(const char* filePath);
 
-	void SoundPlayWave(size_t soundIndex);
+	void PlaySe(size_t soundIndex);
+
+	size_t SeGetMp3(const char* filePath);
+
+	size_t SeGet(const char* filePath);
 
 	~Audio();
 

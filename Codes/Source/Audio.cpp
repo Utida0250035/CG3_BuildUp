@@ -1,9 +1,21 @@
 #include "Audio.h"
+#include "AudioDecoder.h"
+#include "ConvertString.h"
 #include "Hash64.h"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
 
+Audio::~Audio() {
+
+	xAudio2_.Reset();
+
+	soundDataStorage_.clear();
+	soundIndexMap_.clear();
+
+	AudioDecoder::Finalize();
+
+}
 
 void Audio::Initialize() {
 
@@ -13,9 +25,11 @@ void Audio::Initialize() {
 	hr = xAudio2_->CreateMasteringVoice(&masterVoice_);
 	assert(SUCCEEDED(hr));
 
+	AudioDecoder::Initialize();
+
 }
 
-size_t Audio::SoundLoadWave(const char* filePath) {
+size_t Audio::SeLoadWave(const char* filePath) {
 
 	assert(std::filesystem::exists(filePath));
 
@@ -73,8 +87,8 @@ size_t Audio::SoundLoadWave(const char* filePath) {
 	}
 
 	// Dataチャンクのデータ部(波形データ)の読み込み
-	char* pBuffer = new char[data.size];
-	file.read(pBuffer, data.size);
+	std::vector<uint8_t> pBuffer(data.size);
+	file.read(reinterpret_cast<char*>(pBuffer.data()), data.size);
 
 	// Waveファイルを閉じる
 	file.close();
@@ -85,10 +99,10 @@ size_t Audio::SoundLoadWave(const char* filePath) {
 
 	soundDataStorage_.emplace_back(
 		std::make_unique<SoundData>(
-			format.fmt,
-			reinterpret_cast<BYTE*>(pBuffer),
-			data.size
-		)
+		format.fmt,
+		std::move(pBuffer),
+		data.size
+	)
 	);
 
 	// 管理番号をを参照元に戻す
@@ -96,7 +110,7 @@ size_t Audio::SoundLoadWave(const char* filePath) {
 
 }
 
-size_t Audio::SoundGetWave(const char* filePath) {
+size_t Audio::SeGetWave(const char* filePath) {
 
 	auto search = soundIndexMap_.find(hash64_str(filePath));
 
@@ -106,11 +120,11 @@ size_t Audio::SoundGetWave(const char* filePath) {
 
 	}
 
-	return SoundLoadWave(filePath);
+	return SeLoadWave(filePath);
 
 }
 
-void Audio::SoundPlayWave(size_t soundIndex) {
+void Audio::PlaySe(size_t soundIndex) {
 
 	assert(soundIndex < soundDataStorage_.size());
 
@@ -125,7 +139,7 @@ void Audio::SoundPlayWave(size_t soundIndex) {
 
 
 	XAUDIO2_BUFFER buf{};
-	buf.pAudioData = soundData->pBuffer;
+	buf.pAudioData = soundData->pBuffer.data();
 	buf.AudioBytes = soundData->bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 
@@ -137,11 +151,71 @@ void Audio::SoundPlayWave(size_t soundIndex) {
 
 }
 
-Audio::~Audio() {
+size_t Audio::SeLoadMp3(const char* filePath) {
 
-	xAudio2_.Reset();
+	std::vector<uint8_t> pData;
+	WAVEFORMATEX* wfEx = nullptr;
 
-	soundDataStorage_.clear();
-	soundIndexMap_.clear();
+	bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pData, &wfEx);
+	assert(result);
+
+	std::unique_ptr<SoundData> soundData = std::make_unique<SoundData>(
+		*wfEx,
+		std::move(pData),
+		static_cast<unsigned int>(pData.size())
+	);
+
+	soundIndexMap_.emplace(hash64_str(filePath), soundDataStorage_.size());
+	soundDataStorage_.emplace_back(std::move(soundData));
+
+	CoTaskMemFree(wfEx);
+
+	return soundDataStorage_.size() - 1;
+
+}
+
+size_t Audio::SeGetMp3(const char* filePath) {
+
+	auto search = soundIndexMap_.find(hash64_str(filePath));
+
+	if (search != soundIndexMap_.end()) {
+
+		return search->second;
+
+	}
+
+	return SeLoadMp3(filePath);
+
+}
+
+size_t Audio::SeGet(const char* filePath) {
+
+	std::filesystem::path fPath = filePath;
+
+	const wchar_t* extension = fPath.extension().c_str();
+
+	switch (hash64_str(extension)) {
+
+		case L".mp3"_hash64:
+
+			return SeGetMp3(filePath);
+
+			break;
+
+		case L".wav"_hash64:
+
+			return SeGetWave(filePath);
+
+			break;
+
+		default:
+
+			assert(false && "not supported extension(Audio)");
+
+			break;
+
+	}
+
+	return 65536;
 
 }

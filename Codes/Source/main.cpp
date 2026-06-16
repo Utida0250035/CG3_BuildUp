@@ -40,9 +40,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	std::unique_ptr<Audio> audio = std::make_unique<Audio>();
 	audio->Initialize();
 
-	size_t seAlarm = audio->SoundGetWave("./Resources/Audios/Alarm01.wav");
+	size_t seAlarm = audio->SeGetWave("./Resources/Audios/Alarm01.wav");
 
-	audio->SoundPlayWave(seAlarm);
+	size_t seCat = audio->SeGetMp3("./Resources/Audios/seCat.mp3");
+
+	audio->PlaySe(seAlarm);
+
+	audio->PlaySe(seCat);
 
 	/* 3dカメラ */
 
