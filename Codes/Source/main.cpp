@@ -135,6 +135,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	std::unique_ptr<DeltaTime> deltaTimeCalc = std::make_unique<DeltaTime>();
 	float deltaTime = 0.0f;
 
+	/* タイムカウント */
+
+	float timeCount = 0.0f;
+
 	/* 乱数初期化 */
 
 	srand(static_cast<unsigned int>(time(nullptr)));
@@ -171,7 +175,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			deltaTimeCalc->CalcDeltaTime();
 			deltaTime = deltaTimeCalc->GetDeltaTime();
 
+			timeCount += deltaTime;
+
 #ifdef USE_IMGUI
+
+			ImGui::Begin("debug");
+
+			ImGui::Text("timeCount: %f", timeCount);
+
+			ImGui::End();
 
 			/* カメラGUI */
 			ImGui::Begin("camera");

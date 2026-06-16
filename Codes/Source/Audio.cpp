@@ -29,6 +29,25 @@ void Audio::Initialize() {
 
 }
 
+void Audio::AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, const UINT bufferSize, const size_t sourceIndex, const char* filePath) {
+
+	std::unique_ptr<SoundData> soundData = std::make_unique<SoundData>(
+		wfEx,
+		pBuffer,
+		bufferSize
+	);
+
+	// 波形フォーマットをもとにSourceVoiceを生成
+	sourceVoicePool_.emplace_back(nullptr);
+	HRESULT hr = xAudio2_->CreateSourceVoice(&sourceVoicePool_.back(), &wfEx);
+	assert(SUCCEEDED(hr));
+
+	soundDataStorage_.emplace_back(std::move(soundData));
+
+	soundIndexMap_.emplace(hash64_str(filePath), sourceIndex);
+
+}
+
 size_t Audio::SeLoadWave(const char* filePath) {
 
 	assert(std::filesystem::exists(filePath));
@@ -95,15 +114,7 @@ size_t Audio::SeLoadWave(const char* filePath) {
 
 	assert(!file.is_open());
 
-	soundIndexMap_.emplace(hash64_str(filePath), soundDataStorage_.size());
-
-	soundDataStorage_.emplace_back(
-		std::make_unique<SoundData>(
-		format.fmt,
-		std::move(pBuffer),
-		data.size
-	)
-	);
+	this->AddSource(format.fmt, std::move(pBuffer), static_cast<UINT>(data.size), soundDataStorage_.size(), filePath);
 
 	// 管理番号をを参照元に戻す
 	return soundDataStorage_.size() - 1;
@@ -127,16 +138,13 @@ size_t Audio::SeGetWave(const char* filePath) {
 void Audio::PlaySe(size_t soundIndex) {
 
 	assert(soundIndex < soundDataStorage_.size());
+	assert(soundIndex < sourceVoicePool_.size());
 
 	HRESULT hr{};
 
 	auto& soundData = soundDataStorage_[soundIndex];
 
-	// 波形フォーマットをもとにSourceVoiceを生成
-	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	hr = xAudio2_->CreateSourceVoice(&pSourceVoice, &(soundData->wfEx));
-	assert(SUCCEEDED(hr));
-
+	auto& pSourceVoice = sourceVoicePool_[soundIndex];
 
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData->pBuffer.data();
@@ -153,20 +161,13 @@ void Audio::PlaySe(size_t soundIndex) {
 
 size_t Audio::SeLoadMp3(const char* filePath) {
 
-	std::vector<uint8_t> pData;
+	std::vector<uint8_t> pBuffer;
 	WAVEFORMATEX* wfEx = nullptr;
 
-	bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pData, &wfEx);
+	bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
 	assert(result);
 
-	std::unique_ptr<SoundData> soundData = std::make_unique<SoundData>(
-		*wfEx,
-		std::move(pData),
-		static_cast<unsigned int>(pData.size())
-	);
-
-	soundIndexMap_.emplace(hash64_str(filePath), soundDataStorage_.size());
-	soundDataStorage_.emplace_back(std::move(soundData));
+	this->AddSource(*wfEx, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);
 
 	CoTaskMemFree(wfEx);
 

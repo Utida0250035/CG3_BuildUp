@@ -40,7 +40,7 @@ private:
 		// バッファの先頭アドレス
 		std::vector<BYTE> pBuffer;
 		// バッファのサイズ
-		unsigned int bufferSize;
+		UINT bufferSize;
 
 	};
 
@@ -48,6 +48,9 @@ private:
 
 	std::vector<std::unique_ptr<SoundData>> soundDataStorage_{};
 	std::unordered_map<uint64_t, size_t> soundIndexMap_{};
+	std::vector<IXAudio2SourceVoice*> sourceVoicePool_{};
+
+	void AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, const UINT bufferSize, const size_t sourceIndex, const char* filePath);
 
 	size_t SeLoadWave(const char* filePath);
 
