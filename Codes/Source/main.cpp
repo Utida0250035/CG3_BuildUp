@@ -44,10 +44,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	size_t seCat = audio->SeGetMp3("./Resources/Audios/seCat.mp3");
 
-	audio->PlaySe(seAlarm);
-
-	audio->PlaySe(seCat);
-
 	/* 3dカメラ */
 
 	// カメラの座標情報
@@ -182,6 +178,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Begin("debug");
 
 			ImGui::Text("timeCount: %f", timeCount);
+
+			ImGui::SmallButton("seCat");
+
+			if (ImGui::IsItemActivated()) {
+
+				audio->PlaySe(seCat);
+
+			}
+
+			ImGui::SmallButton("seAlarm");
+
+			if (ImGui::IsItemActivated()) {
+
+				audio->PlaySe(seAlarm);
+
+			}
 
 			ImGui::End();
 
