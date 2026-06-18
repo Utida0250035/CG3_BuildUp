@@ -42,7 +42,7 @@
 
 namespace fs = std::filesystem;
 
-class PlayInput;
+class DirectInput;
 
 class AtrumEngine final {
 
@@ -563,7 +563,7 @@ private:
 
 
 	/* プレイヤー入力 */
-	PlayInput* playInput_ = nullptr;
+	DirectInput* playInput_ = nullptr;
 
 	/* OSとのやり取り */
 

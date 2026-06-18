@@ -134,7 +134,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Matrix3D.cpp" />
     <ClCompile Include="Codes\Source\OBB.cpp" />
     <ClCompile Include="Codes\Source\Plane.cpp" />
-    <ClCompile Include="Codes\Source\PlayInput.cpp" />
+    <ClCompile Include="Codes\Source\DirectInput.cpp" />
+    <ClCompile Include="Codes\Source\RawInput.cpp" />
     <ClCompile Include="Codes\Source\RenderDevice.cpp" />
     <ClCompile Include="Codes\Source\SwapChain.cpp" />
     <ClCompile Include="Codes\Source\Vector2.cpp" />
@@ -182,7 +183,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Matrix3D.h" />
     <ClInclude Include="Codes\Include\OBB.h" />
     <ClInclude Include="Codes\Include\Plane.h" />
-    <ClInclude Include="Codes\Include\PlayInput.h" />
+    <ClInclude Include="Codes\Include\DirectInput.h" />
+    <ClInclude Include="Codes\Include\RawInput.h" />
     <ClInclude Include="Codes\Include\RenderDevice.h" />
     <ClInclude Include="Codes\Include\StaticCast.h" />
     <ClInclude Include="Codes\Include\SwapChain.h" />

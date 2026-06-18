@@ -5,7 +5,7 @@
 #include "DeltaTime.h"
 #include "Log.h"
 #include "OBB.h"
-#include "PlayInput.h"
+#include "DirectInput.h"
 #include "StaticCast.h"
 #include <memory>
 #include <numbers>
@@ -28,7 +28,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* プレイヤー入力 */
 
-	PlayInput* playInput = PlayInput::GetInstance();
+	DirectInput* playInput = DirectInput::GetInstance();
 
 	/* テクスチャ */
 

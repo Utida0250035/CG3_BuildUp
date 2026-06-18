@@ -1,7 +1,7 @@
-#include "PlayInput.h"
+#include "DirectInput.h"
 #include <cassert>
 
-void PlayInput::Initialize(HINSTANCE hInstance, HWND hwnd) {
+void DirectInput::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 	/* 入力デバイス */
 	
@@ -28,7 +28,7 @@ void PlayInput::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 }
 
-void PlayInput::Update() {
+void DirectInput::Update() {
 
 	// キーボード入力の取得開始
 	keyboard_->Acquire();
@@ -47,7 +47,7 @@ void PlayInput::Update() {
 
 }
 
-bool PlayInput::IsKeyPress(const uint8_t keyIndex) {
+bool DirectInput::IsKeyPress(const uint8_t keyIndex) {
 
 	if (keys_[keyIndex]) {
 
@@ -59,7 +59,7 @@ bool PlayInput::IsKeyPress(const uint8_t keyIndex) {
 
 }
 
-bool PlayInput::IsKeyTrigger(const uint8_t keyIndex) {
+bool DirectInput::IsKeyTrigger(const uint8_t keyIndex) {
 
 	if (keys_[keyIndex] && !preKeys_[keyIndex]) {
 
@@ -71,7 +71,7 @@ bool PlayInput::IsKeyTrigger(const uint8_t keyIndex) {
 
 }
 
-bool PlayInput::IsKeyRelease(const uint8_t keyIndex) {
+bool DirectInput::IsKeyRelease(const uint8_t keyIndex) {
 
 	if (!keys_[keyIndex] && preKeys_[keyIndex]) {
 

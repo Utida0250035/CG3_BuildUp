@@ -8,21 +8,21 @@
 
 #include <cstdint>
 
-class PlayInput final {
+class DirectInput final {
 
 private:
 
-	~PlayInput() = default;
-	PlayInput() = default;
+	~DirectInput() = default;
+	DirectInput() = default;
 
 public:
 
-	PlayInput(const PlayInput& source) = delete;
-	PlayInput operator=(const PlayInput& source) = delete;
+	DirectInput(const DirectInput& source) = delete;
+	DirectInput operator=(const DirectInput& source) = delete;
 
-	static PlayInput* GetInstance() {
+	static DirectInput* GetInstance() {
 
-		static PlayInput instance;
+		static DirectInput instance;
 
 		return &instance;
 

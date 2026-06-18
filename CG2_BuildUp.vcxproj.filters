@@ -33,7 +33,8 @@
     <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Codes\Source\Audio.cpp" />
     <ClCompile Include="Codes\Source\AudioDecoder.cpp" />
-    <ClCompile Include="Codes\Source\PlayInput.cpp" />
+    <ClCompile Include="Codes\Source\DirectInput.cpp" />
+    <ClCompile Include="Codes\Source\RawInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -66,7 +67,8 @@
     <ClInclude Include="Externals\imgui\imgui_impl_win32.h" />
     <ClInclude Include="Codes\Include\Audio.h" />
     <ClInclude Include="Codes\Include\AudioDecoder.h" />
-    <ClInclude Include="Codes\Include\PlayInput.h" />
+    <ClInclude Include="Codes\Include\DirectInput.h" />
+    <ClInclude Include="Codes\Include\RawInput.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />
