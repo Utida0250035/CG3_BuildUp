@@ -1,13 +1,14 @@
 #include "AtrumEngine.h"
+#include "Audio.h"
 #include "Bezier.h"
 #include "Collision.h"
 #include "DeltaTime.h"
 #include "Log.h"
 #include "OBB.h"
+#include "PlayInput.h"
 #include "StaticCast.h"
-#include "Audio.h"
-#include <numbers>
 #include <memory>
+#include <numbers>
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -24,6 +25,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// 乱数シード生成
 	srand(static_cast<unsigned int>(time(nullptr)));
+
+	/* プレイヤー入力 */
+
+	PlayInput* playInput = PlayInput::GetInstance();
 
 	/* テクスチャ */
 
@@ -172,6 +177,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			deltaTime = deltaTimeCalc->GetDeltaTime();
 
 			timeCount += deltaTime;
+
+			if (playInput->IsKeyTrigger(DIK_SPACE)) {
+
+				audio->PlaySe(seCat);
+
+			}
 
 #ifdef USE_IMGUI
 

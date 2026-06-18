@@ -42,6 +42,8 @@
 
 namespace fs = std::filesystem;
 
+class PlayInput;
+
 class AtrumEngine final {
 
 private:
@@ -559,6 +561,9 @@ private:
 	// 時間差分
 	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
 
+
+	/* プレイヤー入力 */
+	PlayInput* playInput_ = nullptr;
 
 	/* OSとのやり取り */
 

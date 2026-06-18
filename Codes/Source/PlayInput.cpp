@@ -36,6 +36,12 @@ void PlayInput::Update() {
 	// 前フレームのキー入力取得
 	memcpy(preKeys_, keys_, sizeof(keys_));
 
+	for (auto& key : keys_) {
+
+		key = 0u;
+
+	}
+
 	// 全キー入力の取得
 	keyboard_->GetDeviceState(sizeof(keys_), keys_);
 

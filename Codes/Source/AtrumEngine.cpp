@@ -23,6 +23,7 @@
 #include <Windows.h>
 #include "Matrix3D.h"
 #include "Plane.h"
+#include "PlayInput.h"
 
 #ifdef USE_IMGUI
 
@@ -1094,6 +1095,11 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// 時間差分マネージャーの生成
 	deltaTimeManager_.reset(new DeltaTime());
 
+	playInput_ = PlayInput::GetInstance();
+
+	// 入力デバイスの初期化
+	playInput_->Initialize(wc_.hInstance, hwnd_);
+
 	// 初期化完了のログ出力
 	LogFile::GetInstance()->Log("Hello World!");
 
@@ -1168,6 +1174,8 @@ bool AtrumEngine::IsFrameExecute() {
 		return false;
 
 	}
+
+	playInput_->Update();
 
 	return true;
 
