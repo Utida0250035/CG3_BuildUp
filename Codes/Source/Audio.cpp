@@ -8,6 +8,8 @@
 
 Audio::~Audio() {
 
+	sourceVoicePool_.clear();
+
 	xAudio2_.Reset();
 
 	soundDataStorage_.clear();
@@ -38,8 +40,12 @@ void Audio::AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, con
 	);
 
 	// 波形フォーマットをもとにSourceVoiceを生成
-	sourceVoicePool_.emplace_back(nullptr);
-	HRESULT hr = xAudio2_->CreateSourceVoice(&sourceVoicePool_.back(), &wfEx);
+	sourceVoicePool_.emplace_back();
+	sourceVoicePool_.back().emplace_back();
+	auto& pSourceVoice = sourceVoicePool_.back().front();
+	pSourceVoice = std::make_unique<SourceVoice>();
+	pSourceVoice->pCallBack = std::make_unique<VoiceCallback>();
+	HRESULT hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &wfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
 	assert(SUCCEEDED(hr));
 
 	soundDataStorage_.emplace_back(std::move(soundData));
@@ -135,7 +141,7 @@ size_t Audio::SeGetWave(const char* filePath) {
 
 }
 
-void Audio::PlaySe(size_t soundIndex) {
+Audio::PlayHandle Audio::PlaySe(size_t soundIndex) {
 
 	assert(soundIndex < soundDataStorage_.size());
 	assert(soundIndex < sourceVoicePool_.size());
@@ -144,18 +150,49 @@ void Audio::PlaySe(size_t soundIndex) {
 
 	auto& soundData = soundDataStorage_[soundIndex];
 
-	auto& pSourceVoice = sourceVoicePool_[soundIndex];
-
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData->pBuffer.data();
 	buf.AudioBytes = soundData->bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 
-	hr = pSourceVoice->SubmitSourceBuffer(&buf);
+	size_t playIndex = 0;
+
+	for (auto& pSourceVoice : sourceVoicePool_[soundIndex]) {
+
+		if (!pSourceVoice->pCallBack->isPlaying) {
+
+			pSourceVoice->pCallBack->isPlaying = true;
+
+			hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
+			assert(SUCCEEDED(hr));
+
+			hr = pSourceVoice->pVoice->Start();
+			assert(SUCCEEDED(hr));
+
+			return PlayHandle{ soundIndex, playIndex };
+
+		}
+
+		playIndex++;
+
+	}
+
+	// 波形フォーマットをもとにSourceVoiceを生成
+	sourceVoicePool_[soundIndex].emplace_back();
+	auto& pSourceVoice = sourceVoicePool_[soundIndex].back();
+	pSourceVoice = std::make_unique<SourceVoice>();
+	pSourceVoice->pCallBack = std::make_unique<VoiceCallback>();
+
+	hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &soundDataStorage_[soundIndex]->wfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
 	assert(SUCCEEDED(hr));
 
-	hr = pSourceVoice->Start();
+	hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
 	assert(SUCCEEDED(hr));
+
+	hr = pSourceVoice->pVoice->Start();
+	assert(SUCCEEDED(hr));
+
+	return PlayHandle{ soundIndex, playIndex };
 
 }
 

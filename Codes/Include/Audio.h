@@ -3,10 +3,29 @@
 
 #include <xaudio2.h>
 #pragma comment(lib, "xaudio2.lib")
-#include <wrl/client.h>
-#include <vector>
-#include <unordered_map>
+#include <atomic>
 #include <memory>
+#include <unordered_map>
+#include <vector>
+#include <wrl/client.h>
+
+class VoiceCallback : public IXAudio2VoiceCallback {
+public:
+	std::atomic<bool> isPlaying{ false };
+
+	// 再生完了時に自動で呼ばれる
+	void STDMETHODCALLTYPE OnBufferEnd(void*) override {
+		isPlaying = false;
+	}
+
+	// 他の仮想関数は空実装でOK
+	void STDMETHODCALLTYPE OnVoiceProcessingPassStart(UINT32) override {}
+	void STDMETHODCALLTYPE OnVoiceProcessingPassEnd() override {}
+	void STDMETHODCALLTYPE OnStreamEnd() override {}
+	void STDMETHODCALLTYPE OnBufferStart(void*) override {}
+	void STDMETHODCALLTYPE OnLoopEnd(void*) override {}
+	void STDMETHODCALLTYPE OnVoiceError(void*, HRESULT) override {}
+};
 
 class Audio {
 
@@ -44,11 +63,29 @@ private:
 
 	};
 
+	struct SourceVoice {
+		IXAudio2SourceVoice* pVoice;
+		std::unique_ptr<VoiceCallback> pCallBack;
+
+		~SourceVoice() {
+
+			if (pCallBack->isPlaying) {
+
+				pVoice->Stop();
+
+			}
+
+			pVoice->DestroyVoice();
+
+		}
+
+	};
+
 #pragma pack(pop)
 
 	std::vector<std::unique_ptr<SoundData>> soundDataStorage_{};
 	std::unordered_map<uint64_t, size_t> soundIndexMap_{};
-	std::vector<IXAudio2SourceVoice*> sourceVoicePool_{};
+	std::vector<std::vector<std::unique_ptr<SourceVoice>>> sourceVoicePool_{};
 
 	void AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, const UINT bufferSize, const size_t sourceIndex, const char* filePath);
 
@@ -58,11 +95,16 @@ private:
 
 public:
 
+	struct PlayHandle {
+		size_t soundIndex;
+		size_t playIndex;
+	};
+
 	void Initialize();
 
 	size_t SeGetWave(const char* filePath);
 
-	void PlaySe(size_t soundIndex);
+	PlayHandle PlaySe(size_t soundIndex);
 
 	size_t SeGetMp3(const char* filePath);
 
