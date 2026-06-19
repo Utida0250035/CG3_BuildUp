@@ -48,6 +48,13 @@ public:
 
         assert(SUCCEEDED(hr));
 
+        // 読み込み時に強制的に 44.1kHz / 16bit / ステレオ に変換する設定
+        pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
+        pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
+        pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
+        pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4);      // (2ch * 16bit) / 8
+        pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
+
         // 3. 全データを読み込み
         outData.clear();
         while (true) {

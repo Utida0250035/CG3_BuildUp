@@ -85,30 +85,30 @@ private:
 
 	std::vector<std::unique_ptr<SoundData>> soundDataStorage_{};
 	std::unordered_map<uint64_t, size_t> soundIndexMap_{};
-	std::vector<std::vector<std::unique_ptr<SourceVoice>>> sourceVoicePool_{};
+	std::vector<std::unique_ptr<SourceVoice>> sourceVoicePool_{};
 
 	void AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, const UINT bufferSize, const size_t sourceIndex, const char* filePath);
+
+	void CreateVoicePool();
 
 	size_t SeLoadWave(const char* filePath);
 
 	size_t SeLoadMp3(const char* filePath);
 
-public:
+	inline static constexpr size_t kSourceVoiceCount = 64;
 
-	struct PlayHandle {
-		size_t soundIndex;
-		size_t playIndex;
-	};
+public:
 
 	void Initialize();
 
-	size_t SeGetWave(const char* filePath);
+	size_t PlaySe(size_t soundIndex);
 
-	PlayHandle PlaySe(size_t soundIndex);
-
-	size_t SeGetMp3(const char* filePath);
-
-	size_t SeGet(const char* filePath);
+	/// <summary>
+	/// 音源の読み込み
+	/// </summary>
+	/// <param name="filePath"> ファイルパス </param>
+	/// <returns> 音源ハンドル </returns>
+	size_t LoadSe(const char* filePath);
 
 	~Audio();
 

@@ -1119,6 +1119,8 @@ bool AtrumEngine::Process() const {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
+	PlayInput::GetInstance()->EndOfFrame();
+
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event)) {
