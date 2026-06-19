@@ -5,6 +5,7 @@
 #include "DeltaTime.h"
 #include "Log.h"
 #include "OBB.h"
+#include "DirectInput.h"
 #include "PlayInput.h"
 #include "StaticCast.h"
 #include <memory>
@@ -155,404 +156,402 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #endif
 
-	while (atrum->IsProcess()) {
+	while (atrum->Process()) {
 		// ウィンドウの×ボタンが押されるまでループ
 
-		if (atrum->IsFrameExecute()) {
-
-			/*============== メインループ =================*/
+		/*============== メインループ =================*/
 
 #ifdef USE_IMGUI
 
-			// ImGuiにフレーム開始を通知
-			atrum->ImGuiNewFrame();
+		// ImGuiにフレーム開始を通知
+		atrum->ImGuiNewFrame();
 
 #endif
 
-			///
-			/// ↓ 更新ここから
-			///
+		///
+		/// ↓ 更新ここから
+		///
 
-			deltaTimeCalc->CalcDeltaTime();
-			deltaTime = deltaTimeCalc->GetDeltaTime();
+		deltaTimeCalc->CalcDeltaTime();
+		deltaTime = deltaTimeCalc->GetDeltaTime();
 
-			timeCount += deltaTime;
+		timeCount += deltaTime;
 
-			if (playInput->IsKeyTrigger(DIK_SPACE)) {
+		if (playInput->IsKeyTrigger(Key::SPACE)) {
 
-				audio->PlaySe(seCat);
+			audio->PlaySe(seCat);
 
-			}
+		}
 
 #ifdef USE_IMGUI
 
-			ImGui::Begin("debug");
+		ImGui::Begin("debug");
 
-			ImGui::Text("timeCount: %f", timeCount);
+		ImGui::Text("timeCount: %f", timeCount);
 
-			ImGui::SmallButton("seCat");
+		ImGui::SmallButton("seCat");
 
+		if (ImGui::IsItemActivated()) {
+
+			audio->PlaySe(seCat);
+
+		}
+
+		ImGui::SmallButton("seAlarm");
+
+		if (ImGui::IsItemActivated()) {
+
+			audio->PlaySe(seAlarm);
+
+		}
+
+		ImGui::End();
+
+		/* カメラGUI */
+		ImGui::Begin("camera");
+
+		ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
+		ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.03125f);
+
+		ImGui::End();
+
+
+		/* 光源GUI */
+
+		ImGui::Begin("directionalLight");
+
+		ImGui::DragFloat4("color", &directionalLightData.color.x, 0.03125f);
+
+		ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
+
+		if (ImGui::IsItemActive()) {
+
+			directionalLightData.direction = VectorNormalize(directionalLightData.direction);
+
+		}
+
+		ImGui::DragFloat("intensity", &directionalLightData.intensity, 0.03125f);
+
+		ImGui::Checkbox("isLightingEnable", &isLightingEnable);
+
+		if (isLightingEnable) {
+
+			int lightMode = static_cast<int>(directionalLightData.lightModel);
+
+			ImGui::Selectable("lambert", lightMode == 0);
 			if (ImGui::IsItemActivated()) {
 
-				audio->PlaySe(seCat);
+				lightMode = 0;
 
 			}
 
-			ImGui::SmallButton("seAlarm");
-
+			ImGui::Selectable("halfLambert", lightMode == 1);
 			if (ImGui::IsItemActivated()) {
 
-				audio->PlaySe(seAlarm);
+				lightMode = 1;
 
 			}
 
-			ImGui::End();
+			directionalLightData.lightModel = static_cast<AtrumEngine::LightModel>(lightMode);
 
-			/* カメラGUI */
-			ImGui::Begin("camera");
+		}
 
-			ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.03125f);
+		ImGui::End();
 
-			ImGui::End();
+		/* 三角形(1)GUI */
+
+		ImGui::Begin("triangle");
 
 
-			/* 光源GUI */
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
 
-			ImGui::Begin("directionalLight");
+			ImGui::Text("transform");
 
-			ImGui::DragFloat4("color", &directionalLightData.color.x, 0.03125f);
+			ImGui::DragFloat3("scale", &triangleTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &triangleTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &triangleTransform.translate.x, 0.03125f);
 
-			ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
+		}
 
-			if (ImGui::IsItemActive()) {
+		ImGui::EndChild();
 
-				directionalLightData.direction = VectorNormalize(directionalLightData.direction);
+		for (size_t i = 0; i < 3; ++i) {
 
-			}
+			ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangleVertexData[i].position.x, 0.03125f);
+			ImGui::DragFloat2(("texCoord" + std::to_string(i)).c_str(), &triangleVertexData[i].texCoord.x, 0.03125f);
 
-			ImGui::DragFloat("intensity", &directionalLightData.intensity, 0.03125f);
+		}
 
-			ImGui::Checkbox("isLightingEnable", &isLightingEnable);
 
-			if (isLightingEnable) {
+		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
 
-				int lightMode = static_cast<int>(directionalLightData.lightModel);
+			ImGui::Text("uvTransform");
 
-				ImGui::Selectable("lambert", lightMode == 0);
+			ImGui::DragFloat2("scale", &triangleUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("rotate", &triangleUvTransform.rotate.z, 0.03125f);
+			ImGui::DragFloat2("translate", &triangleUvTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+
+		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("texture");
+
+			for (const auto& path : textureFilePaths) {
+
+				ImGui::Selectable(path);
+
 				if (ImGui::IsItemActivated()) {
 
-					lightMode = 0;
+					triangleTexture = atrum->GetTexture(path);
 
 				}
 
-				ImGui::Selectable("halfLambert", lightMode == 1);
+			}
+
+			ImGui::DragFloat4("color", &triangleColor.x, 0.03125f, 0.0f, 1.0f);
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::End();
+
+
+		/* 三角形(2)GUI */
+
+		ImGui::Begin("triangle2");
+
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &triangle2Transform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &triangle2Transform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &triangle2Transform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		for (size_t i = 0; i < 3; ++i) {
+
+			ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangle2VertexData[i].position.x, 0.03125f);
+			ImGui::DragFloat2(("texCoord" + std::to_string(i)).c_str(), &triangle2VertexData[i].texCoord.x, 0.03125f);
+
+		}
+
+		if (ImGui::BeginChild("uvTransform"), imguiChildSize, imguiChildFlags) {
+
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("scale", &triangle2UvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("rotate", &triangle2UvTransform.rotate.z, 0.03125f);
+			ImGui::DragFloat2("translate", &triangle2UvTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("texture");
+
+			for (const auto& path : textureFilePaths) {
+
+				ImGui::Selectable(path);
+
 				if (ImGui::IsItemActivated()) {
 
-					lightMode = 1;
+					triangle2Texture = atrum->GetTexture(path);
 
 				}
 
-				directionalLightData.lightModel = static_cast<AtrumEngine::LightModel>(lightMode);
-
 			}
 
-			ImGui::End();
+			ImGui::DragFloat4("color", &triangle2Color.x, 0.03125f, 0.0f, 1.0f);
 
-			/* 三角形(1)GUI */
+		}
 
-			ImGui::Begin("triangle");
+		ImGui::EndChild();
 
-
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("transform");
-
-				ImGui::DragFloat3("scale", &triangleTransform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &triangleTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &triangleTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			for (size_t i = 0; i < 3; ++i) {
-
-				ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangleVertexData[i].position.x, 0.03125f);
-				ImGui::DragFloat2(("texCoord" + std::to_string(i)).c_str(), &triangleVertexData[i].texCoord.x, 0.03125f);
-
-			}
+		ImGui::End();
 
 
-			if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
+		/* 球GUI */
 
-				ImGui::Text("uvTransform");
+		ImGui::Begin("sphere");
 
-				ImGui::DragFloat2("scale", &triangleUvTransform.scale.x, 0.03125f);
-				ImGui::DragFloat("rotate", &triangleUvTransform.rotate.z, 0.03125f);
-				ImGui::DragFloat2("translate", &triangleUvTransform.translate.x, 0.03125f);
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
 
-			}
+			ImGui::Text("transform");
 
-			ImGui::EndChild();
+			ImGui::DragFloat3("scale", &sphereTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &sphereTransform.translate.x, 0.03125f);
 
+		}
 
-			if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+		ImGui::EndChild();
 
-				ImGui::Text("texture");
+		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
 
-				for (const auto& path : textureFilePaths) {
+			ImGui::Text("uvTransform");
 
-					ImGui::Selectable(path);
+			ImGui::DragFloat2("scale", &sphereUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("rotate", &sphereUvTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat2("translate", &sphereUvTransform.translate.x, 0.03125f);
 
-					if (ImGui::IsItemActivated()) {
+		}
 
-						triangleTexture = atrum->GetTexture(path);
+		ImGui::EndChild();
 
-					}
+		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("texture");
+
+			for (const auto& path : textureFilePaths) {
+
+				ImGui::Selectable(path);
+
+				if (ImGui::IsItemActivated()) {
+
+					sphereTexture = atrum->GetTexture(path);
 
 				}
 
-				ImGui::DragFloat4("color", &triangleColor.x, 0.03125f, 0.0f, 1.0f);
-
 			}
 
-			ImGui::EndChild();
+			ImGui::DragFloat4("color", &sphereColor.x, 0.03125f);
 
-			ImGui::End();
+		}
+
+		ImGui::EndChild();
+
+		ImGui::DragFloat("radius", &sphereRadius, 0.03125f);
+
+		int subdivision = sphereSubdivision;
+
+		ImGui::DragInt("subdivision", &subdivision, 0.03125f);
+
+		sphereSubdivision = subdivision;
+
+		ImGui::End();
 
 
-			/* 三角形(2)GUI */
+		/* 平面3dモデルGUI */
 
-			ImGui::Begin("triangle2");
+		ImGui::Begin("planeModel");
 
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
 
-				ImGui::Text("transform");
+			ImGui::Text("transform");
 
-				ImGui::DragFloat3("scale", &triangle2Transform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &triangle2Transform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &triangle2Transform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &planeModelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &planeModelTransform.translate.x, 0.03125f);
 
-			}
+		}
 
-			ImGui::EndChild();
+		ImGui::EndChild();
 
-			for (size_t i = 0; i < 3; ++i) {
+		ImGui::End();
 
-				ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangle2VertexData[i].position.x, 0.03125f);
-				ImGui::DragFloat2(("texCoord" + std::to_string(i)).c_str(), &triangle2VertexData[i].texCoord.x, 0.03125f);
+		/* 複数メッシュ3dモデルGUI */
 
-			}
+		ImGui::Begin("multiMeshModel");
 
-			if (ImGui::BeginChild("uvTransform"), imguiChildSize, imguiChildFlags) {
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
 
-				ImGui::Text("uvTransform");
+			ImGui::Text("transform");
 
-				ImGui::DragFloat2("scale", &triangle2UvTransform.scale.x, 0.03125f);
-				ImGui::DragFloat("rotate", &triangle2UvTransform.rotate.z, 0.03125f);
-				ImGui::DragFloat2("translate", &triangle2UvTransform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, 0.03125f);
 
-			}
+		}
 
-			ImGui::EndChild();
+		ImGui::EndChild();
 
-			if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+		ImGui::End();
 
-				ImGui::Text("texture");
+		/* 複数マテリアル3dモデルGUI */
 
-				for (const auto& path : textureFilePaths) {
+		ImGui::Begin("multiMaterialModel");
 
-					ImGui::Selectable(path);
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
 
-					if (ImGui::IsItemActivated()) {
+			ImGui::Text("transform");
 
-						triangle2Texture = atrum->GetTexture(path);
+			ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, 0.03125f);
 
-					}
+		}
+
+		ImGui::EndChild();
+
+		ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
+
+		ImGui::End();
+
+		/* スプライトGUI */
+
+		ImGui::Begin("sprite");
+
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &spriteTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("rotate", &spriteUvTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("texture");
+
+			for (const auto& path : textureFilePaths) {
+
+				ImGui::Selectable(path);
+
+				if (ImGui::IsItemActivated()) {
+
+					spriteTexture = atrum->GetTexture(path);
 
 				}
 
-				ImGui::DragFloat4("color", &triangle2Color.x, 0.03125f, 0.0f, 1.0f);
-
 			}
 
-			ImGui::EndChild();
+			ImGui::DragFloat4("color", &spriteColor.x, 0.03125f);
 
-			ImGui::End();
+		}
 
+		ImGui::EndChild();
 
-			/* 球GUI */
+		ImGui::End();
 
-			ImGui::Begin("sphere");
 
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("transform");
-
-				ImGui::DragFloat3("scale", &sphereTransform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &sphereTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("uvTransform");
-
-				ImGui::DragFloat2("scale", &sphereUvTransform.scale.x, 0.03125f);
-				ImGui::DragFloat("rotate", &sphereUvTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat2("translate", &sphereUvTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("texture");
-
-				for (const auto& path : textureFilePaths) {
-
-					ImGui::Selectable(path);
-
-					if (ImGui::IsItemActivated()) {
-
-						sphereTexture = atrum->GetTexture(path);
-
-					}
-
-				}
-
-				ImGui::DragFloat4("color", &sphereColor.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			ImGui::DragFloat("radius", &sphereRadius, 0.03125f);
-
-			int subdivision = sphereSubdivision;
-
-			ImGui::DragInt("subdivision", &subdivision, 0.03125f);
-
-			sphereSubdivision = subdivision;
-
-			ImGui::End();
-
-
-			/* 平面3dモデルGUI */
-
-			ImGui::Begin("planeModel");
-
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("transform");
-
-				ImGui::DragFloat3("scale", &planeModelTransform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &planeModelTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			ImGui::End();
-
-			/* 複数メッシュ3dモデルGUI */
-
-			ImGui::Begin("multiMeshModel");
-
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("transform");
-
-				ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			ImGui::End();
-
-			/* 複数マテリアル3dモデルGUI */
-
-			ImGui::Begin("multiMaterialModel");
-
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("transform");
-
-				ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
-
-			ImGui::End();
-
-			/* スプライトGUI */
-
-			ImGui::Begin("sprite");
-
-			if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("transform");
-
-				ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.03125f);
-				ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat3("translate", &spriteTransform.translate.x, 0.03125f);
-
-			}
-			
-			ImGui::EndChild();
-
-			if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
-			
-				ImGui::Text("uvTransform");
-
-				ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, 0.03125f);
-				ImGui::DragFloat("rotate", &spriteUvTransform.rotate.x, 0.03125f);
-				ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
-
-				ImGui::Text("texture");
-
-				for (const auto& path : textureFilePaths) {
-
-					ImGui::Selectable(path);
-
-					if (ImGui::IsItemActivated()) {
-
-						spriteTexture = atrum->GetTexture(path);
-
-					}
-
-				}
-
-				ImGui::DragFloat4("color", &spriteColor.x, 0.03125f);
-
-			}
-
-			ImGui::EndChild();
-
-			ImGui::End();
-
-
-			atrum->ImGuiRender();
+		atrum->ImGuiRender();
 
 #endif
 
@@ -565,42 +564,40 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			/// 
 
 			// 描画処理(前)
-			atrum->PreDraw();
+		atrum->PreDraw();
 
-			if (isLightingEnable) {
+		if (isLightingEnable) {
 
-				atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision, directionalLightData);
-				atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
-				atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData, directionalLightData);
+			atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision, directionalLightData);
+			atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
+			atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData, directionalLightData);
 
-			} else {
+		} else {
 
-				atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision);
-				atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData);
-				atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData);
-
-			}
-
-
-			planeModel->Draw(atrum, planeModelTransform, cameraTransform);
-
-			multiMeshModel->Draw(atrum, multiMeshModelTransform, cameraTransform);
-
-			multiMtlModel->Draw(atrum, multiMtlModelTransform, cameraTransform);
-
-			// Sprite準備
-			atrum->PrepareSprite();
-
-			atrum->DrawSpriteRect(spriteTexture, spriteColor, sphereUvTransform, spriteTransform, spriteSize);
-
-			// 描画処理(後)
-			atrum->PostDraw();
-
-			///
-			/// ↑描画ここまで
-			/// 
+			atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision);
+			atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData);
+			atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData);
 
 		}
+
+
+		planeModel->Draw(atrum, planeModelTransform, cameraTransform);
+
+		multiMeshModel->Draw(atrum, multiMeshModelTransform, cameraTransform);
+
+		multiMtlModel->Draw(atrum, multiMtlModelTransform, cameraTransform);
+
+		// Sprite準備
+		atrum->PrepareSprite();
+
+		atrum->DrawSpriteRect(spriteTexture, spriteColor, sphereUvTransform, spriteTransform, spriteSize);
+
+		// 描画処理(後)
+		atrum->PostDraw();
+
+		///
+		/// ↑描画ここまで
+		/// 
 
 	}
 

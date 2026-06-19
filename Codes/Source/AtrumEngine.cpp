@@ -1,12 +1,11 @@
 #include "AtrumEngine.h"
-#include "StaticCast.h"
 #include "CommandContext.h"
-#include "RenderDevice.h"
 #include "ConvertString.h"
-#include "Log.h"
-#include "Vector4.h"
 #include "Hash64.h"
-#include "WindowProcedure.h"
+#include "Log.h"
+#include "RenderDevice.h"
+#include "StaticCast.h"
+#include "Vector4.h"
 #include <cassert>
 #include <cstdint>
 #include <d3d12.h>
@@ -17,13 +16,14 @@
 #pragma comment(lib, "dxgi.lib")
 #include <dxgidebug.h>
 #pragma comment(lib, "dxguid.lib")
+#include "DirectInput.h"
+#include "Matrix3D.h"
+#include "Plane.h"
+#include "PlayInput.h"
 #include <format>
 #include <string>
 #include <strsafe.h>
 #include <Windows.h>
-#include "Matrix3D.h"
-#include "Plane.h"
-#include "PlayInput.h"
 
 #ifdef USE_IMGUI
 
@@ -35,13 +35,14 @@
 
 #include <DirectXTex/d3dx12.h>
 #include <vector>
-
-#include <memory>
-#include <filesystem>
 #include <cfloat>
-#include <numbers>
+#include <filesystem>
 #include <fstream>
+#include <memory>
+#include <numbers>
 #include <sstream>
+#include <SDL.h>
+#include <SDL_syswm.h>
 
 AtrumEngine* AtrumEngine::instance_ = nullptr;
 
@@ -84,50 +85,41 @@ void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& c
 
 	assert(!isInitialized_ && "PrepareWindow() is initializeHelper");
 
-	// ウィンドウプロシージャ
-	wc_.lpfnWndProc = WindowProc;
+	// SDLの初期化
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 
-	// ウィンドウクラス名
-	wc_.lpszClassName = L"CG2WindowClass";
+		// エラーハンドリング
+		assert(false);
+		return;
 
-	// インスタンスハンドル
-	wc_.hInstance = GetModuleHandle(nullptr);
+	}
 
-	// カーソル
-	wc_.hCursor = LoadCursor(nullptr, IDC_ARROW);
-
-	// ウィンドウクラスを登録
-	RegisterClass(&wc_);
-
-	// ウィンドウの横の大きさ
 	clientWidth_ = clientWidth;
-
-	// ウィンドウの縦の大きさ
 	clientHeight_ = clientHeight;
 
-	// ウィンドウサイズ構造体
-	wrc_ = { 0, 0, clientWidth_, clientHeight_ };
-
-	// クライアント領域を基に実際のサイズ情報をwrcに反映させる
-	AdjustWindowRect(&wrc_, WS_OVERLAPPEDWINDOW, false);
+	window_ = std::make_unique<Window>();
 
 	// ウィンドウの生成
-	hwnd_ = CreateWindow(
-		wc_.lpszClassName,
-		StringToWString(windowLabel).c_str(),
-		WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME,
-		CW_USEDEFAULT,
-		CW_USEDEFAULT,
-		wrc_.right - wrc_.left,
-		wrc_.bottom - wrc_.top,
-		nullptr,
-		nullptr,
-		wc_.hInstance,
-		nullptr
+	window_->ptr = SDL_CreateWindow(
+		windowLabel.c_str(),
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
+		clientWidth,
+		clientHeight,
+		SDL_WINDOW_SHOWN
 	);
 
-	// ウィンドウの表示
-	ShowWindow(hwnd_, SW_SHOW);
+	// DirectX連携のためにHWNDを取得
+	SDL_SysWMinfo wmInfo{};
+	SDL_VERSION(&wmInfo.version);
+
+	if (SDL_GetWindowWMInfo(window_->ptr, &wmInfo)) {
+
+		hwnd_ = wmInfo.info.win.window;
+
+	}
+
+	//SetWindowLongPtr(hwnd_, GWLP_WNDPROC, (LONG_PTR)WindowProc);
 
 }
 
@@ -1057,7 +1049,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplWin32_Init(hwnd_);
+	ImGui_ImplSDL2_InitForD3D(window_->ptr);
 
 	DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
 
@@ -1095,87 +1087,107 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// 時間差分マネージャーの生成
 	deltaTimeManager_.reset(new DeltaTime());
 
+	/* 入力デバイスの初期化 */
+
+	SDL_SysWMinfo wmInfo;
+	SDL_VERSION(&wmInfo.version);
+
+	if (!SDL_GetWindowWMInfo(window_->ptr, &wmInfo)) {
+
+		assert(false);
+
+	}
+
+	HINSTANCE hInstance = reinterpret_cast<HINSTANCE>(GetWindowLongPtr(wmInfo.info.win.window, GWLP_HINSTANCE));
+
+	// DirectInput
+	directInput_ = DirectInput::GetInstance();
+	directInput_->Initialize(hInstance, hwnd_);
+	
+	// SDL2入力
 	playInput_ = PlayInput::GetInstance();
 
-	// 入力デバイスの初期化
-	playInput_->Initialize(wc_.hInstance, hwnd_);
+	/* 初期化完了のログ出力 */
 
-	// 初期化完了のログ出力
 	LogFile::GetInstance()->Log("Hello World!");
 
 	isInitialized_ = true;
 
 }
 
-bool AtrumEngine::IsProcess() const {
+bool AtrumEngine::Process() const {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	if (msg_.message == WM_QUIT) {
+	SDL_Event event;
 
-		return false;
+	while (SDL_PollEvent(&event)) {
+
+#ifdef USE_IMGUI
+		ImGui_ImplSDL2_ProcessEvent(&event);
+#endif
+
+		switch (event.type) {
+
+			case SDL_WINDOWEVENT:
+
+				if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
+
+					return false;
+
+				}
+
+				break;
+
+			case SDL_QUIT:
+
+				return false;
+
+			case SDL_KEYDOWN:
+
+				assert(event.key.keysym.scancode < 256);
+
+				playInput_->SetKey(static_cast<uint8_t>(event.key.keysym.scancode), true);
+
+				break;
+
+			case SDL_KEYUP:
+
+				assert(event.key.keysym.scancode < 256);
+
+				playInput_->SetKey(static_cast<uint8_t>(event.key.keysym.scancode), false);
+
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+
+				playInput_->SetMouseButton(event.button.button, true);
+
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+
+				playInput_->SetMouseButton(event.button.button, false);
+
+				break;
+
+			case SDL_MOUSEWHEEL:
+
+				playInput_->AddMouseWheel(event.wheel.y);
+
+				break;
+
+			case SDL_MOUSEMOTION:
+
+				playInput_->AddCursorDelta(event.motion.x, event.motion.y);
+
+				break;
+
+		}
 
 	}
 
-	return true;
-
-}
-
-bool AtrumEngine::MessageForOs() {
-
-	assert(isInitialized_ && "AtrumEngine is not initialized");
-
-	if (PeekMessage(&msg_, NULL, 0, 0, PM_REMOVE)) {
-		// OSへのメッセージを最優先で処理
-
-		TranslateMessage(&msg_);
-		DispatchMessage(&msg_);
-
-		return true;
-
-	}
-
-	return false;
-
-}
-
-bool AtrumEngine::IsWaitForFrame() {
-
-	assert(isInitialized_ && "AtrumEngine is not initialized");
-
-	deltaTimeManager_->CalcDeltaTime();
-
-	countForNextFrame_ += deltaTimeManager_->GetDeltaTime();
-
-	if (countForNextFrame_ >= secondsPerFrame_) {
-
-		countForNextFrame_ -= secondsPerFrame_;
-
-		return false;
-
-	}
-
-	return true;
-
-}
-
-bool AtrumEngine::IsFrameExecute() {
-
-	assert(isInitialized_ && "AtrumEngine is not initialized");
-
-	if (this->MessageForOs()) {
-
-		return false;
-
-	}
-
-	if (this->IsWaitForFrame()) {
-
-		return false;
-
-	}
-
-	playInput_->Update();
+	directInput_->Update();
 
 	return true;
 
@@ -1188,7 +1200,7 @@ void AtrumEngine::ImGuiNewFrame() const {
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
 	ImGui_ImplDX12_NewFrame();
-	ImGui_ImplWin32_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
 	ImGui::NewFrame();
 
 }
@@ -1374,7 +1386,7 @@ void AtrumEngine::Finalize() {
 #ifdef USE_IMGUI
 
 	ImGui_ImplDX12_Shutdown();
-	ImGui_ImplWin32_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
 #endif
@@ -1885,8 +1897,8 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 	}
 
-	const float kLonEvery = std::numbers::pi_v<float> *2.0f / Float(subdivision);
-	const float kLatEvery = std::numbers::pi_v<float> / Float(subdivision);
+	const float kLonEvery = std::numbers::pi_v<float> *2.0f / cast::Float(subdivision);
+	const float kLatEvery = std::numbers::pi_v<float> / cast::Float(subdivision);
 
 	VertexData pointA{}, pointB{}, pointC{}, pointD{};
 
@@ -1899,7 +1911,7 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 	for (uint32_t latIndex = 0; latIndex < subdivision; ++latIndex) {
 
-		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * Float(latIndex);
+		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * cast::Float(latIndex);
 
 		for (uint32_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
 
@@ -1907,22 +1919,22 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 			pointA.position = Vector4{ cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon), 0.0f } * radius;
 			pointA.position.w = 1.0f;
-			pointA.texCoord = Vector2{ Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision) };
+			pointA.texCoord = Vector2{ cast::Float(lonIndex) / cast::Float(subdivision), 1.0f - cast::Float(latIndex) / cast::Float(subdivision) };
 			pointA.normal = VectorNormalize(Vector3{ pointA.position.x, pointA.position.y, pointA.position.z });
 
 			pointB.position = Vector4{ cos(lat + kLatEvery) * cos(lon), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon), 0.0f } * radius;
 			pointB.position.w = 1.0f;
-			pointB.texCoord = Vector2{ Float(lonIndex) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
+			pointB.texCoord = Vector2{ cast::Float(lonIndex) / cast::Float(subdivision), 1.0f - cast::Float(latIndex + 1) / cast::Float(subdivision) };
 			pointB.normal = VectorNormalize(Vector3{ pointB.position.x, pointB.position.y, pointB.position.z });
 
 			pointC.position = Vector4{ cos(lat) * cos(lon + kLonEvery), sin(lat), cos(lat) * sin(lon + kLonEvery) , 0.0f } * radius;
 			pointC.position.w = 1.0f;
-			pointC.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex) / Float(subdivision) };
+			pointC.texCoord = Vector2{ cast::Float(lonIndex + 1) / cast::Float(subdivision), 1.0f - cast::Float(latIndex) / cast::Float(subdivision) };
 			pointC.normal = VectorNormalize(Vector3{ pointC.position.x, pointC.position.y, pointC.position.z });
 
 			pointD.position = Vector4{ cos(lat + kLatEvery) * cos(lon + kLonEvery), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon + kLonEvery), 0.0f } * radius;
 			pointD.position.w = 1.0f;
-			pointD.texCoord = Vector2{ Float(lonIndex + 1) / Float(subdivision), 1.0f - Float(latIndex + 1) / Float(subdivision) };
+			pointD.texCoord = Vector2{ cast::Float(lonIndex + 1) / cast::Float(subdivision), 1.0f - cast::Float(latIndex + 1) / cast::Float(subdivision) };
 			pointD.normal = VectorNormalize(Vector3{ pointD.position.x, pointD.position.y, pointD.position.z });
 
 
@@ -1973,7 +1985,7 @@ void AtrumEngine::DrawRegularTetrahedron(const uint32_t& textureIndex, const Vec
 	vec3Vertices[2] = VectorTransform(vec3Vertices[1], MakeYRotateMatrix(axisRotate));
 	vec3Vertices[3] = VectorTransform(vec3Vertices[2], MakeYRotateMatrix(axisRotate));
 
-	Vector4 vertices[4];
+	Vector4 vertices[4]{};
 
 	for (size_t i = 0; i < 4; ++i) {
 

@@ -1,84 +1,15 @@
+
+#include "Log.h"
 #include "PlayInput.h"
+#include "StaticCast.h"
 #include <cassert>
 
-void PlayInput::Initialize(HINSTANCE hInstance, HWND hwnd) {
+void PlayInput::EndOfFrame() {
 
-	/* 入力デバイス */
+	mouseWheel_ = 0;
+	cursorDelta_ = Vector2{};
 	
-	HRESULT hr = DirectInput8Create(
-		hInstance,
-		DIRECTINPUT_VERSION, IID_IDirectInput8,
-		(void**)&directInput_,
-		nullptr
-	);
-	assert(SUCCEEDED(hr));
-
-
-	/* キーボード入力 */
-
-	hr = directInput_->CreateDevice(GUID_SysKeyboard, &keyboard_, NULL);
-	assert(SUCCEEDED(hr));
-
-	// 標準キーボード形式
-	hr = keyboard_->SetDataFormat(&c_dfDIKeyboard);
-	assert(SUCCEEDED(hr));
-
-	// 排他制御レベルのリセット
-	hr = keyboard_->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-
-}
-
-void PlayInput::Update() {
-
-	// キーボード入力の取得開始
-	keyboard_->Acquire();
-
-	// 前フレームのキー入力取得
+	memcpy(preMouseButtons_, mouseButtons_, sizeof(mouseButtons_));
 	memcpy(preKeys_, keys_, sizeof(keys_));
-
-	for (auto& key : keys_) {
-
-		key = 0u;
-
-	}
-
-	// 全キー入力の取得
-	keyboard_->GetDeviceState(sizeof(keys_), keys_);
-
-}
-
-bool PlayInput::IsKeyPress(const uint8_t keyIndex) {
-
-	if (keys_[keyIndex]) {
-
-		return true;
-
-	}
-
-	return false;
-
-}
-
-bool PlayInput::IsKeyTrigger(const uint8_t keyIndex) {
-
-	if (keys_[keyIndex] && !preKeys_[keyIndex]) {
-
-		return true;
-
-	}
-
-	return false;
-
-}
-
-bool PlayInput::IsKeyRelease(const uint8_t keyIndex) {
-
-	if (!keys_[keyIndex] && preKeys_[keyIndex]) {
-
-		return true;
-
-	}
-
-	return false;
 
 }

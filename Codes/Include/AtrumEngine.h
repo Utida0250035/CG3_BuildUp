@@ -39,9 +39,13 @@
 #include <memory>
 #include <unordered_map>
 #include <optional>
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <Log.h>
 
 namespace fs = std::filesystem;
 
+class DirectInput;
 class PlayInput;
 
 class AtrumEngine final {
@@ -103,8 +107,27 @@ private:
 
 	/* Window */
 
+	struct Window {
+		SDL_Window* ptr = nullptr;
+
+		~Window() {
+
+			if (ptr) {
+
+				SDL_DestroyWindow(ptr);
+
+			}
+
+			SDL_Quit();
+
+			LogFile::GetInstance()->Log("SDL2: Quit");
+
+		}
+
+	};
+
 	// ウィンドウクラス
-	WNDCLASS wc_{};
+	std::unique_ptr<Window> window_{};
 
 	// クライアント領域ヨコサイズ
 	int32_t clientWidth_ = 1280;
@@ -538,7 +561,7 @@ private:
 	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
 
 	// 正射影
-	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, Float(clientWidth_), Float(clientHeight_), 0.0f, 100.0f);
+	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth_), cast::Float(clientHeight_), 0.0f, 100.0f);
 
 
 	/* ウィンドウサイズ */
@@ -563,12 +586,12 @@ private:
 
 
 	/* プレイヤー入力 */
+
+	// DirectInput
+	DirectInput* directInput_ = nullptr;
+
+	// SDL2入力
 	PlayInput* playInput_ = nullptr;
-
-	/* OSとのやり取り */
-
-	// メッセージ
-	MSG msg_{};
 
 	/**/
 
@@ -782,32 +805,10 @@ public:
 	void Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
 
 	/// <summary>
-	/// ×ボタンが押されていないかどうか
+	/// 裏の処理と×ボタン判定を行う
 	/// </summary>
 	/// <returns></returns>
-	bool IsProcess() const;
-
-private:
-
-	/// <summary>
-	/// OSへのメッセージ処理
-	/// </summary>
-	/// <returns></returns>
-	bool MessageForOs();
-
-	/// <summary>
-	/// 次フレーム待ちか
-	/// </summary>
-	/// <returns></returns>
-	bool IsWaitForFrame();
-
-public:
-
-	/// <summary>
-	/// フレーム実行の可否
-	/// </summary>
-	/// <returns> フレーム実行フラグ </returns>
-	bool IsFrameExecute();
+	bool Process() const;
 
 #ifdef USE_IMGUI
 

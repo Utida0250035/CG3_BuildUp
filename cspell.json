@@ -11,7 +11,8 @@
         "**/Dumps/**/*",
         ".cspell/**/*",
         "**/*.cmd",
-        "**/*/nul"
+        "**/*/nul",
+        "packages/**/*"
     ],
     "files": [
         "**/*.{cpp,h,hlsl,hlsli,txt,md}"
