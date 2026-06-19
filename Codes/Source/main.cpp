@@ -183,6 +183,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
+		Vector2 cursorPos = playInput->GetCursorPos();
+
 #ifdef USE_IMGUI
 
 		ImGui::Begin("debug");

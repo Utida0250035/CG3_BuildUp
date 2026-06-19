@@ -38,3 +38,5 @@ WNDPROC
 keysym
 MOUSEMOTION
 redist
+xrel
+yrel
