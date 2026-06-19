@@ -27,7 +27,36 @@ void Audio::Initialize() {
 	hr = xAudio2_->CreateMasteringVoice(&masterVoice_);
 	assert(SUCCEEDED(hr));
 
+	this->CreateVoicePool();
+
 	AudioDecoder::Initialize();
+
+}
+
+void Audio::CreateVoicePool() {
+
+	// 標準的なフォーマット設定: 44.1kHz, 16bit, ステレオ
+	WAVEFORMATEX standardWfEx = {};
+	standardWfEx.wFormatTag = WAVE_FORMAT_PCM;     // 非圧縮PCM
+	standardWfEx.nChannels = 2;                    // ステレオ
+	standardWfEx.nSamplesPerSec = 44100;           // 44.1kHz
+	standardWfEx.wBitsPerSample = 16;              // 16bit
+	standardWfEx.nBlockAlign = (standardWfEx.nChannels * standardWfEx.wBitsPerSample) / 8;
+	standardWfEx.nAvgBytesPerSec = standardWfEx.nSamplesPerSec * standardWfEx.nBlockAlign;
+	standardWfEx.cbSize = 0;                    // PCMの場合は0
+
+	for (size_t i = 0; i < kSourceVoiceCount; ++i) {
+		// 定数分のSourceVoiceを生成
+		
+		sourceVoicePool_.emplace_back();
+		auto& pSourceVoice = sourceVoicePool_.back();
+		pSourceVoice = std::make_unique<SourceVoice>();
+		pSourceVoice->pCallBack = std::make_unique<VoiceCallback>();
+
+		[[maybe_unused]] HRESULT hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &standardWfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
+		assert(SUCCEEDED(hr));
+
+	}
 
 }
 
@@ -38,15 +67,6 @@ void Audio::AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, con
 		pBuffer,
 		bufferSize
 	);
-
-	// 波形フォーマットをもとにSourceVoiceを生成
-	sourceVoicePool_.emplace_back();
-	sourceVoicePool_.back().emplace_back();
-	auto& pSourceVoice = sourceVoicePool_.back().front();
-	pSourceVoice = std::make_unique<SourceVoice>();
-	pSourceVoice->pCallBack = std::make_unique<VoiceCallback>();
-	HRESULT hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &wfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
-	assert(SUCCEEDED(hr));
 
 	soundDataStorage_.emplace_back(std::move(soundData));
 
@@ -127,24 +147,9 @@ size_t Audio::SeLoadWave(const char* filePath) {
 
 }
 
-size_t Audio::SeGetWave(const char* filePath) {
-
-	auto search = soundIndexMap_.find(hash64_str(filePath));
-
-	if (search != soundIndexMap_.end()) {
-
-		return search->second;
-
-	}
-
-	return SeLoadWave(filePath);
-
-}
-
-Audio::PlayHandle Audio::PlaySe(size_t soundIndex) {
+size_t Audio::PlaySe(size_t soundIndex) {
 
 	assert(soundIndex < soundDataStorage_.size());
-	assert(soundIndex < sourceVoicePool_.size());
 
 	HRESULT hr{};
 
@@ -157,7 +162,7 @@ Audio::PlayHandle Audio::PlaySe(size_t soundIndex) {
 
 	size_t playIndex = 0;
 
-	for (auto& pSourceVoice : sourceVoicePool_[soundIndex]) {
+	for (auto& pSourceVoice : sourceVoicePool_) {
 
 		if (!pSourceVoice->pCallBack->isPlaying) {
 
@@ -169,7 +174,7 @@ Audio::PlayHandle Audio::PlaySe(size_t soundIndex) {
 			hr = pSourceVoice->pVoice->Start();
 			assert(SUCCEEDED(hr));
 
-			return PlayHandle{ soundIndex, playIndex };
+			return playIndex;
 
 		}
 
@@ -177,22 +182,9 @@ Audio::PlayHandle Audio::PlaySe(size_t soundIndex) {
 
 	}
 
-	// 波形フォーマットをもとにSourceVoiceを生成
-	sourceVoicePool_[soundIndex].emplace_back();
-	auto& pSourceVoice = sourceVoicePool_[soundIndex].back();
-	pSourceVoice = std::make_unique<SourceVoice>();
-	pSourceVoice->pCallBack = std::make_unique<VoiceCallback>();
+	assert(false && "no empty sourceVoice");
 
-	hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &soundDataStorage_[soundIndex]->wfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
-	assert(SUCCEEDED(hr));
-
-	hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
-	assert(SUCCEEDED(hr));
-
-	hr = pSourceVoice->pVoice->Start();
-	assert(SUCCEEDED(hr));
-
-	return PlayHandle{ soundIndex, playIndex };
+	return 0;
 
 }
 
@@ -212,37 +204,25 @@ size_t Audio::SeLoadMp3(const char* filePath) {
 
 }
 
-size_t Audio::SeGetMp3(const char* filePath) {
+size_t Audio::LoadSe(const char* filePath) {
 
-	auto search = soundIndexMap_.find(hash64_str(filePath));
-
-	if (search != soundIndexMap_.end()) {
-
-		return search->second;
-
-	}
-
-	return SeLoadMp3(filePath);
-
-}
-
-size_t Audio::SeGet(const char* filePath) {
+	assert(!soundIndexMap_.contains(hash64_str(filePath)));
 
 	std::filesystem::path fPath = filePath;
 
-	const wchar_t* extension = fPath.extension().c_str();
+	std::filesystem::path extension = fPath.extension().c_str();
 
-	switch (hash64_str(extension)) {
+	switch (hash64_str(extension.c_str())) {
 
 		case L".mp3"_hash64:
 
-			return SeGetMp3(filePath);
+			return SeLoadMp3(filePath);
 
 			break;
 
 		case L".wav"_hash64:
 
-			return SeGetWave(filePath);
+			return SeLoadWave(filePath);
 
 			break;
 
