@@ -64,7 +64,7 @@ private:
 	};
 
 	struct SourceVoice {
-		IXAudio2SourceVoice* pVoice;
+		IXAudio2SourceVoice* pVoice = nullptr;
 		std::unique_ptr<VoiceCallback> pCallBack;
 
 		~SourceVoice() {

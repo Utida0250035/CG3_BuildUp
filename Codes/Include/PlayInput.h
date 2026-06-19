@@ -91,9 +91,9 @@ public:
 
 	/* 入力フラグ */
 
-	bool IsKeyPress(const Key vKey) { return keys_[static_cast<uint8_t>(vKey)]; }
-	bool IsKeyTrigger(const Key vKey) { return keys_[static_cast<uint8_t>(vKey)] && !preKeys_[static_cast<uint8_t>(vKey)]; }
-	bool IsKeyRelease(const Key vKey) { return !keys_[static_cast<uint8_t>(vKey)] && preKeys_[static_cast<uint8_t>(vKey)]; }
+	bool IsKeyPress(const Key vKey) const { return keys_[static_cast<uint8_t>(vKey)]; }
+	bool IsKeyTrigger(const Key vKey) const { return keys_[static_cast<uint8_t>(vKey)] && !preKeys_[static_cast<uint8_t>(vKey)]; }
+	bool IsKeyRelease(const Key vKey) const { return !keys_[static_cast<uint8_t>(vKey)] && preKeys_[static_cast<uint8_t>(vKey)]; }
 
 	/* ゲッター */
 
@@ -101,7 +101,10 @@ public:
 
 	/* セッター */
 
-	void SetCursorPos(Vector2&& cursorPos) { cursorPos_ = cursorPos; }
+	void SetCursorPos(const int32_t x, const int32_t y) { 
+		cursorPos_.x = static_cast<float>(x);
+		cursorPos_.y = static_cast<float>(y);
+	}
 
 	void SetKey(const uint8_t vKey, const bool isPush) {
 		assert(vKey < 256);

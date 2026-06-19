@@ -37,13 +37,25 @@ void Audio::CreateVoicePool() {
 
 	// 標準的なフォーマット設定: 44.1kHz, 16bit, ステレオ
 	WAVEFORMATEX standardWfEx = {};
-	standardWfEx.wFormatTag = WAVE_FORMAT_PCM;     // 非圧縮PCM
-	standardWfEx.nChannels = 2;                    // ステレオ
-	standardWfEx.nSamplesPerSec = 44100;           // 44.1kHz
-	standardWfEx.wBitsPerSample = 16;              // 16bit
+	
+	// 非圧縮PCM
+	standardWfEx.wFormatTag = WAVE_FORMAT_PCM;
+	
+	// ステレオ
+	standardWfEx.nChannels = 2;
+	
+	// 44.1kHz
+	standardWfEx.nSamplesPerSec = 44100;
+	
+	// 16bit
+	standardWfEx.wBitsPerSample = 16;
+	
 	standardWfEx.nBlockAlign = (standardWfEx.nChannels * standardWfEx.wBitsPerSample) / 8;
+	
 	standardWfEx.nAvgBytesPerSec = standardWfEx.nSamplesPerSec * standardWfEx.nBlockAlign;
-	standardWfEx.cbSize = 0;                    // PCMの場合は0
+	
+	// PCMの場合は0
+	standardWfEx.cbSize = 0;
 
 	for (size_t i = 0; i < kSourceVoiceCount; ++i) {
 		// 定数分のSourceVoiceを生成
