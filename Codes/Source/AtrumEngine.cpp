@@ -97,10 +97,8 @@ void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& c
 	clientWidth_ = clientWidth;
 	clientHeight_ = clientHeight;
 
-	window_ = std::make_unique<Window>();
-
 	// ウィンドウの生成
-	window_->ptr = SDL_CreateWindow(
+	window_.ptr = SDL_CreateWindow(
 		windowLabel.c_str(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
@@ -113,7 +111,7 @@ void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& c
 	SDL_SysWMinfo wmInfo{};
 	SDL_VERSION(&wmInfo.version);
 
-	if (SDL_GetWindowWMInfo(window_->ptr, &wmInfo)) {
+	if (SDL_GetWindowWMInfo(window_.ptr, &wmInfo)) {
 
 		hwnd_ = wmInfo.info.win.window;
 
@@ -1049,7 +1047,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplSDL2_InitForD3D(window_->ptr);
+	ImGui_ImplSDL2_InitForD3D(window_.ptr);
 
 	DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
 
@@ -1089,10 +1087,10 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	/* 入力デバイスの初期化 */
 
-	SDL_SysWMinfo wmInfo;
+	SDL_SysWMinfo wmInfo{};
 	SDL_VERSION(&wmInfo.version);
 
-	if (!SDL_GetWindowWMInfo(window_->ptr, &wmInfo)) {
+	if (!SDL_GetWindowWMInfo(window_.ptr, &wmInfo)) {
 
 		assert(false);
 
@@ -1181,7 +1179,9 @@ bool AtrumEngine::Process() const {
 
 			case SDL_MOUSEMOTION:
 
-				playInput_->AddCursorDelta(event.motion.x, event.motion.y);
+				playInput_->AddCursorDelta(event.motion.xrel, event.motion.yrel);
+
+				playInput_->SetCursorPos(event.motion.x, event.motion.y);
 
 				break;
 

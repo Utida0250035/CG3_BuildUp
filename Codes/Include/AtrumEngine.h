@@ -127,7 +127,7 @@ private:
 	};
 
 	// ウィンドウクラス
-	std::unique_ptr<Window> window_{};
+	Window window_{};
 
 	// クライアント領域ヨコサイズ
 	int32_t clientWidth_ = 1280;
