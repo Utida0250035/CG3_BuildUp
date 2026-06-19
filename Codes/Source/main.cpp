@@ -185,11 +185,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		Vector2 cursorPos = playInput->GetCursorPos();
 
+		Vector2 cursorDelta = playInput->GetCursorDelta();
+
+		int32_t mouseWheel = playInput->GetMouseWheel();
+
 #ifdef USE_IMGUI
 
 		ImGui::Begin("debug");
 
 		ImGui::Text("timeCount: %f", timeCount);
+
+		ImGui::DragInt("mouseWheel", &mouseWheel);
+
+		ImGui::DragFloat2("cursorPos", &cursorPos.x);
+
+		ImGui::DragFloat2("cursorDelta", &cursorDelta.x);
 
 		ImGui::SmallButton("seCat");
 

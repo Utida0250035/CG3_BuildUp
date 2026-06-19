@@ -95,9 +95,15 @@ public:
 	bool IsKeyTrigger(const Key vKey) const { return keys_[static_cast<uint8_t>(vKey)] && !preKeys_[static_cast<uint8_t>(vKey)]; }
 	bool IsKeyRelease(const Key vKey) const { return !keys_[static_cast<uint8_t>(vKey)] && preKeys_[static_cast<uint8_t>(vKey)]; }
 
+	bool IsMousePress(const Mouse vMouse) const { return mouseButtons_[static_cast<uint8_t>(vMouse)]; }
+	bool IsMouseTrigger(const Mouse vMouse) const { return mouseButtons_[static_cast<uint8_t>(vMouse)] && !preMouseButtons_[static_cast<uint8_t>(vMouse)]; }
+	bool IsMouseRelease(const Mouse vMouse) const { return !mouseButtons_[static_cast<uint8_t>(vMouse)] && preMouseButtons_[static_cast<uint8_t>(vMouse)]; }
+
 	/* ゲッター */
 
 	Vector2 GetCursorPos() const { return cursorPos_; }
+	Vector2 GetCursorDelta() const { return cursorDelta_; }
+	int32_t GetMouseWheel() const { return mouseWheel_; }
 
 	/* セッター */
 
