@@ -34,6 +34,9 @@
     <ClCompile Include="Codes\Source\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\PlayInput.cpp" />
     <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="Codes\Source\ShaderCompiler.cpp" />
+    <ClCompile Include="Codes\Source\RootSignature.cpp" />
+    <ClCompile Include="Codes\Source\PipelineState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -67,6 +70,9 @@
     <ClInclude Include="Codes\Include\DirectInput.h" />
     <ClInclude Include="Codes\Include\PlayInput.h" />
     <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h" />
+    <ClInclude Include="Codes\Include\ShaderCompiler.h" />
+    <ClInclude Include="Codes\Include\RootSignature.h" />
+    <ClInclude Include="Codes\Include\PipelineState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />

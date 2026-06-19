@@ -165,317 +165,6 @@ void AtrumEngine::ErrorSuppressionDebug() {
 
 }
 
-void AtrumEngine::InitDXC() {
-
-	assert(!isInitialized_ && "InitDXC() is initializeHelper");
-
-	//dxcCompilerを初期化
-	hr_ = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
-	assert(SUCCEEDED(hr_));
-	hr_ = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
-	assert(SUCCEEDED(hr_));
-
-	// includeに対応するための設定
-	hr_ = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
-	assert(SUCCEEDED(hr_));
-
-	LogFile::GetInstance()->Log("Initialized DXC");
-
-}
-
-IDxcBlob* AtrumEngine::CompileShader(
-	const std::wstring& filePath,
-	const wchar_t* profile
-) {
-
-	assert(!isInitialized_ && "CompileShader() is initializeHelper");
-
-	// これからシェーダーをコンパイルする旨をログ出力
-	LogFile::GetInstance()->Log(WStringToString(std::format(L"Begin CompileShader, path:{}, profile:{}", filePath, profile)));
-
-	/*
-	hlslファイルを読む
-	*/
-	IDxcBlobEncoding* shaderSource = nullptr;
-	hr_ = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSource);
-
-	// 読めなかったら止める
-	assert(SUCCEEDED(hr_));
-
-	// 読み込んだファイルの内容を設定する
-	DxcBuffer shaderSourceBuffer{};
-	shaderSourceBuffer.Ptr = shaderSource->GetBufferPointer();
-	shaderSourceBuffer.Size = shaderSource->GetBufferSize();
-	// UTF8の文字コードであることを通知
-	shaderSourceBuffer.Encoding = DXC_CP_UTF8;
-
-
-	/*
-	コンパイルする
-	*/
-	LPCWSTR arguments[] = {
-
-		// コンパイル対象のhlslファイル名
-		filePath.c_str(),
-
-		// エントリーポイントの指定
-		L"-E", L"main",
-
-		// ShaderProfileの設定
-		L"-T", profile,
-
-		// デバッグ用の情報を埋め込む
-		L"-Zi", L"-Qembed_debug",
-
-		// 最適化を外しておく
-		L"-Od",
-
-		// メモリレイアウトは行優先
-		L"-Zpr"
-
-	};
-
-	// 実際にShaderをコンパイルする
-	IDxcResult* shaderResult = nullptr;
-	hr_ = dxcCompiler_->Compile(
-		// 読み込んだファイル
-		&shaderSourceBuffer,
-		// コンパイル設定
-		arguments,
-		// コンパイル設定の数
-		_countof(arguments),
-		// includeが含まれた諸々
-		includeHandler_.Get(),
-		// コンパイル結果
-		IID_PPV_ARGS(&shaderResult)
-	);
-
-	// コンパイルエラーではないがDXCが起動できない等の致命的な情報を感知
-	assert(SUCCEEDED(hr_));
-
-	/*
-	警告・エラーが出たらログ出力して止める
-	*/
-	IDxcBlobUtf8* shaderError = nullptr;
-	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
-
-	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-		// 警告・エラーがある場合はログ出力して止める
-
-		LogFile::GetInstance()->Log(shaderError->GetStringPointer());
-
-		shaderError->Release();
-
-		assert(false);
-
-	}
-
-	/*
-	警告・エラーが無ければコンパイル結果を取得して返す
-	*/
-
-	// コンパイル結果から実行用のバイナリ部分を取得
-	IDxcBlob* shaderBlob = nullptr;
-	hr_ = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
-	assert(SUCCEEDED(hr_));
-
-	// 成功した旨のログ出力
-	LogFile::GetInstance()->Log(WStringToString(std::format(L"Compile Succeeded, path:{}, profile:{}", filePath, profile)));
-
-	// もう使わないリソースを解放
-	shaderSource->Release();
-	shaderResult->Release();
-
-	LogFile::GetInstance()->Log("shader Compiled");
-
-	// 実行用のバイナリを返却
-	return shaderBlob;
-
-}
-
-void AtrumEngine::MakeRootSignature() {
-
-	assert(!isInitialized_ && "MakeRootSignature() is initializeHelper");
-
-	// RootSignature作成
-	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
-	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-	// RootParameter作成 [0]:PixelShaderのMaterial [1]:VertexShaderのTransform
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
-
-	// CBVを使う
-	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	// PixelShaderで使う
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	// レジスタ番号0にバインド
-	rootParameters[0].Descriptor.ShaderRegister = 0;
-
-	// CBVを使う
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	// VertexShaderで使う
-	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	// レジスタ番号0を使う
-	rootParameters[1].Descriptor.ShaderRegister = 0;
-
-	// CBVを使う
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	// PixelShaderで使う
-	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	// レジスタ番号1を使う
-	rootParameters[3].Descriptor.ShaderRegister = 1;
-
-
-	// ルートパラメータ配列へのポインタ
-	descriptionRootSignature.pParameters = rootParameters;
-	// 配列の長さ
-	descriptionRootSignature.NumParameters = _countof(rootParameters);
-
-
-	// DescriptorRange
-	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
-	// 0から始まる
-	descriptorRange[0].BaseShaderRegister = 0;
-	// 数は1つ
-	descriptorRange[0].NumDescriptors = 1;
-	// SRVを使う
-	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	// Offsetを自動計算
-	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	// DescriptorTableを使う
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	// PixelShaderで使う
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	// Tableの中身の配列を指定
-	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
-	// Tableで利用する数
-	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
-
-
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	// バイリニアフィルタ
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	// 0~1の範囲外をリピート
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	// 比較しない
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	// ありったけのMipMapを使う
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
-	// レジスタ番号0を使う
-	staticSamplers[0].ShaderRegister = 0;
-	// PixelShaderで使う
-	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	descriptionRootSignature.pStaticSamplers = staticSamplers;
-	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
-
-	// シリアライズしてバイナリにする
-	hr_ = D3D12SerializeRootSignature(&descriptionRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob_, &errorBlob_);
-
-	if (FAILED(hr_)) {
-
-
-		LogFile::GetInstance()->Log(reinterpret_cast<char*>(errorBlob_->GetBufferPointer()));
-
-		assert(false);
-
-	}
-
-	// バイナリを基に生成
-	hr_ = renderDevice_->GetDevice()->CreateRootSignature(0, signatureBlob_->GetBufferPointer(), signatureBlob_->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
-	assert(SUCCEEDED(hr_));
-
-	LogFile::GetInstance()->Log("Created RootSignature");
-
-}
-
-void AtrumEngine::SetUpInputLayout() {
-
-	assert(!isInitialized_ && "SetUpInputLayout() is initializeHelper");
-
-	inputElementDescriptions_[0].SemanticName = "POSITION";
-	inputElementDescriptions_[0].SemanticIndex = 0;
-	inputElementDescriptions_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	inputElementDescriptions_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-
-	inputElementDescriptions_[1].SemanticName = "TEXCOORD";
-	inputElementDescriptions_[1].SemanticIndex = 0;
-	inputElementDescriptions_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescriptions_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-
-	inputElementDescriptions_[2].SemanticName = "NORMAL";
-	inputElementDescriptions_[2].SemanticIndex = 0;
-	inputElementDescriptions_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescriptions_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
-
-	inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
-	inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
-
-	LogFile::GetInstance()->Log("Finished SetUp InputLayout");
-
-}
-
-void AtrumEngine::SetUpBlendState() {
-
-	assert(!isInitialized_ && "SetUpBlendState() is initializeHelper");
-
-	// BlendStateの設定
-
-	// 全ての色要素を書き込む
-	blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-}
-
-void AtrumEngine::SetUpRasterizerState() {
-
-	assert(!isInitialized_ && "SetUpRasterizerState() is initializeHelper");
-
-	// RasterizerStateの設定
-
-	// 裏面(時計回り)を表示しない
-	rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
-
-	// 三角形の中を塗りつぶす
-	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
-
-	LogFile::GetInstance()->Log("Finished SetUp RasterizerState");
-
-}
-
-void AtrumEngine::SetUpDepthStencilState() {
-
-	assert(!isInitialized_ && "SetUpDepthStencilState() is initializeHelper");
-
-	// Depthの機能を有効化する
-	depthStencilDesc_.DepthEnable = true;
-
-	// 書き込みする
-	depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-
-	// 比較関数をLessEqualとする(近ければ描画される)
-	depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-
-}
-
-void AtrumEngine::PrepareShader() {
-
-	assert(!isInitialized_ && "PrepareShader() is initializeHelper");
-
-	// Shaderをコンパイルする
-
-	vertexShaderBlob_ = this->CompileShader(L"Object3d.VS.hlsl", L"vs_6_0");
-	assert(vertexShaderBlob_ != nullptr);
-
-	pixelShaderBlob_ = CompileShader(L"Object3d.PS.hlsl", L"ps_6_0");
-	assert(pixelShaderBlob_ != nullptr);
-
-	LogFile::GetInstance()->Log("Shader Prepared");
-
-}
-
 ComPtr<ID3D12Resource> AtrumEngine::CreateBufferResource(size_t sizeInBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES resourceState) {
 
 	// リソース用のヒープの設定
@@ -549,52 +238,6 @@ void AtrumEngine::CreateTransformationResource() {
 	transformationResource_->Map(0, nullptr, reinterpret_cast<void**>(&transformationData_));
 
 	LogFile::GetInstance()->Log("Created WvpResource");
-
-}
-
-
-void AtrumEngine::CreatePSO() {
-
-	assert(!isInitialized_ && "CreatePSO() is initializeHelper");
-
-	// ルートシグネチャを設定
-	graphicsPipelineStateDesc_.pRootSignature = rootSignature_.Get();
-
-	// InputLayout
-	graphicsPipelineStateDesc_.InputLayout = inputLayoutDesc_;
-
-	// VertexShader
-	graphicsPipelineStateDesc_.VS = { vertexShaderBlob_->GetBufferPointer(), vertexShaderBlob_->GetBufferSize() };
-
-	// PixelShader
-	graphicsPipelineStateDesc_.PS = { pixelShaderBlob_->GetBufferPointer(), pixelShaderBlob_->GetBufferSize() };
-
-	// Blendの設定
-	graphicsPipelineStateDesc_.BlendState = blendDesc_;
-
-	// Rasterizerの設定
-	graphicsPipelineStateDesc_.RasterizerState = rasterizerDesc_;
-
-	// DepthStencilの設定
-	graphicsPipelineStateDesc_.DepthStencilState = depthStencilDesc_;
-	graphicsPipelineStateDesc_.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
-	// 書き込むRTVの情報
-	graphicsPipelineStateDesc_.NumRenderTargets = 1;
-	graphicsPipelineStateDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-
-	// 利用するトポロジ(形状)のタイプ 三角形
-	graphicsPipelineStateDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-	// どのように画面に色を打ち込むかの設定
-	graphicsPipelineStateDesc_.SampleDesc.Count = 1;
-	graphicsPipelineStateDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-	// 実際に生成
-	hr_ = renderDevice_->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc_, IID_PPV_ARGS(&graphicsPipelineState_));
-	assert(SUCCEEDED(hr_));
-
-	LogFile::GetInstance()->Log("Created PSO");
 
 }
 
@@ -947,26 +590,20 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	fenceManager_ = std::make_unique<Fence>();
 	fenceManager_->Initialize(renderDevice_->GetDevice(), SwapChain::kBackBufferCount);
 
-	// DXCの初期化
-	this->InitDXC();
-
 	// ルートシグネチャの作成
-	this->MakeRootSignature();
+	rootSignature_ = std::make_unique<RootSignature>();
+	rootSignature_->Initialize(renderDevice_->GetDevice());
 
-	// InputLayoutの設定
-	this->SetUpInputLayout();
+	// シェーダーコンパイラの初期化
+	shaderCompiler_ = std::make_unique<ShaderCompiler>();
+	shaderCompiler_->Initialize();
 
-	// BlendStateの設定
-	this->SetUpBlendState();
+	// 必要なシェーダーのコンパイル
+	shaderCompiler_->CompileShaders();
 
-	// RasterizerStateの設定
-	this->SetUpRasterizerState();
-
-	// DepthStencilStateの設定
-	this->SetUpDepthStencilState();
-
-	// シェーダーの用意
-	this->PrepareShader();
+	// PSOの生成
+	graphicsPipelineState_ = std::make_unique<PipelineState>();
+	graphicsPipelineState_->Initialize(rootSignature_->GetRootSignature(), renderDevice_->GetDevice(), shaderCompiler_->GetVertexShaderBlob(), shaderCompiler_->GetPixelShaderBlob());
 
 	// ビューポートの設定
 	this->SetUpViewport();
@@ -979,9 +616,6 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// TransformationResourceの生成
 	this->CreateTransformationResource();
-
-	// PSOの生成
-	this->CreatePSO();
 
 	// VertexResourceの生成
 	this->CreateVertexResource();
@@ -1268,10 +902,10 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->RSSetScissorRects(1, &scissorRect_);
 
 	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
-	commandContextDirect_->GetCommandList()->SetGraphicsRootSignature(rootSignature_.Get());
+	commandContextDirect_->GetCommandList()->SetGraphicsRootSignature(rootSignature_->GetRootSignature());
 
 	// PSOを設定
-	commandContextDirect_->GetCommandList()->SetPipelineState(graphicsPipelineState_.Get());
+	commandContextDirect_->GetCommandList()->SetPipelineState(graphicsPipelineState_->GetPSO());
 
 	// VBVを設定
 	commandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, &vertexBufferView_);

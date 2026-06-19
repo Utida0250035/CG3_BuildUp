@@ -1,47 +1,42 @@
 #pragma once
-#include "DeltaTime.h"
 #include "CommandContext.h"
-#include "RenderDevice.h"
-#include "SwapChain.h"
+#include "DeltaTime.h"
 #include "DescriptorAllocator.h"
 #include "Fence.h"
-#include "StaticCast.h"
-#include <cstdint>
-#include <string>
-#include <Windows.h>
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-
-#include <dxcapi.h>
-#pragma comment(lib, "dxcompiler.lib")
-#include "Vector4.h"
-
+#include "Log.h"
 #include "Matrix3D.h"
+#include "PipelineState.h"
+#include "RenderDevice.h"
+#include "RootSignature.h"
+#include "ShaderCompiler.h"
+#include "StaticCast.h"
+#include "SwapChain.h"
+#include "Vector2.h"
 #include "Vector3.h"
+#include "Vector4.h"
+#include <array>
+#include <cstdint>
+#include <DirectXTex/DirectXTex.h>
+#include <memory>
+#include <optional>
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <Windows.h>
+#include <wrl/client.h>
+
+#include <d3d12.h>
+#pragma comment(lib, "d3d12.lib")
+#include <dxgi1_6.h>
+#pragma comment(lib, "dxgi.lib")
 
 #ifdef USE_IMGUI
 
 #include "ImGui.h"
 
 #endif
-
-#include <DirectXTex/DirectXTex.h>
-
-#include "Vector2.h"
-
-#include <wrl/client.h>
-
-#include <vector>
-#include <array>
-
-#include <memory>
-#include <unordered_map>
-#include <optional>
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <Log.h>
 
 namespace fs = std::filesystem;
 
@@ -183,67 +178,20 @@ private:
 	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
 
-	/* DirectXShaderCompiler 補助 / コンパイラ本体 */
+	/* DirectXShaderCompiler */
 
-	// DXC補助
-	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
-
-	// DXCコンパイラ
-	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
-
-	// インクルードハンドラー
-	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
+	std::unique_ptr<ShaderCompiler> shaderCompiler_ = nullptr;
 
 
 	/* RootSignature */
 
-	// RootSignature
-	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-
-	// RootSignatureの生成結果
-	ComPtr<ID3DBlob> signatureBlob_ = nullptr;
-
-	// RootSignatureのエラー結果
-	ComPtr<ID3DBlob> errorBlob_ = nullptr;
-
-
-	/* InputLayout */
-
-	// InputLayoutの設定
-	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[3]{};
-
-	// inputLayout
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
-
-
-	/* 描画State */
-
-	// BlendState
-	D3D12_BLEND_DESC blendDesc_{};
-
-	// RasterizerState
-	D3D12_RASTERIZER_DESC rasterizerDesc_{};
-
-	// DepthStencilState
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
-
-
-	/* VertexShader / PixelShader コンパイル結果 */
-
-	// vertexShaderのコンパイル結果
-	ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
-
-	// pixelShaderのコンパイル結果
-	ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
+	std::unique_ptr<RootSignature> rootSignature_ = nullptr;
 
 
 	/* PSO */
 
-	// PSOの設定
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc_{};
-
-	// PSO
-	ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
+	// PipelineStateObject
+	std::unique_ptr<PipelineState> graphicsPipelineState_ = nullptr;
 
 
 	/* Vertex */
@@ -620,11 +568,6 @@ private:
 	void ErrorSuppressionDebug();
 
 	/// <summary>
-	/// 初期化処理 DXCの初期化 
-	/// </summary>
-	void InitDXC();
-
-	/// <summary>
 	/// 初期化処理 Viewport の設定
 	/// </summary>
 	void SetUpViewport();
@@ -633,47 +576,6 @@ private:
 	/// 初期化処理 シザー矩形の設定
 	/// </summary>
 	void SetUpScissorRect();
-
-	/// <summary>
-	/// 初期化処理 InputLayoutの設定
-	/// </summary>
-	void SetUpInputLayout();
-
-	/// <summary>
-	/// 初期化処理 BlendStateの設定
-	/// </summary>
-	void SetUpBlendState();
-
-	/// <summary>
-	/// 初期化処理 RasterizerStateの設定
-	/// </summary>
-	void SetUpRasterizerState();
-
-	/// <summary>
-	/// 初期化処理 DepthStencilStateの設定
-	/// </summary>
-	void SetUpDepthStencilState();
-
-	/// <summary>
-	/// 初期化処理 ルートシグネチャの作成
-	/// </summary>
-	void MakeRootSignature();
-
-	/// <summary>
-	/// 初期化処理 Shaderのコンパイル
-	/// </summary>
-	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
-	/// <param name="profile"> コンパイルに使用するプロファイル </param>
-	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
-	IDxcBlob* CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile
-	);
-
-	/// <summary>
-	/// 初期化処理 Shaderの準備
-	/// </summary>
-	void PrepareShader();
 
 	/// <summary>
 	/// BufferResource作成
@@ -708,11 +610,6 @@ private:
 	/// 初期化処理 WvpResource(TransformationMatrix用のリソース)の作成
 	/// </summary>
 	void CreateTransformationResource();
-
-	/// <summary>
-	/// 初期化処理 PSOの生成
-	/// </summary>
-	void CreatePSO();
 
 	/// <summary>
 	/// 初期化処理 VertexResourceの生成
