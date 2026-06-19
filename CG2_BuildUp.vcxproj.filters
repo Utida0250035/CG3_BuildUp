@@ -23,18 +23,17 @@
     <ClCompile Include="Codes\Source\Vector2.cpp" />
     <ClCompile Include="Codes\Source\Vector3.cpp" />
     <ClCompile Include="Codes\Source\Vector4.cpp" />
-    <ClCompile Include="Codes\Source\WindowProcedure.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp" />
     <ClCompile Include="Externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="Externals\imgui\imgui_draw.cpp" />
     <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Codes\Source\Audio.cpp" />
     <ClCompile Include="Codes\Source\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\DirectInput.cpp" />
-    <ClCompile Include="Codes\Source\RawInput.cpp" />
+    <ClCompile Include="Codes\Source\PlayInput.cpp" />
+    <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -57,21 +56,21 @@
     <ClInclude Include="Codes\Include\Vector2.h" />
     <ClInclude Include="Codes\Include\Vector3.h" />
     <ClInclude Include="Codes\Include\Vector4.h" />
-    <ClInclude Include="Codes\Include\WindowProcedure.h" />
     <ClInclude Include="Externals\imgui\imgui.h" />
     <ClInclude Include="Externals\imgui\imgui_internal.h" />
     <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="Externals\imgui\imstb_textedit.h" />
     <ClInclude Include="Externals\imgui\imstb_truetype.h" />
     <ClInclude Include="Externals\imgui\imgui_impl_dx12.h" />
-    <ClInclude Include="Externals\imgui\imgui_impl_win32.h" />
     <ClInclude Include="Codes\Include\Audio.h" />
     <ClInclude Include="Codes\Include\AudioDecoder.h" />
     <ClInclude Include="Codes\Include\DirectInput.h" />
-    <ClInclude Include="Codes\Include\RawInput.h" />
+    <ClInclude Include="Codes\Include\PlayInput.h" />
+    <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Externals\imgui\LICENSE.txt" />
