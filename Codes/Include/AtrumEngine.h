@@ -274,6 +274,10 @@ private:
 	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
 
 
+	/* ビュー行列 */
+
+	Matrix4x4 viewMatrix_{};
+
 	/* プレイヤー入力 */
 
 	// DirectInput
@@ -548,7 +552,7 @@ public:
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
 	/// <param name="directionalLightData"> 平行光源データ(option) </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
 
 	/// <summary>
 	/// 球の描画
@@ -560,7 +564,7 @@ public:
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 球の半径 </param>
 	/// <param name="directionalLightData"> 平行光源データ(option) </param>
-	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
+	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
 
 	/// <summary>
 	/// 正四面体の描画
@@ -572,7 +576,7 @@ public:
 	/// <param name="cameraTransform"></param>
 	/// <param name="centerToVertices"></param>
 	/// <param name="directionalLightData"></param>
-	void DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const Transform& cameraTransform, const float centerToVertices, const bool isLighting = false);
+	//void DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const float centerToVertices, const bool isLighting = false);
 
 	/// <summary>
 	/// Spriteの準備
@@ -636,12 +640,13 @@ public:
 	/// <param name="transform"> 3Dモデルの座標変換情報 </param>
 	/// <param name="cameraTransform"> カメラの座標変換情報 </param>
 	/// <param name="isLighting"> ライティングフラグ </param>
-	void DrawModel(AssetModel* model, const Transform& transform, const Transform& cameraTransform, const bool isLighting);
+	void DrawModel(AssetModel* model, const Transform& transform, const bool isLighting);
 
 	/* セッター */
-	
+
 	void SetDirectionalLightData(const DirectionalLightData& data) { directionalLightBuffer_->SetData(data); }
 
+	void SetViewMatrix(const Matrix4x4& mat) { viewMatrix_ = mat; }
 
 };
 
