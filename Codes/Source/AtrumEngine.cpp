@@ -1301,15 +1301,9 @@ uint32_t AtrumEngine::GetTexture(const std::string& filePath) {
 
 }
 
-void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting) {
+void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
-
-	// カメラのワールド行列
-	Matrix4x4 cameraWorldMatrix = this->CreateWorldMatrix(cameraTransform);
-
-	// ビュー行列
-	Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
 
 	// 三角形のTransform
 	Matrix4x4 triangleWorldMatrix = this->CreateWorldMatrix(triangleTransform);
@@ -1317,7 +1311,7 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 
 	TransformationData transformationData{};
 
-	transformationData.wvp = triangleWorldMatrix * viewMatrix * kPerspectiveFovMatrix;
+	transformationData.wvp = triangleWorldMatrix * viewMatrix_ * kPerspectiveFovMatrix;
 	transformationData.world = triangleWorldMatrix;
 
 	transformationBuffer_->SetData(transformationData, constantBufferCount_);
@@ -1358,22 +1352,16 @@ void AtrumEngine::DrawTriangle(const uint32_t& textureIndex, const Vector4& text
 
 }
 
-void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const bool isLighting) {
+void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
-
-	// カメラのワールド行列
-	Matrix4x4 cameraWorldMatrix = this->CreateWorldMatrix(cameraTransform);
-
-	// ビュー行列
-	Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
 
 	// 球のTransform
 	Matrix4x4 sphereWorldMatrix = this->CreateWorldMatrix(sphereTransform);
 
 	TransformationData transformationData{};
 
-	transformationData.wvp = sphereWorldMatrix * viewMatrix * kPerspectiveFovMatrix;
+	transformationData.wvp = sphereWorldMatrix * viewMatrix_ * kPerspectiveFovMatrix;
 	transformationData.world = sphereWorldMatrix;
 
 	transformationBuffer_->SetData(transformationData, constantBufferCount_);
@@ -1466,97 +1454,97 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 }
 
-void AtrumEngine::DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const Transform& cameraTransform, const float centerToVerticesDistance, const bool isLighting) {
-
-	assert(isInitialized_ && "AtrumEngine is not initialized");
-
-	Vector3 centerToTop = Vector3{ 0.0f, centerToVerticesDistance, 0.0f };
-
-	Vector3 vec3Vertices[4]{};
-
-	// 109.47[deg]
-	const float axisRotate = 109.47f / 180.0f * std::numbers::pi_v<float>;
-
-	vec3Vertices[0] = centerToTop;
-	vec3Vertices[1] = VectorTransform(centerToTop, MakeXRotateMatrix(axisRotate));
-	vec3Vertices[2] = VectorTransform(vec3Vertices[1], MakeYRotateMatrix(axisRotate));
-	vec3Vertices[3] = VectorTransform(vec3Vertices[2], MakeYRotateMatrix(axisRotate));
-
-	Vector4 vertices[4]{};
-
-	for (size_t i = 0; i < 4; ++i) {
-
-		vertices[i].x = vec3Vertices[i].x;
-		vertices[i].y = vec3Vertices[i].y;
-		vertices[i].z = vec3Vertices[i].z;
-		vertices[i].w = 1.0f;
-
-	}
-
-	VertexData totalVertices[12] = {
-
-		// 面1(1, 0, 2) の面
-		{ vertices[1], Vector2(0.0f, 1.0f) }, // 左下
-		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
-		{ vertices[2], Vector2(1.0f, 1.0f) }, // 右下
-
-		// 面2(2, 0, 3) の面
-		{ vertices[2], Vector2(0.0f, 1.0f) }, // 左下
-		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
-		{ vertices[3], Vector2(1.0f, 1.0f) }, // 右下
-
-		// 面3(3, 0, 1) の面
-		{ vertices[3], Vector2(0.0f, 1.0f) }, // 左下
-		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
-		{ vertices[1], Vector2(1.0f, 1.0f) }, // 右下
-
-		// 面4(3, 2, 1) の面（底面
-		{ vertices[3], Vector2(0.0f, 1.0f) }, // 左下
-		{ vertices[2], Vector2(0.5f, 0.0f) }, // 上
-		{ vertices[1], Vector2(1.0f, 1.0f) }  // 右下
-
-	};
-
-	Vector3 vec3TotalVertices[12] = {
-
-		// 面1：(1, 0, 2) の面
-		vec3Vertices[1], // 左下
-		vec3Vertices[0], // 上
-		vec3Vertices[2], // 右下
-
-		// 面2：(2, 0, 3) の面
-		vec3Vertices[2], // 左下
-		vec3Vertices[0], // 上
-		vec3Vertices[3], // 右下
-
-		// 面3：(3, 0, 1) の面
-		vec3Vertices[3], // 左下
-		vec3Vertices[0], // 上
-		vec3Vertices[1], // 右下
-
-		// 面4：(3, 2, 1) の面（底面
-		vec3Vertices[3], // 左下
-		vec3Vertices[2], // 上
-		vec3Vertices[1], // 右下
-
-	};
-
-	for (size_t i = 0; i < 4; i++) {
-
-		Vector3 pointsCenter = (vec3TotalVertices[i * 3] + vec3TotalVertices[i * 3 + 1] + vec3TotalVertices[i * 3 + 2]) / 3.0f;
-		Vector3 normal = VectorNormalize(pointsCenter);
-
-		for (size_t j = 0; j < 3; ++j) {
-
-			totalVertices[i * 3 + j].normal = normal;
-
-		}
-
-		DrawTriangle(textureIndex, textureColor, uvTransform, tetrahedronTransform, cameraTransform, std::array<VertexData, 3>({ totalVertices[i * 3], totalVertices[i * 3 + 1], totalVertices[i * 3 + 2] }), isLighting);
-
-	}
-
-}
+//void AtrumEngine::DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform const float centerToVerticesDistance, const bool isLighting) {
+//
+//	assert(isInitialized_ && "AtrumEngine is not initialized");
+//
+//	Vector3 centerToTop = Vector3{ 0.0f, centerToVerticesDistance, 0.0f };
+//
+//	Vector3 vec3Vertices[4]{};
+//
+//	// 109.47[deg]
+//	const float axisRotate = 109.47f / 180.0f * std::numbers::pi_v<float>;
+//
+//	vec3Vertices[0] = centerToTop;
+//	vec3Vertices[1] = VectorTransform(centerToTop, MakeXRotateMatrix(axisRotate));
+//	vec3Vertices[2] = VectorTransform(vec3Vertices[1], MakeYRotateMatrix(axisRotate));
+//	vec3Vertices[3] = VectorTransform(vec3Vertices[2], MakeYRotateMatrix(axisRotate));
+//
+//	Vector4 vertices[4]{};
+//
+//	for (size_t i = 0; i < 4; ++i) {
+//
+//		vertices[i].x = vec3Vertices[i].x;
+//		vertices[i].y = vec3Vertices[i].y;
+//		vertices[i].z = vec3Vertices[i].z;
+//		vertices[i].w = 1.0f;
+//
+//	}
+//
+//	VertexData totalVertices[12] = {
+//
+//		// 面1(1, 0, 2) の面
+//		{ vertices[1], Vector2(0.0f, 1.0f) }, // 左下
+//		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
+//		{ vertices[2], Vector2(1.0f, 1.0f) }, // 右下
+//
+//		// 面2(2, 0, 3) の面
+//		{ vertices[2], Vector2(0.0f, 1.0f) }, // 左下
+//		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
+//		{ vertices[3], Vector2(1.0f, 1.0f) }, // 右下
+//
+//		// 面3(3, 0, 1) の面
+//		{ vertices[3], Vector2(0.0f, 1.0f) }, // 左下
+//		{ vertices[0], Vector2(0.5f, 0.0f) }, // 上
+//		{ vertices[1], Vector2(1.0f, 1.0f) }, // 右下
+//
+//		// 面4(3, 2, 1) の面（底面
+//		{ vertices[3], Vector2(0.0f, 1.0f) }, // 左下
+//		{ vertices[2], Vector2(0.5f, 0.0f) }, // 上
+//		{ vertices[1], Vector2(1.0f, 1.0f) }  // 右下
+//
+//	};
+//
+//	Vector3 vec3TotalVertices[12] = {
+//
+//		// 面1：(1, 0, 2) の面
+//		vec3Vertices[1], // 左下
+//		vec3Vertices[0], // 上
+//		vec3Vertices[2], // 右下
+//
+//		// 面2：(2, 0, 3) の面
+//		vec3Vertices[2], // 左下
+//		vec3Vertices[0], // 上
+//		vec3Vertices[3], // 右下
+//
+//		// 面3：(3, 0, 1) の面
+//		vec3Vertices[3], // 左下
+//		vec3Vertices[0], // 上
+//		vec3Vertices[1], // 右下
+//
+//		// 面4：(3, 2, 1) の面（底面
+//		vec3Vertices[3], // 左下
+//		vec3Vertices[2], // 上
+//		vec3Vertices[1], // 右下
+//
+//	};
+//
+//	for (size_t i = 0; i < 4; i++) {
+//
+//		Vector3 pointsCenter = (vec3TotalVertices[i * 3] + vec3TotalVertices[i * 3 + 1] + vec3TotalVertices[i * 3 + 2]) / 3.0f;
+//		Vector3 normal = VectorNormalize(pointsCenter);
+//
+//		for (size_t j = 0; j < 3; ++j) {
+//
+//			totalVertices[i * 3 + j].normal = normal;
+//
+//		}
+//
+//		DrawTriangle(textureIndex, textureColor, uvTransform, tetrahedronTransform, cameraTransform, std::array<VertexData, 3>({ totalVertices[i * 3], totalVertices[i * 3 + 1], totalVertices[i * 3 + 2] }), isLighting);
+//
+//	}
+//
+//}
 
 void AtrumEngine::PrepareSprite() {
 
@@ -1580,15 +1568,12 @@ void AtrumEngine::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& te
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
-	// ビュー行列
-	Matrix4x4 viewMatrix = MakeIdentityMatrix4x4();
-
 	// 三角形のTransform
 	Matrix4x4 worldMatrix = this->CreateWorldMatrix(rectTransform);
 
 	TransformationData spriteTransformData{};
 
-	spriteTransformData.wvp = worldMatrix * viewMatrix * kOrthographicMatrix;
+	spriteTransformData.wvp = worldMatrix * viewMatrix_ * kOrthographicMatrix;
 	spriteTransformData.world = worldMatrix;
 
 	spriteTransformationBuffer_->SetData(spriteTransformData, spriteConstantBufferCount_);
@@ -2213,7 +2198,7 @@ std::vector<std::shared_ptr<AssetMaterialData>> AtrumEngine::LoadMaterialTemplat
 		// 書き込み用アドレスの確保
 		assetMaterialData[i]->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterialData[i]->materialData));
 
-		assetMaterialData[i]->materialData->uvTransformMatrix = MakeIdentityMatrix4x4();
+		assetMaterialData[i]->materialData->uvTransformMatrix = MakeIdentity4x4();
 
 		assetMaterialData[i]->materialData->color = colors[i];
 
@@ -2300,9 +2285,9 @@ std::shared_ptr<AssetModel> AtrumEngine::GetModel(const std::string& directoryPa
 
 }
 
-void AtrumEngine::DrawModel(AssetModel* model, const Transform& transform, const Transform& cameraTransform, const bool isLighting) {
+void AtrumEngine::DrawModel(AssetModel* model, const Transform& transform, const bool isLighting) {
 
-	model->Draw(transform, cameraTransform, directionalLightBuffer_->GetGpuVirtualAddress(), commandContextDirect_->GetCommandList(), srvAllocator_.get(), kPerspectiveFovMatrix, isLighting);
+	model->Draw(transform, viewMatrix_, directionalLightBuffer_->GetGpuVirtualAddress(), commandContextDirect_->GetCommandList(), srvAllocator_.get(), kPerspectiveFovMatrix, isLighting);
 
 }
 

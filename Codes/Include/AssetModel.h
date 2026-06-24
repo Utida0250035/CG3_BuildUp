@@ -97,13 +97,7 @@ private:
 
 public:
 
-	void Draw(const Transform& transform, const Transform& cameraTransform, const D3D12_GPU_VIRTUAL_ADDRESS& directionalLightAddr, ID3D12GraphicsCommandList* commandList, DescriptorAllocator* srvAllocator, const Matrix4x4& perspectiveFovMatrix, const bool isLighting) {
-
-		// カメラのワールド行列
-		Matrix4x4 cameraWorldMatrix = MakeWorldMatrix(cameraTransform);
-
-		// ビュー行列
-		Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
+	void Draw(const Transform& transform, Matrix4x4 viewMatrix, const D3D12_GPU_VIRTUAL_ADDRESS& directionalLightAddr, ID3D12GraphicsCommandList* commandList, DescriptorAllocator* srvAllocator, const Matrix4x4& perspectiveFovMatrix, const bool isLighting) {
 
 		// 三角形のTransform
 		Matrix4x4 worldMatrix = MakeWorldMatrix(transform);

@@ -127,6 +127,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\CommandContext.cpp" />
     <ClCompile Include="Codes\Source\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
+    <ClCompile Include="Codes\Source\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\DeltaTime.cpp" />
     <ClCompile Include="Codes\Source\DescriptorAllocator.cpp" />
     <ClCompile Include="Codes\Source\Fence.cpp" />
@@ -175,11 +176,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Audio.h" />
     <ClInclude Include="Codes\Include\AudioDecoder.h" />
     <ClInclude Include="Codes\Include\Bezier.h" />
+    <ClInclude Include="Codes\Include\Camera.h" />
     <ClInclude Include="Codes\Include\Collision.h" />
     <ClInclude Include="Codes\Include\CommandContext.h" />
     <ClInclude Include="Codes\Include\ConstantBuffer.h" />
     <ClInclude Include="Codes\Include\ConvertString.h" />
     <ClInclude Include="Codes\Include\CreateBufferResource.h" />
+    <ClInclude Include="Codes\Include\DebugCamera.h" />
     <ClInclude Include="Codes\Include\DeltaTime.h" />
     <ClInclude Include="Codes\Include\DescriptorAllocator.h" />
     <ClInclude Include="Codes\Include\DirectionalLightData.h" />
@@ -198,6 +201,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Plane.h" />
     <ClInclude Include="Codes\Include\DirectInput.h" />
     <ClInclude Include="Codes\Include\PlayInput.h" />
+    <ClInclude Include="Codes\Include\Quaternion.h" />
     <ClInclude Include="Codes\Include\RenderDevice.h" />
     <ClInclude Include="Codes\Include\RootSignature.h" />
     <ClInclude Include="Codes\Include\ShaderCompiler.h" />

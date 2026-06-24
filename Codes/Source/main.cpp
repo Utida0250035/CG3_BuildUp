@@ -8,6 +8,7 @@
 #include "DirectInput.h"
 #include "PlayInput.h"
 #include "StaticCast.h"
+#include "DebugCamera.h"
 #include <memory>
 #include <numbers>
 
@@ -144,6 +145,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* 乱数初期化 */
 
 	srand(static_cast<unsigned int>(time(nullptr)));
+
+	/* デバッグカメラ */
+
+	std::unique_ptr<DebugCamera> debugCamera = std::make_unique<DebugCamera>();
+
+	debugCamera->Initialize();
+	debugCamera->CreateOrthographicMatrix(1280, 720);
 
 	/* ImGui */
 
@@ -565,6 +573,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		atrum->ImGuiRender();
 
+		debugCamera->Update();
+
 #endif
 
 		///
@@ -575,19 +585,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画ここから
 		/// 
 
+		atrum->SetViewMatrix(debugCamera->GetViewMatrix());
+
 		// 光源データの設定
 		atrum->SetDirectionalLightData(directionalLightData);
 
 		// 描画処理(前)
 		atrum->PreDraw();
 
-		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision, isLightingEnable);
-		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, isLightingEnable);
-		atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData, isLightingEnable);
+		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform,  sphereRadius, sphereSubdivision, isLightingEnable);
+		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform,  triangleVertexData, isLightingEnable);
+		atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform,  triangle2VertexData, isLightingEnable);
 
-		atrum->DrawModel(planeModel.get(), planeModelTransform, cameraTransform, isLightingEnable);
-		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, cameraTransform, isLightingEnable);
-		atrum->DrawModel(multiMtlModel.get(), multiMeshModelTransform, cameraTransform, isLightingEnable);
+		atrum->DrawModel(planeModel.get(), planeModelTransform,  isLightingEnable);
+		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform,  isLightingEnable);
+		atrum->DrawModel(multiMtlModel.get(), multiMeshModelTransform,  isLightingEnable);
 
 		// Sprite準備
 		atrum->PrepareSprite();

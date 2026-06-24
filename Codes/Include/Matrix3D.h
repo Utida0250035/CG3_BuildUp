@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Vector3.h"
 #include <cassert>
 
@@ -102,6 +103,54 @@ inline constexpr void operator*=(Matrix4x4& me, const Matrix4x4& other) {
 
 }
 
+inline constexpr Matrix4x4 operator*(const float scalar, const Matrix4x4& matrix) {
+
+	Matrix4x4 result{};
+
+	for (size_t i = 0; i < 4; ++i) {
+
+		for (size_t j = 0; j < 4; ++j) {
+
+			result.m[i][j] = matrix.m[i][j] * scalar;
+
+		}
+
+	}
+
+	return result;
+
+}
+
+inline constexpr Matrix4x4 operator*(const Matrix4x4& matrix, const float scalar) {
+
+	return scalar * matrix;
+
+}
+
+inline constexpr void operator*=(Matrix4x4& matrix, const float scalar) {
+
+	matrix = scalar * matrix;
+
+}
+
+inline constexpr Matrix4x4 Add(const Matrix4x4& me, const Matrix4x4& other) {
+
+	return me + other;
+
+}
+
+inline constexpr Matrix4x4 Subtract(const Matrix4x4& me, const Matrix4x4& other) {
+
+	return me - other;
+
+}
+
+inline constexpr Matrix4x4 Multiply(const Matrix4x4& me, const Matrix4x4& other) {
+
+	return me * other;
+
+}
+
 /// <summary>
 /// 3x3の行列式を求める補助関数
 /// </summary>
@@ -129,6 +178,8 @@ inline constexpr float Determinant3x3(
 
 Matrix4x4 MatrixInverse(const Matrix4x4& matrix);
 
+Matrix4x4 RTMatrixInverse(const Matrix4x4& roteteMatrix, const Matrix4x4& translateMatrix);
+
 inline constexpr Matrix4x4 MatrixTranspose(const Matrix4x4 matrix) {
 
 	Matrix4x4 result = {};
@@ -147,7 +198,7 @@ inline constexpr Matrix4x4 MatrixTranspose(const Matrix4x4 matrix) {
 
 }
 
-inline constexpr Matrix4x4 MakeIdentityMatrix4x4() {
+inline constexpr Matrix4x4 MakeIdentity4x4() {
 
 	return Matrix4x4(
 		{
@@ -204,13 +255,30 @@ inline constexpr Vector3 VectorTransform(const Vector3& vector, const Matrix4x4&
 
 }
 
+inline constexpr Vector3 ScreenTransform(const Vector3& vector, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) {
+
+	return VectorTransform(VectorTransform(vector, viewProjectionMatrix), viewportMatrix);
+
+}
+
 Matrix4x4 MakeXRotateMatrix(const float& angle);
 
 Matrix4x4 MakeYRotateMatrix(const float& angle);
 
 Matrix4x4 MakeZRotateMatrix(const float& angle);
 
-Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale, const Vector3& rotation);
+inline constexpr Matrix4x4 MakeRotateMatrix(const Vector3& rotate) {
+
+	return MakeXRotateMatrix(rotate.x) * MakeYRotateMatrix(rotate.y) * MakeZRotateMatrix(rotate.z);
+
+}
+
+Matrix4x4 MakeWorldMatrix(const Vector3& translation, const Vector3& scale = Vector3{ 1.0f, 1.0f, 1.0f }, const Vector3& rotation = Vector3{0.0f, 0.0f, 0.0f});
+
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+static constexpr int kMatrixPrintRowHeight = 20;
+static constexpr int kMatrixPrintColumnWidth = 60;
 
 // 透視投影行列
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
@@ -220,3 +288,5 @@ Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float botto
 
 // ビューポート変換行列
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
+
+Matrix4x4 MakeLookAtMatrix(const Vector3& observer, const Vector3& target, const Vector3& above);
