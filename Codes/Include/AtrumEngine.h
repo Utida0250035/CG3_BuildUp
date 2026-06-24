@@ -1,47 +1,52 @@
 #pragma once
-#include "DeltaTime.h"
+#include "AssetModel.h"
 #include "CommandContext.h"
-#include "RenderDevice.h"
-#include "SwapChain.h"
+#include "ConstantBuffer.h"
+#include "DeltaTime.h"
 #include "DescriptorAllocator.h"
+#include "DirectionalLightData.h"
 #include "Fence.h"
-#include "StaticCast.h"
-#include <cstdint>
-#include <string>
-#include <Windows.h>
-#include <d3d12.h>
-#include <dxgi1_6.h>
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-
-#include <dxcapi.h>
-#pragma comment(lib, "dxcompiler.lib")
-#include "Vector4.h"
-
+#include "IndexBuffer.h"
+#include "Log.h"
+#include "MaterialData.h"
 #include "Matrix3D.h"
+#include "PipelineState.h"
+#include "RenderDevice.h"
+#include "RootSignature.h"
+#include "ShaderCompiler.h"
+#include "StaticCast.h"
+#include "SwapChain.h"
+#include "Texture.h"
+#include "Transform.h"
+#include "TransformationData.h"
+#include "Vector2.h"
 #include "Vector3.h"
+#include "Vector4.h"
+#include "VertexBuffer.h"
+#include "VertexData.h"
+#include <array>
+#include <cstdint>
+#include <DirectXTex/DirectXTex.h>
+#include <memory>
+#include <optional>
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <Windows.h>
+#include <wrl/client.h>
+
+#include <d3d12.h>
+#pragma comment(lib, "d3d12.lib")
+#include <dxgi1_6.h>
+#pragma comment(lib, "dxgi.lib")
 
 #ifdef USE_IMGUI
 
 #include "ImGui.h"
 
 #endif
-
-#include <DirectXTex/DirectXTex.h>
-
-#include "Vector2.h"
-
-#include <wrl/client.h>
-
-#include <vector>
-#include <array>
-
-#include <memory>
-#include <unordered_map>
-#include <optional>
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <Log.h>
 
 namespace fs = std::filesystem;
 
@@ -54,51 +59,6 @@ private:
 
 	template<typename T>
 	using ComPtr = Microsoft::WRL::ComPtr<T>;
-
-public:
-
-	struct Transform {
-		Vector3 scale{ 1.0f, 1.0f, 1.0f };
-		Vector3 rotate{};
-		Vector3 translate{};
-	};
-
-	struct VertexData {
-		Vector4 position;
-		Vector2 texCoord;
-		Vector3 normal;
-	};
-
-	struct Texture {
-
-		ComPtr<ID3D12Resource> resource = nullptr;
-		D3D12_CPU_DESCRIPTOR_HANDLE srvHandleCPU{};
-		D3D12_GPU_DESCRIPTOR_HANDLE srvHandleGPU{};
-
-		// 使用するSRVディスクリプタの番号
-		uint32_t srvIndex = 1;
-	};
-
-	enum class LightModel : uint32_t {
-		Lambert,
-		HalfLambert
-	};
-
-	struct DirectionalLightData {
-		// 平行光源の色
-		Vector4 color;
-		// 平行光源の向き
-		Vector3 direction;
-		// 平行光源の輝度
-		float intensity;
-		// 光源の種類
-		LightModel lightModel;
-
-		// 16 + 12 + 4 + 4 = 36
-		// 残り220バイト分
-		float padding[55];
-
-	};
 
 private:
 
@@ -183,143 +143,45 @@ private:
 	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
 
-	/* DirectXShaderCompiler 補助 / コンパイラ本体 */
+	/* DirectXShaderCompiler */
 
-	// DXC補助
-	ComPtr<IDxcUtils> dxcUtils_ = nullptr;
-
-	// DXCコンパイラ
-	ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
-
-	// インクルードハンドラー
-	ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
+	std::unique_ptr<ShaderCompiler> shaderCompiler_ = nullptr;
 
 
 	/* RootSignature */
 
-	// RootSignature
-	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
-
-	// RootSignatureの生成結果
-	ComPtr<ID3DBlob> signatureBlob_ = nullptr;
-
-	// RootSignatureのエラー結果
-	ComPtr<ID3DBlob> errorBlob_ = nullptr;
-
-
-	/* InputLayout */
-
-	// InputLayoutの設定
-	D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[3]{};
-
-	// inputLayout
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
-
-
-	/* 描画State */
-
-	// BlendState
-	D3D12_BLEND_DESC blendDesc_{};
-
-	// RasterizerState
-	D3D12_RASTERIZER_DESC rasterizerDesc_{};
-
-	// DepthStencilState
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
-
-
-	/* VertexShader / PixelShader コンパイル結果 */
-
-	// vertexShaderのコンパイル結果
-	ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
-
-	// pixelShaderのコンパイル結果
-	ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
+	std::unique_ptr<RootSignature> rootSignature_ = nullptr;
 
 
 	/* PSO */
 
-	// PSOの設定
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc_{};
-
-	// PSO
-	ComPtr<ID3D12PipelineState> graphicsPipelineState_ = nullptr;
+	// PipelineStateObject
+	std::unique_ptr<PipelineState> graphicsPipelineState_ = nullptr;
 
 
 	/* Vertex */
 
-	// 頂点リソース
-	ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+	std::unique_ptr<VertexBuffer> vertexBuffer_ = nullptr;
 
-	// VertexBufferView
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
-
-	// 頂点データ
-	VertexData* vertexData_ = nullptr;
-
-	// 画面上に描画済みの頂点の数
-	uint32_t vertexDrewCount_ = 0;
-
-	// 画面上の三角形の最大描画数
-	inline static constexpr uint32_t kTriangleMaxDrawCount = 4096;
-
-	struct TransformationData {
-		Matrix4x4 wvp{};
-		Matrix4x4 world{};
-
-		// 4 * 16 + 4 * 16 = 128
-		// (256 - 128) / 4
-		// ConstantBuffer用の詰め物
-		float padding[32]{};
-	};
+	inline static constexpr uint32_t kMaxDrawCount = 4096;
 
 	/* 頂点インデックス */
 
-	// インデックスリソース
-	ComPtr<ID3D12Resource> indexResource_ = nullptr;
-
-	// IndexBufferView
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
-
-	// 頂点インデックスデータ
-	uint32_t* indexData_ = nullptr;
-
-	// 頂点インデックスカウント
-	uint32_t vertexIndexDrewCount_ = 0;
+	std::unique_ptr<IndexBuffer> indexBuffer_ = nullptr;
 
 
 	/* Material */
 
-	struct MaterialData {
-		Vector4 color{};
-		Matrix4x4 uvTransformMatrix{};
-		int32_t inLightingEnable = false;
-		// ConstantBuffer用の詰め物
-		float padding[43]{};
-	};
-
-	// MaterialResource
-	ComPtr<ID3D12Resource> materialResource_ = nullptr;
-
-	// MaterialData 色データRGBA
-	MaterialData* materialData_ = nullptr;
+	std::unique_ptr<MultiConstantBuffer<MaterialData>> materialBuffer_ = nullptr;
 
 
 	/* WVP */
 
-	// WvpResource
-	ComPtr<ID3D12Resource> transformationResource_ = nullptr;
-
-	// WvpData 描画座標データ
-	TransformationData* transformationData_ = nullptr;
+	std::unique_ptr<MultiConstantBuffer<TransformationData>> transformationBuffer_ = nullptr;
 
 	/* DirectionalLight(3D専用) */
 
-	// 平行光源Resource
-	ComPtr<ID3D12Resource> directionalLightResource_ = nullptr;
-
-	// 平行光源Data
-	DirectionalLightData* directionalLightData_ = nullptr;
+	std::unique_ptr<SingleConstantBuffer<DirectionalLightData>> directionalLightBuffer_ = nullptr;
 
 
 	/* constantBufferCount */
@@ -338,202 +200,29 @@ private:
 
 	/* Sprite用 Vertex */
 
-	// Sprite用のVertexResource
-	ComPtr<ID3D12Resource> spriteVertexResource_ = nullptr;
-
-	// Sprite用のVertexBufferView
-	D3D12_VERTEX_BUFFER_VIEW spriteVertexBufferView_{};
-
-	// Sprite用 頂点データ
-	VertexData* spriteVertexData_ = nullptr;
-
-	// Sprite用 総描画頂点数のカウント
-	uint32_t spriteVertexDrewCount_ = 0;
+	std::unique_ptr<VertexBuffer> spriteVertexBuffer_ = nullptr;
 
 
 	/* Sprite用 頂点インデックス */
 
-	// Sprite用 IndexResource
-	ComPtr<ID3D12Resource> spriteIndexResource_ = nullptr;
+	std::unique_ptr<IndexBuffer> spriteIndexBuffer_ = nullptr;
 
-	// Sprite用 IndesData
-	uint32_t* spriteIndexData_ = nullptr;
-
-	// Sprite用 IndexBufferView
-	D3D12_INDEX_BUFFER_VIEW spriteIndexBufferView_{};
-
-	// Sprite用 頂点インデックスのカウント
-	uint32_t spriteVertexIndexCount_ = 0;
-
-	inline static constexpr uint32_t kSpriteTriangleMaxDrawCount = 1024;
+	inline static constexpr uint32_t kSpriteMaxDrawCount = 1024;
 
 
 	/* Sprite用 Material */
 
 	// MaterialResource
-	ComPtr<ID3D12Resource> spriteMaterialResource_ = nullptr;
-
-	// MaterialData
-	MaterialData* spriteMaterialData_ = nullptr;
+	std::unique_ptr<MultiConstantBuffer<MaterialData>> spriteMaterialBuffer_ = nullptr;
 
 
 	/* Sprite用 Transform */
 
-	// Sprite用のTransformMatrix用のリソース
-	ComPtr<ID3D12Resource> spriteTransformationResource_ = nullptr;
-
-	// Sprite用 Transformデータ
-	TransformationData* spriteTransformData_ = nullptr;
+	std::unique_ptr<MultiConstantBuffer<TransformationData>> spriteTransformationBuffer_ = nullptr;
 
 	/* Sprite用 constantBufferCount */
 
 	uint32_t spriteConstantBufferCount_ = 0;
-
-	/* Asset用 Mesh */
-	struct AssetMeshData {
-
-		// 頂点データ
-		std::vector<VertexData> vertices;
-
-		// 頂点リソース
-		ComPtr<ID3D12Resource> vertexResource = nullptr;
-
-		// 頂点バッファビュー
-		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
-
-#ifdef _DEBUG
-
-		// データ名
-		std::string name;
-
-#endif
-
-	};
-
-	/* Asset用 Material */
-	struct AssetMaterialData {
-
-		// srvディスクリプタヒープ上の番号
-		uint32_t textureSrvIndex = 0u;
-
-		// マテリアルリソース
-		ComPtr<ID3D12Resource> materialResource = nullptr;
-
-		// マテリアルデータ
-		MaterialData* materialData = nullptr;
-
-#ifdef _DEBUG
-
-		// テクスチャのファイルパス
-		std::string textureFilePathDebug = "";
-
-		// データ名
-		std::string name;
-
-#endif
-
-	};
-
-	struct AssetMeshNode {
-
-		std::shared_ptr<AssetMeshData> mesh;
-		std::shared_ptr<AssetMaterialData> material;
-
-	};
-
-public:
-
-	/* Asset用 Model */
-	class AssetModel {
-
-	private:
-
-		friend AtrumEngine;
-
-		// 座標変換リソース
-		ComPtr<ID3D12Resource> transformationResource_ = nullptr;
-		// 座標変換データ
-		TransformationData* transformationData_ = nullptr;
-
-		// メッシュの塊の添え字検索
-		std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
-		// メッシュと対応マテリアルの塊
-		std::vector<AssetMeshNode> meshNodes_{};
-
-#ifdef _DEBUG
-
-		std::string objFilePathDebug_ = "";
-		std::string mtlFilePathDebug_ = "";
-
-#endif
-
-	public:
-
-		void Draw(AtrumEngine* atrum, const Transform& transform, const Transform& cameraTransform) {
-
-			// カメラのワールド行列
-			Matrix4x4 cameraWorldMatrix = atrum->CreateWorldMatrix(cameraTransform);
-
-			// ビュー行列
-			Matrix4x4 viewMatrix = MatrixInverse(cameraWorldMatrix);
-
-			// 透視投影行列
-			Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
-
-			// 三角形のTransform
-			Matrix4x4 worldMatrix = atrum->CreateWorldMatrix(transform);
-
-			auto commandList = atrum->commandContextDirect_->GetCommandList();
-
-			transformationData_->world = worldMatrix;
-
-			transformationData_->wvp = worldMatrix * viewMatrix * projectionMatrix;
-
-			commandList->SetGraphicsRootConstantBufferView(1, transformationResource_->GetGPUVirtualAddress());
-
-			commandList->SetGraphicsRootConstantBufferView(3, atrum->directionalLightResource_->GetGPUVirtualAddress());
-
-
-			DescriptorAllocator::DescriptorHandle textureHandle{};
-
-			for (auto& meshNode : meshNodes_) {
-
-				textureHandle = atrum->srvAllocator_->GetHandle(meshNode.material->textureSrvIndex);
-
-				// SRVのDescriptorTableの先頭を設定 rootParameter[2]
-				atrum->commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
-
-				commandList->SetGraphicsRootConstantBufferView(0, meshNode.material->materialResource->GetGPUVirtualAddress());
-
-				commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
-
-				commandList->DrawInstanced(static_cast<UINT>(meshNode.mesh->vertices.size()), 1, 0, 0);
-
-			}
-
-		}
-
-#ifdef _DEBUG
-
-	public:
-
-		std::string GetTexturePath() {
-
-			std::string result{};
-
-			for (const auto& meshNode : meshNodes_) {
-
-				result += "\n" + meshNode.material->textureFilePathDebug;
-
-			}
-
-			return result;
-
-		}
-
-#endif
-
-	};
 
 private:
 
@@ -620,11 +309,6 @@ private:
 	void ErrorSuppressionDebug();
 
 	/// <summary>
-	/// 初期化処理 DXCの初期化 
-	/// </summary>
-	void InitDXC();
-
-	/// <summary>
 	/// 初期化処理 Viewport の設定
 	/// </summary>
 	void SetUpViewport();
@@ -635,139 +319,49 @@ private:
 	void SetUpScissorRect();
 
 	/// <summary>
-	/// 初期化処理 InputLayoutの設定
+	/// 初期化処理 MaterialBufferの作成
 	/// </summary>
-	void SetUpInputLayout();
+	void CreateMaterialBuffer();
 
 	/// <summary>
-	/// 初期化処理 BlendStateの設定
+	/// 初期化処理 TransformationBufferの作成
 	/// </summary>
-	void SetUpBlendState();
+	void CreateTransformationBuffer();
 
 	/// <summary>
-	/// 初期化処理 RasterizerStateの設定
+	/// 初期化処理 VertexBufferの生成
 	/// </summary>
-	void SetUpRasterizerState();
+	void CreateVertexBuffer();
 
 	/// <summary>
-	/// 初期化処理 DepthStencilStateの設定
+	/// 初期化処理 IndexBufferの生成
 	/// </summary>
-	void SetUpDepthStencilState();
+	void CreateIndexBuffer();
 
 	/// <summary>
-	/// 初期化処理 ルートシグネチャの作成
+	/// 初期化処理 平行光源Bufferの作成
 	/// </summary>
-	void MakeRootSignature();
+	void CreateDirectionalLightBuffer();
 
 	/// <summary>
-	/// 初期化処理 Shaderのコンパイル
+	/// 初期化処理 Sprite用VertexBufferの生成
 	/// </summary>
-	/// <param name="filePath"> コンパイルするShaderファイルへのパス </param>
-	/// <param name="profile"> コンパイルに使用するプロファイル </param>
-	/// <returns> コンパイル結果(実行用のバイナリ) </returns>
-	IDxcBlob* CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile
-	);
+	void CreateSpriteVertexBuffer();
 
 	/// <summary>
-	/// 初期化処理 Shaderの準備
+	/// 初期化処理 Sprite用IndexBufferの生成
 	/// </summary>
-	void PrepareShader();
+	void CreateSpriteIndexBuffer();
 
 	/// <summary>
-	/// BufferResource作成
+	/// 初期化処理 Sprite用MaterialBufferの生成
 	/// </summary>
-	/// <param name="device"> デバイス </param>
-	/// <param name="sizeInBytes"> Resourceのサイズ </param>
-	/// <returns> Resource </returns>
-	ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES resourceState);
+	void CreateSpriteMaterialBuffer();
 
 	/// <summary>
-	/// UploadBuffer作成
+	/// 初期化処理 Sprite用TransformBufferの生成
 	/// </summary>
-	/// <param name="device"> デバイス </param>
-	/// <param name="sizeInBytes"> Bufferのサイズ </param>
-	/// <returns> Resource </returns>
-	ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes);
-
-	/// <summary>
-	/// DefaultBuffer作成
-	/// </summary>
-	/// <param name="device"> デバイス </param>
-	/// <param name="sizeInBytes"> Bufferのサイズ </param>
-	/// <returns> Resource </returns>
-	ComPtr<ID3D12Resource> CreateDefaultBuffer(size_t sizeInBytes);
-
-	/// <summary>
-	/// 初期化処理 MaterialResourceの作成
-	/// </summary>
-	void CreateMaterialResource();
-
-	/// <summary>
-	/// 初期化処理 WvpResource(TransformationMatrix用のリソース)の作成
-	/// </summary>
-	void CreateTransformationResource();
-
-	/// <summary>
-	/// 初期化処理 PSOの生成
-	/// </summary>
-	void CreatePSO();
-
-	/// <summary>
-	/// 初期化処理 VertexResourceの生成
-	/// </summary>
-	void CreateVertexResource();
-
-	/// <summary>
-	/// 初期化処理 VertexBufferViewの作成
-	/// </summary>
-	void CreateVertexBufferView();
-
-	/// <summary>
-	/// 初期化処理 IndexResourceの生成
-	/// </summary>
-	void CreateIndexResource();
-
-	/// <summary>
-	/// 初期化処理 IndexBufferViewの生成
-	/// </summary>
-	void CreateIndexBufferView();
-
-	/// <summary>
-	/// 初期化処理 平行光源Resourceの作成
-	/// </summary>
-	void CreateDirectionalLightResource();
-
-	/// <summary>
-	/// 初期化処理 Sprite用VertexResourceの生成
-	/// </summary>
-	void CreateSpriteVertexResource();
-
-	/// <summary>
-	/// 初期化処理 Sprite用VertexBufferViewの生成
-	/// </summary>
-	void CreateSpriteVertexBufferView();
-
-	/// <summary>
-	/// 初期化処理 Sprite用IndexResourceの生成
-	/// </summary>
-	void CreateSpriteIndexResource();
-
-	/// <summary>
-	/// 初期化処理 Sprite用IndexBufferViewの生成
-	/// </summary>
-	void CreateSpriteIndexBufferView();
-
-	/// <summary>
-	/// 初期化処理 Sprite用MaterialResourceの生成
-	/// </summary>
-	void CreateSpriteMaterialResource();
-
-	/// <summary>
-	/// 初期化処理 Sprite用TransformResourceの生成
-	/// </summary>
-	void CreateSpriteTransformationResource();
+	void CreateSpriteTransformationBuffer();
 
 	/// <summary>
 	/// 初期化処理 DepthStencilResourceの作成
@@ -954,7 +548,7 @@ public:
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
 	/// <param name="directionalLightData"> 平行光源データ(option) </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
+	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const Transform& cameraTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
 
 	/// <summary>
 	/// 球の描画
@@ -966,7 +560,7 @@ public:
 	/// <param name="cameraTransform"> カメラの座標情報 </param>
 	/// <param name="vertexData"> 球の半径 </param>
 	/// <param name="directionalLightData"> 平行光源データ(option) </param>
-	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
+	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const Transform& cameraTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
 
 	/// <summary>
 	/// 正四面体の描画
@@ -978,7 +572,7 @@ public:
 	/// <param name="cameraTransform"></param>
 	/// <param name="centerToVertices"></param>
 	/// <param name="directionalLightData"></param>
-	void DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const Transform& cameraTransform, const float centerToVertices, const std::optional<DirectionalLightData>& directionalLightData = std::nullopt);
+	void DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const Transform& cameraTransform, const float centerToVertices, const bool isLighting = false);
 
 	/// <summary>
 	/// Spriteの準備
@@ -1034,6 +628,20 @@ public:
 	/// <param name="mtlFilePath"></param>
 	/// <returns></returns>
 	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+
+	/// <summary>
+	/// 3Dモデルの描画
+	/// </summary>
+	/// <param name="model"> 3Dモデルインスタンス </param>
+	/// <param name="transform"> 3Dモデルの座標変換情報 </param>
+	/// <param name="cameraTransform"> カメラの座標変換情報 </param>
+	/// <param name="isLighting"> ライティングフラグ </param>
+	void DrawModel(AssetModel* model, const Transform& transform, const Transform& cameraTransform, const bool isLighting);
+
+	/* セッター */
+	
+	void SetDirectionalLightData(const DirectionalLightData& data) { directionalLightBuffer_->SetData(data); }
+
 
 };
 

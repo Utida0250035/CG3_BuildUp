@@ -37,29 +37,29 @@ void Audio::CreateVoicePool() {
 
 	// 標準的なフォーマット設定: 44.1kHz, 16bit, ステレオ
 	WAVEFORMATEX standardWfEx = {};
-	
+
 	// 非圧縮PCM
 	standardWfEx.wFormatTag = WAVE_FORMAT_PCM;
-	
+
 	// ステレオ
 	standardWfEx.nChannels = 2;
-	
+
 	// 44.1kHz
 	standardWfEx.nSamplesPerSec = 44100;
-	
+
 	// 16bit
 	standardWfEx.wBitsPerSample = 16;
-	
+
 	standardWfEx.nBlockAlign = (standardWfEx.nChannels * standardWfEx.wBitsPerSample) / 8;
-	
+
 	standardWfEx.nAvgBytesPerSec = standardWfEx.nSamplesPerSec * standardWfEx.nBlockAlign;
-	
+
 	// PCMの場合は0
 	standardWfEx.cbSize = 0;
 
 	for (size_t i = 0; i < kSourceVoiceCount; ++i) {
 		// 定数分のSourceVoiceを生成
-		
+
 		sourceVoicePool_.emplace_back();
 		auto& pSourceVoice = sourceVoicePool_.back();
 		pSourceVoice = std::make_unique<SourceVoice>();
@@ -205,7 +205,7 @@ size_t Audio::SeLoadMp3(const char* filePath) {
 	std::vector<uint8_t> pBuffer;
 	WAVEFORMATEX* wfEx = nullptr;
 
-	bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
+	[[maybe_unused]] bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
 	assert(result);
 
 	this->AddSource(*wfEx, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);

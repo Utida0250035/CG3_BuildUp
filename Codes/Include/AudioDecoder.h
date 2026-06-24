@@ -20,7 +20,7 @@ public:
 
     static void Initialize() {
 
-        HRESULT hr = MFStartup(MF_VERSION);
+        [[maybe_unused]] HRESULT hr = MFStartup(MF_VERSION);
         assert(SUCCEEDED(hr));
 
     }
