@@ -107,7 +107,7 @@ void PipelineState::Initialize(ID3D12RootSignature* rootSignature, ID3D12Device*
 	pipelineStateDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
 	// 実際に生成
-	HRESULT hr = device->CreateGraphicsPipelineState(&pipelineStateDesc_, IID_PPV_ARGS(&pipelineState_));
+	[[maybe_unused]] HRESULT hr = device->CreateGraphicsPipelineState(&pipelineStateDesc_, IID_PPV_ARGS(&pipelineState_));
 	assert(SUCCEEDED(hr));
 
 	LogFile::GetInstance()->Log("Created PSO");

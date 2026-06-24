@@ -46,23 +46,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	std::unique_ptr<Audio> audio = std::make_unique<Audio>();
 	audio->Initialize();
 
-	size_t seAlarm = audio->LoadSe("./Resources/Audios/Alarm01.wav");
+	[[maybe_unused]] size_t seAlarm = audio->LoadSe("./Resources/Audios/Alarm01.wav");
 
 	size_t seCat = audio->LoadSe("./Resources/Audios/seCat.mp3");
 
 	/* 3dカメラ */
 
 	// カメラの座標情報
-	AtrumEngine::Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -50.0f} };
+	Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -50.0f} };
 
 	/* Triangle */
 
-	AtrumEngine::Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{} };
+	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{} };
 
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	AtrumEngine::Transform triangleUvTransform{};
+	Transform triangleUvTransform{};
 
-	std::array<AtrumEngine::VertexData, 3> triangleVertexData = {
+	std::array<VertexData, 3> triangleVertexData = {
 		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f},
 		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f}, Vector3{0.0f, 0.0f, -1.0f},
 		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f}
@@ -72,12 +72,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* Triangle2 */
 
-	AtrumEngine::Transform triangle2Transform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.1f, 0.0f}, Vector3{} };
+	Transform triangle2Transform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.1f, 0.0f}, Vector3{} };
 
 	Vector4 triangle2Color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	AtrumEngine::Transform triangle2UvTransform{};
+	Transform triangle2UvTransform{};
 
-	std::array<AtrumEngine::VertexData, 3> triangle2VertexData = {
+	std::array<VertexData, 3> triangle2VertexData = {
 		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f},
 		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f}, Vector3{0.0f, 0.0f, -1.0f},
 		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f}
@@ -88,8 +88,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* Sphere */
 
-	AtrumEngine::Transform sphereTransform{};
-	AtrumEngine::Transform sphereUvTransform{};
+	Transform sphereTransform{};
+	Transform sphereUvTransform{};
 	float sphereRadius = 5.0f;
 	uint32_t sphereSubdivision = 12;
 	uint32_t sphereTexture = textureWhite;
@@ -99,23 +99,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* 平面3dModel */
 
 	auto planeModel = atrum->CreateModel("./Resources/Objects/ForStudy", "plane.obj", "./Resources/Objects/ForStudy", "plane.mtl");
-	AtrumEngine::Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
+	Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 	planeModelTransform.translate.z = -20.0f;
 
 	/* 複数メッシュ3dModel */
 
 	auto multiMeshModel = atrum->CreateModel("./Resources/Objects/ForStudy", "multiMesh.obj", "./Resources/Objects/ForStudy", "multiMesh.mtl");
-	AtrumEngine::Transform multiMeshModelTransform{};
+	Transform multiMeshModelTransform{};
 
 	/* 複数マテリアル3dModel */
 
 	auto multiMtlModel = atrum->CreateModel("./Resources/Objects/ForStudy", "multiMaterial.obj", "./Resources/Objects/ForStudy", "multiMaterial.mtl");
-	AtrumEngine::Transform multiMtlModelTransform{};
+	Transform multiMtlModelTransform{};
 
 	/* Sprite */
 
-	AtrumEngine::Transform spriteTransform{};
-	AtrumEngine::Transform spriteUvTransform{};
+	Transform spriteTransform{};
+	Transform spriteUvTransform{};
 	Vector2 spriteSize{ 64.0f, 64.0f };
 	uint32_t spriteTexture = textureWhite;
 	Vector4 spriteColor = Vec4White();
@@ -123,11 +123,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* DirectionalLight */
 
-	AtrumEngine::DirectionalLightData directionalLightData = AtrumEngine::DirectionalLightData{
+	DirectionalLightData directionalLightData = DirectionalLightData{
 		.color = Vector4{1.0f, 1.0f, 1.0f, 1.0f},
 		.direction = Vector3{0.0f, -1.0f, 0.0f},
 		.intensity = 10.0f,
-		.lightModel = AtrumEngine::LightModel::HalfLambert
+		.lightModel = LightModel::HalfLambert
 	};
 
 	bool isLightingEnable = true;
@@ -187,7 +187,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		Vector2 cursorDelta = playInput->GetCursorDelta();
 
-		int32_t mouseWheel = playInput->GetMouseWheel();
+		[[maybe_unused]] int32_t mouseWheel = playInput->GetMouseWheel();
 
 #ifdef USE_IMGUI
 
@@ -264,7 +264,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
-			directionalLightData.lightModel = static_cast<AtrumEngine::LightModel>(lightMode);
+			directionalLightData.lightModel = static_cast<LightModel>(lightMode);
 
 		}
 
@@ -567,37 +567,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #endif
 
-			///
-			/// ↑更新ここまで
-			/// 
+		///
+		/// ↑更新ここまで
+		/// 
 
-			///
-			/// ↓描画ここから
-			/// 
+		///
+		/// ↓描画ここから
+		/// 
 
-			// 描画処理(前)
+		// 光源データの設定
+		atrum->SetDirectionalLightData(directionalLightData);
+
+		// 描画処理(前)
 		atrum->PreDraw();
 
-		if (isLightingEnable) {
+		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision, isLightingEnable);
+		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, isLightingEnable);
+		atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData, isLightingEnable);
 
-			atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision, directionalLightData);
-			atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData, directionalLightData);
-			atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData, directionalLightData);
-
-		} else {
-
-			atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, cameraTransform, sphereRadius, sphereSubdivision);
-			atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, cameraTransform, triangleVertexData);
-			atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform, cameraTransform, triangle2VertexData);
-
-		}
-
-
-		planeModel->Draw(atrum, planeModelTransform, cameraTransform);
-
-		multiMeshModel->Draw(atrum, multiMeshModelTransform, cameraTransform);
-
-		multiMtlModel->Draw(atrum, multiMtlModelTransform, cameraTransform);
+		atrum->DrawModel(planeModel.get(), planeModelTransform, cameraTransform, isLightingEnable);
+		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, cameraTransform, isLightingEnable);
+		atrum->DrawModel(multiMtlModel.get(), multiMeshModelTransform, cameraTransform, isLightingEnable);
 
 		// Sprite準備
 		atrum->PrepareSprite();

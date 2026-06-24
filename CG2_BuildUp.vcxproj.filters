@@ -37,6 +37,9 @@
     <ClCompile Include="Codes\Source\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\RootSignature.cpp" />
     <ClCompile Include="Codes\Source\PipelineState.cpp" />
+    <ClCompile Include="Codes\Source\VertexBuffer.cpp" />
+    <ClCompile Include="Codes\Source\IndexBuffer.cpp" />
+    <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -73,6 +76,19 @@
     <ClInclude Include="Codes\Include\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\RootSignature.h" />
     <ClInclude Include="Codes\Include\PipelineState.h" />
+    <ClInclude Include="Codes\Include\TransformationData.h" />
+    <ClInclude Include="Codes\Include\MaterialData.h" />
+    <ClInclude Include="Codes\Include\Transform.h" />
+    <ClInclude Include="Codes\Include\VertexData.h" />
+    <ClInclude Include="Codes\Include\Texture.h" />
+    <ClInclude Include="Codes\Include\LightData.h" />
+    <ClInclude Include="Codes\Include\Window.h" />
+    <ClInclude Include="Codes\Include\AssetModel.h" />
+    <ClInclude Include="Codes\Include\VertexBuffer.h" />
+    <ClInclude Include="Codes\Include\IndexBuffer.h" />
+    <ClInclude Include="Codes\Include\ConstantBuffer.h" />
+    <ClInclude Include="Codes\Include\CreateBufferResource.h" />
+    <ClInclude Include="Codes\Include\DirectionalLightData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />
