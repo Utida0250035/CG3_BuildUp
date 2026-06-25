@@ -253,9 +253,9 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 
 }
 
-Matrix4x4 MakeLookAtMatrix(const Vector3& position, const Vector3& target, const Vector3& above) {
+Matrix4x4 MakeLookAtMatrix(const Vector3& observerPos, const Vector3& targetPos, const Vector3& above) {
 
-	Vector3 f = VectorNormalize(target - position);
+	Vector3 f = VectorNormalize(targetPos - observerPos);
 
 	Vector3 r = VectorNormalize(VectorCross(f, above));
 
@@ -268,11 +268,10 @@ Matrix4x4 MakeLookAtMatrix(const Vector3& position, const Vector3& target, const
 	m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z;
 	m.m[2][0] = -f.x; m.m[2][1] = -f.y; m.m[2][2] = -f.z;
 
-	// 移動成分 (右上 3列目)
-	// カメラ位置を逆変換するため、内積にマイナスを掛ける
-	m.m[0][3] = -(r.x * position.x + r.y * position.y + r.z * position.z);
-	m.m[1][3] = -(u.x * position.x + u.y * position.y + u.z * position.z);
-	m.m[2][3] = (f.x * position.x + f.y * position.y + f.z * position.z);
+
+	m.m[3][0] = -VectorDot(r, observerPos);
+	m.m[3][1] = -VectorDot(u, observerPos);
+	m.m[3][2] = VectorDot(f, observerPos);
 
 	return m;
 

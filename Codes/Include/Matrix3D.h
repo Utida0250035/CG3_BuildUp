@@ -178,7 +178,7 @@ inline constexpr float Determinant3x3(
 
 Matrix4x4 MatrixInverse(const Matrix4x4& matrix);
 
-Matrix4x4 RTMatrixInverse(const Matrix4x4& roteteMatrix, const Matrix4x4& translateMatrix);
+Matrix4x4 RTMatrixInverse(const Matrix4x4& rotateMatrix, const Matrix4x4& translateMatrix);
 
 inline constexpr Matrix4x4 MatrixTranspose(const Matrix4x4 matrix) {
 

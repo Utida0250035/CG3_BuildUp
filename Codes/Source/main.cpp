@@ -51,10 +51,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	size_t seCat = audio->LoadSe("./Resources/Audios/seCat.mp3");
 
-	/* 3dカメラ */
-
-	// カメラの座標情報
-	Transform cameraTransform{ Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -50.0f} };
 
 	/* Triangle */
 
@@ -227,11 +223,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
-		/* カメラGUI */
-		ImGui::Begin("camera");
-
-		ImGui::DragFloat3("rotate", &cameraTransform.rotate.x, 0.03125f);
-		ImGui::DragFloat3("translate", &cameraTransform.translate.x, 0.03125f);
+		ImGui::Begin("DebugCamera");
+		
+		ImGui::DragFloat("distance", debugCamera->PGetDistance());
 
 		ImGui::End();
 
@@ -574,6 +568,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		atrum->ImGuiRender();
 
 		debugCamera->Update();
+
+		playInput->EndOfFrame();
 
 #endif
 

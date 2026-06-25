@@ -13,7 +13,7 @@ protected:
 	Matrix4x4 perspectiveFovMatrix_ = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
 
 	// 正射影
-	Matrix4x4 orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0f, 100.0f);
+	Matrix4x4 orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0001f, 100.0f);
 
 	// 平行移動
 	Vector3 translate_{};
@@ -31,19 +31,19 @@ public:
 		orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth), cast::Float(clientHeight), 0.0f, 100.0f);
 	}
 
-	virtual void UpdateMatrix() {
-		viewMatrix_ = RTMatrixInverse(quaternion_.create_rotate_matrix(), MakeTranslateMatrix(translate_));
+	void UpdateMatrix() {
+		viewMatrix_ = MatrixInverse(MakeScaleMatrix(Vector3{1.0f, 1.0f, 1.0f}) * quaternion_.create_rotate_matrix() * MakeTranslateMatrix(translate_));
 	}
 
 	/* ゲッター */
 
 	Matrix4x4 GetViewMatrix() const { return viewMatrix_; }
-	Matrix4x4 GetPerspectivFovMatrix() const { return perspectiveFovMatrix_; }
+	Matrix4x4 GetPerspectiveFovMatrix() const { return perspectiveFovMatrix_; }
 	Matrix4x4 GetOrthographicMatrix() const { return orthographicMatrix_; }
 
 	/* セッター */
 
-	void SetPerspectivFovMatrix(const Matrix4x4& matrix) { perspectiveFovMatrix_ = matrix; }
+	void SetPerspectiveFovMatrix(const Matrix4x4& matrix) { perspectiveFovMatrix_ = matrix; }
 	void SetOrthographicMatrix(const Matrix4x4& matrix) { orthographicMatrix_ = matrix; }
 
 	/* 加算 */

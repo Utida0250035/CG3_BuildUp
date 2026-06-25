@@ -250,7 +250,7 @@ private:
 	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
 
 	// 正射影
-	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth_), cast::Float(clientHeight_), 0.0f, 100.0f);
+	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth_), cast::Float(clientHeight_), 0.01f, 100.0f);
 
 
 	/* ウィンドウサイズ */
@@ -565,18 +565,6 @@ public:
 	/// <param name="vertexData"> 球の半径 </param>
 	/// <param name="directionalLightData"> 平行光源データ(option) </param>
 	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
-
-	/// <summary>
-	/// 正四面体の描画
-	/// </summary>
-	/// <param name="textureIndex"> テクスチャ番号 </param>
-	/// <param name="textureColor"> テクスチャ色(補正) </param>
-	/// <param name="uvTransform"> uv座標情報 </param> 
-	/// <param name="sphereTransform"></param>
-	/// <param name="cameraTransform"></param>
-	/// <param name="centerToVertices"></param>
-	/// <param name="directionalLightData"></param>
-	//void DrawRegularTetrahedron(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& tetrahedronTransform, const float centerToVertices, const bool isLighting = false);
 
 	/// <summary>
 	/// Spriteの準備
