@@ -2,7 +2,6 @@
 #include "PlayInput.h"
 #include "StaticCast.h"
 
-
 #ifdef USE_IMGUI
 
 #include "ImGui.h"
@@ -18,45 +17,90 @@ void DebugCamera::Initialize() {
 
 void DebugCamera::Update() {
 
-	if (ImGui::GetIO().WantCaptureMouse) return;
+	if (ImGui::GetIO().WantCaptureMouse) {
 
-	// 1. マウスホイールで距離調整
-	distance_ += (float)input_->GetMouseWheel() * 3.0f;
+		UpdateMatrix();
 
-	distance_ = std::max(distance_, 1.0f);
+		return;
 
-	if (input_->IsMousePress(Mouse::Middle))
-	{
-		Vector2 move = input_->GetCursorDelta() * 0.01f;
-
-		Quaternion yawQ =
-			Quaternion::FromAxisAngle({ 0,1,0 }, move.x);
-
-		Vector3 right =
-			quaternion_.rotate_vector({ 1,0,0 });
-
-		Quaternion pitchQ =
-			Quaternion::FromAxisAngle(right, move.y);
-
-		quaternion_ =
-			(pitchQ * yawQ * quaternion_).normalized();
-	
 	}
 
-	// 3. 原点から「見て」カメラ位置を算出
-	// {0,0,distance_} をピボット回転させることでカメラの「位置」が決まる
-	Vector3 offset = { 0.0f, 0.0f, distance_ };
-	translate_ = quaternion_.rotate_vector(offset);
+	if (input_->IsKeyTrigger(Key::F5)) {
 
-	assert(std::abs(VectorLength(translate_) - distance_) < 0.01f);
+		if (mode_ == DebugCameraMode::FREE) {
 
-	Vector3 up =
-		quaternion_.rotate_vector({ 0,1,0 });
+			mode_ = DebugCameraMode::ORBIT;
 
-	// 4. View行列の構築 (LookAtを使用)
-	// カメラ位置(translate_)から原点(0,0,0)を見る行列を作成
-	viewMatrix_ = MakeLookAtMatrix(translate_, { 0.0f, 0.0f, 0.0f }, up);
+			distance_ = VectorLength(pivot_ - translate_);
 
-	viewMatrix_ = MakeIdentity4x4();
+			pivotQuaternion_ = Quaternion::FromLookAt(pivot_, translate_, Vector3{ 0.0f, 1.0f, 0.0f });
+
+			quaternion_ = pivotQuaternion_.conjugated();
+
+		} else {
+
+			mode_ = DebugCameraMode::FREE;
+
+		}
+
+	}
+
+	const Vector2 bufferedCursorMove = input_->GetCursorDelta() * 0.01562f;
+
+	if (mode_ == DebugCameraMode::ORBIT) {
+
+		if (input_->GetMouseWheel() != 0) {
+
+			distance_ += cast::Float(input_->GetMouseWheel()) * -3.0f;
+			distance_ = std::max(distance_, 1.0f);
+
+		}
+
+		if (input_->IsMousePress(Mouse::Middle)) {
+			Quaternion yawQ = Quaternion::FromAxisAngle({ 0,1,0 }, bufferedCursorMove.x);
+			Quaternion pitchQ = Quaternion::FromAxisAngle({ 1, 0, 0 }, bufferedCursorMove.y);
+			pivotQuaternion_ = ((pitchQ * pivotQuaternion_).normalized() * yawQ).normalized();
+			quaternion_ = pivotQuaternion_.conjugated();
+
+		}
+
+		Vector3 offset = { 0.0f, 0.0f, -distance_ };
+		translate_ = pivotQuaternion_.rotate_vector(offset) + pivot_;
+
+	} else {
+
+		if (input_->IsMousePress(Mouse::Middle)) {
+
+			Quaternion yawQ = Quaternion::FromAxisAngle({ 0,1,0 }, bufferedCursorMove.x);
+
+
+			Quaternion pitchQ = Quaternion::FromAxisAngle({1, 0, 0}, bufferedCursorMove.y);
+
+			quaternion_ = (yawQ * pitchQ * quaternion_).normalized();
+
+		} else {
+
+			if (input_->GetMouseWheel() != 0) {
+
+				Vector3 moveByWheel = cast::Float(input_->GetMouseWheel()) * 3.0f * quaternion_.rotate_vector({ 0.0f, 0.0f, 1.0f });
+
+				translate_ += moveByWheel;
+
+			}
+
+		}
+
+		if (input_->IsMousePress(Mouse::Left)) {
+
+			Vector3 moveByDrag = { -bufferedCursorMove.x, bufferedCursorMove.y, 0.0f };
+			moveByDrag = quaternion_.rotate_vector(moveByDrag);
+
+			translate_ += moveByDrag;
+
+		}
+
+	}
+
+	UpdateMatrix();
 
 }

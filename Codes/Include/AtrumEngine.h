@@ -247,10 +247,10 @@ private:
 	/* 射影行列 */
 
 	// 透視投影
-	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 128.0f);
+	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 1024.0f);
 
 	// 正射影
-	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth_), cast::Float(clientHeight_), 0.01f, 100.0f);
+	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth_), cast::Float(clientHeight_), 0.0f, 100.0f);
 
 
 	/* ウィンドウサイズ */

@@ -32,7 +32,7 @@ public:
 	}
 
 	void UpdateMatrix() {
-		viewMatrix_ = MatrixInverse(MakeScaleMatrix(Vector3{1.0f, 1.0f, 1.0f}) * quaternion_.create_rotate_matrix() * MakeTranslateMatrix(translate_));
+		viewMatrix_ = RTMatrixInverse(quaternion_.create_rotate_matrix(), MakeTranslateMatrix(translate_));
 	}
 
 	/* ゲッター */
@@ -48,7 +48,22 @@ public:
 
 	/* 加算 */
 
-	void AddRotate(const Vector3& add) { quaternion_ *= Quaternion::FromEulerRotateVector(add); }
+	void AddRotate(const Vector3& add) {
+		
+		Vector3 up = quaternion_.rotate_vector({ 0, 1, 0 });
+		Vector3 right = quaternion_.rotate_vector({ 1,0,0 });
+		Vector3 forward = quaternion_.rotate_vector({ 0, 0, 1 });
+
+		Quaternion yawQ = Quaternion::FromAxisAngle(up, add.x);
+
+		Quaternion pitchQ = Quaternion::FromAxisAngle(right, add.y);
+
+		Quaternion rollQ = Quaternion::FromAxisAngle(forward, add.z);
+
+		quaternion_ = (quaternion_ * yawQ * pitchQ * rollQ).normalized();
+
+	}
+
 	void AddTranslate(const Vector3& add) { translate_ += add; }
 
 };
