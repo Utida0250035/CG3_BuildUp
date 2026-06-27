@@ -230,27 +230,3 @@ struct Quaternion {
 	}
 
 };
-
-inline Quaternion LookAtRotation(Vector3 pos, Vector3 target, Vector3 up) {
-	// 1. Forwardベクトルを計算 (ターゲット - 位置)
-	Vector3 f = VectorNormalize(target - pos);
-
-	// 2. Rightベクトルを計算
-	Vector3 r = VectorNormalize(VectorCross(f, up));
-
-	// 3. Upベクトルを再計算
-	Vector3 u = VectorCross(r, f);
-
-	// 4. 回転行列を作成
-	// ここで重要なのは「列」に並べること（回転行列 R の各列が基底ベクトルになる）
-	// 行列クラスの仕様が [row][col] なら以下のように並べる
-	Matrix4x4 m;
-	m.m[0][0] = r.x; m.m[1][0] = r.y; m.m[2][0] = r.z;
-	m.m[0][1] = u.x; m.m[1][1] = u.y; m.m[2][1] = u.z;
-	m.m[0][2] = -f.x; m.m[1][2] = -f.y; m.m[2][2] = -f.z;
-	m.m[0][3] = 0.0f; m.m[1][3] = 0.0f; m.m[2][3] = 0.0f; m.m[3][3] = 1.0f;
-
-	// 5. 行列をクォータニオンに変換
-	return Quaternion::FromRotateMatrix(m).normalized().conjugated();
-
-}

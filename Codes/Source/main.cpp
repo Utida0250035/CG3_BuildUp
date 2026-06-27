@@ -231,7 +231,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat3("translate", &debugCamera->RefTranslate().x);
 
-		ImGui::DragFloat4("quaternion", &debugCamera->RefQuaternion().w, 0.03125f);
+		ImGui::DragFloat4("quaternion", &debugCamera->RefQuaternion().x, 0.03125f);
 
 		if (ImGui::IsItemActive()) {
 

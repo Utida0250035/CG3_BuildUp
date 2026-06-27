@@ -33,9 +33,12 @@ void DebugCamera::Update() {
 
 			distance_ = VectorLength(pivot_ - translate_);
 
-			pivotQuaternion_ = Quaternion::FromLookAt(pivot_, translate_, Vector3{ 0.0f, 1.0f, 0.0f });
+			quaternion_ = Quaternion::FromLookAt(pivot_, translate_, Vector3{ 0.0f, 1.0f, 0.0f });
 
-			quaternion_ = pivotQuaternion_.conjugated();
+			pivotQuaternion_ = quaternion_.conjugated();
+
+			Vector3 offset = { 0.0f, 0.0f, distance_ };
+			translate_ = pivotQuaternion_.rotate_vector(offset) + pivot_;
 
 		} else {
 
@@ -57,10 +60,10 @@ void DebugCamera::Update() {
 		}
 
 		if (input_->IsMousePress(Mouse::Middle)) {
-			Quaternion yawQ = Quaternion::FromAxisAngle({ 0,1,0 }, bufferedCursorMove.x);
-			Quaternion pitchQ = Quaternion::FromAxisAngle({ 1, 0, 0 }, bufferedCursorMove.y);
-			pivotQuaternion_ = ((pitchQ * pivotQuaternion_).normalized() * yawQ).normalized();
-			quaternion_ = pivotQuaternion_.conjugated();
+			Quaternion yawQ = Quaternion::FromAxisAngle({ 0.0f, 1.0f, 0.0f }, -bufferedCursorMove.x);
+			Quaternion pitchQ = Quaternion::FromAxisAngle({ 1.0f, 0.0f, 0.0f }, -bufferedCursorMove.y);
+			quaternion_ = (pitchQ * quaternion_ * yawQ).normalized();
+			pivotQuaternion_ = quaternion_.conjugated();
 
 		}
 
@@ -73,16 +76,20 @@ void DebugCamera::Update() {
 
 			Quaternion yawQ = Quaternion::FromAxisAngle({ 0,1,0 }, bufferedCursorMove.x);
 
+			Vector3 right = quaternion_.rotate_vector({ 1, 0, 0 });
+			Quaternion pitchQ = Quaternion::FromAxisAngle(right, bufferedCursorMove.y);
 
-			Quaternion pitchQ = Quaternion::FromAxisAngle({1, 0, 0}, bufferedCursorMove.y);
-
-			quaternion_ = (yawQ * pitchQ * quaternion_).normalized();
+			quaternion_ = (yawQ * quaternion_ * pitchQ).normalized();
+			quaternion_.z = 0.0f;
+			quaternion_.normalize();
 
 		} else {
 
 			if (input_->GetMouseWheel() != 0) {
 
-				Vector3 moveByWheel = cast::Float(input_->GetMouseWheel()) * 3.0f * quaternion_.rotate_vector({ 0.0f, 0.0f, 1.0f });
+				Vector3 moveByWheel = cast::Float(input_->GetMouseWheel()) * -3.0f * quaternion_.rotate_vector({ 0.0f, 0.0f, 1.0f });
+
+				moveByWheel.z *= -1.0f;
 
 				translate_ += moveByWheel;
 
