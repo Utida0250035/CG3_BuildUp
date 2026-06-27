@@ -33,12 +33,12 @@ void DebugCamera::Update() {
 
 			distance_ = VectorLength(pivot_ - translate_);
 
-			quaternion_ = Quaternion::FromLookAt(pivot_, translate_, Vector3{ 0.0f, 1.0f, 0.0f });
+			quaternion_ = Quaternion::FromLookAt(pivot_, translate_, {0.0f, 1.0f, 0.0f});
+
+			quaternion_.z = 0.0f;
+			quaternion_.normalize();
 
 			pivotQuaternion_ = quaternion_.conjugated();
-
-			Vector3 offset = { 0.0f, 0.0f, distance_ };
-			translate_ = pivotQuaternion_.rotate_vector(offset) + pivot_;
 
 		} else {
 
