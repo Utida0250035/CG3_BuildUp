@@ -6,14 +6,21 @@
 
 class PlayInput;
 
+enum class DebugCameraMode {
+	FREE, ORBIT
+};
+
 class DebugCamera : public Camera {
 
 private:
+
+	DebugCameraMode mode_ = DebugCameraMode::FREE;
 
 	PlayInput* input_ = nullptr;
 
 	Vector3 pivot_{ 0.0f, 0.0f, 0.0f };
 	float distance_ = 50.0f;
+	Quaternion pivotQuaternion_{};
 
 public:
 
@@ -23,7 +30,11 @@ public:
 
 #ifdef _DEBUG
 
-	float* PGetDistance() { return &distance_; }
+	float& RefDistance() { return distance_; }
+	Vector3& RefTranslate() { return translate_; }
+	Quaternion& RefQuaternion() { return quaternion_; }
+	Quaternion& RefPivotQuaternion() { return pivotQuaternion_; }
+	DebugCameraMode GetMode() const { return mode_; }
 
 #endif
 

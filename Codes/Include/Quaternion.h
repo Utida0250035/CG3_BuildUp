@@ -1,6 +1,4 @@
 #pragma once
-
-#define NOMINMAX
 #include "Vector3.h"
 #include "Matrix3D.h"
 #include <algorithm>
@@ -65,14 +63,14 @@ struct Quaternion {
 
 	}
 
-	//float get_theta() {
-	//	assert(std::abs(magnitude_square() - 1.0f) < 0.001f);
+	float get_theta() {
+		assert(std::abs(magnitude_square() - 1.0f) < 0.001f);
 
-	//	Quaternion nq = normalized();
+		Quaternion nq = normalized();
 
-	//	float clamped_w = std::max(-1.0f, std::min(1.0f, nq.w));
-	//	return 2.0f * std::acos(clamped_w);
-	//}
+		float clamped_w = std::max(-1.0f, std::min(1.0f, nq.w));
+		return 2.0f * std::acos(clamped_w);
+	}
 
 	Quaternion conjugated() const {
 		return Quaternion(w, -x, -y, -z);
@@ -80,7 +78,7 @@ struct Quaternion {
 
 	Matrix4x4 create_rotate_matrix() const {
 
-		//assert(std::abs(magnitude_square() - 1.0f) < 0.001f);
+		assert(std::abs(magnitude_square() - 1.0f) < 0.001f);
 
 		Quaternion nq = normalized();
 
@@ -119,10 +117,11 @@ struct Quaternion {
 
 		float halfAngle = angle * 0.5f;
 		float sin = std::sin(halfAngle);
-		return Quaternion{std::cos(halfAngle), unitVector.x * sin, unitVector.y * sin, unitVector.z * sin};
+		return Quaternion{ std::cos(halfAngle), unitVector.x * sin, unitVector.y * sin, -unitVector.z * sin };
+
 	}
 
-	static Quaternion FromEulerRotateMatrix(const Matrix4x4& rotateMatrix) {
+	static Quaternion FromRotateMatrix(const Matrix4x4& rotateMatrix) {
 
 		const auto& m = rotateMatrix.m;
 		Quaternion q;
@@ -152,7 +151,7 @@ struct Quaternion {
 				q.w = (m[1][0] - m[0][1]) / s;
 				q.x = (m[0][2] + m[2][0]) / s;
 				q.y = (m[1][2] + m[2][1]) / s;
-				q.z = 0.25f * s;
+				q.z = -0.25f * s;
 			}
 		}
 
@@ -160,14 +159,31 @@ struct Quaternion {
 
 	}
 
-	static Quaternion FromEulerRotateVector(const Vector3& rotate) {
+	static Quaternion FromLookAt(const Vector3& target, const Vector3& observer, const Vector3& above) {
+		Vector3 forward = VectorNormalize(target - observer);
 
-		return FromEulerRotateMatrix(MakeRotateMatrix(rotate));
+		Vector3 right = VectorNormalize(VectorCross(above, forward));
 
+		Vector3 up = VectorCross(forward, right);
+
+		float trace = right.x + above.y + forward.z;
+		Quaternion q;
+
+		if (trace > 0.0f) {
+			float s = 2.0f * sqrtf(trace + 1.0f);
+			q.w = 0.25f * s;
+			q.x = (above.z - forward.y) / s;
+			q.y = (forward.x - right.z) / s;
+			q.z = -(right.y - above.x) / s;
+		} else {
+			// 対角成分が小さい場合の分岐処理 省略
+		}
+
+		return q.normalized();
 	}
 
 	Vector3 rotate_vector(const Vector3& vector) {
-		
+
 		Quaternion p{ 0, vector.x, vector.y, vector.z };
 
 		Quaternion r =
@@ -194,47 +210,23 @@ struct Quaternion {
 
 		if (dot < -0.99999f) {
 
-			Vector3 axis = VectorCross({1.0f, 0.0f, 0.0f}, from);
+			Vector3 axis = VectorCross({ 1.0f, 0.0f, 0.0f }, from);
 
 			if (VectorLength(axis) < 0.001f) {
 
-				axis = VectorCross({0.0f, 1.0f, 0.0f}, from);
+				axis = VectorCross({ 0.0f, 1.0f, 0.0f }, from);
 
 			}
 
-			return Quaternion{0.0f, axis.x, axis.y, axis.z};
+			return Quaternion{ 0.0f, axis.x, axis.y, axis.z };
 
 		}
 
 		Vector3 axis = VectorCross(from, to);
-		Quaternion q = { dot + 1.0f, axis.x, axis.y, axis.z };
+		Quaternion q = { dot + 1.0f, axis.x, axis.y, -axis.z };
 
 		return q.normalized();
 
 	}
 
 };
-
-inline Quaternion LookAtRotation(Vector3 pos, Vector3 target, Vector3 up) {
-	// 1. Forwardベクトルを計算 (ターゲット - 位置)
-	Vector3 f = VectorNormalize(target - pos);
-
-	// 2. Rightベクトルを計算
-	Vector3 r = VectorNormalize(VectorCross(f, up));
-
-	// 3. Upベクトルを再計算
-	Vector3 u = VectorCross(r, f);
-
-	// 4. 回転行列を作成
-	// ここで重要なのは「列」に並べること（回転行列 R の各列が基底ベクトルになる）
-	// 行列クラスの仕様が [row][col] なら以下のように並べる
-	Matrix4x4 m;
-	m.m[0][0] = r.x; m.m[1][0] = r.y; m.m[2][0] = r.z;
-	m.m[0][1] = u.x; m.m[1][1] = u.y; m.m[2][1] = u.z;
-	m.m[0][2] = -f.x; m.m[1][2] = -f.y; m.m[2][2] = -f.z;
-	m.m[0][3] = 0.0f; m.m[1][3] = 0.0f; m.m[2][3] = 0.0f; m.m[3][3] = 1.0f;
-
-	// 5. 行列をクォータニオンに変換
-	return Quaternion::FromEulerRotateMatrix(m).normalized().conjugated();
-
-}

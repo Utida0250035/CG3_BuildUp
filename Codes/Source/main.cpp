@@ -225,7 +225,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("DebugCamera");
 		
-		ImGui::DragFloat("distance", debugCamera->PGetDistance());
+		ImGui::Text("mode: %d", debugCamera->GetMode());
+
+		ImGui::DragFloat("distance", &debugCamera->RefDistance());
+
+		ImGui::DragFloat3("translate", &debugCamera->RefTranslate().x);
+
+		ImGui::DragFloat4("quaternion", &debugCamera->RefQuaternion().x, 0.03125f);
+
+		if (ImGui::IsItemActive()) {
+
+			debugCamera->RefQuaternion().normalize();
+
+		}
+
+		ImGui::DragFloat4("pivotQuaternion", &debugCamera->RefPivotQuaternion().w, 0.03125f);
+
+		if (ImGui::IsItemActive()) {
+
+			debugCamera->RefPivotQuaternion().normalize();
+
+		}
 
 		ImGui::End();
 
