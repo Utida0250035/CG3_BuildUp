@@ -6,10 +6,10 @@
 #include <cmath>
 
 struct Quaternion {
-	float w = 1.0f;
 	float x = 0.0f;
 	float y = 0.0f;
 	float z = 0.0f;
+	float w = 1.0f;
 
 	constexpr float magnitude_square() const { return  w * w + x * x + y * y + z * z; }
 	float magnitude() const { return std::sqrt(magnitude_square()); }
@@ -19,10 +19,10 @@ struct Quaternion {
 
 		if (magnitude > 0.0f) {
 
-			w /= magnitude;
 			x /= magnitude;
 			y /= magnitude;
 			z /= magnitude;
+			w /= magnitude;
 
 			return;
 
@@ -47,13 +47,14 @@ struct Quaternion {
 	constexpr Quaternion operator*(const Quaternion& other) const
 	{
 		return Quaternion{
-			w * other.w - x * other.x - y * other.y - z * other.z,
 
 			w * other.x + x * other.w + y * other.z - z * other.y,
 
 			w * other.y + y * other.w + z * other.x - x * other.z,
 
-			w * other.z + z * other.w + x * other.y - y * other.x
+			w * other.z + z * other.w + x * other.y - y * other.x,
+
+			w * other.w - x * other.x - y * other.y - z * other.z
 		};
 	}
 
@@ -73,7 +74,7 @@ struct Quaternion {
 	}
 
 	Quaternion conjugated() const {
-		return Quaternion(w, -x, -y, -z);
+		return Quaternion(-x, -y, -z, w);
 	}
 
 	Matrix4x4 create_rotate_matrix() const {
@@ -117,7 +118,7 @@ struct Quaternion {
 
 		float halfAngle = angle * 0.5f;
 		float sin = std::sin(halfAngle);
-		return Quaternion{ std::cos(halfAngle), unitVector.x * sin, unitVector.y * sin, -unitVector.z * sin };
+		return Quaternion{ unitVector.x * sin, unitVector.y * sin, -unitVector.z * sin, std::cos(halfAngle) };
 
 	}
 
@@ -129,29 +130,29 @@ struct Quaternion {
 
 		if (trace > 0.0f) {
 			float s = 0.5f / std::sqrt(trace + 1.0f);
-			q.w = 0.25f / s;
 			q.x = (m[2][1] - m[1][2]) * s;
 			q.y = (m[0][2] - m[2][0]) * s;
 			q.z = (m[1][0] - m[0][1]) * s;
+			q.w = 0.25f / s;
 		} else {
 			if (m[0][0] > m[1][1] && m[0][0] > m[2][2]) {
 				float s = 2.0f * std::sqrt(1.0f + m[0][0] - m[1][1] - m[2][2]);
-				q.w = (m[2][1] - m[1][2]) / s;
 				q.x = 0.25f * s;
 				q.y = (m[0][1] + m[1][0]) / s;
 				q.z = (m[0][2] + m[2][0]) / s;
+				q.w = (m[2][1] - m[1][2]) / s;
 			} else if (m[1][1] > m[2][2]) {
 				float s = 2.0f * std::sqrt(1.0f + m[1][1] - m[0][0] - m[2][2]);
-				q.w = (m[0][2] - m[2][0]) / s;
 				q.x = (m[0][1] + m[1][0]) / s;
 				q.y = 0.25f * s;
 				q.z = (m[1][2] + m[2][1]) / s;
+				q.w = (m[0][2] - m[2][0]) / s;
 			} else {
 				float s = 2.0f * std::sqrt(1.0f + m[2][2] - m[0][0] - m[1][1]);
-				q.w = (m[1][0] - m[0][1]) / s;
 				q.x = (m[0][2] + m[2][0]) / s;
 				q.y = (m[1][2] + m[2][1]) / s;
 				q.z = -0.25f * s;
+				q.w = (m[1][0] - m[0][1]) / s;
 			}
 		}
 
@@ -167,14 +168,14 @@ struct Quaternion {
 		Vector3 up = VectorCross(forward, right);
 
 		float trace = right.x + above.y + forward.z;
-		Quaternion q;
+		Quaternion q{};
 
 		if (trace > 0.0f) {
 			float s = 2.0f * sqrtf(trace + 1.0f);
-			q.w = 0.25f * s;
 			q.x = (above.z - forward.y) / s;
 			q.y = (forward.x - right.z) / s;
 			q.z = -(right.y - above.x) / s;
+			q.w = 0.25f * s;
 		} else {
 			// 対角成分が小さい場合の分岐処理 省略
 		}
@@ -184,7 +185,7 @@ struct Quaternion {
 
 	Vector3 rotate_vector(const Vector3& vector) {
 
-		Quaternion p{ 0, vector.x, vector.y, vector.z };
+		Quaternion p{ vector.x, vector.y, vector.z, 0 };
 
 		Quaternion r =
 			(*this) * p * this->conjugated();

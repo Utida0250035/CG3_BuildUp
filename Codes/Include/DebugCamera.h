@@ -34,6 +34,7 @@ public:
 	Vector3& RefTranslate() { return translate_; }
 	Quaternion& RefQuaternion() { return quaternion_; }
 	Quaternion& RefPivotQuaternion() { return pivotQuaternion_; }
+	Vector3& RefPivot() { return pivot_; };
 	DebugCameraMode GetMode() const { return mode_; }
 
 #endif
