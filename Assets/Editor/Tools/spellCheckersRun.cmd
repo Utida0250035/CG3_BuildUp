@@ -12,7 +12,7 @@ cd ../../..
 
 echo [1/4] Node.js check...
 
-:: node が存在するか確認するだけの単純なコマンド
+
 call node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo node -v FAILED.
