@@ -1,2 +1,2 @@
 export PATH="./node_modules/.bin:$PATH" 
-cmd.exe //c call "_checkersRun.cmd" 
+cmd.exe //c call "C:\Users\ukout\source\repos\CG2_BuildUp\Assets\Editor\Tools\checkersRun.cmd" 

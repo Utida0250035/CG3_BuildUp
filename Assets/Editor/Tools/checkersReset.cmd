@@ -1,19 +1,21 @@
 @echo off
 setlocal
 
-echo [] delete .checkers\.inited
+echo [] delete checkers\inited
 
-if exist ".checkers\.inited" (
+if exist "checkers\inited" (
 
     echo delete.
 
-    rmdir /q /s .checkers\.inited
+    rmdir /q /s checkers\inited
 
 ) else (
 
    echo not exist.
 
 )
+
+cd ..
 
 echo [] delete .husky\
 
@@ -44,9 +46,11 @@ if exist "node_modules" (
 
 )
 
+cd tools
+
 echo -
 echo -
 
-echo call ".\_checkersSetup.cmd"
+echo call ".\checkersSetup.cmd"
 
-call ".\_checkersSetup.cmd"
+call ".\checkersSetup.cmd"

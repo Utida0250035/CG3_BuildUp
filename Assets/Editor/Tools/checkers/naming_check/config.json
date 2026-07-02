@@ -18,7 +18,9 @@
         "x64",
         "Externals",
         ".naming_check",
-        "CG2_BuildUp"
+        "CG2_BuildUp",
+        "tools",
+        "packages"
     ],
     "exclude_files": [
         "*.log",

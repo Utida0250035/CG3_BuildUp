@@ -4,6 +4,12 @@ chcp 65001 >nul
 
 setlocal
 
+cd /d "%~dp0"
+
+set "TOOLS_DIR=%~dp0"
+
+cd ../../..
+
 echo [1/4] Node.js check...
 
 :: node が存在するか確認するだけの単純なコマンド
@@ -38,12 +44,12 @@ echo node_modules\ found.
 echo [4/4]run checkers...
 
 :: different process
-start "" cmd /k "call npm run lint:spell"
+start "" "%TOOLS_DIR%checkers\run.cmd"
 
 :: different process
-start "" ".\.checkers\run.cmd"
+start "" cmd /k "call npm run lint:spell"
 
 :: spell check(mainProcess)
 call npm run lint:spell >&2
 
- exit /b %errorlevel%
+exit /b %errorlevel%

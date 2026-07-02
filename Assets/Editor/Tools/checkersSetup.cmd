@@ -2,13 +2,19 @@
 setlocal
 echo STARTING SETUP...
 
-if exist ".checkers\.inited" (
+set "TOOLS_DIR=%~dp0"
+
+if exist "checkers\inited" (
 
     echo checkers are inited.
     
     pause
 
+    exit /b 1
+
 )
+
+cd ..\..\..
 
 echo [1/5] Node.js check...
 
@@ -18,6 +24,7 @@ if %errorlevel% neq 0 (
     echo node -v FAILED.
     echo Node.js is not found or not in PATH.
     pause
+    exit /b 1
 )
 
 echo Node.js found.
@@ -28,6 +35,7 @@ if %errorlevel% neq 0 (
     echo npm -v FAILED.
     echo npm is not found.
     pause
+    exit .b 1
 )
 
 echo npm found.
@@ -38,6 +46,7 @@ if exist "node_modules" (
     echo [SKIP] node_modules\ is already exist.
 ) else (
     echo install node_modules...
+    
     call npm install
     if %errorlevel% neq 0 (
         echo [ERROR] ライブラリのインストールに失敗しました。
@@ -56,11 +65,13 @@ if "%HOOKS_PATH%"==".husky" (
     call npx husky init
     echo [INFO] setup pre-commit...
     echo export PATH="./node_modules/.bin:$PATH" > .husky/pre-commit
-    echo cmd.exe //c call "_checkersRun.cmd" >> .husky/pre-commit
+    echo cmd.exe //c call "%TOOLS_DIR%checkersRun.cmd" >> .husky/pre-commit
 
 )
 
-mkdir .\.checkers\.inited
+cd %TOOLS_DIR%
+
+mkdir .\checkers\inited
 
 echo SUCCESS!
 
