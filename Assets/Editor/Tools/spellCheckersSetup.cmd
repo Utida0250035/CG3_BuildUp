@@ -56,7 +56,7 @@ if exist "node_modules" (
 
 for /f "tokens=*" %%i in ('git config core.hooksPath') do set HOOKS_PATH=%%i
 
-set "TARGET_FILE=.\.husky\pre-commit"
+set "FILE=.\.husky\pre-commit"
 
 if "%HOOKS_PATH%"==".husky" (
     echo [OK] Husky is ready
@@ -64,8 +64,19 @@ if "%HOOKS_PATH%"==".husky" (
     echo [INFO] init Husky...
     call npx husky init
     echo [INFO] setup pre-commit...
-    echo export PATH="./node_modules/.bin:$PATH" > .husky/pre-commit
-    echo cmd.exe //c call "..\Assets\Editor\Tools\checkersRun.cmd" >> .husky/pre-commit
+    ::echo export PATH="./node_modules/.bin:$PATH" > .husky/pre-commit
+    ::echo cmd.exe //c call "..\Assets\Editor\Tools\checkersRun.cmd" >> .husky/pre-commit
+
+    type nul > "%FILE%"
+
+    (
+        echo #!/bin/sh
+        echo export PATH="./node_modules/.bin:$PATH"
+        echo cmd.exe /c call "..\Assets\Editor\Tools\checkersRun.cmd"
+    ) > "%FILE%"
+
+    :: 3. ここが重要：改行コードを強制的にLFにする
+    powershell -NoProfile -Command "(Get-Content '%FILE%' -Raw) -replace \"`r`n\", \"`n\" | Set-Content -Path '%FILE%' -NoNewline -Encoding Ascii"
 
 )
 
@@ -76,6 +87,8 @@ mkdir .\spellCheckers\inited
 echo SUCCESS!
 
 pause
+
+exit
 
 :: --- 内部関数 ---
 :write_utf8
