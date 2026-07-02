@@ -44,7 +44,7 @@ echo node_modules\ found.
 echo [4/4]run checkers...
 
 :: different process
-start "" "%TOOLS_DIR%checkers\run.cmd"
+start "" "%TOOLS_DIR%spellCheckers\run.cmd"
 
 :: different process
 start "" cmd /k "call npm run lint:spell"

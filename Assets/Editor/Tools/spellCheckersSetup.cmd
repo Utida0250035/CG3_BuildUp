@@ -70,8 +70,9 @@ if "%HOOKS_PATH%"==".husky" (
     type nul > "%FILE%"
 
     (
-        echo export PATH="./node_modules/.bin:$PATH"
-        echo cmd.exe /c call "..\Assets\Editor\Tools\checkersRun.cmd"
+        ::echo #!/usr/bin/env sh
+        echo export PATH=".\node_modules\.bin:$PATH"
+        echo cmd.exe /c call ".\Assets\Editor\Tools\checkersRun.cmd"
     ) > "%FILE%"
 
     :: 3. ここが重要：改行コードを強制的にLFにする
