@@ -1,3 +1,2 @@
-#!/bin/sh
 export PATH="./node_modules/.bin:$PATH"
 cmd.exe /c call "..\Assets\Editor\Tools\checkersRun.cmd"

@@ -70,7 +70,6 @@ if "%HOOKS_PATH%"==".husky" (
     type nul > "%FILE%"
 
     (
-        echo #!/bin/sh
         echo export PATH="./node_modules/.bin:$PATH"
         echo cmd.exe /c call "..\Assets\Editor\Tools\checkersRun.cmd"
     ) > "%FILE%"
