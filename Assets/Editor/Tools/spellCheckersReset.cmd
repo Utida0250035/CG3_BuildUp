@@ -1,13 +1,15 @@
 @echo off
 setlocal
 
-echo [] delete checkers\inited
+set "TOOLS_DIR=%~dp0"
 
-if exist "checkers\inited" (
+echo [] delete spellCheckers\inited
+
+if exist "spellCheckers\inited" (
 
     echo delete.
 
-    rmdir /q /s checkers\inited
+    rmdir /q /s spellCheckers\inited
 
 ) else (
 
@@ -15,7 +17,7 @@ if exist "checkers\inited" (
 
 )
 
-cd ..
+cd ..\..\..
 
 echo [] delete .husky\
 
@@ -46,11 +48,11 @@ if exist "node_modules" (
 
 )
 
-cd tools
+cd %TOOLS_DIR%
 
 echo -
 echo -
 
-echo call ".\checkersSetup.cmd"
+echo call ".\spellCheckersSetup.cmd"
 
-call ".\checkersSetup.cmd"
+call ".\spellCheckersSetup.cmd"

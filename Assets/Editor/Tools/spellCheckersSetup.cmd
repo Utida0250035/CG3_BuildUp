@@ -4,9 +4,9 @@ echo STARTING SETUP...
 
 set "TOOLS_DIR=%~dp0"
 
-if exist "checkers\inited" (
+if exist "spellCheckers\inited" (
 
-    echo checkers are inited.
+    echo spellCheckers are inited.
     
     pause
 
@@ -18,7 +18,7 @@ cd ..\..\..
 
 echo [1/5] Node.js check...
 
-:: node ‚ª‘¶Ý‚·‚é‚©Šm”F‚·‚é‚¾‚¯‚Ì’Pƒ‚ÈƒRƒ}ƒ“ƒh
+:: node ãŒå­˜åœ¨ã™ã‚‹ã‹ç¢ºèªã™ã‚‹ã ã‘ã®å˜ç´”ãªã‚³ãƒžãƒ³ãƒ‰
 call node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo node -v FAILED.
@@ -41,7 +41,7 @@ if %errorlevel% neq 0 (
 echo npm found.
 echo [3/5] Running npm install...
 
-:: node_modules ƒtƒHƒ‹ƒ_‚ª‚ ‚ê‚ÎƒCƒ“ƒXƒg[ƒ‹‚ðƒXƒLƒbƒv‚·‚éƒƒWƒbƒN
+:: node_modules ãƒ•ã‚©ãƒ«ãƒ€ãŒã‚ã‚Œã°ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã‚’ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹ãƒ­ã‚¸ãƒƒã‚¯
 if exist "node_modules" (
     echo [SKIP] node_modules\ is already exist.
 ) else (
@@ -49,29 +49,29 @@ if exist "node_modules" (
     
     call npm install
     if %errorlevel% neq 0 (
-        echo [ERROR] ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒCƒ“ƒXƒg[ƒ‹‚ÉŽ¸”s‚µ‚Ü‚µ‚½B
+        echo [ERROR] ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã«å¤±æ•—ã—ã¾ã—ãŸã€‚
         pause
         exit /b 1
     )
 )
 
-:: Husky‚Ì‰Šú‰»”»’è
+:: Huskyã®åˆæœŸåŒ–åˆ¤å®š
 for /f "tokens=*" %%i in ('git config core.hooksPath') do set HOOKS_PATH=%%i
 
 if "%HOOKS_PATH%"==".husky" (
-    echo [OK] Husky ‚Í³‚µ‚­Ý’è‚³‚ê‚Ä‚¢‚Ü‚·B
+    echo [OK] Husky ã¯æ­£ã—ãè¨­å®šã•ã‚Œã¦ã„ã¾ã™ã€‚
 ) else (
-    echo [INFO] Husky ‚ð‰Šú‰»‚µ‚Ü‚·...
+    echo [INFO] Husky ã‚’åˆæœŸåŒ–ã—ã¾ã™...
     call npx husky init
     echo [INFO] setup pre-commit...
     echo export PATH="./node_modules/.bin:$PATH" > .husky/pre-commit
-    echo cmd.exe //c call "%TOOLS_DIR%checkersRun.cmd" >> .husky/pre-commit
+    echo cmd.exe //c call "..\Assets\Editor\Tools\checkersRun.cmd" >> .husky/pre-commit
 
 )
 
 cd %TOOLS_DIR%
 
-mkdir .\checkers\inited
+mkdir .\spellCheckers\inited
 
 echo SUCCESS!
 
