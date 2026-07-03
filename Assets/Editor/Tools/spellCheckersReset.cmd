@@ -50,6 +50,20 @@ if exist "node_modules" (
 
 )
 
+echo [] delete package-lock.json
+
+if exist "package-lock.json" (
+
+    echo delete.
+
+    del package-lock.json
+
+) else (
+
+    echo not exist.
+
+)
+
 cd %TOOLS_DIR%
 
 echo -
