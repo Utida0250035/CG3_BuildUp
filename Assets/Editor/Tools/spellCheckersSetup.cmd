@@ -1,4 +1,6 @@
-@echo off
+﻿@echo off
+chcp 65001 >nul
+
 setlocal
 echo STARTING SETUP...
 
@@ -69,15 +71,7 @@ if "%HOOKS_PATH%"==".husky" (
 
     type nul > "%FILE%"
 
-    (
-        ::echo #!/usr/bin/env sh
-        echo export PATH=".\node_modules\.bin:$PATH"
-        echo cmd.exe /c call ".\Assets\Editor\Tools\checkersRun.cmd"
-    ) > "%FILE%"
-
-    :: 3. ここが重要：改行コードを強制的にLFにする
-    powershell -NoProfile -Command "(Get-Content '%FILE%' -Raw) -replace \"`r`n\", \"`n\" | Set-Content -Path '%FILE%' -NoNewline -Encoding Ascii"
-
+    echo [INFO] created empty: ProjectDir\.husky\pre-commit
 )
 
 cd %TOOLS_DIR%
@@ -90,12 +84,10 @@ pause
 
 exit
 
-:: --- 内部関数 ---
 :write_utf8
 powershell -NoProfile -Command "$val = '%~2'; $val -replace \"`r`n\", \"`n\" | Add-Content -Path '%~1' -Encoding UTF8"
 exit /b
 
 :append_utf8
-:: PowerShellのAdd-ContentはEncodingを指定できる
 powershell -NoProfile -Command "Add-Content -Path '%~1' -Value '%~2' -Encoding UTF8"
 exit /b

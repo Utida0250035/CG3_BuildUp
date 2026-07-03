@@ -1,4 +1,6 @@
 @echo off
+chcp 65001 >nul
+
 setlocal
 
 set "TOOLS_DIR=%~dp0"
@@ -56,3 +58,7 @@ echo -
 echo call ".\spellCheckersSetup.cmd"
 
 call ".\spellCheckersSetup.cmd"
+
+pause
+
+exit

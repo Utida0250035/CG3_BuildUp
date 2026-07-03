@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "lint:spell": "cspell --no-must-find-files --no-progress \"**/*\""
+    "lint:spell": "cspell --no-must-find-files --no-progress \"**/*\"",
+    "lint:checkers": "cmd.exe /c .\\Assets\\Editor\\Tools\\checkersRun.cmd"
   },
   "devDependencies": {
     "husky": "^9.0.0",
