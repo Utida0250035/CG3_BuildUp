@@ -369,6 +369,43 @@ void AtrumEngine::DrawCall(const uint32_t& textureIndex, const uint32_t& indexDa
 
 }
 
+
+void AtrumEngine::DrawCall(const uint32_t& textureIndex, const uint32_t& vertexCountInInstance) {
+
+	assert(isInitialized_ && "AtrumEngine is not initialized");
+
+	assert(constantBufferCount_ + 1 < kMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
+
+	// TransformMatrix (WVP) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(TransformationData));
+	// GPUに設定(rootParameter0)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
+
+	// Material (Color) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
+
+	// GPUに設定(rootParameter1)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+
+	// GPUに設定(rootParameter3)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightBuffer_->GetGpuVirtualAddress());
+
+	DescriptorAllocator::DescriptorHandle textureHandle{};
+
+	textureHandle = srvAllocator_->GetHandle(textureIndex);
+
+	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+	// 描画(DrawCall) 3頂点で1つのインスタンス
+	commandContextDirect_->GetCommandList()->DrawInstanced(vertexCountInInstance, 1, vertexBuffer_->GetDrewCount(), 0);
+
+	vertexBuffer_->AddDrewCount(vertexCountInInstance);
+
+	constantBufferCount_++;
+
+}
+
 void AtrumEngine::SetFps(const int32_t& fps) {
 
 	secondsPerFrame_ = 1.0f / static_cast<float>(fps);
@@ -1485,36 +1522,22 @@ void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vect
 
 	// 描画関数内の書き込み処理
 	uint32_t vStart = vertexBuffer_->GetDrewCount();
-	uint32_t iStart = indexBuffer_->GetDrewCount();
 
-	// 1. 各頂点に個別の法線を持たせるための準備
-	// 今回は、インデックスを使って頂点バッファを埋めていく
-	for (size_t i = 0; i < mesh.indices.size(); i += 3) {
-		uint16_t i0 = mesh.indices[i];
-		uint16_t i1 = mesh.indices[i + 1];
-		uint16_t i2 = mesh.indices[i + 2];
+	for (const auto& vertex : mesh.vertices) {
 
-		// 面法線を計算
-		Vector3 v0 = { mesh.vertices[i0].x, mesh.vertices[i0].y, mesh.vertices[i0].z };
-		Vector3 v1 = { mesh.vertices[i1].x, mesh.vertices[i1].y, mesh.vertices[i1].z };
-		Vector3 v2 = { mesh.vertices[i2].x, mesh.vertices[i2].y, mesh.vertices[i2].z };
-		Vector3 faceNormal = VectorNormalize(VectorCross(v1 - v0, v2 - v0));
+		vertexBuffer_->SetVertexData(
+			{
+				{vertex.position.x, vertex.position.y, vertex.position.z, 1.0f},
+				{0.0f, 0.0f},
+				vertex.normal
+			},
+			vStart++
+		);
 
-		// 2. インデックスバッファの仕様を維持しつつ、
-		// 頂点バッファには「面ごとの法線」を持った頂点を書き込む
-		vertexBuffer_->SetVertexData({ {v0.x, v0.y, v0.z, 1.0f}, {0,0}, faceNormal }, vStart++);
-		vertexBuffer_->SetVertexData({ {v1.x, v1.y, v1.z, 1.0f}, {0,0}, faceNormal }, vStart++);
-		vertexBuffer_->SetVertexData({ {v2.x, v2.y, v2.z, 1.0f}, {0,0}, faceNormal }, vStart++);
-
-		// インデックスバッファには、今の vStart から逆算した相対インデックスを書き込む
-		// ※インデックスバッファの仕様上、ここでの数値が正しく参照できればOKです
-		indexBuffer_->SetIndexData(vStart - 3, iStart++);
-		indexBuffer_->SetIndexData(vStart - 2, iStart++);
-		indexBuffer_->SetIndexData(vStart - 1, iStart++);
 	}
 
 	// 描画実行 (mesh.indices.size() で数を確認)
-	this->DrawCall(textureIndex, (uint32_t)mesh.indices.size(), (uint32_t)mesh.vertices.size());
+	this->DrawCall(textureIndex, (uint32_t)mesh.vertices.size());
 
 }
 

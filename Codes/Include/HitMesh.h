@@ -85,7 +85,12 @@ struct HitMesh {
 inline HitMesh CreateAsymmetricPyramid() {
     PyramidMesh pyramid{};
     HitMesh hm{};
-    hm.localVertices = pyramid.vertices;
+
+    for (const auto& vertex : pyramid.vertices) {
+
+        hm.localVertices.push_back(vertex.position);
+
+    }
 
     // 初期状態の設定
     hm.position = {};

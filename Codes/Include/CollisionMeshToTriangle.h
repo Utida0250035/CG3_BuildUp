@@ -15,7 +15,7 @@ void ResolveCollision(HitMesh& body, const std::vector<Triangle>& terrain) {
 
     // 1. 衝突判定 (全三角形に対してループ)
     for (const auto& tri : terrain) {
-        Vector3 N = tri.normal;
+        Vector3 N = VectorNormalize(tri.normal);
         Vector3 P0 = tri.v0;
 
         for (const auto& v : body.localVertices) {

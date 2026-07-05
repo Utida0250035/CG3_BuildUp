@@ -312,6 +312,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::EndChild();
 
+		Vector3 vertices[3]{};
+
+		for (size_t i = 0; i < 3; ++i) {
+
+			const auto& v = triangleVertexData[i];
+
+			vertices[i] = { v.position.x, v.position.y, v.position.w };
+
+		}
+
+		triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
+		triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
+		triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
+
 		triangle.normal = VectorTransform(triangleVertexData[0].normal, MakeRotateMatrix(triangleTransform.rotate));
 
 		for (size_t i = 0; i < 3; ++i) {
@@ -391,7 +405,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
-		atrum->DrawAsymmetricPyramid(textureWhite, Vec4White(), Transform{}, Transform{ {1.0f, 1.0f, 1.0f}, hitMeshPyramid.rotation, hitMeshPyramid.position }, pyramidMesh, isLightingEnable);
+		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, Transform{ {1.0f, 1.0f, 1.0f}, hitMeshPyramid.rotation, hitMeshPyramid.position }, pyramidMesh, isLightingEnable);
 
 		// Sprite準備
 		atrum->PrepareSprite();

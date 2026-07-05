@@ -386,6 +386,7 @@ private:
 	/// 3D実体の描画呼び出し(モデル除く)
 	/// </summary>
 	void DrawCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere);
+	void DrawCall(const uint32_t& textureIndex, const uint32_t& vertexCountInInstance);
 
 	/// <summary>
 	/// Spriteの描画呼び出し
