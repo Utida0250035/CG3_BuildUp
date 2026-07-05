@@ -163,7 +163,7 @@ void CollisionManager::ResolveAngularVelocity(
     HitMesh& meshB,
     const SATResult& result) {
 
-    constexpr float kAngularResponse = 0.5f;
+    constexpr float kAngularResponse = 0.05f;
 
     Vector3 contactPoint = result.contactPoint;
 
