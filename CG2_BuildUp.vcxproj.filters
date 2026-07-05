@@ -46,6 +46,7 @@
     <ClCompile Include="Codes\Source\HitMeshBuilder.cpp" />
     <ClCompile Include="Codes\Source\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\Matrix2D.cpp" />
+    <ClCompile Include="Codes\Source\Matrix3x3Physics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -109,6 +110,7 @@
     <ClInclude Include="Codes\Include\HitMeshBuilder.h" />
     <ClInclude Include="Codes\Include\CollisionManager.h" />
     <ClInclude Include="Codes\Include\Matrix2D.h" />
+    <ClInclude Include="Codes\Include\Matrix3x3Physics.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />

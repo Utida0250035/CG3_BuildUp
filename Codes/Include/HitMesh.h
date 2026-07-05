@@ -1,6 +1,6 @@
 #pragma once
 #include "CollisionTypes.h"
-#include "Matrix2D.h"
+#include "Matrix3x3Physics.h"
 #include "Matrix3D.h"
 #include "PyramidMesh.h"
 #include "Quaternion.h"
@@ -69,9 +69,13 @@ struct HitMesh {
 
 	Vector3 torque{};
 
-	Matrix3x3 inertiaTensor{};
+	Matrix3x3Physics inertiaTensor{};
 
-	Matrix3x3 inverseInertiaTensor{};
+	Matrix3x3Physics inverseInertiaTensor{};
+
+	Matrix3x3Physics inverseInertiaTensorLocal{};
+
+	Matrix3x3Physics inverseInertiaTensorWorld{};
 
 	float mass = 1.0f;
 
@@ -85,7 +89,7 @@ struct HitMesh {
 
 	bool isStatic = false;
 
-	
+
 
 	//--------------------------------------------------------
 	// 更新
@@ -135,6 +139,12 @@ struct HitMesh {
 			MakeTranslateMatrix(position);
 
 		UpdateWorldVertices();
+
+		inverseInertiaTensorWorld = MakeWorldInverseInertiaTensor(
+			inverseInertiaTensorLocal,
+			rotation
+		);
+
 	}
 
 	//--------------------------------------------------------

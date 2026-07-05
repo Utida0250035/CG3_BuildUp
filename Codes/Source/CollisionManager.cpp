@@ -163,9 +163,7 @@ void CollisionManager::ResolveAngularVelocity(
     HitMesh& meshB,
     const SATResult& result) {
 
-    constexpr float kAngularResponse = 0.05f;
-
-    Vector3 contactPoint = result.contactPoint;
+    constexpr float kMaxAngularSpeed = 3.0f;
 
     Vector3 relativeVelocity =
         meshA.velocity - meshB.velocity;
@@ -180,6 +178,9 @@ void CollisionManager::ResolveAngularVelocity(
     Vector3 impulse =
         result.normal * (-normalVelocity);
 
+    Vector3 contactPoint =
+        result.contactPoint;
+
     if (meshA.inverseMass > 0.0f) {
 
         Vector3 rA =
@@ -188,8 +189,17 @@ void CollisionManager::ResolveAngularVelocity(
         Vector3 torqueA =
             VectorCross(rA, impulse);
 
-        meshA.angularVelocity +=
-            torqueA * kAngularResponse;
+        Vector3 deltaAngularVelocityA =
+            meshA.inverseInertiaTensorWorld * torqueA;
+
+        meshA.angularVelocity += deltaAngularVelocityA;
+
+        float speed = VectorLength(meshA.angularVelocity);
+
+        if (speed > kMaxAngularSpeed) {
+            meshA.angularVelocity =
+                VectorNormalize(meshA.angularVelocity) * kMaxAngularSpeed;
+        }
     }
 
     if (meshB.inverseMass > 0.0f) {
@@ -200,7 +210,16 @@ void CollisionManager::ResolveAngularVelocity(
         Vector3 torqueB =
             VectorCross(rB, impulse * -1.0f);
 
-        meshB.angularVelocity +=
-            torqueB * kAngularResponse;
+        Vector3 deltaAngularVelocityB =
+            meshB.inverseInertiaTensorWorld * torqueB;
+
+        meshB.angularVelocity += deltaAngularVelocityB;
+
+        float speed = VectorLength(meshB.angularVelocity);
+
+        if (speed > kMaxAngularSpeed) {
+            meshB.angularVelocity =
+                VectorNormalize(meshB.angularVelocity) * kMaxAngularSpeed;
+        }
     }
 }

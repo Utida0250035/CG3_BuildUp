@@ -2,6 +2,56 @@
 
 #include <cassert>
 
+namespace {
+
+    void CalculateAABBSize(
+        const std::vector<Vector3>& vertices,
+        float& width,
+        float& height,
+        float& depth) {
+
+        Vector3 min = vertices[0];
+        Vector3 max = vertices[0];
+
+        for (const Vector3& v : vertices) {
+            min.x = std::min(min.x, v.x);
+            min.y = std::min(min.y, v.y);
+            min.z = std::min(min.z, v.z);
+
+            max.x = std::max(max.x, v.x);
+            max.y = std::max(max.y, v.y);
+            max.z = std::max(max.z, v.z);
+        }
+
+        width = max.x - min.x;
+        height = max.y - min.y;
+        depth = max.z - min.z;
+    }
+
+    void SetupInertiaTensor(HitMesh& hitMesh) {
+
+        if (hitMesh.inverseMass <= 0.0f || hitMesh.localVertices.empty()) {
+            hitMesh.inverseInertiaTensorLocal = MakeZeroMatrix3x3Physics();
+            hitMesh.inverseInertiaTensorWorld = MakeZeroMatrix3x3Physics();
+            return;
+        }
+
+        float width = 0.0f;
+        float height = 0.0f;
+        float depth = 0.0f;
+
+        CalculateAABBSize(hitMesh.localVertices, width, height, depth);
+
+        hitMesh.inverseInertiaTensorLocal =
+            MakeBoxInverseInertiaTensor(
+                hitMesh.mass,
+                width,
+                height,
+                depth);
+    }
+
+}
+
 HitMesh HitMeshBuilder::CreateFromPyramid(const PyramidMesh& mesh) {
 
     HitMesh hitMesh{};
@@ -37,10 +87,10 @@ HitMesh HitMeshBuilder::CreateFromPyramid(const PyramidMesh& mesh) {
     hitMesh.friction = 0.5f;
 
     //----------------------------------------------------------
-    // ワールド行列生成
+    // 物理
     //----------------------------------------------------------
 
-    hitMesh.UpdateMatrix();
+    SetupInertiaTensor(hitMesh);
 
     return hitMesh;
 
@@ -56,6 +106,11 @@ HitMesh HitMeshBuilder::CreateFromObj(const AssetModel& model) {
     // TODO
     // OBJLoader完成後に実装
     //----------------------------------------------------------
+    
+
+    SetupInertiaTensor(hitMesh);
+
+    hitMesh.UpdateMatrix();
 
     return hitMesh;
 
@@ -87,6 +142,8 @@ HitMesh HitMeshBuilder::CreateFromVertices(
 
     hitMesh.restitution = 0.3f;
     hitMesh.friction = 0.5f;
+
+    SetupInertiaTensor(hitMesh);
 
     hitMesh.UpdateMatrix();
 
@@ -156,6 +213,8 @@ HitMesh HitMeshBuilder::CreateFromTriangle(const Triangle& triangle) {
 
     hitMesh.restitution = 0.3f;
     hitMesh.friction = 0.5f;
+
+    SetupInertiaTensor(hitMesh);
 
     hitMesh.UpdateMatrix();
 

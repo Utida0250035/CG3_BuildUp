@@ -139,6 +139,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\main.cpp" />
     <ClCompile Include="Codes\Source\Matrix2D.cpp" />
     <ClCompile Include="Codes\Source\Matrix3D.cpp" />
+    <ClCompile Include="Codes\Source\Matrix3x3Physics.cpp" />
     <ClCompile Include="Codes\Source\OBB.cpp" />
     <ClCompile Include="Codes\Source\PipelineState.cpp" />
     <ClCompile Include="Codes\Source\Plane.cpp" />
@@ -207,6 +208,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\MaterialData.h" />
     <ClInclude Include="Codes\Include\Matrix2D.h" />
     <ClInclude Include="Codes\Include\Matrix3D.h" />
+    <ClInclude Include="Codes\Include\Matrix3x3Physics.h" />
     <ClInclude Include="Codes\Include\OBB.h" />
     <ClInclude Include="Codes\Include\Overlap.h" />
     <ClInclude Include="Codes\Include\PipelineState.h" />
