@@ -185,6 +185,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\ConvertString.h" />
     <ClInclude Include="Codes\Include\CreateBufferResource.h" />
     <ClInclude Include="Codes\Include\DebugCamera.h" />
+    <ClInclude Include="Codes\Include\DebugConsole.h" />
     <ClInclude Include="Codes\Include\DeltaTime.h" />
     <ClInclude Include="Codes\Include\DescriptorAllocator.h" />
     <ClInclude Include="Codes\Include\DirectionalLightData.h" />

@@ -97,6 +97,7 @@
     <ClInclude Include="Codes\Include\HitMesh.h" />
     <ClInclude Include="Codes\Include\CollisionMeshToTriangle.h" />
     <ClInclude Include="Codes\Include\PyramidMesh.h" />
+    <ClInclude Include="Codes\Include\DebugConsole.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />

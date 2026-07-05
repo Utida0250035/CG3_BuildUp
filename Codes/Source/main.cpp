@@ -54,7 +54,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	size_t seCat = audio->LoadSe("./Resources/Audios/seCat.mp3");
 
-
 	/* Triangle */
 
 	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{std::numbers::pi_v<float> * 0.5f, 0.0f, 0.0f}, Vector3{0.0f, -1.0f, 0.0f} };
@@ -326,7 +325,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
 		triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
 
-		triangle.normal = VectorTransform(triangleVertexData[0].normal, MakeRotateMatrix(triangleTransform.rotate));
+		triangle.normal = VectorNormalize(
+			VectorCross(
+			triangle.v1 - triangle.v0,
+			triangle.v2 - triangle.v0
+		)
+		);
 
 		for (size_t i = 0; i < 3; ++i) {
 
@@ -382,7 +386,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		hitMeshPyramid.velocity.y += -5.0f * deltaTime;
 		hitMeshPyramid.Update(deltaTime);
 
-		ResolveCollision(hitMeshPyramid, { triangle });
+		Vector3 contact = {8192.0f, 0.0f, 0.0f};
+
+		ResolveCollision(hitMeshPyramid, { triangle }, contact);
 
 		playInput->EndOfFrame();
 
@@ -406,6 +412,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
 		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, Transform{ {1.0f, 1.0f, 1.0f}, hitMeshPyramid.rotation, hitMeshPyramid.position }, pyramidMesh, isLightingEnable);
+
+		if (contact.x != 8192.0f) {
+
+			atrum->DrawSphere(textureWhite, Vec4Red(), Transform{}, Transform{ {1.0f, 1.0f, 1.0f}, {}, contact }, 0.1f, 10, false);
+
+		}
 
 		// Sprite準備
 		atrum->PrepareSprite();

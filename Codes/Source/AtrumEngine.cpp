@@ -3,6 +3,7 @@
 #include "CommandContext.h"
 #include "ConvertString.h"
 #include "CreateBufferResource.h"
+#include "DebugConsole.h"
 #include "DirectInput.h"
 #include "Hash64.h"
 #include "Log.h"
@@ -420,6 +421,8 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	SetUnhandledExceptionFilter(ExportDump);
 
 #ifdef _DEBUG
+
+	OpenDebugConsole();
 
 	ComPtr<ID3D12Debug1> debugController;
 
