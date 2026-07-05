@@ -331,7 +331,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 }
 
-void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere) {
+void AtrumEngine::DrawCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInInstance, const uint32_t& vertexCountInInstance) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -359,11 +359,11 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& i
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(indexDataCountInSphere, 1, indexBuffer_->GetDrewCount(), vertexBuffer_->GetDrewCount(), 0);
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(indexDataCountInInstance, 1, indexBuffer_->GetDrewCount(), vertexBuffer_->GetDrewCount(), 0);
 
-	indexBuffer_->AddDrewCount(indexDataCountInSphere);
+	indexBuffer_->AddDrewCount(indexDataCountInInstance);
 
-	vertexBuffer_->AddDrewCount(vertexCountInSphere);
+	vertexBuffer_->AddDrewCount(vertexCountInInstance);
 
 	constantBufferCount_++;
 
@@ -1452,7 +1452,69 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 	}
 
-	this->DrawSphereCall(textureIndex, indexDataCount - indexBuffer_->GetDrewCount(), vertexDataCount - vertexBuffer_->GetDrewCount());
+	this->DrawCall(textureIndex, indexDataCount - indexBuffer_->GetDrewCount(), vertexDataCount - vertexBuffer_->GetDrewCount());
+
+}
+
+void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& pyramidTransform, const PyramidMesh& mesh, const bool isLighting) {
+
+	// 非対称ピラミッドのTransform
+	Matrix4x4 worldMatrix = this->CreateWorldMatrix(pyramidTransform);
+
+	TransformationData transformationData{};
+
+	transformationData.wvp = worldMatrix * viewMatrix_ * kPerspectiveFovMatrix;
+	transformationData.world = worldMatrix;
+
+	transformationBuffer_->SetData(transformationData, constantBufferCount_);
+
+
+	MaterialData materialData{};
+
+	materialData.color = textureColor;
+
+	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
+	uvTransformMatrix *= MakeZRotateMatrix(uvTransform.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform.translate);
+	materialData.uvTransformMatrix = uvTransformMatrix;
+
+	materialData.inLightingEnable = isLighting;
+
+	materialBuffer_->SetData(materialData, constantBufferCount_);
+
+
+	// 描画関数内の書き込み処理
+	uint32_t vStart = vertexBuffer_->GetDrewCount();
+	uint32_t iStart = indexBuffer_->GetDrewCount();
+
+	// 1. 各頂点に個別の法線を持たせるための準備
+	// 今回は、インデックスを使って頂点バッファを埋めていく
+	for (size_t i = 0; i < mesh.indices.size(); i += 3) {
+		uint16_t i0 = mesh.indices[i];
+		uint16_t i1 = mesh.indices[i + 1];
+		uint16_t i2 = mesh.indices[i + 2];
+
+		// 面法線を計算
+		Vector3 v0 = { mesh.vertices[i0].x, mesh.vertices[i0].y, mesh.vertices[i0].z };
+		Vector3 v1 = { mesh.vertices[i1].x, mesh.vertices[i1].y, mesh.vertices[i1].z };
+		Vector3 v2 = { mesh.vertices[i2].x, mesh.vertices[i2].y, mesh.vertices[i2].z };
+		Vector3 faceNormal = VectorNormalize(VectorCross(v1 - v0, v2 - v0));
+
+		// 2. インデックスバッファの仕様を維持しつつ、
+		// 頂点バッファには「面ごとの法線」を持った頂点を書き込む
+		vertexBuffer_->SetVertexData({ {v0.x, v0.y, v0.z, 1.0f}, {0,0}, faceNormal }, vStart++);
+		vertexBuffer_->SetVertexData({ {v1.x, v1.y, v1.z, 1.0f}, {0,0}, faceNormal }, vStart++);
+		vertexBuffer_->SetVertexData({ {v2.x, v2.y, v2.z, 1.0f}, {0,0}, faceNormal }, vStart++);
+
+		// インデックスバッファには、今の vStart から逆算した相対インデックスを書き込む
+		// ※インデックスバッファの仕様上、ここでの数値が正しく参照できればOKです
+		indexBuffer_->SetIndexData(vStart - 3, iStart++);
+		indexBuffer_->SetIndexData(vStart - 2, iStart++);
+		indexBuffer_->SetIndexData(vStart - 1, iStart++);
+	}
+
+	// 描画実行 (mesh.indices.size() で数を確認)
+	this->DrawCall(textureIndex, (uint32_t)mesh.indices.size(), (uint32_t)mesh.vertices.size());
 
 }
 

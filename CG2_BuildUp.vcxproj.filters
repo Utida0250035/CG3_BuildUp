@@ -41,6 +41,7 @@
     <ClCompile Include="Codes\Source\IndexBuffer.cpp" />
     <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
     <ClCompile Include="Codes\Source\DebugCamera.cpp" />
+    <ClCompile Include="Codes\Source\HitMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -93,6 +94,9 @@
     <ClInclude Include="Codes\Include\DebugCamera.h" />
     <ClInclude Include="Codes\Include\Camera.h" />
     <ClInclude Include="Codes\Include\Quaternion.h" />
+    <ClInclude Include="Codes\Include\HitMesh.h" />
+    <ClInclude Include="Codes\Include\CollisionMeshToTriangle.h" />
+    <ClInclude Include="Codes\Include\PyramidMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />

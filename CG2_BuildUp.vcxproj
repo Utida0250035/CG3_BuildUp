@@ -131,6 +131,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\DeltaTime.cpp" />
     <ClCompile Include="Codes\Source\DescriptorAllocator.cpp" />
     <ClCompile Include="Codes\Source\Fence.cpp" />
+    <ClCompile Include="Codes\Source\HitMesh.cpp" />
     <ClCompile Include="Codes\Source\IndexBuffer.cpp" />
     <ClCompile Include="Codes\Source\Log.cpp" />
     <ClCompile Include="Codes\Source\main.cpp" />
@@ -178,6 +179,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Bezier.h" />
     <ClInclude Include="Codes\Include\Camera.h" />
     <ClInclude Include="Codes\Include\Collision.h" />
+    <ClInclude Include="Codes\Include\CollisionMeshToTriangle.h" />
     <ClInclude Include="Codes\Include\CommandContext.h" />
     <ClInclude Include="Codes\Include\ConstantBuffer.h" />
     <ClInclude Include="Codes\Include\ConvertString.h" />
@@ -188,6 +190,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\DirectionalLightData.h" />
     <ClInclude Include="Codes\Include\Fence.h" />
     <ClInclude Include="Codes\Include\Hash64.h" />
+    <ClInclude Include="Codes\Include\HitMesh.h" />
     <ClInclude Include="Codes\Include\ImGui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -201,6 +204,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Plane.h" />
     <ClInclude Include="Codes\Include\DirectInput.h" />
     <ClInclude Include="Codes\Include\PlayInput.h" />
+    <ClInclude Include="Codes\Include\PyramidMesh.h" />
     <ClInclude Include="Codes\Include\Quaternion.h" />
     <ClInclude Include="Codes\Include\RenderDevice.h" />
     <ClInclude Include="Codes\Include\RootSignature.h" />
