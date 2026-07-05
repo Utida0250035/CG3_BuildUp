@@ -42,6 +42,10 @@
     <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
     <ClCompile Include="Codes\Source\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\HitMesh.cpp" />
+    <ClCompile Include="Codes\Source\SAT.cpp" />
+    <ClCompile Include="Codes\Source\HitMeshBuilder.cpp" />
+    <ClCompile Include="Codes\Source\CollisionManager.cpp" />
+    <ClCompile Include="Codes\Source\Matrix2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\AtrumEngine.h" />
@@ -95,9 +99,16 @@
     <ClInclude Include="Codes\Include\Camera.h" />
     <ClInclude Include="Codes\Include\Quaternion.h" />
     <ClInclude Include="Codes\Include\HitMesh.h" />
-    <ClInclude Include="Codes\Include\CollisionMeshToTriangle.h" />
     <ClInclude Include="Codes\Include\PyramidMesh.h" />
     <ClInclude Include="Codes\Include\DebugConsole.h" />
+    <ClInclude Include="Projection.h" />
+    <ClInclude Include="Codes\Include\Triangle.h" />
+    <ClInclude Include="Codes\Include\Overlap.h" />
+    <ClInclude Include="Codes\Include\SAT.h" />
+    <ClInclude Include="Codes\Include\CollisionTypes.h" />
+    <ClInclude Include="Codes\Include\HitMeshBuilder.h" />
+    <ClInclude Include="Codes\Include\CollisionManager.h" />
+    <ClInclude Include="Codes\Include\Matrix2D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Object3d.hlsli" />

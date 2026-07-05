@@ -1,19 +1,21 @@
 #include "AtrumEngine.h"
 #include "Audio.h"
-#include "Bezier.h"
-#include "Collision.h"
+#include "CollisionManager.h"
+#include "DebugCamera.h"
 #include "DeltaTime.h"
-#include "Log.h"
-#include "OBB.h"
 #include "DirectInput.h"
 #include "HitMesh.h"
-#include "PyramidMesh.h"
-#include "CollisionMeshToTriangle.h"
+#include "HitMeshBuilder.h"
+#include "Log.h"
+#include "OBB.h"
 #include "PlayInput.h"
+#include "PyramidMesh.h"
 #include "StaticCast.h"
-#include "DebugCamera.h"
+#include "Triangle.h"
 #include <memory>
 #include <numbers>
+#include <iostream>
+#include <format>
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -56,7 +58,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* Triangle */
 
-	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{std::numbers::pi_v<float> * 0.5f, 0.0f, 0.0f}, Vector3{0.0f, -1.0f, 0.0f} };
+	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{std::numbers::pi_v<float> *0.5f, 0.0f, 0.0f}, Vector3{0.0f, -1.0f, 0.0f} };
 
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	Transform triangleUvTransform{};
@@ -80,11 +82,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* HitMesh */
 
 	PyramidMesh pyramidMesh{};
-	HitMesh hitMeshPyramid = CreateAsymmetricPyramid();
+	HitMesh hitMeshPyramid = HitMeshBuilder::CreateFromPyramid(PyramidMesh{});
 	hitMeshPyramid.position = { 0.0f, 10.0f, 0.0f };
 	hitMeshPyramid.velocity = { 0.0f, -0.1f, 0.0f };
-	hitMeshPyramid.rotation = { 0.0f, 0.0f, 0.0f };
+	hitMeshPyramid.rotation = Quaternion::Identity();
 	hitMeshPyramid.angularVelocity = {};
+	hitMeshPyramid.inverseMass = 1.0f;
+	hitMeshPyramid.mass = 3.0f;
+
+	HitMesh hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
+
+	/* Collision */
+
+	CollisionManager colM{};
 
 	/* DirectionalLight */
 
@@ -282,6 +292,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
 			hitMeshPyramid.angularVelocity = {};
 			hitMeshPyramid.rotation = {};
+			hitMeshPyramid.velocity = {};
 
 		}
 
@@ -320,17 +331,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			vertices[i] = { v.position.x, v.position.y, v.position.w };
 
 		}
-
-		triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
-		triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
-		triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
-
-		triangle.normal = VectorNormalize(
-			VectorCross(
-			triangle.v1 - triangle.v0,
-			triangle.v2 - triangle.v0
-		)
-		);
 
 		for (size_t i = 0; i < 3; ++i) {
 
@@ -383,12 +383,59 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #endif
 
-		hitMeshPyramid.velocity.y += -5.0f * deltaTime;
+		triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
+		triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
+		triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
+
+		triangle.normal = VectorNormalize(
+			VectorCross(
+			triangle.v1 - triangle.v0,
+			triangle.v2 - triangle.v0
+		)
+		);
+
+		hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
+
+		hitMeshPyramid.velocity.y += -1.0f * deltaTime;
 		hitMeshPyramid.Update(deltaTime);
 
-		Vector3 contact = {8192.0f, 0.0f, 0.0f};
+		for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {
+			Vector3 w = VectorTransform(
+				hitMeshPyramid.localVertices[i],
+				hitMeshPyramid.worldMatrix
+			);
 
-		ResolveCollision(hitMeshPyramid, { triangle }, contact);
+			std::cout << std::format(
+				"HitMesh world[{}] = {}, {}, {}",
+				i, w.x, w.y, w.z
+			)<<std::endl;
+		}
+
+		Vector3 contact = { 8192.0f, 0.0f, 0.0f };
+
+		SATResult test = TestSAT(hitMeshPyramid, hitMeshTriangle);
+
+		std::cout << std::format(
+			"SAT hit={}, depth={}, normal=({}, {}, {})",
+			test.isHit,
+			test.depth,
+			test.normal.x,
+			test.normal.y,
+			test.normal.z
+		) << std::endl;
+
+		colM.Clear();
+
+		colM.AddBody(&hitMeshTriangle);
+
+		colM.AddBody(&hitMeshPyramid);
+
+
+		for (size_t i = 0; i < 4; i++) {
+
+			colM.CheckCollision();
+
+		}
 
 		playInput->EndOfFrame();
 
@@ -411,7 +458,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
-		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, Transform{ {1.0f, 1.0f, 1.0f}, hitMeshPyramid.rotation, hitMeshPyramid.position }, pyramidMesh, isLightingEnable);
+		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
 
 		if (contact.x != 8192.0f) {
 

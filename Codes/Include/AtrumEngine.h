@@ -11,6 +11,7 @@
 #include "MaterialData.h"
 #include "Matrix3D.h"
 #include "PipelineState.h"
+#include "Quaternion.h"
 #include "RenderDevice.h"
 #include "RootSignature.h"
 #include "ShaderCompiler.h"
@@ -566,7 +567,7 @@ public:
 	/// <param name="triangleTransform"></param>
 	/// <param name="vertexData"></param>
 	/// <param name="isLighting"></param>
-	void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const PyramidMesh& mesh, const bool isLighting = false);
+	void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting = false);
 
 	/// <summary>
 	/// 球の描画

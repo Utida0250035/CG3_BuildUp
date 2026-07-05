@@ -124,6 +124,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\Bezier.cpp" />
     <ClCompile Include="Codes\Source\Collision.cpp" />
+    <ClCompile Include="Codes\Source\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\CommandContext.cpp" />
     <ClCompile Include="Codes\Source\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
@@ -132,9 +133,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\DescriptorAllocator.cpp" />
     <ClCompile Include="Codes\Source\Fence.cpp" />
     <ClCompile Include="Codes\Source\HitMesh.cpp" />
+    <ClCompile Include="Codes\Source\HitMeshBuilder.cpp" />
     <ClCompile Include="Codes\Source\IndexBuffer.cpp" />
     <ClCompile Include="Codes\Source\Log.cpp" />
     <ClCompile Include="Codes\Source\main.cpp" />
+    <ClCompile Include="Codes\Source\Matrix2D.cpp" />
     <ClCompile Include="Codes\Source\Matrix3D.cpp" />
     <ClCompile Include="Codes\Source\OBB.cpp" />
     <ClCompile Include="Codes\Source\PipelineState.cpp" />
@@ -143,6 +146,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\PlayInput.cpp" />
     <ClCompile Include="Codes\Source\RenderDevice.cpp" />
     <ClCompile Include="Codes\Source\RootSignature.cpp" />
+    <ClCompile Include="Codes\Source\SAT.cpp" />
     <ClCompile Include="Codes\Source\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\SwapChain.cpp" />
     <ClCompile Include="Codes\Source\Vector2.cpp" />
@@ -179,7 +183,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Bezier.h" />
     <ClInclude Include="Codes\Include\Camera.h" />
     <ClInclude Include="Codes\Include\Collision.h" />
-    <ClInclude Include="Codes\Include\CollisionMeshToTriangle.h" />
+    <ClInclude Include="Codes\Include\CollisionManager.h" />
+    <ClInclude Include="Codes\Include\CollisionTypes.h" />
     <ClInclude Include="Codes\Include\CommandContext.h" />
     <ClInclude Include="Codes\Include\ConstantBuffer.h" />
     <ClInclude Include="Codes\Include\ConvertString.h" />
@@ -192,6 +197,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Fence.h" />
     <ClInclude Include="Codes\Include\Hash64.h" />
     <ClInclude Include="Codes\Include\HitMesh.h" />
+    <ClInclude Include="Codes\Include\HitMeshBuilder.h" />
     <ClInclude Include="Codes\Include\ImGui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -199,8 +205,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\LightData.h" />
     <ClInclude Include="Codes\Include\Log.h" />
     <ClInclude Include="Codes\Include\MaterialData.h" />
+    <ClInclude Include="Codes\Include\Matrix2D.h" />
     <ClInclude Include="Codes\Include\Matrix3D.h" />
     <ClInclude Include="Codes\Include\OBB.h" />
+    <ClInclude Include="Codes\Include\Overlap.h" />
     <ClInclude Include="Codes\Include\PipelineState.h" />
     <ClInclude Include="Codes\Include\Plane.h" />
     <ClInclude Include="Codes\Include\DirectInput.h" />
@@ -209,12 +217,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Quaternion.h" />
     <ClInclude Include="Codes\Include\RenderDevice.h" />
     <ClInclude Include="Codes\Include\RootSignature.h" />
+    <ClInclude Include="Codes\Include\SAT.h" />
     <ClInclude Include="Codes\Include\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\StaticCast.h" />
     <ClInclude Include="Codes\Include\SwapChain.h" />
     <ClInclude Include="Codes\Include\Texture.h" />
     <ClInclude Include="Codes\Include\TransformationData.h" />
     <ClInclude Include="Codes\Include\Transform.h" />
+    <ClInclude Include="Codes\Include\Triangle.h" />
     <ClInclude Include="Codes\Include\Vector2.h" />
     <ClInclude Include="Codes\Include\Vector3.h" />
     <ClInclude Include="Codes\Include\Vector4.h" />
@@ -242,6 +252,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Externals\imgui\imstb_truetype.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="Projection.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Object3d.PS.hlsl">

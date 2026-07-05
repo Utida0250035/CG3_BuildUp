@@ -1,124 +1,249 @@
 #pragma once
+#include "CollisionTypes.h"
+#include "Matrix2D.h"
 #include "Matrix3D.h"
 #include "PyramidMesh.h"
+#include "Quaternion.h"
 #include "Vector3.h"
 #include <vector>
 
 inline Vector3 CalculateCentroid(const std::vector<Vector3>& vertices) {
-    Vector3 sum = { 0.0f, 0.0f, 0.0f };
-    for (const auto& v : vertices) {
-        sum.x += v.x;
-        sum.y += v.y;
-        sum.z += v.z;
-    }
-    float count = static_cast<float>(vertices.size());
-    return { sum.x / count, sum.y / count, sum.z / count };
+	Vector3 sum = { 0.0f, 0.0f, 0.0f };
+	for (const auto& v : vertices) {
+		sum.x += v.x;
+		sum.y += v.y;
+		sum.z += v.z;
+	}
+	float count = static_cast<float>(vertices.size());
+	return { sum.x / count, sum.y / count, sum.z / count };
 }
 
-// 物理演算用ボディ構造体
+///------------------------------------------------------------
+/// 凸メッシュ
+/// SAT・GJK・EPA・剛体計算で使用する
+///------------------------------------------------------------
 struct HitMesh {
-    // 形状データ（凸包の頂点群）
-    // ※元のモデルの頂点から「凸包アルゴリズム(QuickHull等)」で生成したものを持つ
-    std::vector<Vector3> localVertices{};
 
-    // 現在の状態
-    Vector3 position{};    // ワールド位置
-    Vector3 rotation{};    // クォータニオン回転
-    Matrix4x4 worldMatrix{}; // ワールド行列 (位置・回転から算出)
+	//--------------------------------------------------------
+	// メッシュ情報（ローカル空間）
+	//--------------------------------------------------------
 
-    // 速度と角速度（物理応答用）
-    Vector3 velocity{};
-    Vector3 angularVelocity{};
+	// 頂点
+	std::vector<Vector3> localVertices{};
 
-    // ヘルパー：ワールド空間での頂点取得（サポート関数用）
-    Vector3 GetWorldVertex(int index) const {
-        return VectorTransform(localVertices[index], worldMatrix);
-    }
+	// 辺
+	std::vector<Edge> edges{};
 
-    void Update(const float deltaTime) {
+	// 面
+	std::vector<Face> faces{};
 
-        position += velocity * deltaTime;
-        rotation += angularVelocity * deltaTime;
+	//--------------------------------------------------------
+	// ワールド空間
+	//--------------------------------------------------------
 
-        UpdateMatrix();
+	// ワールド座標
+	std::vector<Vector3> worldVertices{};
 
-    }
+	//--------------------------------------------------------
+	// Transform
+	//--------------------------------------------------------
 
-    // 行列の更新
-    void UpdateMatrix() {
-        worldMatrix = MakeScaleMatrix({ 1.0f, 1.0f, 1.0f }) * MakeRotateMatrix(rotation) * MakeTranslateMatrix(position);
-    }
+	Vector3 position{};
 
-    // ある方向 d に対して最も遠い頂点を探す（サポート関数）
-    Vector3 GetSupportPoint(Vector3 direction) const {
-        // ローカル空間での方向を計算（行列の逆変換を使用）
-        Matrix4x4 invWorld = MatrixInverse(worldMatrix);
-        Vector3 localDir = VectorTransform(direction, invWorld);
+	Quaternion rotation = Quaternion::Identity();
 
-        float maxDot = -FLT_MAX;
-        int bestIndex = 0;
+	Vector3 scale = { 1.0f,1.0f,1.0f };
 
-        for (size_t i = 0; i < localVertices.size(); ++i) {
-            float dot = VectorDot(localVertices[i], localDir);
-            if (dot > maxDot) {
-                maxDot = dot;
-                bestIndex = (int)i;
-            }
-        }
+	Matrix4x4 worldMatrix{};
 
-        // ワールド空間の頂点を返す
-        return GetWorldVertex(bestIndex);
-    }
+	//--------------------------------------------------------
+	// Physics
+	//--------------------------------------------------------
 
-    void CenterMesh() {
-        Vector3 centroid = CalculateCentroid(localVertices);
+	Vector3 velocity{};
 
-        for (auto& v : localVertices) {
-            v.x -= centroid.x;
-            v.y -= centroid.y;
-            v.z -= centroid.z;
-        }
-    }
+	// ワールド空間角速度(rad/s)
+	Vector3 angularVelocity{};
+
+	Vector3 force{};
+
+	Vector3 torque{};
+
+	Matrix3x3 inertiaTensor{};
+
+	Matrix3x3 inverseInertiaTensor{};
+
+	float mass = 1.0f;
+
+	float inverseMass = 1.0f;
+
+	float restitution = 0.3f;
+
+	float friction = 0.5f;
+
+	bool useGravity = true;
+
+	bool isStatic = false;
+
+	
+
+	//--------------------------------------------------------
+	// 更新
+	//--------------------------------------------------------
+
+	void Update(float deltaTime)
+	{
+		//--------------------
+		// 平行移動
+		//--------------------
+
+		position += velocity * deltaTime;
+
+		//--------------------
+		// 回転
+		//--------------------
+
+		Vector3 rotateDelta = angularVelocity * deltaTime;
+
+		float angle = VectorLength(rotateDelta);
+
+		if (angle > 0.000001f) {
+
+			Vector3 axis = rotateDelta / angle;
+
+			Quaternion delta =
+				Quaternion::FromAxisAngle(
+					axis,
+					angle);
+
+			rotation =
+				(delta * rotation).normalized();
+		}
+
+		UpdateMatrix();
+	}
+
+	//--------------------------------------------------------
+	// 行列更新
+	//--------------------------------------------------------
+
+	void UpdateMatrix()
+	{
+		worldMatrix =
+			MakeScaleMatrix(scale) *
+			rotation.create_rotate_matrix() *
+			MakeTranslateMatrix(position);
+
+		UpdateWorldVertices();
+	}
+
+	//--------------------------------------------------------
+	// ワールド頂点更新
+	//--------------------------------------------------------
+
+	void UpdateWorldVertices()
+	{
+		worldVertices.clear();
+
+		worldVertices.reserve(localVertices.size());
+
+		for (const auto& v : localVertices)
+		{
+			worldVertices.push_back(
+				VectorTransform(
+				v,
+				worldMatrix));
+		}
+	}
+
+	//--------------------------------------------------------
+	// Support Mapping
+	//--------------------------------------------------------
+
+	Vector3 GetSupportPoint(
+		const Vector3& direction) const
+	{
+		float maxDot =
+			-FLT_MAX;
+
+		Vector3 best{};
+
+		for (const auto& v : worldVertices)
+		{
+			float d =
+				VectorDot(v, direction);
+
+			if (d > maxDot)
+			{
+				maxDot = d;
+				best = v;
+			}
+		}
+
+		return best;
+	}
+
+	//--------------------------------------------------------
+	// 面法線取得
+	//--------------------------------------------------------
+
+	Vector3 GetFaceNormal(
+		uint32_t index) const
+	{
+		const Face& face =
+			faces[index];
+
+		Matrix4x4 rotate =
+			rotation.create_rotate_matrix();
+
+		return VectorNormalize(
+			VectorTransform(
+			face.normal,
+			rotate));
+	}
+
+	//--------------------------------------------------------
+	// 面中心
+	//--------------------------------------------------------
+
+	Vector3 GetFaceCenter(
+		uint32_t index) const
+	{
+		const Face& face =
+			faces[index];
+
+		Vector3 center{};
+
+		for (uint32_t i : face.indices)
+		{
+			center += worldVertices[i];
+		}
+
+		center /=
+			static_cast<float>(
+				face.indices.size());
+
+		return center;
+	}
+
+	//--------------------------------------------------------
+	// メッシュ重心
+	//--------------------------------------------------------
+
+	Vector3 GetCenter() const
+	{
+		Vector3 center{};
+
+		for (const auto& v : worldVertices)
+		{
+			center += v;
+		}
+
+		center /=
+			static_cast<float>(
+				worldVertices.size());
+
+		return center;
+	}
 
 };
-
-inline HitMesh CreateAsymmetricPyramid() {
-    PyramidMesh pyramid{};
-    HitMesh hm{};
-
-    for (const auto& vertex : pyramid.vertices) {
-
-        hm.localVertices.push_back(vertex.position);
-
-    }
-
-    // 初期状態の設定
-    hm.position = {};
-    hm.rotation = {};
-    hm.velocity = {};
-    hm.angularVelocity = {};
-    hm.UpdateMatrix();
-
-    return hm;
-}
-
-// 既存のMeshデータ（パース済み）から HitMesh を初期化する
-inline HitMesh CreateHitMeshFromObj(const std::vector<Vector3>& rawVertices) {
-    HitMesh hm{};
-
-    // ここで凸包アルゴリズムまたは間引き処理を行う
-    // 今日中に終わらせるなら、とりあえず頂点をコピーするだけでもOK
-    // ただし、頂点数が多い場合は「数点おきに間引く」などの工夫を推奨
-    for (size_t i = 0; i < rawVertices.size(); i += 4) { // 簡易的な間引き例
-        hm.localVertices.push_back(rawVertices[i]);
-    }
-
-    // 初期状態の設定
-    hm.position = Vector3(0.0f, 0.0f, 0.0f);
-    hm.rotation = {};
-    hm.velocity = {};
-    hm.angularVelocity = {};
-    hm.UpdateMatrix();
-
-    return hm;
-}

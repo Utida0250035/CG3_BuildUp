@@ -22,9 +22,9 @@ typedef struct OrientedBoundingBox {
 
 	void GetWorldCorners(Vector2 corners[4]) const;
 
-} OBB;
+} MyOBB;
 
-struct RigidBodyOBB : public OBB {
+struct RigidBodyOBB : public MyOBB {
 
 	Vector2 velocity{};
 	float angularVelocity = 0.0f;

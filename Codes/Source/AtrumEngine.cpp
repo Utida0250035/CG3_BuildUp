@@ -1496,10 +1496,21 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 }
 
-void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& pyramidTransform, const PyramidMesh& mesh, const bool isLighting) {
+void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting) {
 
 	// 非対称ピラミッドのTransform
-	Matrix4x4 worldMatrix = this->CreateWorldMatrix(pyramidTransform);
+	Matrix4x4 worldMatrix = MakeScaleMatrix(scale) * rotate.create_rotate_matrix() * MakeTranslateMatrix(translate);
+
+	for (size_t i = 0; i < mesh.renderVertices.size(); ++i) {
+		Vector3 p = mesh.renderVertices[i].position;
+
+		Vector3 w = VectorTransform(p, worldMatrix);
+
+		std::cout << std::format(
+			"Render world[{}] = {}, {}, {}",
+			i, w.x, w.y, w.z
+		) << std::endl;
+	}
 
 	TransformationData transformationData{};
 
@@ -1526,7 +1537,7 @@ void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vect
 	// 描画関数内の書き込み処理
 	uint32_t vStart = vertexBuffer_->GetDrewCount();
 
-	for (const auto& vertex : mesh.vertices) {
+	for (const auto& vertex : mesh.renderVertices) {
 
 		vertexBuffer_->SetVertexData(
 			{
@@ -1540,7 +1551,7 @@ void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vect
 	}
 
 	// 描画実行 (mesh.indices.size() で数を確認)
-	this->DrawCall(textureIndex, (uint32_t)mesh.vertices.size());
+	this->DrawCall(textureIndex, (uint32_t)mesh.renderVertices.size());
 
 }
 
