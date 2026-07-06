@@ -198,19 +198,43 @@ struct HitMesh {
 	// 面法線取得
 	//--------------------------------------------------------
 
-	Vector3 GetFaceNormal(
-		uint32_t index) const
-	{
-		const Face& face =
-			faces[index];
+	Vector3 GetFaceNormal(uint32_t index) const {
 
-		Matrix4x4 rotate =
-			rotation.create_rotate_matrix();
+		if (index >= faces.size()) {
+			return {};
+		}
 
-		return VectorNormalize(
-			VectorTransform(
-			face.normal,
-			rotate));
+		const Face& face = faces[index];
+
+		if (face.indices.size() < 3) {
+			return {};
+		}
+
+		uint32_t i0 = face.indices[0];
+		uint32_t i1 = face.indices[1];
+		uint32_t i2 = face.indices[2];
+
+		if (i0 >= worldVertices.size() ||
+			i1 >= worldVertices.size() ||
+			i2 >= worldVertices.size()) {
+			return {};
+		}
+
+		const Vector3& v0 = worldVertices[i0];
+		const Vector3& v1 = worldVertices[i1];
+		const Vector3& v2 = worldVertices[i2];
+
+		Vector3 edge0 = v1 - v0;
+		Vector3 edge1 = v2 - v0;
+
+		Vector3 normal =
+			VectorCross(edge0, edge1);
+
+		if (VectorLength(normal) <= 0.000001f) {
+			return {};
+		}
+
+		return VectorNormalize(normal);
 	}
 
 	//--------------------------------------------------------

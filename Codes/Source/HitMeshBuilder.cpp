@@ -111,7 +111,7 @@ HitMesh HitMeshBuilder::CreateFromVertices(
     hitMesh.inverseMass = 1.0f;
 
     hitMesh.restitution = 0.3f;
-    hitMesh.friction = 2.8f;
+    hitMesh.friction = 0.0f;
 
     SetupInertiaTensor(hitMesh);
 
@@ -155,12 +155,6 @@ HitMesh HitMeshBuilder::CreateFromTriangle(const Triangle& triangle) {
         Face face{};
         face.indices = indices;
 
-        const Vector3& v0 = hitMesh.localVertices[face.indices[0]];
-        const Vector3& v1 = hitMesh.localVertices[face.indices[1]];
-        const Vector3& v2 = hitMesh.localVertices[face.indices[2]];
-
-        face.normal = VectorNormalize(VectorCross(v1 - v0, v2 - v0));
-
         hitMesh.faces.push_back(face);
     };
 
@@ -181,8 +175,8 @@ HitMesh HitMeshBuilder::CreateFromTriangle(const Triangle& triangle) {
     hitMesh.mass = 0.0f;
     hitMesh.inverseMass = 0.0f;
 
-    hitMesh.restitution = 0.0f;
-    hitMesh.friction = 2.8f;
+    hitMesh.restitution = 0.3f;
+    hitMesh.friction = 0.0f;
 
     SetupInertiaTensor(hitMesh);
 

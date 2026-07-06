@@ -126,6 +126,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Collision.cpp" />
     <ClCompile Include="Codes\Source\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\CommandContext.cpp" />
+    <ClCompile Include="Codes\Source\ContactConstraint.cpp" />
     <ClCompile Include="Codes\Source\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
     <ClCompile Include="Codes\Source\DebugCamera.cpp" />
@@ -188,6 +189,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\CollisionTypes.h" />
     <ClInclude Include="Codes\Include\CommandContext.h" />
     <ClInclude Include="Codes\Include\ConstantBuffer.h" />
+    <ClInclude Include="Codes\Include\ContactConstraint.h" />
     <ClInclude Include="Codes\Include\ConvertString.h" />
     <ClInclude Include="Codes\Include\CreateBufferResource.h" />
     <ClInclude Include="Codes\Include\DebugCamera.h" />

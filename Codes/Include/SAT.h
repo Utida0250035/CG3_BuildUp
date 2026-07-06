@@ -1,46 +1,35 @@
 #pragma once
 
-#include "CollisionTypes.h"
-#include "HitMesh.h"
-
-#include <cfloat>
 #include <vector>
 
-///----------------------------------------
-/// 射影
-///----------------------------------------
+#include "HitMesh.h"
+#include "CollisionTypes.h"
 
 Projection ProjectVertices(
     const std::vector<Vector3>& vertices,
     const Vector3& axis);
 
-///----------------------------------------
-/// 射影の重なり量
-///----------------------------------------
-
 float Overlap(
     const Projection& a,
     const Projection& b);
-
-///----------------------------------------
-/// SAT軸生成
-///----------------------------------------
 
 std::vector<Vector3> GetFaceAxes(
     const HitMesh& mesh);
 
 std::vector<Vector3> GetEdgeAxes(
-    const HitMesh& meshA,
-    const HitMesh& meshB);
+    const HitMesh& a,
+    const HitMesh& b);
 
 std::vector<Vector3> GetAxes(
-    const HitMesh& meshA,
-    const HitMesh& meshB);
+    const HitMesh& a,
+    const HitMesh& b);
 
-///----------------------------------------
-/// SAT判定
-///----------------------------------------
+std::vector<Vector3> GenerateContactPoints(
+    const HitMesh& bodyA,
+    const HitMesh& bodyB,
+    const Vector3& normal,
+    float depth);
 
 SATResult TestSAT(
-    const HitMesh& meshA,
-    const HitMesh& meshB);
+    const HitMesh& bodyA,
+    const HitMesh& bodyB);

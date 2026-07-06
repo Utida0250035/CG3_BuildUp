@@ -63,25 +63,11 @@ struct PyramidMesh
 
 private:
 
-    //--------------------------------------------
-    // 面生成
-    //--------------------------------------------
-
     void AddFace(
         uint32_t i0,
         uint32_t i1,
         uint32_t i2)
     {
-        Vector3 v0 = collisionVertices[i0];
-        Vector3 v1 = collisionVertices[i1];
-        Vector3 v2 = collisionVertices[i2];
-
-        Vector3 normal =
-            VectorNormalize(
-                VectorCross(
-                v1 - v0,
-                v2 - v0));
-
         Face face;
 
         face.indices =
@@ -91,33 +77,21 @@ private:
             i2
         };
 
-        face.normal = normal;
-
         faces.push_back(face);
     }
-
-    //--------------------------------------------
-    // SAT面生成
-    //--------------------------------------------
 
     void BuildFaces()
     {
         faces.clear();
 
-        // 底面
         AddFace(0, 2, 1);
         AddFace(0, 3, 2);
 
-        // 側面
         AddFace(0, 1, 4);
         AddFace(1, 2, 4);
         AddFace(2, 3, 4);
         AddFace(3, 0, 4);
     }
-
-    //--------------------------------------------
-    // 描画頂点生成
-    //--------------------------------------------
 
     void BuildRenderVertices()
     {
@@ -125,23 +99,35 @@ private:
 
         for (const Face& face : faces)
         {
-            renderVertices.push_back(
-                {
-                    collisionVertices[face.indices[0]],
-                    face.normal
-                });
+            if (face.indices.size() < 3)
+            {
+                continue;
+            }
 
-            renderVertices.push_back(
-                {
-                    collisionVertices[face.indices[1]],
-                    face.normal
-                });
+            uint32_t i0 = face.indices[0];
+            uint32_t i1 = face.indices[1];
+            uint32_t i2 = face.indices[2];
 
-            renderVertices.push_back(
-                {
-                    collisionVertices[face.indices[2]],
-                    face.normal
-                });
+            Vector3 v0 = collisionVertices[i0];
+            Vector3 v1 = collisionVertices[i1];
+            Vector3 v2 = collisionVertices[i2];
+
+            Vector3 normal =
+                VectorCross(
+                    v1 - v0,
+                    v2 - v0);
+
+            if (VectorLength(normal) <= 0.000001f)
+            {
+                normal = { 0.0f, 1.0f, 0.0f };
+            } else
+            {
+                normal = VectorNormalize(normal);
+            }
+
+            renderVertices.push_back({ collisionVertices[i0], normal });
+            renderVertices.push_back({ collisionVertices[i1], normal });
+            renderVertices.push_back({ collisionVertices[i2], normal });
         }
     }
 

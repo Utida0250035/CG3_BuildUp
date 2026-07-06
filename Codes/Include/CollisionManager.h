@@ -1,10 +1,9 @@
 #pragma once
 
-#include "CollisionTypes.h"
-#include "HitMesh.h"
-#include "SAT.h"
-
 #include <vector>
+
+#include "HitMesh.h"
+#include "ContactConstraint.h"
 
 class CollisionManager {
 public:
@@ -17,32 +16,14 @@ public:
 
 private:
 
-    void ResolveCollision(
-        HitMesh& meshA,
-        HitMesh& meshB,
-        const SATResult& result
-    );
+    void BuildConstraints();
 
-    void ResolvePosition(
-        HitMesh& meshA,
-        HitMesh& meshB,
-        const SATResult& result
-    );
+    void SolvePositions();
 
-    void ResolveVelocity(
-        HitMesh& meshA,
-        HitMesh& meshB,
-        const SATResult& result
-    );
-
-    bool ShouldApplyImpactImpulse(
-        HitMesh& meshA,
-        HitMesh& meshB,
-        const SATResult& result
-    );
+    void SolveVelocities();
 
 private:
 
-    std::vector<HitMesh*> bodies_{};
-
+    std::vector<HitMesh*> bodies_;
+    std::vector<ContactConstraint> constraints_;
 };

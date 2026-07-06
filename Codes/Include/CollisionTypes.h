@@ -1,126 +1,61 @@
 #pragma once
 
-#include "Vector3.h"
-
-#include <cstdint>
-#include <limits>
+#include <cfloat>
 #include <vector>
 
-///----------------------------------------
-/// 頂点インデックスで表現する辺
-///----------------------------------------
+#include "Vector3.h"
+
 struct Edge {
-
-    uint32_t v0 = 0;
-    uint32_t v1 = 0;
-
+    int start = 0;
+    int end = 0;
 };
 
-///----------------------------------------
-/// 面
-/// SATでは法線軸として使用する
-///----------------------------------------
 struct Face {
-
-    // 面を構成する頂点インデックス
-    std::vector<uint32_t> indices{};
-
-    // ローカル空間法線
-    Vector3 normal{};
-
+    std::vector<uint32_t> indices;
 };
 
-///----------------------------------------
-/// 射影結果
-///----------------------------------------
 struct Projection {
-
-    float min = std::numeric_limits<float>::max();
-    float max = std::numeric_limits<float>::lowest();
-
+    float min = 0.0f;
+    float max = 0.0f;
 };
 
-///----------------------------------------
-/// SAT判定結果
-///----------------------------------------
 struct SATResult {
+    bool hit = false;
 
-    // 衝突したか
-    bool isHit = false;
-
-    // 最小押し戻し方向(MTV)
     Vector3 normal{};
+    float depth = FLT_MAX;
 
-    // めり込み量
-    float depth = 0.0f;
-
-    // 接触点
+    // 旧1点接触。互換用に残す。
     Vector3 contactPoint{};
 
-    // 使用した面
-    uint32_t faceIndex = UINT32_MAX;
-
+    // 新規：複数接触点
+    std::vector<Vector3> contactPoints;
 };
 
-///----------------------------------------
-/// 接触点
-///----------------------------------------
 struct ContactPoint {
-
     Vector3 position{};
-    Vector3 normal{};
-
     float penetration = 0.0f;
-
 };
 
-///----------------------------------------
-/// 衝突情報
-///----------------------------------------
 struct CollisionInfo {
-
-    ContactPoint contact;
-
-    SATResult sat;
-
+    bool hit = false;
+    Vector3 normal{};
+    float depth = 0.0f;
+    std::vector<Vector3> contactPoints;
 };
 
-///----------------------------------------
-/// AABB
-/// BroadPhase用
-///----------------------------------------
 struct AABB {
-
     Vector3 min{};
     Vector3 max{};
-
 };
 
-///----------------------------------------
-/// OBB
-/// 将来用
-///----------------------------------------
 struct OBB {
-
     Vector3 center{};
-
-    Vector3 axis[3] = {
-        {1.0f,0.0f,0.0f},
-        {0.0f,1.0f,0.0f},
-        {0.0f,0.0f,1.0f}
-    };
-
+    Vector3 axis[3]{};
     Vector3 halfSize{};
-
 };
 
-///----------------------------------------
-/// 球
-///----------------------------------------
 struct Sphere {
-
     Vector3 center{};
-
-    float radius = 0.0f;
-
+    float radius = 1.0f;
 };
