@@ -20,14 +20,22 @@ private:
     void ResolveCollision(
         HitMesh& meshA,
         HitMesh& meshB,
-        const SATResult& result);
+        const SATResult& result
+    );
 
     void ResolvePosition(
         HitMesh& meshA,
         HitMesh& meshB,
-        const SATResult& result);
+        const SATResult& result
+    );
 
     void ResolveVelocity(
+        HitMesh& meshA,
+        HitMesh& meshB,
+        const SATResult& result
+    );
+
+    bool ShouldApplyImpactImpulse(
         HitMesh& meshA,
         HitMesh& meshB,
         const SATResult& result

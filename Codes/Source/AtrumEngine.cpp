@@ -1501,17 +1501,6 @@ void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vect
 	// 非対称ピラミッドのTransform
 	Matrix4x4 worldMatrix = MakeScaleMatrix(scale) * rotate.create_rotate_matrix() * MakeTranslateMatrix(translate);
 
-	for (size_t i = 0; i < mesh.renderVertices.size(); ++i) {
-		Vector3 p = mesh.renderVertices[i].position;
-
-		Vector3 w = VectorTransform(p, worldMatrix);
-
-		std::cout << std::format(
-			"Render world[{}] = {}, {}, {}",
-			i, w.x, w.y, w.z
-		) << std::endl;
-	}
-
 	TransformationData transformationData{};
 
 	transformationData.wvp = worldMatrix * viewMatrix_ * kPerspectiveFovMatrix;

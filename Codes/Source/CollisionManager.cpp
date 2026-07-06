@@ -88,8 +88,9 @@ void CollisionManager::ResolveCollision(
 
 	ResolvePosition(meshA, meshB, result);
 
-	ResolveVelocity(meshA, meshB, result);
-
+	if (ShouldApplyImpactImpulse(meshA, meshB, result)) {
+		ResolveVelocity(meshA, meshB, result);
+	}
 }
 
 void CollisionManager::ResolvePosition(
@@ -157,7 +158,10 @@ void CollisionManager::ResolveVelocity(
 	float velocityAlongNormal =
 		VectorDot(relativeVelocity, normal);
 
-	if (velocityAlongNormal > 0.0f) {
+	constexpr float kRestVelocity = 0.1f;
+
+	if (velocityAlongNormal < kRestVelocity)
+	{
 		return;
 	}
 
@@ -220,7 +224,101 @@ void CollisionManager::ResolveVelocity(
 			VectorCross(rB, impulse);
 	}
 
+	// ------------------------------
+// Friction Impulse
+// ------------------------------
+
+	vA =
+		meshA.velocity +
+		VectorCross(meshA.angularVelocity, rA);
+
+	vB =
+		meshB.velocity +
+		VectorCross(meshB.angularVelocity, rB);
+
+	relativeVelocity = vB - vA;
+
+	Vector3 tangent =
+		relativeVelocity -
+		normal * VectorDot(relativeVelocity, normal);
+
+	if (VectorLength(tangent) > 0.000001f) {
+
+		tangent = VectorNormalize(tangent);
+
+		Vector3 rACrossT =
+			VectorCross(rA, tangent);
+
+		Vector3 rBCrossT =
+			VectorCross(rB, tangent);
+
+		Vector3 inertiaTA =
+			meshA.inverseInertiaTensorWorld * rACrossT;
+
+		Vector3 inertiaTB =
+			meshB.inverseInertiaTensorWorld * rBCrossT;
+
+		float frictionDenominator =
+			totalInverseMass +
+			VectorDot(
+				tangent,
+				VectorCross(inertiaTA, rA) +
+				VectorCross(inertiaTB, rB));
+
+		if (frictionDenominator > 0.000001f) {
+
+			float jt =
+				-VectorDot(relativeVelocity, tangent);
+
+			jt /= frictionDenominator;
+
+			float friction =
+				std::sqrt(meshA.friction * meshB.friction);
+
+			float maxFriction =
+				std::abs(impulseScalar) * friction;
+
+			jt = std::clamp(
+				jt,
+				-maxFriction,
+				maxFriction);
+
+			Vector3 frictionImpulse =
+				tangent * jt;
+
+			std::cout << std::format(
+				"tangentSpeed={:.6f}, jt={:.6f}, maxFriction={:.6f}",
+				VectorDot(relativeVelocity, tangent),
+				jt,
+				maxFriction)
+				<< std::endl;
+
+			if (meshA.inverseMass > 0.0f) {
+				meshA.velocity -= frictionImpulse * meshA.inverseMass;
+				meshA.angularVelocity -=
+					meshA.inverseInertiaTensorWorld *
+					VectorCross(rA, frictionImpulse);
+			}
+
+			if (meshB.inverseMass > 0.0f) {
+				meshB.velocity += frictionImpulse * meshB.inverseMass;
+				meshB.angularVelocity +=
+					meshB.inverseInertiaTensorWorld *
+					VectorCross(rB, frictionImpulse);
+			}
+
+		}
+	}
+
 #ifdef _DEBUG
+
+	Vector3 torqueB = VectorCross(rB, impulse);
+
+	std::cout << std::format(
+		"rB=({:.3f},{:.3f},{:.3f}) torqueB=({:.3f},{:.3f},{:.3f})",
+		rB.x, rB.y, rB.z,
+		torqueB.x, torqueB.y, torqueB.z)
+		<< std::endl;
 
 	std::cout << std::format(
 		"vn = {:.6f}, impulse = {:.6f}",
@@ -253,4 +351,40 @@ void CollisionManager::ResolveVelocity(
 
 #endif
 
+}
+
+bool CollisionManager::ShouldApplyImpactImpulse(
+	HitMesh& meshA,
+	HitMesh& meshB,
+	const SATResult& result) {
+
+	Vector3 normal =
+		VectorNormalize(result.normal);
+
+	Vector3 contactPoint =
+		result.contactPoint;
+
+	Vector3 rA =
+		contactPoint - meshA.GetCenter();
+
+	Vector3 rB =
+		contactPoint - meshB.GetCenter();
+
+	Vector3 vA =
+		meshA.velocity +
+		VectorCross(meshA.angularVelocity, rA);
+
+	Vector3 vB =
+		meshB.velocity +
+		VectorCross(meshB.angularVelocity, rB);
+
+	Vector3 relativeVelocity =
+		vB - vA;
+
+	float vn =
+		VectorDot(relativeVelocity, normal);
+
+	constexpr float kImpactVelocity = 0.35f;
+
+	return vn > kImpactVelocity;
 }

@@ -324,11 +324,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
-		Vector3 buffer = hitMeshPyramid.position;
+		ImGui::DragFloat3("pos", &hitMeshPyramid.position.x);
+		ImGui::DragFloat3("velocity", &hitMeshPyramid.velocity.x);
+		ImGui::DragFloat4("rotate(Quaternion)", &hitMeshPyramid.rotation.x);
 
-		ImGui::DragFloat3("pos", &buffer.x);
+		if (ImGui::IsItemActive()) {
 
-		hitMeshPyramid.position = buffer;
+			hitMeshPyramid.rotation.normalize();
+
+		}
+
+		ImGui::DragFloat3("angularVelocity", &hitMeshPyramid.angularVelocity.x);
 
 		ImGui::End();
 
@@ -411,54 +417,44 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #endif
 
-		triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
-		triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
-		triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
+		if (isPhysicsMove) {
 
-		triangle.normal = VectorNormalize(
-			VectorCross(
-			triangle.v1 - triangle.v0,
-			triangle.v2 - triangle.v0
-		)
-		);
+			triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
+			triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
+			triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
 
-		hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
-
-		hitMeshPyramid.velocity.y += gravity * deltaTime;
-		hitMeshPyramid.Update(deltaTime);
-
-		for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {
-			Vector3 w = VectorTransform(
-				hitMeshPyramid.localVertices[i],
-				hitMeshPyramid.worldMatrix
+			triangle.normal = VectorNormalize(
+				VectorCross(
+				triangle.v1 - triangle.v0,
+				triangle.v2 - triangle.v0
+			)
 			);
 
-			std::cout << std::format(
-				"HitMesh world[{}] = {}, {}, {}",
-				i, w.x, w.y, w.z
-			) << std::endl;
+			hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
+
+			hitMeshPyramid.velocity.y += gravity * deltaTime;
+
+			hitMeshPyramid.velocity.y = std::clamp(hitMeshPyramid.velocity.y, -5.0f, 5.0f);
+
+			hitMeshPyramid.Update(deltaTime);
+
+			for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {
+				Vector3 w = VectorTransform(
+					hitMeshPyramid.localVertices[i],
+					hitMeshPyramid.worldMatrix
+				);
+
+			}
+
+			colM.Clear();
+
+			colM.AddBody(&hitMeshTriangle);
+
+			colM.AddBody(&hitMeshPyramid);
+
+			colM.CheckCollision();
+
 		}
-
-		Vector3 contact = { 8192.0f, 0.0f, 0.0f };
-
-		SATResult test = TestSAT(hitMeshPyramid, hitMeshTriangle);
-
-		std::cout << std::format(
-			"SAT hit={}, depth={}, normal=({}, {}, {})",
-			test.isHit,
-			test.depth,
-			test.normal.x,
-			test.normal.y,
-			test.normal.z
-		) << std::endl;
-
-		colM.Clear();
-
-		colM.AddBody(&hitMeshTriangle);
-
-		colM.AddBody(&hitMeshPyramid);
-
-		colM.CheckCollision();
 
 		playInput->EndOfFrame();
 
@@ -482,12 +478,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
 		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
-
-		if (contact.x != 8192.0f) {
-
-			atrum->DrawSphere(textureWhite, Vec4Red(), Transform{}, Transform{ {1.0f, 1.0f, 1.0f}, {}, contact }, 0.1f, 10, false);
-
-		}
 
 		// Sprite準備
 		atrum->PrepareSprite();

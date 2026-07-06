@@ -260,7 +260,22 @@ SATResult TestSAT(
 	Vector3 supportA = meshA.GetSupportPoint(result.normal * -1.0f);
 	Vector3 supportB = meshB.GetSupportPoint(result.normal);
 
-	result.contactPoint = (supportA + supportB) * 0.5f;
+	//result.contactPoint = (supportA + supportB) * 0.5f;
+
+	float minDot = FLT_MAX;
+	Vector3 contactPoint{};
+
+	for (const Vector3& v : meshB.worldVertices) {
+
+		float d = VectorDot(v, result.normal);
+
+		if (d < minDot) {
+			minDot = d;
+			contactPoint = v;
+		}
+	}
+
+	result.contactPoint = contactPoint;
 
 	return result;
 
