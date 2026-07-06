@@ -33,12 +33,6 @@ private:
         const SATResult& result
     );
 
-    void ResolveAngularVelocity(
-        HitMesh& meshA,
-        HitMesh& meshB,
-        const SATResult& result
-    );
-
 private:
 
     std::vector<HitMesh*> bodies_{};

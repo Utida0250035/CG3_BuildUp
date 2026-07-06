@@ -107,6 +107,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	bool isLightingEnable = true;
 
+	/* gravity */
+
+	float gravity = -8.0f;
+
 	/* deltaTime */
 
 	std::unique_ptr<DeltaTime> deltaTimeCalc = std::make_unique<DeltaTime>();
@@ -198,6 +202,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			audio->PlaySe(seAlarm);
 
 		}
+
+		ImGui::DragFloat("gravity", &gravity);
 
 		ImGui::End();
 
@@ -396,7 +402,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
 
-		hitMeshPyramid.velocity.y += -1.0f * deltaTime;
+		hitMeshPyramid.velocity.y += gravity * deltaTime;
 		hitMeshPyramid.Update(deltaTime);
 
 		for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {

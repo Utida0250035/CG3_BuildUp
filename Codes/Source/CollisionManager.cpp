@@ -5,221 +5,218 @@
 
 void CollisionManager::Clear() {
 
-    bodies_.clear();
+	bodies_.clear();
 
 }
 
 void CollisionManager::AddBody(HitMesh* body) {
 
-    assert(body != nullptr);
+	assert(body != nullptr);
 
-    if (body == nullptr) {
-        return;
-    }
+	if (body == nullptr) {
+		return;
+	}
 
-    for (HitMesh* registered : bodies_) {
+	for (HitMesh* registered : bodies_) {
 
-        if (registered == body) {
+		if (registered == body) {
 
-            return;
+			return;
 
-        }
+		}
 
-    }
+	}
 
-    bodies_.push_back(body);
+	bodies_.push_back(body);
 
 }
 
 void CollisionManager::CheckCollision() {
 
-    for (HitMesh* body : bodies_) {
+	for (HitMesh* body : bodies_) {
 
-        if (body != nullptr) {
-            body->UpdateMatrix();
-        }
+		if (body != nullptr) {
+			body->UpdateMatrix();
+		}
 
-    }
+	}
 
-    for (size_t i = 0; i < bodies_.size(); ++i) {
+	for (size_t i = 0; i < bodies_.size(); ++i) {
 
-        HitMesh* meshA = bodies_[i];
+		HitMesh* meshA = bodies_[i];
 
-        if (meshA == nullptr) {
-            continue;
-        }
+		if (meshA == nullptr) {
+			continue;
+		}
 
-        for (size_t j = i + 1; j < bodies_.size(); ++j) {
+		for (size_t j = i + 1; j < bodies_.size(); ++j) {
 
-            HitMesh* meshB = bodies_[j];
+			HitMesh* meshB = bodies_[j];
 
-            if (meshB == nullptr) {
-                continue;
-            }
+			if (meshB == nullptr) {
+				continue;
+			}
 
-            SATResult result = TestSAT(*meshA, *meshB);
+			SATResult result = TestSAT(*meshA, *meshB);
 
-            if (!result.isHit) {
-                continue;
-            }
+			if (!result.isHit) {
+				continue;
+			}
 
-            ResolveCollision(*meshA, *meshB, result);
+			ResolveCollision(*meshA, *meshB, result);
 
-            meshA->UpdateMatrix();
-            meshB->UpdateMatrix();
+			meshA->UpdateMatrix();
+			meshB->UpdateMatrix();
 
-        }
+		}
 
-    }
+	}
 
 }
 
 void CollisionManager::ResolveCollision(
-    HitMesh& meshA,
-    HitMesh& meshB,
-    const SATResult& result) {
+	HitMesh& meshA,
+	HitMesh& meshB,
+	const SATResult& result) {
 
-    ResolvePosition(meshA, meshB, result);
+	ResolvePosition(meshA, meshB, result);
 
-    ResolveAngularVelocity(meshA, meshB, result);
-
-    ResolveVelocity(meshA, meshB, result);
+	ResolveVelocity(meshA, meshB, result);
 
 }
 
 void CollisionManager::ResolvePosition(
-    HitMesh& meshA,
-    HitMesh& meshB,
-    const SATResult& result) {
+	HitMesh& meshA,
+	HitMesh& meshB,
+	const SATResult& result) {
 
-    float totalInverseMass =
-        meshA.inverseMass + meshB.inverseMass;
+	float totalInverseMass =
+		meshA.inverseMass + meshB.inverseMass;
 
-    if (totalInverseMass <= 0.0f) {
-        return;
-    }
+	if (totalInverseMass <= 0.0f) {
+		return;
+	}
 
-    constexpr float kSlop = 0.001f;
-    constexpr float kPercent = 1.0f;
+	constexpr float kSlop = 0.001f;
+	constexpr float kPercent = 1.0f;
 
-    float correctionDepth =
-        std::max(result.depth - kSlop, 0.0f);
+	float correctionDepth =
+		std::max(result.depth - kSlop, 0.0f);
 
-    Vector3 correction =
-        result.normal *
-        (correctionDepth / totalInverseMass) *
-        kPercent;
+	Vector3 correction =
+		result.normal *
+		(correctionDepth / totalInverseMass) *
+		kPercent;
 
-    meshA.position += correction * meshA.inverseMass;
-    meshB.position -= correction * meshB.inverseMass;
+	meshA.position += correction * meshA.inverseMass;
+	meshB.position -= correction * meshB.inverseMass;
 
 }
 
 void CollisionManager::ResolveVelocity(
-    HitMesh& meshA,
-    HitMesh& meshB,
-    const SATResult& result) {
+	HitMesh& meshA,
+	HitMesh& meshB,
+	const SATResult& result) {
 
-    float totalInverseMass =
-        meshA.inverseMass + meshB.inverseMass;
+	float totalInverseMass =
+		meshA.inverseMass + meshB.inverseMass;
 
-    if (totalInverseMass <= 0.0f) {
-        return;
-    }
+	if (totalInverseMass <= 0.0f) {
+		return;
+	}
 
-    Vector3 relativeVelocity =
-        meshA.velocity - meshB.velocity;
+	Vector3 normal =
+		VectorNormalize(result.normal);
 
-    float velocityAlongNormal =
-        VectorDot(relativeVelocity, result.normal);
+	Vector3 contactPoint =
+		result.contactPoint;
 
-    if (velocityAlongNormal > 0.0f) {
-        return;
-    }
+	Vector3 rA =
+		contactPoint - meshA.GetCenter();
 
-    constexpr float kRestThreshold = 0.5f;
+	Vector3 rB =
+		contactPoint - meshB.GetCenter();
 
-    float restitution =
-        std::min(meshA.restitution, meshB.restitution);
+	Vector3 vA =
+		meshA.velocity +
+		VectorCross(meshA.angularVelocity, rA);
 
-    if (std::abs(velocityAlongNormal) < kRestThreshold) {
-        restitution = 0.0f;
-    }
+	Vector3 vB =
+		meshB.velocity +
+		VectorCross(meshB.angularVelocity, rB);
 
-    float impulseScalar =
-        -(1.0f + restitution) * velocityAlongNormal;
+	Vector3 relativeVelocity =
+		vA - vB;
 
-    impulseScalar /= totalInverseMass;
+	float velocityAlongNormal =
+		VectorDot(relativeVelocity, normal);
 
-    Vector3 impulse =
-        result.normal * impulseScalar;
+	if (velocityAlongNormal > 0.0f) {
+		return;
+	}
 
-    meshA.velocity += impulse * meshA.inverseMass;
-    meshB.velocity -= impulse * meshB.inverseMass;
-}
+	float restitution =
+		std::min(meshA.restitution, meshB.restitution);
 
-void CollisionManager::ResolveAngularVelocity(
-    HitMesh& meshA,
-    HitMesh& meshB,
-    const SATResult& result) {
+	constexpr float kRestThreshold = 0.5f;
 
-    constexpr float kMaxAngularSpeed = 3.0f;
+	if (std::abs(velocityAlongNormal) < kRestThreshold) {
+		restitution = 0.0f;
+	}
 
-    Vector3 relativeVelocity =
-        meshA.velocity - meshB.velocity;
+	Vector3 rACrossN =
+		VectorCross(rA, normal);
 
-    float normalVelocity =
-        VectorDot(relativeVelocity, result.normal);
+	Vector3 rBCrossN =
+		VectorCross(rB, normal);
 
-    if (normalVelocity > 0.0f) {
-        return;
-    }
+	Vector3 inertiaA =
+		meshA.inverseInertiaTensorWorld * rACrossN;
 
-    Vector3 impulse =
-        result.normal * (-normalVelocity);
+	Vector3 inertiaB =
+		meshB.inverseInertiaTensorWorld * rBCrossN;
 
-    Vector3 contactPoint =
-        result.contactPoint;
+	Vector3 angularA =
+		VectorCross(inertiaA, rA);
 
-    if (meshA.inverseMass > 0.0f) {
+	Vector3 angularB =
+		VectorCross(inertiaB, rB);
 
-        Vector3 rA =
-            contactPoint - meshA.GetCenter();
+	float angularFactor =
+		VectorDot(normal, angularA + angularB);
 
-        Vector3 torqueA =
-            VectorCross(rA, impulse);
+	float denominator =
+		totalInverseMass + angularFactor;
 
-        Vector3 deltaAngularVelocityA =
-            meshA.inverseInertiaTensorWorld * torqueA;
+	if (denominator <= 0.000001f) {
+		return;
+	}
 
-        meshA.angularVelocity += deltaAngularVelocityA;
+	float impulseScalar =
+		-(1.0f + restitution) * velocityAlongNormal;
 
-        float speed = VectorLength(meshA.angularVelocity);
+	impulseScalar /= denominator;
 
-        if (speed > kMaxAngularSpeed) {
-            meshA.angularVelocity =
-                VectorNormalize(meshA.angularVelocity) * kMaxAngularSpeed;
-        }
-    }
+	Vector3 impulse =
+		normal * impulseScalar;
 
-    if (meshB.inverseMass > 0.0f) {
+	if (meshA.inverseMass > 0.0f) {
 
-        Vector3 rB =
-            contactPoint - meshB.GetCenter();
+		meshA.velocity +=
+			impulse * meshA.inverseMass;
 
-        Vector3 torqueB =
-            VectorCross(rB, impulse * -1.0f);
+		meshA.angularVelocity +=
+			meshA.inverseInertiaTensorWorld *
+			VectorCross(rA, impulse);
+	}
 
-        Vector3 deltaAngularVelocityB =
-            meshB.inverseInertiaTensorWorld * torqueB;
+	if (meshB.inverseMass > 0.0f) {
 
-        meshB.angularVelocity += deltaAngularVelocityB;
+		meshB.velocity -=
+			impulse * meshB.inverseMass;
 
-        float speed = VectorLength(meshB.angularVelocity);
-
-        if (speed > kMaxAngularSpeed) {
-            meshB.angularVelocity =
-                VectorNormalize(meshB.angularVelocity) * kMaxAngularSpeed;
-        }
-    }
+		meshB.angularVelocity -=
+			meshB.inverseInertiaTensorWorld *
+			VectorCross(rB, impulse);
+	}
 }

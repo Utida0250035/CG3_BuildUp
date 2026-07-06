@@ -83,8 +83,8 @@ HitMesh HitMeshBuilder::CreateFromPyramid(const PyramidMesh& mesh) {
     hitMesh.mass = 1.0f;
     hitMesh.inverseMass = 1.0f;
 
-    hitMesh.restitution = 0.3f;
-    hitMesh.friction = 0.5f;
+    hitMesh.restitution = 0.0f;
+    hitMesh.friction = 0.8f;
 
     //----------------------------------------------------------
     // 物理
@@ -211,8 +211,8 @@ HitMesh HitMeshBuilder::CreateFromTriangle(const Triangle& triangle) {
     hitMesh.mass = 0.0f;
     hitMesh.inverseMass = 0.0f;
 
-    hitMesh.restitution = 0.3f;
-    hitMesh.friction = 0.5f;
+    hitMesh.restitution = 0.0f;
+    hitMesh.friction = 0.8f;
 
     SetupInertiaTensor(hitMesh);
 
