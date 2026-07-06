@@ -12,19 +12,10 @@ struct ContactConstraint {
 
     Vector3 normal{};
 
-    Vector3 contactPoint{};
-    std::vector<Vector3> contactPoints;
-
-    float penetration = 0.0f;
+    std::vector<ContactPoint> contacts;
 
     float restitution = 0.0f;
     float friction = 0.0f;
-
-    float accumulatedNormalImpulse = 0.0f;
-    float accumulatedTangentImpulse = 0.0f;
-
-    std::vector<float> accumulatedNormalImpulses;
-    std::vector<float> accumulatedTangentImpulses;
 
     void Initialize(
         HitMesh* a,
@@ -37,8 +28,15 @@ struct ContactConstraint {
 
 private:
 
+    void SolvePositionAtPoint(
+        size_t contactIndex);
+
     void SolveVelocityAtPoint(
         size_t contactIndex);
+
+    void ApplyPositionCorrection(
+        const Vector3& correctionImpulse,
+        const Vector3& point);
 
     void ApplyImpulse(
         const Vector3& impulse,

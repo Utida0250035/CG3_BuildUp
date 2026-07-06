@@ -313,13 +313,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("HitMesh");
 
-		ImGui::SmallButton("reset");
+		ImGui::SmallButton("reset(transform)");
 
 		if (ImGui::IsItemActivated()) {
 
 			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
 			hitMeshPyramid.angularVelocity = {};
 			hitMeshPyramid.rotation = {};
+			hitMeshPyramid.velocity = {};
+
+		}
+
+		ImGui::SmallButton("reset(velocity, position)");
+
+		if (ImGui::IsItemActivated()) {
+
+			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
 			hitMeshPyramid.velocity = {};
 
 		}

@@ -89,7 +89,8 @@ struct HitMesh {
 
 	bool isStatic = false;
 
-
+	bool isSleeping = false;
+	float sleepTimer = 0.0f;
 
 	//--------------------------------------------------------
 	// 更新

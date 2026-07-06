@@ -110,8 +110,8 @@ HitMesh HitMeshBuilder::CreateFromVertices(
     hitMesh.mass = 1.0f;
     hitMesh.inverseMass = 1.0f;
 
-    hitMesh.restitution = 0.3f;
-    hitMesh.friction = 0.0f;
+    hitMesh.restitution = 0.0f;
+    hitMesh.friction = 0.8f;
 
     SetupInertiaTensor(hitMesh);
 
@@ -175,8 +175,8 @@ HitMesh HitMeshBuilder::CreateFromTriangle(const Triangle& triangle) {
     hitMesh.mass = 0.0f;
     hitMesh.inverseMass = 0.0f;
 
-    hitMesh.restitution = 0.3f;
-    hitMesh.friction = 0.0f;
+    hitMesh.restitution = 0.0f;
+    hitMesh.friction = 0.8f;
 
     SetupInertiaTensor(hitMesh);
 

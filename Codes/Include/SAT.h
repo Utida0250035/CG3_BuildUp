@@ -24,7 +24,7 @@ std::vector<Vector3> GetAxes(
     const HitMesh& a,
     const HitMesh& b);
 
-std::vector<Vector3> GenerateContactPoints(
+std::vector<ContactPoint> GenerateContactPoints(
     const HitMesh& bodyA,
     const HitMesh& bodyB,
     const Vector3& normal,

@@ -13,29 +13,13 @@ void ContactConstraint::Initialize(
 
     normal = VectorNormalize(sat.normal);
 
-    contactPoint = sat.contactPoint;
-    contactPoints = sat.contactPoints;
-
-    if (contactPoints.empty()) {
-        contactPoints.push_back(contactPoint);
-    }
-
-    penetration = sat.depth;
+    contacts = sat.contactPoints;
 
     restitution =
         std::min(bodyA->restitution, bodyB->restitution);
 
     friction =
         std::sqrt(bodyA->friction * bodyB->friction);
-
-    accumulatedNormalImpulse = 0.0f;
-    accumulatedTangentImpulse = 0.0f;
-
-    accumulatedNormalImpulses.clear();
-    accumulatedTangentImpulses.clear();
-
-    accumulatedNormalImpulses.resize(contactPoints.size(), 0.0f);
-    accumulatedTangentImpulses.resize(contactPoints.size(), 0.0f);
 }
 
 void ContactConstraint::SolvePosition() {
@@ -44,6 +28,25 @@ void ContactConstraint::SolvePosition() {
         return;
     }
 
+    if (contacts.empty()) {
+        return;
+    }
+
+    for (size_t i = 0; i < contacts.size(); ++i) {
+        SolvePositionAtPoint(i);
+    }
+
+    bodyA->UpdateMatrix();
+    bodyB->UpdateMatrix();
+}
+
+void ContactConstraint::SolvePositionAtPoint(
+    size_t contactIndex) {
+
+    if (contactIndex >= contacts.size()) {
+        return;
+    }
+
     float totalInverseMass =
         bodyA->inverseMass + bodyB->inverseMass;
 
@@ -51,22 +54,51 @@ void ContactConstraint::SolvePosition() {
         return;
     }
 
+    ContactPoint& contact =
+        contacts[contactIndex];
+
+    Vector3 rA =
+        contact.position - bodyA->GetCenter();
+
+    Vector3 rB =
+        contact.position - bodyB->GetCenter();
+
+    Vector3 rACrossN =
+        VectorCross(rA, normal);
+
+    Vector3 rBCrossN =
+        VectorCross(rB, normal);
+
+    float denominator =
+        totalInverseMass +
+        VectorDot(
+            normal,
+            VectorCross(bodyA->inverseInertiaTensorWorld * rACrossN, rA) +
+            VectorCross(bodyB->inverseInertiaTensorWorld * rBCrossN, rB));
+
+    if (denominator <= 0.000001f) {
+        return;
+    }
+
     constexpr float kSlop = 0.001f;
-    constexpr float kPercent = 0.8f;
+    constexpr float kPercent = 0.1f;
 
     float correctionDepth =
-        std::max(penetration - kSlop, 0.0f);
+        std::max(contact.penetration - kSlop, 0.0f);
 
-    Vector3 correction =
-        normal *
-        (correctionDepth / totalInverseMass) *
-        kPercent;
+    if (correctionDepth <= 0.0f) {
+        return;
+    }
 
-    bodyA->position -= correction * bodyA->inverseMass;
-    bodyB->position += correction * bodyB->inverseMass;
+    float impulseMagnitude =
+        correctionDepth * kPercent / denominator;
 
-    bodyA->UpdateMatrix();
-    bodyB->UpdateMatrix();
+    Vector3 correctionImpulse =
+        normal * impulseMagnitude;
+
+    ApplyPositionCorrection(
+        correctionImpulse,
+        contact.position);
 }
 
 void ContactConstraint::SolveVelocity() {
@@ -75,30 +107,19 @@ void ContactConstraint::SolveVelocity() {
         return;
     }
 
-    if (contactPoints.empty()) {
+    if (contacts.empty()) {
         return;
     }
 
-    for (size_t i = 0; i < contactPoints.size(); ++i) {
+    for (size_t i = 0; i < contacts.size(); ++i) {
         SolveVelocityAtPoint(i);
-    }
-
-    accumulatedNormalImpulse = 0.0f;
-    accumulatedTangentImpulse = 0.0f;
-
-    for (float impulse : accumulatedNormalImpulses) {
-        accumulatedNormalImpulse += impulse;
-    }
-
-    for (float impulse : accumulatedTangentImpulses) {
-        accumulatedTangentImpulse += impulse;
     }
 }
 
 void ContactConstraint::SolveVelocityAtPoint(
     size_t contactIndex) {
 
-    if (contactIndex >= contactPoints.size()) {
+    if (contactIndex >= contacts.size()) {
         return;
     }
 
@@ -109,13 +130,14 @@ void ContactConstraint::SolveVelocityAtPoint(
         return;
     }
 
-    const Vector3& point = contactPoints[contactIndex];
+    ContactPoint& contact =
+        contacts[contactIndex];
 
     Vector3 rA =
-        point - bodyA->GetCenter();
+        contact.position - bodyA->GetCenter();
 
     Vector3 rB =
-        point - bodyB->GetCenter();
+        contact.position - bodyB->GetCenter();
 
     Vector3 vA =
         bodyA->velocity +
@@ -130,6 +152,10 @@ void ContactConstraint::SolveVelocityAtPoint(
 
     float vn =
         VectorDot(relativeVelocity, normal);
+
+    if (vn > 0.0f) {
+        return;
+    }
 
     Vector3 rACrossN =
         VectorCross(rA, normal);
@@ -150,33 +176,35 @@ void ContactConstraint::SolveVelocityAtPoint(
 
     float e = restitution;
 
-    constexpr float kRestThreshold = 0.5f;
+    constexpr float kRestThreshold = 1.0f;
 
     if (std::abs(vn) < kRestThreshold) {
         e = 0.0f;
     }
 
-    float contactCount =
-        static_cast<float>(contactPoints.size());
-
     float normalImpulse =
         -(1.0f + e) * vn / normalDenominator;
 
-    normalImpulse /= contactCount;
-
     float oldNormalImpulse =
-        accumulatedNormalImpulses[contactIndex];
+        contact.accumulatedNormalImpulse;
 
-    accumulatedNormalImpulses[contactIndex] =
-        std::max(oldNormalImpulse + normalImpulse, 0.0f);
+    contact.accumulatedNormalImpulse =
+        std::max(
+            oldNormalImpulse + normalImpulse,
+            0.0f);
 
     normalImpulse =
-        accumulatedNormalImpulses[contactIndex] - oldNormalImpulse;
+        contact.accumulatedNormalImpulse - oldNormalImpulse;
 
-    ApplyImpulse(normal * normalImpulse, point);
+    ApplyImpulse(
+        normal * normalImpulse,
+        contact.position);
 
-    rA = point - bodyA->GetCenter();
-    rB = point - bodyB->GetCenter();
+    rA =
+        contact.position - bodyA->GetCenter();
+
+    rB =
+        contact.position - bodyB->GetCenter();
 
     vA =
         bodyA->velocity +
@@ -186,7 +214,8 @@ void ContactConstraint::SolveVelocityAtPoint(
         bodyB->velocity +
         VectorCross(bodyB->angularVelocity, rB);
 
-    relativeVelocity = vB - vA;
+    relativeVelocity =
+        vB - vA;
 
     Vector3 tangent =
         relativeVelocity -
@@ -196,7 +225,8 @@ void ContactConstraint::SolveVelocityAtPoint(
         return;
     }
 
-    tangent = VectorNormalize(tangent);
+    tangent =
+        VectorNormalize(tangent);
 
     Vector3 rACrossT =
         VectorCross(rA, tangent);
@@ -218,24 +248,88 @@ void ContactConstraint::SolveVelocityAtPoint(
     float tangentImpulse =
         -VectorDot(relativeVelocity, tangent) / tangentDenominator;
 
-    tangentImpulse /= contactCount;
-
     float maxFriction =
-        friction * accumulatedNormalImpulses[contactIndex];
+        friction * contact.accumulatedNormalImpulse;
 
     float oldTangentImpulse =
-        accumulatedTangentImpulses[contactIndex];
+        contact.accumulatedTangentImpulse;
 
-    accumulatedTangentImpulses[contactIndex] =
+    contact.accumulatedTangentImpulse =
         std::clamp(
             oldTangentImpulse + tangentImpulse,
             -maxFriction,
             maxFriction);
 
     tangentImpulse =
-        accumulatedTangentImpulses[contactIndex] - oldTangentImpulse;
+        contact.accumulatedTangentImpulse - oldTangentImpulse;
 
-    ApplyImpulse(tangent * tangentImpulse, point);
+    ApplyImpulse(
+        tangent * tangentImpulse,
+        contact.position);
+}
+
+void ContactConstraint::ApplyPositionCorrection(
+    const Vector3& correctionImpulse,
+    const Vector3& point) {
+
+    Vector3 rA =
+        point - bodyA->GetCenter();
+
+    Vector3 rB =
+        point - bodyB->GetCenter();
+
+    if (bodyA->inverseMass > 0.0f) {
+
+        bodyA->position -=
+            correctionImpulse * bodyA->inverseMass;
+
+        Vector3 angularCorrection =
+            bodyA->inverseInertiaTensorWorld *
+            VectorCross(rA, correctionImpulse);
+
+        angularCorrection =
+            -angularCorrection;
+
+        float angle =
+            VectorLength(angularCorrection);
+
+        if (angle > 0.000001f) {
+
+            Vector3 axis =
+                angularCorrection / angle;
+
+            Quaternion dq =
+                Quaternion::FromAxisAngle(axis, angle);
+
+            bodyA->rotation =
+                (dq * bodyA->rotation).normalized();
+        }
+    }
+
+    if (bodyB->inverseMass > 0.0f) {
+
+        bodyB->position +=
+            correctionImpulse * bodyB->inverseMass;
+
+        Vector3 angularCorrection =
+            bodyB->inverseInertiaTensorWorld *
+            VectorCross(rB, correctionImpulse);
+
+        float angle =
+            VectorLength(angularCorrection);
+
+        if (angle > 0.000001f) {
+
+            Vector3 axis =
+                angularCorrection / angle;
+
+            Quaternion dq =
+                Quaternion::FromAxisAngle(axis, angle);
+
+            bodyB->rotation =
+                (dq * bodyB->rotation).normalized();
+        }
+    }
 }
 
 void ContactConstraint::ApplyImpulse(
@@ -250,7 +344,8 @@ void ContactConstraint::ApplyImpulse(
 
     if (bodyA->inverseMass > 0.0f) {
 
-        bodyA->velocity -= impulse * bodyA->inverseMass;
+        bodyA->velocity -=
+            impulse * bodyA->inverseMass;
 
         bodyA->angularVelocity -=
             bodyA->inverseInertiaTensorWorld *
@@ -259,7 +354,8 @@ void ContactConstraint::ApplyImpulse(
 
     if (bodyB->inverseMass > 0.0f) {
 
-        bodyB->velocity += impulse * bodyB->inverseMass;
+        bodyB->velocity +=
+            impulse * bodyB->inverseMass;
 
         bodyB->angularVelocity +=
             bodyB->inverseInertiaTensorWorld *

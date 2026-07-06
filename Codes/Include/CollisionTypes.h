@@ -19,22 +19,21 @@ struct Projection {
     float max = 0.0f;
 };
 
+struct ContactPoint {
+    Vector3 position{};
+    float penetration = 0.0f;
+
+    float accumulatedNormalImpulse = 0.0f;
+    float accumulatedTangentImpulse = 0.0f;
+};
+
 struct SATResult {
     bool hit = false;
 
     Vector3 normal{};
-    float depth = FLT_MAX;
-
-    // 旧1点接触。互換用に残す。
-    Vector3 contactPoint{};
 
     // 新規：複数接触点
-    std::vector<Vector3> contactPoints;
-};
-
-struct ContactPoint {
-    Vector3 position{};
-    float penetration = 0.0f;
+    std::vector<ContactPoint> contactPoints;
 };
 
 struct CollisionInfo {

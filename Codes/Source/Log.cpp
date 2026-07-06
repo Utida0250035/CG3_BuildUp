@@ -5,13 +5,19 @@
 #include <Windows.h>
 #include <format>
 
-void Log(const std::string& message) {
+void Log([[maybe_unused]]const std::string& message) {
+
+#ifdef _DEBUG
 
 	OutputDebugStringA(("\n" + message + "\n\n").c_str());
+
+#endif
 
 }
 
 void LogFile::Initialize() {
+
+#ifdef _DEBUG
 
 	// logsフォルダを作成
 	std::filesystem::create_directory("Logs");
@@ -34,9 +40,11 @@ void LogFile::Initialize() {
 
 	logStream_.open(filePath_, std::ios::app);
 
+#endif
+
 }
 
-void LogFile::Log(const std::string& message) {
+void LogFile::Log([[maybe_unused]]const std::string& message) {
 
 	// ログをファイルに出力
 	logStream_ << std::endl << message << std::endl;
@@ -47,7 +55,9 @@ void LogFile::Log(const std::string& message) {
 
 }
 
-void LogFile::Log(const std::wstring& message) {
+void LogFile::Log([[maybe_unused]]const std::wstring& message) {
+
+#ifdef _DEBUG
 
 	// ログをファイルに出力
 	logStream_ << std::endl << WStringToString(message) << std::endl;
@@ -56,10 +66,16 @@ void LogFile::Log(const std::wstring& message) {
 	// 出力ウィンドウにログを出力
 	OutputDebugStringA(("\n" + WStringToString(message) + "\n\n").c_str());
 
+#endif
+
 }
 
 LogFile::~LogFile() {
 
+#ifdef _DEBUG
+
 	logStream_.close();
+
+#endif
 
 }

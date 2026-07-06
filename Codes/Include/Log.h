@@ -2,6 +2,8 @@
 
 #include <string>
 #include <fstream>
+#include <iostream>
+#include <format>
 
 void Log(const std::string& message);
 
@@ -69,3 +71,18 @@ public:
 	LogFile(const LogFile& source) = delete;
 
 };
+
+namespace console {
+
+	template<class... Args>
+	void Println([[maybe_unused]]const std::format_string<Args...>& fmt, [[maybe_unused]]const Args&&... args) {
+
+#ifdef _DEBUG
+
+		std::cout << std::format(fmt, std::forward<Args>(args)...) << std::endl;
+
+#endif
+
+	}
+
+}
