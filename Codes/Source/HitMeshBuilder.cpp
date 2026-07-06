@@ -4,30 +4,6 @@
 
 namespace {
 
-    void CalculateAABBSize(
-        const std::vector<Vector3>& vertices,
-        float& width,
-        float& height,
-        float& depth) {
-
-        Vector3 min = vertices[0];
-        Vector3 max = vertices[0];
-
-        for (const Vector3& v : vertices) {
-            min.x = std::min(min.x, v.x);
-            min.y = std::min(min.y, v.y);
-            min.z = std::min(min.z, v.z);
-
-            max.x = std::max(max.x, v.x);
-            max.y = std::max(max.y, v.y);
-            max.z = std::max(max.z, v.z);
-        }
-
-        width = max.x - min.x;
-        height = max.y - min.y;
-        depth = max.z - min.z;
-    }
-
     void SetupInertiaTensor(HitMesh& hitMesh) {
 
         if (hitMesh.inverseMass <= 0.0f || hitMesh.localVertices.empty()) {
@@ -36,18 +12,10 @@ namespace {
             return;
         }
 
-        float width = 0.0f;
-        float height = 0.0f;
-        float depth = 0.0f;
-
-        CalculateAABBSize(hitMesh.localVertices, width, height, depth);
-
         hitMesh.inverseInertiaTensorLocal =
-            MakeBoxInverseInertiaTensor(
-                hitMesh.mass,
-                width,
-                height,
-                depth);
+            MakeVertexCloudInverseInertiaTensor(
+                hitMesh.localVertices,
+                hitMesh.mass);
     }
 
 }

@@ -2,6 +2,7 @@
 
 #include "Vector3.h"
 #include "Quaternion.h"
+#include <vector>
 
 struct Matrix3x3Physics {
     float m[3][3];
@@ -171,3 +172,10 @@ Matrix3x3Physics MakeBoxInverseInertiaTensor(
 Matrix3x3Physics MakeWorldInverseInertiaTensor(
     const Matrix3x3Physics& localInverseInertia,
     const Quaternion& rotation);
+
+Matrix3x3Physics Matrix3x3PhysicsInverse(
+    const Matrix3x3Physics& matrix);
+
+Matrix3x3Physics MakeVertexCloudInverseInertiaTensor(
+    const std::vector<Vector3>& vertices,
+    float mass);
