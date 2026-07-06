@@ -116,6 +116,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	std::unique_ptr<DeltaTime> deltaTimeCalc = std::make_unique<DeltaTime>();
 	float deltaTime = 0.0f;
 
+	/* 物理実行フラグ */
+
+	bool isPhysicsMove = false;
+
 	/* タイムカウント */
 
 	float timeCount = 0.0f;
@@ -204,6 +208,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		ImGui::DragFloat("gravity", &gravity);
+
+		ImGui::SmallButton("physicsSwitch");
+
+		if (ImGui::IsItemActivated()) {
+
+			isPhysicsMove = !isPhysicsMove;
+
+		}
+
+		if (isPhysicsMove) {
+
+			ImGui::Text("now on");
+
+		} else {
+
+			ImGui::Text("now off");
+
+		}
 
 		ImGui::End();
 
