@@ -92,6 +92,8 @@ HitMesh HitMeshBuilder::CreateFromPyramid(const PyramidMesh& mesh) {
 
     SetupInertiaTensor(hitMesh);
 
+    hitMesh.UpdateMatrix();
+
     return hitMesh;
 
 }

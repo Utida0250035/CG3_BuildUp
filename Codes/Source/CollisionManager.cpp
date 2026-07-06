@@ -3,6 +3,13 @@
 #include <algorithm>
 #include <cassert>
 
+#ifdef _DEBUG
+
+#include <iostream>
+#include <format> 
+
+#endif
+
 void CollisionManager::Clear() {
 
 	bodies_.clear();
@@ -145,8 +152,7 @@ void CollisionManager::ResolveVelocity(
 		meshB.velocity +
 		VectorCross(meshB.angularVelocity, rB);
 
-	Vector3 relativeVelocity =
-		vA - vB;
+	Vector3 relativeVelocity = vB - vA;
 
 	float velocityAlongNormal =
 		VectorDot(relativeVelocity, normal);
@@ -201,22 +207,50 @@ void CollisionManager::ResolveVelocity(
 		normal * impulseScalar;
 
 	if (meshA.inverseMass > 0.0f) {
-
-		meshA.velocity +=
-			impulse * meshA.inverseMass;
-
-		meshA.angularVelocity +=
+		meshA.velocity -= impulse * meshA.inverseMass;
+		meshA.angularVelocity -=
 			meshA.inverseInertiaTensorWorld *
 			VectorCross(rA, impulse);
 	}
 
 	if (meshB.inverseMass > 0.0f) {
-
-		meshB.velocity -=
-			impulse * meshB.inverseMass;
-
-		meshB.angularVelocity -=
+		meshB.velocity += impulse * meshB.inverseMass;
+		meshB.angularVelocity +=
 			meshB.inverseInertiaTensorWorld *
 			VectorCross(rB, impulse);
 	}
+
+#ifdef _DEBUG
+
+	std::cout << std::format(
+		"vn = {:.6f}, impulse = {:.6f}",
+		velocityAlongNormal,
+		impulseScalar)
+		<< std::endl;
+
+	std::cout << std::format(
+		"I^-1 = [{:.6f}, {:.6f}, {:.6f}]",
+		meshA.inverseInertiaTensorWorld.m[0][0],
+		meshA.inverseInertiaTensorWorld.m[1][1],
+		meshA.inverseInertiaTensorWorld.m[2][2])
+		<< std::endl;
+
+	std::cout << std::format(
+		"A invMass={}, I^-1=[{:.6f}, {:.6f}, {:.6f}]",
+		meshA.inverseMass,
+		meshA.inverseInertiaTensorWorld.m[0][0],
+		meshA.inverseInertiaTensorWorld.m[1][1],
+		meshA.inverseInertiaTensorWorld.m[2][2])
+		<< std::endl;
+
+	std::cout << std::format(
+		"B invMass={}, I^-1=[{:.6f}, {:.6f}, {:.6f}]",
+		meshB.inverseMass,
+		meshB.inverseInertiaTensorWorld.m[0][0],
+		meshB.inverseInertiaTensorWorld.m[1][1],
+		meshB.inverseInertiaTensorWorld.m[2][2])
+		<< std::endl;
+
+#endif
+
 }

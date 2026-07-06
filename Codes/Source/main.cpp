@@ -414,7 +414,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			std::cout << std::format(
 				"HitMesh world[{}] = {}, {}, {}",
 				i, w.x, w.y, w.z
-			)<<std::endl;
+			) << std::endl;
 		}
 
 		Vector3 contact = { 8192.0f, 0.0f, 0.0f };
@@ -436,12 +436,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		colM.AddBody(&hitMeshPyramid);
 
-
-		for (size_t i = 0; i < 4; i++) {
-
-			colM.CheckCollision();
-
-		}
+		colM.CheckCollision();
 
 		playInput->EndOfFrame();
 

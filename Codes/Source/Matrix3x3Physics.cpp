@@ -1,6 +1,8 @@
 #include "Matrix3x3Physics.h"
 
 #include <cmath>
+#include <format>
+#include <iostream>
 
 Matrix3x3Physics MakeIdentityMatrix3x3Physics() {
 
@@ -95,6 +97,20 @@ Matrix3x3Physics MakeBoxInverseInertiaTensor(
     float height,
     float depth) {
 
+#ifdef _DEBUG
+
+    std::cout << std::format(
+        "mass={} width={} height={} depth={}",
+        mass,
+        width,
+        height,
+        depth)
+        << std::endl;
+
+#endif
+
+
+
     if (mass <= 0.0f) {
         return MakeZeroMatrix3x3Physics();
     }
@@ -125,7 +141,7 @@ Matrix3x3Physics MakeWorldInverseInertiaTensor(
     const Quaternion& rotation) {
 
     Matrix3x3Physics r =
-        MakeMatrix3x3PhysicsFromQuaternion(rotation);
+        MakeMatrix3x3PhysicsFromQuaternion(rotation.normalized());
 
     Matrix3x3Physics rt =
         Matrix3x3PhysicsTranspose(r);
