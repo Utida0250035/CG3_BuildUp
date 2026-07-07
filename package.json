@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "husky",
     "lint:spell": "cspell --no-must-find-files --no-progress \"**/*\"",
-    "pre-commit": "cmd.exe /c .\\Assets\\Editor\\Tools\\spellCheckersRun.cmd"
+    "pre-commit": "cmd.exe /c .\\EditorAssets\\Tools\\Checkers\\spellCheckersRun.cmd"
   },
   "devDependencies": {
     "husky": "^9.0.0",

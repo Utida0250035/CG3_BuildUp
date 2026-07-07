@@ -16,7 +16,7 @@ call node -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo node -v FAILED.
     echo Node.js is not found or not in PATH.
-    exit 0
+    exit 1
 )
 
 echo Node.js found.
@@ -26,7 +26,7 @@ call npm -v >nul 2>&1
 if %errorlevel% neq 0 (
     echo npm -v FAILED.
     echo npm is not found.
-    exit 0
+    exit 1
 )
 
 echo npm found.
@@ -35,7 +35,7 @@ echo [3/4] node_modules check...
 
 if not exist "node_modules" (
     echo node_modules\ is not exist.
-    exit 0
+    exit 1
 )
 
 echo node_modules\ found.
@@ -43,7 +43,7 @@ echo node_modules\ found.
 echo [4/4]run checkers...
 
 :: different process
-start "" "%TOOLS_DIR%spellCheckers\run.cmd"
+start "" "%TOOLS_DIR%\spellCheckers\run.cmd"
 
 :: different process
 start "" cmd /k "call npm run lint:spell"
