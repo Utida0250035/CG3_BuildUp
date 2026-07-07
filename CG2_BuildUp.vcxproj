@@ -147,8 +147,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
-    <ClCompile Include="Codes\Source\Math\Matrix2D.cpp" />
-    <ClCompile Include="Codes\Source\Math\Matrix3D.cpp" />
+    <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
+    <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector2.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />

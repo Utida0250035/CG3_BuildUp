@@ -79,10 +79,10 @@
     <ClCompile Include="Codes\Source\Application\main.cpp">
       <Filter>Codes\Source\Application</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix2D.cpp">
+    <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp">
       <Filter>Codes\Source\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix3D.cpp">
+    <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp">
       <Filter>Codes\Source\Math</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp">
