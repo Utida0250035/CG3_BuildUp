@@ -6,6 +6,18 @@ struct Vector3 {
 	float z;
 };
 
+inline constexpr Vector3 operator-(Vector3& me) {
+
+	return{ -me.x, -me.y, -me.z };
+
+}
+
+inline constexpr Vector3 operator+(Vector3& me) {
+
+	return{ me.x, me.y, me.z };
+
+}
+
 inline constexpr void operator+=(Vector3& me, const Vector3& other) {
 	me.x += other.x;
 	me.y += other.y;

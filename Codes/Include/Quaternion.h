@@ -11,6 +11,11 @@ struct Quaternion {
 	float z = 0.0f;
 	float w = 1.0f;
 
+	static constexpr Quaternion Identity() {
+
+		return Quaternion{0.0f, 0.0f, 0.0f, 1.0f};
+	}
+
 	constexpr float magnitude_square() const { return  w * w + x * x + y * y + z * z; }
 	float magnitude() const { return std::sqrt(magnitude_square()); }
 
@@ -228,6 +233,27 @@ struct Quaternion {
 
 		return q.normalized();
 
+	}
+
+	static Quaternion MakeRotateQuaternion(
+		const Vector3& euler)
+	{
+		Quaternion qx =
+			FromAxisAngle(
+				{ 1,0,0 },
+				euler.x);
+
+		Quaternion qy =
+			FromAxisAngle(
+				{ 0,1,0 },
+				euler.y);
+
+		Quaternion qz =
+			FromAxisAngle(
+				{ 0,0,1 },
+				euler.z);
+
+		return (qx * qy * qz).normalized();
 	}
 
 };

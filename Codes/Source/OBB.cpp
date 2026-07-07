@@ -1,14 +1,14 @@
 #include "OBB.h"
 #include <cmath>
 
-Vector2 OBB::ToLocal(const Vector2& worldPos) const {
+Vector2 MyOBB::ToLocal(const Vector2& worldPos) const {
 
 	Vector2 relation = worldPos - center;
 	return { VectorDot(relation, axis[0]), VectorDot(relation, axis[1]) };
 
 }
 
-void OBB::UpdateAxis(float theta) {
+void MyOBB::UpdateAxis(float theta) {
 
 	// 右方向軸
 	axis[0] = Vector2{ std::cos(theta), std::sin(theta) };
@@ -18,13 +18,13 @@ void OBB::UpdateAxis(float theta) {
 
 }
 
-float OBB::CalculateAngle()const {
+float MyOBB::CalculateAngle()const {
 
 	return std::atan2(axis[0].y, axis[0].x);
 
 }
 
-bool OBB::IsPointInOBB(const Vector2& point) const {
+bool MyOBB::IsPointInOBB(const Vector2& point) const {
 
 	// 各軸（axis[0], axis[1]）に投影してローカル座標を求める
 	Vector2 localPoint = ToLocal(point);
@@ -44,7 +44,7 @@ bool OBB::IsPointInOBB(const Vector2& point) const {
 
 }
 
-void OBB::GetWorldCorners(Vector2 corners[4]) const {
+void MyOBB::GetWorldCorners(Vector2 corners[4]) const {
 
 	Vector2 offsetX = axis[0] * halfSize.x;
 

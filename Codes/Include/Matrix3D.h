@@ -291,3 +291,5 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 
 // LookAt行列
 Matrix4x4 MakeLookAtMatrix(const Vector3& observer, const Vector3& target, const Vector3& above);
+
+Vector3 MatrixToEuler(const Matrix4x4& m);

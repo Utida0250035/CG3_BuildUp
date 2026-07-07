@@ -3,6 +3,7 @@
 #include "CommandContext.h"
 #include "ConvertString.h"
 #include "CreateBufferResource.h"
+#include "DebugConsole.h"
 #include "DirectInput.h"
 #include "Hash64.h"
 #include "Log.h"
@@ -331,7 +332,7 @@ void AtrumEngine::DrawTriangleCall(const uint32_t& textureIndex) {
 
 }
 
-void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere) {
+void AtrumEngine::DrawCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInInstance, const uint32_t& vertexCountInInstance) {
 
 	assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -359,11 +360,48 @@ void AtrumEngine::DrawSphereCall(const uint32_t& textureIndex, const uint32_t& i
 	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
 	// 描画(DrawCall) 3頂点で1つのインスタンス
-	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(indexDataCountInSphere, 1, indexBuffer_->GetDrewCount(), vertexBuffer_->GetDrewCount(), 0);
+	commandContextDirect_->GetCommandList()->DrawIndexedInstanced(indexDataCountInInstance, 1, indexBuffer_->GetDrewCount(), vertexBuffer_->GetDrewCount(), 0);
 
-	indexBuffer_->AddDrewCount(indexDataCountInSphere);
+	indexBuffer_->AddDrewCount(indexDataCountInInstance);
 
-	vertexBuffer_->AddDrewCount(vertexCountInSphere);
+	vertexBuffer_->AddDrewCount(vertexCountInInstance);
+
+	constantBufferCount_++;
+
+}
+
+
+void AtrumEngine::DrawCall(const uint32_t& textureIndex, const uint32_t& vertexCountInInstance) {
+
+	assert(isInitialized_ && "AtrumEngine is not initialized");
+
+	assert(constantBufferCount_ + 1 < kMaxDrawCount && "constantBufferCount over maxCount(Sphere)");
+
+	// TransformMatrix (WVP) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(TransformationData));
+	// GPUに設定(rootParameter0)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
+
+	// Material (Color) のアドレス計算
+	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
+
+	// GPUに設定(rootParameter1)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+
+	// GPUに設定(rootParameter3)
+	commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(3, directionalLightBuffer_->GetGpuVirtualAddress());
+
+	DescriptorAllocator::DescriptorHandle textureHandle{};
+
+	textureHandle = srvAllocator_->GetHandle(textureIndex);
+
+	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+	commandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+	// 描画(DrawCall) 3頂点で1つのインスタンス
+	commandContextDirect_->GetCommandList()->DrawInstanced(vertexCountInInstance, 1, vertexBuffer_->GetDrewCount(), 0);
+
+	vertexBuffer_->AddDrewCount(vertexCountInInstance);
 
 	constantBufferCount_++;
 
@@ -383,6 +421,8 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	SetUnhandledExceptionFilter(ExportDump);
 
 #ifdef _DEBUG
+
+	OpenDebugConsole();
 
 	ComPtr<ID3D12Debug1> debugController;
 
@@ -1452,7 +1492,55 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex, const Vector4& textur
 
 	}
 
-	this->DrawSphereCall(textureIndex, indexDataCount - indexBuffer_->GetDrewCount(), vertexDataCount - vertexBuffer_->GetDrewCount());
+	this->DrawCall(textureIndex, indexDataCount - indexBuffer_->GetDrewCount(), vertexDataCount - vertexBuffer_->GetDrewCount());
+
+}
+
+void AtrumEngine::DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting) {
+
+	// 非対称ピラミッドのTransform
+	Matrix4x4 worldMatrix = MakeScaleMatrix(scale) * rotate.create_rotate_matrix() * MakeTranslateMatrix(translate);
+
+	TransformationData transformationData{};
+
+	transformationData.wvp = worldMatrix * viewMatrix_ * kPerspectiveFovMatrix;
+	transformationData.world = worldMatrix;
+
+	transformationBuffer_->SetData(transformationData, constantBufferCount_);
+
+
+	MaterialData materialData{};
+
+	materialData.color = textureColor;
+
+	Matrix4x4 uvTransformMatrix = MakeScaleMatrix(uvTransform.scale);
+	uvTransformMatrix *= MakeZRotateMatrix(uvTransform.rotate.z);
+	uvTransformMatrix *= MakeTranslateMatrix(uvTransform.translate);
+	materialData.uvTransformMatrix = uvTransformMatrix;
+
+	materialData.inLightingEnable = isLighting;
+
+	materialBuffer_->SetData(materialData, constantBufferCount_);
+
+
+	// 描画関数内の書き込み処理
+	uint32_t vStart = vertexBuffer_->GetDrewCount();
+
+	for (const auto& vertex : mesh.renderVertices) {
+
+		vertexBuffer_->SetVertexData(
+			{
+				{vertex.position.x, vertex.position.y, vertex.position.z, 1.0f},
+				{0.0f, 0.0f},
+				vertex.normal
+			},
+			vStart++
+		);
+
+	}
+
+	// 描画実行 (mesh.indices.size() で数を確認)
+	this->DrawCall(textureIndex, (uint32_t)mesh.renderVertices.size());
 
 }
 

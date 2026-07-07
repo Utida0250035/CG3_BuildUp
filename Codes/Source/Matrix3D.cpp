@@ -276,3 +276,24 @@ Matrix4x4 MakeLookAtMatrix(const Vector3& observerPos, const Vector3& targetPos,
 	return m;
 
 }
+
+Vector3 MatrixToEuler(const Matrix4x4& m) {
+	Vector3 rotation{};
+
+	// Pitch (X)
+	rotation.x = asin(-m.m[1][2]);
+
+	// ジンバルロックの判定 (cos(pitch) が 0 に近い場合)
+	if (cos(rotation.x) > 0.0001f) {
+		// Yaw (Y)
+		rotation.y = atan2(m.m[0][2], m.m[2][2]);
+		// Roll (Z)
+		rotation.z = atan2(m.m[1][0], m.m[1][1]);
+	} else {
+		// ジンバルロック時の処理（一例）
+		rotation.y = atan2(-m.m[2][0], m.m[0][0]);
+		rotation.z = 0.0f;
+	}
+
+	return rotation;
+}

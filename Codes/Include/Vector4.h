@@ -99,7 +99,13 @@ inline constexpr Vector4 Vec4White() {
 
 }
 
-inline constexpr Vector4 Vec4BLACK() {
+inline constexpr Vector4 Vec4Red() {
+
+	return Vector4{ 1.0f, 0.0f, 0.0f, 1.0f };
+
+}
+
+inline constexpr Vector4 Vec4Black() {
 
 	return Vector4{ 0.0f, 0.0f, 0.0f, 1.0f };
 
