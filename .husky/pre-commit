@@ -1,2 +1,3 @@
-export PATH="./node_modules/.bin:$PATH" 
-cmd.exe //c call "_checkersRun.cmd" 
+#!/usr/bin/env sh
+
+npm.cmd run pre-commit

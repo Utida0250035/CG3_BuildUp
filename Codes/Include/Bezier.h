@@ -1,7 +1,0 @@
-#pragma once
-
-#include "Vector2.h"
-
-Vector2 CalcBezier2(const Vector2 p[3], float t);
-
-Vector2 CalcBezier2Tangent(const Vector2 p[3], float t);
