@@ -11,6 +11,7 @@
 #include "MaterialData.h"
 #include "Matrix3D.h"
 #include "PipelineState.h"
+#include "Quaternion.h"
 #include "RenderDevice.h"
 #include "RootSignature.h"
 #include "ShaderCompiler.h"
@@ -47,6 +48,8 @@
 #include "ImGui.h"
 
 #endif
+
+#include "HitMesh.h"
 
 namespace fs = std::filesystem;
 
@@ -381,9 +384,10 @@ private:
 	void DrawTriangleCall(const uint32_t& textureIndex);
 
 	/// <summary>
-	/// 球の描画呼び出し
+	/// 3D実体の描画呼び出し(モデル除く)
 	/// </summary>
-	void DrawSphereCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere);
+	void DrawCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere);
+	void DrawCall(const uint32_t& textureIndex, const uint32_t& vertexCountInInstance);
 
 	/// <summary>
 	/// Spriteの描画呼び出し
@@ -553,6 +557,17 @@ public:
 	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
 	/// <param name="directionalLightData"> 平行光源データ(option) </param>
 	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
+
+	/// <summary>
+	/// 非対称ピラミッドの描画
+	/// </summary>
+	/// <param name="textureIndex"></param>
+	/// <param name="textureColor"></param>
+	/// <param name="uvTransform"></param>
+	/// <param name="triangleTransform"></param>
+	/// <param name="vertexData"></param>
+	/// <param name="isLighting"></param>
+	void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting = false);
 
 	/// <summary>
 	/// 球の描画

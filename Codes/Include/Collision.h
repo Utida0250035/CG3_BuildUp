@@ -3,11 +3,11 @@
 #include "OBB.h"
 #include "Bezier.h"
 
-bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT);
+bool CheckCollision(const MyOBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT);
 
-bool CheckCollisionDetailed(const OBB& obb, const Vector2& obbVertexPos, const Vector2 p[3], float& t1, float& t2, int depthCount, const int depth);
+bool CheckCollisionDetailed(const MyOBB& obb, const Vector2& obbVertexPos, const Vector2 p[3], float& t1, float& t2, int depthCount, const int depth);
 
-bool ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]);
+bool ResolveObbBezierResponse(MyOBB& obb, Vector2& velocity, const Vector2 p[3]);
 
 bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier[3]);
 

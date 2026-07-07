@@ -1,16 +1,21 @@
 #include "AtrumEngine.h"
 #include "Audio.h"
-#include "Bezier.h"
-#include "Collision.h"
+#include "CollisionManager.h"
+#include "DebugCamera.h"
 #include "DeltaTime.h"
+#include "DirectInput.h"
+#include "HitMesh.h"
+#include "HitMeshBuilder.h"
 #include "Log.h"
 #include "OBB.h"
-#include "DirectInput.h"
 #include "PlayInput.h"
+#include "PyramidMesh.h"
 #include "StaticCast.h"
-#include "DebugCamera.h"
+#include "Triangle.h"
 #include <memory>
 #include <numbers>
+#include <iostream>
+#include <format>
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -51,72 +56,45 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	size_t seCat = audio->LoadSe("./Resources/Audios/seCat.mp3");
 
-
 	/* Triangle */
 
-	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.03f, 0.0f}, Vector3{} };
+	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{std::numbers::pi_v<float> *0.5f, 0.0f, 0.0f}, Vector3{0.0f, -1.0f, 0.0f} };
 
 	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	Transform triangleUvTransform{};
 
+	Triangle triangle{
+		{-5.0f, -5.0f, 0.0f},
+		{0.0f, 5.0f, 0.0f},
+		{5.0f, -5.0f, 0.0f},
+		{0.0f, 0.0f, -1.0f}
+	};
+
 	std::array<VertexData, 3> triangleVertexData = {
-		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f},
-		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f}, Vector3{0.0f, 0.0f, -1.0f},
-		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f}
+		Vector4{triangle.v0.x, triangle.v0.y, triangle.v0.z, 1.0f},Vector2{0.0f, 1.0f}, triangle.normal,
+		Vector4{triangle.v1.x, triangle.v1.y, triangle.v1.z, 1.0f},Vector2{0.5f, 0.0f}, triangle.normal,
+		Vector4{triangle.v2.x, triangle.v2.y, triangle.v2.z, 1.0f},Vector2{1.0f, 1.0f}, triangle.normal
 	};
 
 	uint32_t triangleTexture = textureWhite;
 
-	/* Triangle2 */
 
-	Transform triangle2Transform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{0.0f, 0.1f, 0.0f}, Vector3{} };
+	/* HitMesh */
 
-	Vector4 triangle2Color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	Transform triangle2UvTransform{};
+	PyramidMesh pyramidMesh{};
+	HitMesh hitMeshPyramid = HitMeshBuilder::CreateFromPyramid(PyramidMesh{});
+	hitMeshPyramid.position = { 0.0f, 10.0f, 0.0f };
+	hitMeshPyramid.velocity = { 0.0f, -0.1f, 0.0f };
+	hitMeshPyramid.rotation = Quaternion::Identity();
+	hitMeshPyramid.angularVelocity = {};
+	hitMeshPyramid.inverseMass = 1.0f;
+	hitMeshPyramid.mass = 3.0f;
 
-	std::array<VertexData, 3> triangle2VertexData = {
-		Vector4{-5.0f, -5.0f, 0.0f, 1.0f},Vector2{0.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f},
-		Vector4{0.0f, 5.0f, 0.0f, 1.0f},Vector2{0.5f, 0.0f}, Vector3{0.0f, 0.0f, -1.0f},
-		Vector4{5.0f, -5.0f, 0.0f, 1.0f},Vector2{1.0f, 1.0f}, Vector3{0.0f, 0.0f, -1.0f}
-	};
+	HitMesh hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
 
-	uint32_t triangle2Texture = textureWhite;
+	/* Collision */
 
-
-	/* Sphere */
-
-	Transform sphereTransform{};
-	Transform sphereUvTransform{};
-	float sphereRadius = 5.0f;
-	uint32_t sphereSubdivision = 12;
-	uint32_t sphereTexture = textureWhite;
-	Vector4 sphereColor = Vec4White();
-
-
-	/* 平面3dModel */
-
-	auto planeModel = atrum->CreateModel("./Resources/Objects/ForStudy", "plane.obj", "./Resources/Objects/ForStudy", "plane.mtl");
-	Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
-	planeModelTransform.translate.z = -20.0f;
-
-	/* 複数メッシュ3dModel */
-
-	auto multiMeshModel = atrum->CreateModel("./Resources/Objects/ForStudy", "multiMesh.obj", "./Resources/Objects/ForStudy", "multiMesh.mtl");
-	Transform multiMeshModelTransform{};
-
-	/* 複数マテリアル3dModel */
-
-	auto multiMtlModel = atrum->CreateModel("./Resources/Objects/ForStudy", "multiMaterial.obj", "./Resources/Objects/ForStudy", "multiMaterial.mtl");
-	Transform multiMtlModelTransform{};
-
-	/* Sprite */
-
-	Transform spriteTransform{};
-	Transform spriteUvTransform{};
-	Vector2 spriteSize{ 64.0f, 64.0f };
-	uint32_t spriteTexture = textureWhite;
-	Vector4 spriteColor = Vec4White();
-
+	CollisionManager colM{};
 
 	/* DirectionalLight */
 
@@ -129,10 +107,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	bool isLightingEnable = true;
 
+	/* gravity */
+
+	float gravity = -8.0f;
+
 	/* deltaTime */
 
 	std::unique_ptr<DeltaTime> deltaTimeCalc = std::make_unique<DeltaTime>();
 	float deltaTime = 0.0f;
+
+	/* 物理実行フラグ */
+
+	bool isPhysicsMove = false;
 
 	/* タイムカウント */
 
@@ -221,10 +207,30 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
+		ImGui::DragFloat("gravity", &gravity);
+
+		ImGui::SmallButton("physicsSwitch");
+
+		if (ImGui::IsItemActivated()) {
+
+			isPhysicsMove = !isPhysicsMove;
+
+		}
+
+		if (isPhysicsMove) {
+
+			ImGui::Text("now on");
+
+		} else {
+
+			ImGui::Text("now off");
+
+		}
+
 		ImGui::End();
 
 		ImGui::Begin("DebugCamera");
-		
+
 		ImGui::Text("mode: %d", debugCamera->GetMode());
 
 		ImGui::DragFloat("distance", &debugCamera->RefDistance());
@@ -236,13 +242,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::DragFloat4("pivotQuaternion", &debugCamera->RefPivotQuaternion().x, 0.03125f);
 
 		ImGui::DragFloat3("pivot", &debugCamera->RefPivot().x, 0.03125f);
-		
+
 		const Vector3& pivot = debugCamera->RefPivot();
 		const Vector3& translate = debugCamera->RefTranslate();
 
 		Vector3 direction = VectorNormalize(pivot - translate);
-		Vector3 calculatedDirection = debugCamera->RefQuaternion().rotate_vector({0.0f, 0.0f, -1.0f});
-		
+		Vector3 calculatedDirection = debugCamera->RefQuaternion().rotate_vector({ 0.0f, 0.0f, -1.0f });
+
 		ImGui::DragFloat3("direction", &direction.x);
 		ImGui::DragFloat3("direction(calc)", &calculatedDirection.x);
 
@@ -303,7 +309,45 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
-		/* 三角形(1)GUI */
+		/* HitMeshのGUI */
+
+		ImGui::Begin("HitMesh");
+
+		ImGui::SmallButton("reset(transform)");
+
+		if (ImGui::IsItemActivated()) {
+
+			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
+			hitMeshPyramid.angularVelocity = {};
+			hitMeshPyramid.rotation = {};
+			hitMeshPyramid.velocity = {};
+
+		}
+
+		ImGui::SmallButton("reset(velocity, position)");
+
+		if (ImGui::IsItemActivated()) {
+
+			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
+			hitMeshPyramid.velocity = {};
+
+		}
+
+		ImGui::DragFloat3("pos", &hitMeshPyramid.position.x);
+		ImGui::DragFloat3("velocity", &hitMeshPyramid.velocity.x);
+		ImGui::DragFloat4("rotate(Quaternion)", &hitMeshPyramid.rotation.x);
+
+		if (ImGui::IsItemActive()) {
+
+			hitMeshPyramid.rotation.normalize();
+
+		}
+
+		ImGui::DragFloat3("angularVelocity", &hitMeshPyramid.angularVelocity.x);
+
+		ImGui::End();
+
+		/* 三角形GUI */
 
 		ImGui::Begin("triangle");
 
@@ -314,11 +358,22 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::DragFloat3("scale", &triangleTransform.scale.x, 0.03125f);
 			ImGui::DragFloat3("rotate", &triangleTransform.rotate.x, 0.03125f);
+
 			ImGui::DragFloat3("translate", &triangleTransform.translate.x, 0.03125f);
 
 		}
 
 		ImGui::EndChild();
+
+		Vector3 vertices[3]{};
+
+		for (size_t i = 0; i < 3; ++i) {
+
+			const auto& v = triangleVertexData[i];
+
+			vertices[i] = { v.position.x, v.position.y, v.position.w };
+
+		}
 
 		for (size_t i = 0; i < 3; ++i) {
 
@@ -365,244 +420,52 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
-
-		/* 三角形(2)GUI */
-
-		ImGui::Begin("triangle2");
-
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &triangle2Transform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &triangle2Transform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &triangle2Transform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		for (size_t i = 0; i < 3; ++i) {
-
-			ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangle2VertexData[i].position.x, 0.03125f);
-			ImGui::DragFloat2(("texCoord" + std::to_string(i)).c_str(), &triangle2VertexData[i].texCoord.x, 0.03125f);
-
-		}
-
-		if (ImGui::BeginChild("uvTransform"), imguiChildSize, imguiChildFlags) {
-
-			ImGui::Text("uvTransform");
-
-			ImGui::DragFloat2("scale", &triangle2UvTransform.scale.x, 0.03125f);
-			ImGui::DragFloat("rotate", &triangle2UvTransform.rotate.z, 0.03125f);
-			ImGui::DragFloat2("translate", &triangle2UvTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("texture");
-
-			for (const auto& path : textureFilePaths) {
-
-				ImGui::Selectable(path);
-
-				if (ImGui::IsItemActivated()) {
-
-					triangle2Texture = atrum->GetTexture(path);
-
-				}
-
-			}
-
-			ImGui::DragFloat4("color", &triangle2Color.x, 0.03125f, 0.0f, 1.0f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::End();
-
-
-		/* 球GUI */
-
-		ImGui::Begin("sphere");
-
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &sphereTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &sphereTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("uvTransform");
-
-			ImGui::DragFloat2("scale", &sphereUvTransform.scale.x, 0.03125f);
-			ImGui::DragFloat("rotate", &sphereUvTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat2("translate", &sphereUvTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("texture");
-
-			for (const auto& path : textureFilePaths) {
-
-				ImGui::Selectable(path);
-
-				if (ImGui::IsItemActivated()) {
-
-					sphereTexture = atrum->GetTexture(path);
-
-				}
-
-			}
-
-			ImGui::DragFloat4("color", &sphereColor.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::DragFloat("radius", &sphereRadius, 0.03125f);
-
-		int subdivision = sphereSubdivision;
-
-		ImGui::DragInt("subdivision", &subdivision, 0.03125f);
-
-		sphereSubdivision = subdivision;
-
-		ImGui::End();
-
-
-		/* 平面3dモデルGUI */
-
-		ImGui::Begin("planeModel");
-
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &planeModelTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &planeModelTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::End();
-
-		/* 複数メッシュ3dモデルGUI */
-
-		ImGui::Begin("multiMeshModel");
-
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::End();
-
-		/* 複数マテリアル3dモデルGUI */
-
-		ImGui::Begin("multiMaterialModel");
-
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
-
-		ImGui::End();
-
-		/* スプライトGUI */
-
-		ImGui::Begin("sprite");
-
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &spriteTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("uvTransform");
-
-			ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, 0.03125f);
-			ImGui::DragFloat("rotate", &spriteUvTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
-
-			ImGui::Text("texture");
-
-			for (const auto& path : textureFilePaths) {
-
-				ImGui::Selectable(path);
-
-				if (ImGui::IsItemActivated()) {
-
-					spriteTexture = atrum->GetTexture(path);
-
-				}
-
-			}
-
-			ImGui::DragFloat4("color", &spriteColor.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::End();
-
-
 		atrum->ImGuiRender();
 
 		debugCamera->Update();
 
-		playInput->EndOfFrame();
-
 #endif
+
+		if (isPhysicsMove) {
+
+			triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
+			triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
+			triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
+
+			triangle.normal = VectorNormalize(
+				VectorCross(
+				triangle.v1 - triangle.v0,
+				triangle.v2 - triangle.v0
+			)
+			);
+
+			hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
+
+			hitMeshPyramid.velocity.y += gravity * deltaTime;
+
+			hitMeshPyramid.velocity.y = std::clamp(hitMeshPyramid.velocity.y, -5.0f, 5.0f);
+
+			hitMeshPyramid.Update(deltaTime);
+
+			for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {
+				Vector3 w = VectorTransform(
+					hitMeshPyramid.localVertices[i],
+					hitMeshPyramid.worldMatrix
+				);
+
+			}
+
+			colM.Clear();
+
+			colM.AddBody(&hitMeshTriangle);
+
+			colM.AddBody(&hitMeshPyramid);
+
+			colM.CheckCollision();
+
+		}
+
+		playInput->EndOfFrame();
 
 		///
 		/// ↑更新ここまで
@@ -620,18 +483,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 描画処理(前)
 		atrum->PreDraw();
 
-		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform,  sphereRadius, sphereSubdivision, isLightingEnable);
-		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform,  triangleVertexData, isLightingEnable);
-		atrum->DrawTriangle(triangle2Texture, triangle2Color, triangle2UvTransform, triangle2Transform,  triangle2VertexData, isLightingEnable);
 
-		atrum->DrawModel(planeModel.get(), planeModelTransform,  isLightingEnable);
-		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform,  isLightingEnable);
-		atrum->DrawModel(multiMtlModel.get(), multiMeshModelTransform,  isLightingEnable);
+		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
+
+		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
 
 		// Sprite準備
 		atrum->PrepareSprite();
 
-		atrum->DrawSpriteRect(spriteTexture, spriteColor, sphereUvTransform, spriteTransform, spriteSize);
 
 		// 描画処理(後)
 		atrum->PostDraw();

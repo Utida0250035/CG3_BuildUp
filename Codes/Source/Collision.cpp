@@ -2,8 +2,8 @@
 #include <algorithm>
 #include <numbers>
 
-// OBBとベジェ曲線の交差判定（再帰）
-bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT) {
+// MyOBBとベジェ曲線の交差判定（再帰）
+bool CheckCollision(const MyOBB& obb, const Vector2 p[3], float t1, float t2, int depth, float& hitT) {
 
 	// 区間の開始点
 	Vector2 pStart = CalcBezier2(p, t1);
@@ -20,7 +20,7 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
 	float minY = std::min({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
 	float maxY = std::max({ obb.ToLocal(pStart).y, obb.ToLocal(pEnd).y, obb.ToLocal(pMid).y });
 
-	// 明確にOBB範囲外なら即座に抜ける
+	// 明確にMyOBB範囲外なら即座に抜ける
 	if (minX > obb.halfSize.x + 32.0f || maxX < -obb.halfSize.x - 32.0f ||
 		minY > obb.halfSize.y + 32.0f || maxY < -obb.halfSize.y - 32.0f) {
 		return false;
@@ -65,8 +65,8 @@ bool CheckCollision(const OBB& obb, const Vector2 p[3], float t1, float t2, int 
 
 }
 
-// OBBとベジェ曲線の交差判定（再帰）詳細版
-bool CheckCollisionDetailed(const OBB& obb, const Vector2& obbVertexPos, const Vector2 pBezier[3], float& t1, float& t2, int depthCount, const int depth) {
+// MyOBBとベジェ曲線の交差判定（再帰）詳細版
+bool CheckCollisionDetailed(const MyOBB& obb, const Vector2& obbVertexPos, const Vector2 pBezier[3], float& t1, float& t2, int depthCount, const int depth) {
 
 	// 区間の開始点
 	Vector2 pStart = CalcBezier2(pBezier, t1);
@@ -156,7 +156,7 @@ bool CheckCollisionDetailed(const OBB& obb, const Vector2& obbVertexPos, const V
 
 }
 
-bool ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
+bool ResolveObbBezierResponse(MyOBB& obb, Vector2& velocity, const Vector2 p[3]) {
 
 	float hitT = 0.0f;
 
@@ -167,7 +167,7 @@ bool ResolveObbBezierResponse(OBB& obb, Vector2& velocity, const Vector2 p[3]) {
 		Vector2 worldContact = CalcBezier2(p, hitT);
 		Vector2 localContact = obb.ToLocal(worldContact);
 
-		// 3. 応答法線（OBBのどの面で当たったか）の決定
+		// 3. 応答法線（MyOBBのどの面で当たったか）の決定
 		// めり込みが最も浅い方向に押し出す
 		float dx = obb.halfSize.x - std::abs(localContact.x);
 		float dy = obb.halfSize.y - std::abs(localContact.y);
@@ -214,7 +214,7 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
 
 		// 法線(normal)と押し出し量(overlap)を決定
 
-		// OBBの面法線
+		// MyOBBの面法線
 		Vector2 normal;
 		float dx = body.halfSize.x - std::abs(localContact.x);
 		float dy = body.halfSize.y - std::abs(localContact.y);
@@ -245,7 +245,7 @@ bool ResolveRigidBodyObbBezierResponse(RigidBodyOBB& body, const Vector2 pBezier
 
 		}
 
-		// 衝突した面からOBBを外に押し出す方向に法線の向きを固定する
+		// 衝突した面からMyOBBを外に押し出す方向に法線の向きを固定する
 
 		Vector2 towardCenter = body.center - contactPoint;
 
