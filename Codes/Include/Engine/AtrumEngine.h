@@ -20,7 +20,7 @@
 #include "Collision/HitMesh.h"
 #include "Debug/Log.h"
 #include "Geometry/PyramidMesh.h"
-#include "Math/Matrix3D.h"
+#include "Math/Matrix3x3.h"
 #include "Math/Quaternion.h"
 #include "Math/Transform.h"
 #include "Math/Vector2.h"
@@ -29,7 +29,6 @@
 #include "Time/DeltaTime.h"
 #include <array>
 #include <cstdint>
-#include <DirectXTex/DirectXTex.h>
 #include <memory>
 #include <optional>
 #include <SDL.h>
@@ -44,6 +43,8 @@
 #pragma comment(lib, "d3d12.lib")
 #include <dxgi1_6.h>
 #pragma comment(lib, "dxgi.lib")
+#include <DirectXTex/DirectXTex.h>
+#pragma comment(lib, "DirectXTex.lib")
 
 #ifdef USE_IMGUI
 

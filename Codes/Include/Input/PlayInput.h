@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector2.h"
+#include "Math/Vector2.h"
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include <windows.h>

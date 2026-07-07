@@ -27,10 +27,10 @@ void ShaderCompiler::CompileShaders() {
 
 	// Shaderをコンパイルする
 
-	vertexShaderBlob_ = this->Compile(L"Object3d.VS.hlsl", L"vs_6_0");
+	vertexShaderBlob_ = this->Compile(L"Assets/Shaders/Object3d.VS.hlsl", L"vs_6_0");
 	assert(vertexShaderBlob_ != nullptr);
 
-	pixelShaderBlob_ = this->Compile(L"Object3d.PS.hlsl", L"ps_6_0");
+	pixelShaderBlob_ = this->Compile(L"Assets/Shaders/Object3d.PS.hlsl", L"ps_6_0");
 	assert(pixelShaderBlob_ != nullptr);
 
 	LogFile::GetInstance()->Log("Shaders Compiled");

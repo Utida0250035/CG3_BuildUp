@@ -68,6 +68,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -220,8 +222,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Hash\Hash64.h" />
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
-    <ClInclude Include="Codes\Include\Math\Matrix2D.h" />
-    <ClInclude Include="Codes\Include\Math\Matrix3D.h" />
+    <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
+    <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h" />
     <ClInclude Include="Codes\Include\Math\Projection.h" />
     <ClInclude Include="Codes\Include\Math\Quaternion.h" />

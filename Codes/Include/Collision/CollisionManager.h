@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "./ContactConstraint.h"
-#include "./HitMesh.h"
+#include "Collision/ContactConstraint.h"
+#include "Collision/HitMesh.h"
 
 class CollisionManager {
 public:

@@ -1,5 +1,5 @@
 #pragma once
-#include "Vector3.h"
+#include "Math/Vector3.h"
 
 struct Triangle {
     Vector3 v0, v1, v2;

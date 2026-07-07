@@ -1,5 +1,5 @@
 #pragma once
-#include "Log.h"
+#include "Debug/Log.h"
 #include <SDL.h>
 
 struct Window {

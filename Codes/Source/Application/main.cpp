@@ -40,9 +40,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* テクスチャ */
 
 	const char* textureFilePaths[3] = {
-		"./Resources/Images/ForStudy/uvChecker.png",
-		"./Resources/Images/ForStudy/monsterBall.png",
-		"./Resources/Images/white4x4.png"
+		"./Assets/Images/ForStudy/uvChecker.png",
+		"./Assets/Images/ForStudy/monsterBall.png",
+		"./Assets/Images/white4x4.png"
 	};
 
 	uint32_t textureWhite = atrum->GetTexture(textureFilePaths[2]);
@@ -52,9 +52,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	std::unique_ptr<Audio> audio = std::make_unique<Audio>();
 	audio->Initialize();
 
-	[[maybe_unused]] size_t seAlarm = audio->LoadSe("./Resources/Audios/Alarm01.wav");
+	[[maybe_unused]] size_t seAlarm = audio->LoadSe("./Assets/Audios/Alarm01.wav");
 
-	size_t seCat = audio->LoadSe("./Resources/Audios/seCat.mp3");
+	size_t seCat = audio->LoadSe("./Assets/Audios/seCat.mp3");
 
 	/* Triangle */
 

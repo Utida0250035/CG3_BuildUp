@@ -1,296 +1,396 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Externals\imgui\imgui.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_demo.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_tables.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp" />
-    <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Audio.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui_demo.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\Bezier.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui_draw.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\Collision2D.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\CommandContext.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui_tables.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\String\ConvertString.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\CreateBufferResource.cpp">
-      <Filter>Source</Filter>
+    <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
+      <Filter>External_ImGui</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Debug\DebugCamera.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\Collision2D.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Audio.cpp">
+      <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\DescriptorAllocator.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Time</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Fence.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\IndexBuffer.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Debug\Log.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Application\main.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix2D.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix3D.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\OBB.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\PipelineState.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\Plane.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Input</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Geometry\Bezier.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\String\ConvertString.cpp">
+      <Filter>Codes\Source\String</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\CommandContext.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\CreateBufferResource.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\DescriptorAllocator.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Fence.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\IndexBuffer.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Debug\Log.cpp">
+      <Filter>Codes\Source\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Application\main.cpp">
+      <Filter>Codes\Source\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Matrix2D.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Matrix3D.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\PipelineState.cpp">
+      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\RenderDevice.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\RootSignature.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\SAT.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\ShaderCompiler.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\SwapChain.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Vector2.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Vector3.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Vector4.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\VertexBuffer.cpp">
-      <Filter>Source</Filter>
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Geometry\OBB.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Geometry\Plane.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\SAT.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Vector4.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Vector3.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Vector2.cpp">
+      <Filter>Codes\Source\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Externals\imgui\imgui.h" />
-    <ClInclude Include="Externals\imgui\imgui_internal.h" />
-    <ClInclude Include="Externals\imgui\imstb_rectpack.h" />
-    <ClInclude Include="Externals\imgui\imstb_textedit.h" />
-    <ClInclude Include="Externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h" />
-    <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h" />
-    <ClInclude Include="Codes\Include\Engine\AssetModel.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imgui.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\AtrumEngine.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\Bezier.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Camera\Camera.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imgui_internal.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\Collision2D.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imstb_rectpack.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\CollisionManager.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imstb_textedit.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\CollisionTypes.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\CommandContext.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\ConstantBuffer.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\ContactConstraint.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\String\ConvertString.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\CreateBufferResource.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\DebugCamera.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\DebugConsole.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Time\DeltaTime.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\DescriptorAllocator.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Input\DirectInput.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\DirectionalLightData.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Hash\Hash64.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Fence.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\HitMesh.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\HitMeshBuilder.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\ImGui.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\Log.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\LightData.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\IndexBuffer.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\MaterialData.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Matrix2D.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Matrix3D.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\OBB.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\PipelineState.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\Plane.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Input\PlayInput.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Projection.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Quaternion.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\RenderDevice.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\RootSignature.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\SAT.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\ShaderCompiler.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Cast\StaticCast.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\SwapChain.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Texture.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\TransformationData.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Transform.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\Triangle.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Vector2.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Vector4.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\VertexBuffer.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\VertexData.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Window.h">
-      <Filter>Include</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Vector3.h">
-      <Filter>Include</Filter>
+    <ClInclude Include="Externals\imgui\imstb_truetype.h">
+      <Filter>External_ImGui</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
-      <Filter>Include</Filter>
+      <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h">
-      <Filter>Include</Filter>
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\Camera.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\AssetModel.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\AtrumEngine.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\Collision2D.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\CollisionManager.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\CollisionTypes.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\Bezier.h">
+      <Filter>Codes\Include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\CommandContext.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\ConstantBuffer.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\ContactConstraint.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\String\ConvertString.h">
+      <Filter>Codes\Include\String</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\CreateBufferResource.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\DebugCamera.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\DebugConsole.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Time\DeltaTime.h">
+      <Filter>Codes\Include\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Input\DirectInput.h">
+      <Filter>Codes\Include\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Input\PlayInput.h">
+      <Filter>Codes\Include\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Cast\StaticCast.h">
+      <Filter>Codes\Include\Cast</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\DescriptorAllocator.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\DirectionalLightData.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Fence.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Hash\Hash64.h">
+      <Filter>Codes\Include\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\HitMesh.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\HitMeshBuilder.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\ImGui.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\Log.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\IndexBuffer.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\LightData.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\MaterialData.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Matrix4x4.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Matrix3x3.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\OBB.h">
+      <Filter>Codes\Include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\Plane.h">
+      <Filter>Codes\Include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h">
+      <Filter>Codes\Include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\Triangle.h">
+      <Filter>Codes\Include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\TransformationData.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\RootSignature.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\RenderDevice.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\PipelineState.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\SwapChain.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\ShaderCompiler.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Projection.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Quaternion.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Texture.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\VertexBuffer.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\VertexData.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Window.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\SAT.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Transform.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Vector2.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Vector3.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Vector4.h">
+      <Filter>Codes\Include\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Include">
+    <Filter Include="External_ImGui">
+      <UniqueIdentifier>{b84c2eb2-f9c0-4ff2-8c64-bc55f932ce27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes">
+      <UniqueIdentifier>{900e000f-fc5b-488b-b4d8-7d759bc1668f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source">
+      <UniqueIdentifier>{aba49542-c454-4ea9-95d7-e0043e600fcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include">
       <UniqueIdentifier>{f9374064-b9b6-4a98-b8c4-b862cd099077}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source">
-      <UniqueIdentifier>{aba49542-c454-4ea9-95d7-e0043e600fcf}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Audio">
+      <UniqueIdentifier>{6508fe82-ebc6-4ce8-a1a3-9669a7d9439d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Camera">
+      <UniqueIdentifier>{fab0dd0f-4bcf-4682-8e86-3c54b9585db2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Collision">
+      <UniqueIdentifier>{ab78ce32-9e4d-4923-ac88-7d3bb0febbd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Geometry">
+      <UniqueIdentifier>{ce92aacf-c447-45c1-9ac8-cc9606b1e0a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\String">
+      <UniqueIdentifier>{8864796d-ca41-4260-80c9-df344277779c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Cast">
+      <UniqueIdentifier>{9eeb6520-60b5-4226-9134-f18ceac9201c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Time">
+      <UniqueIdentifier>{47f80d08-288b-40d8-8c8f-dccc9fbaafb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Input">
+      <UniqueIdentifier>{e98cc502-bb96-4358-8138-75bf81e062de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Math">
+      <UniqueIdentifier>{e3d4e1db-67e0-4c75-92c1-08772d568d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Hash">
+      <UniqueIdentifier>{573e1403-88c0-48b4-90b0-836f58fe5ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Debug">
+      <UniqueIdentifier>{0a2a2f1e-216f-4fb0-9e46-6ea7f15ab3c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine">
+      <UniqueIdentifier>{71d6de3f-d2d0-4ef9-8d96-9b61f3ded539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Audio">
+      <UniqueIdentifier>{e1b3bdf8-57d6-458f-8fbe-0421561214c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Debug">
+      <UniqueIdentifier>{430c27db-76c5-4d81-859c-5149fb5e6687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Input">
+      <UniqueIdentifier>{bc38a932-5962-47ab-819f-0f216676e320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Math">
+      <UniqueIdentifier>{4867987e-9274-414c-ba3d-e3e33988819e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Time">
+      <UniqueIdentifier>{c24392f0-037a-4d5c-bdbb-8e8730ca9c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\String">
+      <UniqueIdentifier>{ed221189-606f-408e-ba68-df02a5959626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Geometry">
+      <UniqueIdentifier>{8d888d4b-98d9-4c6a-a1f9-52776ee0c918}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Application">
+      <UniqueIdentifier>{3628ce2a-aeb0-48b2-abc7-4cc1ccff95de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine">
+      <UniqueIdentifier>{1047fd15-02f6-4873-aa2d-b98aeb2fdf9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Collision">
+      <UniqueIdentifier>{ae939f77-4abd-4f98-ab84-f6d15fce7840}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
-﻿#pragma once
-#include "Vector3.h"
+#pragma once
+#include "Math/Vector3.h"
 
 struct Plane {
 	// 法線

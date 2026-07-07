@@ -12,6 +12,7 @@
 #pragma comment(lib, "dxcompiler.lib")
 
 #include <DirectXTex/DirectXTex.h>
+#pragma comment(lib, "DirectXTex.lib")
 
 #include <wrl/client.h>
 

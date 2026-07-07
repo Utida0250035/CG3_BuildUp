@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Geometry/Triangle.h"
+#include "Math/Matrix4x4.h"
+#include "Math/Vector3.h"
 #include <vector>
-#include "Matrix3D.h"
-#include "Vector3.h"
-#include "Triangle.h"
 
 
 struct Projection {

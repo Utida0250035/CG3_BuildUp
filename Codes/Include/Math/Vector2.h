@@ -1,5 +1,5 @@
 #pragma once
-#include <Cmath>
+#include <cmath>
 
 struct Vector2 {
 	float x;

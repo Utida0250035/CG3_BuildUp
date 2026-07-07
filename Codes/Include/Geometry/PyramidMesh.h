@@ -1,7 +1,7 @@
 #pragma once
 
-#include "CollisionTypes.h"
-#include "Vector3.h"
+#include "Collision/CollisionTypes.h"
+#include "Math/Vector3.h"
 
 #include <vector>
 

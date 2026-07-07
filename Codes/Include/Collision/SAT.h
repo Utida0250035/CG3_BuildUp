@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "HitMesh.h"
-#include "CollisionTypes.h"
+#include "Collision/CollisionTypes.h"
+#include "Collision/HitMesh.h"
 
 Projection ProjectVertices(
     const std::vector<Vector3>& vertices,

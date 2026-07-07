@@ -10,13 +10,12 @@
 #include "Hash/Hash64.h"
 #include "Input/DirectInput.h"
 #include "Input/PlayInput.h"
-#include "Math/Matrix3D.h"
+#include "Math/Matrix4x4.h"
 #include "Math/Vector4.h"
 #include "String/ConvertString.h"
 #include <cassert>
 #include <cfloat>
 #include <cstdint>
-#include <DirectXTex/d3dx12.h>
 #include <filesystem>
 #include <format>
 #include <fstream>
@@ -38,6 +37,8 @@
 #pragma comment(lib, "dxgi.lib")
 #include <dxgidebug.h>
 #pragma comment(lib, "dxguid.lib")
+#include <DirectXTex/d3dx12.h>
+#pragma comment(lib, "DirectXTex.lib")
 
 #ifdef USE_IMGUI
 
@@ -2129,7 +2130,7 @@ std::vector<std::shared_ptr<AssetMaterialData>> AtrumEngine::LoadMaterialTemplat
 
 
 #ifdef _DEBUG
-						assetMaterial->textureFilePathDebug = "./Resources/Images/white4x4.png";
+						assetMaterial->textureFilePathDebug = "./Assets/Images/white4x4.png";
 #endif
 
 						assetMaterialData.emplace_back(assetMaterial);
