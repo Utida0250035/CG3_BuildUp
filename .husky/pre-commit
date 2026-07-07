@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-cmd.exe /c ".\Assets\Editor\Tools\spellCheckersRun.cmd"
+cmd.exe /c ".\EditorAssets\Tools\Checkers\spellCheckersRun.cmd"

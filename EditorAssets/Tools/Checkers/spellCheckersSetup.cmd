@@ -61,7 +61,7 @@ echo [INFO] setup pre-commit...
 (
     echo #!/usr/bin/env sh
     echo.
-    echo cmd.exe /c ".\Assets\Editor\Tools\spellCheckersRun.cmd"
+    echo cmd.exe /c ".\EditorAssets\Tools\Checkers\spellCheckersRun.cmd"
 ) > "%FILE%"
 
 echo [INFO] created : ProjectDir\.husky\pre-commit
