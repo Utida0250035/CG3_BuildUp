@@ -119,42 +119,40 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Codes\Source\AtrumEngine.cpp" />
-    <ClCompile Include="Codes\Source\Audio.cpp" />
-    <ClCompile Include="Codes\Source\AudioDecoder.cpp" />
-    <ClCompile Include="Codes\Source\Bezier.cpp" />
-    <ClCompile Include="Codes\Source\Collision.cpp" />
-    <ClCompile Include="Codes\Source\CollisionManager.cpp" />
-    <ClCompile Include="Codes\Source\CommandContext.cpp" />
-    <ClCompile Include="Codes\Source\ContactConstraint.cpp" />
-    <ClCompile Include="Codes\Source\ConvertString.cpp" />
-    <ClCompile Include="Codes\Source\CreateBufferResource.cpp" />
-    <ClCompile Include="Codes\Source\DebugCamera.cpp" />
-    <ClCompile Include="Codes\Source\DeltaTime.cpp" />
-    <ClCompile Include="Codes\Source\DescriptorAllocator.cpp" />
-    <ClCompile Include="Codes\Source\Fence.cpp" />
-    <ClCompile Include="Codes\Source\HitMesh.cpp" />
-    <ClCompile Include="Codes\Source\HitMeshBuilder.cpp" />
-    <ClCompile Include="Codes\Source\IndexBuffer.cpp" />
-    <ClCompile Include="Codes\Source\Log.cpp" />
-    <ClCompile Include="Codes\Source\main.cpp" />
-    <ClCompile Include="Codes\Source\Matrix2D.cpp" />
-    <ClCompile Include="Codes\Source\Matrix3D.cpp" />
-    <ClCompile Include="Codes\Source\Matrix3x3Physics.cpp" />
-    <ClCompile Include="Codes\Source\OBB.cpp" />
-    <ClCompile Include="Codes\Source\PipelineState.cpp" />
-    <ClCompile Include="Codes\Source\Plane.cpp" />
-    <ClCompile Include="Codes\Source\DirectInput.cpp" />
-    <ClCompile Include="Codes\Source\PlayInput.cpp" />
-    <ClCompile Include="Codes\Source\RenderDevice.cpp" />
-    <ClCompile Include="Codes\Source\RootSignature.cpp" />
-    <ClCompile Include="Codes\Source\SAT.cpp" />
-    <ClCompile Include="Codes\Source\ShaderCompiler.cpp" />
-    <ClCompile Include="Codes\Source\SwapChain.cpp" />
-    <ClCompile Include="Codes\Source\Vector2.cpp" />
-    <ClCompile Include="Codes\Source\Vector3.cpp" />
-    <ClCompile Include="Codes\Source\Vector4.cpp" />
-    <ClCompile Include="Codes\Source\VertexBuffer.cpp" />
+    <ClCompile Include="Codes\Source\Application\main.cpp" />
+    <ClCompile Include="Codes\Source\Collision\Collision2D.cpp" />
+    <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp" />
+    <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
+    <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp" />
+    <ClCompile Include="Codes\Source\Collision\SAT.cpp" />
+    <ClCompile Include="Codes\Source\Debug\DebugCamera.cpp" />
+    <ClCompile Include="Codes\Source\Debug\Log.cpp" />
+    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Audio.cpp" />
+    <ClCompile Include="Codes\Source\Engine\CommandContext.cpp" />
+    <ClCompile Include="Codes\Source\Engine\CreateBufferResource.cpp" />
+    <ClCompile Include="Codes\Source\Engine\DescriptorAllocator.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Fence.cpp" />
+    <ClCompile Include="Codes\Source\Engine\IndexBuffer.cpp" />
+    <ClCompile Include="Codes\Source\Engine\PipelineState.cpp" />
+    <ClCompile Include="Codes\Source\Engine\RenderDevice.cpp" />
+    <ClCompile Include="Codes\Source\Engine\RootSignature.cpp" />
+    <ClCompile Include="Codes\Source\Engine\ShaderCompiler.cpp" />
+    <ClCompile Include="Codes\Source\Engine\SwapChain.cpp" />
+    <ClCompile Include="Codes\Source\Engine\VertexBuffer.cpp" />
+    <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
+    <ClCompile Include="Codes\Source\Geometry\OBB.cpp" />
+    <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
+    <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
+    <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
+    <ClCompile Include="Codes\Source\Math\Matrix2D.cpp" />
+    <ClCompile Include="Codes\Source\Math\Matrix3D.cpp" />
+    <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp" />
+    <ClCompile Include="Codes\Source\Math\Vector2.cpp" />
+    <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
+    <ClCompile Include="Codes\Source\Math\Vector4.cpp" />
+    <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -178,63 +176,61 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Codes\Include\AssetModel.h" />
-    <ClInclude Include="Codes\Include\AtrumEngine.h" />
-    <ClInclude Include="Codes\Include\Audio.h" />
-    <ClInclude Include="Codes\Include\AudioDecoder.h" />
-    <ClInclude Include="Codes\Include\Bezier.h" />
-    <ClInclude Include="Codes\Include\Camera.h" />
-    <ClInclude Include="Codes\Include\Collision.h" />
-    <ClInclude Include="Codes\Include\CollisionManager.h" />
-    <ClInclude Include="Codes\Include\CollisionTypes.h" />
-    <ClInclude Include="Codes\Include\CommandContext.h" />
-    <ClInclude Include="Codes\Include\ConstantBuffer.h" />
-    <ClInclude Include="Codes\Include\ContactConstraint.h" />
-    <ClInclude Include="Codes\Include\ConvertString.h" />
-    <ClInclude Include="Codes\Include\CreateBufferResource.h" />
-    <ClInclude Include="Codes\Include\DebugCamera.h" />
-    <ClInclude Include="Codes\Include\DebugConsole.h" />
-    <ClInclude Include="Codes\Include\DeltaTime.h" />
-    <ClInclude Include="Codes\Include\DescriptorAllocator.h" />
-    <ClInclude Include="Codes\Include\DirectionalLightData.h" />
-    <ClInclude Include="Codes\Include\Fence.h" />
-    <ClInclude Include="Codes\Include\Hash64.h" />
-    <ClInclude Include="Codes\Include\HitMesh.h" />
-    <ClInclude Include="Codes\Include\HitMeshBuilder.h" />
-    <ClInclude Include="Codes\Include\ImGui.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\IndexBuffer.h" />
-    <ClInclude Include="Codes\Include\LightData.h" />
-    <ClInclude Include="Codes\Include\Log.h" />
-    <ClInclude Include="Codes\Include\MaterialData.h" />
-    <ClInclude Include="Codes\Include\Matrix2D.h" />
-    <ClInclude Include="Codes\Include\Matrix3D.h" />
-    <ClInclude Include="Codes\Include\Matrix3x3Physics.h" />
-    <ClInclude Include="Codes\Include\OBB.h" />
-    <ClInclude Include="Codes\Include\Overlap.h" />
-    <ClInclude Include="Codes\Include\PipelineState.h" />
-    <ClInclude Include="Codes\Include\Plane.h" />
-    <ClInclude Include="Codes\Include\DirectInput.h" />
-    <ClInclude Include="Codes\Include\PlayInput.h" />
-    <ClInclude Include="Codes\Include\PyramidMesh.h" />
-    <ClInclude Include="Codes\Include\Quaternion.h" />
-    <ClInclude Include="Codes\Include\RenderDevice.h" />
-    <ClInclude Include="Codes\Include\RootSignature.h" />
-    <ClInclude Include="Codes\Include\SAT.h" />
-    <ClInclude Include="Codes\Include\ShaderCompiler.h" />
-    <ClInclude Include="Codes\Include\StaticCast.h" />
-    <ClInclude Include="Codes\Include\SwapChain.h" />
-    <ClInclude Include="Codes\Include\Texture.h" />
-    <ClInclude Include="Codes\Include\TransformationData.h" />
-    <ClInclude Include="Codes\Include\Transform.h" />
-    <ClInclude Include="Codes\Include\Triangle.h" />
-    <ClInclude Include="Codes\Include\Vector2.h" />
-    <ClInclude Include="Codes\Include\Vector3.h" />
-    <ClInclude Include="Codes\Include\Vector4.h" />
-    <ClInclude Include="Codes\Include\VertexBuffer.h" />
-    <ClInclude Include="Codes\Include\VertexData.h" />
-    <ClInclude Include="Codes\Include\Window.h" />
+    <ClInclude Include="Codes\Include\Audio\Audio.h" />
+    <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
+    <ClInclude Include="Codes\Include\Camera\Camera.h" />
+    <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
+    <ClInclude Include="Codes\Include\Collision\Collision2D.h" />
+    <ClInclude Include="Codes\Include\Collision\CollisionManager.h" />
+    <ClInclude Include="Codes\Include\Collision\CollisionTypes.h" />
+    <ClInclude Include="Codes\Include\Collision\ContactConstraint.h" />
+    <ClInclude Include="Codes\Include\Collision\HitMesh.h" />
+    <ClInclude Include="Codes\Include\Collision\HitMeshBuilder.h" />
+    <ClInclude Include="Codes\Include\Collision\SAT.h" />
+    <ClInclude Include="Codes\Include\Debug\DebugCamera.h" />
+    <ClInclude Include="Codes\Include\Debug\DebugConsole.h" />
+    <ClInclude Include="Codes\Include\Debug\ImGui.h" />
+    <ClInclude Include="Codes\Include\Debug\Log.h" />
+    <ClInclude Include="Codes\Include\Engine\AssetModel.h" />
+    <ClInclude Include="Codes\Include\Engine\AtrumEngine.h" />
+    <ClInclude Include="Codes\Include\Engine\CommandContext.h" />
+    <ClInclude Include="Codes\Include\Engine\ConstantBuffer.h" />
+    <ClInclude Include="Codes\Include\Engine\CreateBufferResource.h" />
+    <ClInclude Include="Codes\Include\Engine\DescriptorAllocator.h" />
+    <ClInclude Include="Codes\Include\Engine\DirectionalLightData.h" />
+    <ClInclude Include="Codes\Include\Engine\Fence.h" />
+    <ClInclude Include="Codes\Include\Engine\IndexBuffer.h" />
+    <ClInclude Include="Codes\Include\Engine\LightData.h" />
+    <ClInclude Include="Codes\Include\Engine\MaterialData.h" />
+    <ClInclude Include="Codes\Include\Engine\PipelineState.h" />
+    <ClInclude Include="Codes\Include\Engine\RenderDevice.h" />
+    <ClInclude Include="Codes\Include\Engine\RootSignature.h" />
+    <ClInclude Include="Codes\Include\Engine\ShaderCompiler.h" />
+    <ClInclude Include="Codes\Include\Engine\SwapChain.h" />
+    <ClInclude Include="Codes\Include\Engine\Texture.h" />
+    <ClInclude Include="Codes\Include\Engine\TransformationData.h" />
+    <ClInclude Include="Codes\Include\Engine\VertexBuffer.h" />
+    <ClInclude Include="Codes\Include\Engine\VertexData.h" />
+    <ClInclude Include="Codes\Include\Engine\Window.h" />
+    <ClInclude Include="Codes\Include\Geometry\Bezier.h" />
+    <ClInclude Include="Codes\Include\Geometry\OBB.h" />
+    <ClInclude Include="Codes\Include\Geometry\Plane.h" />
+    <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h" />
+    <ClInclude Include="Codes\Include\Geometry\Triangle.h" />
+    <ClInclude Include="Codes\Include\Hash\Hash64.h" />
+    <ClInclude Include="Codes\Include\Input\DirectInput.h" />
+    <ClInclude Include="Codes\Include\Input\PlayInput.h" />
+    <ClInclude Include="Codes\Include\Math\Matrix2D.h" />
+    <ClInclude Include="Codes\Include\Math\Matrix3D.h" />
+    <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h" />
+    <ClInclude Include="Codes\Include\Math\Projection.h" />
+    <ClInclude Include="Codes\Include\Math\Quaternion.h" />
+    <ClInclude Include="Codes\Include\Math\Transform.h" />
+    <ClInclude Include="Codes\Include\Math\Vector2.h" />
+    <ClInclude Include="Codes\Include\Math\Vector3.h" />
+    <ClInclude Include="Codes\Include\Math\Vector4.h" />
+    <ClInclude Include="Codes\Include\String\ConvertString.h" />
+    <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -256,19 +252,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Externals\imgui\imstb_truetype.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Projection.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="Object3d.PS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Object3d.VS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
