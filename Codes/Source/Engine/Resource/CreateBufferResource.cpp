@@ -1,5 +1,5 @@
-#include "Engine/CreateBufferResource.h"
 #include "Debug/Log.h"
+#include "Engine/Resource/CreateBufferResource.h"
 #include <cassert>
 
 Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes, D3D12_HEAP_TYPE heapType, D3D12_RESOURCE_STATES resourceState, ID3D12Device* device) {

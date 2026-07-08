@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/AssetModel.h"
+#include "Engine/Resource/AssetModel.h"
 
 #include <unordered_map>
 #include <memory>

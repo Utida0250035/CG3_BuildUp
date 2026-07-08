@@ -5,7 +5,7 @@
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
 
-#include "Engine/CreateBufferResource.h"
+#include "Engine/Resource/CreateBufferResource.h"
 
 template <typename T>
 class SingleConstantBuffer {

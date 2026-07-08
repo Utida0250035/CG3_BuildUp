@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/VertexData.h"
+#include "Engine/Resource/VertexData.h"
 #include <cstdint>
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")

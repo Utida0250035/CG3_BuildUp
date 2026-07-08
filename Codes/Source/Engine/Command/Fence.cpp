@@ -1,4 +1,4 @@
-#include "Engine/Fence.h"
+#include "Engine/Command/Fence.h"
 #include <cassert>
 
 void Fence::Initialize(ID3D12Device* device, const uint32_t backBufferCount) {

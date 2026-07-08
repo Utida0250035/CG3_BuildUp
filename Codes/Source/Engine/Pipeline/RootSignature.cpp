@@ -1,5 +1,5 @@
 #include "Debug/Log.h"
-#include "Engine/RootSignature.h"
+#include "Engine/Pipeline/RootSignature.h"
 #include <cassert>
 
 void RootSignature::Initialize(ID3D12Device* device) {

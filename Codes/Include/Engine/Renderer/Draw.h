@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Engine/ConstantBuffer.h"
-#include "Engine/DirectionalLightData.h"
-#include "Engine/MaterialData.h"
-#include "Engine/VertexData.h"
-#include "Engine/TransformationData.h"
+#include "Engine/Resource/ConstantBuffer.h"
+#include "Engine/Resource/DirectionalLightData.h"
+#include "Engine/Resource/MaterialData.h"
+#include "Engine/Resource/TransformationData.h"
+#include "Engine/Resource/VertexData.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Transform.h"
 

@@ -1,9 +1,9 @@
 #include "Debug/Log.h"
-#include "Engine/CreateBufferResource.h"
-#include "Engine/ModelStorage.h"
-#include "Engine/TextureStorage.h"
+#include "Engine/Command/CommandContext.h"
+#include "Engine/Resource/CreateBufferResource.h"
+#include "Engine/Resource/ModelStorage.h"
+#include "Engine/Resource/TextureStorage.h"
 #include "Hash/Hash64.h"
-#include "Engine/CommandContext.h"
 
 #include <DirectXTex/d3dx12.h>
 #include <filesystem>

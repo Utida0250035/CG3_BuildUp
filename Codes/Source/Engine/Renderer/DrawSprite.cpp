@@ -1,9 +1,9 @@
-#include "Engine/DrawSprite.h"
+#include "Engine/REnderer/DrawSprite.h"
 
-#include "Engine/CommandContext.h"
-#include "Engine/DescriptorAllocator.h"
-#include "Engine/IndexBuffer.h"
-#include "Engine/VertexBuffer.h"
+#include "Engine/Command/CommandContext.h"
+#include "Engine/Resource/DescriptorAllocator.h"
+#include "Engine/Resource/IndexBuffer.h"
+#include "Engine/Resource/VertexBuffer.h"
 #include "Math/Transform.h"
 
 

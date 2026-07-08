@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Cast/StaticCast.h"
-#include "Engine/ConstantBuffer.h"
-#include "Engine/MaterialData.h"
-#include "Engine/TransformationData.h"
+#include "Engine/REsource/ConstantBuffer.h"
+#include "Engine/Resource/MaterialData.h"
+#include "Engine/Resource/TransformationData.h"
 #include "Math/Transform.h"
 #include "Math/Vector2.h"
 
