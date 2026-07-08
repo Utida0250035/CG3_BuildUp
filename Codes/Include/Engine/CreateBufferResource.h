@@ -9,3 +9,5 @@ Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes, 
 Microsoft::WRL::ComPtr<ID3D12Resource> CreateUploadBuffer(size_t sizeInBytes, ID3D12Device* device);
 
 Microsoft::WRL::ComPtr<ID3D12Resource> CreateDefaultBuffer(size_t sizeInBytes, ID3D12Device* device);
+
+Microsoft::WRL::ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t intermediateSize, ID3D12Device* device);

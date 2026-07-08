@@ -124,6 +124,18 @@
     <ClCompile Include="Codes\Source\Math\Vector2.cpp">
       <Filter>Codes\Source\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\ModelStorage.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\TextureStorage.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Draw.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\DrawSprite.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -311,6 +323,18 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Vector4.h">
       <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\ModelStorage.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\TextureStorage.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Draw.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\DrawSprite.h">
+      <Filter>Codes\Include\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

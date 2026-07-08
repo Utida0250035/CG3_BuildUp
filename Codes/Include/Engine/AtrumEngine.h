@@ -57,6 +57,12 @@ namespace fs = std::filesystem;
 class DirectInput;
 class PlayInput;
 
+class ModelStorage;
+class TextureStorage;
+
+class Draw;
+class DrawSprite;
+
 class AtrumEngine final {
 
 private:
@@ -163,34 +169,9 @@ private:
 	std::unique_ptr<PipelineState> graphicsPipelineState_ = nullptr;
 
 
-	/* Vertex */
-
-	std::unique_ptr<VertexBuffer> vertexBuffer_ = nullptr;
-
-	inline static constexpr uint32_t kMaxDrawCount = 4096;
-
-	/* 頂点インデックス */
-
-	std::unique_ptr<IndexBuffer> indexBuffer_ = nullptr;
-
-
-	/* Material */
-
-	std::unique_ptr<MultiConstantBuffer<MaterialData>> materialBuffer_ = nullptr;
-
-
-	/* WVP */
-
-	std::unique_ptr<MultiConstantBuffer<TransformationData>> transformationBuffer_ = nullptr;
-
 	/* DirectionalLight(3D専用) */
 
 	std::unique_ptr<SingleConstantBuffer<DirectionalLightData>> directionalLightBuffer_ = nullptr;
-
-
-	/* constantBufferCount */
-
-	uint32_t constantBufferCount_ = 0;
 
 
 	/* depthStencil */
@@ -201,60 +182,7 @@ private:
 	// DepthStencilResource
 	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-
-	/* Sprite用 Vertex */
-
-	std::unique_ptr<VertexBuffer> spriteVertexBuffer_ = nullptr;
-
-
-	/* Sprite用 頂点インデックス */
-
-	std::unique_ptr<IndexBuffer> spriteIndexBuffer_ = nullptr;
-
-	inline static constexpr uint32_t kSpriteMaxDrawCount = 1024;
-
-
-	/* Sprite用 Material */
-
-	// MaterialResource
-	std::unique_ptr<MultiConstantBuffer<MaterialData>> spriteMaterialBuffer_ = nullptr;
-
-
-	/* Sprite用 Transform */
-
-	std::unique_ptr<MultiConstantBuffer<TransformationData>> spriteTransformationBuffer_ = nullptr;
-
-	/* Sprite用 constantBufferCount */
-
-	uint32_t spriteConstantBufferCount_ = 0;
-
 private:
-
-	// 3DモデルAsset用 Meshマップ
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshMap_{};
-
-	// 3DモデルAsset用 Materialマップ
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialMap_{};
-
-	// 3DモデルAsset用 Modelマップ
-	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelMap_{};
-
-
-	/* テクスチャ */
-
-	// Textureのsrv番号テーブル
-	std::unordered_map<uint64_t, uint32_t> textureIndexTable_{};
-
-	// Texture
-	std::vector<Texture> textures_{};
-
-	/* 射影行列 */
-
-	// 透視投影
-	const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 1024.0f);
-
-	// 正射影
-	const Matrix4x4 kOrthographicMatrix = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth_), cast::Float(clientHeight_), 0.0f, 100.0f);
 
 
 	/* ウィンドウサイズ */
@@ -278,10 +206,6 @@ private:
 	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
 
 
-	/* ビュー行列 */
-
-	Matrix4x4 viewMatrix_{};
-
 	/* プレイヤー入力 */
 
 	// DirectInput
@@ -289,6 +213,21 @@ private:
 
 	// SDL2入力
 	PlayInput* playInput_ = nullptr;
+
+
+	/* アセットストレージ */
+
+	ModelStorage* pModelStorage_ = nullptr;
+	
+	TextureStorage* pTextureStorage_ = nullptr;
+
+
+	/* 描画 */
+
+	Draw* pDraw_ = nullptr;
+
+	DrawSprite* pDrawSprite_ = nullptr;
+
 
 	/**/
 
@@ -327,49 +266,10 @@ private:
 	void SetUpScissorRect();
 
 	/// <summary>
-	/// 初期化処理 MaterialBufferの作成
-	/// </summary>
-	void CreateMaterialBuffer();
-
-	/// <summary>
-	/// 初期化処理 TransformationBufferの作成
-	/// </summary>
-	void CreateTransformationBuffer();
-
-	/// <summary>
-	/// 初期化処理 VertexBufferの生成
-	/// </summary>
-	void CreateVertexBuffer();
-
-	/// <summary>
-	/// 初期化処理 IndexBufferの生成
-	/// </summary>
-	void CreateIndexBuffer();
-
 	/// <summary>
 	/// 初期化処理 平行光源Bufferの作成
 	/// </summary>
 	void CreateDirectionalLightBuffer();
-
-	/// <summary>
-	/// 初期化処理 Sprite用VertexBufferの生成
-	/// </summary>
-	void CreateSpriteVertexBuffer();
-
-	/// <summary>
-	/// 初期化処理 Sprite用IndexBufferの生成
-	/// </summary>
-	void CreateSpriteIndexBuffer();
-
-	/// <summary>
-	/// 初期化処理 Sprite用MaterialBufferの生成
-	/// </summary>
-	void CreateSpriteMaterialBuffer();
-
-	/// <summary>
-	/// 初期化処理 Sprite用TransformBufferの生成
-	/// </summary>
-	void CreateSpriteTransformationBuffer();
 
 	/// <summary>
 	/// 初期化処理 DepthStencilResourceの作成
@@ -379,16 +279,6 @@ private:
 	/// <returns> DepthStencilResource </returns>
 	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
-	/// <summary>
-	/// 三角形の描画呼び出し
-	/// </summary>
-	void DrawTriangleCall(const uint32_t& textureIndex);
-
-	/// <summary>
-	/// 3D実体の描画呼び出し(モデル除く)
-	/// </summary>
-	void DrawCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInSphere, const uint32_t& vertexCountInSphere);
-	void DrawCall(const uint32_t& textureIndex, const uint32_t& vertexCountInInstance);
 
 	/// <summary>
 	/// Spriteの描画呼び出し
@@ -484,68 +374,7 @@ public:
 	// コピーコンストラクタの削除
 	AtrumEngine(const AtrumEngine& source) = delete;
 
-	/// <summary>
-	/// ワールド行列の作成
-	/// </summary>
-	/// <param name="transform"> Transform </param>
-	/// <returns> ワールド行列 </returns>
-	Matrix4x4 CreateWorldMatrix(const Transform& transform) const;
-
-
-
-private:
-
-	/// <summary>
-	/// 中間リソース生成の汎用関数
-	/// </summary>
-	/// <param name="resourceSize"> 中間リソースのサイズ </param>
-	/// <returns> 中間リソース </returns>
-	ComPtr<ID3D12Resource> CreateIntermediateResource(const size_t intermediateSize);
-
-	/// <summary>
-	/// Textureデータの読み込み
-	/// </summary>
-	/// <param name="filePath"> ファイルパス </param>
-	/// <returns> MipMap付きデータ </returns>
-	DirectX::ScratchImage LoadTexture(const std::string& filePath);
-
-	/// <summary>
-	/// TextureResourceの作成
-	/// </summary>
-	/// <param name="metaData"></param>
-	/// <returns></returns>
-	ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
-
-	/// <summary>
-	/// テクスチャ読み込み用中間リソースの作成
-	/// </summary>
-	/// <param name="textureResource"></param>
-	/// <returns></returns>
-	ComPtr<ID3D12Resource> CreateTextureIntermediateResource(ID3D12Resource* textureResource);
-
-	/// <summary>
-	/// textureResourceにデータを転送する
-	/// </summary>
-	/// <param name="texture"> テクスチャポインタ </param>
-	/// <param name="mipImages"> MipMap付データ </param>
-	/// <param name="intermediateResource"> 中間リソース </param>
-	void UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
-
-	/// <summary>
-	/// ShaderResourceViewの作成
-	/// </summary>
-	/// <param name="metaData"> Meta情報 </param>
-	void MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData);
-
 public:
-
-	/// <summary>
-	/// テクスチャの取得
-	/// </summary>
-	/// <param name="filePath"> テクスチャのファイルパス </param>
-	/// <returns> テクスチャ番号 </returns>
-	uint32_t GetTexture(const std::string& filePath);
-
 
 	/// <summary>
 	/// 三角形の描画
@@ -605,38 +434,6 @@ public:
 	/// <param name="width"> 太さ </param>
 	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
 
-
-	/// <summary>
-	/// objファイルの読み込み
-	/// </summary>
-	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
-	/// <param name="fileName"> ファイル名 </param>
-	/// <returns> メッシュデータ </returns>
-	std::vector<AssetMeshNode> LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames);
-
-	/// <summary>
-	/// mtlファイルの読み込み
-	/// </summary>
-	/// <param name="directoryPath"> ファイル直上のフォルダまでのパス </param>
-	/// <param name="fileName"> ファイル名 </param>
-	/// <returns> 寿命保証用マテリアルデータ配列 </returns>
-	std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
-
-	/// <summary>
-	/// 3Dモデルの生成
-	/// </summary>
-	/// <param name="objFilePath"> objファイルのパス </param>
-	/// <returns> 管理番号(ハッシュ) </returns>
-	std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
-
-	/// <summary>
-	/// 3Dモデルの取得||新規生成
-	/// </summary>
-	/// <param name="objFilePath"></param>
-	/// <param name="mtlFilePath"></param>
-	/// <returns></returns>
-	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
-
 	/// <summary>
 	/// 3Dモデルの描画
 	/// </summary>
@@ -646,11 +443,29 @@ public:
 	/// <param name="isLighting"> ライティングフラグ </param>
 	void DrawModel(AssetModel* model, const Transform& transform, const bool isLighting);
 
+
+
+	/// <summary>
+	/// テクスチャの取得
+	/// </summary>
+	/// <param name="filePath"> テクスチャのファイルパス </param>
+	/// <returns> テクスチャ番号 </returns>
+	uint32_t GetTexture(const std::string& filePath);
+
+	/// <summary>
+	/// 3Dモデルの取得||新規生成
+	/// </summary>
+	/// <param name="objFilePath"></param>
+	/// <param name="mtlFilePath"></param>
+	/// <returns></returns>
+	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+
+
 	/* セッター */
 
 	void SetDirectionalLightData(const DirectionalLightData& data) { directionalLightBuffer_->SetData(data); }
 
-	void SetViewMatrix(const Matrix4x4& mat) { viewMatrix_ = mat; }
+	void SetViewMatrix(const Matrix4x4& mat);
 
 };
 

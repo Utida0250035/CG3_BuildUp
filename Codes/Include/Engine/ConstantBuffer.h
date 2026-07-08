@@ -5,6 +5,8 @@
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
 
+#include "Engine/CreateBufferResource.h"
+
 template <typename T>
 class SingleConstantBuffer {
 
@@ -50,7 +52,7 @@ public:
 	void CreateBuffer(ID3D12Device* device, const size_t resourceCount) {
 
 		// Data1つ分 * resourceCountのサイズを用意
-		resource_ = CreateUploadBuffer(sizeof(T) * resourceCount, device);
+		resource_ = CreateUploadBuffer(resourceCount * sizeof(T), device);
 
 		// データを書き込むためのアドレスを取得
 		resource_->Map(0, nullptr, reinterpret_cast<void**>(&data_));

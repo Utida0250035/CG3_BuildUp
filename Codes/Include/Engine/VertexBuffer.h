@@ -24,12 +24,6 @@ private:
 
 public:
 
-	// 画面上の頂点の最大描画数
-	inline static constexpr uint32_t kVertexMaxDrawCount = 16384;
-
-	// スプライト版 最大頂点数
-	inline static constexpr uint32_t kSpriteVertexMaxDrawCount = 4096;
-
 	void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
 
 	/* カウント加算 */
