@@ -1,5 +1,5 @@
 #include "Debug/Log.h"
-#include "Engine/DescriptorAllocator.h"
+#include "Engine/Resource/DescriptorAllocator.h"
 #include "String/ConvertString.h"
 
 void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, std::wstring descriptorName, ID3D12Device* device) {

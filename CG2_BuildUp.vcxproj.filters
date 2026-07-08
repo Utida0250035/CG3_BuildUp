@@ -31,9 +31,6 @@
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
       <Filter>Codes\Source\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Audio.cpp">
-      <Filter>Codes\Source\Audio</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp">
       <Filter>Codes\Source\Time</Filter>
     </ClCompile>
@@ -43,9 +40,6 @@
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
       <Filter>Codes\Source\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp">
       <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
@@ -54,21 +48,6 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\String\ConvertString.cpp">
       <Filter>Codes\Source\String</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\CommandContext.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\CreateBufferResource.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\DescriptorAllocator.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Fence.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\IndexBuffer.cpp">
-      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp">
       <Filter>Codes\Source\Collision</Filter>
@@ -88,24 +67,6 @@
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp">
       <Filter>Codes\Source\Math</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\PipelineState.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\RenderDevice.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\RootSignature.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\ShaderCompiler.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\SwapChain.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\VertexBuffer.cpp">
-      <Filter>Codes\Source\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\OBB.cpp">
       <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
@@ -123,6 +84,57 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\Math\Vector2.cpp">
       <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Audio\Audio.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Command\CommandContext.cpp">
+      <Filter>Codes\Source\Engine\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Command\Fence.cpp">
+      <Filter>Codes\Source\Engine\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Device\RenderDevice.cpp">
+      <Filter>Codes\Source\Engine\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Device\SwapChain.cpp">
+      <Filter>Codes\Source\Engine\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Pipeline\RootSignature.cpp">
+      <Filter>Codes\Source\Engine\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Pipeline\PipelineState.cpp">
+      <Filter>Codes\Source\Engine\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
+      <Filter>Codes\Source\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp">
+      <Filter>Codes\Source\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\DescriptorAllocator.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\IndexBuffer.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\ModelStorage.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\TextureStorage.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
+      <Filter>Codes\Source\Engine\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -156,12 +168,6 @@
     <ClInclude Include="Codes\Include\Camera\Camera.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\AssetModel.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\AtrumEngine.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Collision\Collision2D.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
@@ -174,20 +180,11 @@
     <ClInclude Include="Codes\Include\Geometry\Bezier.h">
       <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\CommandContext.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\ConstantBuffer.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Collision\ContactConstraint.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\String\ConvertString.h">
       <Filter>Codes\Include\String</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\CreateBufferResource.h">
-      <Filter>Codes\Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Debug\DebugCamera.h">
       <Filter>Codes\Include\Debug</Filter>
@@ -207,15 +204,6 @@
     <ClInclude Include="Codes\Include\Cast\StaticCast.h">
       <Filter>Codes\Include\Cast</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\DescriptorAllocator.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\DirectionalLightData.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Fence.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Hash\Hash64.h">
       <Filter>Codes\Include\Hash</Filter>
     </ClInclude>
@@ -230,15 +218,6 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Debug\Log.h">
       <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\IndexBuffer.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\LightData.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\MaterialData.h">
-      <Filter>Codes\Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h">
       <Filter>Codes\Include\Math</Filter>
@@ -261,41 +240,11 @@
     <ClInclude Include="Codes\Include\Geometry\Triangle.h">
       <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\TransformationData.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\RootSignature.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\RenderDevice.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\PipelineState.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\SwapChain.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\ShaderCompiler.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Math\Projection.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Quaternion.h">
       <Filter>Codes\Include\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Texture.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\VertexBuffer.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\VertexData.h">
-      <Filter>Codes\Include\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Window.h">
-      <Filter>Codes\Include\Engine</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\SAT.h">
       <Filter>Codes\Include\Collision</Filter>
@@ -311,6 +260,81 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Vector4.h">
       <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\AtrumEngine.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h">
+      <Filter>Codes\Include\Engine\Platform\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Command\CommandContext.h">
+      <Filter>Codes\Include\Engine\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\CreateBufferResource.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\DescriptorAllocator.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\DirectionalLightData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\IndexBuffer.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\MaterialData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\ModelStorage.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\Texture.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\TextureStorage.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\TransformationData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\VertexBuffer.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h">
+      <Filter>Codes\Include\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h">
+      <Filter>Codes\Include\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Pipeline\PipelineState.h">
+      <Filter>Codes\Include\Engine\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Pipeline\RootSignature.h">
+      <Filter>Codes\Include\Engine\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Command\Fence.h">
+      <Filter>Codes\Include\Engine\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Device\RenderDevice.h">
+      <Filter>Codes\Include\Engine\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Device\SwapChain.h">
+      <Filter>Codes\Include\Engine\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h">
+      <Filter>Codes\Include\Engine\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -391,6 +415,48 @@
     </Filter>
     <Filter Include="Codes\Source\Collision">
       <UniqueIdentifier>{ae939f77-4abd-4f98-ab84-f6d15fce7840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Device">
+      <UniqueIdentifier>{e274a08f-f09a-49b4-9f02-a608783a9700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Pipeline">
+      <UniqueIdentifier>{7a722a98-0b76-477f-aff5-576be504bafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Platform">
+      <UniqueIdentifier>{01783b0c-1a01-466e-84f5-37eb1cba87f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Shader">
+      <UniqueIdentifier>{bf984495-4469-4975-a802-0d0449e3ef2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Platform\Window">
+      <UniqueIdentifier>{b8cc9764-0571-44ed-95ee-c1ba811f88c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Command">
+      <UniqueIdentifier>{61c20277-3e19-49ba-a326-e61cc7a21adb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Resource">
+      <UniqueIdentifier>{10d85e9a-9d0b-4c22-8609-a4c85ef5f1eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Renderer">
+      <UniqueIdentifier>{a0d020ec-bffe-4362-a8e8-aa456089693b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Command">
+      <UniqueIdentifier>{838c3640-e1bf-4d2e-8af8-0e95f3998cef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Device">
+      <UniqueIdentifier>{764e1030-756e-4693-920d-17a23f15f677}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Pipeline">
+      <UniqueIdentifier>{32446860-bb4b-4ef5-887d-ee72f3961786}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Renderer">
+      <UniqueIdentifier>{3e594e86-fa9e-4325-9e74-bccdfc7e4128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Resource">
+      <UniqueIdentifier>{68dd256d-1b97-42f7-8df7-c01f1a744bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Shader">
+      <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

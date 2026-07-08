@@ -70,6 +70,7 @@ struct AssetMeshNode {
 };
 
 class AtrumEngine;
+class ModelStorage;
 
 /* Asset用 Model */
 class AssetModel {
@@ -77,6 +78,8 @@ class AssetModel {
 private:
 
 	friend AtrumEngine;
+
+	friend ModelStorage;
 
 	// 座標変換リソース
 	Microsoft::WRL::ComPtr<ID3D12Resource> transformationResource_ = nullptr;

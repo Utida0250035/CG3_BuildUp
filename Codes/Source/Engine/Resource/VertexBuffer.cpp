@@ -1,6 +1,6 @@
 #include "Debug/Log.h"
-#include "Engine/CreateBufferResource.h"
-#include "Engine/VertexBuffer.h"
+#include "Engine/Resource/CreateBufferResource.h"
+#include "Engine/Resource/VertexBuffer.h"
 
 void VertexBuffer::CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device) {
 

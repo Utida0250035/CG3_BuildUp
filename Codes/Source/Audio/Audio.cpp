@@ -1,7 +1,7 @@
-#include "Audio.h"
-#include "AudioDecoder.h"
-#include "ConvertString.h"
-#include "Hash64.h"
+#include "Audio/Audio.h"
+#include "Audio/AudioDecoder.h"
+#include "Hash/Hash64.h"
+#include "String/ConvertString.h"
 #include <cassert>
 #include <filesystem>
 #include <fstream>

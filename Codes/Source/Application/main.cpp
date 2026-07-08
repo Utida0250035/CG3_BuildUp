@@ -79,6 +79,30 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	uint32_t triangleTexture = textureWhite;
 
 
+	/* 平面3dModel */
+
+	auto planeModel = atrum->GetModel("./Assets/Objects/ForStudy", "plane.obj", "./Assets/Objects/ForStudy", "plane.mtl");
+	Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
+	planeModelTransform.translate.z = -20.0f;
+
+	/* 複数メッシュ3dModel */
+
+	auto multiMeshModel = atrum->GetModel("./Assets/Objects/ForStudy", "multiMesh.obj", "./Assets/Objects/ForStudy", "multiMesh.mtl");
+	Transform multiMeshModelTransform{};
+
+	/* 複数マテリアル3dModel */
+
+	auto multiMtlModel = atrum->GetModel("./Assets/Objects/ForStudy", "multiMaterial.obj", "./Assets/Objects/ForStudy", "multiMaterial.mtl");
+	Transform multiMtlModelTransform{};
+
+	/* Sprite */
+
+	Transform spriteTransform{};
+	Transform spriteUvTransform{};
+	Vector2 spriteSize{ 64.0f, 64.0f };
+	uint32_t spriteTexture = textureWhite;
+	Vector4 spriteColor = Vec4White();
+
 	/* HitMesh */
 
 	PyramidMesh pyramidMesh{};
@@ -309,6 +333,62 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
+		/* 平面3dモデルGUI */
+
+		ImGui::Begin("planeModel");
+
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &planeModelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &planeModelTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::End();
+
+		/* 複数メッシュ3dモデルGUI */
+
+		ImGui::Begin("multiMeshModel");
+
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::End();
+
+		/* 複数マテリアル3dモデルGUI */
+
+		ImGui::Begin("multiMaterialModel");
+
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
+
+		ImGui::End();
+
 		/* HitMeshのGUI */
 
 		ImGui::Begin("HitMesh");
@@ -344,6 +424,58 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		ImGui::DragFloat3("angularVelocity", &hitMeshPyramid.angularVelocity.x);
+
+		ImGui::End();
+
+		/* スプライトGUI */
+
+		ImGui::Begin("sprite");
+
+		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.03125f);
+			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat3("translate", &spriteTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, 0.03125f);
+			ImGui::DragFloat("rotate", &spriteUvTransform.rotate.x, 0.03125f);
+			ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
+
+		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+
+			ImGui::Text("texture");
+
+			for (const auto& path : textureFilePaths) {
+
+				ImGui::Selectable(path);
+
+				if (ImGui::IsItemActivated()) {
+
+					spriteTexture = atrum->GetTexture(path);
+
+				}
+
+			}
+
+			ImGui::DragFloat4("color", &spriteColor.x, 0.03125f);
+
+		}
+
+		ImGui::EndChild();
 
 		ImGui::End();
 
@@ -483,13 +615,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 描画処理(前)
 		atrum->PreDraw();
 
-
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
 		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
 
+
+		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
+		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);
+		atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform, isLightingEnable);
+
+
 		// Sprite準備
 		atrum->PrepareSprite();
+
+		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize);
 
 
 		// 描画処理(後)

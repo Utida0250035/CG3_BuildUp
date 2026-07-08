@@ -1,5 +1,5 @@
 #pragma once
-#include "Engine/VertexData.h"
+#include "Engine/Resource/VertexData.h"
 #include <cstdint>
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
@@ -23,12 +23,6 @@ private:
 	uint32_t vertexDrewCount_ = 0;
 
 public:
-
-	// 画面上の頂点の最大描画数
-	inline static constexpr uint32_t kVertexMaxDrawCount = 16384;
-
-	// スプライト版 最大頂点数
-	inline static constexpr uint32_t kSpriteVertexMaxDrawCount = 4096;
 
 	void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
 
