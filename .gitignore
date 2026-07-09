@@ -36,6 +36,7 @@ bld/
 [Dd]umps/
 *.dmp
 *.dll
+*.exe
 
 
 # Visual Studio 2015/2017 cache/options directory
