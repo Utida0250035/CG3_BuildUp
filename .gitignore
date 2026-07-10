@@ -32,12 +32,11 @@ bld/
 [Oo]ut/
 [Ll]og/
 [Ll]ogs/
-
-logs/
 *.log
-
-Dumps/
+[Dd]umps/
 *.dmp
+*.dll
+*.exe
 
 
 # Visual Studio 2015/2017 cache/options directory

@@ -3,7 +3,7 @@
 #include "Engine/Command/Fence.h"
 #include "Engine/Device/SwapChain.h"
 #include "Engine/Resource/CreateBufferResource.h"
-#include "Engine/REsource/DescriptorAllocator.h"
+#include "Engine/Resource/DescriptorAllocator.h"
 #include "Engine/Resource/TextureStorage.h"
 #include "Hash/Hash64.h"
 #include "String/ConvertString.h"

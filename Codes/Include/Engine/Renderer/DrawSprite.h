@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Cast/StaticCast.h"
-#include "Engine/REsource/ConstantBuffer.h"
+#include "Engine/Resource/ConstantBuffer.h"
 #include "Engine/Resource/MaterialData.h"
 #include "Engine/Resource/TransformationData.h"
 #include "Math/Transform.h"

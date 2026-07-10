@@ -1,0 +1,45 @@
+{
+    "target_extensions": [
+        ".py",
+        ".h",
+        ".cpp"
+    ],
+    "ignore_dirs": [
+        ".git",
+        ".vscode",
+        "build",
+        "Externals",
+        "node_modules"
+    ],
+    "exact_match": [
+        "pPCMType",
+        "MFShutdown",
+        "MFStartup",
+        "MFCreateMediaType",
+        "MFCreateSample",
+        "IMFSample",
+        "IMFMediaBuffer",
+        "IMFSourceReader",
+        "pIDList",
+        "RTMatrixInverse"
+    ],
+    "partial_match": [
+        "WString",
+        "PGet",
+        "SAT",
+        "IMFMediaType",
+        "IASet",
+        "OMSet",
+        "RSSet",
+        "IDxc",
+        "DSV",
+        "RTV",
+        "UAV",
+        "SRV",
+        "D3D",
+        "ID3D",
+        "ID3D12",
+        "URL",
+        "MFCreate"
+    ]
+}

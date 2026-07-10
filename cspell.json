@@ -2,6 +2,10 @@
     "version": "0.2",
     "language": "en-us",
     "checkComments": true,
+    "checkStrings": true,
+    "camelCase": true,
+    "ignoreCase": false,
+    "allowCompoundWords": false,
     "ignorePaths": [
         ".node_env/**/*",
         "node_modules/**/*",
