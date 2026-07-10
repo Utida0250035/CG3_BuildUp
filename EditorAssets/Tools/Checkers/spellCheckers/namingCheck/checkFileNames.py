@@ -94,7 +94,7 @@ def analyze_naming_anomalies(targets):
                 {
                     "path": t["path"],
                     "type": t["type"],
-                    "reason": f"統計的逸脱: 長さ={length}(平均{mean_len:.1f}), 特殊文字率={ratio_special:.2%}",
+                    "reason": f"長さ={length}(平均{mean_len:.1f}), 特殊文字率={ratio_special:.2%}",
                 }
             )
 
@@ -176,7 +176,7 @@ def main():
         relative_path = os.path.relpath(anomaly["path"], project_root)
 
         print(
-            f"長文や特殊文字: |{anomaly['type']}|($ProjectDir)\{relative_path} - {anomaly['reason']}"
+            f"長文や特殊文字: |{anomaly['type']}|\033[32m($ProjectDir)\{relative_path}\033[0m\n\033[33m{anomaly['reason']}\033[0m\n"
         )
 
     # 希少単語を検出
@@ -185,7 +185,7 @@ def main():
     for anomaly in anomaliesRare:
         relative_path = os.path.relpath(anomaly["path"], project_root)
         print(
-            f"希少単語が含まれている): |{anomaly['type']}|($ProjectDir)\{relative_path} - {anomaly['rare_words']}"
+            f"希少単語を含む): |{anomaly['type']}|\033[32m($ProjectDir)\{relative_path}\033[0m\n\033[33m{anomaly['rare_words']}\033[0m\n"
         )
 
     input("\nEnterキーを押して終了...")

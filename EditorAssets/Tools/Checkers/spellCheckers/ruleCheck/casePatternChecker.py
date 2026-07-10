@@ -116,9 +116,11 @@ def main():
                         tokens = re.findall(r"\b[a-zA-Z]+\b", line)
                         for token in tokens:
                             if check_token(token, exact_list, partial_list):
-                                print(f"{rel_path}:{i}: '{token}'")
+                                print(
+                                    f"大文字の連続:\033[32m{rel_path}\033[0m: \033[32m{i}\033[0m: \n'\033[33m{token}\033[0m'\n"
+                                )
             except Exception as e:
-                print(f"Error reading {rel_path}: {e}")
+                print(f"\033[33mError reading {rel_path}: {e}\033[0m")
 
 
 if __name__ == "__main__":
