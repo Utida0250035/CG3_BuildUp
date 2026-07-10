@@ -7,7 +7,7 @@
 #include "Engine/Resource/AssetModel.h"
 #include "Engine/Resource/DescriptorAllocator.h" 
 #include "Engine/Resource/IndexBuffer.h"
-#include "Engine/REsource/VertexBuffer.h"
+#include "Engine/Resource/VertexBuffer.h"
 #include "Geometry/PyramidMesh.h"
 #include "Math/Quaternion.h"
 

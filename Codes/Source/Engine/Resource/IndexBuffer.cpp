@@ -1,6 +1,6 @@
 #include "Debug/Log.h"
 #include "Engine/Resource/CreateBufferResource.h"
-#include "Engine/REsource/IndexBuffer.h"
+#include "Engine/Resource/IndexBuffer.h"
 
 void IndexBuffer::CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device) {
 

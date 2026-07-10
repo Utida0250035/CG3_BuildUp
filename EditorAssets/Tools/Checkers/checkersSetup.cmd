@@ -177,7 +177,7 @@ goto ERROR
 
 :PYTHON_WINGET
 
-winget install --id Python.Python.3.12 -e
+winget install Python3
 
 echo.
 echo Please restart this setup after the installation.
