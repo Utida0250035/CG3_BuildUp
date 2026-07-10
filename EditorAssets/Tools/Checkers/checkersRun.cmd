@@ -45,9 +45,6 @@ echo [4/4]run checkers...
 :: different process
 start "" "%TOOLS_DIR%\spellCheckers\run.cmd"
 
-:: different process
-start "" cmd /k "call npm run lint:spell"
-
 :: spell check(mainProcess)
 call npm run lint:spell >&2
 
