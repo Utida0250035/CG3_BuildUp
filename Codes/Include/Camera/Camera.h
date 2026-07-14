@@ -16,7 +16,7 @@ protected:
 	Matrix4x4 orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, 1280.0f, 720.0f, 0.0001f, 100.0f);
 
 	// 平行移動
-	Vector3 translate_{};
+	Vector3 translate_{ 0.0f,0.0f, -10.0f };
 
 	// 回転
 	Quaternion quaternion_{};
@@ -28,7 +28,9 @@ protected:
 public:
 
 	virtual void Initialize() {}
-	virtual void Update() {}
+	virtual void Update() {
+		UpdateMatrix();
+	}
 
 	void CreateOrthographicMatrix(const int32_t clientWidth, const int32_t clientHeight) {
 		orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth), cast::Float(clientHeight), 0.0f, 100.0f);
@@ -52,7 +54,7 @@ public:
 	/* 加算 */
 
 	void AddRotate(const Vector3& add) {
-		
+
 		Vector3 up = quaternion_.rotate_vector({ 0, 1, 0 });
 		Vector3 right = quaternion_.rotate_vector({ 1,0,0 });
 		Vector3 forward = quaternion_.rotate_vector({ 0, 0, 1 });

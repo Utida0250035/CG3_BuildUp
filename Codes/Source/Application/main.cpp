@@ -153,14 +153,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	/* デバッグカメラ */
-
-	std::unique_ptr<Camera> camera = nullptr;
 	
 #ifdef _DEBUG
 	
+	std::unique_ptr<DebugCamera> camera = nullptr;
+
 	camera = std::make_unique<DebugCamera>();
 
 #else
+
+	std::unique_ptr<Camera> camera = nullptr;
 
 	camera = std::make_unique<Camera>();
 
@@ -268,36 +270,36 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("DebugCamera");
 
-		ImGui::Text("mode: %d", debugCamera->GetMode());
+		ImGui::Text("mode: %d", camera->GetMode());
 
-		ImGui::DragFloat("distance", &debugCamera->RefDistance());
+		ImGui::DragFloat("distance", &camera->RefDistance());
 
-		ImGui::DragFloat3("translate", &debugCamera->RefTranslate().x);
+		ImGui::DragFloat3("translate", &camera->RefTranslate().x);
 
-		ImGui::DragFloat4("quaternion", &debugCamera->RefQuaternion().x, 0.03125f);
+		ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, 0.03125f);
 
-		ImGui::DragFloat4("pivotQuaternion", &debugCamera->RefPivotQuaternion().x, 0.03125f);
+		ImGui::DragFloat4("pivotQuaternion", &camera->RefPivotQuaternion().x, 0.03125f);
 
-		ImGui::DragFloat3("pivot", &debugCamera->RefPivot().x, 0.03125f);
+		ImGui::DragFloat3("pivot", &camera->RefPivot().x, 0.03125f);
 
-		const Vector3& pivot = debugCamera->RefPivot();
-		const Vector3& translate = debugCamera->RefTranslate();
+		const Vector3& pivot = camera->RefPivot();
+		const Vector3& translate = camera->RefTranslate();
 
 		Vector3 direction = VectorNormalize(pivot - translate);
-		Vector3 calculatedDirection = debugCamera->RefQuaternion().rotate_vector({ 0.0f, 0.0f, -1.0f });
+		Vector3 calculatedDirection = camera->RefQuaternion().rotate_vector({ 0.0f, 0.0f, -1.0f });
 
 		ImGui::DragFloat3("direction", &direction.x);
 		ImGui::DragFloat3("direction(calc)", &calculatedDirection.x);
 
 		if (ImGui::IsItemActive()) {
 
-			debugCamera->RefQuaternion().normalize();
+			camera->RefQuaternion().normalize();
 
 		}
 
 		if (ImGui::IsItemActive()) {
 
-			debugCamera->RefPivotQuaternion().normalize();
+			camera->RefPivotQuaternion().normalize();
 
 		}
 
@@ -557,9 +559,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		atrum->ImGuiRender();
 
-		debugCamera->Update();
-
 #endif
+
+		camera->Update();
 
 		Vector3 vertices[3]{};
 
