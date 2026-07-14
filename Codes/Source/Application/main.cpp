@@ -11,7 +11,6 @@
 #include "Geometry/Triangle.h"
 #include "Input/DirectInput.h"
 #include "Input/PlayInput.h"
-#include "Json/JsonTest.h"
 #include "Time/DeltaTime.h"
 #include <format>
 #include <iostream>
@@ -175,18 +174,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	camera->CreateOrthographicMatrix(1280, 720);
 
-#ifdef USE_IMGUI
-
 	/* ImGui */
+
+#ifdef USE_IMGUI
 
 	ImVec2 imguiChildSize = ImVec2(0.0f, 0.0f);
 	ImGuiChildFlags imguiChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY;
 
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-	/* Json入出力テスト */
-
-	JsonTest jsonTest;
 
 #endif
 
@@ -224,8 +219,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		[[maybe_unused]] int32_t mouseWheel = playInput->GetMouseWheel();
 
 #ifdef USE_IMGUI
-
-		jsonTest.jsonVal.ImGui("./Assets/Sample/test.json");
 
 		ImGui::Begin("debug");
 

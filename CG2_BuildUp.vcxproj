@@ -153,7 +153,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
-    <ClCompile Include="Codes\Source\Json\JsonTest.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp" />
@@ -234,8 +233,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
     <ClInclude Include="Codes\Include\Json\JsonHandler.h" />
-    <ClInclude Include="Codes\Include\Json\JsonTest.h" />
-    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
     <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h" />
