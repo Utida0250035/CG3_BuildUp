@@ -336,7 +336,9 @@
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h">
       <Filter>Codes\Include\Engine\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="JsonHandler.h" />
+    <ClInclude Include="Codes\Include\Json\JsonHandler.h">
+      <Filter>Codes\Include\Json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -458,6 +460,9 @@
     </Filter>
     <Filter Include="Codes\Source\Engine\Shader">
       <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Json">
+      <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -4,12 +4,13 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
-
 /// <summary>
 /// JSON操作クラス 汎用 シリアライズ定義済み前提
 /// </summary>
 class JsonHandler {
+
+private:
+	using json = nlohmann::json;
 
 public:
 
@@ -20,7 +21,7 @@ public:
 	/// <param name="fileName"></param>
 	/// <returns></returns>
 	template<typename T>
-	static T loadFromFile(const std::string& fileName) {
+	static T LoadFromFile(const std::string& fileName) {
 
 		std::ifstream file(fileName);
 		if (!file.is_open()) {
