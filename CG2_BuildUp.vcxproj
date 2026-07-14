@@ -153,6 +153,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
+    <ClCompile Include="Codes\Source\Json\JsonTest.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp" />
@@ -232,6 +233,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Hash\Hash64.h" />
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
+    <ClInclude Include="Codes\Include\Json\JsonHandler.h" />
+    <ClInclude Include="Codes\Include\Json\JsonTest.h" />
+    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
     <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h" />
@@ -264,7 +268,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Externals\imgui\imstb_truetype.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="JsonHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
