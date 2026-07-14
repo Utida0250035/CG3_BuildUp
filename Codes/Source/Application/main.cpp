@@ -154,10 +154,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* デバッグカメラ */
 
-	std::unique_ptr<DebugCamera> debugCamera = std::make_unique<DebugCamera>();
+	std::unique_ptr<Camera> camera = nullptr;
+	
+#ifdef _DEBUG
+	
+	camera = std::make_unique<DebugCamera>();
 
-	debugCamera->Initialize();
-	debugCamera->CreateOrthographicMatrix(1280, 720);
+#else
+
+	camera = std::make_unique<Camera>();
+
+#endif
+
+	camera->Initialize();
+
+
+
+	camera->CreateOrthographicMatrix(1280, 720);
 
 	/* ImGui */
 
@@ -497,16 +510,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::EndChild();
 
-		Vector3 vertices[3]{};
-
-		for (size_t i = 0; i < 3; ++i) {
-
-			const auto& v = triangleVertexData[i];
-
-			vertices[i] = { v.position.x, v.position.y, v.position.w };
-
-		}
-
 		for (size_t i = 0; i < 3; ++i) {
 
 			ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangleVertexData[i].position.x, 0.03125f);
@@ -558,6 +561,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #endif
 
+		Vector3 vertices[3]{};
+
+		for (size_t i = 0; i < 3; ++i) {
+
+			const auto& v = triangleVertexData[i];
+
+			vertices[i] = { v.position.x, v.position.y, v.position.w };
+
+		}
+
 		if (isPhysicsMove) {
 
 			triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
@@ -607,7 +620,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓描画ここから
 		/// 
 
-		atrum->SetViewMatrix(debugCamera->GetViewMatrix());
+		atrum->SetViewMatrix(camera->GetViewMatrix());
 
 		// 光源データの設定
 		atrum->SetDirectionalLightData(directionalLightData);

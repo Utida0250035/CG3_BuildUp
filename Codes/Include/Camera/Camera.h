@@ -27,6 +27,9 @@ protected:
 
 public:
 
+	virtual void Initialize() {}
+	virtual void Update() {}
+
 	void CreateOrthographicMatrix(const int32_t clientWidth, const int32_t clientHeight) {
 		orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth), cast::Float(clientHeight), 0.0f, 100.0f);
 	}
