@@ -136,6 +136,7 @@
     <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
       <Filter>Codes\Source\Engine\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Json\JsonTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -339,6 +340,8 @@
     <ClInclude Include="Codes\Include\Json\JsonHandler.h">
       <Filter>Codes\Include\Json</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Json\JsonTest.h" />
+    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
