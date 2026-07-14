@@ -336,6 +336,7 @@
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h">
       <Filter>Codes\Include\Engine\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="JsonHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
