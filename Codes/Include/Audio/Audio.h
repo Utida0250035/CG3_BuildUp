@@ -9,6 +9,23 @@
 #include <vector>
 #include <wrl/client.h>
 
+struct StreamingSourceVoice {
+
+	IXAudio2SourceVoice* pVoice = nullptr;
+	// メディアデータ読み込み用
+	Microsoft::WRL::ComPtr<IMFSourceReader> pReader;
+
+	// 読み込みと再生の状態管理
+	std::atomic<bool> isStreaming{ false };
+
+	// ストリーミング用にバッファを複数持つ（ダブルバッファリング）
+	inline static constexpr size_t kBufferCount = 3;
+	// 64KB単位の読み込みvg
+	inline static constexpr size_t kBufferSize = 65536;
+	BYTE* pBuffers[kBufferCount];
+};
+
+
 class VoiceCallback : public IXAudio2VoiceCallback {
 public:
 	std::atomic<bool> isPlaying{ false };
