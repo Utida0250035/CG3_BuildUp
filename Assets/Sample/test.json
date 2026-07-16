@@ -1,12 +1,12 @@
 {
-    "name": "JsonTest",
+    "name": "test.json",
     "numFloat": 0.0,
     "numInt": 0,
     "numInt32bit": 0,
     "numUINT32bit": 0,
     "position": {
         "x": 0.0,
-        "y": 0.0,
+        "y": 36.0,
         "z": 0.0
     },
     "positions": []

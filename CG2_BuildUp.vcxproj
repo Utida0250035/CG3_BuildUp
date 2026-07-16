@@ -183,6 +183,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h" />
@@ -246,6 +249,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Math\Vector3.h" />
     <ClInclude Include="Codes\Include\Math\Vector4.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
+    <ClInclude Include="Codes\Include\System\ECS.h" />
     <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -266,6 +270,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imstb_truetype.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
   </ItemGroup>

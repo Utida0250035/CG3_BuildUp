@@ -13,22 +13,13 @@ DEFINE_JSON(Vector3, x, y, z);
 
 DEFINE_JSON(JsonTest::JsonData, name, position, positions, numFloat, numInt, numInt32bit, numUINT32bit);
 
-static int InputTextCallback(ImGuiInputTextCallbackData* data) {
-	if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-		std::string* str = (std::string*)data->UserData;
-		str->resize(data->BufTextLen);
-		data->Buf = (char*)str->c_str();
-	}
-	return 0;
-}
-
 void JsonTest::JsonData::ImGui(const char* jsonFilePath) {
 
 #ifdef USE_IMGUI
 
 	ImGui::Begin("jsonTest");
 
-	ImGui::InputText("name", reinterpret_cast<char*>(name.data()), name.size() + 1, ImGuiInputTextFlags_CallbackResize, InputTextCallback, reinterpret_cast<void*>(&name));
+	ImGui::InputText("name", &name);
 
 	ImGui::DragFloat3("position", &position.x);
 

@@ -23,7 +23,7 @@ struct JsonTest {
 
 	JsonData jsonVal;
 
-	std::unique_ptr<Vector3> positionUniquePtr;
-	Vector3* positionPtr;
+	std::unique_ptr<Vector3> positionUniquePtr = nullptr;
+	Vector3* positionPtr = nullptr;
 
 };
