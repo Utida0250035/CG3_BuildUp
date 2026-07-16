@@ -19,7 +19,7 @@ void JsonTest::JsonData::ImGui(const char* jsonFilePath) {
 
 	ImGui::Begin("jsonTest");
 
-	ImGui::InputText("name", &name);
+	ImGui::InputString("name", name);
 
 	ImGui::DragFloat3("position", &position.x);
 
