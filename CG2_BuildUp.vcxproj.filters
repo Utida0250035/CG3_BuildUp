@@ -136,6 +136,12 @@
     <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
       <Filter>Codes\Source\Engine\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Json\JsonTest.cpp">
+      <Filter>Codes\Source\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>External_ImGui\misc\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -336,7 +342,17 @@
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h">
       <Filter>Codes\Include\Engine\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="JsonHandler.h" />
+    <ClInclude Include="Codes\Include\Json\JsonHandler.h">
+      <Filter>Codes\Include\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
+    <ClInclude Include="Codes\Include\Json\JsonTest.h">
+      <Filter>Codes\Include\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\ECS.h" />
+    <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
+      <Filter>External_ImGui\misc\cpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -458,6 +474,18 @@
     </Filter>
     <Filter Include="Codes\Source\Engine\Shader">
       <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Json">
+      <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Json">
+      <UniqueIdentifier>{273621d6-0f20-451f-98cc-e8d51793d29f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External_ImGui\misc">
+      <UniqueIdentifier>{0dbabe86-272b-4b16-905c-b4b2feb15a43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External_ImGui\misc\cpp">
+      <UniqueIdentifier>{1adedc12-3918-4693-88d9-d24a107eb95e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
