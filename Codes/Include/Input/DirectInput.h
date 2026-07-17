@@ -8,68 +8,72 @@
 
 #include <cstdint>
 
-class DirectInput final {
+namespace Atrum::Input {
 
-private:
+	class DirectInput final {
 
-	~DirectInput() = default;
-	DirectInput() = default;
+	private:
 
-public:
+		~DirectInput() = default;
+		DirectInput() = default;
 
-	DirectInput(const DirectInput& source) = delete;
-	DirectInput operator=(const DirectInput& source) = delete;
+	public:
 
-	static DirectInput* GetInstance() {
+		DirectInput(const DirectInput& source) = delete;
+		DirectInput operator=(const DirectInput& source) = delete;
 
-		static DirectInput instance;
+		static DirectInput* GetInstance() {
 
-		return &instance;
+			static DirectInput instance;
 
-	}
+			return &instance;
 
-private:
+		}
 
-	// 入力デバイス
-	IDirectInput8* directInput_ = nullptr;
-	// キーボード入力
-	IDirectInputDevice8* keyboard_ = nullptr;
+	private:
 
-	// キー入力(今フレーム)
-	BYTE keys_[256]{};
-	// キー入力(前フレーム)
-	BYTE preKeys_[256]{};
+		// 入力デバイス
+		IDirectInput8* directInput_ = nullptr;
+		// キーボード入力
+		IDirectInputDevice8* keyboard_ = nullptr;
 
-public:
+		// キー入力(今フレーム)
+		BYTE keys_[256]{};
+		// キー入力(前フレーム)
+		BYTE preKeys_[256]{};
 
-	/// <summary>
-	/// 入力デバイスの初期化
-	/// </summary>
-	/// <param name="hInstance"> インスタンスハンドル </param>
-	/// <param name="hwnd"> ウィンドウハンドル </param>
-	void Initialize(HINSTANCE hInstance, HWND hwnd);
-	
-	/// <summary>
-	/// 入力の更新
-	/// </summary>
-	void Update();
+	public:
 
-	/// <summary>
-	/// キーの長押し検知
-	/// </summary>
-	/// <param name="keyIndex"> キー番号 </param>
-	bool IsKeyPress(const uint8_t keyIndex);
+		/// <summary>
+		/// 入力デバイスの初期化
+		/// </summary>
+		/// <param name="hInstance"> インスタンスハンドル </param>
+		/// <param name="hwnd"> ウィンドウハンドル </param>
+		void Initialize(HINSTANCE hInstance, HWND hwnd);
 
-	/// <summary>
-	/// キーの押下検知
-	/// </summary>
-	/// <param name="keyIndex"> キー番号 </param>
-	bool IsKeyTrigger(const uint8_t keyIndex);
+		/// <summary>
+		/// 入力の更新
+		/// </summary>
+		void Update();
 
-	/// <summary>
-	/// キーの離し検知
-	/// </summary>
-	/// <param name="keyIndex"> キー番号 </param>
-	bool IsKeyRelease(const uint8_t keyIndex);
+		/// <summary>
+		/// キーの長押し検知
+		/// </summary>
+		/// <param name="keyIndex"> キー番号 </param>
+		bool IsKeyPress(const uint8_t keyIndex);
 
-};
+		/// <summary>
+		/// キーの押下検知
+		/// </summary>
+		/// <param name="keyIndex"> キー番号 </param>
+		bool IsKeyTrigger(const uint8_t keyIndex);
+
+		/// <summary>
+		/// キーの離し検知
+		/// </summary>
+		/// <param name="keyIndex"> キー番号 </param>
+		bool IsKeyRelease(const uint8_t keyIndex);
+
+	};
+
+}

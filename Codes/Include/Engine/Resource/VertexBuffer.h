@@ -6,42 +6,46 @@
 #include <wrl/client.h>
 
 
-class VertexBuffer {
+namespace Atrum {
 
-private:
+	class VertexBuffer {
 
-	// 頂点リソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
+	private:
 
-	// VertexBufferView
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
+		// 頂点リソース
+		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_ = nullptr;
 
-	// 頂点データ
-	VertexData* vertexData_ = nullptr;
+		// VertexBufferView
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-	// 画面上に描画済みの頂点の数
-	uint32_t vertexDrewCount_ = 0;
+		// 頂点データ
+		VertexData* vertexData_ = nullptr;
 
-public:
+		// 画面上に描画済みの頂点の数
+		uint32_t vertexDrewCount_ = 0;
 
-	void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
+	public:
 
-	/* カウント加算 */
+		void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
 
-	void AddDrewCount(const uint32_t add) { vertexDrewCount_ += add; }
+		/* カウント加算 */
 
-	/* セッター */
+		void AddDrewCount(const uint32_t add) { vertexDrewCount_ += add; }
 
-	void SetVertexData(const VertexData& vertexData, const uint32_t index) { vertexData_[index] = vertexData; }
+		/* セッター */
 
-	void ResetDrewCount() { vertexDrewCount_ = 0; }
+		void SetVertexData(const VertexData& vertexData, const uint32_t index) { vertexData_[index] = vertexData; }
 
-	/* ゲッター */
+		void ResetDrewCount() { vertexDrewCount_ = 0; }
 
-	uint32_t GetDrewCount() const { return vertexDrewCount_; }
+		/* ゲッター */
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return vertexResource_->GetGPUVirtualAddress(); }
+		uint32_t GetDrewCount() const { return vertexDrewCount_; }
 
-	D3D12_VERTEX_BUFFER_VIEW* PGetVertexBufferView() { return &vertexBufferView_; }
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return vertexResource_->GetGPUVirtualAddress(); }
 
-};
+		D3D12_VERTEX_BUFFER_VIEW* PGetVertexBufferView() { return &vertexBufferView_; }
+
+	};
+
+}

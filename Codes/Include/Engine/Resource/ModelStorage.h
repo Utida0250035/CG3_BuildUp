@@ -6,67 +6,71 @@
 #include <memory>
 #include <wrl/client.h>
 
-class TextureStorage;
-class CommandContext;
+namespace Atrum {
 
-class ModelStorage final {
+	class TextureStorage;
+	class CommandContext;
 
-private:
+	class ModelStorage final {
 
-	// 3DモデルAsset用 Meshマップ
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshMap_{};
+	private:
 
-	// 3DモデルAsset用 Materialマップ
-	std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialMap_{};
+		// 3DモデルAsset用 Meshマップ
+		std::unordered_map<uint64_t, std::weak_ptr<AssetMeshData>> assetMeshMap_{};
 
-	// 3DモデルAsset用 Modelマップ
-	std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelMap_{};
+		// 3DモデルAsset用 Materialマップ
+		std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> assetMaterialMap_{};
 
-	ModelStorage() = default;
-	~ModelStorage() = default;
+		// 3DモデルAsset用 Modelマップ
+		std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelMap_{};
 
-	static ModelStorage* instance_;
+		ModelStorage() = default;
+		~ModelStorage() = default;
 
-	CommandContext* pCommandContextDirect_ = nullptr;
-	ID3D12Device* pDevice_ = nullptr;
-	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
+		static ModelStorage* instance_;
 
-	std::vector<AssetMeshNode> LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames);
+		CommandContext* pCommandContextDirect_ = nullptr;
+		ID3D12Device* pDevice_ = nullptr;
+		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
 
-	std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
+		std::vector<AssetMeshNode> LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames);
 
-public:
+		std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
 
-	void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
+	public:
 
-	std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+		void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
 
-	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+		std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
-	ModelStorage operator=(const ModelStorage& source) = delete;
-	ModelStorage(const ModelStorage& source) = delete;
+		std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
-	static ModelStorage* GetInstance() {
+		ModelStorage operator=(const ModelStorage& source) = delete;
+		ModelStorage(const ModelStorage& source) = delete;
 
-		if (instance_ == nullptr) {
+		static ModelStorage* GetInstance() {
 
-			instance_ = new ModelStorage();
+			if (instance_ == nullptr) {
 
-		}
+				instance_ = new ModelStorage();
 
-		return instance_;
+			}
 
-	}
-
-	static void Destroy() {
-
-		if (instance_) {
-
-			delete instance_;
-			instance_ = nullptr;
+			return instance_;
 
 		}
 
-	}
+		static void Destroy() {
 
-};
+			if (instance_) {
+
+				delete instance_;
+				instance_ = nullptr;
+
+			}
+
+		}
+
+	};
+
+}

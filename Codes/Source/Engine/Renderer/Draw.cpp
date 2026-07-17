@@ -246,8 +246,8 @@ void Draw::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor,
 	materialBuffer_->SetData(materialData, constantBufferCount_);
 
 
-	const float kLonEvery = std::numbers::pi_v<float> *2.0f / cast::Float(subdivision);
-	const float kLatEvery = std::numbers::pi_v<float> / cast::Float(subdivision);
+	const float kLonEvery = std::numbers::pi_v<float> *2.0f / Cast::Float(subdivision);
+	const float kLatEvery = std::numbers::pi_v<float> / Cast::Float(subdivision);
 
 	VertexData pointA{}, pointB{}, pointC{}, pointD{};
 
@@ -261,7 +261,7 @@ void Draw::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor,
 
 	for (uint32_t latIndex = 0; latIndex < subdivision; ++latIndex) {
 
-		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * cast::Float(latIndex);
+		lat = -(std::numbers::pi_v<float> *0.5f) + kLatEvery * Cast::Float(latIndex);
 
 		for (uint32_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
 
@@ -269,22 +269,22 @@ void Draw::DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor,
 
 			pointA.position = Vector4{ cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon), 0.0f } * radius;
 			pointA.position.w = 1.0f;
-			pointA.texCoord = Vector2{ cast::Float(lonIndex) / cast::Float(subdivision), 1.0f - cast::Float(latIndex) / cast::Float(subdivision) };
+			pointA.texCoord = Vector2{ Cast::Float(lonIndex) / Cast::Float(subdivision), 1.0f - Cast::Float(latIndex) / Cast::Float(subdivision) };
 			pointA.normal = VectorNormalize(Vector3{ pointA.position.x, pointA.position.y, pointA.position.z });
 
 			pointB.position = Vector4{ cos(lat + kLatEvery) * cos(lon), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon), 0.0f } * radius;
 			pointB.position.w = 1.0f;
-			pointB.texCoord = Vector2{ cast::Float(lonIndex) / cast::Float(subdivision), 1.0f - cast::Float(latIndex + 1) / cast::Float(subdivision) };
+			pointB.texCoord = Vector2{ Cast::Float(lonIndex) / Cast::Float(subdivision), 1.0f - Cast::Float(latIndex + 1) / Cast::Float(subdivision) };
 			pointB.normal = VectorNormalize(Vector3{ pointB.position.x, pointB.position.y, pointB.position.z });
 
 			pointC.position = Vector4{ cos(lat) * cos(lon + kLonEvery), sin(lat), cos(lat) * sin(lon + kLonEvery) , 0.0f } * radius;
 			pointC.position.w = 1.0f;
-			pointC.texCoord = Vector2{ cast::Float(lonIndex + 1) / cast::Float(subdivision), 1.0f - cast::Float(latIndex) / cast::Float(subdivision) };
+			pointC.texCoord = Vector2{ Cast::Float(lonIndex + 1) / Cast::Float(subdivision), 1.0f - Cast::Float(latIndex) / Cast::Float(subdivision) };
 			pointC.normal = VectorNormalize(Vector3{ pointC.position.x, pointC.position.y, pointC.position.z });
 
 			pointD.position = Vector4{ cos(lat + kLatEvery) * cos(lon + kLonEvery), sin(lat + kLatEvery), cos(lat + kLatEvery) * sin(lon + kLonEvery), 0.0f } * radius;
 			pointD.position.w = 1.0f;
-			pointD.texCoord = Vector2{ cast::Float(lonIndex + 1) / cast::Float(subdivision), 1.0f - cast::Float(latIndex + 1) / cast::Float(subdivision) };
+			pointD.texCoord = Vector2{ Cast::Float(lonIndex + 1) / Cast::Float(subdivision), 1.0f - Cast::Float(latIndex + 1) / Cast::Float(subdivision) };
 			pointD.normal = VectorNormalize(Vector3{ pointD.position.x, pointD.position.y, pointD.position.z });
 
 

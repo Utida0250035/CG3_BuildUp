@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace cast {
+namespace Atrum::Cast {
 
 	inline float Float(const uint32_t num) {
 

@@ -3,24 +3,32 @@
 #include "./HitMesh.h"
 #include "Geometry/Triangle.h"
 
-class AssetModel;
+namespace Atrum {
 
-class HitMeshBuilder {
-public:
+    class AssetModel;
 
-    static HitMesh CreateFromPyramid(
-        const PyramidMesh& mesh);
+}
 
-    static HitMesh CreateFromObj(
-        const AssetModel& model);
+namespace Atrum::Physics {
 
-    static HitMesh CreateFromVertices(
-        const std::vector<Vector3>& vertices,
-        const std::vector<Edge>& edges,
-        const std::vector<Face>& faces);
+    class HitMeshBuilder {
+    public:
 
-    static HitMesh CreateFromTriangle(
-        const Triangle& triangle);
+        static HitMesh CreateFromPyramid(
+            const PyramidMesh& mesh);
+
+        static HitMesh CreateFromObj(
+            const AssetModel& model);
+
+        static HitMesh CreateFromVertices(
+            const std::vector<Vector3>& vertices,
+            const std::vector<Edge>& edges,
+            const std::vector<Face>& faces);
+
+        static HitMesh CreateFromTriangle(
+            const Triangle& triangle);
 
 
-};
+    };
+
+}

@@ -1,6 +1,9 @@
 #include "Cast/StaticCast.h"
 #include "Debug/DebugConsole.h"
+#include "Debug/DebugLayer.h"
+#include "Debug/ErrorSupression.h"
 #include "Debug/Log.h"
+#include "Debug/SetBreakOnSeverity.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Device/RenderDevice.h"
@@ -89,88 +92,6 @@ static LONG WINAPI ExportDump(EXCEPTION_POINTERS* exception) {
 
 }
 
-void AtrumEngine::PrepareWindow(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight) {
-
-	assert(!isInitialized_ && "PrepareWindow() is initializeHelper");
-
-	// SDLの初期化
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-
-		// エラーハンドリング
-		assert(false);
-		return;
-
-	}
-
-	clientWidth_ = clientWidth;
-	clientHeight_ = clientHeight;
-
-	// ウィンドウの生成
-	window_.ptr = SDL_CreateWindow(
-		windowLabel.c_str(),
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		clientWidth,
-		clientHeight,
-		SDL_WINDOW_SHOWN
-	);
-
-	// DirectX連携のためにHWNDを取得
-	SDL_SysWMinfo wmInfo{};
-	SDL_VERSION(&wmInfo.version);
-
-	if (SDL_GetWindowWMInfo(window_.ptr, &wmInfo)) {
-
-		hwnd_ = wmInfo.info.win.window;
-
-	}
-
-}
-
-void AtrumEngine::ErrorSuppressionDebug() {
-
-#ifdef _DEBUG
-
-	assert(!isInitialized_ && "ErrorSuppressionDebug() is initializeHelper");
-
-	ID3D12InfoQueue* infoQueue = nullptr;
-
-	if (SUCCEEDED(renderDevice_->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
-
-		// 深刻なエラー時に止まる
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
-
-		// エラー時に止まる
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-
-		// 警告時に止まる
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
-
-		D3D12_MESSAGE_ID denyIds[] = {
-			// Windows11でのDXGIデバッグレイヤーとDX12デバッグレイヤーの相互作用バグによるエラーメッセージ
-			D3D12_MESSAGE_ID_RESOURCE_BARRIER_MISMATCHING_COMMAND_LIST_TYPE
-		};
-
-		// 抑制するレベル
-		D3D12_MESSAGE_SEVERITY severities[] = { D3D12_MESSAGE_SEVERITY_INFO };
-		D3D12_INFO_QUEUE_FILTER filter{};
-		filter.DenyList.NumIDs = _countof(denyIds);
-		filter.DenyList.pIDList = denyIds;
-		filter.DenyList.NumSeverities = _countof(severities);
-		filter.DenyList.pSeverityList = severities;
-
-		// 指定したメッセージの表示を抑制する
-		infoQueue->PushStorageFilter(&filter);
-
-		// エラー情報キューの解放
-		infoQueue->Release();
-
-	}
-
-#endif
-
-}
-
 
 void AtrumEngine::CreateDirectionalLightBuffer() {
 
@@ -191,32 +112,6 @@ void AtrumEngine::CreateDirectionalLightBuffer() {
 
 }
 
-void AtrumEngine::SetUpViewport() {
-
-	assert(!isInitialized_ && "SetUpViewport() is initializeHelper");
-
-	// クライアント領域のサイズと同等にして画面全体を表示領域とする
-
-	viewport_.Width = static_cast<FLOAT>(clientWidth_);
-	viewport_.Height = static_cast<float>(clientHeight_);
-	viewport_.TopLeftX = 0.0f;
-	viewport_.TopLeftY = 0.0f;
-	viewport_.MinDepth = 0.0f;
-	viewport_.MaxDepth = 1.0f;
-
-}
-
-void AtrumEngine::SetUpScissorRect() {
-
-	assert(!isInitialized_ && "SetUpScissorRect() is initializeHelper");
-
-	scissorRect_.left = 0;
-	scissorRect_.right = clientWidth_;
-	scissorRect_.top = 0;
-	scissorRect_.bottom = clientHeight_;
-
-}
-
 
 
 void AtrumEngine::SetFps(const int32_t& fps) {
@@ -232,71 +127,46 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	// SEH例外が補足されなかった場合(Unhandled)に補足する関数を登録
 	SetUnhandledExceptionFilter(ExportDump);
 
-#ifdef _DEBUG
-
 	OpenDebugConsole();
 
-	ComPtr<ID3D12Debug1> debugController;
-
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
-
-		// デバッグレイヤーを有効化
-		debugController->EnableDebugLayer();
-
-		// GPU側でもチェックを行なうようにする
-		debugController->SetEnableGPUBasedValidation(TRUE);
-
-	}
-
-#endif
+	EnableDebugLayer();
 
 	// COMの初期化
-	hr_ = CoInitializeEx(0, COINIT_MULTITHREADED);
+	[[maybe_unused]] HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	// COMの初期化が失敗したら起動不可
-	assert(SUCCEEDED(hr_));
+	assert(SUCCEEDED(hr));
 
 	// ログ出力ファイルの初期化
 	LogFile::GetInstance()->Initialize();
 
-	this->PrepareWindow(windowLabel, clientWidth, clientHeight);
+	window_ = std::make_unique<Window>();
+	window_->Initialize(windowLabel, clientWidth, clientHeight);
 
 	// レンダリングデバイスを生成
 	renderDevice_ = std::make_unique<RenderDevice>();
 	// レンダリングデバイスを初期化
 	renderDevice_->Initialize();
 
-#ifdef _DEBUG
+	ErrorSuppressionDebug(renderDevice_->GetDevice());
 
-	ComPtr<ID3D12InfoQueue> infoQueue;
-	if (SUCCEEDED(renderDevice_->GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
-
-		// 致命的なエラー時にブレーク
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
-		// 通常のエラー時にブレーク
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-		// 警告時にブレーク
-		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
-
-	}
-
-#endif
+	SetBreakOnSeverity(renderDevice_->GetDevice());
 
 	// 描画コマンド経路を生成
 	commandContextDirect_ = std::make_unique<CommandContext>();
 	// 描画コマンド経路を初期化
 	commandContextDirect_->Initialize(renderDevice_->GetDevice(), SwapChain::kBackBufferCount, D3D12_COMMAND_LIST_TYPE_DIRECT);
 
+	rtvAllocator_ = std::make_unique<DescriptorAllocator>();
 
 	swapChainManager_ = std::make_unique<SwapChain>();
-	rtvAllocator_ = std::make_unique<DescriptorAllocator>();
 
 	// RTVの設定
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
-	swapChainManager_->Initialize(clientWidth_, clientHeight_, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), hwnd_, rtvAllocator_.get(), rtvDesc);
+	swapChainManager_->Initialize(clientWidth, clientHeight, renderDevice_->GetDevice(), renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(), window_->GetHwnd(), rtvAllocator_.get(), rtvDesc);
 
 
 	// SRVディスクリプタヒープの生成
@@ -322,12 +192,6 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	graphicsPipelineState_ = std::make_unique<PipelineState>();
 	graphicsPipelineState_->Initialize(rootSignature_->GetRootSignature(), renderDevice_->GetDevice(), shaderCompiler_->GetVertexShaderBlob(), shaderCompiler_->GetPixelShaderBlob());
 
-	// ビューポートの設定
-	this->SetUpViewport();
-
-	// シザー矩形の設定
-	this->SetUpScissorRect();
-
 	/* 描画クラスの初期化 */
 
 	pDraw_ = Draw::GetInstance();
@@ -342,7 +206,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	this->CreateDirectionalLightBuffer();
 
 	// 深度ステンシルリソースの生成
-	depthStencilResource_ = this->CreateDepthStencilResource(clientWidth_, clientHeight_);
+	depthStencilResource_ = this->CreateDepthStencilResource(clientWidth, clientHeight);
 
 	// 深度ステンシルディスクリプタの生成
 	dsvAllocator_ = std::make_unique<DescriptorAllocator>();
@@ -368,7 +232,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplSDL2_InitForD3D(window_.ptr);
+	ImGui_ImplSDL2_InitForD3D(window_->GetWindow());
 
 	DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
 
@@ -420,7 +284,7 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 	SDL_SysWMinfo wmInfo{};
 	SDL_VERSION(&wmInfo.version);
 
-	if (!SDL_GetWindowWMInfo(window_.ptr, &wmInfo)) {
+	if (!SDL_GetWindowWMInfo(window_->GetWindow(), &wmInfo)) {
 
 		assert(false);
 
@@ -430,10 +294,11 @@ void AtrumEngine::Initialize(const std::string& windowLabel, const int32_t& clie
 
 	// DirectInput
 	directInput_ = DirectInput::GetInstance();
-	directInput_->Initialize(hInstance, hwnd_);
+	directInput_->Initialize(hInstance, window_->GetHwnd());
 
 	// SDL2入力
 	playInput_ = PlayInput::GetInstance();
+
 
 	/* 初期化完了のログ出力 */
 
@@ -594,10 +459,10 @@ void AtrumEngine::PreDraw() {
 	commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1, descriptorHeaps);
 
 	// Viewportを設定
-	commandContextDirect_->GetCommandList()->RSSetViewports(1, &viewport_);
+	commandContextDirect_->GetCommandList()->RSSetViewports(1, &window_->GetViewport());
 
 	// ScissorRectを設定
-	commandContextDirect_->GetCommandList()->RSSetScissorRects(1, &scissorRect_);
+	commandContextDirect_->GetCommandList()->RSSetScissorRects(1, &window_->GetScissorRect());
 
 	// RootSignatureを設定 PSOに設定しているが別途の設定が必要
 	commandContextDirect_->GetCommandList()->SetGraphicsRootSignature(rootSignature_->GetRootSignature());
@@ -659,8 +524,8 @@ void AtrumEngine::PostDraw() {
 	commandContextDirect_->GetCommandList()->ResourceBarrier(1, &barrier);
 
 	// コマンドリストの内容を確定させる
-	hr_ = commandContextDirect_->GetCommandList()->Close();
-	assert(SUCCEEDED(hr_));
+	[[maybe_unused]] HRESULT hr = commandContextDirect_->GetCommandList()->Close();
+	assert(SUCCEEDED(hr));
 
 	// GPUにコマンドリストを実行させる
 	ID3D12CommandList* commandLists[] = { commandContextDirect_->GetCommandList() };
@@ -685,10 +550,10 @@ void AtrumEngine::PostDraw() {
 
 	// 次のフレーム用のコマンドリストを準備
 
-	hr_ = commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex())->Reset();
-	assert(SUCCEEDED(hr_));
-	hr_ = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
-	assert(SUCCEEDED(hr_));
+	hr = commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex())->Reset();
+	assert(SUCCEEDED(hr));
+	hr = commandContextDirect_->GetCommandList()->Reset(commandContextDirect_->GetCommandAllocator(swapChainManager_->GetBackBufferIndex()), nullptr);
+	assert(SUCCEEDED(hr));
 
 
 	// 描画頂点数のカウントをリセット
@@ -737,8 +602,6 @@ void AtrumEngine::Finalize() {
 	// COMの終了処理
 	CoUninitialize();
 
-	CloseWindow(hwnd_);
-
 }
 
 ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, int32_t height) {
@@ -777,7 +640,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, in
 
 	// Resourceの生成
 	ComPtr<ID3D12Resource> resource = nullptr;
-	hr_ = renderDevice_->GetDevice()->CreateCommittedResource(
+	[[maybe_unused]] HRESULT hr = renderDevice_->GetDevice()->CreateCommittedResource(
 		// heapの設定
 		&heapProperties,
 		// Heapの特殊な設定 無し
@@ -792,7 +655,7 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width, in
 		IID_PPV_ARGS(&resource)
 	);
 
-	assert(SUCCEEDED(hr_));
+	assert(SUCCEEDED(hr));
 
 	return resource;
 

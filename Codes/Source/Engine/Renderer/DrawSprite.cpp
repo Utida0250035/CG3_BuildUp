@@ -17,7 +17,7 @@ void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContext
 
 	pSrvAllocator_ = srvAllocator;
 
-	orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth), cast::Float(clientHeight), 0.0f, 100.0f);
+	orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, Cast::Float(clientWidth), Cast::Float(clientHeight), 0.0f, 100.0f);
 
 	CreateVertexBuffer();
 

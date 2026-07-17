@@ -3,19 +3,23 @@
 #include "Math/Matrix4x4.h"
 #include "Math/Vector3.h"
 
-struct Transform {
-	Vector3 scale{ 1.0f, 1.0f, 1.0f };
-	Vector3 rotate{};
-	Vector3 translate{};
-};
+namespace Atrum::Math {
 
-/// <summary>
-/// ワールド行列の作成
-/// </summary>
-/// <param name="transform"> Transform </param>
-/// <returns> ワールド行列 </returns>
-inline Matrix4x4 MakeWorldMatrix(const Transform& transform) {
+	struct Transform {
+		Vector3 scale{ 1.0f, 1.0f, 1.0f };
+		Vector3 rotate{};
+		Vector3 translate{};
+	};
 
-	return MakeWorldMatrix(transform.translate, transform.scale, transform.rotate);
+	/// <summary>
+	/// ワールド行列の作成
+	/// </summary>
+	/// <param name="transform"> Transform </param>
+	/// <returns> ワールド行列 </returns>
+	inline Matrix4x4 MakeWorldMatrix(const Transform& transform) {
+
+		return MakeWorldMatrix(transform.translate, transform.scale, transform.rotate);
+
+	}
 
 }

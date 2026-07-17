@@ -5,31 +5,35 @@
 #include "Collision/CollisionTypes.h"
 #include "Collision/HitMesh.h"
 
-Projection ProjectVertices(
-    const std::vector<Vector3>& vertices,
-    const Vector3& axis);
+namespace Atrum::Physics {
 
-float Overlap(
-    const Projection& a,
-    const Projection& b);
+    Projection ProjectVertices(
+        const std::vector<Vector3>& vertices,
+        const Vector3& axis);
 
-std::vector<Vector3> GetFaceAxes(
-    const HitMesh& mesh);
+    float Overlap(
+        const Projection& a,
+        const Projection& b);
 
-std::vector<Vector3> GetEdgeAxes(
-    const HitMesh& a,
-    const HitMesh& b);
+    std::vector<Vector3> GetFaceAxes(
+        const HitMesh& mesh);
 
-std::vector<Vector3> GetAxes(
-    const HitMesh& a,
-    const HitMesh& b);
+    std::vector<Vector3> GetEdgeAxes(
+        const HitMesh& a,
+        const HitMesh& b);
 
-std::vector<ContactPoint> GenerateContactPoints(
-    const HitMesh& bodyA,
-    const HitMesh& bodyB,
-    const Vector3& normal,
-    float depth);
+    std::vector<Vector3> GetAxes(
+        const HitMesh& a,
+        const HitMesh& b);
 
-SATResult TestSAT(
-    const HitMesh& bodyA,
-    const HitMesh& bodyB);
+    std::vector<ContactPoint> GenerateContactPoints(
+        const HitMesh& bodyA,
+        const HitMesh& bodyB,
+        const Vector3& normal,
+        float depth);
+
+    SATResult TestSAT(
+        const HitMesh& bodyA,
+        const HitMesh& bodyB);
+
+}

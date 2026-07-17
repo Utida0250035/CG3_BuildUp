@@ -7,64 +7,68 @@
 
 #include "Engine/Resource/CreateBufferResource.h"
 
-template <typename T>
-class SingleConstantBuffer {
+namespace Atrum {
 
-private:
+	template <typename T>
+	class SingleConstantBuffer {
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr;
+	private:
 
-	T* data_ = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr;
 
-public:
+		T* data_ = nullptr;
 
-	void CreateBuffer(ID3D12Device* device) {
+	public:
 
-		// Data1つ分のサイズを用意
-		resource_ = CreateUploadBuffer(sizeof(T), device);
+		void CreateBuffer(ID3D12Device* device) {
 
-		// データを書き込むためのアドレスを取得
-		resource_->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+			// Data1つ分のサイズを用意
+			resource_ = CreateUploadBuffer(sizeof(T), device);
 
-	}
+			// データを書き込むためのアドレスを取得
+			resource_->Map(0, nullptr, reinterpret_cast<void**>(&data_));
 
-	/* ゲッター */
+		}
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
+		/* ゲッター */
 
-	/* セッター */
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
 
-	void SetData(const T& data) { memcpy(data_, &data, sizeof(T)); }
+		/* セッター */
 
-};
+		void SetData(const T& data) { memcpy(data_, &data, sizeof(T)); }
 
-template<typename T>
-class MultiConstantBuffer {
+	};
 
-private:
+	template<typename T>
+	class MultiConstantBuffer {
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr;
+	private:
 
-	T* data_ = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr;
 
-public:
+		T* data_ = nullptr;
 
-	void CreateBuffer(ID3D12Device* device, const size_t resourceCount) {
+	public:
 
-		// Data1つ分 * resourceCountのサイズを用意
-		resource_ = CreateUploadBuffer(resourceCount * sizeof(T), device);
+		void CreateBuffer(ID3D12Device* device, const size_t resourceCount) {
 
-		// データを書き込むためのアドレスを取得
-		resource_->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+			// Data1つ分 * resourceCountのサイズを用意
+			resource_ = CreateUploadBuffer(resourceCount * sizeof(T), device);
 
-	}
+			// データを書き込むためのアドレスを取得
+			resource_->Map(0, nullptr, reinterpret_cast<void**>(&data_));
 
-	/* ゲッター */
+		}
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
+		/* ゲッター */
 
-	/* セッター */
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
 
-	void SetData(const T& data, const size_t index) { data_[index] = data; }
+		/* セッター */
 
-};
+		void SetData(const T& data, const size_t index) { data_[index] = data; }
+
+	};
+
+}

@@ -5,40 +5,44 @@
 #include "./CollisionTypes.h"
 #include "./HitMesh.h"
 
-struct ContactConstraint {
+namespace Atrum::Physics {
 
-    HitMesh* bodyA = nullptr;
-    HitMesh* bodyB = nullptr;
+    struct ContactConstraint {
 
-    Vector3 normal{};
+        HitMesh* bodyA = nullptr;
+        HitMesh* bodyB = nullptr;
 
-    std::vector<ContactPoint> contacts;
+        Vector3 normal{};
 
-    float restitution = 0.0f;
-    float friction = 0.0f;
+        std::vector<ContactPoint> contacts;
 
-    void Initialize(
-        HitMesh* a,
-        HitMesh* b,
-        const SATResult& sat);
+        float restitution = 0.0f;
+        float friction = 0.0f;
 
-    void SolvePosition();
+        void Initialize(
+            HitMesh* a,
+            HitMesh* b,
+            const SATResult& sat);
 
-    void SolveVelocity();
+        void SolvePosition();
 
-private:
+        void SolveVelocity();
 
-    void SolvePositionAtPoint(
-        size_t contactIndex);
+    private:
 
-    void SolveVelocityAtPoint(
-        size_t contactIndex);
+        void SolvePositionAtPoint(
+            size_t contactIndex);
 
-    void ApplyPositionCorrection(
-        const Vector3& correctionImpulse,
-        const Vector3& point);
+        void SolveVelocityAtPoint(
+            size_t contactIndex);
 
-    void ApplyImpulse(
-        const Vector3& impulse,
-        const Vector3& point);
-};
+        void ApplyPositionCorrection(
+            const Vector3& correctionImpulse,
+            const Vector3& point);
+
+        void ApplyImpulse(
+            const Vector3& impulse,
+            const Vector3& point);
+    };
+
+}
