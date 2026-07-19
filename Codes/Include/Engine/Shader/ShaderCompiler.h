@@ -5,36 +5,40 @@
 #include <dxcapi.h>
 #pragma comment(lib, "dxcompiler.lib")
 
-class ShaderCompiler {
+namespace Atrum {
 
-private:
+    class ShaderCompiler {
 
-    template<typename T>
-    using ComPtr = Microsoft::WRL::ComPtr<T>;
+    private:
 
-    ComPtr<IDxcUtils> dxcUtils_ = nullptr;
-    ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
-    ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
+        template<typename T>
+        using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-    // vertexShaderのコンパイル結果
-    ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
+        ComPtr<IDxcUtils> dxcUtils_ = nullptr;
+        ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
+        ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
-    // pixelShaderのコンパイル結果
-    ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
+        // vertexShaderのコンパイル結果
+        ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
 
-    // コンパイルを実行するインターフェース
-    ComPtr<IDxcBlob> Compile(const std::wstring& filePath, const wchar_t* profile);
+        // pixelShaderのコンパイル結果
+        ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
 
-public:
-    
-    // コンパイルに必要な依存関係を初期化
-    void Initialize();
+        // コンパイルを実行するインターフェース
+        ComPtr<IDxcBlob> Compile(const std::wstring& filePath, const wchar_t* profile);
 
-    void CompileShaders();
+    public:
 
-    /* ゲッター */
+        // コンパイルに必要な依存関係を初期化
+        void Initialize();
 
-    IDxcBlob* GetVertexShaderBlob() const { return vertexShaderBlob_.Get(); }
-    IDxcBlob* GetPixelShaderBlob() const { return pixelShaderBlob_.Get(); }
+        void CompileShaders();
 
-};
+        /* ゲッター */
+
+        IDxcBlob* GetVertexShaderBlob() const { return vertexShaderBlob_.Get(); }
+        IDxcBlob* GetPixelShaderBlob() const { return pixelShaderBlob_.Get(); }
+
+    };
+
+}

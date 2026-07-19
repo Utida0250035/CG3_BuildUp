@@ -1,7 +1,11 @@
-﻿#pragma once
+#pragma once
 
 #include <string>
 
-std::wstring StringToWString(const std::string& str);
+namespace Atrum {
 
-std::string WStringToString(const std::wstring& str);
+	std::wstring StringToWString(const std::string& str);
+
+	std::string WStringToString(const std::wstring& str);
+
+}

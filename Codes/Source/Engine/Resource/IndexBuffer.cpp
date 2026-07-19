@@ -1,31 +1,37 @@
+#include "Engine/Alias/CoreAlias.h"
+
 #include "Debug/Log.h"
 #include "Engine/Resource/CreateBufferResource.h"
 #include "Engine/Resource/IndexBuffer.h"
 
-void IndexBuffer::CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device) {
+namespace Atrum {
 
-	indexResource_ = CreateUploadBuffer(sizeof(uint32_t) * indexMaxCount, device);
+	void IndexBuffer::CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device) {
 
-	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+		indexResource_ = CreateUploadBuffer(sizeof(uint32_t) * indexMaxCount, device);
 
-	// リソースの先頭のアドレスから使う
-	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+		indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
 
-	// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * indexMaxCount;
+		// リソースの先頭のアドレスから使う
+		indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
 
-	// 1頂点当たりのサイズ
-	indexBufferView_.SizeInBytes = sizeof(uint32_t);
+		// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
+		indexBufferView_.SizeInBytes = sizeof(uint32_t) * indexMaxCount;
 
-	// リソースの先頭のアドレスから使う
-	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+		// 1頂点当たりのサイズ
+		indexBufferView_.SizeInBytes = sizeof(uint32_t);
 
-	// 使用するリソースのサイズ 大雑把に三角形の描画上限数*3 本来は頂点数
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * indexMaxCount;
+		// リソースの先頭のアドレスから使う
+		indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
 
-	// 1番号当たりのサイズ
-	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+		// 使用するリソースのサイズ 大雑把に三角形の描画上限数*3 本来は頂点数
+		indexBufferView_.SizeInBytes = sizeof(uint32_t) * indexMaxCount;
 
-	LogFile::GetInstance()->Log("Created IndexBuffer");
+		// 1番号当たりのサイズ
+		indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+		D::LogFile::GetInstance()->Log("Created IndexBuffer");
+
+	}
 
 }

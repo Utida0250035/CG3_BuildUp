@@ -1,8 +1,12 @@
 #include "Math/Vector3.h"
 #include <cmath>
 
-float VectorLength(const Vector3& vector) {
+namespace Atrum::Math {
 
-	return std::sqrt(VectorLengthSquare(vector));
+	float Vector3::Length() const {
+
+		return std::sqrt(LengthSquare());
+
+	}
 
 }

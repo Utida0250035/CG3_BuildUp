@@ -1,181 +1,179 @@
 #pragma once
 
-#include "Vector3.h"
-#include "Quaternion.h"
+#include "Engine/Alias/PhysicsAlias.h"
+
+#include "Math/Vector3.h"
+#include "Math/Quaternion.h"
 #include <vector>
 
-struct Matrix3x3Physics {
-    float m[3][3];
+namespace Atrum::Physics {
 
-    inline constexpr Matrix3x3Physics operator+(
-        const Matrix3x3Physics& other) const {
+	struct Matrix3x3Physics {
+		float m[3][3];
 
-        Matrix3x3Physics result{};
+		inline constexpr Matrix3x3Physics operator+(
+			const Matrix3x3Physics& other) const {
 
-        for (uint32_t y = 0; y < 3; ++y) {
-            for (uint32_t x = 0; x < 3; ++x) {
-                result.m[y][x] = m[y][x] + other.m[y][x];
-            }
-        }
+			Matrix3x3Physics result{};
 
-        return result;
-    }
+			for (uint32_t y = 0; y < 3; ++y) {
+				for (uint32_t x = 0; x < 3; ++x) {
+					result.m[y][x] = m[y][x] + other.m[y][x];
+				}
+			}
 
-    inline constexpr Matrix3x3Physics operator-(
-        const Matrix3x3Physics& other) const {
+			return result;
+		}
 
-        Matrix3x3Physics result{};
+		inline constexpr Matrix3x3Physics operator-(
+			const Matrix3x3Physics& other) const {
 
-        for (uint32_t y = 0; y < 3; ++y) {
-            for (uint32_t x = 0; x < 3; ++x) {
-                result.m[y][x] = m[y][x] - other.m[y][x];
-            }
-        }
+			Matrix3x3Physics result{};
 
-        return result;
-    }
+			for (uint32_t y = 0; y < 3; ++y) {
+				for (uint32_t x = 0; x < 3; ++x) {
+					result.m[y][x] = m[y][x] - other.m[y][x];
+				}
+			}
 
-    inline constexpr Matrix3x3Physics operator*(
-        const Matrix3x3Physics& other) const {
+			return result;
+		}
 
-        Matrix3x3Physics result{};
+		inline constexpr Matrix3x3Physics operator*(
+			const Matrix3x3Physics& other) const {
 
-        for (uint32_t y = 0; y < 3; ++y) {
+			Matrix3x3Physics result{};
 
-            for (uint32_t x = 0; x < 3; ++x) {
+			for (uint32_t y = 0; y < 3; ++y) {
 
-                result.m[y][x] =
-                    m[y][0] * other.m[0][x] +
-                    m[y][1] * other.m[1][x] +
-                    m[y][2] * other.m[2][x];
+				for (uint32_t x = 0; x < 3; ++x) {
 
-            }
+					result.m[y][x] =
+						m[y][0] * other.m[0][x] +
+						m[y][1] * other.m[1][x] +
+						m[y][2] * other.m[2][x];
 
-        }
+				}
 
-        return result;
-    }
+			}
 
-    inline constexpr Matrix3x3Physics operator*(
-        float scalar) const {
+			return result;
+		}
 
-        Matrix3x3Physics result{};
+		inline constexpr Matrix3x3Physics operator*(
+			float scalar) const {
 
-        for (uint32_t y = 0; y < 3; ++y) {
-            for (uint32_t x = 0; x < 3; ++x) {
-                result.m[y][x] = m[y][x] * scalar;
-            }
-        }
+			Matrix3x3Physics result{};
 
-        return result;
-    }
+			for (uint32_t y = 0; y < 3; ++y) {
+				for (uint32_t x = 0; x < 3; ++x) {
+					result.m[y][x] = m[y][x] * scalar;
+				}
+			}
 
-    inline constexpr Vector3 operator*(
-        const Vector3& vector) const {
+			return result;
+		}
 
-        return {
+		inline constexpr M::Vector3 operator*(
+			const M::Vector3& vector) const {
 
-            vector.x * m[0][0] +
-            vector.y * m[1][0] +
-            vector.z * m[2][0],
+			return {
 
-            vector.x * m[0][1] +
-            vector.y * m[1][1] +
-            vector.z * m[2][1],
+				vector.x * m[0][0] +
+				vector.y * m[1][0] +
+				vector.z * m[2][0],
 
-            vector.x * m[0][2] +
-            vector.y * m[1][2] +
-            vector.z * m[2][2]
+				vector.x * m[0][1] +
+				vector.y * m[1][1] +
+				vector.z * m[2][1],
 
-        };
+				vector.x * m[0][2] +
+				vector.y * m[1][2] +
+				vector.z * m[2][2]
 
-    }
+			};
 
-    inline Matrix3x3Physics& operator*=(
-        const Matrix3x3Physics& other) {
+		}
 
-        *this = *this * other;
+		inline Matrix3x3Physics& operator*=(
+			const Matrix3x3Physics& other) {
 
-        return *this;
-    }
+			*this = *this * other;
 
-    inline Matrix3x3Physics& operator*=(
-        float scalar) {
+			return *this;
+		}
 
-        for (uint32_t y = 0; y < 3; ++y) {
-            for (uint32_t x = 0; x < 3; ++x) {
-                m[y][x] *= scalar;
-            }
-        }
+		inline Matrix3x3Physics& operator*=(
+			float scalar) {
 
-        return *this;
-    }
+			for (uint32_t y = 0; y < 3; ++y) {
+				for (uint32_t x = 0; x < 3; ++x) {
+					m[y][x] *= scalar;
+				}
+			}
 
-    inline constexpr Matrix3x3Physics operator/(
-        float scalar) const {
+			return *this;
+		}
 
-        Matrix3x3Physics result = *this;
+		inline constexpr Matrix3x3Physics operator/(
+			float scalar) const {
 
-        for (uint32_t y = 0; y < 3; ++y) {
-            for (uint32_t x = 0; x < 3; ++x) {
-                result.m[y][x] /= scalar;
-            }
-        }
+			Matrix3x3Physics result = *this;
 
-        return result;
+			for (uint32_t y = 0; y < 3; ++y) {
+				for (uint32_t x = 0; x < 3; ++x) {
+					result.m[y][x] /= scalar;
+				}
+			}
 
-    }
+			return result;
 
-    inline Matrix3x3Physics& operator/=(
-        float scalar) {
+		}
 
-        for (uint32_t y = 0; y < 3; ++y) {
-            for (uint32_t x = 0; x < 3; ++x) {
-                m[y][x] /= scalar;
-            }
-        }
+		inline Matrix3x3Physics& operator/=(
+			float scalar) {
 
-        return *this;
+			for (uint32_t y = 0; y < 3; ++y) {
+				for (uint32_t x = 0; x < 3; ++x) {
+					m[y][x] /= scalar;
+				}
+			}
 
-    }
+			return *this;
 
-    inline constexpr bool operator==(
-        const Matrix3x3Physics&) const = default;
+		}
 
-};
+		inline constexpr bool operator==(
+			const Matrix3x3Physics&) const = default;
 
+		static Matrix3x3Physics Identity();
 
-Matrix3x3Physics MakeIdentityMatrix3x3Physics();
+		static Matrix3x3Physics Zero();
 
-Matrix3x3Physics MakeZeroMatrix3x3Physics();
+		Matrix3x3Physics Transposed() const;
 
-Matrix3x3Physics Matrix3x3PhysicsTranspose(
-    const Matrix3x3Physics& matrix);
+		M::Vector3 VectorTransform(
+			const M::Vector3& vector) const;
 
-Matrix3x3Physics Matrix3x3PhysicsMultiply(
-    const Matrix3x3Physics& a,
-    const Matrix3x3Physics& b);
+		static Matrix3x3Physics FromQuaternion(
+			const M::Quaternion& q);
 
-Vector3 VectorTransform(
-    const Vector3& vector,
-    const Matrix3x3Physics& matrix);
+		static Matrix3x3Physics BoxInverseInertiaTensor(
+			float mass,
+			float width,
+			float height,
+			float depth);
 
-Matrix3x3Physics MakeMatrix3x3PhysicsFromQuaternion(
-    const Quaternion& q);
+		static Matrix3x3Physics WorldInverseInertiaTensor(
+			const Matrix3x3Physics& localInverseInertia,
+			const M::Quaternion& rotation);
 
-Matrix3x3Physics MakeBoxInverseInertiaTensor(
-    float mass,
-    float width,
-    float height,
-    float depth);
+		Matrix3x3Physics Inversed() const;
 
-Matrix3x3Physics MakeWorldInverseInertiaTensor(
-    const Matrix3x3Physics& localInverseInertia,
-    const Quaternion& rotation);
+		static Matrix3x3Physics VertexCloudInverseInertiaTensor(
+			const std::vector<M::Vector3>& vertices,
+			float mass);
 
-Matrix3x3Physics Matrix3x3PhysicsInverse(
-    const Matrix3x3Physics& matrix);
+	};
 
-Matrix3x3Physics MakeVertexCloudInverseInertiaTensor(
-    const std::vector<Vector3>& vertices,
-    float mass);
+}

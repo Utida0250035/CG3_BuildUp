@@ -10,64 +10,68 @@
 
 #include <wrl/client.h>
 
-class RenderDevice {
+namespace Atrum {
 
-private:
+	class RenderDevice {
 
-	template<typename T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
+	private:
 
-	bool isInitialized_ = false;
+		template<typename T>
+		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
-	ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
+		bool isInitialized_ = false;
 
-	// 使用するアダプタ用
-	ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
+		// DXGI(DirectX Graphics Infrastructure)オブジェクト生成インターフェース
+		ComPtr<IDXGIFactory7> dxgiFactory_ = nullptr;
 
-	// デバイス
-	ComPtr<ID3D12Device> device_ = nullptr;
+		// 使用するアダプタ用
+		ComPtr<IDXGIAdapter4> useAdapter_ = nullptr;
 
-	/// <summary>
-	/// DxgiFactoryの生成
-	/// </summary>
-	void CreateDxgiFactory();
+		// デバイス
+		ComPtr<ID3D12Device> device_ = nullptr;
 
-	/// <summary>
-	/// 使用するアダプタの選択
-	/// </summary>
-	void SelectAdapter();
+		/// <summary>
+		/// DxgiFactoryの生成
+		/// </summary>
+		void CreateDxgiFactory();
 
-	/// <summary>
-	/// デバイスの生成
-	/// </summary>
-	void CreateDevice();
+		/// <summary>
+		/// 使用するアダプタの選択
+		/// </summary>
+		void SelectAdapter();
 
-public:
+		/// <summary>
+		/// デバイスの生成
+		/// </summary>
+		void CreateDevice();
 
-	// コンストラクタ デフォルト
-	RenderDevice() = default;
+	public:
 
-	// デストラクタ デフォルト
-	~RenderDevice() = default;
+		// コンストラクタ デフォルト
+		RenderDevice() = default;
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize();
+		// デストラクタ デフォルト
+		~RenderDevice() = default;
 
-	/* ゲッター */
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		void Initialize();
 
-	/// <summary>
-	/// ゲッター Device
-	/// </summary>
-	/// <returns> Device </returns>
-	ID3D12Device* GetDevice() { return device_.Get(); }
+		/* ゲッター */
 
-	/// <summary>
-	/// ゲッター DxgiFactory
-	/// </summary>
-	/// <returns> DxgiFactory </returns>
-	IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
+		/// <summary>
+		/// ゲッター Device
+		/// </summary>
+		/// <returns> Device </returns>
+		ID3D12Device* GetDevice() { return device_.Get(); }
 
-};
+		/// <summary>
+		/// ゲッター DxgiFactory
+		/// </summary>
+		/// <returns> DxgiFactory </returns>
+		IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
+
+	};
+
+}

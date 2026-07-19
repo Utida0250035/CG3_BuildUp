@@ -18,12 +18,54 @@
 #include <memory>
 #include <numbers>
 
+namespace {
+
+	using Atrum::LeakChecker;
+
+	using Atrum::Input::PlayInput;
+	using Atrum::Input::Key;
+
+	using Atrum::Audio::AudioManager;
+
+	using Atrum::Math::Transform;
+
+	using Atrum::Math::Vector2;
+	using Atrum::Math::Vector3;
+	using Atrum::Math::Vector4;
+
+	using Atrum::Math::Matrix4x4;
+	using Atrum::Math::Quaternion;
+
+	using Atrum::Physics::HitMesh;
+	using Atrum::Physics::HitMeshBuilder;
+	using Atrum::Physics::CollisionManager;
+
+	using Atrum::Geometry::Triangle;
+	using Atrum::Geometry::PyramidMesh;
+
+
+	using Atrum::VertexData;
+	using Atrum::LightModel;
+	using Atrum::DirectionalLightData;
+
+	using Atrum::DeltaTime;
+
+	using Atrum::Json::JsonTest;
+
+#ifdef  _DEBUG
+
+	using Atrum::Debug::DebugCamera;
+
+#endif //  _DEBUG
+
+}
+
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	LeakChecker leakChecker;
 
 	// エンジンインスタンスの取得
-	AtrumEngine* atrum = AtrumEngine::GetInstance();
+	Atrum::Engine* atrum = Atrum::Engine::GetInstance();
 
 	// エンジンの初期化
 	atrum->Initialize("CG2", 1280, 720);
@@ -50,7 +92,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* 音源 */
 
-	std::unique_ptr<Audio> audio = std::make_unique<Audio>();
+	std::unique_ptr<AudioManager> audio = std::make_unique<AudioManager>();
 	audio->Initialize();
 
 	[[maybe_unused]] size_t seAlarm = audio->LoadSe("./Assets/Audios/Alarm01.wav");
@@ -102,7 +144,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Transform spriteUvTransform{};
 	Vector2 spriteSize{ 64.0f, 64.0f };
 	uint32_t spriteTexture = textureWhite;
-	Vector4 spriteColor = Vec4White();
+	Vector4 spriteColor = Vector4::White();
 
 	/* HitMesh */
 
@@ -292,21 +334,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		const Vector3& pivot = camera->RefPivot();
 		const Vector3& translate = camera->RefTranslate();
 
-		Vector3 direction = VectorNormalize(pivot - translate);
-		Vector3 calculatedDirection = camera->RefQuaternion().rotate_vector({ 0.0f, 0.0f, -1.0f });
+		Vector3 direction = (pivot - translate).Normalized();
+		Vector3 calculatedDirection = camera->RefQuaternion().RotateVector({ 0.0f, 0.0f, -1.0f });
 
 		ImGui::DragFloat3("direction", &direction.x);
 		ImGui::DragFloat3("direction(calc)", &calculatedDirection.x);
 
 		if (ImGui::IsItemActive()) {
 
-			camera->RefQuaternion().normalize();
+			camera->RefQuaternion().Normalize();
 
 		}
 
 		if (ImGui::IsItemActive()) {
 
-			camera->RefPivotQuaternion().normalize();
+			camera->RefPivotQuaternion().Normalize();
 
 		}
 
@@ -323,7 +365,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (ImGui::IsItemActive()) {
 
-			directionalLightData.direction = VectorNormalize(directionalLightData.direction);
+			directionalLightData.direction.Normalize();
 
 		}
 
@@ -441,7 +483,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (ImGui::IsItemActive()) {
 
-			hitMeshPyramid.rotation.normalize();
+			hitMeshPyramid.rotation.Normalize();
 
 		}
 
@@ -582,16 +624,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (isPhysicsMove) {
 
-			triangle.v0 = VectorTransform(vertices[0], MakeWorldMatrix(triangleTransform));
-			triangle.v1 = VectorTransform(vertices[1], MakeWorldMatrix(triangleTransform));
-			triangle.v2 = VectorTransform(vertices[2], MakeWorldMatrix(triangleTransform));
+			Matrix4x4 worldMat = triangleTransform.MakeWorldMatrix();
 
-			triangle.normal = VectorNormalize(
-				VectorCross(
-				triangle.v1 - triangle.v0,
-				triangle.v2 - triangle.v0
-			)
-			);
+			triangle.v0 = worldMat.Transform(vertices[0]);
+			triangle.v1 = worldMat.Transform(vertices[1]);
+			triangle.v2 = worldMat.Transform(vertices[2]);
+
+			triangle.normal = (triangle.v1 - triangle.v0).Cross(triangle.v2 - triangle.v0);
+			triangle.normal.Normalize();
 
 			hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
 
@@ -602,10 +642,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			hitMeshPyramid.Update(deltaTime);
 
 			for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {
-				Vector3 w = VectorTransform(
-					hitMeshPyramid.localVertices[i],
-					hitMeshPyramid.worldMatrix
-				);
+				Vector3 w = hitMeshPyramid.worldMatrix.Transform(hitMeshPyramid.localVertices[i]);
 
 			}
 
@@ -639,7 +676,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
-		atrum->DrawAsymmetricPyramid(textureWhite, Vec4Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
+		atrum->DrawAsymmetricPyramid(textureWhite, Vector4::Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
 
 
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
@@ -668,7 +705,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	atrum->Finalize();
 
-	AtrumEngine::Destroy();
+	Atrum::Engine::Destroy();
 
 	return 0;
 

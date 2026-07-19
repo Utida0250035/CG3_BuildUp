@@ -2,35 +2,43 @@
 
 #include "Math/Vector2.h"
 
-typedef struct OrientedBoundingBox {
-	// 中心
-	Vector2 center;
-	// 各軸の長さ(幅, 高さ)
-	Vector2 size;
-	// 各軸の長さの半分
-	Vector2 halfSize;
-	// 正規化された方向ベクトル(ローカル右、ローカル上)
-	Vector2 axis[2];
+namespace Atrum::Geometry {
 
-	Vector2 ToLocal(const Vector2& worldPos)const;
+	typedef struct OrientedBoundingBox {
+		// 中心
+		Math::Vector2 center;
+		// 各軸の長さ(幅, 高さ)
+		Math::Vector2 size;
+		// 各軸の長さの半分
+		Math::Vector2 halfSize;
+		// 正規化された方向ベクトル(ローカル右、ローカル上)
+		Math::Vector2 axis[2];
 
-	void UpdateAxis(float theta);
+		Math::Vector2 ToLocal(const Math::Vector2& worldPos)const;
 
-	float CalculateAngle()const;
+		void UpdateAxis(float theta);
 
-	bool IsPointInOBB(const Vector2& point) const;
+		float CalculateAngle()const;
 
-	void GetWorldCorners(Vector2 corners[4]) const;
+		bool IsPointInOBB(const Math::Vector2& point) const;
 
-} MyOBB;
+		void GetWorldCorners(Math::Vector2 corners[4]) const;
 
-struct RigidBodyOBB : public MyOBB {
+	} MyOBB;
 
-	Vector2 velocity{};
-	float angularVelocity = 0.0f;
-	float mass = 1.0f;
-	float inertiaMoment;
+}
 
-	void UpdateInertiaMoment();
+namespace Atrum::Physics {
 
-};
+	struct RigidBodyOBB : public Geometry::MyOBB {
+
+		Math::Vector2 velocity{};
+		float angularVelocity = 0.0f;
+		float mass = 1.0f;
+		float inertiaMoment;
+
+		void UpdateInertiaMoment();
+
+	};
+
+}

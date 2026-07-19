@@ -8,6 +8,7 @@
 #include "Engine/Device/SwapChain.h"
 #include "Engine/Pipeline/PipelineState.h"
 #include "Engine/Pipeline/RootSignature.h"
+#include "Engine/Platform/Window/Window.h"
 #include "Engine/Resource/AssetModel.h"
 #include "Engine/Resource/ConstantBuffer.h"
 #include "Engine/Resource/DescriptorAllocator.h"
@@ -46,6 +47,7 @@
 #include <DirectXTex/DirectXTex.h>
 #pragma comment(lib, "DirectXTex.lib")
 
+
 #ifdef USE_IMGUI
 
 #include "Debug/ImGui.h"
@@ -54,423 +56,360 @@
 
 namespace fs = std::filesystem;
 
-class DirectInput;
-class PlayInput;
+namespace Atrum {
 
-class ModelStorage;
-class TextureStorage;
+	namespace Input {
 
-class Draw;
-class DrawSprite;
+		class DirectInput;
+		class PlayInput;
 
-class AtrumEngine final {
+	}
 
-private:
+	class ModelStorage;
+	class TextureStorage;
 
-	template<typename T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
+	class Draw;
+	class DrawSprite;
 
-private:
+	class AtrumEngine final {
 
-	// 初期化済フラグ
-	bool isInitialized_ = false;
+	private:
 
-	/* Window */
+		template<typename T>
+		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	struct Window {
-		SDL_Window* ptr = nullptr;
+	private:
 
-		~Window() {
+		// 初期化済フラグ
+		bool isInitialized_ = false;
 
-			if (ptr) {
+		std::unique_ptr<Window> window_ = nullptr;
 
-				SDL_DestroyWindow(ptr);
+		/* RenderDevice */
 
-			}
+		std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
 
-			SDL_Quit();
+		/* Command */
 
-			LogFile::GetInstance()->Log("SDL2: Quit");
+		// コマンド経路(Direct)
+		std::unique_ptr<CommandContext> commandContextDirect_ = nullptr;
 
-		}
+		/* SwapChain */
 
-	};
+		std::unique_ptr<SwapChain> swapChainManager_ = nullptr;
 
-	// ウィンドウクラス
-	Window window_{};
 
-	// クライアント領域ヨコサイズ
-	int32_t clientWidth_ = 1280;
+		/* SRV */
 
-	// クライアント領域タテサイズ
-	int32_t clientHeight_ = 720;
+		std::unique_ptr<DescriptorAllocator> srvAllocator_ = nullptr;
 
-	// ウィンドウサイズ構造体
-	RECT wrc_{};
 
-	// ウィンドウハンドル
-	HWND hwnd_{};
+		/* RTV */
 
+		std::unique_ptr<DescriptorAllocator> rtvAllocator_ = nullptr;
 
-	/* エラー処理 */
 
-	// Windowsエラーハンドル
-	[[maybe_unused]] HRESULT hr_{};
+		/* フェンス / フェンスイベント */
 
+		std::unique_ptr<Fence> fenceManager_ = nullptr;
 
-	/* RenderDevice */
 
-	std::unique_ptr<RenderDevice> renderDevice_ = nullptr;
+		/* 中間リソース */
 
-	/* Command */
+		// フレーム内の中間リソース保存
+		std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
 
-	// コマンド経路(Direct)
-	std::unique_ptr<CommandContext> commandContextDirect_ = nullptr;
 
-	/* SwapChain */
+		/* DirectXShaderCompiler */
 
-	std::unique_ptr<SwapChain> swapChainManager_ = nullptr;
+		std::unique_ptr<ShaderCompiler> shaderCompiler_ = nullptr;
 
 
-	/* SRV */
+		/* RootSignature */
 
-	std::unique_ptr<DescriptorAllocator> srvAllocator_ = nullptr;
+		std::unique_ptr<RootSignature> rootSignature_ = nullptr;
 
 
-	/* RTV */
+		/* PSO */
 
-	std::unique_ptr<DescriptorAllocator> rtvAllocator_ = nullptr;
+		// PipelineStateObject
+		std::unique_ptr<PipelineState> graphicsPipelineState_ = nullptr;
 
 
-	/* フェンス / フェンスイベント */
+		/* DirectionalLight(3D専用) */
 
-	std::unique_ptr<Fence> fenceManager_ = nullptr;
+		std::unique_ptr<SingleConstantBuffer<DirectionalLightData>> directionalLightBuffer_ = nullptr;
 
 
-	/* 中間リソース */
+		/* depthStencil */
 
-	// フレーム内の中間リソース保存
-	std::vector<ComPtr<ID3D12Resource>> temporaryResources_;
+		// DSVディスクリプタヒープ(Depth Stencil View)
+		std::unique_ptr<DescriptorAllocator> dsvAllocator_ = nullptr;
 
+		// DepthStencilResource
+		ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-	/* DirectXShaderCompiler */
+	private:
 
-	std::unique_ptr<ShaderCompiler> shaderCompiler_ = nullptr;
 
+		/* 時間管理 */
 
-	/* RootSignature */
+		// 次フレームまでのカウント
+		float countForNextFrame_ = 0.0f;
 
-	std::unique_ptr<RootSignature> rootSignature_ = nullptr;
+		// fps(フレーム/s)
+		float secondsPerFrame_ = 0.0f;
 
+		// 時間差分
+		std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
 
-	/* PSO */
 
-	// PipelineStateObject
-	std::unique_ptr<PipelineState> graphicsPipelineState_ = nullptr;
+		/* プレイヤー入力 */
 
+		// DirectInput
+		Input::DirectInput* directInput_ = nullptr;
 
-	/* DirectionalLight(3D専用) */
+		// SDL2入力
+		Input::PlayInput* playInput_ = nullptr;
 
-	std::unique_ptr<SingleConstantBuffer<DirectionalLightData>> directionalLightBuffer_ = nullptr;
 
+		/* アセットストレージ */
 
-	/* depthStencil */
+		ModelStorage* pModelStorage_ = nullptr;
 
-	// DSVディスクリプタヒープ(Depth Stencil View)
-	std::unique_ptr<DescriptorAllocator> dsvAllocator_ = nullptr;
+		TextureStorage* pTextureStorage_ = nullptr;
 
-	// DepthStencilResource
-	ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
-private:
+		/* 描画 */
 
+		Draw* pDraw_ = nullptr;
 
-	/* ウィンドウサイズ */
+		DrawSprite* pDrawSprite_ = nullptr;
 
-	// ビューポート
-	D3D12_VIEWPORT viewport_{};
 
-	// シザー矩形
-	D3D12_RECT scissorRect_{};
+		/**/
 
 
-	/* 時間管理 */
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		AtrumEngine() = default;
 
-	// 次フレームまでのカウント
-	float countForNextFrame_ = 0.0f;
+		/// <summary>
+		/// デストラクタ
+		/// </summary>
+		~AtrumEngine() = default;
 
-	// fps(フレーム/s)
-	float secondsPerFrame_ = 0.0f;
+		/// <summary>
+		/// <summary>
+		/// 初期化処理 平行光源Bufferの作成
+		/// </summary>
+		void CreateDirectionalLightBuffer();
 
-	// 時間差分
-	std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
+		/// <summary>
+		/// 初期化処理 DepthStencilResourceの作成
+		/// </summary>
+		/// <param name="width"> 幅 </param>
+		/// <param name="height"> 高さ </param>
+		/// <returns> DepthStencilResource </returns>
+		ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
 
 
-	/* プレイヤー入力 */
+		/// <summary>
+		/// Spriteの描画呼び出し
+		/// </summary>
+		void DrawSpriteCall(const uint32_t& textureIndex);
 
-	// DirectInput
-	DirectInput* directInput_ = nullptr;
+	public:
 
-	// SDL2入力
-	PlayInput* playInput_ = nullptr;
+		void SetFps(const int32_t& fps);
 
+		/// <summary>
+		/// エンジンの初期化
+		/// </summary>
+		/// <param name="windowLabel"> ウィンドウのタイトル </param>
+		/// <param name="clientWidth"> ウィンドウの横幅 </param>
+		/// <param name="clientHeight"> ウィンドウの縦幅 </param>
+		void Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
 
-	/* アセットストレージ */
-
-	ModelStorage* pModelStorage_ = nullptr;
-	
-	TextureStorage* pTextureStorage_ = nullptr;
-
-
-	/* 描画 */
-
-	Draw* pDraw_ = nullptr;
-
-	DrawSprite* pDrawSprite_ = nullptr;
-
-
-	/**/
-
-
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	AtrumEngine() = default;
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~AtrumEngine() = default;
-
-	/// <summary>
-	/// 初期化処理 ウィンドウ作成
-	/// </summary>
-	/// <param name="windowLabel"> ウィンドウタイトル </param>
-	/// <param name="clientWidth"> ウィンドウの横幅 </param>
-	/// <param name="clientHeight"> ウィンドウの縦幅 </param>
-	void PrepareWindow(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
-
-	/// <summary>
-	/// 初期化処理 エラー抑制 デバッグ用
-	/// </summary>
-	void ErrorSuppressionDebug();
-
-	/// <summary>
-	/// 初期化処理 Viewport の設定
-	/// </summary>
-	void SetUpViewport();
-
-	/// <summary>
-	/// 初期化処理 シザー矩形の設定
-	/// </summary>
-	void SetUpScissorRect();
-
-	/// <summary>
-	/// <summary>
-	/// 初期化処理 平行光源Bufferの作成
-	/// </summary>
-	void CreateDirectionalLightBuffer();
-
-	/// <summary>
-	/// 初期化処理 DepthStencilResourceの作成
-	/// </summary>
-	/// <param name="width"> 幅 </param>
-	/// <param name="height"> 高さ </param>
-	/// <returns> DepthStencilResource </returns>
-	ComPtr<ID3D12Resource> CreateDepthStencilResource(int32_t width, int32_t height);
-
-
-	/// <summary>
-	/// Spriteの描画呼び出し
-	/// </summary>
-	void DrawSpriteCall(const uint32_t& textureIndex);
-
-public:
-
-	void SetFps(const int32_t& fps);
-
-	/// <summary>
-	/// エンジンの初期化
-	/// </summary>
-	/// <param name="windowLabel"> ウィンドウのタイトル </param>
-	/// <param name="clientWidth"> ウィンドウの横幅 </param>
-	/// <param name="clientHeight"> ウィンドウの縦幅 </param>
-	void Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
-
-	/// <summary>
-	/// 裏の処理と×ボタン判定を行う
-	/// </summary>
-	/// <returns></returns>
-	bool Process() const;
+		/// <summary>
+		/// 裏の処理と×ボタン判定を行う
+		/// </summary>
+		/// <returns></returns>
+		bool Process() const;
 
 #ifdef USE_IMGUI
 
 	/// <summary>
 	/// ImGuiにフレーム開始を通知
 	/// </summary>
-	void ImGuiNewFrame() const;
+		void ImGuiNewFrame() const;
 
-	/// <summary>
-	/// ImGuiの内部コマンド生成
-	/// </summary>
-	void ImGuiRender() const;
+		/// <summary>
+		/// ImGuiの内部コマンド生成
+		/// </summary>
+		void ImGuiRender() const;
 
 #endif
 
 	/// <summary>
 	/// 描画処理(前)
 	/// </summary>
-	void PreDraw();
+		void PreDraw();
 
-	/// <summary>
-	/// 描画処理(後)
-	/// </summary>
-	void PostDraw();
+		/// <summary>
+		/// 描画処理(後)
+		/// </summary>
+		void PostDraw();
 
-	/// <summary>
-	/// エンジンの終了
-	/// </summary>
-	void Finalize();
+		/// <summary>
+		/// エンジンの終了
+		/// </summary>
+		void Finalize();
 
-private:
+	private:
 
-	static AtrumEngine* instance_;
+		static AtrumEngine* instance_;
 
-public:
+	public:
 
-	/// <summary>
-	/// インスタンスの取得
-	/// </summary>
-	/// <returns> AtrumEngineインスタンス </returns>
-	static AtrumEngine* GetInstance() {
+		/// <summary>
+		/// インスタンスの取得
+		/// </summary>
+		/// <returns> AtrumEngineインスタンス </returns>
+		static AtrumEngine* GetInstance() {
 
-		if (!instance_) {
+			if (!instance_) {
 
-			instance_ = new AtrumEngine();
+				instance_ = new AtrumEngine();
 
-		}
+			}
 
-		return instance_;
-
-	}
-
-	/// <summary>
-	/// インスタンスの破棄
-	/// </summary>
-	static void Destroy() {
-
-		if (instance_) {
-
-			delete instance_;
-			instance_ = nullptr;
+			return instance_;
 
 		}
 
-	}
+		/// <summary>
+		/// インスタンスの破棄
+		/// </summary>
+		static void Destroy() {
 
-	// 代入演算子の削除
-	AtrumEngine operator=(const AtrumEngine& source) = delete;
+			if (instance_) {
 
-	// コピーコンストラクタの削除
-	AtrumEngine(const AtrumEngine& source) = delete;
+				delete instance_;
+				instance_ = nullptr;
 
-public:
+			}
 
-	/// <summary>
-	/// 三角形の描画
-	/// </summary>
-	/// <param name="textureIndex"> テクスチャ番号 </param>
-	/// <param name="textureColor"> テクスチャ色(補正) </param>
-	/// <param name="uvTransform"> uv座標情報 </param> 
-	/// <param name="triangleTransform"> 三角形の座標情報 </param>
-	/// <param name="cameraTransform"> カメラの座標情報 </param>
-	/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
-	/// <param name="directionalLightData"> 平行光源データ(option) </param>
-	void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
+		}
 
-	/// <summary>
-	/// 非対称ピラミッドの描画
-	/// </summary>
-	/// <param name="textureIndex"></param>
-	/// <param name="textureColor"></param>
-	/// <param name="uvTransform"></param>
-	/// <param name="triangleTransform"></param>
-	/// <param name="vertexData"></param>
-	/// <param name="isLighting"></param>
-	void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting = false);
+		// 代入演算子の削除
+		AtrumEngine operator=(const AtrumEngine& source) = delete;
 
-	/// <summary>
-	/// 球の描画
-	/// </summary>
-	/// <param name="textureIndex"> テクスチャ番号 </param>
-	/// <param name="textureColor"> テクスチャ色(補正) </param>
-	/// <param name="uvTransform"> uv座標情報 </param> 
-	/// <param name="triangleTransform"> 球の座標情報 </param>
-	/// <param name="cameraTransform"> カメラの座標情報 </param>
-	/// <param name="vertexData"> 球の半径 </param>
-	/// <param name="directionalLightData"> 平行光源データ(option) </param>
-	void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
+		// コピーコンストラクタの削除
+		AtrumEngine(const AtrumEngine& source) = delete;
 
-	/// <summary>
-	/// Spriteの準備
-	/// </summary>
-	void PrepareSprite();
+	public:
 
-	/// <summary>
-	/// 2D矩形の描画
-	/// </summary>
-	/// <param name="textureIndex"> テクスチャ番号 </param>
-	/// <param name="textureColor"> テクスチャ色(補正) </param>
-	/// <param name="plateTransform"> 板の座標情報 </param>
-	void DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize);
+		/// <summary>
+		/// 三角形の描画
+		/// </summary>
+		/// <param name="textureIndex"> テクスチャ番号 </param>
+		/// <param name="textureColor"> テクスチャ色(補正) </param>
+		/// <param name="uvTransform"> uv座標情報 </param> 
+		/// <param name="triangleTransform"> 三角形の座標情報 </param>
+		/// <param name="cameraTransform"> カメラの座標情報 </param>
+		/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
+		/// <param name="directionalLightData"> 平行光源データ(option) </param>
+		void DrawTriangle(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
 
-	/// <summary>
-	/// 2D線の描画
-	/// </summary>
-	/// <param name="textureIndex"> テクスチャ番号 </param>
-	/// <param name="textureColor"> テクスチャ色(補正) </param>
-	/// <param name="start"> 始点 </param>
-	/// <param name="end"> 終点 </param>
-	/// <param name="width"> 太さ </param>
-	void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
+		/// <summary>
+		/// 非対称ピラミッドの描画
+		/// </summary>
+		/// <param name="textureIndex"></param>
+		/// <param name="textureColor"></param>
+		/// <param name="uvTransform"></param>
+		/// <param name="triangleTransform"></param>
+		/// <param name="vertexData"></param>
+		/// <param name="isLighting"></param>
+		void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector3& scale, const Math::Quaternion& rotate, const Math::Vector3& translate, const Geometry::PyramidMesh& mesh, const bool isLighting = false);
 
-	/// <summary>
-	/// 3Dモデルの描画
-	/// </summary>
-	/// <param name="model"> 3Dモデルインスタンス </param>
-	/// <param name="transform"> 3Dモデルの座標変換情報 </param>
-	/// <param name="cameraTransform"> カメラの座標変換情報 </param>
-	/// <param name="isLighting"> ライティングフラグ </param>
-	void DrawModel(AssetModel* model, const Transform& transform, const bool isLighting);
+		/// <summary>
+		/// 球の描画
+		/// </summary>
+		/// <param name="textureIndex"> テクスチャ番号 </param>
+		/// <param name="textureColor"> テクスチャ色(補正) </param>
+		/// <param name="uvTransform"> uv座標情報 </param> 
+		/// <param name="triangleTransform"> 球の座標情報 </param>
+		/// <param name="cameraTransform"> カメラの座標情報 </param>
+		/// <param name="vertexData"> 球の半径 </param>
+		/// <param name="directionalLightData"> 平行光源データ(option) </param>
+		void DrawSphere(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
 
+		/// <summary>
+		/// Spriteの準備
+		/// </summary>
+		void PrepareSprite();
 
+		/// <summary>
+		/// 2D矩形の描画
+		/// </summary>
+		/// <param name="textureIndex"> テクスチャ番号 </param>
+		/// <param name="textureColor"> テクスチャ色(補正) </param>
+		/// <param name="plateTransform"> 板の座標情報 </param>
+		void DrawSpriteRect(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& rectTransform, const Math::Vector2& rectSize);
 
-	/// <summary>
-	/// テクスチャの取得
-	/// </summary>
-	/// <param name="filePath"> テクスチャのファイルパス </param>
-	/// <returns> テクスチャ番号 </returns>
-	uint32_t GetTexture(const std::string& filePath);
+		/// <summary>
+		/// 2D線の描画
+		/// </summary>
+		/// <param name="textureIndex"> テクスチャ番号 </param>
+		/// <param name="textureColor"> テクスチャ色(補正) </param>
+		/// <param name="start"> 始点 </param>
+		/// <param name="end"> 終点 </param>
+		/// <param name="width"> 太さ </param>
+		void DrawSpriteLine(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector2& start, const Math::Vector2& end, const float& width, const float& posZ);
 
-	/// <summary>
-	/// 3Dモデルの取得||新規生成
-	/// </summary>
-	/// <param name="objFilePath"></param>
-	/// <param name="mtlFilePath"></param>
-	/// <returns></returns>
-	std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+		/// <summary>
+		/// 3Dモデルの描画
+		/// </summary>
+		/// <param name="model"> 3Dモデルインスタンス </param>
+		/// <param name="transform"> 3Dモデルの座標変換情報 </param>
+		/// <param name="cameraTransform"> カメラの座標変換情報 </param>
+		/// <param name="isLighting"> ライティングフラグ </param>
+		void DrawModel(AssetModel* model, const Math::Transform& transform, const bool isLighting);
 
 
-	/* セッター */
 
-	void SetDirectionalLightData(const DirectionalLightData& data) { directionalLightBuffer_->SetData(data); }
+		/// <summary>
+		/// テクスチャの取得
+		/// </summary>
+		/// <param name="filePath"> テクスチャのファイルパス </param>
+		/// <returns> テクスチャ番号 </returns>
+		uint32_t GetTexture(const std::string& filePath);
 
-	void SetViewMatrix(const Matrix4x4& mat);
+		/// <summary>
+		/// 3Dモデルの取得||新規生成
+		/// </summary>
+		/// <param name="objFilePath"></param>
+		/// <param name="mtlFilePath"></param>
+		/// <returns></returns>
+		std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
-};
 
-struct LeakChecker {
+		/* セッター */
 
-	~LeakChecker();
+		void SetDirectionalLightData(const DirectionalLightData& data) { directionalLightBuffer_->SetData(data); }
 
-};
+		void SetViewMatrix(const Math::Matrix4x4& mat);
+
+	};
+
+	using Engine = AtrumEngine;
+
+	struct LeakChecker {
+
+		~LeakChecker();
+
+	};
+
+}

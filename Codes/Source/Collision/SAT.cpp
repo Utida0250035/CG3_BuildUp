@@ -1,3 +1,5 @@
+#include "Engine/Alias/PhysicsAlias.h"
+
 #include "Collision/SAT.h"
 #include <algorithm>
 #include <cfloat>
@@ -5,732 +7,722 @@
 
 namespace {
 
-    constexpr float kAxisEpsilon = 0.000001f;
-    constexpr float kContactTolerance = 0.05f;
+	namespace M = Atrum::Math;
+	namespace P = Atrum::Physics;
+	namespace G = Atrum::Geometry;
 
-    bool IsValidAxis(const Vector3& axis) {
+	constexpr float kAxisEpsilon = 0.000001f;
+	constexpr float kContactTolerance = 0.05f;
 
-        return VectorLength(axis) > kAxisEpsilon;
-    }
+	bool IsValidAxis(const M::Vector3& axis) {
 
-    bool ContainsNearPoint(
-        const std::vector<ContactPoint>& contacts,
-        const Vector3& point,
-        float epsilon) {
+		return axis.Length() > kAxisEpsilon;
+	}
 
-        for (const ContactPoint& contact : contacts) {
+	bool ContainsNearPoint(
+		const std::vector<P::ContactPoint>& contacts,
+		const M::Vector3& point,
+		float epsilon) {
 
-            if (VectorLength(contact.position - point) <= epsilon) {
-                return true;
-            }
-        }
+		for (const P::ContactPoint& contact : contacts) {
 
-        return false;
-    }
+			if ((contact.position - point).Length() <= epsilon) {
+				return true;
+			}
+		}
 
-    void AddUniquePoint(
-        std::vector<ContactPoint>& contacts,
-        const Vector3& point,
-        float penetration,
-        float epsilon) {
+		return false;
+	}
 
-        if (ContainsNearPoint(contacts, point, epsilon)) {
-            return;
-        }
+	void AddUniquePoint(
+		std::vector<P::ContactPoint>& contacts,
+		const M::Vector3& point,
+		float penetration,
+		float epsilon) {
 
-        ContactPoint contact{};
-        contact.position = point;
-        contact.penetration = penetration;
+		if (ContainsNearPoint(contacts, point, epsilon)) {
+			return;
+		}
 
-        contacts.push_back(contact);
-    }
+		P::ContactPoint contact{};
+		contact.position = point;
+		contact.penetration = penetration;
 
-    Vector3 CalculateAveragePoint(
-        const std::vector<ContactPoint>& contacts) {
+		contacts.push_back(contact);
+	}
 
-        if (contacts.empty()) {
-            return {};
-        }
+	M::Vector3 CalculateAveragePoint(
+		const std::vector<P::ContactPoint>& contacts) {
 
-        Vector3 result{};
+		if (contacts.empty()) {
+			return {};
+		}
 
-        for (const ContactPoint& contact : contacts) {
-            result += contact.position;
-        }
+		M::Vector3 result{};
 
-        result /= static_cast<float>(contacts.size());
+		for (const P::ContactPoint& contact : contacts) {
+			result += contact.position;
+		}
 
-        return result;
-    }
+		result /= static_cast<float>(contacts.size());
 
-    struct FaceQuery {
-        int index = -1;
-        Vector3 normal{};
-        Vector3 center{};
-        float dot = -FLT_MAX;
-    };
+		return result;
+	}
 
-    struct ReferenceFace {
-        const HitMesh* mesh = nullptr;
-        int faceIndex = -1;
-        Vector3 normal{};
-        Vector3 center{};
-        bool referenceIsA = true;
-    };
+	struct FaceQuery {
+		int index = -1;
+		M::Vector3 normal{};
+		M::Vector3 center{};
+		float dot = -FLT_MAX;
+	};
 
-    Vector3 CalculateFaceCenter(
-        const HitMesh& mesh,
-        const Face& face) {
+	struct ReferenceFace {
+		const P::HitMesh* mesh = nullptr;
+		int faceIndex = -1;
+		M::Vector3 normal{};
+		M::Vector3 center{};
+		bool referenceIsA = true;
+	};
 
-        Vector3 center{};
+	M::Vector3 CalculateFaceCenter(
+		const P::HitMesh& mesh,
+		const G::Face& face) {
 
-        if (face.indices.empty()) {
-            return center;
-        }
+		M::Vector3 center{};
 
-        for (uint32_t index : face.indices) {
+		if (face.indices.empty()) {
+			return center;
+		}
 
-            if (index >= mesh.worldVertices.size()) {
-                continue;
-            }
+		for (uint32_t index : face.indices) {
 
-            center += mesh.worldVertices[index];
-        }
+			if (index >= mesh.worldVertices.size()) {
+				continue;
+			}
 
-        center /= static_cast<float>(face.indices.size());
+			center += mesh.worldVertices[index];
+		}
 
-        return center;
-    }
+		center /= static_cast<float>(face.indices.size());
 
-    Vector3 CalculateOutwardFaceNormal(
-        const HitMesh& mesh,
-        const Face& face) {
+		return center;
+	}
 
-        if (face.indices.size() < 3) {
-            return {};
-        }
+	M::Vector3 CalculateOutwardFaceNormal(
+		const P::HitMesh& mesh,
+		const G::Face& face) {
 
-        uint32_t i0 = face.indices[0];
-        uint32_t i1 = face.indices[1];
-        uint32_t i2 = face.indices[2];
+		if (face.indices.size() < 3) {
+			return {};
+		}
 
-        if (i0 >= mesh.worldVertices.size() ||
-            i1 >= mesh.worldVertices.size() ||
-            i2 >= mesh.worldVertices.size()) {
-            return {};
-        }
+		uint32_t i0 = face.indices[0];
+		uint32_t i1 = face.indices[1];
+		uint32_t i2 = face.indices[2];
 
-        const Vector3& v0 = mesh.worldVertices[i0];
-        const Vector3& v1 = mesh.worldVertices[i1];
-        const Vector3& v2 = mesh.worldVertices[i2];
+		if (i0 >= mesh.worldVertices.size() ||
+			i1 >= mesh.worldVertices.size() ||
+			i2 >= mesh.worldVertices.size()) {
+			return {};
+		}
 
-        Vector3 normal =
-            VectorCross(v1 - v0, v2 - v0);
+		const M::Vector3& v0 = mesh.worldVertices[i0];
+		const M::Vector3& v1 = mesh.worldVertices[i1];
+		const M::Vector3& v2 = mesh.worldVertices[i2];
 
-        if (!IsValidAxis(normal)) {
-            return {};
-        }
+		M::Vector3 normal = (v1 - v0).Cross(v2 - v0);
 
-        normal = VectorNormalize(normal);
+		if (!IsValidAxis(normal)) {
+			return {};
+		}
 
-        Vector3 faceCenter =
-            CalculateFaceCenter(mesh, face);
+		normal = normal.Normalized();
 
-        Vector3 meshCenter =
-            mesh.GetCenter();
+		M::Vector3 faceCenter =
+			CalculateFaceCenter(mesh, face);
 
-        Vector3 outwardDirection =
-            faceCenter - meshCenter;
+		M::Vector3 meshCenter =
+			mesh.GetCenter();
 
-        if (VectorDot(normal, outwardDirection) < 0.0f) {
-            normal = -normal;
-        }
+		M::Vector3 outwardDirection =
+			faceCenter - meshCenter;
 
-        return normal;
-    }
+		if (normal.Dot(outwardDirection) < 0.0f) {
+			normal = -normal;
+		}
 
-    FaceQuery FindMostAlignedFace(
-        const HitMesh& mesh,
-        const Vector3& direction) {
+		return normal;
+	}
 
-        FaceQuery result{};
+	FaceQuery FindMostAlignedFace(
+		const P::HitMesh& mesh,
+		const M::Vector3& direction) {
 
-        Vector3 dir = VectorNormalize(direction);
+		FaceQuery result{};
 
-        for (size_t i = 0; i < mesh.faces.size(); ++i) {
+		M::Vector3 dir = direction.Normalized();
 
-            const Face& face = mesh.faces[i];
+		for (size_t i = 0; i < mesh.faces.size(); ++i) {
 
-            Vector3 normal =
-                CalculateOutwardFaceNormal(mesh, face);
+			const G::Face& face = mesh.faces[i];
 
-            if (!IsValidAxis(normal)) {
-                continue;
-            }
+			M::Vector3 normal =
+				CalculateOutwardFaceNormal(mesh, face);
 
-            float d =
-                VectorDot(normal, dir);
+			if (!IsValidAxis(normal)) {
+				continue;
+			}
 
-            if (d > result.dot) {
+			float d = normal.Dot(dir);
 
-                result.index = static_cast<int>(i);
-                result.normal = normal;
-                result.center = CalculateFaceCenter(mesh, face);
-                result.dot = d;
-            }
-        }
+			if (d > result.dot) {
 
-        return result;
-    }
+				result.index = static_cast<int>(i);
+				result.normal = normal;
+				result.center = CalculateFaceCenter(mesh, face);
+				result.dot = d;
+			}
+		}
 
-    FaceQuery FindMostAntiParallelFace(
-        const HitMesh& mesh,
-        const Vector3& referenceNormal) {
+		return result;
+	}
 
-        FaceQuery result{};
-        result.dot = FLT_MAX;
+	FaceQuery FindMostAntiParallelFace(
+		const P::HitMesh& mesh,
+		const M::Vector3& referenceNormal) {
 
-        Vector3 refN =
-            VectorNormalize(referenceNormal);
+		FaceQuery result{};
+		result.dot = FLT_MAX;
 
-        for (size_t i = 0; i < mesh.faces.size(); ++i) {
+		M::Vector3 refN = referenceNormal.Normalized();
 
-            const Face& face = mesh.faces[i];
+		for (size_t i = 0; i < mesh.faces.size(); ++i) {
 
-            Vector3 normal =
-                CalculateOutwardFaceNormal(mesh, face);
+			const G::Face& face = mesh.faces[i];
 
-            if (!IsValidAxis(normal)) {
-                continue;
-            }
+			M::Vector3 normal = CalculateOutwardFaceNormal(mesh, face);
 
-            float d =
-                VectorDot(normal, refN);
+			if (!IsValidAxis(normal)) {
+				continue;
+			}
 
-            if (d < result.dot) {
+			float d = normal.Dot(refN);
 
-                result.index = static_cast<int>(i);
-                result.normal = normal;
-                result.center = CalculateFaceCenter(mesh, face);
-                result.dot = d;
-            }
-        }
+			if (d < result.dot) {
 
-        return result;
-    }
+				result.index = static_cast<int>(i);
+				result.normal = normal;
+				result.center = CalculateFaceCenter(mesh, face);
+				result.dot = d;
+			}
+		}
 
-    std::vector<Vector3> GetFaceVertices(
-        const HitMesh& mesh,
-        const Face& face) {
+		return result;
+	}
 
-        std::vector<Vector3> vertices;
+	std::vector<M::Vector3> GetFaceVertices(
+		const P::HitMesh& mesh,
+		const G::Face& face) {
 
-        for (uint32_t index : face.indices) {
+		std::vector<M::Vector3> vertices;
 
-            if (index >= mesh.worldVertices.size()) {
-                continue;
-            }
+		for (uint32_t index : face.indices) {
 
-            vertices.push_back(mesh.worldVertices[index]);
-        }
+			if (index >= mesh.worldVertices.size()) {
+				continue;
+			}
 
-        return vertices;
-    }
+			vertices.push_back(mesh.worldVertices[index]);
+		}
 
-    std::vector<Vector3> ClipPolygonByPlane(
-        const std::vector<Vector3>& polygon,
-        const Vector3& planePoint,
-        const Vector3& planeNormal) {
+		return vertices;
+	}
 
-        std::vector<Vector3> result;
+	std::vector<M::Vector3> ClipPolygonByPlane(
+		const std::vector<M::Vector3>& polygon,
+		const M::Vector3& planePoint,
+		const M::Vector3& planeNormal) {
 
-        if (polygon.empty()) {
-            return result;
-        }
+		std::vector<M::Vector3> result;
 
-        constexpr float kPlaneEpsilon = 0.0001f;
+		if (polygon.empty()) {
+			return result;
+		}
 
-        for (size_t i = 0; i < polygon.size(); ++i) {
+		constexpr float kPlaneEpsilon = 0.0001f;
 
-            const Vector3& current =
-                polygon[i];
+		for (size_t i = 0; i < polygon.size(); ++i) {
 
-            const Vector3& next =
-                polygon[(i + 1) % polygon.size()];
+			const M::Vector3& current = polygon[i];
 
-            float currentDistance =
-                VectorDot(current - planePoint, planeNormal);
+			const M::Vector3& next = polygon[(i + 1) % polygon.size()];
 
-            float nextDistance =
-                VectorDot(next - planePoint, planeNormal);
+			float currentDistance = (current - planePoint).Dot(planeNormal);
 
-            bool currentInside =
-                currentDistance <= kPlaneEpsilon;
+			float nextDistance = (next - planePoint).Dot(planeNormal);
 
-            bool nextInside =
-                nextDistance <= kPlaneEpsilon;
+			bool currentInside = currentDistance <= kPlaneEpsilon;
 
-            if (currentInside && nextInside) {
+			bool nextInside = nextDistance <= kPlaneEpsilon;
 
-                result.push_back(next);
+			if (currentInside && nextInside) {
 
-            } else if (currentInside && !nextInside) {
+				result.push_back(next);
 
-                float t =
-                    currentDistance /
-                    (currentDistance - nextDistance);
+			} else if (currentInside && !nextInside) {
 
-                Vector3 intersection =
-                    current + (next - current) * t;
+				float t =
+					currentDistance /
+					(currentDistance - nextDistance);
 
-                result.push_back(intersection);
+				M::Vector3 intersection =
+					current + (next - current) * t;
 
-            } else if (!currentInside && nextInside) {
+				result.push_back(intersection);
 
-                float t =
-                    currentDistance /
-                    (currentDistance - nextDistance);
+			} else if (!currentInside && nextInside) {
 
-                Vector3 intersection =
-                    current + (next - current) * t;
+				float t =
+					currentDistance /
+					(currentDistance - nextDistance);
 
-                result.push_back(intersection);
-                result.push_back(next);
-            }
-        }
+				M::Vector3 intersection =
+					current + (next - current) * t;
 
-        return result;
-    }
+				result.push_back(intersection);
+				result.push_back(next);
+			}
+		}
 
-    std::vector<Vector3> ClipIncidentFaceByReferenceFace(
-        const HitMesh& referenceMesh,
-        const Face& referenceFace,
-        const Vector3& referenceNormal,
-        const std::vector<Vector3>& incidentPolygon) {
+		return result;
+	}
 
-        std::vector<Vector3> clipped =
-            incidentPolygon;
+	std::vector<M::Vector3> ClipIncidentFaceByReferenceFace(
+		const P::HitMesh& referenceMesh,
+		const G::Face& referenceFace,
+		const M::Vector3& referenceNormal,
+		const std::vector<M::Vector3>& incidentPolygon) {
 
-        if (referenceFace.indices.size() < 3) {
-            return clipped;
-        }
+		std::vector<M::Vector3> clipped =
+			incidentPolygon;
 
-        Vector3 referenceCenter =
-            CalculateFaceCenter(referenceMesh, referenceFace);
+		if (referenceFace.indices.size() < 3) {
+			return clipped;
+		}
 
-        for (size_t i = 0; i < referenceFace.indices.size(); ++i) {
+		M::Vector3 referenceCenter =
+			CalculateFaceCenter(referenceMesh, referenceFace);
 
-            uint32_t index0 =
-                referenceFace.indices[i];
+		for (size_t i = 0; i < referenceFace.indices.size(); ++i) {
 
-            uint32_t index1 =
-                referenceFace.indices[(i + 1) % referenceFace.indices.size()];
+			uint32_t index0 =
+				referenceFace.indices[i];
 
-            if (index0 >= referenceMesh.worldVertices.size() ||
-                index1 >= referenceMesh.worldVertices.size()) {
-                continue;
-            }
+			uint32_t index1 =
+				referenceFace.indices[(i + 1) % referenceFace.indices.size()];
 
-            Vector3 v0 =
-                referenceMesh.worldVertices[index0];
+			if (index0 >= referenceMesh.worldVertices.size() ||
+				index1 >= referenceMesh.worldVertices.size()) {
+				continue;
+			}
 
-            Vector3 v1 =
-                referenceMesh.worldVertices[index1];
+			M::Vector3 v0 =
+				referenceMesh.worldVertices[index0];
 
-            Vector3 edge =
-                v1 - v0;
+			M::Vector3 v1 =
+				referenceMesh.worldVertices[index1];
 
-            if (!IsValidAxis(edge)) {
-                continue;
-            }
+			M::Vector3 edge =
+				v1 - v0;
 
-            Vector3 sideNormal =
-                VectorCross(edge, referenceNormal);
+			if (!IsValidAxis(edge)) {
+				continue;
+			}
 
-            if (!IsValidAxis(sideNormal)) {
-                continue;
-            }
+			M::Vector3 sideNormal =
+				edge.Cross(referenceNormal);
 
-            sideNormal =
-                VectorNormalize(sideNormal);
+			if (!IsValidAxis(sideNormal)) {
+				continue;
+			}
 
-            float centerSide =
-                VectorDot(referenceCenter - v0, sideNormal);
+			sideNormal.Normalize();
 
-            if (centerSide > 0.0f) {
-                sideNormal = -sideNormal;
-            }
+			float centerSide = (referenceCenter - v0).Dot(sideNormal);
 
-            clipped =
-                ClipPolygonByPlane(
-                    clipped,
-                    v0,
-                    sideNormal);
+			if (centerSide > 0.0f) {
+				sideNormal = -sideNormal;
+			}
 
-            if (clipped.empty()) {
-                break;
-            }
-        }
+			clipped =
+				ClipPolygonByPlane(
+					clipped,
+					v0,
+					sideNormal);
 
-        return clipped;
-    }
+			if (clipped.empty()) {
+				break;
+			}
+		}
+
+		return clipped;
+	}
 
 } // namespace
 
-Projection ProjectVertices(
-    const std::vector<Vector3>& vertices,
-    const Vector3& axis) {
+namespace Atrum::Physics::SAT {
 
-    Projection result{};
+	G::Projection ProjectVertices(
+		const std::vector<M::Vector3>& vertices,
+		const M::Vector3& axis) {
 
-    if (vertices.empty()) {
-        return result;
-    }
+		G::Projection result{};
 
-    float first = VectorDot(vertices[0], axis);
+		if (vertices.empty()) {
+			return result;
+		}
 
-    result.min = first;
-    result.max = first;
+		float first = vertices[0].Dot(axis);
 
-    for (size_t i = 1; i < vertices.size(); ++i) {
+		result.min = first;
+		result.max = first;
 
-        float projection = VectorDot(vertices[i], axis);
+		for (size_t i = 1; i < vertices.size(); ++i) {
 
-        result.min = std::min(result.min, projection);
-        result.max = std::max(result.max, projection);
+			float projection = vertices[i].Dot(axis);
 
-    }
+			result.min = std::min(result.min, projection);
+			result.max = std::max(result.max, projection);
 
-    return result;
-}
+		}
 
-float Overlap(
-    const Projection& a,
-    const Projection& b) {
+		return result;
+	}
 
-    return std::min(a.max, b.max) - std::max(a.min, b.min);
-}
+	float Overlap(
+		const G::Projection& a,
+		const G::Projection& b) {
 
-std::vector<Vector3> GetFaceAxes(
-    const HitMesh& mesh) {
+		return std::min(a.max, b.max) - std::max(a.min, b.min);
+	}
 
-    std::vector<Vector3> axes;
+	std::vector<M::Vector3> GetFaceAxes(
+		const P::HitMesh& mesh) {
 
-    for (size_t i = 0; i < mesh.faces.size(); ++i) {
+		std::vector<M::Vector3> axes;
 
-        Vector3 axis = mesh.GetFaceNormal(static_cast<int>(i));
+		for (size_t i = 0; i < mesh.faces.size(); ++i) {
 
-        if (!IsValidAxis(axis)) {
-            continue;
-        }
+			M::Vector3 axis = mesh.GetFaceNormal(static_cast<int>(i));
 
-        axis = VectorNormalize(axis);
+			if (!IsValidAxis(axis)) {
+				continue;
+			}
 
-        axes.push_back(axis);
-    }
+			axis.Normalize();
 
-    return axes;
-}
+			axes.push_back(axis);
+		}
 
-std::vector<Vector3> GetEdgeAxes(
-    const HitMesh& a,
-    const HitMesh& b) {
+		return axes;
+	}
 
-    std::vector<Vector3> axes;
+	std::vector<M::Vector3> GetEdgeAxes(
+		const P::HitMesh& a,
+		const P::HitMesh& b) {
 
-    for (const Edge& edgeA : a.edges) {
+		std::vector<M::Vector3> axes;
 
-        Vector3 a0 = a.worldVertices[edgeA.start];
-        Vector3 a1 = a.worldVertices[edgeA.end];
+		for (const G::Edge& edgeA : a.edges) {
 
-        Vector3 dirA = a1 - a0;
+			M::Vector3 a0 = a.worldVertices[edgeA.start];
+			M::Vector3 a1 = a.worldVertices[edgeA.end];
 
-        if (!IsValidAxis(dirA)) {
-            continue;
-        }
+			M::Vector3 dirA = a1 - a0;
 
-        dirA = VectorNormalize(dirA);
+			if (!IsValidAxis(dirA)) {
+				continue;
+			}
 
-        for (const Edge& edgeB : b.edges) {
+			dirA.Normalize();
 
-            Vector3 b0 = b.worldVertices[edgeB.start];
-            Vector3 b1 = b.worldVertices[edgeB.end];
+			for (const G::Edge& edgeB : b.edges) {
 
-            Vector3 dirB = b1 - b0;
+				M::Vector3 b0 = b.worldVertices[edgeB.start];
+				M::Vector3 b1 = b.worldVertices[edgeB.end];
 
-            if (!IsValidAxis(dirB)) {
-                continue;
-            }
+				M::Vector3 dirB = b1 - b0;
 
-            dirB = VectorNormalize(dirB);
+				if (!IsValidAxis(dirB)) {
+					continue;
+				}
 
-            Vector3 axis = VectorCross(dirA, dirB);
+				dirB.Normalize();
 
-            if (!IsValidAxis(axis)) {
-                continue;
-            }
+				M::Vector3 axis = dirA.Cross(dirB);
 
-            axis = VectorNormalize(axis);
+				if (!IsValidAxis(axis)) {
+					continue;
+				}
 
-            axes.push_back(axis);
-        }
-    }
+				axis.Normalize();
 
-    return axes;
-}
+				axes.push_back(axis);
+			}
+		}
 
-std::vector<Vector3> GetAxes(
-    const HitMesh& a,
-    const HitMesh& b) {
+		return axes;
+	}
 
-    std::vector<Vector3> axes;
+	std::vector<M::Vector3> GetAxes(
+		const P::HitMesh& a,
+		const P::HitMesh& b) {
 
-    std::vector<Vector3> faceAxesA = GetFaceAxes(a);
-    std::vector<Vector3> faceAxesB = GetFaceAxes(b);
-    std::vector<Vector3> edgeAxes = GetEdgeAxes(a, b);
+		std::vector<M::Vector3> axes;
 
-    axes.insert(axes.end(), faceAxesA.begin(), faceAxesA.end());
-    axes.insert(axes.end(), faceAxesB.begin(), faceAxesB.end());
-    axes.insert(axes.end(), edgeAxes.begin(), edgeAxes.end());
+		std::vector<M::Vector3> faceAxesA = GetFaceAxes(a);
+		std::vector<M::Vector3> faceAxesB = GetFaceAxes(b);
+		std::vector<M::Vector3> edgeAxes = GetEdgeAxes(a, b);
 
-    return axes;
-}
+		axes.insert(axes.end(), faceAxesA.begin(), faceAxesA.end());
+		axes.insert(axes.end(), faceAxesB.begin(), faceAxesB.end());
+		axes.insert(axes.end(), edgeAxes.begin(), edgeAxes.end());
 
-std::vector<ContactPoint> GenerateContactPoints(
-    const HitMesh& bodyA,
-    const HitMesh& bodyB,
-    const Vector3& normal,
-    float depth) {
+		return axes;
+	}
 
-    std::vector<ContactPoint> contacts;
+	std::vector<P::ContactPoint> GenerateContactPoints(
+		const P::HitMesh& bodyA,
+		const P::HitMesh& bodyB,
+		const M::Vector3& normal,
+		float depth) {
 
-    if (!IsValidAxis(normal)) {
-        return contacts;
-    }
+		std::vector<P::ContactPoint> contacts;
 
-    Vector3 n =
-        VectorNormalize(normal);
+		if (!IsValidAxis(normal)) {
+			return contacts;
+		}
 
-    FaceQuery faceA =
-        FindMostAlignedFace(bodyA, n);
+		M::Vector3 n = normal.Normalized();
 
-    FaceQuery faceB =
-        FindMostAlignedFace(bodyB, -n);
+		FaceQuery faceA =
+			FindMostAlignedFace(bodyA, n);
 
-    if (faceA.index < 0 || faceB.index < 0) {
-        return contacts;
-    }
+		FaceQuery faceB =
+			FindMostAlignedFace(bodyB, -n);
 
-    ReferenceFace reference{};
+		if (faceA.index < 0 || faceB.index < 0) {
+			return contacts;
+		}
 
-    const HitMesh* incidentMesh = nullptr;
-    int incidentFaceIndex = -1;
+		ReferenceFace reference{};
 
-    if (faceA.dot >= faceB.dot) {
+		const P::HitMesh* incidentMesh = nullptr;
+		int incidentFaceIndex = -1;
 
-        reference.mesh = &bodyA;
-        reference.faceIndex = faceA.index;
-        reference.normal = faceA.normal;
-        reference.center = faceA.center;
-        reference.referenceIsA = true;
+		if (faceA.dot >= faceB.dot) {
 
-        incidentMesh = &bodyB;
+			reference.mesh = &bodyA;
+			reference.faceIndex = faceA.index;
+			reference.normal = faceA.normal;
+			reference.center = faceA.center;
+			reference.referenceIsA = true;
 
-        FaceQuery incidentFace =
-            FindMostAntiParallelFace(
-                bodyB,
-                reference.normal);
+			incidentMesh = &bodyB;
 
-        incidentFaceIndex = incidentFace.index;
+			FaceQuery incidentFace =
+				FindMostAntiParallelFace(
+					bodyB,
+					reference.normal);
 
-    } else {
+			incidentFaceIndex = incidentFace.index;
 
-        reference.mesh = &bodyB;
-        reference.faceIndex = faceB.index;
-        reference.normal = faceB.normal;
-        reference.center = faceB.center;
-        reference.referenceIsA = false;
+		} else {
 
-        incidentMesh = &bodyA;
+			reference.mesh = &bodyB;
+			reference.faceIndex = faceB.index;
+			reference.normal = faceB.normal;
+			reference.center = faceB.center;
+			reference.referenceIsA = false;
 
-        FaceQuery incidentFace =
-            FindMostAntiParallelFace(
-                bodyA,
-                reference.normal);
+			incidentMesh = &bodyA;
 
-        incidentFaceIndex = incidentFace.index;
-    }
+			FaceQuery incidentFace =
+				FindMostAntiParallelFace(
+					bodyA,
+					reference.normal);
 
-    if (reference.mesh == nullptr ||
-        incidentMesh == nullptr ||
-        reference.faceIndex < 0 ||
-        incidentFaceIndex < 0) {
-        return contacts;
-    }
+			incidentFaceIndex = incidentFace.index;
+		}
 
-    const Face& referenceFace =
-        reference.mesh->faces[reference.faceIndex];
+		if (reference.mesh == nullptr ||
+			incidentMesh == nullptr ||
+			reference.faceIndex < 0 ||
+			incidentFaceIndex < 0) {
+			return contacts;
+		}
 
-    const Face& incidentFace =
-        incidentMesh->faces[incidentFaceIndex];
+		const G::Face& referenceFace =
+			reference.mesh->faces[reference.faceIndex];
 
-    std::vector<Vector3> incidentPolygon =
-        GetFaceVertices(*incidentMesh, incidentFace);
+		const G::Face& incidentFace =
+			incidentMesh->faces[incidentFaceIndex];
 
-    if (incidentPolygon.empty()) {
-        return contacts;
-    }
+		std::vector<M::Vector3> incidentPolygon =
+			GetFaceVertices(*incidentMesh, incidentFace);
 
-    std::vector<Vector3> clipped =
-        ClipIncidentFaceByReferenceFace(
-            *reference.mesh,
-            referenceFace,
-            reference.normal,
-            incidentPolygon);
+		if (incidentPolygon.empty()) {
+			return contacts;
+		}
 
-    if (clipped.empty()) {
-        return contacts;
-    }
+		std::vector<M::Vector3> clipped =
+			ClipIncidentFaceByReferenceFace(
+				*reference.mesh,
+				referenceFace,
+				reference.normal,
+				incidentPolygon);
 
-    constexpr float kContactSlop = 0.01f;
+		if (clipped.empty()) {
+			return contacts;
+		}
 
-    float referencePlane =
-        VectorDot(reference.center, reference.normal);
+		constexpr float kContactSlop = 0.01f;
 
-    for (const Vector3& point : clipped) {
+		float referencePlane = reference.center.Dot(reference.normal);
 
-        float distance =
-            VectorDot(point, reference.normal) - referencePlane;
+		for (const M::Vector3& point : clipped) {
 
-        if (distance <= kContactSlop + depth) {
+			float distance = point.Dot(reference.normal) - referencePlane;
 
-            float pointPenetration =
-                std::max(-distance, 0.0f);
+			if (distance <= kContactSlop + depth) {
 
-            if (pointPenetration <= 0.0f) {
-                continue;
-            }
+				float pointPenetration =
+					std::max(-distance, 0.0f);
 
-            Vector3 projectedPoint =
-                point - reference.normal * distance;
+				if (pointPenetration <= 0.0f) {
+					continue;
+				}
 
-            AddUniquePoint(
-                contacts,
-                projectedPoint,
-                pointPenetration,
-                0.001f);
-        }
-    }
+				M::Vector3 projectedPoint =
+					point - reference.normal * distance;
 
-    constexpr size_t kMaxContactCount = 4;
+				AddUniquePoint(
+					contacts,
+					projectedPoint,
+					pointPenetration,
+					0.001f);
+			}
+		}
 
-    if (contacts.size() > kMaxContactCount) {
+		constexpr size_t kMaxContactCount = 4;
 
-        Vector3 average =
-            CalculateAveragePoint(contacts);
+		if (contacts.size() > kMaxContactCount) {
 
-        std::sort(
-            contacts.begin(),
-            contacts.end(),
-            [average](const ContactPoint& lhs, const ContactPoint& rhs) {
+			M::Vector3 average =
+				CalculateAveragePoint(contacts);
 
-            float dl =
-                VectorLength(lhs.position - average);
+			std::sort(
+				contacts.begin(),
+				contacts.end(),
+				[average](const P::ContactPoint& lhs, const P::ContactPoint& rhs) {
 
-            float dr =
-                VectorLength(rhs.position - average);
+				float dl = (lhs.position - average).Length();
 
-            return dl > dr;
-        });
+				float dr = (rhs.position - average).Length();
 
-        contacts.resize(kMaxContactCount);
-    }
+				return dl > dr;
+			});
 
-    if (contacts.empty()) {
+			contacts.resize(kMaxContactCount);
+		}
 
-        Vector3 supportA =
-            bodyA.GetSupportPoint(n);
+		if (contacts.empty()) {
 
-        Vector3 supportB =
-            bodyB.GetSupportPoint(-n);
+			M::Vector3 supportA =
+				bodyA.GetSupportPoint(n);
 
-        AddUniquePoint(
-            contacts,
-            (supportA + supportB) * 0.5f,
-            depth,
-            0.001f);
-    }
+			M::Vector3 supportB =
+				bodyB.GetSupportPoint(-n);
 
-    return contacts;
-}
+			AddUniquePoint(
+				contacts,
+				(supportA + supportB) * 0.5f,
+				depth,
+				0.001f);
+		}
 
-SATResult TestSAT(
-    const HitMesh& bodyA,
-    const HitMesh& bodyB) {
+		return contacts;
+	}
 
-    SATResult result{};
+	P::SATResult TestSAT(
+		const P::HitMesh& bodyA,
+		const P::HitMesh& bodyB) {
 
-    std::vector<Vector3> axes = GetAxes(bodyA, bodyB);
+		P::SATResult result{};
 
-    if (axes.empty()) {
-        return result;
-    }
+		std::vector<M::Vector3> axes = GetAxes(bodyA, bodyB);
 
-    float minOverlap = FLT_MAX;
-    Vector3 minAxis{};
+		if (axes.empty()) {
+			return result;
+		}
 
-    for (Vector3 axis : axes) {
+		float minOverlap = FLT_MAX;
+		M::Vector3 minAxis{};
 
-        if (!IsValidAxis(axis)) {
-            continue;
-        }
+		for (M::Vector3 axis : axes) {
 
-        axis = VectorNormalize(axis);
+			if (!IsValidAxis(axis)) {
+				continue;
+			}
 
-        Projection projectionA =
-            ProjectVertices(bodyA.worldVertices, axis);
+			axis.Normalize();
 
-        Projection projectionB =
-            ProjectVertices(bodyB.worldVertices, axis);
+			G::Projection projectionA =
+				ProjectVertices(bodyA.worldVertices, axis);
 
-        float overlap =
-            Overlap(projectionA, projectionB);
+			G::Projection projectionB =
+				ProjectVertices(bodyB.worldVertices, axis);
 
-        if (overlap <= 0.0f) {
-            result.hit = false;
-            return result;
-        }
+			float overlap =
+				Overlap(projectionA, projectionB);
 
-        if (overlap < minOverlap) {
+			if (overlap <= 0.0f) {
+				result.hit = false;
+				return result;
+			}
 
-            minOverlap = overlap;
-            minAxis = axis;
-        }
-    }
+			if (overlap < minOverlap) {
 
-    if (!IsValidAxis(minAxis)) {
-        result.hit = false;
-        return result;
-    }
+				minOverlap = overlap;
+				minAxis = axis;
+			}
+		}
 
-    Vector3 centerA = bodyA.GetCenter();
-    Vector3 centerB = bodyB.GetCenter();
+		if (!IsValidAxis(minAxis)) {
+			result.hit = false;
+			return result;
+		}
 
-    Vector3 centerDirection = centerB - centerA;
+		M::Vector3 centerA = bodyA.GetCenter();
+		M::Vector3 centerB = bodyB.GetCenter();
 
-    if (VectorDot(centerDirection, minAxis) < 0.0f) {
-        minAxis = -minAxis;
-    }
+		M::Vector3 centerDirection = centerB - centerA;
 
-    result.hit = true;
-    result.normal = VectorNormalize(minAxis);
+		if (centerDirection.Dot(minAxis) < 0.0f) {
+			minAxis = -minAxis;
+		}
 
-    result.contactPoints =
-        GenerateContactPoints(
-            bodyA,
-            bodyB,
-            result.normal,
-            minOverlap);
+		result.hit = true;
+		result.normal = minAxis.Normalized();
 
-    return result;
+		result.contactPoints =
+			GenerateContactPoints(
+				bodyA,
+				bodyB,
+				result.normal,
+				minOverlap);
+
+		return result;
+	}
+
 }

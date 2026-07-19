@@ -1,186 +1,192 @@
 #include "Collision/HitMeshBuilder.h"
+#include "Engine/Alias/PhysicsAlias.h"
 
 #include <cassert>
+#include <vector>
 
 namespace {
 
-    void SetupInertiaTensor(HitMesh& hitMesh) {
+	namespace P = ::Atrum::Physics;
 
-        if (hitMesh.inverseMass <= 0.0f || hitMesh.localVertices.empty()) {
-            hitMesh.inverseInertiaTensorLocal = MakeZeroMatrix3x3Physics();
-            hitMesh.inverseInertiaTensorWorld = MakeZeroMatrix3x3Physics();
-            return;
-        }
+	void SetupInertiaTensor(P::HitMesh& hitMesh) {
 
-        hitMesh.inverseInertiaTensorLocal =
-            MakeVertexCloudInverseInertiaTensor(
-                hitMesh.localVertices,
-                hitMesh.mass);
-    }
+		if (hitMesh.inverseMass <= 0.0f || hitMesh.localVertices.empty()) {
+			hitMesh.inverseInertiaTensorLocal = P::Matrix3x3Physics::Zero();
+			hitMesh.inverseInertiaTensorWorld = P::Matrix3x3Physics::Zero();
+			return;
+		}
 
-}
+		hitMesh.inverseInertiaTensorLocal = P::Matrix3x3Physics::VertexCloudInverseInertiaTensor(
+			hitMesh.localVertices,
+			hitMesh.mass
+		);
 
-HitMesh HitMeshBuilder::CreateFromPyramid(const PyramidMesh& mesh) {
-
-    HitMesh hitMesh{};
-
-    //----------------------------------------------------------
-    // 頂点, 辺, 面
-    //----------------------------------------------------------
-
-    hitMesh.localVertices = mesh.collisionVertices;
-
-    hitMesh.edges = mesh.edges;
-
-    hitMesh.faces = mesh.faces;
-
-    //----------------------------------------------------------
-    // 初期Transform
-    //----------------------------------------------------------
-
-    hitMesh.position = {};
-
-    hitMesh.rotation = Quaternion::Identity();
-
-    hitMesh.scale = { 1.0f,1.0f,1.0f };
-
-    hitMesh.velocity = {};
-
-    hitMesh.angularVelocity = {};
-
-    hitMesh.mass = 1.0f;
-    hitMesh.inverseMass = 1.0f;
-
-    hitMesh.restitution = 0.0f;
-    hitMesh.friction = 0.8f;
-
-    //----------------------------------------------------------
-    // 物理
-    //----------------------------------------------------------
-
-    SetupInertiaTensor(hitMesh);
-
-    hitMesh.UpdateMatrix();
-
-    return hitMesh;
+	}
 
 }
 
-HitMesh HitMeshBuilder::CreateFromObj(const AssetModel& model) {
+namespace Atrum::Physics {
 
-    model;
+	HitMesh HitMeshBuilder::CreateFromPyramid(const G::PyramidMesh& mesh) {
 
-    HitMesh hitMesh{};
+		HitMesh hitMesh{};
 
-    //----------------------------------------------------------
-    // TODO
-    // OBJLoader完成後に実装
-    //----------------------------------------------------------
-    
+		//----------------------------------------------------------
+		// 頂点, 辺, 面
+		//----------------------------------------------------------
 
-    SetupInertiaTensor(hitMesh);
+		hitMesh.localVertices = mesh.collisionVertices;
 
-    hitMesh.UpdateMatrix();
+		hitMesh.edges = mesh.edges;
 
-    return hitMesh;
+		hitMesh.faces = mesh.faces;
 
-}
+		//----------------------------------------------------------
+		// 初期Transform
+		//----------------------------------------------------------
 
-HitMesh HitMeshBuilder::CreateFromVertices(
-    const std::vector<Vector3>& vertices,
-    const std::vector<Edge>& edges,
-    const std::vector<Face>& faces) {
+		hitMesh.position = {};
 
-    HitMesh hitMesh{};
+		hitMesh.rotation = M::Quaternion::Identity();
 
-    hitMesh.localVertices = vertices;
-    hitMesh.edges = edges;
-    hitMesh.faces = faces;
+		hitMesh.scale = { 1.0f,1.0f,1.0f };
 
-    hitMesh.position = {};
+		hitMesh.velocity = {};
 
-    hitMesh.rotation = Quaternion::Identity();
+		hitMesh.angularVelocity = {};
 
-    hitMesh.scale = { 1.0f,1.0f,1.0f };
+		hitMesh.mass = 1.0f;
+		hitMesh.inverseMass = 1.0f;
 
-    hitMesh.velocity = {};
+		hitMesh.restitution = 0.0f;
+		hitMesh.friction = 0.8f;
 
-    hitMesh.angularVelocity = {};
+		//----------------------------------------------------------
+		// 物理
+		//----------------------------------------------------------
 
-    hitMesh.mass = 1.0f;
-    hitMesh.inverseMass = 1.0f;
+		SetupInertiaTensor(hitMesh);
 
-    hitMesh.restitution = 0.0f;
-    hitMesh.friction = 0.8f;
+		hitMesh.UpdateMatrix();
 
-    SetupInertiaTensor(hitMesh);
+		return hitMesh;
 
-    hitMesh.UpdateMatrix();
+	}
 
-    return hitMesh;
+	HitMesh HitMeshBuilder::CreateFromObj(const AssetModel& model) {
 
-}
+		model;
 
-HitMesh HitMeshBuilder::CreateFromTriangle(const Triangle& triangle) {
+		HitMesh hitMesh{};
 
-    HitMesh hitMesh{};
+		//----------------------------------------------------------
+		// TODO
+		// OBJLoader完成後に実装
+		//----------------------------------------------------------
 
-    Vector3 normal = VectorNormalize(
-        VectorCross(
-        triangle.v1 - triangle.v0,
-        triangle.v2 - triangle.v0));
 
-    constexpr float thickness = 1.0f;
-    Vector3 offset = normal * thickness;
+		SetupInertiaTensor(hitMesh);
 
-    hitMesh.localVertices = {
-        triangle.v0 + offset,
-        triangle.v1 + offset,
-        triangle.v2 + offset,
+		hitMesh.UpdateMatrix();
 
-        triangle.v0 - offset,
-        triangle.v1 - offset,
-        triangle.v2 - offset
-    };
+		return hitMesh;
 
-    hitMesh.edges = {
-        {0,1}, {1,2}, {2,0},
-        {3,4}, {4,5}, {5,3},
-        {0,3}, {1,4}, {2,5}
-    };
+	}
 
-    hitMesh.faces.clear();
+	HitMesh HitMeshBuilder::CreateFromVertices(
+		const std::vector<M::Vector3>& vertices,
+		const std::vector<G::Edge>& edges,
+		const std::vector<G::Face>& faces) {
 
-    auto AddFace = [&](std::initializer_list<uint32_t> indices) {
-        Face face{};
-        face.indices = indices;
+		HitMesh hitMesh{};
 
-        hitMesh.faces.push_back(face);
-    };
+		hitMesh.localVertices = vertices;
+		hitMesh.edges = edges;
+		hitMesh.faces = faces;
 
-    AddFace({ 0, 1, 2 });       // 表
-    AddFace({ 5, 4, 3 });       // 裏
+		hitMesh.position = {};
 
-    AddFace({ 0, 3, 4, 1 });    // 側面
-    AddFace({ 1, 4, 5, 2 });    // 側面
-    AddFace({ 2, 5, 3, 0 });    // 側面
+		hitMesh.rotation = M::Quaternion::Identity();
 
-    hitMesh.position = {};
-    hitMesh.rotation = Quaternion::Identity();
-    hitMesh.scale = { 1.0f, 1.0f, 1.0f };
+		hitMesh.scale = { 1.0f,1.0f,1.0f };
 
-    hitMesh.velocity = {};
-    hitMesh.angularVelocity = {};
+		hitMesh.velocity = {};
 
-    hitMesh.mass = 0.0f;
-    hitMesh.inverseMass = 0.0f;
+		hitMesh.angularVelocity = {};
 
-    hitMesh.restitution = 0.0f;
-    hitMesh.friction = 0.8f;
+		hitMesh.mass = 1.0f;
+		hitMesh.inverseMass = 1.0f;
 
-    SetupInertiaTensor(hitMesh);
+		hitMesh.restitution = 0.0f;
+		hitMesh.friction = 0.8f;
 
-    hitMesh.UpdateMatrix();
+		SetupInertiaTensor(hitMesh);
 
-    return hitMesh;
+		hitMesh.UpdateMatrix();
+
+		return hitMesh;
+
+	}
+
+	HitMesh HitMeshBuilder::CreateFromTriangle(const G::Triangle& triangle) {
+
+		HitMesh hitMesh{};
+
+		M::Vector3 normal = (triangle.v1 - triangle.v0).Cross(triangle.v2 - triangle.v0).Normalized();
+
+		constexpr float thickness = 1.0f;
+		M::Vector3 offset = normal * thickness;
+
+		hitMesh.localVertices = {
+			triangle.v0 + offset,
+			triangle.v1 + offset,
+			triangle.v2 + offset,
+
+			triangle.v0 - offset,
+			triangle.v1 - offset,
+			triangle.v2 - offset
+		};
+
+		hitMesh.edges = {
+			{0,1}, {1,2}, {2,0},
+			{3,4}, {4,5}, {5,3},
+			{0,3}, {1,4}, {2,5}
+		};
+
+		hitMesh.faces.clear();
+
+		auto AddFace = [&](std::initializer_list<uint32_t> indices) {
+			G::Face face{};
+			face.indices = indices;
+
+			hitMesh.faces.push_back(face);
+		};
+
+		AddFace({ 0, 1, 2 });       // 表
+		AddFace({ 5, 4, 3 });       // 裏
+
+		AddFace({ 0, 3, 4, 1 });    // 側面
+		AddFace({ 1, 4, 5, 2 });    // 側面
+		AddFace({ 2, 5, 3, 0 });    // 側面
+
+		hitMesh.position = {};
+		hitMesh.rotation = M::Quaternion::Identity();
+		hitMesh.scale = { 1.0f, 1.0f, 1.0f };
+
+		hitMesh.velocity = {};
+		hitMesh.angularVelocity = {};
+
+		hitMesh.mass = 0.0f;
+		hitMesh.inverseMass = 0.0f;
+
+		hitMesh.restitution = 0.0f;
+		hitMesh.friction = 0.8f;
+
+		SetupInertiaTensor(hitMesh);
+
+		hitMesh.UpdateMatrix();
+
+		return hitMesh;
+	}
+
 }

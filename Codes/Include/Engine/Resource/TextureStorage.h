@@ -12,73 +12,77 @@
 
 #include <DirectXTex/DirectXTex.h>
 
-class Fence;
-class SwapChain;
-class DescriptorAllocator;
-class CommandContext;
+namespace Atrum {
 
-class TextureStorage final {
+	class Fence;
+	class SwapChain;
+	class DescriptorAllocator;
+	class CommandContext;
 
-private:
+	class TextureStorage final {
 
-	// Textureのsrv番号テーブル
-	std::unordered_map<uint64_t, uint32_t> textureIndexTable_{};
+	private:
 
-	// Texture
-	std::vector<Texture> textures_{};
+		// Textureのsrv番号テーブル
+		std::unordered_map<uint64_t, uint32_t> textureIndexTable_{};
 
-	TextureStorage() = default;
-	~TextureStorage() { textures_.clear(); };
+		// Texture
+		std::vector<Texture> textures_{};
 
-	DirectX::ScratchImage LoadTexture(const std::string& filePath);
+		TextureStorage() = default;
+		~TextureStorage() { textures_.clear(); };
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
+		DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureIntermediateResource(ID3D12Resource* textureResource);
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureResource(const DirectX::TexMetadata& metaData);
 
-	void UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateTextureIntermediateResource(ID3D12Resource* textureResource);
 
-	void MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData);
+		void UploadTextureData(ID3D12Resource* textureResource, const DirectX::ScratchImage& mipImages, ID3D12Resource* intermediateResource);
 
-	static TextureStorage* instance_;
+		void MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData);
 
-	CommandContext* pCommandContextDirect_ = nullptr;
-	Fence* pFence_ = nullptr;
-	SwapChain* pSwapChain_ = nullptr;
-	DescriptorAllocator* pSrvAllocator_ = nullptr;
-	ID3D12Device* pDevice_ = nullptr;
-	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
+		static TextureStorage* instance_;
 
-public:
+		CommandContext* pCommandContextDirect_ = nullptr;
+		Fence* pFence_ = nullptr;
+		SwapChain* pSwapChain_ = nullptr;
+		DescriptorAllocator* pSrvAllocator_ = nullptr;
+		ID3D12Device* pDevice_ = nullptr;
+		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
 
-	void Initialize(CommandContext* commandContextDirect, Fence* fence, SwapChain* swapChain, DescriptorAllocator* srvAllocator, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
+	public:
 
-	uint32_t GetTexture(const std::string& filePath);
+		void Initialize(CommandContext* commandContextDirect, Fence* fence, SwapChain* swapChain, DescriptorAllocator* srvAllocator, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
 
-	TextureStorage operator=(const TextureStorage& source) = delete;
-	TextureStorage(const TextureStorage& source) = delete;
+		uint32_t GetTexture(const std::string& filePath);
 
-	static TextureStorage* GetInstance() {
+		TextureStorage operator=(const TextureStorage& source) = delete;
+		TextureStorage(const TextureStorage& source) = delete;
 
-		if (instance_ == nullptr) {
+		static TextureStorage* GetInstance() {
 
-			instance_ = new TextureStorage();
+			if (instance_ == nullptr) {
 
-		}
+				instance_ = new TextureStorage();
 
-		return instance_;
+			}
 
-	}
-
-	static void Destroy() {
-
-		if (instance_) {
-
-			delete instance_;
-			instance_ = nullptr;
+			return instance_;
 
 		}
 
-	}
+		static void Destroy() {
 
-};
+			if (instance_) {
+
+				delete instance_;
+				instance_ = nullptr;
+
+			}
+
+		}
+
+	};
+
+}
