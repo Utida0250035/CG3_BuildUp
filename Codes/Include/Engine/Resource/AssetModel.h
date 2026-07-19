@@ -102,10 +102,10 @@ namespace Atrum {
 
 	public:
 
-		void Draw(const Transform& transform, Matrix4x4 viewMatrix, const D3D12_GPU_VIRTUAL_ADDRESS& directionalLightAddr, ID3D12GraphicsCommandList* commandList, DescriptorAllocator* srvAllocator, const Matrix4x4& perspectiveFovMatrix, const bool isLighting) {
+		void Draw(const Math::Transform& transform, Math::Matrix4x4 viewMatrix, const D3D12_GPU_VIRTUAL_ADDRESS& directionalLightAddr, ID3D12GraphicsCommandList* commandList, DescriptorAllocator* srvAllocator, const Math::Matrix4x4& perspectiveFovMatrix, const bool isLighting) {
 
 			// 三角形のTransform
-			Matrix4x4 worldMatrix = MakeWorldMatrix(transform);
+			Math::Matrix4x4 worldMatrix = transform.MakeWorldMatrix();
 
 			transformationData_->world = worldMatrix;
 

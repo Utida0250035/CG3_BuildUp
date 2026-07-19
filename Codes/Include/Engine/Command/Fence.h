@@ -13,6 +13,8 @@ namespace Atrum {
 		bool isInitialized_ = false;
 
 		template<typename T>
+		
+		
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 		ComPtr<ID3D12Fence> fence_;

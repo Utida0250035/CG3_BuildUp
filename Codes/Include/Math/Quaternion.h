@@ -15,16 +15,16 @@ namespace Atrum::Math {
 		float z = 0.0f;
 		float w = 1.0f;
 
-		static constexpr Quaternion Identity() {
+		[[nodiscard]] static constexpr Quaternion Identity() {
 
 			return Quaternion{ 0.0f, 0.0f, 0.0f, 1.0f };
 		}
 
-		constexpr float magnitude_square() const { return  w * w + x * x + y * y + z * z; }
-		float magnitude() const { return std::sqrt(magnitude_square()); }
+		[[nodiscard]] constexpr float MagnitudeSquare() const { return  w * w + x * x + y * y + z * z; }
+		[[nodiscard]] float Magnitude() const { return std::sqrt(MagnitudeSquare()); }
 
-		void normalize() {
-			float magnitude = this->magnitude();
+		void Normalize() {
+			float magnitude = this->Magnitude();
 
 			if (magnitude > 0.0f) {
 
@@ -43,54 +43,54 @@ namespace Atrum::Math {
 
 		}
 
-		Quaternion normalized() const {
+		[[nodiscard]] Quaternion Normalized() const {
 
 			Quaternion q = *this;
 
-			q.normalize();
+			q.Normalize();
 
 			return q;
 
 		}
 
-		constexpr Quaternion operator*(const Quaternion& other) const
+		[[nodiscard]] constexpr Quaternion operator*(const Quaternion& other) const
 		{
 			return Quaternion{
 
-				w * other.x + x * other.w + y * other.z - z * other.y,
+				w* other.x + x * other.w + y * other.z - z * other.y,
 
-				w * other.y + y * other.w + z * other.x - x * other.z,
+					w* other.y + y * other.w + z * other.x - x * other.z,
 
-				w * other.z + z * other.w + x * other.y - y * other.x,
+					w* other.z + z * other.w + x * other.y - y * other.x,
 
-				w * other.w - x * other.x - y * other.y - z * other.z
+					w* other.w - x * other.x - y * other.y - z * other.z
 			};
 		}
 
-		constexpr void operator*=(const Quaternion& other) {
+		[[nodiscard]] constexpr void operator*=(const Quaternion& other) {
 
 			*this = (*this) * other;
 
 		}
 
-		float get_theta() {
-			assert(std::abs(magnitude_square() - 1.0f) < 0.001f);
+		[[nodiscard]] float GetTheta() {
+			assert(std::abs(MagnitudeSquare() - 1.0f) < 0.001f);
 
-			Quaternion nq = normalized();
+			Quaternion nq = Normalized();
 
 			float clamped_w = std::max(-1.0f, std::min(1.0f, nq.w));
 			return 2.0f * std::acos(clamped_w);
 		}
 
-		Quaternion conjugated() const {
+		[[nodiscard]] Quaternion Conjugated() const {
 			return Quaternion(-x, -y, -z, w);
 		}
 
-		Matrix4x4 create_rotate_matrix() const {
+		[[nodiscard]] Matrix4x4 CreateRotateMatrix() const {
 
-			assert(std::abs(magnitude_square() - 1.0f) < 0.001f);
+			assert(std::abs(MagnitudeSquare() - 1.0f) < 0.001f);
 
-			Quaternion nq = normalized();
+			Quaternion nq = Normalized();
 
 			float x2 = nq.x * nq.x;
 			float y2 = nq.y * nq.y;
@@ -102,7 +102,7 @@ namespace Atrum::Math {
 			float wy = nq.w * nq.y;
 			float wz = nq.w * nq.z;
 
-			Matrix4x4 rotateMatrix = MakeIdentity4x4();
+			Matrix4x4 rotateMatrix = Matrix4x4::Identity();
 
 			// 行優先(Row-Major)で回転成分のみを上書き
 			rotateMatrix.m[0][0] = 1.0f - 2.0f * (y2 + z2);
@@ -123,7 +123,7 @@ namespace Atrum::Math {
 
 		static Quaternion FromAxisAngle(const Vector3 unitVector, const float angle) {
 
-			assert(std::abs(VectorLength(unitVector) - 1.0f) < 0.001f);
+			assert(std::abs(unitVector.LengthSquare() - 1.0f) < 0.001f);
 
 			float halfAngle = angle * 0.5f;
 			float sin = std::sin(halfAngle);
@@ -165,16 +165,16 @@ namespace Atrum::Math {
 				}
 			}
 
-			return q.normalized(); // 最後に必ず正規化する
+			return q.Normalized(); // 最後に必ず正規化する
 
 		}
 
 		static Quaternion FromLookAt(const Vector3& target, const Vector3& observer, const Vector3& above) {
-			Vector3 forward = VectorNormalize(target - observer);
+			Vector3 forward = (target - observer).Normalized();
 
-			Vector3 right = VectorNormalize(VectorCross(above, forward));
+			Vector3 right = above.Cross(forward).Normalized();
 
-			Vector3 up = VectorCross(forward, right);
+			Vector3 up = forward.Cross(right);
 
 			float trace = right.x + above.y + forward.z;
 			Quaternion q{};
@@ -189,42 +189,46 @@ namespace Atrum::Math {
 				// 対角成分が小さい場合の分岐処理 省略
 			}
 
-			return q.normalized();
+			return q.Normalized();
 		}
 
-		Vector3 rotate_vector(const Vector3& vector) {
+		Vector3 RotateVector(const Vector3& vector) const {
 
 			Quaternion p{ vector.x, vector.y, vector.z, 0 };
 
 			Quaternion r =
-				(*this) * p * this->conjugated();
+				(*this) * p * this->Conjugated();
 
 			return { r.x, r.y, r.z };
 
 		}
 
-		void add_rotation(const Quaternion& delta) {
+		void AddRotation(const Quaternion& delta) {
 
 			(*this) *= delta;
 
-			this->normalize();
+			this->Normalize();
 
 		}
 
 		static Quaternion FromTwoDirection(Vector3 from, Vector3 to) {
 
-			from = VectorNormalize(from);
-			to = VectorNormalize(to);
+			from.Normalize();
+			to.Normalize();
 
-			float dot = VectorDot(from, to);
+			constexpr Vector3 kRight = { 1.0f, 0.0f, 0.0f };
+
+			constexpr Vector3 kUp = { 0.0f, 1.0f, 0.0f };
+
+			float dot = from.Dot(to);
 
 			if (dot < -0.99999f) {
 
-				Vector3 axis = VectorCross({ 1.0f, 0.0f, 0.0f }, from);
+				Vector3 axis = kRight.Cross(from);
 
-				if (VectorLength(axis) < 0.001f) {
+				if (axis.Length() < 0.001f) {
 
-					axis = VectorCross({ 0.0f, 1.0f, 0.0f }, from);
+					axis = kUp.Cross(from);
 
 				}
 
@@ -232,10 +236,10 @@ namespace Atrum::Math {
 
 			}
 
-			Vector3 axis = VectorCross(from, to);
+			Vector3 axis = from.Cross(to);
 			Quaternion q = { dot + 1.0f, axis.x, axis.y, -axis.z };
 
-			return q.normalized();
+			return q.Normalized();
 
 		}
 
@@ -257,7 +261,7 @@ namespace Atrum::Math {
 					{ 0,0,1 },
 					euler.z);
 
-			return (qx * qy * qz).normalized();
+			return (qx * qy * qz).Normalized();
 		}
 
 	};

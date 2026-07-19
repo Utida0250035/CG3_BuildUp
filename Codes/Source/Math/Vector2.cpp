@@ -1,8 +1,12 @@
 #include "Math/Vector2.h"
 #include <cMath>
 
-float VectorLength(const Vector2& me) {
+namespace Atrum::Math {
 
-	return std::sqrt(me.x * me.x + me.y * me.y);
+	float Vector2::Length() const {
+
+		return std::sqrt(LengthSquare());
+
+	}
 
 }

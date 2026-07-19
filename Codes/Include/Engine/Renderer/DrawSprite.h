@@ -92,7 +92,7 @@ namespace Atrum {
 		static DrawSprite* instance_;
 
 		// 正射影
-		Matrix4x4 orthographicMatrix_{};
+		Math::Matrix4x4 orthographicMatrix_{};
 
 	public:
 
@@ -109,7 +109,7 @@ namespace Atrum {
 		/// <param name="textureIndex"> テクスチャ番号 </param>
 		/// <param name="textureColor"> テクスチャ色(補正) </param>
 		/// <param name="plateTransform"> 板の座標情報 </param>
-		void DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize);
+		void DrawSpriteRect(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& rectTransform, const Math::Vector2& rectSize);
 
 		/// <summary>
 		/// 2D線の描画
@@ -119,7 +119,7 @@ namespace Atrum {
 		/// <param name="start"> 始点 </param>
 		/// <param name="end"> 終点 </param>
 		/// <param name="width"> 太さ </param>
-		void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
+		void DrawSpriteLine(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector2& start, const Math::Vector2& end, const float& width, const float& posZ);
 
 
 		DrawSprite operator=(const DrawSprite& source) = delete;

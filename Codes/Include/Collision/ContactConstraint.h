@@ -12,7 +12,7 @@ namespace Atrum::Physics {
         HitMesh* bodyA = nullptr;
         HitMesh* bodyB = nullptr;
 
-        Vector3 normal{};
+        Math::Vector3 normal{};
 
         std::vector<ContactPoint> contacts;
 
@@ -37,12 +37,12 @@ namespace Atrum::Physics {
             size_t contactIndex);
 
         void ApplyPositionCorrection(
-            const Vector3& correctionImpulse,
-            const Vector3& point);
+            const Math::Vector3& correctionImpulse,
+            const Math::Vector3& point);
 
         void ApplyImpulse(
-            const Vector3& impulse,
-            const Vector3& point);
+            const Math::Vector3& impulse,
+            const Math::Vector3& point);
     };
 
 }

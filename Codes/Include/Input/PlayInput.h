@@ -45,7 +45,7 @@ namespace Atrum::Input {
 		bool preKeys_[256]{ false };
 
 		// マウスカーソルの1フレーム変位
-		Vector2 cursorDelta_{};
+		Math::Vector2 cursorDelta_{};
 
 		// マウスボタン
 		bool mouseButtons_[SDL_BUTTON_X2 + 1]{ false };
@@ -56,7 +56,7 @@ namespace Atrum::Input {
 		int32_t mouseWheel_ = 0;
 
 		// マウスのクライアント座標
-		Vector2 cursorPos_{};
+		Math::Vector2 cursorPos_{};
 
 	public:
 
@@ -82,7 +82,7 @@ namespace Atrum::Input {
 
 		/* 変化量の加算 */
 
-		void AddCursorDelta(const Vector2 add) { cursorDelta_ += add; }
+		void AddCursorDelta(const Math::Vector2 add) { cursorDelta_ += add; }
 
 		void AddCursorDelta(const int32_t addX, const int32_t addY) {
 			cursorDelta_.x += static_cast<float>(addX);
@@ -103,8 +103,8 @@ namespace Atrum::Input {
 
 		/* ゲッター */
 
-		Vector2 GetCursorPos() const { return cursorPos_; }
-		Vector2 GetCursorDelta() const { return cursorDelta_; }
+		Math::Vector2 GetCursorPos() const { return cursorPos_; }
+		Math::Vector2 GetCursorDelta() const { return cursorDelta_; }
 		int32_t GetMouseWheel() const { return mouseWheel_; }
 
 		/* セッター */

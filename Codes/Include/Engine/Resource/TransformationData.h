@@ -4,8 +4,8 @@
 namespace Atrum {
 
 	struct TransformationData {
-		Matrix4x4 wvp{};
-		Matrix4x4 world{};
+		Math::Matrix4x4 wvp{};
+		Math::Matrix4x4 world{};
 
 		// 4 * 16 + 4 * 16 = 128
 		// (256 - 128) / 4

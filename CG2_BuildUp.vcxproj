@@ -162,6 +162,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector4.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity.cpp" />
     <ClCompile Include="Codes\Source\System\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
@@ -208,6 +209,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Debug\ImGui.h" />
     <ClInclude Include="Codes\Include\Debug\Log.h" />
     <ClInclude Include="Codes\Include\Debug\SetBreakOnSeverity.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h" />
     <ClInclude Include="Codes\Include\Engine\AtrumEngine.h" />
     <ClInclude Include="Codes\Include\Engine\Command\CommandContext.h" />
     <ClInclude Include="Codes\Include\Engine\Command\Fence.h" />

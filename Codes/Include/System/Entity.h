@@ -6,8 +6,6 @@
 #include <cassert>
 #include <vector>
 #include <memory>
-#include <typeindex>
-#include <iostream>
 #include <concepts>
 
 namespace Atrum {
@@ -42,23 +40,9 @@ namespace Atrum {
 
 	public:
 
-		void Initialize() {
-
-			for (auto& component : components_) {
-				component->Initialize();
-			}
-
-			state_ = State::Active;
-
-		}
-
-		void Execute() {
-
-			for (auto& component : components_) {
-				component->Execute();
-			}
-
-		}
+		void Initialize();
+		void Execute();
+		void Finalize();
 
 		template<typename T>
 			requires std::derived_from<T, Component>
@@ -67,8 +51,10 @@ namespace Atrum {
 				if (auto p = dynamic_cast<T*>(component.get())) {
 					return p;
 				}
-				return nullptr;
 			}
+
+			return nullptr;
+
 		}
 
 		template<typename T>
@@ -87,11 +73,15 @@ namespace Atrum {
 
 			}
 
-			components_.emplace_back(std::make_unique<T>(std::forward<Args>(args)...));
+			std::unique_ptr<Component> component = std::make_unique<T>(std::forward<Args>(args)...);
+
+			component->SetOwner(this);
+
+			components_.emplace_back(component);
 
 		}
 
-		explicit Entity(const std::string& name) : nameHash_(hash64_str(name)) {}
+		explicit Entity(const std::string& name) : nameHash_(Hash64(name)) {}
 
 		uint64_t GetHash() const { return nameHash_; }
 

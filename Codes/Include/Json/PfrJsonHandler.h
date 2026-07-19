@@ -1,7 +1,8 @@
 #pragma once
-#include <string>
-#include <nlohmann/json.hpp>
 #include <boost/pfr.hpp>
+#include <fstream>
+#include <nlohmann/json.hpp>
+#include <string>
 #include <type_traits>
 
 namespace Atrum::Json {

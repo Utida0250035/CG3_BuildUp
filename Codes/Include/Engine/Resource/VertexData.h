@@ -6,9 +6,9 @@
 namespace Atrum {
 
 	struct VertexData {
-		Vector4 position;
-		Vector2 texCoord;
-		Vector3 normal;
+		Math::Vector4 position;
+		Math::Vector2 texCoord;
+		Math::Vector3 normal;
 	};
 
 }

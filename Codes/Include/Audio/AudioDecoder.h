@@ -14,10 +14,14 @@
 #pragma comment(lib, "mfuuid.lib")
 
 namespace Atrum::Audio {
-
-    using Microsoft::WRL::ComPtr;
-
+    
     class AudioDecoder {
+
+    private:
+
+        template<typename T>
+        using ComPtr = Microsoft::WRL::ComPtr<T>;
+
     public:
 
         static void Initialize() {

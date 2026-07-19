@@ -1,5 +1,5 @@
 #pragma once
-#include "./CollisionTypes.h"
+#include "Collision/CollisionTypes.h"
 #include "Geometry/PyramidMesh.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Matrix3x3Physics.h"
@@ -7,10 +7,12 @@
 #include "Math/Vector3.h"
 #include <vector>
 
+#include "Engine/Alias/PhysicsAlias.h"
+
 namespace Atrum::Physics {
 
-	inline Vector3 CalculateCentroid(const std::vector<Vector3>& vertices) {
-		Vector3 sum = { 0.0f, 0.0f, 0.0f };
+	inline Math::Vector3 CalculateCentroid(const std::vector<Math::Vector3>& vertices) {
+		Math::Vector3 sum = { 0.0f, 0.0f, 0.0f };
 		for (const auto& v : vertices) {
 			sum.x += v.x;
 			sum.y += v.y;
@@ -31,45 +33,45 @@ namespace Atrum::Physics {
 		//--------------------------------------------------------
 
 		// 頂点
-		std::vector<Vector3> localVertices{};
+		std::vector<Math::Vector3> localVertices{};
 
 		// 辺
-		std::vector<Edge> edges{};
+		std::vector<Geometry::Edge> edges{};
 
 		// 面
-		std::vector<Face> faces{};
+		std::vector<G::Face> faces{};
 
 		//--------------------------------------------------------
 		// ワールド空間
 		//--------------------------------------------------------
 
 		// ワールド座標
-		std::vector<Vector3> worldVertices{};
+		std::vector<M::Vector3> worldVertices{};
 
 		//--------------------------------------------------------
 		// Transform
 		//--------------------------------------------------------
 
-		Vector3 position{};
+		M::Vector3 position{};
 
-		Quaternion rotation = Quaternion::Identity();
+		M::Quaternion rotation = M::Quaternion::Identity();
 
-		Vector3 scale = { 1.0f,1.0f,1.0f };
+		M::Vector3 scale = { 1.0f,1.0f,1.0f };
 
-		Matrix4x4 worldMatrix{};
+		M::Matrix4x4 worldMatrix{};
 
 		//--------------------------------------------------------
 		// Physics
 		//--------------------------------------------------------
 
-		Vector3 velocity{};
+		M::Vector3 velocity{};
 
 		// ワールド空間角速度(rad/s)
-		Vector3 angularVelocity{};
+		M::Vector3 angularVelocity{};
 
-		Vector3 force{};
+		M::Vector3 force{};
 
-		Vector3 torque{};
+		M::Vector3 torque{};
 
 		Matrix3x3Physics inertiaTensor{};
 
@@ -110,21 +112,21 @@ namespace Atrum::Physics {
 			// 回転
 			//--------------------
 
-			Vector3 rotateDelta = angularVelocity * deltaTime;
+			M::Vector3 rotateDelta = angularVelocity * deltaTime;
 
-			float angle = VectorLength(rotateDelta);
+			float angle = rotateDelta.Length();
 
 			if (angle > 0.000001f) {
 
-				Vector3 axis = rotateDelta / angle;
+				M::Vector3 axis = rotateDelta / angle;
 
-				Quaternion delta =
-					Quaternion::FromAxisAngle(
+				M::Quaternion delta =
+					M::Quaternion::FromAxisAngle(
 						axis,
 						angle);
 
 				rotation =
-					(delta * rotation).normalized();
+					(delta * rotation).Normalized();
 			}
 
 			UpdateMatrix();
@@ -138,13 +140,13 @@ namespace Atrum::Physics {
 		void UpdateMatrix()
 		{
 			worldMatrix =
-				MakeScaleMatrix(scale) *
-				rotation.create_rotate_matrix() *
-				MakeTranslateMatrix(position);
+				M::Matrix4x4::Scale(scale) *
+				rotation.CreateRotateMatrix() *
+				M::Matrix4x4::Translate(position);
 
 			UpdateWorldVertices();
 
-			inverseInertiaTensorWorld = MakeWorldInverseInertiaTensor(
+			inverseInertiaTensorWorld = Matrix3x3Physics::WorldInverseInertiaTensor(
 				inverseInertiaTensorLocal,
 				rotation
 			);
@@ -163,10 +165,7 @@ namespace Atrum::Physics {
 
 			for (const auto& v : localVertices)
 			{
-				worldVertices.push_back(
-					VectorTransform(
-					v,
-					worldMatrix));
+				worldVertices.push_back(worldMatrix.Transform(v));
 			}
 		}
 
@@ -174,18 +173,17 @@ namespace Atrum::Physics {
 		// Support Mapping
 		//--------------------------------------------------------
 
-		Vector3 GetSupportPoint(
-			const Vector3& direction) const
+		M::Vector3 GetSupportPoint(
+			const M::Vector3& direction) const
 		{
 			float maxDot =
 				-FLT_MAX;
 
-			Vector3 best{};
+			M::Vector3 best{};
 
 			for (const auto& v : worldVertices)
 			{
-				float d =
-					VectorDot(v, direction);
+				float d = v.Dot(direction);
 
 				if (d > maxDot)
 				{
@@ -201,13 +199,13 @@ namespace Atrum::Physics {
 		// 面法線取得
 		//--------------------------------------------------------
 
-		Vector3 GetFaceNormal(uint32_t index) const {
+		M::Vector3 GetFaceNormal(uint32_t index) const {
 
 			if (index >= faces.size()) {
 				return {};
 			}
 
-			const Face& face = faces[index];
+			const G::Face& face = faces[index];
 
 			if (face.indices.size() < 3) {
 				return {};
@@ -223,34 +221,33 @@ namespace Atrum::Physics {
 				return {};
 			}
 
-			const Vector3& v0 = worldVertices[i0];
-			const Vector3& v1 = worldVertices[i1];
-			const Vector3& v2 = worldVertices[i2];
+			const M::Vector3& v0 = worldVertices[i0];
+			const M::Vector3& v1 = worldVertices[i1];
+			const M::Vector3& v2 = worldVertices[i2];
 
-			Vector3 edge0 = v1 - v0;
-			Vector3 edge1 = v2 - v0;
+			M::Vector3 edge0 = v1 - v0;
+			M::Vector3 edge1 = v2 - v0;
 
-			Vector3 normal =
-				VectorCross(edge0, edge1);
+			M::Vector3 normal = edge0.Cross(edge1);
 
-			if (VectorLength(normal) <= 0.000001f) {
+			if (normal.Length() <= 0.000001f) {
 				return {};
 			}
 
-			return VectorNormalize(normal);
+			return normal.Normalized();
 		}
 
 		//--------------------------------------------------------
 		// 面中心
 		//--------------------------------------------------------
 
-		Vector3 GetFaceCenter(
+		M::Vector3 GetFaceCenter(
 			uint32_t index) const
 		{
-			const Face& face =
+			const G::Face& face =
 				faces[index];
 
-			Vector3 center{};
+			M::Vector3 center{};
 
 			for (uint32_t i : face.indices)
 			{
@@ -268,9 +265,9 @@ namespace Atrum::Physics {
 		// メッシュ重心
 		//--------------------------------------------------------
 
-		Vector3 GetCenter() const
+		M::Vector3 GetCenter() const
 		{
-			Vector3 center{};
+			M::Vector3 center{};
 
 			for (const auto& v : worldVertices)
 			{

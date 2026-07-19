@@ -6,99 +6,127 @@ namespace Atrum::Math {
 	struct Vector2 {
 		float x;
 		float y;
-	};
 
-	float VectorLength(const Vector2& me);
+		constexpr void operator+=(const Vector2& other) {
 
-	inline constexpr float VectorLengthSquare(const Vector2& me) {
-
-		return me.x * me.x + me.y * me.y;
-
-	}
-
-	inline Vector2 VectorNormalize(const Vector2& me) {
-
-		float length = VectorLength(me);
-
-		if (length == 0.0f) {
-
-			return { 0.0, 0.0f };
-
-		} else {
-
-			return { me.x / length, me.y / length };
+			x += other.x;
+			y += other.y;
 
 		}
 
-	}
+		constexpr Vector2 operator+(const Vector2& other) const {
 
-	inline constexpr float VectorDot(const Vector2& me, const Vector2& other) {
+			Vector2 result = (*this);
+			result += other;
 
-		return me.x * other.x + me.y * other.y;
+			return result;
 
-	}
+		}
 
-	inline constexpr float VectorCross(const Vector2& me, const Vector2& other) {
+		constexpr Vector2& operator-=(const Vector2& other) {
 
-		return me.x * other.y - me.y * other.x;
+			x -= other.x;
+			y -= other.y;
 
-	}
+			return (*this);
 
-	inline constexpr Vector2 operator+(const Vector2& me, const Vector2& other) {
+		}
 
-		return { me.x + other.x, me.y + other.y };
+		inline constexpr Vector2 operator-(const Vector2& other) const {
 
-	}
+			Vector2 result = (*this);
+			result -= other;
 
-	inline constexpr void operator+=(Vector2& me, const Vector2& other) {
+			return result;
 
-		me.x += other.x;
-		me.y += other.y;
+		}
 
-	}
+		inline constexpr Vector2& operator*=(const float scalar) {
 
-	inline constexpr Vector2 operator-(const Vector2& me, const Vector2& other) {
+			x *= scalar;
+			y *= scalar;
 
-		return { me.x - other.x, me.y - other.y };
+			return (*this);
 
-	}
+		}
 
-	inline constexpr void operator-=(Vector2& me, const Vector2& other) {
+		inline constexpr Vector2 operator*(const float scalar) const {
 
-		me.x -= other.x;
-		me.y -= other.y;
+			Vector2 result = (*this);
+			result *= scalar;
 
-	}
+			return result;
 
-	inline constexpr Vector2 operator*(const Vector2& me, const float& scalar) {
+		}
 
-		return { me.x * scalar, me.y * scalar };
+		inline constexpr Vector2& operator/=(const float scalar) {
 
-	}
+			x /= scalar;
+			y /= scalar;
 
-	inline constexpr Vector2 operator*(const float& scalar, const Vector2& vector) {
+			return (*this);
+
+		}
+
+		inline constexpr Vector2 operator/(const float scalar) const {
+
+			Vector2 result = (*this);
+			result /= scalar;
+
+			return result;
+
+		}
+
+
+		float Length() const;
+
+		constexpr float LengthSquare() const {
+
+			return x * x + y * y;
+
+		}
+
+		void Normalize() {
+
+			float length = Length();
+
+			if (length == 0.0f) {
+
+				return;
+
+			}
+
+			(*this) /= length;
+
+		}
+
+		[[nodiscard]]Vector2 Normalized() const {
+
+			Vector2 normalized = (*this);
+
+			normalized.Normalize();
+
+			return normalized;
+
+		}
+
+		constexpr float Dot(const Vector2& other) const {
+
+			return x * other.x + y * other.y;
+
+		}
+
+		constexpr float Cross(const Vector2& other) const {
+
+			return x * other.y - y * other.x;
+
+		}
+
+	};
+
+	inline constexpr Vector2 operator*(const float scalar, const Vector2& vector) {
 
 		return { scalar * vector.x, scalar * vector.y };
-
-	}
-
-	inline constexpr void operator*=(Vector2& me, const float& scalar) {
-
-		me.x *= scalar;
-		me.y *= scalar;
-
-	}
-
-	inline constexpr Vector2 operator/(const Vector2& me, const float& scalar) {
-
-		return { me.x / scalar, me.y / scalar };
-
-	}
-
-	inline constexpr void operator/=(Vector2& me, const float& scalar) {
-
-		me.x /= scalar;
-		me.y /= scalar;
 
 	}
 

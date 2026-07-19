@@ -5,7 +5,9 @@
 #include "Engine/Resource/MaterialData.h"
 #include "Engine/Resource/TransformationData.h"
 #include "Engine/Resource/VertexData.h"
+#include "Geometry/PyramidMesh.h"
 #include "Math/Matrix4x4.h"
+#include "Math/Quaternion.h"
 #include "Math/Transform.h"
 
 #include <memory>
@@ -22,9 +24,6 @@ namespace Atrum {
 
 	class AssetModel;
 
-	struct Quaternion;
-	struct PyramidMesh;
-
 	class AtrumEngine;
 
 	class Draw final {
@@ -33,9 +32,9 @@ namespace Atrum {
 
 		friend AtrumEngine;
 
-		const Matrix4x4 kPerspectiveFovMatrix = MakePerspectiveFovMatrix(0.5f, 1.77777f, 0.125f, 1024.0f);
+		const Math::Matrix4x4 kPerspectiveFovMatrix = Math::Matrix4x4::PerspectiveFov(0.5f, 1.77777f, 0.125f, 1024.0f);
 
-		Matrix4x4 viewMatrix_{};
+		Math::Matrix4x4 viewMatrix_{};
 
 		std::unique_ptr<VertexBuffer> vertexBuffer_ = nullptr;
 
@@ -104,15 +103,15 @@ namespace Atrum {
 
 		void Initialize(ID3D12Device* device, CommandContext* commandContext, DescriptorAllocator* srvAllocator);
 
-		void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+		void DrawTriangle(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+		void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector3& scale, const Math::Quaternion& rotate, const Math::Vector3& translate, const Geometry::PyramidMesh& mesh, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+		void DrawSphere(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void DrawModel(AssetModel* model, const Transform& transform, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+		void DrawModel(AssetModel* model, const Math::Transform& transform, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void SetViewMatrix(const Matrix4x4& mat) { viewMatrix_ = mat; }
+		void SetViewMatrix(const Math::Matrix4x4& mat) { viewMatrix_ = mat; }
 
 		Draw operator=(const Draw& source) = delete;
 		Draw(const Draw& source) = delete;

@@ -148,6 +148,7 @@
     <ClCompile Include="Codes\Source\System\EntityStorage.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -376,6 +377,21 @@
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -521,6 +537,9 @@
     </Filter>
     <Filter Include="Codes\Source\System">
       <UniqueIdentifier>{b4c8cc52-40b6-4403-aacb-4a4394894018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Alias">
+      <UniqueIdentifier>{2b1c6f48-a18b-40c9-b796-de6a332e2d15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

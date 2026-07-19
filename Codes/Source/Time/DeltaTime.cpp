@@ -1,29 +1,33 @@
 #include "Time/DeltaTime.h"
 
-namespace chrono = std::chrono;
+namespace Atrum {
 
-void DeltaTime::CalcDeltaTime() {
+	namespace chrono = ::std::chrono;
 
-	preTime_ = currentTime_;
+	void DeltaTime::CalcDeltaTime() {
 
-	currentTime_ = chrono::steady_clock::now();
+		preTime_ = currentTime_;
 
-	deltaTime_ = chrono::duration_cast<chrono::milliseconds>(currentTime_ - preTime_);
+		currentTime_ = chrono::steady_clock::now();
 
-	if (deltaTime_ >= chrono::milliseconds(70)) {
+		deltaTime_ = chrono::duration_cast<chrono::milliseconds>(currentTime_ - preTime_);
 
-		deltaTime_ = chrono::milliseconds(1);
+		if (deltaTime_ >= chrono::milliseconds(70)) {
 
-	} else if (deltaTime_ <= chrono::milliseconds(1)) {
+			deltaTime_ = chrono::milliseconds(1);
 
-		deltaTime_ = chrono::milliseconds(1);
+		} else if (deltaTime_ <= chrono::milliseconds(1)) {
+
+			deltaTime_ = chrono::milliseconds(1);
+
+		}
 
 	}
 
-}
+	float DeltaTime::GetDeltaTime() {
 
-float DeltaTime::GetDeltaTime() {
+		return static_cast<float>(deltaTime_.count()) / 1000.0f;
 
-	return static_cast<float>(deltaTime_.count()) / 1000.0f;
+	}
 
 }

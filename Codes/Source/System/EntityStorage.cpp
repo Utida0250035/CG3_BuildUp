@@ -8,17 +8,17 @@ namespace Atrum {
 
     void EntityStorage::StoreEntity(const std::string& name, std::unique_ptr<Entity>& pEntity) {
 
-        assert(!entityMap_.contains(hash64_str(name)));
+        assert(!entityMap_.contains(Hash64(name)));
 
         entitys_.emplace_back(std::move(pEntity));
 
-        entityMap_.emplace(hash64_str(name), entitys_.size());
+        entityMap_.emplace(Hash64(name), entitys_.size());
 
     }
 
     void EntityStorage::EraseEntity(const std::string& name) {
 
-        size_t hash = hash64_str(name);
+        size_t hash = Hash64(name);
         size_t indexToRemove = entityMap_.at(hash);
         size_t lastIndex = entitys_.size() - 1;
 
@@ -43,7 +43,7 @@ namespace Atrum {
 
     Entity* EntityStorage::Find(const std::string& name) {
 
-        auto search = entityMap_.find(hash64_str(name));
+        auto search = entityMap_.find(Hash64(name));
 
         assert(search != entityMap_.end());
 

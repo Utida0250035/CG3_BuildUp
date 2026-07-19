@@ -2,27 +2,31 @@
 
 #include <chrono>
 
-class DeltaTime final{
-private:
-	std::chrono::milliseconds deltaTime_ = std::chrono::milliseconds(0);
+namespace Atrum {
 
-	std::chrono::time_point<std::chrono::steady_clock> currentTime_ = std::chrono::steady_clock::now();
-	std::chrono::time_point<std::chrono::steady_clock> preTime_ = currentTime_;
+	class DeltaTime final {
+	private:
+		std::chrono::milliseconds deltaTime_ = std::chrono::milliseconds(0);
 
-public:
+		std::chrono::time_point<std::chrono::steady_clock> currentTime_ = std::chrono::steady_clock::now();
+		std::chrono::time_point<std::chrono::steady_clock> preTime_ = currentTime_;
 
-	DeltaTime() = default;
-	~DeltaTime() = default;
+	public:
 
-	/// <summary>
-	/// 時間差分の計算
-	/// </summary>
-	void CalcDeltaTime();
+		DeltaTime() = default;
+		~DeltaTime() = default;
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns> 時間差分[s] </returns>
-	float GetDeltaTime();
+		/// <summary>
+		/// 時間差分の計算
+		/// </summary>
+		void CalcDeltaTime();
 
-};
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns> 時間差分[s] </returns>
+		float GetDeltaTime();
+
+	};
+
+}

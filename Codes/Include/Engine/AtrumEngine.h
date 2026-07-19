@@ -58,8 +58,12 @@ namespace fs = std::filesystem;
 
 namespace Atrum {
 
-	class DirectInput;
-	class PlayInput;
+	namespace Input {
+
+		class DirectInput;
+		class PlayInput;
+
+	}
 
 	class ModelStorage;
 	class TextureStorage;
@@ -163,10 +167,10 @@ namespace Atrum {
 		/* プレイヤー入力 */
 
 		// DirectInput
-		DirectInput* directInput_ = nullptr;
+		Input::DirectInput* directInput_ = nullptr;
 
 		// SDL2入力
-		PlayInput* playInput_ = nullptr;
+		Input::PlayInput* playInput_ = nullptr;
 
 
 		/* アセットストレージ */
@@ -317,7 +321,7 @@ namespace Atrum {
 		/// <param name="cameraTransform"> カメラの座標情報 </param>
 		/// <param name="vertexData"> 三角形のローカル頂点データ 左下 ＞上 > 右下 </param>
 		/// <param name="directionalLightData"> 平行光源データ(option) </param>
-		void DrawTriangle(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
+		void DrawTriangle(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting = false);
 
 		/// <summary>
 		/// 非対称ピラミッドの描画
@@ -328,7 +332,7 @@ namespace Atrum {
 		/// <param name="triangleTransform"></param>
 		/// <param name="vertexData"></param>
 		/// <param name="isLighting"></param>
-		void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector3& scale, const Quaternion& rotate, const Vector3& translate, const PyramidMesh& mesh, const bool isLighting = false);
+		void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector3& scale, const Math::Quaternion& rotate, const Math::Vector3& translate, const Geometry::PyramidMesh& mesh, const bool isLighting = false);
 
 		/// <summary>
 		/// 球の描画
@@ -340,7 +344,7 @@ namespace Atrum {
 		/// <param name="cameraTransform"> カメラの座標情報 </param>
 		/// <param name="vertexData"> 球の半径 </param>
 		/// <param name="directionalLightData"> 平行光源データ(option) </param>
-		void DrawSphere(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
+		void DrawSphere(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting = false);
 
 		/// <summary>
 		/// Spriteの準備
@@ -353,7 +357,7 @@ namespace Atrum {
 		/// <param name="textureIndex"> テクスチャ番号 </param>
 		/// <param name="textureColor"> テクスチャ色(補正) </param>
 		/// <param name="plateTransform"> 板の座標情報 </param>
-		void DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize);
+		void DrawSpriteRect(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& rectTransform, const Math::Vector2& rectSize);
 
 		/// <summary>
 		/// 2D線の描画
@@ -363,7 +367,7 @@ namespace Atrum {
 		/// <param name="start"> 始点 </param>
 		/// <param name="end"> 終点 </param>
 		/// <param name="width"> 太さ </param>
-		void DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ);
+		void DrawSpriteLine(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector2& start, const Math::Vector2& end, const float& width, const float& posZ);
 
 		/// <summary>
 		/// 3Dモデルの描画
@@ -372,7 +376,7 @@ namespace Atrum {
 		/// <param name="transform"> 3Dモデルの座標変換情報 </param>
 		/// <param name="cameraTransform"> カメラの座標変換情報 </param>
 		/// <param name="isLighting"> ライティングフラグ </param>
-		void DrawModel(AssetModel* model, const Transform& transform, const bool isLighting);
+		void DrawModel(AssetModel* model, const Math::Transform& transform, const bool isLighting);
 
 
 
@@ -396,9 +400,11 @@ namespace Atrum {
 
 		void SetDirectionalLightData(const DirectionalLightData& data) { directionalLightBuffer_->SetData(data); }
 
-		void SetViewMatrix(const Matrix4x4& mat);
+		void SetViewMatrix(const Math::Matrix4x4& mat);
 
 	};
+
+	using Engine = AtrumEngine;
 
 	struct LeakChecker {
 

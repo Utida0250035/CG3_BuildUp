@@ -2,14 +2,14 @@
 #include <cstdint>
 #include <string>
 
-namespace Atrum::Hash {
+namespace Atrum {
 
 	/// <summary>
 	/// 文字列をハッシュ化(FNV-1aハッシュ)
 	/// </summary>
 	/// <param name="str"> 文字列リテラル </param>
 	/// <returns> ハッシュ </returns>
-	constexpr uint64_t hash64_str(const char* str) {
+	constexpr uint64_t Hash64(const char* str) {
 
 		uint64_t hash = 14695981039346656037ull;
 		const uint64_t fnv_prime = 1099511628211ull;
@@ -30,9 +30,9 @@ namespace Atrum::Hash {
 	/// </summary>
 	/// <param name="string"> 文字列 </param>
 	/// <returns> ハッシュ </returns>
-	constexpr uint64_t hash64_str(const std::string& string) {
+	constexpr uint64_t Hash64(const std::string& string) {
 
-		return hash64_str(string.c_str());
+		return Hash64(string.c_str());
 
 	}
 
@@ -41,7 +41,7 @@ namespace Atrum::Hash {
 	/// </summary>
 	/// <param name="wstr"> 文字列リテラル(wide) </param>
 	/// <returns> ハッシュ </returns>
-	constexpr uint64_t hash64_str(const wchar_t* wstr) {
+	constexpr uint64_t Hash64(const wchar_t* wstr) {
 
 		uint64_t hash = 14695981039346656037ull;
 		const uint64_t fnv_prime = 1099511628211ull;
@@ -68,9 +68,9 @@ namespace Atrum::Hash {
 	/// </summary>
 	/// <param name="wstr"> 文字列(wide) </param>
 	/// <returns></returns>
-	constexpr uint64_t hash64_str(const std::wstring& wstr) {
+	constexpr uint64_t Hash64(const std::wstring& wstr) {
 
-		return hash64_str(wstr.c_str());
+		return Hash64(wstr.c_str());
 
 	}
 
@@ -81,7 +81,7 @@ namespace Atrum::Hash {
 	/// <returns> ハッシュ </returns>
 	constexpr uint64_t operator"" _hash64(const char* str, size_t) {
 
-		return hash64_str(str);
+		return Hash64(str);
 
 	}
 
@@ -92,7 +92,7 @@ namespace Atrum::Hash {
 	/// <returns> ハッシュ </returns>
 	constexpr uint64_t operator"" _hash64(const wchar_t* wstr, size_t) {
 
-		return hash64_str(wstr);
+		return Hash64(wstr);
 
 	}
 

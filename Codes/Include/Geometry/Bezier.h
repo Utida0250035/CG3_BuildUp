@@ -2,10 +2,10 @@
 
 #include "Math/Vector2.h"
 
-namespace Atrum::Geometry {
+namespace Atrum::Geometry::Bezier {
 
-	Vector2 CalcBezier2(const Vector2 p[3], float t);
+	Math::Vector2 CalcBezier2(const Math::Vector2 p[3], float t);
 
-	Vector2 CalcBezier2Tangent(const Vector2 p[3], float t);
+	Math::Vector2 CalcBezier2Tangent(const Math::Vector2 p[3], float t);
 
 }

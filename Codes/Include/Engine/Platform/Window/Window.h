@@ -52,7 +52,7 @@ namespace Atrum {
 
 			SDL_Quit();
 
-			LogFile::GetInstance()->Log("SDL2: Quit");
+			Debug::LogFile::GetInstance()->Log("SDL2: Quit");
 
 		}
 

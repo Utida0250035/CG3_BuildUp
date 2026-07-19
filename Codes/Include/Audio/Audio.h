@@ -62,7 +62,7 @@ namespace Atrum::Audio {
 		void STDMETHODCALLTYPE OnVoiceError(void*, HRESULT) override {}
 	};
 
-	class Audio {
+	class AudioManager {
 
 	private:
 		template<typename T>
@@ -145,8 +145,10 @@ namespace Atrum::Audio {
 		/// <returns> 音源ハンドル </returns>
 		size_t LoadSe(const char* filePath);
 
-		~Audio();
+		~AudioManager();
 
 	};
+
+	using Manager = AudioManager;
 
 }

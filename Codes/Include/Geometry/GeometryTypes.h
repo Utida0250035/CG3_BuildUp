@@ -20,18 +20,18 @@ namespace Atrum::Geometry {
 	};
 
 	struct AABB {
-		Vector3 min{};
-		Vector3 max{};
+		Math::Vector3 min{};
+		Math::Vector3 max{};
 	};
 
 	struct OBB {
-		Vector3 center{};
-		Vector3 axis[3]{};
-		Vector3 halfSize{};
+		Math::Vector3 center{};
+		Math::Vector3 axis[3]{};
+		Math::Vector3 halfSize{};
 	};
 
 	struct Sphere {
-		Vector3 center{};
+		Math::Vector3 center{};
 		float radius = 1.0f;
 	};
 

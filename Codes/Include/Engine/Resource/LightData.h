@@ -13,9 +13,9 @@ namespace Atrum {
 
 	struct DirectionalLightData {
 		// 平行光源の色
-		Vector4 color;
+		Math::Vector4 color;
 		// 平行光源の向き
-		Vector3 direction;
+		Math::Vector3 direction;
 		// 平行光源の輝度
 		float intensity;
 		// 光源の種類

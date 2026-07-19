@@ -22,7 +22,7 @@
 #include <memory>
 #include <map>
 
-namespace Atrum::Graphics {
+namespace Atrum {
 
 	class CommandContext {
 
@@ -31,6 +31,8 @@ namespace Atrum::Graphics {
 		bool isInitialized_ = false;
 
 		template<typename T>
+		
+		
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 		// Type

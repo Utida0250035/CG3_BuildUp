@@ -7,7 +7,7 @@ namespace Atrum {
 	// 全てのパーツの基底
 	class Component {
 
-	protected:
+	private:
 
 		Entity* owner_ = nullptr; // 所有者（Enemyなど）への参照
 
@@ -17,7 +17,15 @@ namespace Atrum {
 
 		virtual void Initialize() {}
 
-		virtual void Execute() = 0;
+		virtual void Execute() {};
+
+		virtual void Finalize() {};
+
+	protected:
+
+		const Entity* GetOwner() const { return owner_; }
+
+	public:
 
 		void SetOwner(Entity* owner) { owner_ = owner; }
 
