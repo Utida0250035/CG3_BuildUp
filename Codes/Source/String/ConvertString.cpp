@@ -2,70 +2,74 @@
 #include <Windows.h>
 #include <cassert>
 
-std::wstring StringToWString(const std::string& str) {
+namespace Atrum {
 
-	std::wstring result;
+	std::wstring StringToWString(const std::string& str) {
 
-	// 文字数を計測
-	int needSize = MultiByteToWideChar(CP_UTF8,
-		0,
-		str.c_str(),
-		static_cast<int>(str.length()),
-		nullptr,
-		0
-	);
+		std::wstring result;
 
-	assert(needSize >= 0);
+		// 文字数を計測
+		int needSize = MultiByteToWideChar(CP_UTF8,
+			0,
+			str.c_str(),
+			static_cast<int>(str.length()),
+			nullptr,
+			0
+		);
 
-	// サイズ各頬
-	result.resize(needSize);
+		assert(needSize >= 0);
 
-	// 変換
-	MultiByteToWideChar(CP_UTF8,
-		0,
-		str.c_str(),
-		static_cast<int>(str.length()),
-		result.data(),
-		static_cast<int>(result.size())
-	);
+		// サイズ各頬
+		result.resize(needSize);
 
-	return result;
+		// 変換
+		MultiByteToWideChar(CP_UTF8,
+			0,
+			str.c_str(),
+			static_cast<int>(str.length()),
+			result.data(),
+			static_cast<int>(result.size())
+		);
 
-}
+		return result;
 
-std::string WStringToString(const std::wstring& str) {
+	}
 
-	std::string result;
+	std::string WStringToString(const std::wstring& str) {
 
-	// 文字数を計測
-	int needSize = WideCharToMultiByte(
-		CP_ACP,
-		0,
-		str.c_str(),
-		static_cast<int>(str.length()),
-		nullptr,
-		0,
-		nullptr,
-		nullptr
-	);
+		std::string result;
 
-	assert(needSize >= 0);
+		// 文字数を計測
+		int needSize = WideCharToMultiByte(
+			CP_ACP,
+			0,
+			str.c_str(),
+			static_cast<int>(str.length()),
+			nullptr,
+			0,
+			nullptr,
+			nullptr
+		);
 
-	// サイズ確保
-	result.resize(needSize);
+		assert(needSize >= 0);
 
-	// 変換
-	WideCharToMultiByte(
-		CP_ACP,
-		0,
-		str.c_str(),
-		static_cast<int>(str.length()),
-		result.data(),
-		static_cast<int>(result.size()),
-		nullptr,
-		nullptr
-	);
+		// サイズ確保
+		result.resize(needSize);
 
-	return result;
+		// 変換
+		WideCharToMultiByte(
+			CP_ACP,
+			0,
+			str.c_str(),
+			static_cast<int>(str.length()),
+			result.data(),
+			static_cast<int>(result.size()),
+			nullptr,
+			nullptr
+		);
+
+		return result;
+
+	}
 
 }

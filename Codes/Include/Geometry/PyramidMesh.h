@@ -1,134 +1,132 @@
 #pragma once
 
-#include "Collision/CollisionTypes.h"
+#include "Geometry/GeometryTypes.h"
 #include "Math/Vector3.h"
-
 #include <vector>
 
-struct PyramidVertex
-{
-    Vector3 position;
-    Vector3 normal;
-};
+namespace Atrum::Geometry {
 
-struct PyramidMesh
-{
-    //--------------------------------------------
-    // SAT用頂点（重複なし）
-    //--------------------------------------------
+	struct PyramidVertex
+	{
+		Math::Vector3 position;
+		Math::Vector3 normal;
+	};
 
-    std::vector<Vector3> collisionVertices =
-    {
-        {-1.0f,-1.0f,0.0f},     //0
-        { 1.0f,-1.0f,0.0f},     //1
-        { 1.0f, 1.0f,0.0f},     //2
-        {-0.5f,0.5f,0.0f},      //3
-        { 0.0f,0.0f,2.0f}      //4
-    };
+	struct PyramidMesh
+	{
+		//--------------------------------------------
+		// SAT用頂点（重複なし）
+		//--------------------------------------------
 
-    //--------------------------------------------
-    // SAT用辺
-    //--------------------------------------------
+		std::vector<Math::Vector3> collisionVertices =
+		{
+			{-1.0f,-1.0f,0.0f},     //0
+			{ 1.0f,-1.0f,0.0f},     //1
+			{ 1.0f, 1.0f,0.0f},     //2
+			{-0.5f,0.5f,0.0f},      //3
+			{ 0.0f,0.0f,2.0f}      //4
+		};
 
-    std::vector<Edge> edges =
-    {
-        {0,1},
-        {1,2},
-        {2,3},
-        {3,0},
+		//--------------------------------------------
+		// SAT用辺
+		//--------------------------------------------
 
-        {0,4},
-        {1,4},
-        {2,4},
-        {3,4}
-    };
+		std::vector<Edge> edges =
+		{
+			{0,1},
+			{1,2},
+			{2,3},
+			{3,0},
 
-    //--------------------------------------------
-    // SAT用面
-    //--------------------------------------------
+			{0,4},
+			{1,4},
+			{2,4},
+			{3,4}
+		};
 
-    std::vector<Face> faces;
+		//--------------------------------------------
+		// SAT用面
+		//--------------------------------------------
 
-    //--------------------------------------------
-    // 描画用
-    //--------------------------------------------
+		std::vector<Face> faces;
 
-    std::vector<PyramidVertex> renderVertices;
+		//--------------------------------------------
+		// 描画用
+		//--------------------------------------------
 
-    PyramidMesh()
-    {
-        BuildFaces();
-        BuildRenderVertices();
-    }
+		std::vector<PyramidVertex> renderVertices;
 
-private:
+		PyramidMesh()
+		{
+			BuildFaces();
+			BuildRenderVertices();
+		}
 
-    void AddFace(
-        uint32_t i0,
-        uint32_t i1,
-        uint32_t i2)
-    {
-        Face face;
+	private:
 
-        face.indices =
-        {
-            i0,
-            i1,
-            i2
-        };
+		void AddFace(
+			uint32_t i0,
+			uint32_t i1,
+			uint32_t i2)
+		{
+			Face face;
 
-        faces.push_back(face);
-    }
+			face.indices =
+			{
+				i0,
+				i1,
+				i2
+			};
 
-    void BuildFaces()
-    {
-        faces.clear();
+			faces.push_back(face);
+		}
 
-        AddFace(0, 2, 1);
-        AddFace(0, 3, 2);
+		void BuildFaces()
+		{
+			faces.clear();
 
-        AddFace(0, 1, 4);
-        AddFace(1, 2, 4);
-        AddFace(2, 3, 4);
-        AddFace(3, 0, 4);
-    }
+			AddFace(0, 2, 1);
+			AddFace(0, 3, 2);
 
-    void BuildRenderVertices()
-    {
-        renderVertices.clear();
+			AddFace(0, 1, 4);
+			AddFace(1, 2, 4);
+			AddFace(2, 3, 4);
+			AddFace(3, 0, 4);
+		}
 
-        for (const Face& face : faces)
-        {
-            if (face.indices.size() < 3)
-            {
-                continue;
-            }
+		void BuildRenderVertices()
+		{
+			renderVertices.clear();
 
-            uint32_t i0 = face.indices[0];
-            uint32_t i1 = face.indices[1];
-            uint32_t i2 = face.indices[2];
+			for (const Face& face : faces)
+			{
+				if (face.indices.size() < 3)
+				{
+					continue;
+				}
 
-            Vector3 v0 = collisionVertices[i0];
-            Vector3 v1 = collisionVertices[i1];
-            Vector3 v2 = collisionVertices[i2];
+				uint32_t i0 = face.indices[0];
+				uint32_t i1 = face.indices[1];
+				uint32_t i2 = face.indices[2];
 
-            Vector3 normal =
-                VectorCross(
-                    v1 - v0,
-                    v2 - v0);
+				Math::Vector3 v0 = collisionVertices[i0];
+				Math::Vector3 v1 = collisionVertices[i1];
+				Math::Vector3 v2 = collisionVertices[i2];
 
-            if (VectorLength(normal) <= 0.000001f)
-            {
-                normal = { 0.0f, 1.0f, 0.0f };
-            } else
-            {
-                normal = VectorNormalize(normal);
-            }
+				Math::Vector3 normal = (v1 - v0).Cross(v2 - v0);
 
-            renderVertices.push_back({ collisionVertices[i0], normal });
-            renderVertices.push_back({ collisionVertices[i1], normal });
-            renderVertices.push_back({ collisionVertices[i2], normal });
-        }
-    }
+				if (normal.Length() <= 0.000001f) {
+					normal = { 0.0f, 1.0f, 0.0f };
+				} else {
+					normal.Normalize();
+				}
 
-};
+				renderVertices.push_back({ collisionVertices[i0], normal });
+				renderVertices.push_back({ collisionVertices[i1], normal });
+				renderVertices.push_back({ collisionVertices[i2], normal });
+			}
+		}
+
+	};
+
+}

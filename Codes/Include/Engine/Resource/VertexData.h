@@ -3,8 +3,12 @@
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 
-struct VertexData {
-	Vector4 position;
-	Vector2 texCoord;
-	Vector3 normal;
-};
+namespace Atrum {
+
+	struct VertexData {
+		Math::Vector4 position;
+		Math::Vector2 texCoord;
+		Math::Vector3 normal;
+	};
+
+}

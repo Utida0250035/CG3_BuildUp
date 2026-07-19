@@ -1,100 +1,106 @@
+#include "Engine/Alias/CoreAlias.h"
+
 #include "Debug/Log.h"
 #include "Engine/Resource/DescriptorAllocator.h"
 #include "String/ConvertString.h"
 
-void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, std::wstring descriptorName, ID3D12Device* device) {
+namespace Atrum {
 
-	assert(!isInitialized_ && "DescriptorAllocator is already initialized");
+	void DescriptorAllocator::Initialize(const D3D12_DESCRIPTOR_HEAP_TYPE descriptorType, const uint32_t maxDescriptorCount, const bool isShaderVisible, std::wstring descriptorName, ID3D12Device* device) {
 
-	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
-	descriptorHeapDesc.Type = descriptorType;
-	descriptorHeapDesc.NumDescriptors = maxDescriptorCount;
+		assert(!isInitialized_ && "DescriptorAllocator is already initialized");
 
-	type_ = descriptorType;
-	maxDescriptorCount_ = maxDescriptorCount;
-	descriptorSize_ = device->GetDescriptorHandleIncrementSize(type_);
+		D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+		descriptorHeapDesc.Type = descriptorType;
+		descriptorHeapDesc.NumDescriptors = maxDescriptorCount;
 
-	if (isShaderVisible) {
+		type_ = descriptorType;
+		maxDescriptorCount_ = maxDescriptorCount;
+		descriptorSize_ = device->GetDescriptorHandleIncrementSize(type_);
 
-		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+		if (isShaderVisible) {
 
-	} else {
+			descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
-		descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		} else {
 
-	}
+			descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
-	[[maybe_unused]]HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap_));
+		}
 
-	// ディスクリプタヒープが生成できなかったら起動不可
-	assert(SUCCEEDED(hr));
+		[[maybe_unused]] HRESULT hr = device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&descriptorHeap_));
 
-	cpuStart_ = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+		// ディスクリプタヒープが生成できなかったら起動不可
+		assert(SUCCEEDED(hr));
 
-	if (isShaderVisible) {
+		cpuStart_ = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 
-		gpuStart_ = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+		if (isShaderVisible) {
 
-	}
+			gpuStart_ = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
 
-	LogFile::GetInstance()->Log("Created " + WStringToString(descriptorName));
+		}
 
-	isInitialized_ = true;
+		D::LogFile::GetInstance()->Log("Created " + WStringToString(descriptorName));
 
-}
-
-DescriptorAllocator::DescriptorHandle DescriptorAllocator::Allocate() {
-
-	assert(isInitialized_ && "DescriptorAllocator is not initialized");
-
-	uint32_t index = 0;
-
-	if (freeIndices_.empty()) {
-
-		// 上限チェック
-		assert(nextIndex_ < maxDescriptorCount_ && "Descriptor Heap is full");
-
-		index = nextIndex_;
-
-		nextIndex_++;
-
-	} else {
-
-		index = freeIndices_.back();
-
-		freeIndices_.pop_back();
+		isInitialized_ = true;
 
 	}
 
-	DescriptorHandle handle;
-	handle.index = index;
-	handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
-	handle.gpu.ptr = gpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
+	DescriptorAllocator::DescriptorHandle DescriptorAllocator::Allocate() {
 
-	LogFile::GetInstance()->Log("Allocate Descriptor");
+		assert(isInitialized_ && "DescriptorAllocator is not initialized");
 
-	return handle;
+		uint32_t index = 0;
 
-}
+		if (freeIndices_.empty()) {
 
-DescriptorAllocator::DescriptorHandle DescriptorAllocator::GetHandle(const uint32_t index) {
+			// 上限チェック
+			assert(nextIndex_ < maxDescriptorCount_ && "Descriptor Heap is full");
 
-	assert(isInitialized_ && "DescriptorAllocator is not initialized");
+			index = nextIndex_;
 
-	DescriptorHandle handle{};
+			nextIndex_++;
 
-	handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * index);
-	handle.gpu.ptr = gpuStart_.ptr + static_cast<uint64_t>(descriptorSize_ * index);
-	handle.index = index;
+		} else {
 
-	return handle;
+			index = freeIndices_.back();
 
-}
+			freeIndices_.pop_back();
 
-void DescriptorAllocator::Free(const uint32_t index) {
+		}
 
-	assert(isInitialized_ && "DescriptorAllocator is not initialized");
+		DescriptorHandle handle;
+		handle.index = index;
+		handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
+		handle.gpu.ptr = gpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
 
-	freeIndices_.push_back(index);
+		D::LogFile::GetInstance()->Log("Allocate Descriptor");
+
+		return handle;
+
+	}
+
+	DescriptorAllocator::DescriptorHandle DescriptorAllocator::GetHandle(const uint32_t index) {
+
+		assert(isInitialized_ && "DescriptorAllocator is not initialized");
+
+		DescriptorHandle handle{};
+
+		handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * index);
+		handle.gpu.ptr = gpuStart_.ptr + static_cast<uint64_t>(descriptorSize_ * index);
+		handle.index = index;
+
+		return handle;
+
+	}
+
+	void DescriptorAllocator::Free(const uint32_t index) {
+
+		assert(isInitialized_ && "DescriptorAllocator is not initialized");
+
+		freeIndices_.push_back(index);
+
+	}
 
 }

@@ -1,31 +1,37 @@
+#include "Engine/Alias/CoreAlias.h"
+
 #include "Debug/Log.h"
 #include "Engine/Resource/CreateBufferResource.h"
 #include "Engine/Resource/VertexBuffer.h"
 
-void VertexBuffer::CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device) {
+namespace Atrum {
 
-	vertexResource_ = CreateUploadBuffer(sizeof(VertexData) * vertexMaxCount, device);
+	void VertexBuffer::CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device) {
 
-	vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
+		vertexResource_ = CreateUploadBuffer(sizeof(VertexData) * vertexMaxCount, device);
 
-	// リソースの先頭のアドレスから使う
-	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+		vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));
 
-	// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * vertexMaxCount;
+		// リソースの先頭のアドレスから使う
+		vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
-	// 1頂点当たりのサイズ
-	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+		// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
+		vertexBufferView_.SizeInBytes = sizeof(VertexData) * vertexMaxCount;
 
-	// リソースの先頭のアドレスから使う
-	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+		// 1頂点当たりのサイズ
+		vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-	// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * vertexMaxCount;
+		// リソースの先頭のアドレスから使う
+		vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 
-	// 1頂点当たりのサイズ
-	vertexBufferView_.StrideInBytes = sizeof(VertexData);
+		// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
+		vertexBufferView_.SizeInBytes = sizeof(VertexData) * vertexMaxCount;
 
-	LogFile::GetInstance()->Log("Created VertexBuffer");
+		// 1頂点当たりのサイズ
+		vertexBufferView_.StrideInBytes = sizeof(VertexData);
+
+		D::LogFile::GetInstance()->Log("Created VertexBuffer");
+
+	}
 
 }

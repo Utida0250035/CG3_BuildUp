@@ -22,46 +22,52 @@
 #include <memory>
 #include <map>
 
-class CommandContext {
+namespace Atrum {
 
-private:
+	class CommandContext {
 
-	bool isInitialized_ = false;
+	private:
 
-	template<typename T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
+		bool isInitialized_ = false;
 
-	// Type
-	D3D12_COMMAND_LIST_TYPE type_ = D3D12_COMMAND_LIST_TYPE_NONE;
+		template<typename T>
+		
+		
+		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	// コマンドキュー
-	ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
+		// Type
+		D3D12_COMMAND_LIST_TYPE type_ = D3D12_COMMAND_LIST_TYPE_NONE;
 
-	// コマンドアロケータ(コマンド割り当て担当)
-	std::vector<ComPtr<ID3D12CommandAllocator>> commandAllocators_{};
+		// コマンドキュー
+		ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
 
-	// コマンドリスト
-	ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
+		// コマンドアロケータ(コマンド割り当て担当)
+		std::vector<ComPtr<ID3D12CommandAllocator>> commandAllocators_{};
+
+		// コマンドリスト
+		ComPtr<ID3D12GraphicsCommandList> commandList_ = nullptr;
 
 
-	void CreateCommandQueue(ID3D12Device* device);
+		void CreateCommandQueue(ID3D12Device* device);
 
-	void CreateCommandAllocators(ID3D12Device* device, const UINT backBufferContext);
+		void CreateCommandAllocators(ID3D12Device* device, const UINT backBufferContext);
 
-	void CreateCommandList(ID3D12Device* device);
+		void CreateCommandList(ID3D12Device* device);
 
-public:
+	public:
 
-	void Initialize(ID3D12Device* device, const UINT beckBufferContext, const D3D12_COMMAND_LIST_TYPE type);
+		void Initialize(ID3D12Device* device, const UINT beckBufferContext, const D3D12_COMMAND_LIST_TYPE type);
 
-	/* ゲッター */
+		/* ゲッター */
 
-	ID3D12CommandQueue* GetCommandQueue() { return commandQueue_.Get(); }
+		ID3D12CommandQueue* GetCommandQueue() { return commandQueue_.Get(); }
 
-	ID3D12CommandAllocator* GetCommandAllocator(const size_t index) { return commandAllocators_[index].Get(); }
+		ID3D12CommandAllocator* GetCommandAllocator(const size_t index) { return commandAllocators_[index].Get(); }
 
-	ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
+		ID3D12GraphicsCommandList* GetCommandList() { return commandList_.Get(); }
 
-	D3D12_COMMAND_LIST_TYPE GetType()const { return type_; }
+		D3D12_COMMAND_LIST_TYPE GetType()const { return type_; }
 
-};
+	};
+
+}

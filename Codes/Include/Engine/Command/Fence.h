@@ -5,28 +5,34 @@
 #include <cstdint>
 #include <vector>
 
-class Fence {
-private:
+namespace Atrum {
 
-	bool isInitialized_ = false;
+	class Fence {
+	private:
 
-	template<typename T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
+		bool isInitialized_ = false;
 
-	ComPtr<ID3D12Fence> fence_;
-	HANDLE fenceEvent_ = nullptr;
+		template<typename T>
+		
+		
+		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	std::vector<uint64_t> fenceValues_{};
-	uint64_t totalFenceCount_ = 0;
+		ComPtr<ID3D12Fence> fence_;
+		HANDLE fenceEvent_ = nullptr;
 
-public:
-	Fence() = default;
-	~Fence() { if(fenceEvent_) CloseHandle(fenceEvent_); }
+		std::vector<uint64_t> fenceValues_{};
+		uint64_t totalFenceCount_ = 0;
 
-	void Initialize(ID3D12Device* device, const uint32_t backBufferCount);
-	
-	void Signal(ID3D12CommandQueue* commandQueue, const uint32_t backBufferIndex);
-	void WaitForNextBuffer(const uint32_t nextBackBufferIndex);
-	void ForceSyncGPU(ID3D12CommandQueue* commandQueue);
+	public:
+		Fence() = default;
+		~Fence() { if (fenceEvent_) CloseHandle(fenceEvent_); }
 
-};
+		void Initialize(ID3D12Device* device, const uint32_t backBufferCount);
+
+		void Signal(ID3D12CommandQueue* commandQueue, const uint32_t backBufferIndex);
+		void WaitForNextBuffer(const uint32_t nextBackBufferIndex);
+		void ForceSyncGPU(ID3D12CommandQueue* commandQueue);
+
+	};
+
+}

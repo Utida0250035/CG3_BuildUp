@@ -142,6 +142,13 @@
     <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>External_ImGui\misc\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
+      <Filter>Codes\Source\Engine\Platform\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\EntityStorage.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -246,9 +253,6 @@
     <ClInclude Include="Codes\Include\Geometry\Triangle.h">
       <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Projection.h">
-      <Filter>Codes\Include\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Math\Quaternion.h">
       <Filter>Codes\Include\Math</Filter>
     </ClInclude>
@@ -345,13 +349,48 @@
     <ClInclude Include="Codes\Include\Json\JsonHandler.h">
       <Filter>Codes\Include\Json</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
     <ClInclude Include="Codes\Include\Json\JsonTest.h">
       <Filter>Codes\Include\Json</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\ECS.h" />
     <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <Filter>External_ImGui\misc\cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h">
+      <Filter>Codes\Include\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\DebugLayer.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\ErrorSupression.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Debug\SetBreakOnSeverity.h">
+      <Filter>Codes\Include\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Component.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\EntityStorage.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -486,6 +525,21 @@
     </Filter>
     <Filter Include="External_ImGui\misc\cpp">
       <UniqueIdentifier>{1adedc12-3918-4693-88d9-d24a107eb95e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Platform">
+      <UniqueIdentifier>{ba388e11-bca2-4111-9b76-fd724bb50223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Platform\Window">
+      <UniqueIdentifier>{3d5600ac-200c-4a80-8960-697df1bf22c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System">
+      <UniqueIdentifier>{de234864-88d9-4480-be8f-35cce704131c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System">
+      <UniqueIdentifier>{b4c8cc52-40b6-4403-aacb-4a4394894018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Alias">
+      <UniqueIdentifier>{2b1c6f48-a18b-40c9-b796-de6a332e2d15}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

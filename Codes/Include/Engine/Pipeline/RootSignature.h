@@ -5,28 +5,32 @@
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
 
-class RootSignature {
+namespace Atrum {
 
-	template<typename T>
-	using ComPtr = Microsoft::WRL::ComPtr<T>;
+	class RootSignature {
 
-private:
+		template<typename T>
+		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-	// RootSignature
-	ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
+	private:
 
-	// RootSignatureの生成結果
-	ComPtr<ID3DBlob> signatureBlob_ = nullptr;
+		// RootSignature
+		ComPtr<ID3D12RootSignature> rootSignature_ = nullptr;
 
-	// RootSignatureのエラー結果
-	ComPtr<ID3DBlob> errorBlob_ = nullptr;
+		// RootSignatureの生成結果
+		ComPtr<ID3DBlob> signatureBlob_ = nullptr;
 
-public:
+		// RootSignatureのエラー結果
+		ComPtr<ID3DBlob> errorBlob_ = nullptr;
 
-	void Initialize(ID3D12Device* device);
+	public:
 
-	/* ゲッター */
+		void Initialize(ID3D12Device* device);
 
-	ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
+		/* ゲッター */
 
-};
+		ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
+
+	};
+
+}
