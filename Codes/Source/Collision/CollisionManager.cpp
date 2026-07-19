@@ -2,109 +2,113 @@
 
 #include "Collision/SAT.h"
 
-void CollisionManager::Clear() {
+namespace Atrum::Physics {
 
-    bodies_.clear();
-    constraints_.clear();
-}
+	void CollisionManager::Clear() {
 
-void CollisionManager::AddBody(HitMesh* body) {
+		bodies_.clear();
+		constraints_.clear();
+	}
 
-    if (body == nullptr) {
-        return;
-    }
+	void CollisionManager::AddBody(HitMesh* body) {
 
-    bodies_.push_back(body);
-}
+		if (body == nullptr) {
+			return;
+		}
 
-void CollisionManager::CheckCollision() {
+		bodies_.push_back(body);
+	}
 
-    constraints_.clear();
+	void CollisionManager::CheckCollision() {
 
-    for (HitMesh* body : bodies_) {
+		constraints_.clear();
 
-        if (body == nullptr) {
-            continue;
-        }
+		for (HitMesh* body : bodies_) {
 
-        body->UpdateMatrix();
-    }
+			if (body == nullptr) {
+				continue;
+			}
 
-    BuildConstraints();
+			body->UpdateMatrix();
+		}
 
-    SolvePositions();
+		BuildConstraints();
 
-    SolveVelocities();
-}
+		SolvePositions();
 
-void CollisionManager::BuildConstraints() {
+		SolveVelocities();
+	}
 
-    const size_t bodyCount = bodies_.size();
+	void CollisionManager::BuildConstraints() {
 
-    for (size_t i = 0; i < bodyCount; ++i) {
+		const size_t bodyCount = bodies_.size();
 
-        HitMesh* bodyA = bodies_[i];
+		for (size_t i = 0; i < bodyCount; ++i) {
 
-        if (bodyA == nullptr) {
-            continue;
-        }
+			HitMesh* bodyA = bodies_[i];
 
-        for (size_t j = i + 1; j < bodyCount; ++j) {
+			if (bodyA == nullptr) {
+				continue;
+			}
 
-            HitMesh* bodyB = bodies_[j];
+			for (size_t j = i + 1; j < bodyCount; ++j) {
 
-            if (bodyB == nullptr) {
-                continue;
-            }
+				HitMesh* bodyB = bodies_[j];
 
-            if (bodyA->inverseMass <= 0.0f &&
-                bodyB->inverseMass <= 0.0f) {
-                continue;
-            }
+				if (bodyB == nullptr) {
+					continue;
+				}
 
-            SATResult sat = TestSAT(*bodyA, *bodyB);
+				if (bodyA->inverseMass <= 0.0f &&
+					bodyB->inverseMass <= 0.0f) {
+					continue;
+				}
 
-            if (!sat.hit) {
-                continue;
-            }
+				SATResult sat = SAT::TestSAT(*bodyA, *bodyB);
 
-            Vector3 centerA = bodyA->GetCenter();
-            Vector3 centerB = bodyB->GetCenter();
+				if (!sat.hit) {
+					continue;
+				}
 
-            Vector3 centerDirection = centerB - centerA;
+				M::Vector3 centerA = bodyA->GetCenter();
+				M::Vector3 centerB = bodyB->GetCenter();
 
-            if (VectorDot(centerDirection, sat.normal) < 0.0f) {
-                sat.normal = -sat.normal;
-            }
+				M::Vector3 centerDirection = centerB - centerA;
 
-            ContactConstraint constraint{};
-            constraint.Initialize(bodyA, bodyB, sat);
+				if (centerDirection.Dot(sat.normal) < 0.0f) {
+					sat.normal = -sat.normal;
+				}
 
-            constraints_.push_back(constraint);
-        }
-    }
-}
+				ContactConstraint constraint{};
+				constraint.Initialize(bodyA, bodyB, sat);
 
-void CollisionManager::SolvePositions() {
+				constraints_.push_back(constraint);
+			}
+		}
+	}
 
-    constexpr int kPositionIterations = 4;
+	void CollisionManager::SolvePositions() {
 
-    for (int i = 0; i < kPositionIterations; ++i) {
+		constexpr int kPositionIterations = 4;
 
-        for (ContactConstraint& constraint : constraints_) {
-            constraint.SolvePosition();
-        }
-    }
-}
+		for (int i = 0; i < kPositionIterations; ++i) {
 
-void CollisionManager::SolveVelocities() {
+			for (ContactConstraint& constraint : constraints_) {
+				constraint.SolvePosition();
+			}
+		}
+	}
 
-    constexpr int kVelocityIterations = 8;
+	void CollisionManager::SolveVelocities() {
 
-    for (int i = 0; i < kVelocityIterations; ++i) {
+		constexpr int kVelocityIterations = 8;
 
-        for (ContactConstraint& constraint : constraints_) {
-            constraint.SolveVelocity();
-        }
-    }
+		for (int i = 0; i < kVelocityIterations; ++i) {
+
+			for (ContactConstraint& constraint : constraints_) {
+				constraint.SolveVelocity();
+			}
+		}
+	}
+
 }

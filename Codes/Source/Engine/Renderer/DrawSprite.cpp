@@ -6,196 +6,211 @@
 #include "Engine/Resource/VertexBuffer.h"
 #include "Math/Transform.h"
 
+namespace {
 
-DrawSprite* DrawSprite::instance_ = nullptr;
-
-void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator, const uint32_t clientWidth, const uint32_t clientHeight) {
-
-	pDevice_ = device;
-
-	pCommandContextDirect_ = commandContextDirect;
-
-	pSrvAllocator_ = srvAllocator;
-
-	orthographicMatrix_ = MakeOrthographicMatrix(0.0f, 0.0f, cast::Float(clientWidth), cast::Float(clientHeight), 0.0f, 100.0f);
-
-	CreateVertexBuffer();
-
-	CreateIndexBuffer();
-
-	CreateMaterialBuffer();
-
-	CreateTransformationBuffer();
+	
+	
+	using Atrum::Math::Vector2;
+	using Atrum::Math::Vector3;
+	using Atrum::Math::Vector4;
+	using Atrum::Math::Matrix4x4;
+	using Atrum::Math::Transform;
 
 }
 
-void DrawSprite::CreateVertexBuffer() {
+namespace Atrum {
 
-	vertexBuffer_ = std::make_unique<VertexBuffer>();
+	DrawSprite* DrawSprite::instance_ = nullptr;
 
-	vertexBuffer_->CreateVertexBuffer(kVertexMaxDrawCount, pDevice_);
+	void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator, const uint32_t clientWidth, const uint32_t clientHeight) {
 
-}
+		pDevice_ = device;
 
-void DrawSprite::CreateIndexBuffer() {
+		pCommandContextDirect_ = commandContextDirect;
 
-	indexBuffer_ = std::make_unique<IndexBuffer>();
+		pSrvAllocator_ = srvAllocator;
 
-	indexBuffer_->CreateIndexBuffer(kVertexMaxDrawCount, pDevice_);
+		orthographicMatrix_ = Matrix4x4::Orthographic(0.0f, 0.0f, Cast::Float(clientWidth), Cast::Float(clientHeight), 0.0f, 100.0f);
 
-}
+		CreateVertexBuffer();
 
-void DrawSprite::CreateMaterialBuffer() {
+		CreateIndexBuffer();
 
-	materialBuffer_ = std::make_unique<MultiConstantBuffer<MaterialData>>();
+		CreateMaterialBuffer();
 
-	materialBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		CreateTransformationBuffer();
 
-}
+	}
 
-void DrawSprite::CreateTransformationBuffer() {
+	void DrawSprite::CreateVertexBuffer() {
 
-	transformationBuffer_ = std::make_unique<MultiConstantBuffer<TransformationData>>();
+		vertexBuffer_ = std::make_unique<VertexBuffer>();
 
-	transformationBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		vertexBuffer_->CreateVertexBuffer(kVertexMaxDrawCount, pDevice_);
 
-}
+	}
 
-void DrawSprite::DrawSpriteCall(const uint32_t& textureIndex) {
+	void DrawSprite::CreateIndexBuffer() {
 
-	assert(constantBufferCount_ + 1 < kMaxDrawCount);
+		indexBuffer_ = std::make_unique<IndexBuffer>();
 
-	// TransformMatrix (WVP) のアドレス計算
-	D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(TransformationData));
-	// GPUに設定(rootParameter0)
-	pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
+		indexBuffer_->CreateIndexBuffer(kVertexMaxDrawCount, pDevice_);
 
-	// Material (Color) のアドレス計算
-	D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
-	// GPUに設定(rootParameter1)
-	pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
+	}
 
-	DescriptorAllocator::DescriptorHandle textureHandle{};
-	textureHandle = pSrvAllocator_->GetHandle(textureIndex);
+	void DrawSprite::CreateMaterialBuffer() {
 
-	// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
-	pCommandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+		materialBuffer_ = std::make_unique<MultiConstantBuffer<MaterialData>>();
 
-	// 描画(DrawCall) 6頂点インデックスで1つのインスタンス
-	pCommandContextDirect_->GetCommandList()->DrawIndexedInstanced(6, 1, indexBuffer_->GetDrewCount(), vertexBuffer_->GetDrewCount(), 0);
+		materialBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
 
-	indexBuffer_->AddDrewCount(6);
+	}
 
-	vertexBuffer_->AddDrewCount(4);
+	void DrawSprite::CreateTransformationBuffer() {
 
-	constantBufferCount_++;
+		transformationBuffer_ = std::make_unique<MultiConstantBuffer<TransformationData>>();
 
-}
+		transformationBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
 
-void DrawSprite::PrepareSprite() {
+	}
 
-	// VertexBufferView(VBV)を設定
-	pCommandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, vertexBuffer_->PGetVertexBufferView());
+	void DrawSprite::DrawSpriteCall(const uint32_t& textureIndex) {
 
-	// IndexBufferView(IBV)を設定
-	pCommandContextDirect_->GetCommandList()->IASetIndexBuffer(indexBuffer_->PGetBufferView());
+		assert(constantBufferCount_ + 1 < kMaxDrawCount);
 
-	// トランスフォームの定数バッファの最初のアドレスを設定
-	pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationBuffer_->GetGpuVirtualAddress());
+		// TransformMatrix (WVP) のアドレス計算
+		D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr = transformationBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(TransformationData));
+		// GPUに設定(rootParameter0)
+		pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformOffsetAddr);
 
-	// マテリアルの定数バッファの最初のアドレスを設定
-	pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialBuffer_->GetGpuVirtualAddress());
+		// Material (Color) のアドレス計算
+		D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr = materialBuffer_->GetGpuVirtualAddress() + (constantBufferCount_ * sizeof(MaterialData));
+		// GPUに設定(rootParameter1)
+		pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialOffsetAddr);
 
-}
+		DescriptorAllocator::DescriptorHandle textureHandle{};
+		textureHandle = pSrvAllocator_->GetHandle(textureIndex);
 
-void DrawSprite::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize) {
+		// SRVのDescriptorTableの先頭を設定 2はrootParameter[2]
+		pCommandContextDirect_->GetCommandList()->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
-	// 三角形のTransform
-	Matrix4x4 worldMatrix = MakeWorldMatrix(rectTransform);
+		// 描画(DrawCall) 6頂点インデックスで1つのインスタンス
+		pCommandContextDirect_->GetCommandList()->DrawIndexedInstanced(6, 1, indexBuffer_->GetDrewCount(), vertexBuffer_->GetDrewCount(), 0);
 
-	TransformationData TransformData{};
+		indexBuffer_->AddDrewCount(6);
 
-	TransformData.wvp = worldMatrix * orthographicMatrix_;
-	TransformData.world = worldMatrix;
+		vertexBuffer_->AddDrewCount(4);
 
-	transformationBuffer_->SetData(TransformData, constantBufferCount_);
+		constantBufferCount_++;
 
+	}
 
-	MaterialData MaterialData{};
+	void DrawSprite::PrepareSprite() {
 
-	MaterialData.color = textureColor;
-	MaterialData.inLightingEnable = false;
+		// VertexBufferView(VBV)を設定
+		pCommandContextDirect_->GetCommandList()->IASetVertexBuffers(0, 1, vertexBuffer_->PGetVertexBufferView());
 
-	Matrix4x4 uvTransformData = MakeScaleMatrix(uvTransform.scale);
-	uvTransformData *= MakeZRotateMatrix(uvTransform.rotate.z);
-	uvTransformData *= MakeTranslateMatrix(uvTransform.translate);
-	MaterialData.uvTransformMatrix = uvTransformData;
+		// IndexBufferView(IBV)を設定
+		pCommandContextDirect_->GetCommandList()->IASetIndexBuffer(indexBuffer_->PGetBufferView());
 
-	materialBuffer_->SetData(MaterialData, constantBufferCount_);
+		// トランスフォームの定数バッファの最初のアドレスを設定
+		pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(1, transformationBuffer_->GetGpuVirtualAddress());
 
+		// マテリアルの定数バッファの最初のアドレスを設定
+		pCommandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(0, materialBuffer_->GetGpuVirtualAddress());
 
-	/* 1枚目の三角形 */
+	}
 
-	uint32_t vertexCount = vertexBuffer_->GetDrewCount();
+	void DrawSprite::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize) {
 
-	Vector2 halfSize = rectSize * 0.5f;
+		// 三角形のTransform
+		Matrix4x4 worldMatrix = rectTransform.MakeWorldMatrix();
 
-	uint32_t indexCount = indexBuffer_->GetDrewCount();
+		TransformationData TransformData{};
 
-	VertexData VertexData{};
+		TransformData.wvp = worldMatrix * orthographicMatrix_;
+		TransformData.world = worldMatrix;
 
-	// 法線の向きは全点共通
-	VertexData.normal = Vector3{ 0.0f, 0.0f, -1.0f };
+		transformationBuffer_->SetData(TransformData, constantBufferCount_);
 
-	// 左下
-	VertexData.texCoord = { 0.0f, 1.0f };
-	VertexData.position = { -halfSize.x, halfSize.y, 0.0f, 1.0f };
 
-	vertexBuffer_->SetVertexData(VertexData, vertexCount++);
+		MaterialData MaterialData{};
 
-	// 左上
-	VertexData.texCoord = { 0.0f, 0.0f };
-	VertexData.position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
+		MaterialData.color = textureColor;
+		MaterialData.inLightingEnable = false;
 
-	vertexBuffer_->SetVertexData(VertexData, vertexCount++);
+		Matrix4x4 uvTransformData = Matrix4x4::Scale(uvTransform.scale);
+		uvTransformData *= Matrix4x4::RotateZ(uvTransform.rotate.z);
+		uvTransformData *= Matrix4x4::Translate(uvTransform.translate);
+		MaterialData.uvTransformMatrix = uvTransformData;
 
-	// 右下
-	VertexData.texCoord = { 1.0f, 1.0f };
-	VertexData.position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
+		materialBuffer_->SetData(MaterialData, constantBufferCount_);
 
-	vertexBuffer_->SetVertexData(VertexData, vertexCount++);
 
-	// 右上
-	VertexData.texCoord = { 1.0f, 0.0f };
-	VertexData.position = { halfSize.x, -halfSize.y, 0.0f, 1.0f };
+		/* 1枚目の三角形 */
 
-	vertexBuffer_->SetVertexData(VertexData, vertexCount++);
+		uint32_t vertexCount = vertexBuffer_->GetDrewCount();
 
-	// インスタンス内で頂点インデックスを0から数える
-	indexBuffer_->SetIndexData(0, indexCount++);
-	indexBuffer_->SetIndexData(1, indexCount++);
-	indexBuffer_->SetIndexData(2, indexCount++);
-	indexBuffer_->SetIndexData(1, indexCount++);
-	indexBuffer_->SetIndexData(3, indexCount++);
-	indexBuffer_->SetIndexData(2, indexCount++);
+		Vector2 halfSize = rectSize * 0.5f;
 
-	// 描画
-	this->DrawSpriteCall(textureIndex);
+		uint32_t indexCount = indexBuffer_->GetDrewCount();
 
-}
+		VertexData VertexData{};
 
-void DrawSprite::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ) {
+		// 法線の向きは全点共通
+		VertexData.normal = Vector3{ 0.0f, 0.0f, -1.0f };
 
-	Vector2 difference = end - start;
-	float length = VectorLength(difference);
+		// 左下
+		VertexData.texCoord = { 0.0f, 1.0f };
+		VertexData.position = { -halfSize.x, halfSize.y, 0.0f, 1.0f };
 
-	Vector2 rectPos = start + difference * 0.5f;
+		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
 
-	Transform rectTransform{};
-	rectTransform.translate = { rectPos.x, rectPos.y, posZ };
-	rectTransform.scale = { 1.0f, 1.0f, 1.0f };
-	rectTransform.rotate = { 0.0f, 0.0f, std::atan2(difference.y, difference.x) };
+		// 左上
+		VertexData.texCoord = { 0.0f, 0.0f };
+		VertexData.position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
 
-	DrawSpriteRect(textureIndex, textureColor, uvTransform, rectTransform, Vector2{ length, width });
+		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
+
+		// 右下
+		VertexData.texCoord = { 1.0f, 1.0f };
+		VertexData.position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
+
+		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
+
+		// 右上
+		VertexData.texCoord = { 1.0f, 0.0f };
+		VertexData.position = { halfSize.x, -halfSize.y, 0.0f, 1.0f };
+
+		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
+
+		// インスタンス内で頂点インデックスを0から数える
+		indexBuffer_->SetIndexData(0, indexCount++);
+		indexBuffer_->SetIndexData(1, indexCount++);
+		indexBuffer_->SetIndexData(2, indexCount++);
+		indexBuffer_->SetIndexData(1, indexCount++);
+		indexBuffer_->SetIndexData(3, indexCount++);
+		indexBuffer_->SetIndexData(2, indexCount++);
+
+		// 描画
+		this->DrawSpriteCall(textureIndex);
+
+	}
+
+	void DrawSprite::DrawSpriteLine(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Vector2& start, const Vector2& end, const float& width, const float& posZ) {
+
+		Vector2 difference = end - start;
+		float length = difference.Length();
+
+		Vector2 rectPos = start + difference * 0.5f;
+
+		Transform rectTransform{};
+		rectTransform.translate = { rectPos.x, rectPos.y, posZ };
+		rectTransform.scale = { 1.0f, 1.0f, 1.0f };
+		rectTransform.rotate = { 0.0f, 0.0f, std::atan2(difference.y, difference.x) };
+
+		DrawSpriteRect(textureIndex, textureColor, uvTransform, rectTransform, Vector2{ length, width });
+
+	}
 
 }

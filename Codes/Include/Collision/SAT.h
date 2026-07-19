@@ -5,31 +5,35 @@
 #include "Collision/CollisionTypes.h"
 #include "Collision/HitMesh.h"
 
-Projection ProjectVertices(
-    const std::vector<Vector3>& vertices,
-    const Vector3& axis);
+namespace Atrum::Physics::SAT {
 
-float Overlap(
-    const Projection& a,
-    const Projection& b);
+    Geometry::Projection ProjectVertices(
+        const std::vector<Math::Vector3>& vertices,
+        const Math::Vector3& axis);
 
-std::vector<Vector3> GetFaceAxes(
-    const HitMesh& mesh);
+    float Overlap(
+        const Geometry::Projection& a,
+        const Geometry::Projection& b);
 
-std::vector<Vector3> GetEdgeAxes(
-    const HitMesh& a,
-    const HitMesh& b);
+    std::vector<Math::Vector3> GetFaceAxes(
+        const HitMesh& mesh);
 
-std::vector<Vector3> GetAxes(
-    const HitMesh& a,
-    const HitMesh& b);
+    std::vector<Math::Vector3> GetEdgeAxes(
+        const HitMesh& a,
+        const HitMesh& b);
 
-std::vector<ContactPoint> GenerateContactPoints(
-    const HitMesh& bodyA,
-    const HitMesh& bodyB,
-    const Vector3& normal,
-    float depth);
+    std::vector<Math::Vector3> GetAxes(
+        const HitMesh& a,
+        const HitMesh& b);
 
-SATResult TestSAT(
-    const HitMesh& bodyA,
-    const HitMesh& bodyB);
+    std::vector<ContactPoint> GenerateContactPoints(
+        const HitMesh& bodyA,
+        const HitMesh& bodyB,
+        const Math::Vector3& normal,
+        float depth);
+
+    SATResult TestSAT(
+        const HitMesh& bodyA,
+        const HitMesh& bodyB);
+
+}

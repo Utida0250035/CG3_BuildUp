@@ -5,25 +5,29 @@
 #include "Collision/ContactConstraint.h"
 #include "Collision/HitMesh.h"
 
-class CollisionManager {
-public:
+namespace Atrum::Physics {
 
-    void Clear();
+	class CollisionManager {
+	public:
 
-    void AddBody(HitMesh* body);
+		void Clear();
 
-    void CheckCollision();
+		void AddBody(HitMesh* body);
 
-private:
+		void CheckCollision();
 
-    void BuildConstraints();
+	private:
 
-    void SolvePositions();
+		void BuildConstraints();
 
-    void SolveVelocities();
+		void SolvePositions();
 
-private:
+		void SolveVelocities();
 
-    std::vector<HitMesh*> bodies_;
-    std::vector<ContactConstraint> constraints_;
-};
+	private:
+
+		std::vector<HitMesh*> bodies_;
+		std::vector<ContactConstraint> constraints_;
+	};
+
+}

@@ -139,6 +139,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Engine\Device\SwapChain.cpp" />
     <ClCompile Include="Codes\Source\Engine\Pipeline\PipelineState.cpp" />
     <ClCompile Include="Codes\Source\Engine\Pipeline\RootSignature.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp" />
@@ -161,6 +162,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector4.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity.cpp" />
+    <ClCompile Include="Codes\Source\System\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -201,8 +204,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Collision\SAT.h" />
     <ClInclude Include="Codes\Include\Debug\DebugCamera.h" />
     <ClInclude Include="Codes\Include\Debug\DebugConsole.h" />
+    <ClInclude Include="Codes\Include\Debug\DebugLayer.h" />
+    <ClInclude Include="Codes\Include\Debug\ErrorSupression.h" />
     <ClInclude Include="Codes\Include\Debug\ImGui.h" />
     <ClInclude Include="Codes\Include\Debug\Log.h" />
+    <ClInclude Include="Codes\Include\Debug\SetBreakOnSeverity.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h" />
+    <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h" />
     <ClInclude Include="Codes\Include\Engine\AtrumEngine.h" />
     <ClInclude Include="Codes\Include\Engine\Command\CommandContext.h" />
     <ClInclude Include="Codes\Include\Engine\Command\Fence.h" />
@@ -229,6 +240,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\Geometry\Bezier.h" />
+    <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h" />
     <ClInclude Include="Codes\Include\Geometry\OBB.h" />
     <ClInclude Include="Codes\Include\Geometry\Plane.h" />
     <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h" />
@@ -242,14 +254,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
     <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h" />
-    <ClInclude Include="Codes\Include\Math\Projection.h" />
     <ClInclude Include="Codes\Include\Math\Quaternion.h" />
     <ClInclude Include="Codes\Include\Math\Transform.h" />
     <ClInclude Include="Codes\Include\Math\Vector2.h" />
     <ClInclude Include="Codes\Include\Math\Vector3.h" />
     <ClInclude Include="Codes\Include\Math\Vector4.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
-    <ClInclude Include="Codes\Include\System\ECS.h" />
+    <ClInclude Include="Codes\Include\System\Component.h" />
+    <ClInclude Include="Codes\Include\System\Entity.h" />
+    <ClInclude Include="Codes\Include\System\EntityStorage.h" />
     <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

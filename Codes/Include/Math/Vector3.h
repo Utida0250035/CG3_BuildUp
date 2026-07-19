@@ -1,105 +1,153 @@
 #pragma once
 
-struct Vector3 {
-	float x;
-	float y;
-	float z;
-};
+namespace Atrum::Math {
 
-inline constexpr Vector3 operator-(Vector3& me) {
+	struct Vector3 {
+		float x;
+		float y;
+		float z;
 
-	return{ -me.x, -me.y, -me.z };
+		Vector3& operator=(Vector3 other) {
+			x = other.x;
+			y = other.y;
+			z = other.z;
 
-}
+			return (*this);
 
-inline constexpr Vector3 operator+(Vector3& me) {
+		}
 
-	return{ me.x, me.y, me.z };
+		constexpr Vector3 operator-()const {
 
-}
+			return{ -x, -y, -z };
 
-inline constexpr void operator+=(Vector3& me, const Vector3& other) {
-	me.x += other.x;
-	me.y += other.y;
-	me.z += other.z;
-}
+		}
 
-inline constexpr Vector3 operator+(const Vector3& me, const Vector3& other) {
+		constexpr Vector3 operator+()const {
 
-	return Vector3{ me.x + other.x, me.y + other.y, me.z + other.z };
+			return (*this);
 
-}
+		}
 
-inline constexpr void operator-=(Vector3& me, const Vector3& other) {
-	me.x -= other.x;
-	me.y -= other.y;
-	me.z -= other.z;
-}
+		constexpr Vector3& operator+=(const Vector3& other) {
+			x += other.x;
+			y += other.y;
+			z += other.z;
 
-inline constexpr Vector3 operator-(const Vector3& me, const Vector3& other) {
+			return (*this);
 
-	return Vector3{ me.x - other.x, me.y - other.y, me.z - other.z };
+		}
 
-}
+		constexpr Vector3 operator+(const Vector3& other) const {
 
-inline constexpr void operator*=(Vector3& vector, const float& scalar) {
-	vector.x *= scalar;
-	vector.y *= scalar;
-	vector.z *= scalar;
-}
+			Vector3 result = (*this);
+			result += other;
 
-inline constexpr Vector3 operator*(const Vector3& vector, const float& scalar) {
+			return result;
 
-	return Vector3{ vector.x * scalar, vector.y * scalar, vector.z * scalar };
+		}
 
-}
+		constexpr Vector3& operator-=(const Vector3& other) {
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
 
-inline constexpr Vector3 operator*(const float& scalar, const Vector3& vector) {
+			return (*this);
 
-	return Vector3{ vector.x * scalar, vector.y * scalar, vector.z * scalar };
+		}
 
-}
+		constexpr Vector3 operator-(const Vector3& other) const {
 
-inline constexpr void operator/=(Vector3& vector, const float& scalar) {
-	vector.x /= scalar;
-	vector.y /= scalar;
-	vector.z /= scalar;
-}
+			Vector3 result = (*this);
+			result -= other;
 
-inline constexpr Vector3 operator/(const Vector3& vector, const float& scalar) {
+			return result;
 
-	return Vector3{ vector.x / scalar, vector.y / scalar, vector.z / scalar };
+		}
 
-}
+		constexpr Vector3& operator*=(const float scalar) {
+			x *= scalar;
+			y *= scalar;
+			z *= scalar;
 
-inline constexpr float VectorDot(const Vector3& me, const Vector3& other) {
+			return (*this);
 
-	return me.x * other.x + me.y * other.y + me.z * other.z;
+		}
 
-}
+		constexpr Vector3 operator*(const float scalar) const {
 
-inline constexpr Vector3 VectorCross(const Vector3& me, const Vector3& other) {
+			Vector3 result = (*this);
 
-	return Vector3{ me.y * other.z - me.z * other.y, me.z * other.x - me.x * other.z, me.x * other.y - me.y * other.x };
+			result *= scalar;
 
-}
+			return result;
 
-float VectorLength(const Vector3& vector);
+		}
 
-inline constexpr float VectorLengthSquare(const Vector3& vector) {
+		constexpr Vector3& operator/=(const float scalar) {
+			x /= scalar;
+			y /= scalar;
+			z /= scalar;
 
-	return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z;
+			return (*this);
 
-}
+		}
 
-inline Vector3 VectorNormalize(const Vector3& vector) {
-	float length = VectorLength(vector);
+		constexpr Vector3 operator/(const float scalar) const {
+			Vector3 result = (*this);
+			result /= scalar;
 
-	if (length > 0.00001f) {
+			return result;
+		}
 
-		return vector / length;
+		constexpr float Dot(const Vector3& other) const {
+
+			return x * other.x + y * other.y + z * other.z;
+
+		}
+
+		constexpr Vector3 Cross(const Vector3& other) const {
+
+			return Vector3{ y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x };
+
+		}
+
+		float Length() const;
+
+		constexpr float LengthSquare() const {
+
+			return x * x + y * y + z * z;
+
+		}
+
+		void Normalize() {
+
+			float length = Length();
+
+			if (length <= 0.00001f) {
+
+				return;
+
+			}
+
+			(*this) /= length;
+
+		}
+
+		[[nodiscard]] Vector3 Normalized() const {
+			Vector3 normalized = (*this);
+
+			normalized.Normalize();
+
+			return normalized;
+
+		}
+
+	};
+
+	inline constexpr Vector3 operator*(const float& scalar, const Vector3& vector) {
+
+		return Vector3{ vector.x * scalar, vector.y * scalar, vector.z * scalar };
 
 	}
 
-	return Vector3{ 0.0f, 0.0f, 0.0f };
 }

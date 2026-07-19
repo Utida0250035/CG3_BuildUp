@@ -5,42 +5,46 @@
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
 
-class IndexBuffer {
+namespace Atrum {
 
-private:
+	class IndexBuffer {
 
-	// インデックスリソース
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
+	private:
 
-	// IndexBufferView
-	D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
+		// インデックスリソース
+		Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_ = nullptr;
 
-	// 頂点インデックスデータ
-	uint32_t* indexData_ = nullptr;
+		// IndexBufferView
+		D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
-	// 頂点インデックスカウント
-	uint32_t indexDrewCount_ = 0;
+		// 頂点インデックスデータ
+		uint32_t* indexData_ = nullptr;
 
-public:
+		// 頂点インデックスカウント
+		uint32_t indexDrewCount_ = 0;
 
-	void CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device);
+	public:
 
-	/* カウント加算 */
+		void CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device);
 
-	void AddDrewCount(const uint32_t add) { indexDrewCount_ += add; }
+		/* カウント加算 */
 
-	/* セッター */
+		void AddDrewCount(const uint32_t add) { indexDrewCount_ += add; }
 
-	void SetIndexData(const uint32_t indexData, const uint32_t index) { indexData_[index] = indexData; }
+		/* セッター */
 
-	void ResetDrewCount() { indexDrewCount_ = 0; }
+		void SetIndexData(const uint32_t indexData, const uint32_t index) { indexData_[index] = indexData; }
 
-	/* ゲッター */
+		void ResetDrewCount() { indexDrewCount_ = 0; }
 
-	uint32_t GetDrewCount() const { return indexDrewCount_; }
+		/* ゲッター */
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return indexResource_->GetGPUVirtualAddress(); }
+		uint32_t GetDrewCount() const { return indexDrewCount_; }
 
-	D3D12_INDEX_BUFFER_VIEW* PGetBufferView() { return &indexBufferView_; }
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return indexResource_->GetGPUVirtualAddress(); }
 
-};
+		D3D12_INDEX_BUFFER_VIEW* PGetBufferView() { return &indexBufferView_; }
+
+	};
+
+}

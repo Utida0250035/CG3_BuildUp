@@ -1,8 +1,12 @@
 #include "Math/Vector4.h"
 #include <cmath>
 
-float VectorLength(const Vector4& vector) {
+namespace Atrum::Math {
 
-	return sqrt(VectorLengthSquare(vector));
+	float Vector4::Length() const {
+
+		return sqrt(LengthSquare());
+
+	}
 
 }

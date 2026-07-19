@@ -2,114 +2,118 @@
 #include "Engine/Pipeline/PipelineState.h"
 #include <cassert>
 
-void PipelineState::SetupInputLayout() {
+namespace Atrum {
 
-	inputElementDescriptions_[0].SemanticName = "POSITION";
-	inputElementDescriptions_[0].SemanticIndex = 0;
-	inputElementDescriptions_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	inputElementDescriptions_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	void PipelineState::SetupInputLayout() {
 
-	inputElementDescriptions_[1].SemanticName = "TEXCOORD";
-	inputElementDescriptions_[1].SemanticIndex = 0;
-	inputElementDescriptions_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
-	inputElementDescriptions_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+		inputElementDescriptions_[0].SemanticName = "POSITION";
+		inputElementDescriptions_[0].SemanticIndex = 0;
+		inputElementDescriptions_[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		inputElementDescriptions_[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputElementDescriptions_[2].SemanticName = "NORMAL";
-	inputElementDescriptions_[2].SemanticIndex = 0;
-	inputElementDescriptions_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	inputElementDescriptions_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+		inputElementDescriptions_[1].SemanticName = "TEXCOORD";
+		inputElementDescriptions_[1].SemanticIndex = 0;
+		inputElementDescriptions_[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+		inputElementDescriptions_[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
-	inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
+		inputElementDescriptions_[2].SemanticName = "NORMAL";
+		inputElementDescriptions_[2].SemanticIndex = 0;
+		inputElementDescriptions_[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+		inputElementDescriptions_[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
-	LogFile::GetInstance()->Log("Finished SetUp InputLayout");
+		inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
+		inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
 
-}
+		Debug::LogFile::GetInstance()->Log("Finished SetUp InputLayout");
 
-void PipelineState::SetupBlendState() {
+	}
 
-	// BlendStateの設定
+	void PipelineState::SetupBlendState() {
 
-	// 全ての色要素を書き込む
-	blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		// BlendStateの設定
 
-	LogFile::GetInstance()->Log("Finished SetUp BlendState");
+		// 全ての色要素を書き込む
+		blendDesc_.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
-}
+		Debug::LogFile::GetInstance()->Log("Finished SetUp BlendState");
 
-void PipelineState::SetupRasterizerState() {
+	}
 
-	// RasterizerStateの設定
+	void PipelineState::SetupRasterizerState() {
 
-	// 裏面(時計回り)を表示しない
-	rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
+		// RasterizerStateの設定
 
-	// 三角形の中を塗りつぶす
-	rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
+		// 裏面(時計回り)を表示しない
+		rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
 
-	LogFile::GetInstance()->Log("Finished SetUp RasterizerState");
+		// 三角形の中を塗りつぶす
+		rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
-}
+		Debug::LogFile::GetInstance()->Log("Finished SetUp RasterizerState");
 
-void PipelineState::SetupDepthStencilState() {
+	}
 
-	// Depthの機能を有効化する
-	depthStencilDesc_.DepthEnable = true;
+	void PipelineState::SetupDepthStencilState() {
 
-	// 書き込みする
-	depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		// Depthの機能を有効化する
+		depthStencilDesc_.DepthEnable = true;
 
-	// 比較関数をLessEqualとする(近ければ描画される)
-	depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		// 書き込みする
+		depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 
-	LogFile::GetInstance()->Log("Finished SetUp DepthStencilState");
+		// 比較関数をLessEqualとする(近ければ描画される)
+		depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-}
+		Debug::LogFile::GetInstance()->Log("Finished SetUp DepthStencilState");
 
-void PipelineState::Initialize(ID3D12RootSignature* rootSignature, ID3D12Device* device, IDxcBlob* vertexShaderBlob, IDxcBlob* pixelShaderBlob) {
+	}
 
-	this->SetupInputLayout();
-	this->SetupBlendState();
-	this->SetupRasterizerState();
-	this->SetupDepthStencilState();
+	void PipelineState::Initialize(ID3D12RootSignature* rootSignature, ID3D12Device* device, IDxcBlob* vertexShaderBlob, IDxcBlob* pixelShaderBlob) {
 
-	// ルートシグネチャを設定
-	pipelineStateDesc_.pRootSignature = rootSignature;
+		this->SetupInputLayout();
+		this->SetupBlendState();
+		this->SetupRasterizerState();
+		this->SetupDepthStencilState();
 
-	// InputLayout
-	pipelineStateDesc_.InputLayout = inputLayoutDesc_;
+		// ルートシグネチャを設定
+		pipelineStateDesc_.pRootSignature = rootSignature;
 
-	// VertexShader
-	pipelineStateDesc_.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
+		// InputLayout
+		pipelineStateDesc_.InputLayout = inputLayoutDesc_;
 
-	// PixelShader
-	pipelineStateDesc_.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };
+		// VertexShader
+		pipelineStateDesc_.VS = { vertexShaderBlob->GetBufferPointer(), vertexShaderBlob->GetBufferSize() };
 
-	// Blendの設定
-	pipelineStateDesc_.BlendState = blendDesc_;
+		// PixelShader
+		pipelineStateDesc_.PS = { pixelShaderBlob->GetBufferPointer(), pixelShaderBlob->GetBufferSize() };
 
-	// Rasterizerの設定
-	pipelineStateDesc_.RasterizerState = rasterizerDesc_;
+		// Blendの設定
+		pipelineStateDesc_.BlendState = blendDesc_;
 
-	// DepthStencilの設定
-	pipelineStateDesc_.DepthStencilState = depthStencilDesc_;
-	pipelineStateDesc_.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		// Rasterizerの設定
+		pipelineStateDesc_.RasterizerState = rasterizerDesc_;
 
-	// 書き込むRTVの情報
-	pipelineStateDesc_.NumRenderTargets = 1;
-	pipelineStateDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+		// DepthStencilの設定
+		pipelineStateDesc_.DepthStencilState = depthStencilDesc_;
+		pipelineStateDesc_.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	// 利用するトポロジ(形状)のタイプ 三角形
-	pipelineStateDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		// 書き込むRTVの情報
+		pipelineStateDesc_.NumRenderTargets = 1;
+		pipelineStateDesc_.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 
-	// どのように画面に色を打ち込むかの設定
-	pipelineStateDesc_.SampleDesc.Count = 1;
-	pipelineStateDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		// 利用するトポロジ(形状)のタイプ 三角形
+		pipelineStateDesc_.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-	// 実際に生成
-	[[maybe_unused]] HRESULT hr = device->CreateGraphicsPipelineState(&pipelineStateDesc_, IID_PPV_ARGS(&pipelineState_));
-	assert(SUCCEEDED(hr));
+		// どのように画面に色を打ち込むかの設定
+		pipelineStateDesc_.SampleDesc.Count = 1;
+		pipelineStateDesc_.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-	LogFile::GetInstance()->Log("Created PSO");
+		// 実際に生成
+		[[maybe_unused]] HRESULT hr = device->CreateGraphicsPipelineState(&pipelineStateDesc_, IID_PPV_ARGS(&pipelineState_));
+		assert(SUCCEEDED(hr));
+
+		Debug::LogFile::GetInstance()->Log("Created PSO");
+
+	}
 
 }

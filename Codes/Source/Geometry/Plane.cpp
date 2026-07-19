@@ -1,22 +1,28 @@
+#include "Engine/Alias/GeometryAlias.h"
+
 #include "Geometry/Plane.h"
 
-Plane MakePlane(const Vector3& pointA, const Vector3& pointB, const Vector3& pointC) {
+namespace Atrum::Geometry {
 
-	Plane plane;
+	Plane MakePlane(const M::Vector3& pointA, const M::Vector3& pointB, const M::Vector3& pointC) {
 
-	Vector3 aToB = pointB - pointA;
-	Vector3 btoC = pointC - pointB;
+		Plane plane;
 
-	plane.normal = VectorNormalize(VectorCross(aToB, btoC));
+		M::Vector3 aToB = pointB - pointA;
+		M::Vector3 btoC = pointC - pointB;
 
-	plane.distance = VectorDot(pointA, plane.normal);
+		plane.normal = aToB.Cross(btoC).Normalized();
 
-	return plane;
+		plane.distance = pointA.Dot(plane.normal);
 
-}
+		return plane;
 
-float CalcDistance(const Plane& plane, const Vector3& point) {
+	}
 
-	return VectorDot(plane.normal, point) - plane.distance;
+	float CalcDistance(const Plane& plane, const M::Vector3& point) {
+
+		return plane.normal.Dot(point) - plane.distance;
+
+	}
 
 }
