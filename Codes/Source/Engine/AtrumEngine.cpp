@@ -1,5 +1,6 @@
 #include "Engine/Alias/CoreAlias.h"
 
+#include "Audio/Audio.h"
 #include "Cast/StaticCast.h"
 #include "Debug/DebugConsole.h"
 #include "Debug/DebugLayer.h"
@@ -271,7 +272,7 @@ namespace Atrum {
 
 #endif
 
-	/* アセットストレージの初期化 */
+		/* アセットストレージの初期化 */
 
 		pTextureStorage_ = TextureStorage::GetInstance();
 		pTextureStorage_->Initialize(commandContextDirect_.get(), fenceManager_.get(), swapChainManager_.get(), srvAllocator_.get(), renderDevice_->GetDevice(), &temporaryResources_);
@@ -303,6 +304,10 @@ namespace Atrum {
 		// SDL2入力
 		playInput_ = I::PlayInput::GetInstance();
 
+		/* 音源マネージャーの初期化 */
+
+		audio_ = Audio::Manager::GetInstance();
+		audio_->Initialize();
 
 		/* 初期化完了のログ出力 */
 
@@ -391,6 +396,8 @@ namespace Atrum {
 		}
 
 		directInput_->Update();
+
+		audio_->Update();
 
 		return true;
 

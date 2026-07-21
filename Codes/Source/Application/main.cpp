@@ -92,12 +92,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* 音源 */
 
-	std::unique_ptr<AudioManager> audio = std::make_unique<AudioManager>();
-	audio->Initialize();
+	AudioManager* audio = AudioManager::GetInstance();
 
-	[[maybe_unused]] size_t seAlarm = audio->Load("./Assets/Audios/Alarm01.wav");
 
-	size_t seCat = audio->Load("./Assets/Audios/seCat.mp3");
+	[[maybe_unused]] size_t bgmShiningStarMp3 = 0;
+	[[maybe_unused]] size_t bgmShiningStarM4a = 0;
+	[[maybe_unused]] size_t bgmShiningStarOgg = 0;
+
+	{
+
+		std::string name = "./Assets/Audios/bgmShiningStar";
+
+		bgmShiningStarMp3 = audio->Load(name + ".mp3");
+		bgmShiningStarOgg = audio->Load(name + ".ogg");
+		bgmShiningStarM4a = audio->Load(name + ".m4a");
+
+	}
+
+	AudioHandle bgmPlayHandle{};
 
 	/* Triangle */
 
@@ -196,9 +208,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	/* デバッグカメラ */
-	
+
 #ifdef _DEBUG
-	
+
 	std::unique_ptr<DebugCamera> camera = nullptr;
 
 	camera = std::make_unique<DebugCamera>();
@@ -220,9 +232,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #ifdef USE_IMGUI
 
 	/* ImGui */
-
-	ImVec2 imguiChildSize = ImVec2(0.0f, 0.0f);
-	ImGuiChildFlags imguiChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY;
 
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
@@ -255,7 +264,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (playInput->IsKeyTrigger(Key::SPACE)) {
 
-			audio->PlayShort(seCat);
+			audio->Play(bgmShiningStarOgg);
 
 		}
 
@@ -279,22 +288,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat2("cursorDelta", &cursorDelta.x);
 
-		ImGui::SmallButton("seCat");
-
-		if (ImGui::IsItemActivated()) {
-
-			audio->PlayShort(seCat);
-
-		}
-
-		ImGui::SmallButton("seAlarm");
-
-		if (ImGui::IsItemActivated()) {
-
-			audio->PlayShort(seAlarm);
-
-		}
-
 		ImGui::DragFloat("gravity", &gravity);
 
 		ImGui::SmallButton("physicsSwitch");
@@ -316,6 +309,43 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		ImGui::End();
+
+		ImGui::Begin("audio");
+
+		if (ImGui::BeginChild("shiningStar", ImGui::kChildSize, ImGui::kChildFlags)) {
+
+			ImGui::Text("shiningStar");
+
+			ImGui::SmallButton("mp3");
+
+			if (ImGui::IsItemActivated()) {
+
+				bgmPlayHandle = audio->Play(bgmShiningStarMp3);
+
+			}
+
+			ImGui::SmallButton("ogg");
+
+			if (ImGui::IsItemActivated()) {
+
+				bgmPlayHandle = audio->Play(bgmShiningStarOgg);
+
+			}
+
+			ImGui::SmallButton("m4a");
+
+			if (ImGui::IsItemActivated()) {
+
+				bgmPlayHandle = audio->Play(bgmShiningStarM4a);
+
+			}
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::End();
+
 
 		ImGui::Begin("DebugCamera");
 
@@ -401,7 +431,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("planeModel");
 
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("transform");
 
@@ -419,7 +449,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("multiMeshModel");
 
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("transform");
 
@@ -437,7 +467,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("multiMaterialModel");
 
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("transform");
 
@@ -495,7 +525,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("sprite");
 
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("transform");
 
@@ -507,7 +537,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::EndChild();
 
-		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("uvTransform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("uvTransform");
 
@@ -519,7 +549,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::EndChild();
 
-		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("texture");
 
@@ -548,7 +578,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::Begin("triangle");
 
 
-		if (ImGui::BeginChild("transform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("transform");
 
@@ -569,7 +599,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 
-		if (ImGui::BeginChild("uvTransform", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("uvTransform", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("uvTransform");
 
@@ -582,7 +612,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::EndChild();
 
 
-		if (ImGui::BeginChild("texture", imguiChildSize, imguiChildFlags)) {
+		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
 			ImGui::Text("texture");
 

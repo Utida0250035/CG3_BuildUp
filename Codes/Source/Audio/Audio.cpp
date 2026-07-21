@@ -1,6 +1,7 @@
 #include "Audio/Audio.h"
 #include "Audio/AudioDecoder.h"
 #include "Audio/StreamingSourceVoice.h"
+#include "Audio/StreamingVoiceCallBack.h"
 #include "File/FileSize.h"
 #include "Hash/Hash64.h"
 #include "String/ConvertString.h"
@@ -8,7 +9,14 @@
 #include <filesystem>
 #include <fstream>
 
+#include <mfreadwrite.h>
+#pragma comment(lib, "mfplat.lib")
+#pragma comment(lib, "mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+
 namespace Atrum::Audio {
+
+	AudioManager* AudioManager::instance_ = nullptr;
 
 	AudioManager::~AudioManager() {
 
@@ -39,49 +47,36 @@ namespace Atrum::Audio {
 
 	void AudioManager::Update() {
 
-		for (auto& streamingVoice : streamingSourceVoicePool_) {
-		// ストリーミング再生中かつ、バッファを補充する必要があるかチェック
-			if (streamingVoice->state == VoiceState::Playing) {
+		for (auto& voice : sourceVoicePool_) {
 
-				XAUDIO2_VOICE_STATE state;
-				streamingVoice->pVoice->GetState(&state);
+			if (voice->state == VoiceState::Waiting) {
 
-				// 再生中のバッファ数が kBufferCount 未満なら補充する
-				if (state.BuffersQueued < streamingVoice->kBufferCount) {
-					// 補充処理（ReadNextChunk を呼んで SubmitSourceBuffer する）
-					RefillBuffer(*streamingVoice);
-				}
+				voice->pVoice->Stop();
+				voice->pVoice->FlushSourceBuffers();
+
+				voice->state = VoiceState::Stopped;
+
 			}
+
 		}
 
-	}
+		for (auto& streamingVoice : streamingSourceVoicePool_) {
 
-	void AudioManager::RefillBuffer(StreamingSourceVoice& voice) {
+			if (streamingVoice->state == VoiceState::Waiting) {
 
-		// 現在のインデックスのバッファを使う
-		BYTE* pBuffer = voice.pBuffers[voice.nextBufferIndex];
-		DWORD bytesRead = 0;
+				streamingVoice->pVoice->Stop();
+				streamingVoice->pVoice->FlushSourceBuffers();
 
-		// 1. ファイルからデータを読み込む
-		if (AudioDecoder::ReadNextChunk(voice, pBuffer, voice.kBufferSize, &bytesRead)) {
+				if (streamingVoice->pReader) {
 
-			// 2. XAudio2用バッファ構造体の設定
-			XAUDIO2_BUFFER xBuffer = {};
-			xBuffer.AudioBytes = bytesRead;
-			xBuffer.pAudioData = pBuffer;
-			xBuffer.Flags = 0;
+					streamingVoice->pReader->Release();
+					streamingVoice->pReader = nullptr;
 
-			// 3. ボイスへ送信
-			voice.pVoice->SubmitSourceBuffer(&xBuffer);
+				}
 
-			// 4. インデックスを更新（循環させる）
-			voice.nextBufferIndex = (voice.nextBufferIndex + 1) % voice.kBufferCount;
+				streamingVoice->state = VoiceState::Stopped;
 
-		} else {
-
-			// 読み込みができなかった場合（ファイルの終端など）の処理
-			// ここで state を Stopped に変えるか、ループ再生なら先頭に戻す処理を行う
-			voice.state = VoiceState::Stopped;
+			}
 
 		}
 
@@ -89,27 +84,7 @@ namespace Atrum::Audio {
 
 	void AudioManager::CreateVoicePool() {
 
-		// 標準的なフォーマット設定: 44.1kHz, 16bit, ステレオ
-		WAVEFORMATEX standardWfEx = {};
-
-		// 非圧縮PCM
-		standardWfEx.wFormatTag = WAVE_FORMAT_PCM;
-
-		// ステレオ
-		standardWfEx.nChannels = 2;
-
-		// 44.1kHz
-		standardWfEx.nSamplesPerSec = 44100;
-
-		// 16bit
-		standardWfEx.wBitsPerSample = 16;
-
-		standardWfEx.nBlockAlign = (standardWfEx.nChannels * standardWfEx.wBitsPerSample) / 8;
-
-		standardWfEx.nAvgBytesPerSec = standardWfEx.nSamplesPerSec * standardWfEx.nBlockAlign;
-
-		// PCMの場合は0
-		standardWfEx.cbSize = 0;
+		WAVEFORMATEX standardWfEx = StandardWaveFormatEx();
 
 		for (size_t i = 0; i < kSourceVoiceMax; ++i) {
 			// 定数分のSourceVoiceを生成
@@ -138,6 +113,34 @@ namespace Atrum::Audio {
 
 	}
 
+	WAVEFORMATEX AudioManager::StandardWaveFormatEx() {
+
+		// 標準的なフォーマット設定: 44.1kHz, 16bit, ステレオ
+		WAVEFORMATEX standardWfEx = {};
+
+		// 非圧縮PCM
+		standardWfEx.wFormatTag = WAVE_FORMAT_PCM;
+
+		// ステレオ
+		standardWfEx.nChannels = 2;
+
+		// 44.1kHz
+		standardWfEx.nSamplesPerSec = 44100;
+
+		// 16bit
+		standardWfEx.wBitsPerSample = 16;
+
+		standardWfEx.nBlockAlign = (standardWfEx.nChannels * standardWfEx.wBitsPerSample) / 8;
+
+		standardWfEx.nAvgBytesPerSec = standardWfEx.nSamplesPerSec * standardWfEx.nBlockAlign;
+
+		// PCMの場合は0
+		standardWfEx.cbSize = 0;
+
+		return standardWfEx;
+
+	}
+
 	void AudioManager::AddSource(const WAVEFORMATEX& wfEx, std::vector<BYTE>&& pBuffer, const UINT bufferSize, const size_t sourceIndex, const char* filePath) {
 
 		std::unique_ptr<SoundData> soundData = std::make_unique<SoundData>(
@@ -158,83 +161,25 @@ namespace Atrum::Audio {
 
 	}
 
-	size_t AudioManager::LoadWave(const char* filePath) {
+	size_t AudioManager::SetupStreaming(const char* filePath) {
 
-		assert(std::filesystem::exists(filePath));
+		soundDataStorage_.emplace_back(std::make_unique<SoundData>());
 
-		// ファイル入力
-		std::ifstream file(filePath, std::ios_base::binary);
-		// 開けていなければエラー
-		assert(file.is_open());
+		auto& soundData = soundDataStorage_.back();
 
-		// RIFFヘッダの読み込み
-		RiffHeader riff = {};
-		file.read((char*)&riff, sizeof(riff));
+		soundData->filePath = StringToWString(filePath);
+		soundData->isSuitableStreaming = true;
 
-		// ファイルがRIFFかチェック
-		if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
-			assert(false);
-		}
+		soundData->wfEx = StandardWaveFormatEx();
 
-		// タイプが.wavかチェック
-		if (strncmp(riff.type, "WAVE", 4) != 0) {
-			assert(false);
-		}
-
-		// Formatチャンクの読み込み
-		FormatChunk format = {};
-
-		file.read((char*)&format, sizeof(ChunkHeader));
-
-		if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
-			// チャンクヘッダの確認
-
-			assert(false);
-
-		}
-
-		// チャンク本体の読み込み
-		assert(format.chunk.size <= sizeof(format.fmt));
-		file.read((char*)&format.fmt, format.chunk.size);
-
-		// Dataチャンクの読み込み
-		ChunkHeader data{};
-		file.read((char*)&data, sizeof(data));
-
-		// JUNKチャンクを検出した場合
-		if (strncmp(data.id, "JUNK", 4) == 0) {
-
-			// 読み取り位置をJUNKチャンクの終わりまで進める
-			file.seekg(data.size, std::ios_base::cur);
-			// 再読み込み
-			file.read((char*)&data, sizeof(data));
-
-		}
-
-		if (strncmp(data.id, "data", 4) != 0) {
-			assert(false);
-		}
-
-		// Dataチャンクのデータ部(波形データ)の読み込み
-		std::vector<uint8_t> pBuffer(data.size);
-		file.read(reinterpret_cast<char*>(pBuffer.data()), data.size);
-
-		// Waveファイルを閉じる
-		file.close();
-
-		assert(!file.is_open());
-
-		this->AddSource(format.fmt, std::move(pBuffer), static_cast<UINT>(data.size), soundDataStorage_.size(), filePath);
-
-		// 管理番号をを参照元に戻す
 		return soundDataStorage_.size() - 1;
 
 	}
 
-	size_t AudioManager::LoadMp3(const char* filePath) {
+	size_t AudioManager::LoadShort(const char* filePath) {
 
 		std::vector<uint8_t> pBuffer;
-		WAVEFORMATEX* wfEx = nullptr;
+		WAVEFORMATEX* wfEx = new WAVEFORMATEX();
 
 		[[maybe_unused]] bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
 		assert(result);
@@ -251,33 +196,13 @@ namespace Atrum::Audio {
 
 		assert(!soundIndexMap_.contains(Hash64(filePath)));
 
-		std::filesystem::path fPath = filePath;
+		if (IsSuitableStreaming(filePath)) {
 
-		std::filesystem::path extension = fPath.extension().c_str();
-
-		switch (Hash64(extension.c_str())) {
-
-			case L".mp3"_hash64:
-
-				return LoadMp3(filePath.c_str());
-
-				break;
-
-			case L".wav"_hash64:
-
-				return LoadWave(filePath.c_str());
-
-				break;
-
-			default:
-
-				assert(false && "not supported extension(Audio)");
-
-				break;
+			return SetupStreaming(filePath.c_str());
 
 		}
 
-		return 65536;
+		return LoadShort(filePath.c_str());
 
 	}
 
@@ -359,7 +284,7 @@ namespace Atrum::Audio {
 
 		assert(false && "Streaming voice pool is full");
 
-		return -1;
+		return 65536;
 
 	}
 
@@ -371,6 +296,8 @@ namespace Atrum::Audio {
 		[[maybe_unused]] HRESULT hr = MFCreateSourceReaderFromURL(path.c_str(), nullptr, &voice.pReader);
 		assert(SUCCEEDED(hr));
 
+		voice.startTime100ns = startTime100ns;
+
 		AudioDecoder::Seek(voice, startTime100ns);
 
 	}
@@ -380,14 +307,18 @@ namespace Atrum::Audio {
 		// リーダーの設定（必要に応じてオーディオフォーマットの指定など）
 		// 通常はデフォルト設定でOK 必要ならここでConfigureSourceReaderを呼ぶ
 
+		voice.nextBufferIndex = 0;
+
+		voice.pBuffers[voice.nextBufferIndex].resize(StreamingSourceVoice::kBufferSize);
+
 		DWORD bytesRead = 0;
 		// 3. 最初のバッファを読み込む
-		if (AudioDecoder::ReadNextChunk(voice, voice.pBuffers[voice.nextBufferIndex], StreamingSourceVoice::kBufferSize, &bytesRead)) {
+		if (AudioDecoder::ReadNextChunk(voice, voice.pBuffers[voice.nextBufferIndex].data(), StreamingSourceVoice::kBufferSize, &bytesRead)) {
 
 			// 4. SubmitSourceBuffer
 			XAUDIO2_BUFFER buf{};
 			buf.AudioBytes = bytesRead;
-			buf.pAudioData = voice.pBuffers[0];
+			buf.pAudioData = voice.pBuffers[voice.nextBufferIndex].data();
 			buf.Flags = 0;
 
 			[[maybe_unused]] HRESULT hr{};
@@ -417,7 +348,7 @@ namespace Atrum::Audio {
 
 	}
 
-	void AudioManager::InitializeStreaming(const size_t voiceIndex, const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
+	bool AudioManager::InitializeStreaming(const size_t voiceIndex, const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
 
 		auto& voice = *streamingSourceVoicePool_[voiceIndex];
 
@@ -429,44 +360,47 @@ namespace Atrum::Audio {
 
 			StartStreaming(voice);
 
+			return true;
+
 		}
+
+		return false;
 
 	}
 
 	AudioHandle AudioManager::PlayStreaming(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
 		assert(soundIndex < soundDataStorage_.size());
 
-		// 1. 空きボイスを探す（ストリーミング用プールから）
+		// 空きボイスを探す（ストリーミング用プールから）
 		size_t voiceIndex = FindFreeStreamingVoice();
 
-		// 2. IDの発行
-		uint64_t currentPlayId = nextPlayId_++;
+		// IDの発行
+		size_t currentPlayId = nextPlayId_++;
 
-		// 3. データの初期準備
+		// データの初期準備
 		auto& streamingVoice = streamingSourceVoicePool_[voiceIndex];
 		streamingVoice->playId = currentPlayId;
 		streamingVoice->soundIndex = soundIndex;
 
-		// 4. ストリーミング開始処理
+		// ストリーミング開始処理
 		// ファイルを開き、最初のバッファをSubmitしてStart()する専用の関数
-		InitializeStreaming(voiceIndex, soundIndex, isLoop, startTime100ns);
-
-		AudioDecoder::Seek(*streamingVoice, startTime100ns);
+		bool isSuccess = InitializeStreaming(voiceIndex, soundIndex, isLoop, startTime100ns);
 
 		// 5. ハンドルを返す
 		return AudioHandle{
 			.soundIndex = soundIndex,
 			.voiceIndex = voiceIndex,
 			.isStreaming = true,
-			.playId = currentPlayId
+			.playId = currentPlayId,
+			.isSuccess = isSuccess
 		};
 	}
 
-	AudioHandle AudioManager::Play(const size_t soundIndex, const bool isLoop = false, const long long startTime100ns = 0) {
+	AudioHandle AudioManager::Play(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
 
 		auto& data = soundDataStorage_[soundIndex];
 
-		if (data->isStreaming) {
+		if (data->isSuitableStreaming) {
 
 			return PlayStreaming(soundIndex, isLoop, startTime100ns);
 
@@ -494,7 +428,7 @@ namespace Atrum::Audio {
 				sSrcVoice->pVoice->FlushSourceBuffers();
 
 				sSrcVoice->state = VoiceState::Stopped;
-				sSrcVoice->playId = -1;
+				sSrcVoice->playId = 65536;
 
 			}
 
@@ -513,6 +447,34 @@ namespace Atrum::Audio {
 
 		}
 
+
+	}
+
+	bool AudioManager::IsPlaying(const AudioHandle& handle) {
+
+		if (handle.isStreaming) {
+
+			auto& sVoice = streamingSourceVoicePool_[handle.voiceIndex];
+
+			if (sVoice && sVoice->playId == handle.playId) {
+
+				return sVoice->state == VoiceState::Playing;
+
+			}
+
+		} else {
+
+			auto& voice = sourceVoicePool_[handle.voiceIndex];
+
+			if (voice && voice->playId == handle.playId) {
+
+				return voice->state == VoiceState::Playing;
+
+			}
+
+		}
+
+		return false;
 
 	}
 

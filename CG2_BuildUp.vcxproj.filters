@@ -148,11 +148,21 @@
     <ClCompile Include="Codes\Source\System\EntityStorage.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity.cpp" />
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\File\FileSize.cpp" />
+    <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\File\FileSize.cpp">
+      <Filter>Codes\Source\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -380,7 +390,6 @@
     <ClInclude Include="Codes\Include\System\EntityStorage.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h" />
     <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
       <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
@@ -396,13 +405,28 @@
     <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h">
       <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\File\FileSize.h" />
     <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\VoiceState.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h">
+      <Filter>Codes\Include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\VoiceCallBack.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\StreamingVoiceCallBack.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\SourceVoice.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\File\FileSize.h">
+      <Filter>Codes\Include\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -551,6 +575,12 @@
     </Filter>
     <Filter Include="Codes\Include\Engine\Alias">
       <UniqueIdentifier>{2b1c6f48-a18b-40c9-b796-de6a332e2d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\File">
+      <UniqueIdentifier>{274a45f7-dd64-41f6-8e40-42003c11168e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\File">
+      <UniqueIdentifier>{f81827bf-835d-4f65-b2bc-94780a23554c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

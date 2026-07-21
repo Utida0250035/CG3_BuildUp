@@ -7,7 +7,10 @@ namespace Atrum::Audio {
 	bool AudioDecoder::LoadAudio(const std::wstring& filePath, std::vector<uint8_t>& outData, WAVEFORMATEX** outFormat) {
 		ComPtr<IMFSourceReader> pReader;
 		HRESULT hr = MFCreateSourceReaderFromURL(filePath.c_str(), nullptr, &pReader);
-		if (FAILED(hr)) return false;
+		
+		if (FAILED(hr)) {
+			return false;
+		}
 
 		// 1. PCM形式の設定（デコーダーに変換を指示）
 		ComPtr<IMFMediaType> pNativeType;
@@ -17,6 +20,14 @@ namespace Atrum::Audio {
 		MFCreateMediaType(&pPCMType);
 		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+
+		// 読み込み時に強制的に 44.1kHz / 16bit / ステレオ に変換する設定
+		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
+		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4);      // (2ch * 16bit) / 8
+		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
+
 		pReader->SetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr, pPCMType.Get());
 
 		// 2. フォーマット情報の取得
@@ -25,13 +36,6 @@ namespace Atrum::Audio {
 		hr = MFCreateWaveFormatExFromMFMediaType(pOutputMediaType.Get(), outFormat, nullptr);
 
 		assert(SUCCEEDED(hr));
-
-		// 読み込み時に強制的に 44.1kHz / 16bit / ステレオ に変換する設定
-		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
-		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4);      // (2ch * 16bit) / 8
-		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
 
 		// 3. 全データを読み込み
 		outData.clear();
@@ -74,12 +78,25 @@ namespace Atrum::Audio {
 			voice.remainingData.erase(voice.remainingData.begin(), voice.remainingData.begin() + toCopy);
 		}
 
+		// IMFSourceReader作成後、読み込みループに入る前に実行
+		ComPtr<IMFMediaType> pPCMType;
+		MFCreateMediaType(&pPCMType);
+		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
+		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4); // 2ch * 16bit / 8
+		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
+
+		voice.pReader->SetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr, pPCMType.Get());
+
 		// バッファがまだ埋まっていなければReaderから読み込む
 		while (cbTotalRead < bufferSize) {
 			DWORD flags = 0;
 			ComPtr<IMFSample> pSample;
 
-			HRESULT hr = voice.pReader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &flags, nullptr, &pSample);
+			HRESULT hr = voice.pReader->ReadSample(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, nullptr, &flags, nullptr, &pSample);
 			if (FAILED(hr) || pSample == nullptr || (flags & MF_SOURCE_READERF_ENDOFSTREAM)) break;
 
 			ComPtr<IMFMediaBuffer> pBufferRaw;
@@ -98,7 +115,6 @@ namespace Atrum::Audio {
 				// バッファに収まりきらない分をコピーし、残りを state.remainingData に退避
 				memcpy(pBuffer + cbTotalRead, pAudioData, remaining);
 
-				DWORD rest = cbLength - remaining;
 				voice.remainingData.assign(pAudioData + remaining, pAudioData + cbLength);
 				cbTotalRead += remaining;
 			}
@@ -106,11 +122,13 @@ namespace Atrum::Audio {
 			pBufferRaw->Unlock();
 		}
 
-		*pBytesRead = cbTotalRead;
+		*pBytesRead = (cbTotalRead / 4) * 4;
 		return cbTotalRead > 0;
 	}
 
 	bool AudioDecoder::Seek(StreamingSourceVoice& voice, LONGLONG targetPos100ns) {
+
+		voice.remainingData.clear();
 
 		// 1. ストリームをターゲット位置へ移動
 		// PROPVARIANT で時間を指定 (100ナノ秒単位)
@@ -127,7 +145,7 @@ namespace Atrum::Audio {
 
 		// 2. リーダーのキャッシュをクリア
 		// ストリームのシーク直後、以前のデータがバッファに残っているのを防ぐ
-		voice.pReader->Flush(MF_SOURCE_READER_FIRST_AUDIO_STREAM);
+		voice.pReader->Flush(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM));
 
 		// 3. 成功
 		return true;
