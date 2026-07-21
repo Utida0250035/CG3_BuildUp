@@ -7,7 +7,7 @@ namespace Atrum::Audio {
 	bool AudioDecoder::LoadAudio(const std::wstring& filePath, std::vector<uint8_t>& outData, WAVEFORMATEX** outFormat) {
 		ComPtr<IMFSourceReader> pReader;
 		HRESULT hr = MFCreateSourceReaderFromURL(filePath.c_str(), nullptr, &pReader);
-		
+
 		if (FAILED(hr)) {
 			return false;
 		}
@@ -67,33 +67,20 @@ namespace Atrum::Audio {
 		*pBytesRead = 0;
 		DWORD cbTotalRead = 0;
 
-		// 前回持ち越したデータがあればそれを優先してコピーする
+		// 1. 前回持ち越したデータのコピー
 		if (!voice.remainingData.empty()) {
 			DWORD toCopy = std::min((DWORD)voice.remainingData.size(), bufferSize);
 			memcpy(pBuffer, voice.remainingData.data(), toCopy);
-
 			cbTotalRead += toCopy;
-
-			// コピーした分を削除（ベクタの先頭を削除）
 			voice.remainingData.erase(voice.remainingData.begin(), voice.remainingData.begin() + toCopy);
 		}
 
-		// IMFSourceReader作成後、読み込みループに入る前に実行
-		ComPtr<IMFMediaType> pPCMType;
-		MFCreateMediaType(&pPCMType);
-		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
-		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4); // 2ch * 16bit / 8
-		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
-
-		voice.pReader->SetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr, pPCMType.Get());
-
 		// バッファがまだ埋まっていなければReaderから読み込む
+		DWORD flags = 0;
+		DWORD cbLength = 0;
+
 		while (cbTotalRead < bufferSize) {
-			DWORD flags = 0;
+			flags = 0;
 			ComPtr<IMFSample> pSample;
 
 			HRESULT hr = voice.pReader->ReadSample(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, nullptr, &flags, nullptr, &pSample);
@@ -103,27 +90,44 @@ namespace Atrum::Audio {
 			pSample->ConvertToContiguousBuffer(&pBufferRaw);
 
 			BYTE* pAudioData = nullptr;
-			DWORD cbLength = 0;
+			cbLength = 0;
 			pBufferRaw->Lock(&pAudioData, nullptr, &cbLength);
 
 			DWORD remaining = bufferSize - cbTotalRead;
 			if (cbLength <= remaining) {
-				// 全てコピー可能
 				memcpy(pBuffer + cbTotalRead, pAudioData, cbLength);
 				cbTotalRead += cbLength;
 			} else {
-				// バッファに収まりきらない分をコピーし、残りを state.remainingData に退避
 				memcpy(pBuffer + cbTotalRead, pAudioData, remaining);
-
+				// 収まりきらなかった分を確実に保存
 				voice.remainingData.assign(pAudioData + remaining, pAudioData + cbLength);
 				cbTotalRead += remaining;
 			}
-
 			pBufferRaw->Unlock();
 		}
 
-		*pBytesRead = (cbTotalRead / 4) * 4;
-		return cbTotalRead > 0;
+		DWORD alignment = 4;
+		DWORD remainder = cbTotalRead % alignment;
+
+		if (remainder != 0) {
+			DWORD validBytes = cbTotalRead - remainder;
+
+			// 端数分を退避
+			std::vector<BYTE> newRemaining(pBuffer + validBytes, pBuffer + cbTotalRead);
+
+			// 元々あった remainingData と結合
+			std::vector<BYTE> combined;
+			combined.reserve(voice.remainingData.size() + newRemaining.size());
+			combined.insert(combined.end(), voice.remainingData.begin(), voice.remainingData.end());
+			combined.insert(combined.end(), newRemaining.begin(), newRemaining.end());
+			voice.remainingData = std::move(combined);
+
+			*pBytesRead = validBytes;
+		} else {
+			*pBytesRead = cbTotalRead;
+		}
+
+		return *pBytesRead > 0;
 	}
 
 	bool AudioDecoder::Seek(StreamingSourceVoice& voice, LONGLONG targetPos100ns) {

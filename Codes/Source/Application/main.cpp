@@ -26,6 +26,7 @@ namespace {
 	using Atrum::Input::Key;
 
 	using Atrum::Audio::AudioManager;
+	using Atrum::Audio::To100nsPositive;
 
 	using Atrum::Math::Transform;
 
@@ -97,14 +98,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	[[maybe_unused]] size_t bgmShiningStarMp3 = 0;
 	[[maybe_unused]] size_t bgmShiningStarM4a = 0;
-	[[maybe_unused]] size_t bgmShiningStarOgg = 0;
 
 	{
 
 		std::string name = "./Assets/Audios/bgmShiningStar";
 
 		bgmShiningStarMp3 = audio->Load(name + ".mp3");
-		bgmShiningStarOgg = audio->Load(name + ".ogg");
 		bgmShiningStarM4a = audio->Load(name + ".m4a");
 
 	}
@@ -262,12 +261,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		timeCount += deltaTime;
 
-		if (playInput->IsKeyTrigger(Key::SPACE)) {
-
-			audio->Play(bgmShiningStarOgg);
-
-		}
-
 		Vector2 cursorPos = playInput->GetCursorPos();
 
 		Vector2 cursorDelta = playInput->GetCursorDelta();
@@ -316,27 +309,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("shiningStar");
 
-			ImGui::SmallButton("mp3");
+			const char* extensions[] = {
+				"mp3",
+				"m4a"
+			};
 
-			if (ImGui::IsItemActivated()) {
+			const size_t soundIndices[] = {
+				bgmShiningStarMp3,
+				bgmShiningStarM4a
+			};
 
-				bgmPlayHandle = audio->Play(bgmShiningStarMp3);
+			for (size_t i = 0; i < 2; ++i) {
 
-			}
+				ImGui::SmallButton(extensions[i]);
 
-			ImGui::SmallButton("ogg");
+				if (ImGui::IsItemActivated()) {
 
-			if (ImGui::IsItemActivated()) {
+					if (audio->IsPlaying(bgmPlayHandle)) {
 
-				bgmPlayHandle = audio->Play(bgmShiningStarOgg);
+						audio->Stop(bgmPlayHandle);
 
-			}
+					}
 
-			ImGui::SmallButton("m4a");
+					bgmPlayHandle = audio->Play(soundIndices[i], false, To100nsPositive(0.5f));
 
-			if (ImGui::IsItemActivated()) {
-
-				bgmPlayHandle = audio->Play(bgmShiningStarM4a);
+				}
 
 			}
 

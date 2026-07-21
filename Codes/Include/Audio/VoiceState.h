@@ -5,5 +5,6 @@ enum class VoiceState {
 	Playing,
 	Paused,
 	Loading,
+	Streaming,
 	Waiting
 };

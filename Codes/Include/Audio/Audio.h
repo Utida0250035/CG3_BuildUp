@@ -104,6 +104,8 @@ namespace Atrum::Audio {
 
 		}
 
+		bool RefillBuffer(StreamingSourceVoice& voice);
+
 	public:
 
 		void Initialize();
@@ -155,5 +157,12 @@ namespace Atrum::Audio {
 	using Manager = AudioManager;
 
 	using Handle = AudioHandle;
+
+
+	inline LONGLONG To100nsPositive(const float seconds) {
+
+		return static_cast<LONGLONG>(std::max(0.0f, seconds) * 10000000.0f);
+
+	}
 
 }

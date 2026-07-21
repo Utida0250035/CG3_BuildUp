@@ -39,7 +39,7 @@ namespace Atrum::Audio {
 		// ストリーミング用にバッファを複数持つ（ダブルバッファリング）
 		inline static constexpr size_t kBufferCount = 3;
 		// 64KB単位の読み込みvg
-		inline static constexpr size_t kBufferSize = 65536;
+		inline static constexpr size_t kBufferSize = 1024 * 64;
 		std::vector<BYTE> pBuffers[kBufferCount]{};
 
 		size_t nextBufferIndex = 0;

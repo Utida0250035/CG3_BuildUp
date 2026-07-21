@@ -12,13 +12,11 @@ namespace Atrum::Audio {
 
 		StreamingSourceVoice* parentVoice = nullptr; // 自身を所有するボイスへの参照
 
-		void RefillBuffer(void* pBufferContext);
-
 	public:
 		StreamingVoiceCallback(StreamingSourceVoice* v) : parentVoice(v) {}
 
 		// OnBufferEnd が呼ばれたら、parentVoice を通じてデータを補充
-		void STDMETHODCALLTYPE OnBufferEnd(void* pBufferContext) override;
+		void STDMETHODCALLTYPE OnBufferEnd(void*) override;
 
 		void STDMETHODCALLTYPE OnStreamEnd() override;
 

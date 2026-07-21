@@ -62,6 +62,20 @@ namespace Atrum::Audio {
 
 		for (auto& streamingVoice : streamingSourceVoicePool_) {
 
+			if (streamingVoice->state == VoiceState::Streaming) {
+
+				if (RefillBuffer(*streamingVoice)) {
+
+					streamingVoice->state = VoiceState::Playing;
+
+				} else {
+
+					streamingVoice->state = VoiceState::Waiting;
+
+				}
+
+			}
+
 			if (streamingVoice->state == VoiceState::Waiting) {
 
 				streamingVoice->pVoice->Stop();
@@ -296,6 +310,18 @@ namespace Atrum::Audio {
 		[[maybe_unused]] HRESULT hr = MFCreateSourceReaderFromURL(path.c_str(), nullptr, &voice.pReader);
 		assert(SUCCEEDED(hr));
 
+		//IMFSourceReader作成後、読み込みループに入る前に実行
+		ComPtr<IMFMediaType> pPCMType;
+		MFCreateMediaType(&pPCMType);
+		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
+		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4); // 2ch * 16bit / 8
+		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
+		voice.pReader->SetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr, pPCMType.Get());
+
 		voice.startTime100ns = startTime100ns;
 
 		AudioDecoder::Seek(voice, startTime100ns);
@@ -309,30 +335,15 @@ namespace Atrum::Audio {
 
 		voice.nextBufferIndex = 0;
 
-		voice.pBuffers[voice.nextBufferIndex].resize(StreamingSourceVoice::kBufferSize);
+		voice.isLoop = isLoop;
 
-		DWORD bytesRead = 0;
-		// 3. 最初のバッファを読み込む
-		if (AudioDecoder::ReadNextChunk(voice, voice.pBuffers[voice.nextBufferIndex].data(), StreamingSourceVoice::kBufferSize, &bytesRead)) {
+		for (auto& pBuffer : voice.pBuffers) {
 
-			// 4. SubmitSourceBuffer
-			XAUDIO2_BUFFER buf{};
-			buf.AudioBytes = bytesRead;
-			buf.pAudioData = voice.pBuffers[voice.nextBufferIndex].data();
-			buf.Flags = 0;
-
-			[[maybe_unused]] HRESULT hr{};
-
-			hr = voice.pVoice->SubmitSourceBuffer(&buf);
-			assert(SUCCEEDED(hr));
-
-			voice.isLoop = isLoop;
-
-			return true;
+			pBuffer.resize(StreamingSourceVoice::kBufferSize);
 
 		}
 
-		return false;
+		return RefillBuffer(voice);
 
 	}
 
@@ -343,8 +354,6 @@ namespace Atrum::Audio {
 		assert(SUCCEEDED(hr));
 
 		voice.state = VoiceState::Playing;
-
-		voice.nextBufferIndex = (voice.nextBufferIndex + 1) % StreamingSourceVoice::kBufferCount;
 
 	}
 
@@ -359,6 +368,9 @@ namespace Atrum::Audio {
 		if (SubmitInitialBuffer(voice, isLoop)) {
 
 			StartStreaming(voice);
+
+			// 次のバッファの用意
+			RefillBuffer(voice);
 
 			return true;
 
@@ -394,6 +406,66 @@ namespace Atrum::Audio {
 			.playId = currentPlayId,
 			.isSuccess = isSuccess
 		};
+	}
+
+	bool AudioManager::RefillBuffer(StreamingSourceVoice& voice) {
+
+		uint64_t currentBufferIndex = voice.nextBufferIndex;
+
+		voice.nextBufferIndex = (currentBufferIndex + 1) % StreamingSourceVoice::kBufferCount;
+
+		DWORD bytesRead = 0;
+
+		bool isSuccess = AudioDecoder::ReadNextChunk(voice, voice.pBuffers[currentBufferIndex].data(), StreamingSourceVoice::kBufferSize, &bytesRead);
+
+		if (isSuccess && bytesRead > 0) {
+
+			XAUDIO2_BUFFER buf{};
+			buf.AudioBytes = bytesRead;
+			buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
+			// pContext には parentVoice 自身を入れておくことが一般的
+			buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
+
+			if (bytesRead < StreamingSourceVoice::kBufferSize) {
+				std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
+					voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
+			}
+
+			voice.pVoice->SubmitSourceBuffer(&buf);
+
+			return true;
+
+		} else {
+
+			if (voice.isLoop) {
+
+				AudioDecoder::Seek(voice, voice.startTime100ns);
+
+				bool isSuccess1 = AudioDecoder::ReadNextChunk(voice, voice.pBuffers[currentBufferIndex].data(), StreamingSourceVoice::kBufferSize, &bytesRead);
+
+				if (isSuccess1 && bytesRead > 0) {
+					XAUDIO2_BUFFER buf{};
+					buf.AudioBytes = bytesRead;
+					buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
+					buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
+
+					if (bytesRead < StreamingSourceVoice::kBufferSize) {
+						std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
+							voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
+					}
+
+					voice.pVoice->SubmitSourceBuffer(&buf);
+
+					return true;
+
+				}
+
+			}
+
+			return false;
+
+		}
+
 	}
 
 	AudioHandle AudioManager::Play(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
