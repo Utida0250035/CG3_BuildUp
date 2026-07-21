@@ -1,4 +1,5 @@
 #include "Audio/Audio.h"
+#include "Camera/Camera.h"
 #include "Cast/StaticCast.h"
 #include "Collision/CollisionManager.h"
 #include "Collision/HitMesh.h"
@@ -56,6 +57,10 @@ namespace {
 #ifdef  _DEBUG
 
 	using Atrum::Debug::DebugCamera;
+
+#else
+
+	using Atrum::Camera;
 
 #endif //  _DEBUG
 

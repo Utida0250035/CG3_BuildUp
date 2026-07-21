@@ -9,6 +9,8 @@
 
 #endif
 
+#ifdef _DEBUG
+
 namespace Atrum::Math {
 	// nlohmann/json がこの関数を自動的に見つけます
 	static void to_json(nlohmann::json& j, const Vector3& v) {
@@ -23,11 +25,17 @@ namespace Atrum::Math {
 	}
 }
 
+#endif
+
 namespace Atrum::Json {
+
+#ifdef _DEBUG
 
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Atrum::Json::JsonTest::JsonData, name, position, positions, numFloat, numInt, numInt32bit, numUINT32bit);
 
-	void JsonTest::JsonData::ImGui(const char* jsonFilePath) {
+#endif
+
+	void JsonTest::JsonData::ImGui([[maybe_unused]]const char* jsonFilePath) {
 
 #ifdef USE_IMGUI
 
