@@ -1,12 +1,22 @@
 #include "Audio/Audio.h"
 #include "Audio/AudioDecoder.h"
+#include "Audio/StreamingSourceVoice.h"
+#include "Audio/StreamingVoiceCallBack.h"
+#include "File/FileSize.h"
 #include "Hash/Hash64.h"
 #include "String/ConvertString.h"
 #include <cassert>
 #include <filesystem>
 #include <fstream>
 
+#include <mfreadwrite.h>
+#pragma comment(lib, "mfplat.lib")
+#pragma comment(lib, "mfreadwrite.lib")
+#pragma comment(lib, "mfuuid.lib")
+
 namespace Atrum::Audio {
+
+	AudioManager* AudioManager::instance_ = nullptr;
 
 	AudioManager::~AudioManager() {
 
@@ -35,7 +45,89 @@ namespace Atrum::Audio {
 
 	}
 
+	void AudioManager::Update() {
+
+		for (auto& voice : sourceVoicePool_) {
+
+			if (voice->state == VoiceState::Waiting) {
+
+				voice->pVoice->Stop();
+				voice->pVoice->FlushSourceBuffers();
+
+				voice->state = VoiceState::Stopped;
+
+			}
+
+		}
+
+		for (auto& streamingVoice : streamingSourceVoicePool_) {
+
+			if (streamingVoice->state == VoiceState::Streaming) {
+
+				if (RefillBuffer(*streamingVoice)) {
+
+					streamingVoice->state = VoiceState::Playing;
+
+				} else {
+
+					streamingVoice->state = VoiceState::Waiting;
+
+				}
+
+			}
+
+			if (streamingVoice->state == VoiceState::Waiting) {
+
+				streamingVoice->pVoice->Stop();
+				streamingVoice->pVoice->FlushSourceBuffers();
+
+				if (streamingVoice->pReader) {
+
+					streamingVoice->pReader->Release();
+					streamingVoice->pReader = nullptr;
+
+				}
+
+				streamingVoice->state = VoiceState::Stopped;
+
+			}
+
+		}
+
+	}
+
 	void AudioManager::CreateVoicePool() {
+
+		WAVEFORMATEX standardWfEx = StandardWaveFormatEx();
+
+		for (size_t i = 0; i < kSourceVoiceMax; ++i) {
+			// 定数分のSourceVoiceを生成
+
+			sourceVoicePool_.emplace_back();
+			auto& pSourceVoice = sourceVoicePool_.back();
+			pSourceVoice = std::make_unique<SourceVoice>();
+			pSourceVoice->pCallBack = std::make_unique<VoiceCallback>(pSourceVoice.get());
+
+			[[maybe_unused]] HRESULT hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &standardWfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
+			assert(SUCCEEDED(hr));
+
+		}
+
+		for (size_t i = 0; i < kStreamSourceVoiceMax; ++i) {
+
+			streamingSourceVoicePool_.emplace_back();
+			auto& pStrmSourceVoice = streamingSourceVoicePool_.back();
+			pStrmSourceVoice = std::make_unique<StreamingSourceVoice>();
+			pStrmSourceVoice->pCallBack = std::make_unique<StreamingVoiceCallback>(pStrmSourceVoice.get());
+
+			[[maybe_unused]] HRESULT hr = xAudio2_->CreateSourceVoice(&pStrmSourceVoice->pVoice, &standardWfEx, 0, 2.0f, pStrmSourceVoice->pCallBack.get());
+			assert(SUCCEEDED(hr));
+
+		}
+
+	}
+
+	WAVEFORMATEX AudioManager::StandardWaveFormatEx() {
 
 		// 標準的なフォーマット設定: 44.1kHz, 16bit, ステレオ
 		WAVEFORMATEX standardWfEx = {};
@@ -59,18 +151,7 @@ namespace Atrum::Audio {
 		// PCMの場合は0
 		standardWfEx.cbSize = 0;
 
-		for (size_t i = 0; i < kSourceVoiceCount; ++i) {
-			// 定数分のSourceVoiceを生成
-
-			sourceVoicePool_.emplace_back();
-			auto& pSourceVoice = sourceVoicePool_.back();
-			pSourceVoice = std::make_unique<SourceVoice>();
-			pSourceVoice->pCallBack = std::make_unique<VoiceCallback>();
-
-			[[maybe_unused]] HRESULT hr = xAudio2_->CreateSourceVoice(&pSourceVoice->pVoice, &standardWfEx, 0, 2.0f, pSourceVoice->pCallBack.get());
-			assert(SUCCEEDED(hr));
-
-		}
+		return standardWfEx;
 
 	}
 
@@ -88,124 +169,31 @@ namespace Atrum::Audio {
 
 	}
 
-	size_t AudioManager::SeLoadWave(const char* filePath) {
+	bool AudioManager::IsSuitableStreaming(const std::string& filePath) {
 
-		assert(std::filesystem::exists(filePath));
+		return (File::GetFileSize(filePath) > kFileSizeThreshold);
 
-		// ファイル入力
-		std::ifstream file(filePath, std::ios_base::binary);
-		// 開けていなければエラー
-		assert(file.is_open());
+	}
 
-		// RIFFヘッダの読み込み
-		RiffHeader riff = {};
-		file.read((char*)&riff, sizeof(riff));
+	size_t AudioManager::SetupStreaming(const char* filePath) {
 
-		// ファイルがRIFFかチェック
-		if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
-			assert(false);
-		}
+		soundDataStorage_.emplace_back(std::make_unique<SoundData>());
 
-		// タイプが.wavかチェック
-		if (strncmp(riff.type, "WAVE", 4) != 0) {
-			assert(false);
-		}
+		auto& soundData = soundDataStorage_.back();
 
-		// Formatチャンクの読み込み
-		FormatChunk format = {};
+		soundData->filePath = StringToWString(filePath);
+		soundData->isSuitableStreaming = true;
 
-		file.read((char*)&format, sizeof(ChunkHeader));
+		soundData->wfEx = StandardWaveFormatEx();
 
-		if (strncmp(format.chunk.id, "fmt ", 4) != 0) {
-			// チャンクヘッダの確認
-
-			assert(false);
-
-		}
-
-		// チャンク本体の読み込み
-		assert(format.chunk.size <= sizeof(format.fmt));
-		file.read((char*)&format.fmt, format.chunk.size);
-
-		// Dataチャンクの読み込み
-		ChunkHeader data{};
-		file.read((char*)&data, sizeof(data));
-
-		// JUNKチャンクを検出した場合
-		if (strncmp(data.id, "JUNK", 4) == 0) {
-
-			// 読み取り位置をJUNKチャンクの終わりまで進める
-			file.seekg(data.size, std::ios_base::cur);
-			// 再読み込み
-			file.read((char*)&data, sizeof(data));
-
-		}
-
-		if (strncmp(data.id, "data", 4) != 0) {
-			assert(false);
-		}
-
-		// Dataチャンクのデータ部(波形データ)の読み込み
-		std::vector<uint8_t> pBuffer(data.size);
-		file.read(reinterpret_cast<char*>(pBuffer.data()), data.size);
-
-		// Waveファイルを閉じる
-		file.close();
-
-		assert(!file.is_open());
-
-		this->AddSource(format.fmt, std::move(pBuffer), static_cast<UINT>(data.size), soundDataStorage_.size(), filePath);
-
-		// 管理番号をを参照元に戻す
 		return soundDataStorage_.size() - 1;
 
 	}
 
-	size_t AudioManager::PlaySe(size_t soundIndex) {
-
-		assert(soundIndex < soundDataStorage_.size());
-
-		HRESULT hr{};
-
-		auto& soundData = soundDataStorage_[soundIndex];
-
-		XAUDIO2_BUFFER buf{};
-		buf.pAudioData = soundData->pBuffer.data();
-		buf.AudioBytes = soundData->bufferSize;
-		buf.Flags = XAUDIO2_END_OF_STREAM;
-
-		size_t playIndex = 0;
-
-		for (auto& pSourceVoice : sourceVoicePool_) {
-
-			if (!pSourceVoice->pCallBack->isPlaying) {
-
-				pSourceVoice->pCallBack->isPlaying = true;
-
-				hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
-				assert(SUCCEEDED(hr));
-
-				hr = pSourceVoice->pVoice->Start();
-				assert(SUCCEEDED(hr));
-
-				return playIndex;
-
-			}
-
-			playIndex++;
-
-		}
-
-		assert(false && "no empty sourceVoice");
-
-		return 0;
-
-	}
-
-	size_t AudioManager::SeLoadMp3(const char* filePath) {
+	size_t AudioManager::LoadShort(const char* filePath) {
 
 		std::vector<uint8_t> pBuffer;
-		WAVEFORMATEX* wfEx = nullptr;
+		WAVEFORMATEX* wfEx = new WAVEFORMATEX();
 
 		[[maybe_unused]] bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
 		assert(result);
@@ -218,37 +206,347 @@ namespace Atrum::Audio {
 
 	}
 
-	size_t AudioManager::LoadSe(const char* filePath) {
+	size_t AudioManager::Load(const std::string& filePath) {
 
 		assert(!soundIndexMap_.contains(Hash64(filePath)));
 
-		std::filesystem::path fPath = filePath;
+		if (IsSuitableStreaming(filePath)) {
 
-		std::filesystem::path extension = fPath.extension().c_str();
-
-		switch (Hash64(extension.c_str())) {
-
-			case L".mp3"_hash64:
-
-				return SeLoadMp3(filePath);
-
-				break;
-
-			case L".wav"_hash64:
-
-				return SeLoadWave(filePath);
-
-				break;
-
-			default:
-
-				assert(false && "not supported extension(Audio)");
-
-				break;
+			return SetupStreaming(filePath.c_str());
 
 		}
 
+		return LoadShort(filePath.c_str());
+
+	}
+
+	AudioHandle AudioManager::PlayShort(const size_t soundIndex, const bool isLoop) {
+
+		assert(soundIndex < soundDataStorage_.size());
+
+		HRESULT hr{};
+
+		auto& soundData = soundDataStorage_[soundIndex];
+
+		XAUDIO2_BUFFER buf{};
+		buf.pAudioData = soundData->pBuffer.data();
+		buf.AudioBytes = soundData->bufferSize;
+		buf.Flags = XAUDIO2_END_OF_STREAM;
+
+		if (isLoop) {
+
+			buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+
+		} else {
+
+			buf.LoopCount = 0;
+
+		}
+
+		size_t voiceIndex = 0;
+
+		AudioHandle handle{};
+		handle.isStreaming = false;
+		handle.soundIndex = soundIndex;
+
+		for (auto& pSourceVoice : sourceVoicePool_) {
+
+			if (pSourceVoice->state == VoiceState::Stopped) {
+
+				pSourceVoice->state = VoiceState::Playing;
+
+				hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
+				assert(SUCCEEDED(hr));
+
+				hr = pSourceVoice->pVoice->Start();
+				assert(SUCCEEDED(hr));
+
+				handle.voiceIndex = voiceIndex;
+				handle.playId = nextPlayId_++;
+
+				pSourceVoice->playId = handle.playId;
+
+				return handle;
+
+			}
+
+			voiceIndex++;
+
+		}
+
+		assert(false && "no empty sourceVoice");
+
+		return {};
+
+	}
+
+	size_t AudioManager::FindFreeStreamingVoice() const {
+
+		size_t voiceIndex = 0;
+
+		for (auto& pSourceVoice : streamingSourceVoicePool_) {
+
+			if (pSourceVoice->state == VoiceState::Stopped) {
+
+				return voiceIndex;
+
+			}
+
+			voiceIndex++;
+
+		}
+
+		assert(false && "Streaming voice pool is full");
+
 		return 65536;
+
+	}
+
+	void AudioManager::PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns) {
+
+		// IMFSourceReader の作成
+		// soundDataStorage_ からファイルパスを取得してリーダーを生成
+		auto& path = soundDataStorage_[soundIndex]->filePath; // もしパスを保持していれば
+		[[maybe_unused]] HRESULT hr = MFCreateSourceReaderFromURL(path.c_str(), nullptr, &voice.pReader);
+		assert(SUCCEEDED(hr));
+
+		//IMFSourceReader作成後、読み込みループに入る前に実行
+		ComPtr<IMFMediaType> pPCMType;
+		MFCreateMediaType(&pPCMType);
+		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
+		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
+		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
+		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
+		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4); // 2ch * 16bit / 8
+		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
+		voice.pReader->SetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr, pPCMType.Get());
+
+		voice.startTime100ns = startTime100ns;
+
+		AudioDecoder::Seek(voice, startTime100ns);
+
+	}
+
+	bool AudioManager::SubmitInitialBuffer(StreamingSourceVoice& voice, const bool isLoop) {
+
+		// リーダーの設定（必要に応じてオーディオフォーマットの指定など）
+		// 通常はデフォルト設定でOK 必要ならここでConfigureSourceReaderを呼ぶ
+
+		voice.nextBufferIndex = 0;
+
+		voice.isLoop = isLoop;
+
+		for (auto& pBuffer : voice.pBuffers) {
+
+			pBuffer.resize(StreamingSourceVoice::kBufferSize);
+
+		}
+
+		return RefillBuffer(voice);
+
+	}
+
+	void AudioManager::StartStreaming(StreamingSourceVoice& voice) {
+
+		// 5. 再生開始
+		[[maybe_unused]] HRESULT hr = voice.pVoice->Start();
+		assert(SUCCEEDED(hr));
+
+		voice.state = VoiceState::Playing;
+
+	}
+
+	bool AudioManager::InitializeStreaming(const size_t voiceIndex, const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
+
+		auto& voice = *streamingSourceVoicePool_[voiceIndex];
+
+		assert(voice.state == VoiceState::Stopped);
+
+		PrepareStreamingDecoder(voice, soundIndex, startTime100ns);
+
+		if (SubmitInitialBuffer(voice, isLoop)) {
+
+			StartStreaming(voice);
+
+			// 次のバッファの用意
+			RefillBuffer(voice);
+
+			return true;
+
+		}
+
+		return false;
+
+	}
+
+	AudioHandle AudioManager::PlayStreaming(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
+		assert(soundIndex < soundDataStorage_.size());
+
+		// 空きボイスを探す（ストリーミング用プールから）
+		size_t voiceIndex = FindFreeStreamingVoice();
+
+		// IDの発行
+		size_t currentPlayId = nextPlayId_++;
+
+		// データの初期準備
+		auto& streamingVoice = streamingSourceVoicePool_[voiceIndex];
+		streamingVoice->playId = currentPlayId;
+		streamingVoice->soundIndex = soundIndex;
+
+		// ストリーミング開始処理
+		// ファイルを開き、最初のバッファをSubmitしてStart()する専用の関数
+		bool isSuccess = InitializeStreaming(voiceIndex, soundIndex, isLoop, startTime100ns);
+
+		// 5. ハンドルを返す
+		return AudioHandle{
+			.soundIndex = soundIndex,
+			.voiceIndex = voiceIndex,
+			.isStreaming = true,
+			.playId = currentPlayId,
+			.isSuccess = isSuccess
+		};
+	}
+
+	bool AudioManager::RefillBuffer(StreamingSourceVoice& voice) {
+
+		uint64_t currentBufferIndex = voice.nextBufferIndex;
+
+		voice.nextBufferIndex = (currentBufferIndex + 1) % StreamingSourceVoice::kBufferCount;
+
+		DWORD bytesRead = 0;
+
+		bool isSuccess = AudioDecoder::ReadNextChunk(voice, voice.pBuffers[currentBufferIndex].data(), StreamingSourceVoice::kBufferSize, &bytesRead);
+
+		if (isSuccess && bytesRead > 0) {
+
+			XAUDIO2_BUFFER buf{};
+			buf.AudioBytes = bytesRead;
+			buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
+			// pContext には parentVoice 自身を入れておくことが一般的
+			buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
+
+			if (bytesRead < StreamingSourceVoice::kBufferSize) {
+				std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
+					voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
+			}
+
+			voice.pVoice->SubmitSourceBuffer(&buf);
+
+			return true;
+
+		} else {
+
+			if (voice.isLoop) {
+
+				AudioDecoder::Seek(voice, voice.startTime100ns);
+
+				bool isSuccess1 = AudioDecoder::ReadNextChunk(voice, voice.pBuffers[currentBufferIndex].data(), StreamingSourceVoice::kBufferSize, &bytesRead);
+
+				if (isSuccess1 && bytesRead > 0) {
+					XAUDIO2_BUFFER buf{};
+					buf.AudioBytes = bytesRead;
+					buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
+					buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
+
+					if (bytesRead < StreamingSourceVoice::kBufferSize) {
+						std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
+							voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
+					}
+
+					voice.pVoice->SubmitSourceBuffer(&buf);
+
+					return true;
+
+				}
+
+			}
+
+			return false;
+
+		}
+
+	}
+
+	AudioHandle AudioManager::Play(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
+
+		auto& data = soundDataStorage_[soundIndex];
+
+		if (data->isSuitableStreaming) {
+
+			return PlayStreaming(soundIndex, isLoop, startTime100ns);
+
+		}
+
+		return PlayShort(soundIndex, isLoop);
+
+	}
+
+	void AudioManager::Stop(const AudioHandle& handle) {
+
+		if (handle.voiceIndex >= kSourceVoiceMax) {
+			assert(false && "Invalid voice index");
+
+			return;
+		}
+
+		if (handle.isStreaming) {
+
+			auto& sSrcVoice = streamingSourceVoicePool_[handle.voiceIndex];
+
+			if (sSrcVoice && sSrcVoice->playId == handle.playId) {
+
+				sSrcVoice->pVoice->Stop();
+				sSrcVoice->pVoice->FlushSourceBuffers();
+
+				sSrcVoice->state = VoiceState::Stopped;
+				sSrcVoice->playId = 65536;
+
+			}
+
+			return;
+
+		}
+
+		auto& srcVoice = sourceVoicePool_[handle.voiceIndex];
+
+		if (srcVoice && srcVoice->playId == handle.playId) {
+
+			srcVoice->pVoice->Stop();
+			srcVoice->pVoice->FlushSourceBuffers();
+
+			srcVoice->state = VoiceState::Stopped;
+
+		}
+
+
+	}
+
+	bool AudioManager::IsPlaying(const AudioHandle& handle) {
+
+		if (handle.isStreaming) {
+
+			auto& sVoice = streamingSourceVoicePool_[handle.voiceIndex];
+
+			if (sVoice && sVoice->playId == handle.playId) {
+
+				return sVoice->state == VoiceState::Playing;
+
+			}
+
+		} else {
+
+			auto& voice = sourceVoicePool_[handle.voiceIndex];
+
+			if (voice && voice->playId == handle.playId) {
+
+				return voice->state == VoiceState::Playing;
+
+			}
+
+		}
+
+		return false;
 
 	}
 
