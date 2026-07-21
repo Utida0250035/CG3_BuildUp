@@ -95,9 +95,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	std::unique_ptr<AudioManager> audio = std::make_unique<AudioManager>();
 	audio->Initialize();
 
-	[[maybe_unused]] size_t seAlarm = audio->LoadSe("./Assets/Audios/Alarm01.wav");
+	[[maybe_unused]] size_t seAlarm = audio->Load("./Assets/Audios/Alarm01.wav");
 
-	size_t seCat = audio->LoadSe("./Assets/Audios/seCat.mp3");
+	size_t seCat = audio->Load("./Assets/Audios/seCat.mp3");
 
 	/* Triangle */
 
@@ -255,7 +255,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (playInput->IsKeyTrigger(Key::SPACE)) {
 
-			audio->PlaySe(seCat);
+			audio->PlayShort(seCat);
 
 		}
 
@@ -283,7 +283,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (ImGui::IsItemActivated()) {
 
-			audio->PlaySe(seCat);
+			audio->PlayShort(seCat);
 
 		}
 
@@ -291,7 +291,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		if (ImGui::IsItemActivated()) {
 
-			audio->PlaySe(seAlarm);
+			audio->PlayShort(seAlarm);
 
 		}
 

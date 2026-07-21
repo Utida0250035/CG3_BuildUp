@@ -149,6 +149,10 @@
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity.cpp" />
+    <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\File\FileSize.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -391,6 +395,13 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h">
       <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\File\FileSize.h" />
+    <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\VoiceState.h">
+      <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
