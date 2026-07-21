@@ -65,6 +65,9 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include;</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -102,6 +105,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <TreatWarningAsError>true</TreatWarningAsError>
       <Optimization>MinSpace</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +131,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
   <ItemGroup>
     <ClCompile Include="Codes\Source\Application\main.cpp" />
     <ClCompile Include="Codes\Source\Audio\Audio.cpp" />
+    <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
+    <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp" />
+    <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Collision\Collision2D.cpp" />
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
@@ -149,6 +158,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Engine\Resource\TextureStorage.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp" />
     <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp" />
+    <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
     <ClCompile Include="Codes\Source\Geometry\OBB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
@@ -193,6 +203,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h" />
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
+    <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
+    <ClInclude Include="Codes\Include\Audio\SourceVoice.h" />
+    <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h" />
+    <ClInclude Include="Codes\Include\Audio\StreamingVoiceCallBack.h" />
+    <ClInclude Include="Codes\Include\Audio\VoiceCallBack.h" />
+    <ClInclude Include="Codes\Include\Audio\VoiceState.h" />
     <ClInclude Include="Codes\Include\Camera\Camera.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
     <ClInclude Include="Codes\Include\Collision\Collision2D.h" />
@@ -239,6 +255,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Resource\VertexBuffer.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h" />
+    <ClInclude Include="Codes\Include\File\FileSize.h" />
     <ClInclude Include="Codes\Include\Geometry\Bezier.h" />
     <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h" />
     <ClInclude Include="Codes\Include\Geometry\OBB.h" />

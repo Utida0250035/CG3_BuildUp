@@ -54,9 +54,9 @@
 
 #endif
 
-namespace fs = std::filesystem;
-
 namespace Atrum {
+
+	namespace fs = ::std::filesystem;
 
 	namespace Input {
 
@@ -70,6 +70,12 @@ namespace Atrum {
 
 	class Draw;
 	class DrawSprite;
+
+	namespace Audio {
+
+		class AudioManager;
+
+	}
 
 	class AtrumEngine final {
 
@@ -186,6 +192,10 @@ namespace Atrum {
 
 		DrawSprite* pDrawSprite_ = nullptr;
 
+
+		/* 音源再生 */
+
+		Audio::AudioManager* audio_ = nullptr;
 
 		/**/
 
