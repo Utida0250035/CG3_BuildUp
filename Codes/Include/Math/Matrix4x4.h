@@ -5,6 +5,8 @@
 
 namespace Atrum::Math {
 
+	struct Quaternion;
+
 	struct Matrix4x4 {
 		float m[4][4]{};
 
@@ -211,6 +213,7 @@ namespace Atrum::Math {
 		}
 
 		static Matrix4x4 World(const Vector3& translation, const Vector3& scale = Vector3{ 1.0f, 1.0f, 1.0f }, const Vector3& rotation = Vector3{ 0.0f, 0.0f, 0.0f });
+		static Matrix4x4 World(const Vector3& translate, const Quaternion& rotate, const Vector3& scale);
 
 		static Matrix4x4 Affine(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 

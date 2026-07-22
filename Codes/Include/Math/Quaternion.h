@@ -73,7 +73,7 @@ namespace Atrum::Math {
 
 		}
 
-		[[nodiscard]] float GetTheta() {
+		[[nodiscard]] float GetTheta() const {
 			assert(std::abs(MagnitudeSquare() - 1.0f) < 0.001f);
 
 			Quaternion nq = Normalized();
@@ -82,25 +82,21 @@ namespace Atrum::Math {
 			return 2.0f * std::acos(clamped_w);
 		}
 
-		[[nodiscard]] Quaternion Conjugated() const {
+		[[nodiscard]] constexpr Quaternion Conjugated() const {
 			return Quaternion(-x, -y, -z, w);
 		}
 
-		[[nodiscard]] Matrix4x4 CreateRotateMatrix() const {
+		[[nodiscard]] constexpr Matrix4x4 MakeRotateMatrix() const {
 
-			assert(std::abs(MagnitudeSquare() - 1.0f) < 0.001f);
-
-			Quaternion nq = Normalized();
-
-			float x2 = nq.x * nq.x;
-			float y2 = nq.y * nq.y;
-			float z2 = nq.z * nq.z;
-			float xy = nq.x * nq.y;
-			float xz = nq.x * nq.z;
-			float yz = nq.y * nq.z;
-			float wx = nq.w * nq.x;
-			float wy = nq.w * nq.y;
-			float wz = nq.w * nq.z;
+			float x2 = x * x;
+			float y2 = y * y;
+			float z2 = z * z;
+			float xy = x * y;
+			float xz = x * z;
+			float yz = y * z;
+			float wx = w * x;
+			float wy = w * y;
+			float wz = w * z;
 
 			Matrix4x4 rotateMatrix = Matrix4x4::Identity();
 
@@ -192,7 +188,7 @@ namespace Atrum::Math {
 			return q.Normalized();
 		}
 
-		Vector3 RotateVector(const Vector3& vector) const {
+		constexpr Vector3 RotateVector(const Vector3& vector) const {
 
 			Quaternion p{ vector.x, vector.y, vector.z, 0 };
 
@@ -243,7 +239,7 @@ namespace Atrum::Math {
 
 		}
 
-		static Quaternion MakeRotateQuaternion(
+		static Quaternion FromEuler(
 			const Vector3& euler)
 		{
 			Quaternion qx =

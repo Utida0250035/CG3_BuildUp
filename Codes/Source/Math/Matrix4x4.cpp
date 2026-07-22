@@ -1,4 +1,5 @@
 #include "Math/Matrix4x4.h"
+#include "Math/Quaternion.h"
 #include <cassert>
 #include <cmath>
 
@@ -189,6 +190,12 @@ namespace Atrum::Math {
 			1.0f
 
 		};
+	}
+
+	Matrix4x4 Matrix4x4::World(const Vector3& translate, const Quaternion& rotate, const Vector3& scale) {
+
+		return Scale(scale) * rotate.MakeRotateMatrix() * Translate(translate);
+
 	}
 
 	Matrix4x4 Matrix4x4::PerspectiveFov(float fovY, float aspectRatio, float nearClip, float farClip) {

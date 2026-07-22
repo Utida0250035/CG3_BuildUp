@@ -427,6 +427,7 @@
       <Filter>Codes\Include\File</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
+    <ClInclude Include="Codes\Include\Components\TransformComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
