@@ -201,6 +201,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\AL3_KamataEngine3D\DirectXGame\Easing.h" />
     <ClInclude Include="Codes\Include\Audio\Audio.h" />
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
@@ -263,11 +264,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h" />
     <ClInclude Include="Codes\Include\Geometry\Triangle.h" />
     <ClInclude Include="Codes\Include\Hash\Hash64.h" />
+    <ClInclude Include="Codes\Include\Hit\HitCircle.h" />
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
     <ClInclude Include="Codes\Include\Json\JsonHandler.h" />
     <ClInclude Include="Codes\Include\Json\JsonTest.h" />
     <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
+    <ClInclude Include="Codes\Include\Math\Lerp.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
     <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h" />

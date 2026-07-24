@@ -168,7 +168,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	HitMesh hitMeshPyramid = HitMeshBuilder::CreateFromPyramid(PyramidMesh{});
 	hitMeshPyramid.position = { 0.0f, 10.0f, 0.0f };
 	hitMeshPyramid.velocity = { 0.0f, -0.1f, 0.0f };
-	hitMeshPyramid.rotation = Quaternion::Identity();
+	hitMeshPyramid.quaternion = Quaternion::Identity();
 	hitMeshPyramid.angularVelocity = {};
 	hitMeshPyramid.inverseMass = 1.0f;
 	hitMeshPyramid.mass = 3.0f;
@@ -495,7 +495,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
 			hitMeshPyramid.angularVelocity = {};
-			hitMeshPyramid.rotation = {};
+			hitMeshPyramid.quaternion = {};
 			hitMeshPyramid.velocity = {};
 
 		}
@@ -511,11 +511,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat3("pos", &hitMeshPyramid.position.x);
 		ImGui::DragFloat3("velocity", &hitMeshPyramid.velocity.x);
-		ImGui::DragFloat4("rotate(Quaternion)", &hitMeshPyramid.rotation.x);
+		ImGui::DragFloat4("rotate(Quaternion)", &hitMeshPyramid.quaternion.x);
 
 		if (ImGui::IsItemActive()) {
 
-			hitMeshPyramid.rotation.Normalize();
+			hitMeshPyramid.quaternion.Normalize();
 
 		}
 
@@ -688,8 +688,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
-		playInput->EndOfFrame();
-
 		///
 		/// ↑更新ここまで
 		/// 
@@ -708,7 +706,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
 
-		atrum->DrawAsymmetricPyramid(textureWhite, Vector4::Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.rotation, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
+		atrum->DrawAsymmetricPyramid(textureWhite, Vector4::Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.quaternion, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
 
 
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);

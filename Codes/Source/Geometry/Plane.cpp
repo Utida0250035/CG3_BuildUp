@@ -6,7 +6,7 @@ namespace Atrum::Geometry {
 
 	Plane MakePlane(const M::Vector3& pointA, const M::Vector3& pointB, const M::Vector3& pointC) {
 
-		Plane plane;
+		Plane plane{};
 
 		M::Vector3 aToB = pointB - pointA;
 		M::Vector3 btoC = pointC - pointB;

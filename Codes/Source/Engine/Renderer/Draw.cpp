@@ -330,7 +330,7 @@ namespace Atrum {
 	void Draw::DrawAsymmetricPyramid(const uint32_t& textureIndex, const M::Vector4& textureColor, const M::Transform& uvTransform, const M::Vector3& scale, const M::Quaternion& rotate, const M::Vector3& translate, const G::PyramidMesh& mesh, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
 		// 非対称ピラミッドのM::Transform
-		M::Matrix4x4 worldMatrix = M::Matrix4x4::Scale(scale) * rotate.CreateRotateMatrix() * M::Matrix4x4::Translate(translate);
+		M::Matrix4x4 worldMatrix = M::Matrix4x4::Scale(scale) * rotate.MakeRotateMatrix() * M::Matrix4x4::Translate(translate);
 
 		TransformationData transformationData{};
 

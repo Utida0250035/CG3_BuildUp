@@ -130,7 +130,7 @@ namespace {
 		const M::Vector3& v1 = mesh.worldVertices[i1];
 		const M::Vector3& v2 = mesh.worldVertices[i2];
 
-		M::Vector3 normal = (v1 - v0).Cross(v2 - v0);
+		M::Vector3 normal = P::Cross(v1 - v0, v2 - v0);
 
 		if (!IsValidAxis(normal)) {
 			return {};
@@ -340,7 +340,7 @@ namespace {
 			}
 
 			M::Vector3 sideNormal =
-				edge.Cross(referenceNormal);
+				P::Cross(edge, referenceNormal);
 
 			if (!IsValidAxis(sideNormal)) {
 				continue;
@@ -459,7 +459,7 @@ namespace Atrum::Physics::SAT {
 
 				dirB.Normalize();
 
-				M::Vector3 axis = dirA.Cross(dirB);
+				M::Vector3 axis = P::Cross(dirA, dirB);
 
 				if (!IsValidAxis(axis)) {
 					continue;
