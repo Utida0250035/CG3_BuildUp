@@ -47,7 +47,7 @@ namespace Atrum::Physics {
 
 		hitMesh.position = {};
 
-		hitMesh.rotation = M::Quaternion::Identity();
+		hitMesh.quaternion = M::Quaternion::Identity();
 
 		hitMesh.scale = { 1.0f,1.0f,1.0f };
 
@@ -106,7 +106,7 @@ namespace Atrum::Physics {
 
 		hitMesh.position = {};
 
-		hitMesh.rotation = M::Quaternion::Identity();
+		hitMesh.quaternion = M::Quaternion::Identity();
 
 		hitMesh.scale = { 1.0f,1.0f,1.0f };
 
@@ -132,7 +132,7 @@ namespace Atrum::Physics {
 
 		HitMesh hitMesh{};
 
-		M::Vector3 normal = (triangle.v1 - triangle.v0).Cross(triangle.v2 - triangle.v0).Normalized();
+		M::Vector3 normal = Cross(triangle.v1 - triangle.v0, triangle.v2 - triangle.v0).Normalized();
 
 		constexpr float thickness = 1.0f;
 		M::Vector3 offset = normal * thickness;
@@ -170,7 +170,7 @@ namespace Atrum::Physics {
 		AddFace({ 2, 5, 3, 0 });    // 側面
 
 		hitMesh.position = {};
-		hitMesh.rotation = M::Quaternion::Identity();
+		hitMesh.quaternion = M::Quaternion::Identity();
 		hitMesh.scale = { 1.0f, 1.0f, 1.0f };
 
 		hitMesh.velocity = {};

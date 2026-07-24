@@ -6,51 +6,143 @@
 
 namespace Atrum {
 
-    void EntityStorage::StoreEntity(const std::string& name, std::unique_ptr<Entity>& pEntity) {
+	EntityStorage* EntityStorage::instance = nullptr;
 
-        assert(!entityMap_.contains(Hash64(name)));
+	void EntityStorage::Create(const std::string& name, std::unique_ptr<Entity>& pEntity) {
 
-        entitys_.emplace_back(std::move(pEntity));
+		assert(!hashToIdMap_.contains(Hash64(name)));
 
-        entityMap_.emplace(Hash64(name), entitys_.size());
+		uint64_t currentId = nextId_++;
 
-    }
+		pEntity->SetHash(Hash64(name));
+		pEntity->SetId(currentId);
 
-    void EntityStorage::EraseEntity(const std::string& name) {
+		entitys_.emplace_back(std::move(pEntity));
 
-        size_t hash = Hash64(name);
-        size_t indexToRemove = entityMap_.at(hash);
-        size_t lastIndex = entitys_.size() - 1;
+		hashToIdMap_.emplace(Hash64(name), currentId);
+		idToIndexMap_.emplace(currentId, entitys_.size() - 1);
 
-        if (indexToRemove != lastIndex) {
+	}
 
-            // 1. 最後尾のEntityを取得
-            Entity* lastEntity = entitys_.back().get();
+	EntityHandle EntityStorage::Find(const uint64_t id) {
 
-            // 移動させるEntityの名前（ハッシュ）を特定して、マップの値を更新
-            // Entity自身が自分の名前/ハッシュを知っているとここが楽です
-            entityMap_[lastEntity->GetHash()] = indexToRemove;
+		auto indexSearch = idToIndexMap_.find(id);
 
-            // スワップ
-            std::swap(entitys_[indexToRemove], entitys_[lastIndex]);
-        }
+		if (indexSearch == idToIndexMap_.end()) {
 
-        // 4. 削除
-        entityMap_.erase(hash);
-        entitys_.pop_back();
+			return EntityHandle();
 
-    }
+		}
 
-    Entity* EntityStorage::Find(const std::string& name) {
+		assert(entitys_[indexSearch->second]);
 
-        auto search = entityMap_.find(Hash64(name));
+		return EntityHandle(
+			entitys_[indexSearch->second].get(),
+			id,
+			entitys_[indexSearch->second]->GetHash()
+		);
 
-        assert(search != entityMap_.end());
+	}
 
-        assert(entitys_[search->second]);
+	EntityHandle EntityStorage::Find(const std::string& name) {
 
-        return entitys_[search->second].get();
+		auto idSearch = hashToIdMap_.find(Hash64(name));
 
-    }
+		if (idSearch == hashToIdMap_.end()) return EntityHandle();
+
+		auto indexSearch = idToIndexMap_.find(idSearch->second);
+
+		if (indexSearch == idToIndexMap_.end()) return EntityHandle();
+
+		assert(entitys_[indexSearch->second]);
+
+		return EntityHandle(
+			entitys_[indexSearch->second].get(),
+			idSearch->second,
+			Hash64(name)
+		);
+
+	}
+
+	bool EntityStorage::IsValid(const EntityHandle& handle) {
+
+		auto indexSearch = idToIndexMap_.find(handle.id_);
+
+		if (indexSearch == idToIndexMap_.end())return false;
+
+		if (handle.ptr_ != entitys_[indexSearch->second].get()) return false;
+
+		return true;
+
+	}
+
+	void EntityStorage::RequestErase(EntityHandle& handle) {
+
+		eraseRequestedHandles_.push_back(handle);
+
+		handle.id_ = 0;
+		handle.ptr_ = nullptr;
+
+	}
+
+	void EntityStorage::Erase(EntityHandle& handle) {
+
+		auto indexSearch = idToIndexMap_.find(handle.id_);
+
+		if (indexSearch == idToIndexMap_.end()) {
+
+			handle.id_ = 0;
+			handle.ptr_ = nullptr;
+
+			return;
+
+		}
+
+		size_t indexToRemove = indexSearch->second;
+
+		size_t lastIndex = entitys_.size() - 1;
+
+		if (indexToRemove != lastIndex) {
+
+			// 1. 最後尾のEntityを取得
+			Entity* lastEntity = entitys_.back().get();
+
+			// 移動させるEntityの名前（ハッシュ）を特定して、マップの値を更新
+			// Entity自身が自分の名前/ハッシュを知っているとここが楽です
+			idToIndexMap_[lastEntity->GetId()] = indexToRemove;
+
+			// スワップ
+			std::swap(entitys_[indexToRemove], entitys_[lastIndex]);
+		}
+
+		// 4. 削除
+		hashToIdMap_.erase(handle.nameHash_);
+		idToIndexMap_.erase(handle.id_);
+		entitys_.pop_back();
+
+		handle.id_ = 0;
+		handle.ptr_ = nullptr;
+
+	}
+
+	void EntityStorage::EraseRequested() {
+
+		for (auto& handle : eraseRequestedHandles_) {
+
+			Erase(handle);
+
+			assert(!handle);
+
+		}
+
+		eraseRequestedHandles_.clear();
+
+	}
+
+	void EntityStorage::Update() {
+
+		EraseRequested();
+
+	}
 
 }

@@ -321,7 +321,7 @@ namespace Atrum {
 
 		assert(isInitialized_ && "AtrumEngine is not initialized");
 
-		I::PlayInput::GetInstance()->EndOfFrame();
+		playInput_->EndOfFrame();
 
 		SDL_Event event;
 
@@ -353,6 +353,8 @@ namespace Atrum {
 
 					playInput_->SetKey(static_cast<uint8_t>(event.key.keysym.scancode), true);
 
+					Debug::LogFile::GetInstance()->Log("SDL: KEYDOWN");
+
 					break;
 
 				case SDL_KEYUP:
@@ -361,13 +363,15 @@ namespace Atrum {
 
 					playInput_->SetKey(static_cast<uint8_t>(event.key.keysym.scancode), false);
 
+					Debug::LogFile::GetInstance()->Log("SDL: KEYUP");
+
 					break;
 
 				case SDL_MOUSEBUTTONDOWN:
 
 					playInput_->SetMouseButton(event.button.button - 1, true);
 
-					D::LogFile::GetInstance()->Log("Mouse: " + std::to_string(event.button.button - 1));
+					D::LogFile::GetInstance()->Log(std::format("MouseDown: {}", event.button.button - 1));
 
 					break;
 
@@ -375,11 +379,15 @@ namespace Atrum {
 
 					playInput_->SetMouseButton(event.button.button - 1, false);
 
+					D::LogFile::GetInstance()->Log(std::format("MouseUp: {}", event.button.button - 1));
+
 					break;
 
 				case SDL_MOUSEWHEEL:
 
 					playInput_->AddMouseWheel(event.wheel.y);
+
+					D::LogFile::GetInstance()->Log(std::format("MouseWheel: {}", event.wheel.y));
 
 					break;
 
@@ -388,6 +396,8 @@ namespace Atrum {
 					playInput_->AddCursorDelta(event.motion.xrel, event.motion.yrel);
 
 					playInput_->SetCursorPos(event.motion.x, event.motion.y);
+
+					D::LogFile::GetInstance()->Log(std::format("MouseMotion: ({}, {})", event.motion.x, event.motion.y));
 
 					break;
 
