@@ -231,7 +231,7 @@ namespace Atrum::Math {
 		static Matrix4x4 Viewport(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 		// LookAt行列
-		static Matrix4x4 LookAt(const Vector3& observer, const Vector3& target, const Vector3& above);
+		static Matrix4x4 LookAt(const Vector3& target, const Vector3& eye, const Vector3& up);
 
 		Vector3 ToEuler() const;
 

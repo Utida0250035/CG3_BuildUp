@@ -62,15 +62,15 @@ namespace Atrum::Physics {
 
 		M::Vector3 rB = contact.position - bodyB->GetCenter();
 
-		M::Vector3 rACrossN = rA.Cross(normal);
+		M::Vector3 rACrossN = Cross(rA, normal);
 
-		M::Vector3 rBCrossN = rB.Cross(normal);
+		M::Vector3 rBCrossN = Cross(rB, normal);
 
 		float denominator =
 			totalInverseMass +
 			normal.Dot(
-				(bodyA->inverseInertiaTensorWorld * rACrossN).Cross(rA)
-				+ (bodyB->inverseInertiaTensorWorld * rBCrossN).Cross(rB)
+				Cross(bodyA->inverseInertiaTensorWorld * rACrossN, rA)
+				+ Cross(bodyB->inverseInertiaTensorWorld * rBCrossN, rB)
 			);
 
 		if (denominator <= 0.000001f) {
@@ -136,9 +136,9 @@ namespace Atrum::Physics {
 		M::Vector3 rB =
 			contact.position - bodyB->GetCenter();
 
-		M::Vector3 vA = bodyA->velocity + bodyA->angularVelocity.Cross(rA);
+		M::Vector3 vA = bodyA->velocity + Cross(bodyA->angularVelocity, rA);
 
-		M::Vector3 vB = bodyB->velocity + bodyB->angularVelocity.Cross(rB);
+		M::Vector3 vB = bodyB->velocity + Cross(bodyB->angularVelocity, rB);
 
 		M::Vector3 relativeVelocity = vB - vA;
 
@@ -148,13 +148,13 @@ namespace Atrum::Physics {
 			return;
 		}
 
-		M::Vector3 rACrossN = rA.Cross(normal);
+		M::Vector3 rACrossN = Cross(rA, normal);
 
-		M::Vector3 rBCrossN = rB.Cross(normal);
+		M::Vector3 rBCrossN = Cross(rB, normal);
 
 		float normalDenominator = totalInverseMass + normal.Dot(
-			(bodyA->inverseInertiaTensorWorld * rACrossN).Cross(rA)
-			+ (bodyB->inverseInertiaTensorWorld * rBCrossN).Cross(rB)
+			Cross(bodyA->inverseInertiaTensorWorld * rACrossN, rA)
+			+ Cross(bodyB->inverseInertiaTensorWorld * rBCrossN, rB)
 		);
 
 		if (normalDenominator <= 0.000001f) {
@@ -191,9 +191,9 @@ namespace Atrum::Physics {
 
 		rB = contact.position - bodyB->GetCenter();
 
-		vA = bodyA->velocity + bodyA->angularVelocity.Cross(rA);
+		vA = bodyA->velocity + Cross(bodyA->angularVelocity, rA);
 
-		vB = bodyB->velocity + bodyB->angularVelocity.Cross(rB);
+		vB = bodyB->velocity + Cross(bodyB->angularVelocity, rB);
 
 		relativeVelocity = vB - vA;
 
@@ -205,13 +205,13 @@ namespace Atrum::Physics {
 
 		tangent.Normalize();
 
-		M::Vector3 rACrossT = rA.Cross(tangent);
+		M::Vector3 rACrossT = Cross(rA, tangent);
 
-		M::Vector3 rBCrossT = rB.Cross(tangent);
+		M::Vector3 rBCrossT = Cross(rB, tangent);
 
 		float tangentDenominator = totalInverseMass + tangent.Dot(
-			(bodyA->inverseInertiaTensorWorld * rACrossT).Cross(rA)
-			+ (bodyB->inverseInertiaTensorWorld * rBCrossT).Cross(rB)
+			Cross(bodyA->inverseInertiaTensorWorld * rACrossT, rA)
+			+ Cross(bodyB->inverseInertiaTensorWorld * rBCrossT, rB)
 		);
 
 		if (tangentDenominator <= 0.000001f) {
@@ -254,7 +254,7 @@ namespace Atrum::Physics {
 			bodyA->position -=
 				correctionImpulse * bodyA->inverseMass;
 
-			M::Vector3 angularCorrection = bodyA->inverseInertiaTensorWorld * rA.Cross(correctionImpulse);
+			M::Vector3 angularCorrection = bodyA->inverseInertiaTensorWorld * Cross(rA, correctionImpulse);
 
 			angularCorrection *= -1.0f;
 
@@ -266,16 +266,15 @@ namespace Atrum::Physics {
 
 				M::Quaternion dq = M::Quaternion::FromAxisAngle(axis, angle);
 
-				bodyA->rotation = (dq * bodyA->rotation).Normalized();
+				bodyA->quaternion = (dq * bodyA->quaternion).Normalized();
 			}
 		}
 
 		if (bodyB->inverseMass > 0.0f) {
 
-			bodyB->position +=
-				correctionImpulse * bodyB->inverseMass;
+			bodyB->position += correctionImpulse * bodyB->inverseMass;
 
-			M::Vector3 angularCorrection = bodyB->inverseInertiaTensorWorld * rB.Cross(correctionImpulse);
+			M::Vector3 angularCorrection = bodyB->inverseInertiaTensorWorld * Cross(rB, correctionImpulse);
 
 			float angle = angularCorrection.Length();
 
@@ -286,7 +285,7 @@ namespace Atrum::Physics {
 
 				M::Quaternion dq = M::Quaternion::FromAxisAngle(axis, angle);
 
-				bodyB->rotation = (dq * bodyB->rotation).Normalized();
+				bodyB->quaternion = (dq * bodyB->quaternion).Normalized();
 
 			}
 		}
@@ -306,7 +305,7 @@ namespace Atrum::Physics {
 
 			bodyA->velocity -= impulse * bodyA->inverseMass;
 
-			bodyA->angularVelocity -= bodyA->inverseInertiaTensorWorld * rA.Cross(impulse);
+			bodyA->angularVelocity -= bodyA->inverseInertiaTensorWorld * Cross(rA, impulse);
 
 		}
 
@@ -314,7 +313,7 @@ namespace Atrum::Physics {
 
 			bodyB->velocity += impulse * bodyB->inverseMass;
 
-			bodyB->angularVelocity += bodyB->inverseInertiaTensorWorld * rB.Cross(impulse);
+			bodyB->angularVelocity += bodyB->inverseInertiaTensorWorld * Cross(rB, impulse);
 
 		}
 	}

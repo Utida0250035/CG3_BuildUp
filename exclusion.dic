@@ -1,4 +1,4 @@
-﻿HINSTANCE
+HINSTANCE
 DXGI
 dxgi
 Atrum
@@ -41,3 +41,5 @@ redist
 xrel
 yrel
 Inversed
+Slerp
+slerp

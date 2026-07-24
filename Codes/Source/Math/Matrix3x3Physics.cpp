@@ -60,15 +60,15 @@ namespace Atrum::Physics {
 		Matrix3x3Physics result{};
 
 		result.m[0][0] = 1.0f - 2.0f * y * y - 2.0f * z * z;
-		result.m[0][1] = 2.0f * x * y + 2.0f * w * z;
-		result.m[0][2] = 2.0f * x * z - 2.0f * w * y;
+		result.m[0][1] = 2.0f * x * y - 2.0f * w * z;
+		result.m[0][2] = 2.0f * x * z + 2.0f * w * y;
 
-		result.m[1][0] = 2.0f * x * y - 2.0f * w * z;
+		result.m[1][0] = 2.0f * x * y + 2.0f * w * z;
 		result.m[1][1] = 1.0f - 2.0f * x * x - 2.0f * z * z;
-		result.m[1][2] = 2.0f * y * z + 2.0f * w * x;
+		result.m[1][2] = 2.0f * y * z - 2.0f * w * x;
 
-		result.m[2][0] = 2.0f * x * z + 2.0f * w * y;
-		result.m[2][1] = 2.0f * y * z - 2.0f * w * x;
+		result.m[2][0] = 2.0f * x * z - 2.0f * w * y;
+		result.m[2][1] = 2.0f * y * z + 2.0f * w * x;
 		result.m[2][2] = 1.0f - 2.0f * x * x - 2.0f * y * y;
 
 		return result;

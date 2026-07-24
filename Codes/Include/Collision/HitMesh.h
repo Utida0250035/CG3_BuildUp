@@ -54,7 +54,7 @@ namespace Atrum::Physics {
 
 		M::Vector3 position{};
 
-		M::Quaternion rotation = M::Quaternion::Identity();
+		M::Quaternion quaternion = M::Quaternion::Identity();
 
 		M::Vector3 scale = { 1.0f,1.0f,1.0f };
 
@@ -120,13 +120,16 @@ namespace Atrum::Physics {
 
 				M::Vector3 axis = rotateDelta / angle;
 
+				axis.Normalize();
+
 				M::Quaternion delta =
 					M::Quaternion::FromAxisAngle(
 						axis,
-						angle);
+						angle
+					);
 
-				rotation =
-					(delta * rotation).Normalized();
+				quaternion =
+					(delta * quaternion).Normalized();
 			}
 
 			UpdateMatrix();
@@ -141,14 +144,14 @@ namespace Atrum::Physics {
 		{
 			worldMatrix =
 				M::Matrix4x4::Scale(scale) *
-				rotation.MakeRotateMatrix() *
+				quaternion.MakeRotateMatrix() *
 				M::Matrix4x4::Translate(position);
 
 			UpdateWorldVertices();
 
 			inverseInertiaTensorWorld = Matrix3x3Physics::WorldInverseInertiaTensor(
 				inverseInertiaTensorLocal,
-				rotation
+				quaternion
 			);
 
 		}

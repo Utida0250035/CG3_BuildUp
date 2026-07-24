@@ -427,7 +427,13 @@
       <Filter>Codes\Include\File</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
-    <ClInclude Include="Codes\Include\Components\TransformComponent.h" />
+    <ClInclude Include="Codes\Include\Hit\HitCircle.h" />
+    <ClInclude Include="..\AL3_KamataEngine3D\DirectXGame\Easing.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Lerp.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">

@@ -262,28 +262,16 @@ namespace Atrum::Math {
 
 	}
 
-	Matrix4x4 Matrix4x4::LookAt(const Vector3& observerPos, const Vector3& targetPos, const Vector3& above) {
-
-		Vector3 f = (targetPos - observerPos).Normalized();
-
-		Vector3 r = (f.Cross(above)).Normalized();
-
-		Vector3 u = (r.Cross(f)).Normalized();
+	Matrix4x4 Matrix4x4::LookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
+		Vector3 f = (target - eye).Normalized();
+		Vector3 s = up.Cross(f).Normalized();
+		Vector3 u = f.Cross(s);
 
 		Matrix4x4 m = Identity();
-
-		// 回転成分 (左上 3x3)
-		m.m[0][0] = r.x; m.m[0][1] = r.y; m.m[0][2] = r.z;
+		m.m[0][0] = s.x; m.m[0][1] = s.y; m.m[0][2] = s.z;
 		m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z;
-		m.m[2][0] = -f.x; m.m[2][1] = -f.y; m.m[2][2] = -f.z;
-
-
-		m.m[3][0] = -r.Dot(observerPos);
-		m.m[3][1] = -u.Dot(observerPos);
-		m.m[3][2] = f.Dot(observerPos);
-
+		m.m[2][0] = f.x; m.m[2][1] = f.y; m.m[2][2] = f.z;
 		return m;
-
 	}
 
 	Vector3 Matrix4x4::ToEuler() const {
