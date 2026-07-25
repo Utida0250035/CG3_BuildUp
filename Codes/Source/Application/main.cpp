@@ -27,6 +27,7 @@ namespace {
 	using Atrum::Input::Key;
 
 	using Atrum::Audio::AudioManager;
+	using Atrum::Audio::AudioHandle;
 	using Atrum::Audio::To100nsPositive;
 
 	using Atrum::Math::Transform;

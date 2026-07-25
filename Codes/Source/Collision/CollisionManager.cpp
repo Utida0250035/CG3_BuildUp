@@ -73,12 +73,6 @@ namespace Atrum::Physics {
 				M::Vector3 centerA = bodyA->GetCenter();
 				M::Vector3 centerB = bodyB->GetCenter();
 
-				M::Vector3 centerDirection = centerB - centerA;
-
-				if (centerDirection.Dot(sat.normal) < 0.0f) {
-					sat.normal = -sat.normal;
-				}
-
 				ContactConstraint constraint{};
 				constraint.Initialize(bodyA, bodyB, sat);
 

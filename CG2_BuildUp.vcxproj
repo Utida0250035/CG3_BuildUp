@@ -134,7 +134,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp" />
-    <ClCompile Include="Codes\Source\Collision\Collision2D.cpp" />
+    <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp" />
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp" />
@@ -212,7 +212,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Audio\VoiceState.h" />
     <ClInclude Include="Codes\Include\Camera\Camera.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
-    <ClInclude Include="Codes\Include\Collision\Collision2D.h" />
+    <ClInclude Include="Codes\Include\Collision2D\Collision2D.h" />
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h" />
     <ClInclude Include="Codes\Include\Collision\CollisionTypes.h" />
     <ClInclude Include="Codes\Include\Collision\ContactConstraint.h" />

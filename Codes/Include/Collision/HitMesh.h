@@ -120,16 +120,13 @@ namespace Atrum::Physics {
 
 				M::Vector3 axis = rotateDelta / angle;
 
-				axis.Normalize();
-
 				M::Quaternion delta =
 					M::Quaternion::FromAxisAngle(
 						axis,
 						angle
 					);
 
-				quaternion =
-					(delta * quaternion).Normalized();
+				quaternion = (quaternion * delta).Normalized();
 			}
 
 			UpdateMatrix();
@@ -231,7 +228,7 @@ namespace Atrum::Physics {
 			M::Vector3 edge0 = v1 - v0;
 			M::Vector3 edge1 = v2 - v0;
 
-			M::Vector3 normal = edge0.Cross(edge1);
+			M::Vector3 normal = Cross(edge0, edge1);
 
 			if (normal.Length() <= 0.000001f) {
 				return {};

@@ -25,9 +25,6 @@
     <ClCompile Include="Codes\Source\Debug\DebugCamera.cpp">
       <Filter>Codes\Source\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\Collision2D.cpp">
-      <Filter>Codes\Source\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
       <Filter>Codes\Source\Collision</Filter>
     </ClCompile>
@@ -163,6 +160,9 @@
     <ClCompile Include="Codes\Source\System\Entity.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp">
+      <Filter>Codes\Source\Collision2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -194,9 +194,6 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\Camera.h">
       <Filter>Codes\Include\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\Collision2D.h">
-      <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h">
       <Filter>Codes\Include\Collision</Filter>
@@ -426,13 +423,20 @@
     <ClInclude Include="Codes\Include\File\FileSize.h">
       <Filter>Codes\Include\File</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
-    <ClInclude Include="Codes\Include\Hit\HitCircle.h" />
     <ClInclude Include="..\AL3_KamataEngine3D\DirectXGame\Easing.h">
       <Filter>Codes\Include\Math</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Lerp.h">
       <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision2D\Collision2D.h">
+      <Filter>Codes\Include\Collision2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\AudioHandle.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Hit\HitCircle.h">
+      <Filter>Codes\Include\Hit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -588,6 +592,15 @@
     </Filter>
     <Filter Include="Codes\Source\File">
       <UniqueIdentifier>{f81827bf-835d-4f65-b2bc-94780a23554c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Collision2D">
+      <UniqueIdentifier>{3eb16e80-e4f8-4156-8e78-e8b2bab360ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Collision2D">
+      <UniqueIdentifier>{95e0e672-b12c-4306-9e9b-18d4d660b930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Hit">
+      <UniqueIdentifier>{cb46afd9-da2e-48bf-a17d-a539f1fedb1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
