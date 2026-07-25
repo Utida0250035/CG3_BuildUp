@@ -181,7 +181,7 @@ namespace Atrum::Math {
 			return Quaternion(-x, -y, -z, w);
 		}
 
-		[[nodiscard]] constexpr Matrix4x4 MakeRotateMatrix() const {
+		[[nodiscard]] constexpr Matrix4x4 MakeRotateMatrixRh() const {
 
 			float x2 = x * x;
 			float y2 = y * y;
@@ -206,6 +206,37 @@ namespace Atrum::Math {
 
 			rotateMatrix.m[2][0] = 2.0f * (xz - wy);
 			rotateMatrix.m[2][1] = 2.0f * (yz + wx);
+			rotateMatrix.m[2][2] = 1.0f - 2.0f * (x2 + y2);
+
+			return rotateMatrix;
+
+		}
+
+		[[nodiscard]] constexpr Matrix4x4 MakeRotateMatrixLh() const {
+
+			float x2 = x * x;
+			float y2 = y * y;
+			float z2 = z * z;
+			float xy = x * y;
+			float xz = x * z;
+			float yz = y * z;
+			float wx = w * x;
+			float wy = w * y;
+			float wz = w * z;
+
+			Matrix4x4 rotateMatrix = Matrix4x4::Identity();
+
+			// 行優先(Row-Major)で回転成分のみを上書き
+			rotateMatrix.m[0][0] = 1.0f - 2.0f * (y2 + z2);
+			rotateMatrix.m[0][1] = 2.0f * (xy + wz);
+			rotateMatrix.m[0][2] = 2.0f * (xz - wy);
+
+			rotateMatrix.m[1][0] = 2.0f * (xy - wz);
+			rotateMatrix.m[1][1] = 1.0f - 2.0f * (x2 + z2);
+			rotateMatrix.m[1][2] = 2.0f * (yz + wx);
+
+			rotateMatrix.m[2][0] = 2.0f * (xz + wy);
+			rotateMatrix.m[2][1] = 2.0f * (yz - wx);
 			rotateMatrix.m[2][2] = 1.0f - 2.0f * (x2 + y2);
 
 			return rotateMatrix;

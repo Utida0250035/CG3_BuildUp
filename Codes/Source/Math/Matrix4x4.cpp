@@ -194,7 +194,7 @@ namespace Atrum::Math {
 
 	Matrix4x4 Matrix4x4::World(const Vector3& translate, const Quaternion& rotate, const Vector3& scale) {
 
-		return Scale(scale) * rotate.MakeRotateMatrix() * Translate(translate);
+		return Scale(scale) * rotate.MakeRotateMatrixRh() * Translate(translate);
 
 	}
 

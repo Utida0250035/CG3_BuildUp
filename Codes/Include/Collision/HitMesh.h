@@ -141,7 +141,7 @@ namespace Atrum::Physics {
 		{
 			worldMatrix =
 				M::Matrix4x4::Scale(scale) *
-				quaternion.MakeRotateMatrix() *
+				quaternion.MakeRotateMatrixRh() *
 				M::Matrix4x4::Translate(position);
 
 			UpdateWorldVertices();

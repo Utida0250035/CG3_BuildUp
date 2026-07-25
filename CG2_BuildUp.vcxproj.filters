@@ -438,6 +438,9 @@
     <ClInclude Include="Codes\Include\Hit\HitCircle.h">
       <Filter>Codes\Include\Hit</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Collision\PhysicsBridge.h">
+      <Filter>Codes\Include\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">

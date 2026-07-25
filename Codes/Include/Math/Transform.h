@@ -19,9 +19,9 @@
 namespace Atrum::Math {
 
 	struct DEPRECATED_OLD_TRANSFORM Transform {
-		Vector3 scale{ 1.0f, 1.0f, 1.0f };
-		Vector3 rotate{};
-		Vector3 translate{};
+		Vector3 scale = Vector3::One();
+		Vector3 rotate = Vector3::Zero();
+		Vector3 translate = Vector3::Zero();
 
 		/// <summary>
 		/// ワールド行列の作成
@@ -36,14 +36,27 @@ namespace Atrum::Math {
 
 	};
 
-	struct TransformQ {
-		Vector3 scale{ 1.0f, 1.0f, 1.0f };
-		Quaternion rotate{};
-		Vector3 translate{};
+	struct TransformLH {
+		Vector3 scale = Vector3::One();
+		Quaternion quaternion = Quaternion::Identity();
+		Vector3 translate = Vector3::Zero();
 
 		[[nodiscard]] Matrix4x4 MakeWorldMatrix() const {
 
-			return Matrix4x4::World(translate, rotate, scale);
+			return Matrix4x4::World(translate, quaternion, scale);
+
+		}
+
+	};
+
+	struct TransformRH {
+		Vector3 scale = Vector3::One();
+		Quaternion quaternion = Quaternion::Identity();
+		Vector3 translate = Vector3::Zero();
+
+		[[nodiscard]] Matrix4x4 MakeWorldMatrix() const {
+
+			return Matrix4x4::ToRightHanded(Matrix4x4::World(translate, quaternion, scale));
 
 		}
 
