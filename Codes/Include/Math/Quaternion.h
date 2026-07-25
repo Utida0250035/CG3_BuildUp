@@ -196,17 +196,17 @@ namespace Atrum::Math {
 			Matrix4x4 rotateMatrix = Matrix4x4::Identity();
 
 			// 行優先(Row-Major)で回転成分のみを上書き
-			rotateMatrix.m[0][0] = 1.0f - 2.0f * (y2 + z2);
-			rotateMatrix.m[0][1] = 2.0f * (xy - wz);
-			rotateMatrix.m[0][2] = 2.0f * (xz + wy);
+			rotateMatrix[0][0] = 1.0f - 2.0f * (y2 + z2);
+			rotateMatrix[0][1] = 2.0f * (xy - wz);
+			rotateMatrix[0][2] = 2.0f * (xz + wy);
 
-			rotateMatrix.m[1][0] = 2.0f * (xy + wz);
-			rotateMatrix.m[1][1] = 1.0f - 2.0f * (x2 + z2);
-			rotateMatrix.m[1][2] = 2.0f * (yz - wx);
+			rotateMatrix[1][0] = 2.0f * (xy + wz);
+			rotateMatrix[1][1] = 1.0f - 2.0f * (x2 + z2);
+			rotateMatrix[1][2] = 2.0f * (yz - wx);
 
-			rotateMatrix.m[2][0] = 2.0f * (xz - wy);
-			rotateMatrix.m[2][1] = 2.0f * (yz + wx);
-			rotateMatrix.m[2][2] = 1.0f - 2.0f * (x2 + y2);
+			rotateMatrix[2][0] = 2.0f * (xz - wy);
+			rotateMatrix[2][1] = 2.0f * (yz + wx);
+			rotateMatrix[2][2] = 1.0f - 2.0f * (x2 + y2);
 
 			return rotateMatrix;
 
@@ -227,17 +227,17 @@ namespace Atrum::Math {
 			Matrix4x4 rotateMatrix = Matrix4x4::Identity();
 
 			// 行優先(Row-Major)で回転成分のみを上書き
-			rotateMatrix.m[0][0] = 1.0f - 2.0f * (y2 + z2);
-			rotateMatrix.m[0][1] = 2.0f * (xy + wz);
-			rotateMatrix.m[0][2] = 2.0f * (xz - wy);
+			rotateMatrix[0][0] = 1.0f - 2.0f * (y2 + z2);
+			rotateMatrix[0][1] = 2.0f * (xy + wz);
+			rotateMatrix[0][2] = 2.0f * (xz - wy);
 
-			rotateMatrix.m[1][0] = 2.0f * (xy - wz);
-			rotateMatrix.m[1][1] = 1.0f - 2.0f * (x2 + z2);
-			rotateMatrix.m[1][2] = 2.0f * (yz + wx);
+			rotateMatrix[1][0] = 2.0f * (xy - wz);
+			rotateMatrix[1][1] = 1.0f - 2.0f * (x2 + z2);
+			rotateMatrix[1][2] = 2.0f * (yz + wx);
 
-			rotateMatrix.m[2][0] = 2.0f * (xz + wy);
-			rotateMatrix.m[2][1] = 2.0f * (yz - wx);
-			rotateMatrix.m[2][2] = 1.0f - 2.0f * (x2 + y2);
+			rotateMatrix[2][0] = 2.0f * (xz + wy);
+			rotateMatrix[2][1] = 2.0f * (yz - wx);
+			rotateMatrix[2][2] = 1.0f - 2.0f * (x2 + y2);
 
 			return rotateMatrix;
 
@@ -293,8 +293,8 @@ namespace Atrum::Math {
 
 		}
 
-		[[nodiscard]] static Quaternion FromLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
-			Matrix4x4 lookAtMatrix = Matrix4x4::LookAt(target, eye, up);
+		[[nodiscard]] static Quaternion FromLhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
+			Matrix4x4 lookAtMatrix = Matrix4x4::LhLookAt(target, eye, up);
 
 			Quaternion lookAtQ = FromRotateMatrix(lookAtMatrix);
 

@@ -10,6 +10,9 @@ namespace Atrum::Math {
 	struct Matrix4x4 {
 		float m[4][4]{};
 
+		float* operator[](const int row) { return m[row]; }
+		const float* operator[](const int row) const { return m[row]; }
+
 		constexpr Matrix4x4& operator+=(const Matrix4x4& other) {
 
 			for (size_t i = 0; i < 4; ++i) {
@@ -230,8 +233,11 @@ namespace Atrum::Math {
 		// ビューポート変換行列
 		static Matrix4x4 Viewport(float left, float top, float width, float height, float minDepth, float maxDepth);
 
-		// LookAt行列
-		static Matrix4x4 LookAt(const Vector3& target, const Vector3& eye, const Vector3& up);
+		// LookAt行列(左手系)
+		static Matrix4x4 LhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up);
+
+		// LookAt行列(右手系)
+		static Matrix4x4 RhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up);
 
 		Vector3 ToEuler() const;
 

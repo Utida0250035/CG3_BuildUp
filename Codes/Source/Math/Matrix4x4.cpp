@@ -262,7 +262,7 @@ namespace Atrum::Math {
 
 	}
 
-	Matrix4x4 Matrix4x4::LookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
+	Matrix4x4 Matrix4x4::LhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
 		Vector3 f = (target - eye).Normalized();
 		Vector3 s = up.Cross(f).Normalized();
 		Vector3 u = f.Cross(s);
