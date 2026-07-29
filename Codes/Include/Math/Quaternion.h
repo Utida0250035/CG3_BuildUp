@@ -177,11 +177,17 @@ namespace Atrum::Math {
 			return 2.0f * std::acos(clamped_w);
 		}
 
+		constexpr void Conjugate() {
+			x *= -1.0f;
+			y *= -1.0f;
+			z *= -1.0f;
+		}
+
 		[[nodiscard]] constexpr Quaternion Conjugated() const {
 			return Quaternion(-x, -y, -z, w);
 		}
 
-		[[nodiscard]] constexpr Matrix4x4 MakeRotateMatrixRh() const {
+		[[nodiscard]] Matrix4x4 MakeRotateMatrixRh() const {
 
 			float x2 = x * x;
 			float y2 = y * y;
@@ -212,7 +218,7 @@ namespace Atrum::Math {
 
 		}
 
-		[[nodiscard]] constexpr Matrix4x4 MakeRotateMatrixLh() const {
+		[[nodiscard]] Matrix4x4 MakeRotateMatrixLh() const {
 
 			float x2 = x * x;
 			float y2 = y * y;
@@ -408,61 +414,61 @@ namespace Atrum::Math {
 				roll = std::atan2(2.0f * (x * y + w * z), sqw - sqx + sqy - sqz);
 			}
 
-			return { yaw, pitch, roll };
+			return { pitch, yaw, roll };
+
+	}
+
+	[[nodiscard]] static Quaternion Lerp(const Quaternion& start, const Quaternion& end, const float t) {
+
+		Quaternion result = start * (1.0f - t) + end * t;
+
+		result.Normalize();
+
+		return result;
+
+	}
+
+	[[nodiscard]] static Quaternion Slerp(const Quaternion& start, Quaternion end, const float t) {
+
+		Quaternion result{};
+
+		float dot = start.Dot(end);
+
+		if (dot < 0.0f) {
+
+			dot = -dot;
+
+			end = -end;
 
 		}
 
-		[[nodiscard]] static Quaternion Lerp(const Quaternion& start, const Quaternion& end, const float t) {
+		if (dot > 0.9995f) {
 
-			Quaternion result = start * (1.0f - t) + end * t;
-
-			result.Normalize();
+			result = Lerp(start, end, t);
 
 			return result;
 
 		}
 
-		[[nodiscard]] static Quaternion Slerp(const Quaternion& start, Quaternion end, const float t) {
+		float thetaO = std::acos(dot);
 
-			Quaternion result{};
+		float theta = thetaO * t;
 
-			float dot = start.Dot(end);
+		float sinTheta = std::sin(theta);
+		float sinThetaO = std::sin(thetaO);
 
-			if (dot < 0.0f) {
+		float sO = std::cos(theta) - dot * sinTheta / sinThetaO;
+		float s = sinTheta / sinThetaO;
 
-				dot = -dot;
+		result = start * sO + end * s;
 
-				end = -end;
+		result.Normalize();
 
-			}
+		return result;
 
-			if (dot > 0.9995f) {
+	}
 
-				result = Lerp(start, end, t);
-
-				return result;
-
-			}
-
-			float thetaO = std::acos(dot);
-
-			float theta = thetaO * t;
-
-			float sinTheta = std::sin(theta);
-			float sinThetaO = std::sin(thetaO);
-
-			float sO = std::cos(theta) - dot * sinTheta / sinThetaO;
-			float s = sinTheta / sinThetaO;
-
-			result = start * sO + end * s;
-
-			result.Normalize();
-
-			return result;
-
-		}
-
-	};
+};
 
 }
 
