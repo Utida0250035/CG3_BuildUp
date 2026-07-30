@@ -145,7 +145,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	/* DirectionalLight */
 
 	DirectionalLightData directionalLightData = DirectionalLightData{
-		.color = Vector4{1.0f, 1.0f, 1.0f, 1.0f},
+		.color = Vector3{1.0f, 1.0f, 1.0f},
 		.direction = Vector3{0.0f, -1.0f, 0.0f},
 		.intensity = 10.0f,
 		.lightModel = LightModel::HalfLambert
@@ -327,7 +327,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("directionalLight");
 
-		ImGui::DragFloat4("color", &directionalLightData.color.x, 0.03125f);
+		ImGui::DragFloat3("color", &directionalLightData.color.x, 0.03125f, 0.0f, 1.0f);
 
 		ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
 

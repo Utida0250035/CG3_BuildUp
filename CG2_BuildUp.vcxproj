@@ -248,7 +248,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Resource\DescriptorAllocator.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\DirectionalLightData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\IndexBuffer.h" />
-    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\MaterialData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ModelStorage.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\Texture.h" />
