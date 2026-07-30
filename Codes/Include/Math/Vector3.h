@@ -185,9 +185,9 @@ namespace Atrum::Physics {
 
 	inline Math::Vector3 Cross(const Math::Vector3& me, const Math::Vector3& other) {
 
-		Math::Vector3 result = me.Cross(other);
+		Math::Vector3 result = other.Cross(me);
 
-		return result * -1.0f;
+		return result;
 
 	}
 

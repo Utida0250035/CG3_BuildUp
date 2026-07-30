@@ -42,7 +42,7 @@ namespace Atrum {
 		}
 
 		void UpdateMatrix() {
-			viewMatrix_ = Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrix(), Math::Matrix4x4::Translate(translate_));
+			viewMatrix_ = Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrixRh(), Math::Matrix4x4::Translate(translate_));
 		}
 
 		/* ゲッター */

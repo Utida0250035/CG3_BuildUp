@@ -2,16 +2,20 @@
 
 #include <cstdint>
 
-struct AudioHandle {
+namespace Atrum::Audio {
 
-	size_t soundIndex = 0;
-	size_t voiceIndex = 0;
-	bool isStreaming = false;
-	uint64_t playId = 0;
-	bool isSuccess = false;
+	struct AudioHandle {
 
-	explicit operator bool() const {
-		return isSuccess;
-	}
+		size_t soundIndex = 0;
+		size_t voiceIndex = 0;
+		bool isStreaming = false;
+		uint64_t playId = 0;
+		bool isSuccess = false;
 
-};
+		explicit operator bool() const {
+			return isSuccess;
+		}
+
+	};
+
+}

@@ -27,6 +27,7 @@ namespace {
 	using Atrum::Input::Key;
 
 	using Atrum::Audio::AudioManager;
+	using Atrum::Audio::AudioHandle;
 	using Atrum::Audio::To100nsPositive;
 
 	using Atrum::Math::Transform;
@@ -519,7 +520,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
-		ImGui::DragFloat3("angularVelocity", &hitMeshPyramid.angularVelocity.x);
+		Vector3 pyramidAngularVel = hitMeshPyramid.angularVelocity;
+		pyramidAngularVel.x *= -1.0f;
+		pyramidAngularVel.y *= -1.0f;
+
+		ImGui::DragFloat3("angularVelocity", &pyramidAngularVel.x);
+
+		hitMeshPyramid.angularVelocity = pyramidAngularVel;
+		hitMeshPyramid.angularVelocity.x *= -1.0f;
+		hitMeshPyramid.angularVelocity.y *= -1.0f;
 
 		ImGui::End();
 
