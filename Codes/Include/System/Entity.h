@@ -45,7 +45,7 @@ namespace Atrum {
 
 		};
 
-		Math::TransformQ transform_{};
+		Math::TransformLH transform_{};
 
 		std::vector<ComponentBox> componentBoxes_{};
 
@@ -72,8 +72,8 @@ namespace Atrum {
 
 		}
 
-		Math::TransformQ& RefTransform() { return transform_; }
-		const Math::TransformQ& GetTransform() { return transform_; }
+		Math::TransformLH& RefTransform() { return transform_; }
+		const Math::TransformLH& GetTransform() { return transform_; }
 
 		template<typename T>
 			requires std::derived_from<T, Component>

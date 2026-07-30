@@ -254,9 +254,7 @@ namespace Atrum::Physics {
 			bodyA->position -=
 				correctionImpulse * bodyA->inverseMass;
 
-			M::Vector3 angularCorrection = bodyA->inverseInertiaTensorWorld * Cross(rA, correctionImpulse);
-
-			angularCorrection *= -1.0f;
+			M::Vector3 angularCorrection = -(bodyA->inverseInertiaTensorWorld * Cross(rA, correctionImpulse));
 
 			float angle = angularCorrection.Length();
 
@@ -266,7 +264,7 @@ namespace Atrum::Physics {
 
 				M::Quaternion dq = M::Quaternion::FromAxisAngle(axis, angle);
 
-				bodyA->quaternion = (dq * bodyA->quaternion).Normalized();
+				bodyA->quaternion = (bodyA->quaternion * dq).Normalized();
 			}
 		}
 
@@ -285,7 +283,7 @@ namespace Atrum::Physics {
 
 				M::Quaternion dq = M::Quaternion::FromAxisAngle(axis, angle);
 
-				bodyB->quaternion = (dq * bodyB->quaternion).Normalized();
+				bodyB->quaternion = (bodyB->quaternion * dq).Normalized();
 
 			}
 		}

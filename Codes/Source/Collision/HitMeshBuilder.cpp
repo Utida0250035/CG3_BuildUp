@@ -132,7 +132,7 @@ namespace Atrum::Physics {
 
 		HitMesh hitMesh{};
 
-		M::Vector3 normal = Cross(triangle.v1 - triangle.v0, triangle.v2 - triangle.v0).Normalized();
+		M::Vector3 normal = Physics::Cross(triangle.v1 - triangle.v0, triangle.v2 - triangle.v0).Normalized();
 
 		constexpr float thickness = 1.0f;
 		M::Vector3 offset = normal * thickness;

@@ -194,7 +194,7 @@ namespace Atrum::Math {
 
 	Matrix4x4 Matrix4x4::World(const Vector3& translate, const Quaternion& rotate, const Vector3& scale) {
 
-		return Scale(scale) * rotate.MakeRotateMatrix() * Translate(translate);
+		return Scale(scale) * rotate.MakeRotateMatrixRh() * Translate(translate);
 
 	}
 
@@ -262,7 +262,7 @@ namespace Atrum::Math {
 
 	}
 
-	Matrix4x4 Matrix4x4::LookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
+	Matrix4x4 Matrix4x4::LhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
 		Vector3 f = (target - eye).Normalized();
 		Vector3 s = up.Cross(f).Normalized();
 		Vector3 u = f.Cross(s);
@@ -272,6 +272,22 @@ namespace Atrum::Math {
 		m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z;
 		m.m[2][0] = f.x; m.m[2][1] = f.y; m.m[2][2] = f.z;
 		return m;
+	}
+
+	Matrix4x4 Matrix4x4::RhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
+
+		Vector3 f = (target - eye).Normalized();
+		Vector3 s = Physics::Cross(up, f).Normalized();
+		Vector3 u = Physics::Cross(f, s);
+
+		Matrix4x4 m = Identity();
+		m.m[0][0] = s.x; m.m[0][1] = s.y; m.m[0][2] = s.z;
+		m.m[1][0] = u.x; m.m[1][1] = u.y; m.m[1][2] = u.z;
+		m.m[2][0] = f.x; m.m[2][1] = f.y; m.m[2][2] = f.z;
+
+
+		return m;
+
 	}
 
 	Vector3 Matrix4x4::ToEuler() const {
