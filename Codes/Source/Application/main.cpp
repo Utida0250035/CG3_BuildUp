@@ -116,28 +116,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	AudioHandle bgmPlayHandle{};
 
-	/* Triangle */
-
-	Transform triangleTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{std::numbers::pi_v<float> *0.5f, 0.0f, 0.0f}, Vector3{0.0f, -1.0f, 0.0f} };
-
-	Vector4 triangleColor = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	Transform triangleUvTransform{};
-
-	Triangle triangle{
-		{-5.0f, -5.0f, 0.0f},
-		{0.0f, 5.0f, 0.0f},
-		{5.0f, -5.0f, 0.0f},
-		{0.0f, 0.0f, -1.0f}
-	};
-
-	std::array<VertexData, 3> triangleVertexData = {
-		Vector4{triangle.v0.x, triangle.v0.y, triangle.v0.z, 1.0f},Vector2{0.0f, 1.0f}, triangle.normal,
-		Vector4{triangle.v1.x, triangle.v1.y, triangle.v1.z, 1.0f},Vector2{0.5f, 0.0f}, triangle.normal,
-		Vector4{triangle.v2.x, triangle.v2.y, triangle.v2.z, 1.0f},Vector2{1.0f, 1.0f}, triangle.normal
-	};
-
-	uint32_t triangleTexture = textureWhite;
-
 
 	/* 平面3dModel */
 
@@ -163,27 +141,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	uint32_t spriteTexture = textureWhite;
 	Vector4 spriteColor = Vector4::White();
 
-	/* HitMesh */
-
-	PyramidMesh pyramidMesh{};
-	HitMesh hitMeshPyramid = HitMeshBuilder::CreateFromPyramid(PyramidMesh{});
-	hitMeshPyramid.position = { 0.0f, 10.0f, 0.0f };
-	hitMeshPyramid.velocity = { 0.0f, -0.1f, 0.0f };
-	hitMeshPyramid.quaternion = Quaternion::Identity();
-	hitMeshPyramid.angularVelocity = {};
-	hitMeshPyramid.inverseMass = 1.0f;
-	hitMeshPyramid.mass = 3.0f;
-
-	HitMesh hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
-
-	/* Collision */
-
-	CollisionManager colM{};
 
 	/* DirectionalLight */
 
 	DirectionalLightData directionalLightData = DirectionalLightData{
-		.color = Vector4{1.0f, 1.0f, 1.0f, 1.0f},
+		.color = Vector3{1.0f, 1.0f, 1.0f},
 		.direction = Vector3{0.0f, -1.0f, 0.0f},
 		.intensity = 10.0f,
 		.lightModel = LightModel::HalfLambert
@@ -191,18 +153,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	bool isLightingEnable = true;
 
-	/* gravity */
-
-	float gravity = -8.0f;
 
 	/* deltaTime */
 
 	std::unique_ptr<DeltaTime> deltaTimeCalc = std::make_unique<DeltaTime>();
 	float deltaTime = 0.0f;
-
-	/* 物理実行フラグ */
-
-	bool isPhysicsMove = false;
 
 	/* タイムカウント */
 
@@ -286,26 +241,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		ImGui::DragFloat2("cursorPos", &cursorPos.x);
 
 		ImGui::DragFloat2("cursorDelta", &cursorDelta.x);
-
-		ImGui::DragFloat("gravity", &gravity);
-
-		ImGui::SmallButton("physicsSwitch");
-
-		if (ImGui::IsItemActivated()) {
-
-			isPhysicsMove = !isPhysicsMove;
-
-		}
-
-		if (isPhysicsMove) {
-
-			ImGui::Text("now on");
-
-		} else {
-
-			ImGui::Text("now off");
-
-		}
 
 		ImGui::End();
 
@@ -392,7 +327,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("directionalLight");
 
-		ImGui::DragFloat4("color", &directionalLightData.color.x, 0.03125f);
+		ImGui::DragFloat3("color", &directionalLightData.color.x, 0.03125f, 0.0f, 1.0f);
 
 		ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
 
@@ -486,51 +421,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
-		/* HitMeshのGUI */
-
-		ImGui::Begin("HitMesh");
-
-		ImGui::SmallButton("reset(transform)");
-
-		if (ImGui::IsItemActivated()) {
-
-			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
-			hitMeshPyramid.angularVelocity = {};
-			hitMeshPyramid.quaternion = {};
-			hitMeshPyramid.velocity = {};
-
-		}
-
-		ImGui::SmallButton("reset(velocity, position)");
-
-		if (ImGui::IsItemActivated()) {
-
-			hitMeshPyramid.position = { 0.0f, 1.0f, 0.0f };
-			hitMeshPyramid.velocity = {};
-
-		}
-
-		ImGui::DragFloat3("pos", &hitMeshPyramid.position.x);
-		ImGui::DragFloat3("velocity", &hitMeshPyramid.velocity.x);
-		ImGui::DragFloat4("rotate(Quaternion)", &hitMeshPyramid.quaternion.x);
-
-		if (ImGui::IsItemActive()) {
-
-			hitMeshPyramid.quaternion.Normalize();
-
-		}
-
-		Vector3 pyramidAngularVel = hitMeshPyramid.angularVelocity;
-		pyramidAngularVel.x *= -1.0f;
-		pyramidAngularVel.y *= -1.0f;
-
-		ImGui::DragFloat3("angularVelocity", &pyramidAngularVel.x);
-
-		hitMeshPyramid.angularVelocity = pyramidAngularVel;
-		hitMeshPyramid.angularVelocity.x *= -1.0f;
-		hitMeshPyramid.angularVelocity.y *= -1.0f;
-
-		ImGui::End();
 
 		/* スプライトGUI */
 
@@ -584,118 +474,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
-		/* 三角形GUI */
-
-		ImGui::Begin("triangle");
-
-
-		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &triangleTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &triangleTransform.rotate.x, 0.03125f);
-
-			ImGui::DragFloat3("translate", &triangleTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-		for (size_t i = 0; i < 3; ++i) {
-
-			ImGui::DragFloat3(("vertexPos" + std::to_string(i)).c_str(), &triangleVertexData[i].position.x, 0.03125f);
-			ImGui::DragFloat2(("texCoord" + std::to_string(i)).c_str(), &triangleVertexData[i].texCoord.x, 0.03125f);
-
-		}
-
-
-		if (ImGui::BeginChild("uvTransform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("uvTransform");
-
-			ImGui::DragFloat2("scale", &triangleUvTransform.scale.x, 0.03125f);
-			ImGui::DragFloat("rotate", &triangleUvTransform.rotate.z, 0.03125f);
-			ImGui::DragFloat2("translate", &triangleUvTransform.translate.x, 0.03125f);
-
-		}
-
-		ImGui::EndChild();
-
-
-		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("texture");
-
-			for (const auto& path : textureFilePaths) {
-
-				ImGui::Selectable(path);
-
-				if (ImGui::IsItemActivated()) {
-
-					triangleTexture = atrum->GetTexture(path);
-
-				}
-
-			}
-
-			ImGui::DragFloat4("color", &triangleColor.x, 0.03125f, 0.0f, 1.0f);
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::End();
 
 		atrum->ImGuiRender();
 
 #endif
 
 		camera->Update();
-
-		Vector3 vertices[3]{};
-
-		for (size_t i = 0; i < 3; ++i) {
-
-			const auto& v = triangleVertexData[i];
-
-			vertices[i] = { v.position.x, v.position.y, v.position.w };
-
-		}
-
-		if (isPhysicsMove) {
-
-			Matrix4x4 worldMat = triangleTransform.MakeWorldMatrix();
-
-			triangle.v0 = worldMat.Transform(vertices[0]);
-			triangle.v1 = worldMat.Transform(vertices[1]);
-			triangle.v2 = worldMat.Transform(vertices[2]);
-
-			triangle.normal = (triangle.v1 - triangle.v0).Cross(triangle.v2 - triangle.v0);
-			triangle.normal.Normalize();
-
-			hitMeshTriangle = HitMeshBuilder::CreateFromTriangle(triangle);
-
-			hitMeshPyramid.velocity.y += gravity * deltaTime;
-
-			hitMeshPyramid.velocity.y = std::clamp(hitMeshPyramid.velocity.y, -5.0f, 5.0f);
-
-			hitMeshPyramid.Update(deltaTime);
-
-			for (size_t i = 0; i < hitMeshPyramid.localVertices.size(); ++i) {
-				Vector3 w = hitMeshPyramid.worldMatrix.Transform(hitMeshPyramid.localVertices[i]);
-
-			}
-
-			colM.Clear();
-
-			colM.AddBody(&hitMeshTriangle);
-
-			colM.AddBody(&hitMeshPyramid);
-
-			colM.CheckCollision();
-
-		}
 
 		///
 		/// ↑更新ここまで
@@ -712,11 +496,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		// 描画処理(前)
 		atrum->PreDraw();
-
-		atrum->DrawTriangle(triangleTexture, triangleColor, triangleUvTransform, triangleTransform, triangleVertexData, isLightingEnable);
-
-		atrum->DrawAsymmetricPyramid(textureWhite, Vector4::Red(), Transform{}, { 1.0f, 1.0f, 1.0f }, hitMeshPyramid.quaternion, hitMeshPyramid.position, pyramidMesh, isLightingEnable);
-
 
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);
