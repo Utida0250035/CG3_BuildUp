@@ -197,7 +197,7 @@ namespace Atrum {
 		uvTransformMatrix *= M::Matrix4x4::Translate(uvTransform.translate);
 		materialData.uvTransformMatrix = uvTransformMatrix;
 
-		materialData.inLightingEnable = isLighting;
+		materialData.isLightingEnable = isLighting;
 
 		materialBuffer_->SetData(materialData, constantBufferCount_);
 
@@ -245,7 +245,7 @@ namespace Atrum {
 		uvTransformMatrix *= M::Matrix4x4::Translate(uvTransform.translate);
 		materialData.uvTransformMatrix = uvTransformMatrix;
 
-		materialData.inLightingEnable = isLighting;
+		materialData.isLightingEnable = isLighting;
 
 		materialBuffer_->SetData(materialData, constantBufferCount_);
 
@@ -349,7 +349,7 @@ namespace Atrum {
 		uvTransformMatrix *= M::Matrix4x4::Translate(uvTransform.translate);
 		materialData.uvTransformMatrix = uvTransformMatrix;
 
-		materialData.inLightingEnable = isLighting;
+		materialData.isLightingEnable = isLighting;
 
 		materialBuffer_->SetData(materialData, constantBufferCount_);
 

@@ -120,7 +120,7 @@ namespace Atrum {
 
 			for (auto& meshNode : meshNodes_) {
 
-				meshNode.material->materialData->inLightingEnable = isLighting;
+				meshNode.material->materialData->isLightingEnable = isLighting;
 
 				textureHandle = srvAllocator->GetHandle(meshNode.material->textureSrvIndex);
 

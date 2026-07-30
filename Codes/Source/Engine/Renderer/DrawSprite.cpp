@@ -137,7 +137,7 @@ namespace Atrum {
 		MaterialData MaterialData{};
 
 		MaterialData.color = textureColor;
-		MaterialData.inLightingEnable = false;
+		MaterialData.isLightingEnable = false;
 
 		Matrix4x4 uvTransformData = Matrix4x4::Scale(uvTransform.scale);
 		uvTransformData *= Matrix4x4::RotateZ(uvTransform.rotate.z);

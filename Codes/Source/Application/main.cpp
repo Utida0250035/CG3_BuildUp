@@ -116,22 +116,38 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	AudioHandle bgmPlayHandle{};
 
+	const char* kStudyObjectsFolderName = "./Assets/Objects/ForStudy";
 
 	/* 平面3dModel */
 
-	auto planeModel = atrum->GetModel("./Assets/Objects/ForStudy", "plane.obj", "./Assets/Objects/ForStudy", "plane.mtl");
+	auto planeModel = atrum->GetModel(kStudyObjectsFolderName, "plane.obj", kStudyObjectsFolderName, "plane.mtl");
 	Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 	planeModelTransform.translate.z = -20.0f;
 
 	/* 複数メッシュ3dModel */
 
-	auto multiMeshModel = atrum->GetModel("./Assets/Objects/ForStudy", "multiMesh.obj", "./Assets/Objects/ForStudy", "multiMesh.mtl");
+	auto multiMeshModel = atrum->GetModel(kStudyObjectsFolderName, "multiMesh.obj", kStudyObjectsFolderName, "multiMesh.mtl");
 	Transform multiMeshModelTransform{};
 
 	/* 複数マテリアル3dModel */
 
-	auto multiMtlModel = atrum->GetModel("./Assets/Objects/ForStudy", "multiMaterial.obj", "./Assets/Objects/ForStudy", "multiMaterial.mtl");
+	auto multiMtlModel = atrum->GetModel(kStudyObjectsFolderName, "multiMaterial.obj", kStudyObjectsFolderName, "multiMaterial.mtl");
 	Transform multiMtlModelTransform{};
+
+	/* スザンヌ3dModel */
+
+	auto suzanneModel = atrum->GetModel(kStudyObjectsFolderName, "suzanne.obj", kStudyObjectsFolderName, "suzanne.mtl");
+	Transform suzanneModelTransform{};
+
+	/* ユタティーポット3dModel */
+
+	auto utahTeapotModel = atrum->GetModel(kStudyObjectsFolderName, "teapot.obj", kStudyObjectsFolderName, "teapot.mtl");
+	Transform utahTeapotModelTransform{};
+
+	/* スタンフォードバニー3dModel */
+
+	auto stanfordBunnyModel = atrum->GetModel(kStudyObjectsFolderName, "bunny.obj", kStudyObjectsFolderName, "bunny.mtl");
+	Transform stanfordBunnyModelTransform{};
 
 	/* 球 */
 
@@ -568,11 +584,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform, isLightingEnable);
+		atrum->DrawModel(suzanneModel.get(), suzanneModelTransform, isLightingEnable);
+		atrum->DrawModel(utahTeapotModel.get(), utahTeapotModelTransform, isLightingEnable);
+		atrum->DrawModel(stanfordBunnyModel.get(), stanfordBunnyModelTransform, isLightingEnable);
 
 
 		// Sprite準備
 		atrum->PrepareSprite();
-
+		
 		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize);
 
 
