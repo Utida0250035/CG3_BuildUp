@@ -306,9 +306,6 @@
     <ClInclude Include="Codes\Include\Engine\Resource\IndexBuffer.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h">
-      <Filter>Codes\Include\Engine\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Resource\MaterialData.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
