@@ -24,6 +24,8 @@ namespace Atrum {
 		// 3DモデルAsset用 Modelマップ
 		std::unordered_map<uint64_t, std::weak_ptr<AssetModel>> assetModelMap_{};
 
+		uint32_t defaultTextureSrvIndex_ = 1;
+
 		ModelStorage() = default;
 		~ModelStorage() = default;
 
@@ -39,7 +41,7 @@ namespace Atrum {
 
 	public:
 
-		void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
+		void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex);
 
 		std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 

@@ -116,22 +116,47 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	AudioHandle bgmPlayHandle{};
 
+	const char* kStudyObjectsFolderName = "./Assets/Objects/ForStudy";
 
 	/* 平面3dModel */
 
-	auto planeModel = atrum->GetModel("./Assets/Objects/ForStudy", "plane.obj", "./Assets/Objects/ForStudy", "plane.mtl");
+	auto planeModel = atrum->GetModel(kStudyObjectsFolderName, "plane.obj", kStudyObjectsFolderName, "plane.mtl");
 	Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
 	planeModelTransform.translate.z = -20.0f;
 
 	/* 複数メッシュ3dModel */
 
-	auto multiMeshModel = atrum->GetModel("./Assets/Objects/ForStudy", "multiMesh.obj", "./Assets/Objects/ForStudy", "multiMesh.mtl");
+	auto multiMeshModel = atrum->GetModel(kStudyObjectsFolderName, "multiMesh.obj", kStudyObjectsFolderName, "multiMesh.mtl");
 	Transform multiMeshModelTransform{};
 
 	/* 複数マテリアル3dModel */
 
-	auto multiMtlModel = atrum->GetModel("./Assets/Objects/ForStudy", "multiMaterial.obj", "./Assets/Objects/ForStudy", "multiMaterial.mtl");
+	auto multiMtlModel = atrum->GetModel(kStudyObjectsFolderName, "multiMaterial.obj", kStudyObjectsFolderName, "multiMaterial.mtl");
 	Transform multiMtlModelTransform{};
+
+	/* スザンヌ3dModel */
+
+	auto suzanneModel = atrum->GetModel(kStudyObjectsFolderName, "suzanne.obj", kStudyObjectsFolderName, "suzanne.mtl");
+	Transform suzanneModelTransform{};
+
+	/* ユタティーポット3dModel */
+
+	auto utahTeapotModel = atrum->GetModel(kStudyObjectsFolderName, "teapot.obj", kStudyObjectsFolderName, "teapot.mtl");
+	Transform utahTeapotModelTransform{};
+
+	/* スタンフォードバニー3dModel */
+
+	auto stanfordBunnyModel = atrum->GetModel(kStudyObjectsFolderName, "bunny.obj", kStudyObjectsFolderName, "bunny.mtl");
+	Transform stanfordBunnyModelTransform{};
+
+	/* 球 */
+
+	Transform sphereTransform{};
+	Transform sphereUvTransform{};
+	float sphereRadius = 0.1f;
+	uint32_t sphereTexture = textureWhite;
+	Vector4 sphereColor = Vector4::White();
+	uint32_t sphereSubdivision = 12;
 
 	/* Sprite */
 
@@ -200,6 +225,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	JsonTest jsonTest;
 
 #endif
+
+	/* 32分の1の数 */
+	constexpr float kThirtySecond = 0.03125f;
 
 	while (atrum->Process()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -293,11 +321,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat3("translate", &camera->RefTranslate().x);
 
-		ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, 0.03125f);
+		ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, kThirtySecond);
 
-		ImGui::DragFloat4("pivotQuaternion", &camera->RefPivotQuaternion().x, 0.03125f);
+		ImGui::DragFloat4("pivotQuaternion", &camera->RefPivotQuaternion().x, kThirtySecond);
 
-		ImGui::DragFloat3("pivot", &camera->RefPivot().x, 0.03125f);
+		ImGui::DragFloat3("pivot", &camera->RefPivot().x, kThirtySecond);
 
 		const Vector3& pivot = camera->RefPivot();
 		const Vector3& translate = camera->RefTranslate();
@@ -327,9 +355,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("directionalLight");
 
-		ImGui::DragFloat3("color", &directionalLightData.color.x, 0.03125f, 0.0f, 1.0f);
+		ImGui::DragFloat3("color", &directionalLightData.color.x, kThirtySecond, 0.0f, 1.0f);
 
-		ImGui::DragFloat3("direction", &directionalLightData.direction.x, 0.03125f);
+		ImGui::DragFloat3("direction", &directionalLightData.direction.x, kThirtySecond);
 
 		if (ImGui::IsItemActive()) {
 
@@ -337,7 +365,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
-		ImGui::DragFloat("intensity", &directionalLightData.intensity, 0.03125f);
+		ImGui::DragFloat("intensity", &directionalLightData.intensity, kThirtySecond);
 
 		ImGui::Checkbox("isLightingEnable", &isLightingEnable);
 
@@ -373,9 +401,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("transform");
 
-			ImGui::DragFloat3("scale", &planeModelTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &planeModelTransform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &planeModelTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, kThirtySecond);
+			ImGui::DragFloat3("translate", &planeModelTransform.translate.x, kThirtySecond);
 
 		}
 
@@ -391,9 +419,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("transform");
 
-			ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, kThirtySecond);
+			ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, kThirtySecond);
 
 		}
 
@@ -409,9 +437,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("transform");
 
-			ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, kThirtySecond);
+			ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, kThirtySecond);
 
 		}
 
@@ -430,9 +458,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("transform");
 
-			ImGui::DragFloat3("scale", &spriteTransform.scale.x, 0.03125f);
-			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat3("translate", &spriteTransform.translate.x, 0.03125f);
+			ImGui::DragFloat3("scale", &spriteTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, kThirtySecond);
+			ImGui::DragFloat3("translate", &spriteTransform.translate.x, kThirtySecond);
 
 		}
 
@@ -442,9 +470,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::Text("uvTransform");
 
-			ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, 0.03125f);
-			ImGui::DragFloat("rotate", &spriteUvTransform.rotate.x, 0.03125f);
-			ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, 0.03125f);
+			ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat("rotate", &spriteUvTransform.rotate.z, kThirtySecond);
+			ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, kThirtySecond);
 
 		}
 
@@ -466,7 +494,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
-			ImGui::DragFloat4("color", &spriteColor.x, 0.03125f);
+			ImGui::DragFloat4("color", &spriteColor.x, kThirtySecond);
 
 		}
 
@@ -474,6 +502,60 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::End();
 
+
+		/* 球GUI */
+
+		ImGui::Begin("sphere");
+
+		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
+
+			ImGui::Text("transform");
+
+			ImGui::DragFloat3("scale", &sphereTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, kThirtySecond);
+			ImGui::DragFloat3("translate", &sphereTransform.translate.x, kThirtySecond);
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::DragFloat("radius", &sphereRadius, kThirtySecond);
+
+		if (ImGui::BeginChild("uvTransform", ImGui::kChildSize, ImGui::kChildFlags)) {
+
+			ImGui::Text("uvTransform");
+
+			ImGui::DragFloat2("scale", &sphereUvTransform.scale.x, kThirtySecond);
+			ImGui::DragFloat("rotate", &sphereUvTransform.rotate.z, kThirtySecond);
+			ImGui::DragFloat2("translate", &sphereUvTransform.translate.x, kThirtySecond);
+
+		}
+
+		ImGui::EndChild();
+
+		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
+
+			ImGui::Text("texture");
+
+			for (const auto& path : textureFilePaths) {
+
+				ImGui::Selectable(path);
+
+				if (ImGui::IsItemActivated()) {
+
+					sphereTexture = atrum->GetTexture(path);
+
+				}
+
+			}
+
+			ImGui::DragFloat4("color", &sphereColor.x, kThirtySecond);
+
+		}
+
+		ImGui::EndChild();
+
+		ImGui::End();
 
 		atrum->ImGuiRender();
 
@@ -497,14 +579,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 描画処理(前)
 		atrum->PreDraw();
 
+		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, sphereRadius, sphereSubdivision, isLightingEnable);
+
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform, isLightingEnable);
+		atrum->DrawModel(suzanneModel.get(), suzanneModelTransform, isLightingEnable);
+		atrum->DrawModel(utahTeapotModel.get(), utahTeapotModelTransform, isLightingEnable);
+		atrum->DrawModel(stanfordBunnyModel.get(), stanfordBunnyModelTransform, isLightingEnable);
 
 
 		// Sprite準備
 		atrum->PrepareSprite();
-
+		
 		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize);
 
 

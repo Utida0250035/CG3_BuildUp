@@ -23,11 +23,12 @@ namespace Atrum {
 
 	ModelStorage* ModelStorage::instance_ = nullptr;
 
-	void ModelStorage::Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources) {
+	void ModelStorage::Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex) {
 
 		pCommandContextDirect_ = commandContextDirect;
 		pDevice_ = device;
 		pTemporaryResources_ = pTemporaryResources;
+		defaultTextureSrvIndex_ = defaultTextureIndex;
 
 	}
 
@@ -207,15 +208,30 @@ namespace Atrum {
 							std::string index;
 							// /(スラッシュ)区切りでIndexを読んでいく
 							std::getline(v, index, '/');
-							elementIndices[element] = std::stoi(index);
+
+							if (index.empty()) {
+
+								elementIndices[element] = 0;
+
+							} else {
+
+								elementIndices[element] = std::stoi(index);
+
+							}
 
 						}
 
 						M::Vector4 position = positions[elementIndices[0] - 1];
 						position.z *= -1.0f;
 
-						M::Vector2 texCoord = texCoords[elementIndices[1] - 1];
-						texCoord.y = 1.0f - texCoord.y;
+						M::Vector2 texCoord = { 0.0f, 0.0f };
+
+						if (!texCoords.empty()) {
+
+							texCoord = texCoords[elementIndices[1] - 1];
+							texCoord.y = 1.0f - texCoord.y;
+
+						}
 
 						M::Vector3 normal = normals[elementIndices[2] - 1];
 						normal.z *= -1.0f;
@@ -403,6 +419,8 @@ namespace Atrum {
 
 #endif
 
+					assetMaterial.reset();
+
 					break;
 
 				}
@@ -483,8 +501,6 @@ namespace Atrum {
 
 					}
 
-					assetMaterial.reset(new AssetMaterialData());
-
 					mtlName.clear();
 
 					s >> mtlName;
@@ -509,7 +525,11 @@ namespace Atrum {
 
 						D::LogFile::GetInstance()->Log("GetMtlFromTable: " + mtlName);
 
+						break;
+
 					}
+
+					assetMaterial.reset(new AssetMaterialData());
 
 					D::LogFile::GetInstance()->Log("LoadMtl: " + mtlName);
 
@@ -521,8 +541,30 @@ namespace Atrum {
 
 		}
 
-		assert(assetMaterialData.size() == colors.size());
-		assert(assetMaterialData.size() == lightingEnableData.size());
+		if (assetMaterial) {
+
+			assetMaterialData.emplace_back(assetMaterial);
+
+			assetMaterialMap_.emplace(Hash64(mtlName), assetMaterial);
+
+		}
+
+#ifdef _DEBUG
+
+		for (auto& registered : assetMaterialMap_) {
+
+
+			assert(registered.second.lock());
+
+
+		}
+
+
+#endif
+
+
+		//assert(assetMaterialData.size() == colors.size());
+		//assert(assetMaterialData.size() == lightingEnableData.size());
 
 		for (size_t i = 0; i < assetMaterialData.size(); ++i) {
 
@@ -539,9 +581,27 @@ namespace Atrum {
 
 			assetMaterialData[i]->materialData->uvTransformMatrix = M::Matrix4x4::Identity();
 
-			assetMaterialData[i]->materialData->color = colors[i];
+			if (i >= colors.size()) {
 
-			assetMaterialData[i]->materialData->inLightingEnable = lightingEnableData[i];
+				assetMaterialData[i]->materialData->color = Atrum::Math::Vector4::White();
+
+			} else {
+
+				assetMaterialData[i]->materialData->color = colors[i];
+
+			}
+
+			if (i >= lightingEnableData.size()) {
+
+				assetMaterialData[i]->materialData->isLightingEnable = false;
+
+			} else {
+
+				assetMaterialData[i]->materialData->isLightingEnable = lightingEnableData[i];
+
+			}
+
+			assetMaterialData[i]->materialData->isUseTexture = (assetMaterialData[i]->textureSrvIndex != 0);
 
 		}
 
