@@ -81,13 +81,6 @@ namespace Atrum::Audio {
 				streamingVoice->pVoice->Stop();
 				streamingVoice->pVoice->FlushSourceBuffers();
 
-				if (streamingVoice->pReader) {
-
-					streamingVoice->pReader->Release();
-					streamingVoice->pReader = nullptr;
-
-				}
-
 				streamingVoice->state = VoiceState::Stopped;
 
 			}

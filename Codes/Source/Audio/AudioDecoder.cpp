@@ -64,6 +64,21 @@ namespace Atrum::Audio {
 	}
 
 	bool AudioDecoder::ReadNextChunk(StreamingSourceVoice& voice, BYTE* pBuffer, DWORD bufferSize, DWORD* pBytesRead) {
+		
+		if (!voice.pReader.Get()) {
+
+			return false;
+
+		}
+
+		if (!pBuffer) {
+
+			assert(false);
+
+			return false;
+
+		}
+		
 		*pBytesRead = 0;
 		DWORD cbTotalRead = 0;
 
