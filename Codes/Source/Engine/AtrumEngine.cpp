@@ -277,8 +277,10 @@ namespace Atrum {
 		pTextureStorage_ = TextureStorage::GetInstance();
 		pTextureStorage_->Initialize(commandContextDirect_.get(), fenceManager_.get(), swapChainManager_.get(), srvAllocator_.get(), renderDevice_->GetDevice(), &temporaryResources_);
 
+		uint32_t modelDefaultTexture = pTextureStorage_->GetTexture("./Assets/Images/white4x4.png");
+
 		pModelStorage_ = ModelStorage::GetInstance();
-		pModelStorage_->Initialize(commandContextDirect_.get(), renderDevice_->GetDevice(), &temporaryResources_);
+		pModelStorage_->Initialize(commandContextDirect_.get(), renderDevice_->GetDevice(), &temporaryResources_, modelDefaultTexture);
 
 		/* 時間差分マネージャーの生成 */
 

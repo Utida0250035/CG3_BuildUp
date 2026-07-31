@@ -34,7 +34,8 @@ struct Material {
 	
 	// 1
 	int32_t isLightingEnable;
-	float3 padding1;
+	int32_t isUseTexture;
+	float2 padding1;
 	
 	// 10
 	float4 padding2[10];
@@ -55,9 +56,16 @@ PixelShaderOutput main(VertexShaderOutput input) {
 	
 	float2 uvOffset = input.texCoord.xy - 0.5f;
 	
-	float2 transformedUV = mul(uvOffset, (float2x2) gMaterial.uvTransform);
-	transformedUV += 0.5f + gMaterial.uvTransform._41_42;
-	float32_t4 textureColor = gTexture.SampleLevel(gSampler, transformedUV, 0);
+	float32_t4 textureColor = float32_t4(1.0f, 1.0f, 1.0f, 1.0f);
+	
+	if (gMaterial.isUseTexture) {
+	
+		float2 transformedUV = mul(uvOffset, (float2x2) gMaterial.uvTransform);
+		transformedUV += 0.5f + gMaterial.uvTransform._41_42;
+		textureColor = gTexture.SampleLevel(gSampler, transformedUV, 0);
+		
+	}
+	
 	float nDotL = dot(normalize(input.normal), -gDirectionalLight.direction);
 	float cos = 0.0f;
 	
