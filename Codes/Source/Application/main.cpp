@@ -67,6 +67,8 @@ namespace {
 
 }
 
+void DragTransform(Transform& transform, const std::string& label);
+
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	LeakChecker leakChecker;
@@ -115,6 +117,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	}
 
 	AudioHandle bgmPlayHandle{};
+
+	size_t seOnePointMp3 = audio->Load("./Assets/Audios/seOnePoint.mp3");
+	size_t seOnePointM4a = audio->Load("./Assets/Audios/seOnePoint.m4a");
+	size_t seOnePointWav = audio->Load("./Assets/Audios/seOnePoint.wav");
 
 	const char* kStudyObjectsFolderName = "./Assets/Objects/ForStudy";
 
@@ -310,8 +316,42 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::EndChild();
 
+		if (ImGui::BeginChild("seOnePoint", ImGui::kChildSize, ImGui::kChildFlags)) {
+
+			ImGui::Text("seOnePoint");
+
+			const char* extensions[] = {
+				"mp3",
+				"wav",
+				"m4a"
+			};
+
+			const size_t soundIndices[] = {
+				seOnePointMp3,
+				seOnePointWav,
+				seOnePointM4a
+			};
+
+			for (size_t i = 0; i < 3; ++i) {
+
+				ImGui::SmallButton(extensions[i]);
+
+				if (ImGui::IsItemActivated()) {
+
+					audio->Play(soundIndices[i]);
+
+				}
+
+			}
+
+		}
+
+		ImGui::EndChild();
+
 		ImGui::End();
 
+
+		/* デバッグカメラGUI */
 
 		ImGui::Begin("DebugCamera");
 
@@ -349,6 +389,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 
 		ImGui::End();
+
 
 
 		/* 光源GUI */
@@ -397,17 +438,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("planeModel");
 
-		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &planeModelTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat3("rotate", &planeModelTransform.rotate.x, kThirtySecond);
-			ImGui::DragFloat3("translate", &planeModelTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
+		DragTransform(planeModelTransform, "transform");
 
 		ImGui::End();
 
@@ -415,17 +446,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("multiMeshModel");
 
-		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &multiMeshModelTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat3("rotate", &multiMeshModelTransform.rotate.x, kThirtySecond);
-			ImGui::DragFloat3("translate", &multiMeshModelTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
+		DragTransform(multiMeshModelTransform, "transform");
 
 		ImGui::End();
 
@@ -433,20 +454,43 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("multiMaterialModel");
 
-		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &multiMtlModelTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat3("rotate", &multiMtlModelTransform.rotate.x, kThirtySecond);
-			ImGui::DragFloat3("translate", &multiMtlModelTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
+		DragTransform(multiMtlModelTransform, "transform");
 
 		ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
 
+		ImGui::End();
+
+
+		/* バニー3dモデルGUI */
+
+		ImGui::Begin("bunny");
+
+		DragTransform(stanfordBunnyModelTransform, "transform");
+
+		ImGui::Text(("texture: " + stanfordBunnyModel->GetTexturePath()).c_str());
+
+		ImGui::End();
+
+
+		/* ティーポット3dモデルImGui */
+
+		ImGui::Begin("teapot");
+
+		DragTransform(utahTeapotModelTransform, "transform");
+
+		ImGui::Text(("texture: " + utahTeapotModel->GetTexturePath()).c_str());
+
+		ImGui::End();
+
+
+		/* スザンヌ3dモデルImGui */
+
+		ImGui::Begin("suzanne");
+
+		DragTransform(suzanneModelTransform, "transform");
+
+		ImGui::Text(("texture"+ suzanneModel->GetTexturePath()).c_str());
+			
 		ImGui::End();
 
 
@@ -454,29 +498,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("sprite");
 
-		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
+		DragTransform(spriteTransform, "transform");
 
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &spriteTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat3("rotate", &spriteTransform.rotate.x, kThirtySecond);
-			ImGui::DragFloat3("translate", &spriteTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
-
-		if (ImGui::BeginChild("uvTransform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("uvTransform");
-
-			ImGui::DragFloat2("scale", &spriteUvTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat("rotate", &spriteUvTransform.rotate.z, kThirtySecond);
-			ImGui::DragFloat2("translate", &spriteUvTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
+		DragTransform(spriteUvTransform, "uvTransform");
 
 		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
@@ -507,31 +531,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("sphere");
 
-		if (ImGui::BeginChild("transform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("transform");
-
-			ImGui::DragFloat3("scale", &sphereTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat3("rotate", &sphereTransform.rotate.x, kThirtySecond);
-			ImGui::DragFloat3("translate", &sphereTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
+		DragTransform(sphereTransform, "transform");
 
 		ImGui::DragFloat("radius", &sphereRadius, kThirtySecond);
 
-		if (ImGui::BeginChild("uvTransform", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("uvTransform");
-
-			ImGui::DragFloat2("scale", &sphereUvTransform.scale.x, kThirtySecond);
-			ImGui::DragFloat("rotate", &sphereUvTransform.rotate.z, kThirtySecond);
-			ImGui::DragFloat2("translate", &sphereUvTransform.translate.x, kThirtySecond);
-
-		}
-
-		ImGui::EndChild();
+		DragTransform(sphereUvTransform, "uvTransform");
 
 		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
@@ -591,7 +595,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		// Sprite準備
 		atrum->PrepareSprite();
-		
+
 		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize);
 
 
@@ -613,5 +617,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Atrum::Engine::Destroy();
 
 	return 0;
+
+}
+
+void DragTransform(Transform& transform, const std::string& label) {
+
+	constexpr float kThirtySecond = 0.03125f;
+
+	if (ImGui::BeginChild(label.c_str(), ImGui::kChildSize, ImGui::kChildFlags)) {
+
+		ImGui::Text(label.c_str());
+
+		ImGui::DragFloat3("scale", &transform.scale.x, kThirtySecond);
+		ImGui::DragFloat3("rotate", &transform.rotate.x, kThirtySecond);
+		ImGui::DragFloat3("translate", &transform.translate.x, kThirtySecond);
+
+	}
+
+	ImGui::EndChild();
+
 
 }
