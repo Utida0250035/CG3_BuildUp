@@ -1,6 +1,6 @@
 #include "Engine/Alias/coreAlias.h"
 
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include "Engine/Resource/CreateBufferResource.h"
 #include <cassert>
 
