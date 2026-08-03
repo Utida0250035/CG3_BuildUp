@@ -22,9 +22,6 @@
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
       <Filter>External_ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Debug\DebugCamera.cpp">
-      <Filter>Codes\Source\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
       <Filter>Codes\Source\Collision</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp">
       <Filter>Codes\Source\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Debug\Log.cpp">
-      <Filter>Codes\Source\Debug</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Application\main.cpp">
       <Filter>Codes\Source\Application</Filter>
@@ -163,6 +157,12 @@
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp">
       <Filter>Codes\Source\Collision2D</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\Log.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -210,12 +210,6 @@
     <ClInclude Include="Codes\Include\String\ConvertString.h">
       <Filter>Codes\Include\String</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\DebugCamera.h">
-      <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\DebugConsole.h">
-      <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Time\DeltaTime.h">
       <Filter>Codes\Include\Time</Filter>
     </ClInclude>
@@ -236,12 +230,6 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\HitMeshBuilder.h">
       <Filter>Codes\Include\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\ImGui.h">
-      <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\Log.h">
-      <Filter>Codes\Include\Debug</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h">
       <Filter>Codes\Include\Math</Filter>
@@ -366,15 +354,6 @@
     <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h">
       <Filter>Codes\Include\Json</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\DebugLayer.h">
-      <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\ErrorSupression.h">
-      <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Debug\SetBreakOnSeverity.h">
-      <Filter>Codes\Include\Debug</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\System\Entity.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
@@ -438,6 +417,27 @@
     <ClInclude Include="Codes\Include\Collision\PhysicsBridge.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\DebugLayer.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\ImGui.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\Log.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -482,17 +482,11 @@
     <Filter Include="Codes\Include\Hash">
       <UniqueIdentifier>{573e1403-88c0-48b4-90b0-836f58fe5ac6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Debug">
-      <UniqueIdentifier>{0a2a2f1e-216f-4fb0-9e46-6ea7f15ab3c3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Codes\Include\Engine">
       <UniqueIdentifier>{71d6de3f-d2d0-4ef9-8d96-9b61f3ded539}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\Audio">
       <UniqueIdentifier>{e1b3bdf8-57d6-458f-8fbe-0421561214c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Debug">
-      <UniqueIdentifier>{430c27db-76c5-4d81-859c-5149fb5e6687}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\Input">
       <UniqueIdentifier>{bc38a932-5962-47ab-819f-0f216676e320}</UniqueIdentifier>
@@ -601,6 +595,12 @@
     </Filter>
     <Filter Include="Codes\Include\Hit">
       <UniqueIdentifier>{cb46afd9-da2e-48bf-a17d-a539f1fedb1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\ForDebug">
+      <UniqueIdentifier>{430c27db-76c5-4d81-859c-5149fb5e6687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\ForDebug">
+      <UniqueIdentifier>{0a2a2f1e-216f-4fb0-9e46-6ea7f15ab3c3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

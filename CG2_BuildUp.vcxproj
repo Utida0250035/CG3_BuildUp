@@ -139,8 +139,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp" />
     <ClCompile Include="Codes\Source\Collision\SAT.cpp" />
-    <ClCompile Include="Codes\Source\Debug\DebugCamera.cpp" />
-    <ClCompile Include="Codes\Source\Debug\Log.cpp" />
     <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp" />
     <ClCompile Include="Codes\Source\Engine\Command\CommandContext.cpp" />
     <ClCompile Include="Codes\Source\Engine\Command\Fence.cpp" />
@@ -159,6 +157,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp" />
     <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
     <ClCompile Include="Codes\Source\Geometry\OBB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
@@ -220,13 +220,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Collision\HitMeshBuilder.h" />
     <ClInclude Include="Codes\Include\Collision\PhysicsBridge.h" />
     <ClInclude Include="Codes\Include\Collision\SAT.h" />
-    <ClInclude Include="Codes\Include\Debug\DebugCamera.h" />
-    <ClInclude Include="Codes\Include\Debug\DebugConsole.h" />
-    <ClInclude Include="Codes\Include\Debug\DebugLayer.h" />
-    <ClInclude Include="Codes\Include\Debug\ErrorSupression.h" />
-    <ClInclude Include="Codes\Include\Debug\ImGui.h" />
-    <ClInclude Include="Codes\Include\Debug\Log.h" />
-    <ClInclude Include="Codes\Include\Debug\SetBreakOnSeverity.h" />
     <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h" />
     <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h" />
     <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h" />
@@ -257,6 +250,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\File\FileSize.h" />
+    <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h" />
+    <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h" />
+    <ClInclude Include="Codes\Include\ForDebug\DebugLayer.h" />
+    <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
+    <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\Log.h" />
+    <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h" />
     <ClInclude Include="Codes\Include\Geometry\Bezier.h" />
     <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h" />
     <ClInclude Include="Codes\Include\Geometry\OBB.h" />

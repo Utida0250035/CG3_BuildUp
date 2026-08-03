@@ -1,5 +1,5 @@
 #pragma once
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include <SDL.h>
 #include <string>
 #include <windef.h>
