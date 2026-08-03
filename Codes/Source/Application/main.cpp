@@ -67,7 +67,11 @@ namespace {
 
 }
 
+#ifdef USE_IMGUI
+
 void DragTransform(Transform& transform, const std::string& label);
+
+#endif
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -620,6 +624,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 }
 
+#ifdef USE_IMGUI
+
 void DragTransform(Transform& transform, const std::string& label) {
 
 	constexpr float kThirtySecond = 0.03125f;
@@ -638,3 +644,5 @@ void DragTransform(Transform& transform, const std::string& label) {
 
 
 }
+
+#endif
