@@ -4,8 +4,8 @@
 #include "Collision/CollisionManager.h"
 #include "Collision/HitMesh.h"
 #include "Collision/HitMeshBuilder.h"
-#include "Debug/DebugCamera.h"
-#include "Debug/Log.h"
+#include "ForDebug/DebugCamera.h"
+#include "ForDebug/Log.h"
 #include "Engine/AtrumEngine.h"
 #include "Geometry/OBB.h"
 #include "Geometry/PyramidMesh.h"
@@ -67,7 +67,11 @@ namespace {
 
 }
 
+#ifdef USE_IMGUI
+
 void DragTransform(Transform& transform, const std::string& label);
+
+#endif
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -620,6 +624,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 }
 
+#ifdef USE_IMGUI
+
 void DragTransform(Transform& transform, const std::string& label) {
 
 	constexpr float kThirtySecond = 0.03125f;
@@ -638,3 +644,5 @@ void DragTransform(Transform& transform, const std::string& label) {
 
 
 }
+
+#endif

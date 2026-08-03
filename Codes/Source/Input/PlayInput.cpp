@@ -2,7 +2,7 @@
 #include "Engine/Alias/InputAlias.h"
 
 #include "Cast/StaticCast.h"
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include "Input/PlayInput.h"
 #include <cassert>
 
