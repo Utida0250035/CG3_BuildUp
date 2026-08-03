@@ -2,11 +2,11 @@
 
 #include "Audio/Audio.h"
 #include "Cast/StaticCast.h"
-#include "Debug/DebugConsole.h"
-#include "Debug/DebugLayer.h"
-#include "Debug/ErrorSupression.h"
-#include "Debug/Log.h"
-#include "Debug/SetBreakOnSeverity.h"
+#include "ForDebug/DebugConsole.h"
+#include "ForDebug/DebugLayer.h"
+#include "ForDebug/ErrorSupression.h"
+#include "ForDebug/Log.h"
+#include "ForDebug/SetBreakOnSeverity.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Device/RenderDevice.h"
@@ -52,7 +52,7 @@
 
 #ifdef USE_IMGUI
 
-#include "Debug/ImGui.h"
+#include "ForDebug/ImGui.h"
 
 #include <d3d12sdklayers.h>
 

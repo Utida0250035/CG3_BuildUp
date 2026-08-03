@@ -1,6 +1,6 @@
 #include "Engine/Alias/CoreAlias.h"
 
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include "Engine/Shader/ShaderCompiler.h"
 #include "String/ConvertString.h"
 #include <cassert>

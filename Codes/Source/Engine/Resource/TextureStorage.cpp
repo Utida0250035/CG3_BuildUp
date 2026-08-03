@@ -1,6 +1,6 @@
 #include "Engine/Alias/CoreAlias.h"
 
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Command/Fence.h"
 #include "Engine/Device/SwapChain.h"

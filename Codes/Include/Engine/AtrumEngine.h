@@ -1,7 +1,7 @@
 #pragma once
 #include "Cast/StaticCast.h"
 #include "Collision/HitMesh.h"
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Command/Fence.h"
 #include "Engine/Device/RenderDevice.h"
@@ -50,7 +50,7 @@
 
 #ifdef USE_IMGUI
 
-#include "Debug/ImGui.h"
+#include "ForDebug/ImGui.h"
 
 #endif
 
