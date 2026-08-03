@@ -4,8 +4,8 @@
 #include "Collision/CollisionManager.h"
 #include "Collision/HitMesh.h"
 #include "Collision/HitMeshBuilder.h"
-#include "Debug/DebugCamera.h"
-#include "Debug/Log.h"
+#include "ForDebug/DebugCamera.h"
+#include "ForDebug/Log.h"
 #include "Engine/AtrumEngine.h"
 #include "Geometry/OBB.h"
 #include "Geometry/PyramidMesh.h"
@@ -67,7 +67,11 @@ namespace {
 
 }
 
+#ifdef USE_IMGUI
+
 void DragTransform(Transform& transform, const std::string& label);
+
+#endif
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -118,9 +122,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	AudioHandle bgmPlayHandle{};
 
-	size_t seOnePointMp3 = audio->Load("./Assets/Audios/seOnePoint.mp3");
-	size_t seOnePointM4a = audio->Load("./Assets/Audios/seOnePoint.m4a");
-	size_t seOnePointWav = audio->Load("./Assets/Audios/seOnePoint.wav");
+	[[maybe_unused]] size_t seOnePointMp3 = audio->Load("./Assets/Audios/seOnePoint.mp3");
+	[[maybe_unused]] size_t seOnePointM4a = audio->Load("./Assets/Audios/seOnePoint.m4a");
+	[[maybe_unused]] size_t seOnePointWav = audio->Load("./Assets/Audios/seOnePoint.wav");
 
 	const char* kStudyObjectsFolderName = "./Assets/Objects/ForStudy";
 
@@ -233,7 +237,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	/* 32分の1の数 */
-	constexpr float kThirtySecond = 0.03125f;
+	[[maybe_unused]] constexpr float kThirtySecond = 0.03125f;
 
 	while (atrum->Process()) {
 		// ウィンドウの×ボタンが押されるまでループ
@@ -489,8 +493,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		DragTransform(suzanneModelTransform, "transform");
 
-		ImGui::Text(("texture"+ suzanneModel->GetTexturePath()).c_str());
-			
+		ImGui::Text(("texture" + suzanneModel->GetTexturePath()).c_str());
+
 		ImGui::End();
 
 
@@ -620,6 +624,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 }
 
+#ifdef USE_IMGUI
+
 void DragTransform(Transform& transform, const std::string& label) {
 
 	constexpr float kThirtySecond = 0.03125f;
@@ -638,3 +644,5 @@ void DragTransform(Transform& transform, const std::string& label) {
 
 
 }
+
+#endif

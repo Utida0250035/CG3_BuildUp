@@ -1,4 +1,4 @@
-#include "Debug/Log.h"
+#include "ForDebug/Log.h"
 #include "Engine/Device/RenderDevice.h"
 #include "String/ConvertString.h"
 #include <cassert>
