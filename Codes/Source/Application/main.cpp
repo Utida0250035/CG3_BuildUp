@@ -67,12 +67,6 @@ namespace {
 
 }
 
-#ifdef USE_IMGUI
-
-void DragTransform(Transform& transform, const std::string& label);
-
-#endif
-
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	LeakChecker leakChecker;
@@ -143,21 +137,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	auto multiMtlModel = atrum->GetModel(kStudyObjectsFolderName, "multiMaterial.obj", kStudyObjectsFolderName, "multiMaterial.mtl");
 	Transform multiMtlModelTransform{};
-
-	/* スザンヌ3dModel */
-
-	auto suzanneModel = atrum->GetModel(kStudyObjectsFolderName, "suzanne.obj", kStudyObjectsFolderName, "suzanne.mtl");
-	Transform suzanneModelTransform{};
-
-	/* ユタティーポット3dModel */
-
-	auto utahTeapotModel = atrum->GetModel(kStudyObjectsFolderName, "teapot.obj", kStudyObjectsFolderName, "teapot.mtl");
-	Transform utahTeapotModelTransform{};
-
-	/* スタンフォードバニー3dModel */
-
-	auto stanfordBunnyModel = atrum->GetModel(kStudyObjectsFolderName, "bunny.obj", kStudyObjectsFolderName, "bunny.mtl");
-	Transform stanfordBunnyModelTransform{};
 
 	/* 球 */
 
@@ -367,8 +346,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, kThirtySecond);
 
-		ImGui::DragFloat4("pivotQuaternion", &camera->RefPivotQuaternion().x, kThirtySecond);
-
 		ImGui::DragFloat3("pivot", &camera->RefPivot().x, kThirtySecond);
 
 		const Vector3& pivot = camera->RefPivot();
@@ -386,12 +363,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		}
 
-		if (ImGui::IsItemActive()) {
-
-			camera->RefPivotQuaternion().Normalize();
-
-		}
-
 		ImGui::End();
 
 
@@ -400,41 +371,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("directionalLight");
 
-		ImGui::DragFloat3("color", &directionalLightData.color.x, kThirtySecond, 0.0f, 1.0f);
-
-		ImGui::DragFloat3("direction", &directionalLightData.direction.x, kThirtySecond);
-
-		if (ImGui::IsItemActive()) {
-
-			directionalLightData.direction.Normalize();
-
-		}
-
-		ImGui::DragFloat("intensity", &directionalLightData.intensity, kThirtySecond);
-
-		ImGui::Checkbox("isLightingEnable", &isLightingEnable);
-
-		if (isLightingEnable) {
-
-			int lightMode = static_cast<int>(directionalLightData.lightModel);
-
-			ImGui::Selectable("lambert", lightMode == 0);
-			if (ImGui::IsItemActivated()) {
-
-				lightMode = 0;
-
-			}
-
-			ImGui::Selectable("halfLambert", lightMode == 1);
-			if (ImGui::IsItemActivated()) {
-
-				lightMode = 1;
-
-			}
-
-			directionalLightData.lightModel = static_cast<LightModel>(lightMode);
-
-		}
+		directionalLightData.ImGui();
 
 		ImGui::End();
 
@@ -442,7 +379,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("planeModel");
 
-		DragTransform(planeModelTransform, "transform");
+		planeModelTransform.ImGui();
 
 		ImGui::End();
 
@@ -450,7 +387,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("multiMeshModel");
 
-		DragTransform(multiMeshModelTransform, "transform");
+		multiMeshModelTransform.ImGui();
 
 		ImGui::End();
 
@@ -458,42 +395,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("multiMaterialModel");
 
-		DragTransform(multiMtlModelTransform, "transform");
+		multiMtlModelTransform.ImGui();
 
 		ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
-
-		ImGui::End();
-
-
-		/* バニー3dモデルGUI */
-
-		ImGui::Begin("bunny");
-
-		DragTransform(stanfordBunnyModelTransform, "transform");
-
-		ImGui::Text(("texture: " + stanfordBunnyModel->GetTexturePath()).c_str());
-
-		ImGui::End();
-
-
-		/* ティーポット3dモデルImGui */
-
-		ImGui::Begin("teapot");
-
-		DragTransform(utahTeapotModelTransform, "transform");
-
-		ImGui::Text(("texture: " + utahTeapotModel->GetTexturePath()).c_str());
-
-		ImGui::End();
-
-
-		/* スザンヌ3dモデルImGui */
-
-		ImGui::Begin("suzanne");
-
-		DragTransform(suzanneModelTransform, "transform");
-
-		ImGui::Text(("texture" + suzanneModel->GetTexturePath()).c_str());
 
 		ImGui::End();
 
@@ -502,9 +406,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("sprite");
 
-		DragTransform(spriteTransform, "transform");
+		spriteTransform.ImGui();
 
-		DragTransform(spriteUvTransform, "uvTransform");
+		spriteUvTransform.ImGui("uvTransform");
 
 		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
@@ -535,11 +439,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("sphere");
 
-		DragTransform(sphereTransform, "transform");
+		sphereTransform.ImGui();
 
 		ImGui::DragFloat("radius", &sphereRadius, kThirtySecond);
 
-		DragTransform(sphereUvTransform, "uvTransform");
+		sphereUvTransform.ImGui("uvTransform");
 
 		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
@@ -592,9 +496,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform, isLightingEnable);
-		atrum->DrawModel(suzanneModel.get(), suzanneModelTransform, isLightingEnable);
-		atrum->DrawModel(utahTeapotModel.get(), utahTeapotModelTransform, isLightingEnable);
-		atrum->DrawModel(stanfordBunnyModel.get(), stanfordBunnyModelTransform, isLightingEnable);
 
 
 		// Sprite準備
@@ -623,26 +524,3 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	return 0;
 
 }
-
-#ifdef USE_IMGUI
-
-void DragTransform(Transform& transform, const std::string& label) {
-
-	constexpr float kThirtySecond = 0.03125f;
-
-	if (ImGui::BeginChild(label.c_str(), ImGui::kChildSize, ImGui::kChildFlags)) {
-
-		ImGui::Text(label.c_str());
-
-		ImGui::DragFloat3("scale", &transform.scale.x, kThirtySecond);
-		ImGui::DragFloat3("rotate", &transform.rotate.x, kThirtySecond);
-		ImGui::DragFloat3("translate", &transform.translate.x, kThirtySecond);
-
-	}
-
-	ImGui::EndChild();
-
-
-}
-
-#endif

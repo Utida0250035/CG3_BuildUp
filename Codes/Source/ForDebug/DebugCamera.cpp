@@ -53,9 +53,7 @@ namespace Atrum::Debug {
 
 				quaternion_ = M::Quaternion::FromLhLookAt(pivot_, translate_, M::Vector3::Up());
 
-				rotate_ = quaternion_.ToEulerFirstPerson();
-
-				pivotQuaternion_ = quaternion_.Conjugated();
+				deltaRotate_ = quaternion_.ToEulerXYZ();
 
 			} else {
 
@@ -78,56 +76,39 @@ namespace Atrum::Debug {
 
 			if (input_->IsMousePress(I::Mouse::Right)) {
 
-				rotate_.y -= bufferedCursorMove.x;
+				deltaRotate_.y = bufferedCursorMove.x;
 
-				if (rotate_.y >= std::numbers::pi_v<float> *2.0f || rotate_.y <= 0.0f) {
+				deltaRotate_.x = bufferedCursorMove.y;
 
-					rotate_.y = fmodf(rotate_.y, std::numbers::pi_v<float> *2.0f);
-
-				}
-
-				rotate_.x -= bufferedCursorMove.y;
-
-				if (rotate_.x >= std::numbers::pi_v<float> *2.0f || rotate_.x <= 0.0f) {
-
-					rotate_.x = fmodf(rotate_.x, std::numbers::pi_v<float> *2.0f);
-
-				}
-
-				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::Up(), rotate_.y);
-				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(M::Vector3::Right(), rotate_.x);
-				quaternion_ = (pitchQ * yawQ).Normalized();
-
-				pivotQuaternion_ = quaternion_.Conjugated();
+				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::Up(), deltaRotate_.y);
+				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::Right()), deltaRotate_.x);
+				quaternion_ = (pitchQ * yawQ * quaternion_).Normalized();
 
 			}
 
 			M::Vector3 offset = { 0.0f, 0.0f, -distance_ };
-			translate_ = pivotQuaternion_.RotateVector(offset) + pivot_;
+			translate_ = quaternion_.RotateVector(offset) + pivot_;
 
 		} else {
 
 			if (input_->IsMousePress(I::Mouse::Right)) {
 
-				rotate_.y -= bufferedCursorMove.x;
+				deltaRotate_.y = bufferedCursorMove.x;
 
-				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::Up(), rotate_.y);
+				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::Up(), deltaRotate_.y);
 
-				rotate_.x -= bufferedCursorMove.y;
-				rotate_.x = std::clamp(rotate_.x, std::numbers::pi_v<float> *-0.5f, std::numbers::pi_v<float> *0.5f);
+				deltaRotate_.x = bufferedCursorMove.y;
 
-				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(M::Vector3::Right(), rotate_.x);
+				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::Right()), deltaRotate_.x);
 
-				quaternion_ = (pitchQ * yawQ).Normalized();
+				quaternion_ = (pitchQ * yawQ * quaternion_).Normalized();
 
 
 			} else {
 
 				if (input_->GetMouseWheel() != 0) {
 
-					M::Vector3 moveByWheel = Cast::Float(input_->GetMouseWheel()) * -3.0f * quaternion_.RotateVector(M::Vector3::Forward());
-
-					moveByWheel.z *= -1.0f;
+					M::Vector3 moveByWheel = Cast::Float(input_->GetMouseWheel()) * 3.0f * quaternion_.RotateVector(M::Vector3::Forward());
 
 					translate_ += moveByWheel;
 
@@ -137,12 +118,11 @@ namespace Atrum::Debug {
 
 			if (input_->IsMousePress(I::Mouse::Middle)) {
 
-				M::Vector3 moveByDrag = { -bufferedCursorMove.x, bufferedCursorMove.y, 0.0f };
+				M::Vector3 moveByDrag = { bufferedCursorMove.x, bufferedCursorMove.y, 0.0f };
 
 				if (moveByDrag.LengthSquare() > 0.0f) {
 
 					moveByDrag = quaternion_.RotateVector(moveByDrag);
-					moveByDrag.z *= -1.0f;
 
 					translate_ += moveByDrag;
 

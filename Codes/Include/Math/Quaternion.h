@@ -312,7 +312,7 @@ namespace Atrum::Math {
 
 		[[nodiscard]] Vector3 RotateVector(const Vector3& vector) const {
 
-			Quaternion p{ vector.x, vector.y, vector.z, 0 };
+			Quaternion p{ vector.x, vector.y, vector.z, 0.0f };
 
 			Quaternion r =
 				(*this) * p * this->Conjugated();
@@ -320,14 +320,6 @@ namespace Atrum::Math {
 			Vector3 result = { r.x, r.y, r.z };
 
 			return result;
-
-		}
-
-		void AddRotation(const Quaternion& delta) {
-
-			(*this) *= delta;
-
-			this->Normalize();
 
 		}
 
@@ -352,18 +344,18 @@ namespace Atrum::Math {
 
 				}
 
-				return Quaternion{ 0.0f, axis.x, axis.y, axis.z };
+				return Quaternion{ axis.x, axis.y, axis.z, 0.0f };
 
 			}
 
 			Vector3 axis = from.Cross(to);
-			Quaternion q = { dot + 1.0f, axis.x, axis.y, axis.z };
+			Quaternion q = { axis.x, axis.y, axis.z, dot + 1.0f };
 
 			return q.Normalized();
 
 		}
 
-		[[nodiscard]] static Quaternion FromEuler(const Vector3& euler) {
+		[[nodiscard]] static Quaternion FromEulerXYZ(const Vector3& euler) {
 			Quaternion qX =
 				FromAxisAngle(
 					{ 1,0,0 },
@@ -379,96 +371,93 @@ namespace Atrum::Math {
 					{ 0,0,1 },
 					euler.z);
 
-			return (qY * qX * qZ).Normalized();
+			return (qX * qY * qZ).Normalized();
 		}
 
-		[[nodiscard]] Vector3 ToEulerFirstPerson() const {
-			// 戻り値用
-			float yaw, pitch, roll;
+		[[nodiscard]] Vector3 ToEulerXYZ() const {
+			// 回転角（X, Y, Z）
+			float xAngle, yAngle, zAngle;
 
-			// YXZ順序での計算式
-			// x, y, z, w はクォータニオンのメンバ
+			// クォータニオンの成分
 			float sqw = w * w;
 			float sqx = x * x;
 			float sqy = y * y;
 			float sqz = z * z;
 
-			// Pitch (X軸周り) の計算
-			// sin(pitch) = -2 * (yz - wx)
-			float sinp = -2.0f * (y * z - w * x);
+			// Y軸周りの回転 (sin(y)) を求める
+			float siny = 2.0f * (w * y - z * x);
 
-			if (std::abs(sinp) > 0.9999f) {
-				// ジンバルロックに近い場合（Pitchが90度前後）
-				pitch = (sinp > 0) ? 1.570796f : -1.570796f; // ±π/2
+			if (std::abs(siny) >= 0.9999f) {
+				// ジンバルロック時（Yが ±90度）
+				yAngle = (siny > 0) ? 1.570796f : -1.570796f; // ±π/2
 
-				// この状態ではYawとRollの区別がつかないため、片方を0にする
-				yaw = 0.0f;
-				roll = std::atan2(2.0f * (x * y + w * z), 1.0f - 2.0f * (sqx + sqz));
+				// この状態ではXとZの自由度が重なるため、片方を0固定にする
+				xAngle = 0.0f;
+				zAngle = std::atan2(2.0f * (x * y - w * z), 1.0f - 2.0f * (sqx + sqz));
 			} else {
-				pitch = std::asin(std::clamp(sinp, -1.0f, 1.0f));
+				yAngle = std::asin(std::clamp(siny, -1.0f, 1.0f));
 
-				// Yaw (Y軸周り)
-				yaw = std::atan2(2.0f * (x * z + w * y), sqw - sqx - sqy + sqz);
+				// X軸周りの回転
+				xAngle = std::atan2(2.0f * (y * z + w * x), sqw - sqx - sqy + sqz);
 
-				// Roll (Z軸周り)
-				roll = std::atan2(2.0f * (x * y + w * z), sqw - sqx + sqy - sqz);
+				// Z軸周りの回転
+				zAngle = std::atan2(2.0f * (x * y + w * z), sqw + sqx - sqy - sqz);
 			}
 
-			return { pitch, yaw, roll };
-
-	}
-
-	[[nodiscard]] static Quaternion Lerp(const Quaternion& start, const Quaternion& end, const float t) {
-
-		Quaternion result = start * (1.0f - t) + end * t;
-
-		result.Normalize();
-
-		return result;
-
-	}
-
-	[[nodiscard]] static Quaternion Slerp(const Quaternion& start, Quaternion end, const float t) {
-
-		Quaternion result{};
-
-		float dot = start.Dot(end);
-
-		if (dot < 0.0f) {
-
-			dot = -dot;
-
-			end = -end;
-
+			return { xAngle, yAngle, zAngle };
 		}
 
-		if (dot > 0.9995f) {
+		[[nodiscard]] static Quaternion Lerp(const Quaternion& start, const Quaternion& end, const float t) {
 
-			result = Lerp(start, end, t);
+			Quaternion result = start * (1.0f - t) + end * t;
+
+			result.Normalize();
 
 			return result;
 
 		}
 
-		float thetaO = std::acos(dot);
+		[[nodiscard]] static Quaternion Slerp(const Quaternion& start, Quaternion end, const float t) {
 
-		float theta = thetaO * t;
+			Quaternion result{};
 
-		float sinTheta = std::sin(theta);
-		float sinThetaO = std::sin(thetaO);
+			float dot = start.Dot(end);
 
-		float sO = std::cos(theta) - dot * sinTheta / sinThetaO;
-		float s = sinTheta / sinThetaO;
+			if (dot < 0.0f) {
 
-		result = start * sO + end * s;
+				dot = -dot;
 
-		result.Normalize();
+				end = -end;
 
-		return result;
+			}
 
-	}
+			if (dot > 0.9995f) {
 
-};
+				result = Lerp(start, end, t);
+
+				return result;
+
+			}
+
+			float thetaO = std::acos(dot);
+
+			float theta = thetaO * t;
+
+			float sinTheta = std::sin(theta);
+			float sinThetaO = std::sin(thetaO);
+
+			float sO = std::cos(theta) - dot * sinTheta / sinThetaO;
+			float s = sinTheta / sinThetaO;
+
+			result = start * sO + end * s;
+
+			result.Normalize();
+
+			return result;
+
+		}
+
+	};
 
 }
 
