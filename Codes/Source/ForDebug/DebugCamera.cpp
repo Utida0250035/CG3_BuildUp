@@ -65,6 +65,25 @@ namespace Atrum::Debug {
 
 		const M::Vector2 bufferedCursorMove = input_->GetCursorDelta() * 0.01562f;
 
+		if (input_->IsMousePress(I::Mouse::Right)) {
+
+			deltaRotate_.y = bufferedCursorMove.x;
+
+			deltaRotate_.x = bufferedCursorMove.y;
+
+			M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::UpLh(), deltaRotate_.y);
+			M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::RightLh()).Normalized(), deltaRotate_.x);
+
+			M::Vector3 newForward = (pitchQ * yawQ * quaternion_).RotateVector(M::Vector3::ForwardLh());
+
+			quaternion_ = M::Quaternion::Slerp(M::Quaternion::Identity(), pitchQ, 1.0f - std::abs(newForward.y)) * yawQ * quaternion_;
+
+			quaternion_.Normalize();
+
+			quaternion_.LhZRemove();
+
+		}
+
 		if (mode_ == DebugCameraMode::ORBIT) {
 
 			if (input_->GetMouseWheel() != 0) {
@@ -74,69 +93,12 @@ namespace Atrum::Debug {
 
 			}
 
-			if (input_->IsMousePress(I::Mouse::Right)) {
-
-				deltaRotate_.y = bufferedCursorMove.x;
-
-				deltaRotate_.x = bufferedCursorMove.y;
-
-				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::UpLh(), deltaRotate_.y);
-				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::RightLh()).Normalized(), deltaRotate_.x);
-				
-				M::Vector3 newForward = pitchQ.RotateVector(quaternion_.RotateVector(M::Vector3::ForwardLh()));
-
-				constexpr float limitCos = 0.996f;
-
-				if (newForward.y < limitCos && newForward.y > -limitCos) {
-
-					quaternion_ = pitchQ * yawQ * quaternion_;
-
-				} else {
-
-					quaternion_ = yawQ * quaternion_;
-
-				}
-
-				quaternion_.Normalize();
-
-				quaternion_.LhZRemove();
-
-			}
-
 			M::Vector3 offset = { 0.0f, 0.0f, -distance_ };
 			translate_ = quaternion_.RotateVector(offset) + pivot_;
 
 		} else {
 
-			if (input_->IsMousePress(I::Mouse::Right)) {
-
-				deltaRotate_.y = bufferedCursorMove.x;
-
-				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::UpLh(), deltaRotate_.y);
-
-				deltaRotate_.x = bufferedCursorMove.y;
-
-				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::RightLh()), deltaRotate_.x);
-
-				M::Vector3 newForward = pitchQ.RotateVector(quaternion_.RotateVector(M::Vector3::ForwardLh()));
-
-				constexpr float limitCos = 0.9659f;
-
-				if (newForward.y < limitCos && newForward.y > -limitCos) {
-
-					quaternion_ = pitchQ * yawQ * quaternion_;
-
-				} else {
-
-					quaternion_ = yawQ * quaternion_;
-
-				}
-
-				quaternion_.Normalize();
-
-				quaternion_.LhZRemove();
-
-			} else {
+			if (!input_->IsMousePress(I::Mouse::Right)) {
 
 				if (input_->GetMouseWheel() != 0) {
 
