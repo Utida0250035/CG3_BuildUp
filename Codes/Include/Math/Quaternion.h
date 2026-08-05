@@ -545,17 +545,17 @@ namespace Atrum::Math {
 			float sqz = z * z;
 
 			// Y軸周りの回転 (sin(y)) を求める
-			float siny = 2.0f * (w * y - z * x);
+			float sinY = 2.0f * (w * y - z * x);
 
-			if (std::abs(siny) >= 0.9999f) {
+			if (std::abs(sinY) >= 0.9999f) {
 				// ジンバルロック時（Yが ±90度）
-				yAngle = (siny > 0) ? 1.570796f : -1.570796f; // ±π/2
+				yAngle = (sinY > 0) ? 1.570796f : -1.570796f; // ±π/2
 
 				// この状態ではXとZの自由度が重なるため、片方を0固定にする
 				xAngle = 0.0f;
 				zAngle = std::atan2(2.0f * (x * y - w * z), 1.0f - 2.0f * (sqx + sqz));
 			} else {
-				yAngle = std::asin(std::clamp(siny, -1.0f, 1.0f));
+				yAngle = std::asin(std::clamp(sinY, -1.0f, 1.0f));
 
 				// X軸周りの回転
 				xAngle = std::atan2(2.0f * (y * z + w * x), sqw - sqx - sqy + sqz);
