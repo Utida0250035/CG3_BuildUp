@@ -108,9 +108,15 @@ namespace Atrum::Math {
 
 		}
 
-		constexpr Vector3 Cross(const Vector3& other) const {
+		constexpr Vector3 CrossLh(const Vector3& other) const {
 
 			return Vector3{ y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x };
+
+		}
+
+		constexpr Vector3 CrossRh(const Vector3& other) const {
+
+			return other.CrossLh(*this);
 
 		}
 
@@ -126,7 +132,7 @@ namespace Atrum::Math {
 
 			float length = Length();
 
-			if (length <= 0.00001f) {
+			if (length <= 0.00001f || length <= 1.00001f && length >= 0.99999f) {
 
 				return;
 
@@ -137,6 +143,7 @@ namespace Atrum::Math {
 		}
 
 		[[nodiscard]] Vector3 Normalized() const {
+
 			Vector3 normalized = (*this);
 
 			normalized.Normalize();
@@ -145,17 +152,23 @@ namespace Atrum::Math {
 
 		}
 
-		static constexpr Vector3 Left() { return { -1.0f, 0.0f, 0.0f }; }
+		static constexpr Vector3 LeftLh() { return { -1.0f, 0.0f, 0.0f }; }
+		static constexpr Vector3 LeftRh() { return -LeftLh(); }
 
-		static constexpr Vector3 Right() { return { 1.0f, 0.0f, 0.0f }; }
+		static constexpr Vector3 RightLh() { return { 1.0f, 0.0f, 0.0f }; }
+		static constexpr Vector3 RightRh() { return -RightLh(); }
 
-		static constexpr Vector3 Down() { return { 0.0f, -1.0f, 0.0f }; }
+		static constexpr Vector3 DownLh() { return { 0.0f, -1.0f, 0.0f }; }
+		static constexpr Vector3 DownRh() { return DownLh(); }
 
-		static constexpr Vector3 Up() { return { 0.0f, 1.0f, 0.0f }; }
+		static constexpr Vector3 UpLh() { return { 0.0f, 1.0f, 0.0f }; }
+		static constexpr Vector3 UpRh() { return UpLh(); }
 
-		static constexpr Vector3 Back() { return { 0.0f, 0.0f, -1.0f }; }
+		static constexpr Vector3 BackLh() { return { 0.0f, 0.0f, -1.0f }; }
+		static constexpr Vector3 BackRh() { return -BackLh(); }
 
-		static constexpr Vector3 Forward() { return { 0.0f, 0.0f, 1.0f }; }
+		static constexpr Vector3 ForwardLh() { return { 0.0f, 0.0f, 1.0f }; }
+		static constexpr Vector3 ForwardRh() { return -ForwardLh(); }
 
 		static constexpr Vector3 Zero() { return { 0.0f, 0.0f, 0.0f }; }
 
@@ -185,9 +198,7 @@ namespace Atrum::Physics {
 
 	inline Math::Vector3 Cross(const Math::Vector3& me, const Math::Vector3& other) {
 
-		Math::Vector3 result = other.Cross(me);
-
-		return result;
+		return me.CrossRh(other);
 
 	}
 

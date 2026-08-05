@@ -346,6 +346,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, kThirtySecond);
 
+		if (ImGui::IsItemActive()) {
+
+			camera->RefQuaternion().Normalize();
+
+		}
+
 		ImGui::DragFloat3("pivot", &camera->RefPivot().x, kThirtySecond);
 
 		const Vector3& pivot = camera->RefPivot();
@@ -356,12 +362,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::DragFloat3("direction", &direction.x);
 		ImGui::DragFloat3("direction(calc)", &calculatedDirection.x);
-
-		if (ImGui::IsItemActive()) {
-
-			camera->RefQuaternion().Normalize();
-
-		}
 
 		ImGui::End();
 

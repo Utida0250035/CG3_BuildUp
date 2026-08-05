@@ -51,9 +51,9 @@ namespace Atrum::Debug {
 
 				distance_ = (pivot_ - translate_).Length();
 
-				quaternion_ = M::Quaternion::FromLhLookAt(pivot_, translate_, M::Vector3::Up());
+				quaternion_ = M::Quaternion::FromLhLookAt(pivot_, translate_, M::Vector3::UpLh());
 
-				deltaRotate_ = quaternion_.ToEulerXYZ();
+				quaternion_.LhZRemove();
 
 			} else {
 
@@ -80,9 +80,26 @@ namespace Atrum::Debug {
 
 				deltaRotate_.x = bufferedCursorMove.y;
 
-				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::Up(), deltaRotate_.y);
-				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::Right()), deltaRotate_.x);
-				quaternion_ = (pitchQ * yawQ * quaternion_).Normalized();
+				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::UpLh(), deltaRotate_.y);
+				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::RightLh()).Normalized(), deltaRotate_.x);
+				
+				M::Vector3 newForward = pitchQ.RotateVector(quaternion_.RotateVector(M::Vector3::ForwardLh()));
+
+				constexpr float limitCos = 0.996f;
+
+				if (newForward.y < limitCos && newForward.y > -limitCos) {
+
+					quaternion_ = pitchQ * yawQ * quaternion_;
+
+				} else {
+
+					quaternion_ = yawQ * quaternion_;
+
+				}
+
+				quaternion_.Normalize();
+
+				quaternion_.LhZRemove();
 
 			}
 
@@ -95,20 +112,35 @@ namespace Atrum::Debug {
 
 				deltaRotate_.y = bufferedCursorMove.x;
 
-				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::Up(), deltaRotate_.y);
+				M::Quaternion yawQ = M::Quaternion::FromAxisAngle(M::Vector3::UpLh(), deltaRotate_.y);
 
 				deltaRotate_.x = bufferedCursorMove.y;
 
-				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::Right()), deltaRotate_.x);
+				M::Quaternion pitchQ = M::Quaternion::FromAxisAngle(quaternion_.RotateVector(M::Vector3::RightLh()), deltaRotate_.x);
 
-				quaternion_ = (pitchQ * yawQ * quaternion_).Normalized();
+				M::Vector3 newForward = pitchQ.RotateVector(quaternion_.RotateVector(M::Vector3::ForwardLh()));
 
+				constexpr float limitCos = 0.9659f;
+
+				if (newForward.y < limitCos && newForward.y > -limitCos) {
+
+					quaternion_ = pitchQ * yawQ * quaternion_;
+
+				} else {
+
+					quaternion_ = yawQ * quaternion_;
+
+				}
+
+				quaternion_.Normalize();
+
+				quaternion_.LhZRemove();
 
 			} else {
 
 				if (input_->GetMouseWheel() != 0) {
 
-					M::Vector3 moveByWheel = Cast::Float(input_->GetMouseWheel()) * 3.0f * quaternion_.RotateVector(M::Vector3::Forward());
+					M::Vector3 moveByWheel = Cast::Float(input_->GetMouseWheel()) * 3.0f * quaternion_.RotateVector(M::Vector3::ForwardLh());
 
 					translate_ += moveByWheel;
 
@@ -118,7 +150,7 @@ namespace Atrum::Debug {
 
 			if (input_->IsMousePress(I::Mouse::Middle)) {
 
-				M::Vector3 moveByDrag = { bufferedCursorMove.x, bufferedCursorMove.y, 0.0f };
+				M::Vector3 moveByDrag = { -bufferedCursorMove.x, bufferedCursorMove.y, 0.0f };
 
 				if (moveByDrag.LengthSquare() > 0.0f) {
 
@@ -132,9 +164,9 @@ namespace Atrum::Debug {
 
 		}
 
-		UpdateMatrix();
-
 #endif
+
+		UpdateMatrix();
 
 	}
 

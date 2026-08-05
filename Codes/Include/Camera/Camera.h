@@ -60,17 +60,17 @@ namespace Atrum {
 
 		void AddRotateFirstPerson(const Math::Vector3& add) {
 
-			deltaRotate_ += add;
+			deltaRotate_ = add;
 
 			deltaRotate_.x = std::clamp(deltaRotate_.x, -std::numbers::pi_v<float> *-0.5f, std::numbers::pi_v<float> *0.5f);
 
-			Math::Quaternion yawQ = Math::Quaternion::FromAxisAngle(Math::Vector3::Up(), deltaRotate_.y);
+			Math::Quaternion yawQ = Math::Quaternion::FromAxisAngle(Math::Vector3::UpLh(), deltaRotate_.y);
 
-			Math::Quaternion pitchQ = Math::Quaternion::FromAxisAngle(Math::Vector3::Right(), deltaRotate_.x);
+			Math::Quaternion pitchQ = Math::Quaternion::FromAxisAngle(Math::Vector3::RightLh(), deltaRotate_.x);
 
-			Math::Quaternion rollQ = Math::Quaternion::FromAxisAngle(Math::Vector3::Forward(), deltaRotate_.z);
+			Math::Quaternion rollQ = Math::Quaternion::FromAxisAngle(Math::Vector3::ForwardLh(), deltaRotate_.z);
 
-			quaternion_ = (yawQ * pitchQ).Normalized();
+			quaternion_ = (pitchQ * yawQ * rollQ * quaternion_).Normalized();
 
 		}
 

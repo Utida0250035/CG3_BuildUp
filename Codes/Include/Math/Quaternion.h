@@ -35,6 +35,10 @@ namespace Atrum::Math {
 
 			if (magnitude > 0.0f) {
 
+				if (magnitude >= 0.99999f && magnitude <= 1.00001f) {
+					return;
+				}
+
 				x /= magnitude;
 				y /= magnitude;
 				z /= magnitude;
@@ -187,6 +191,66 @@ namespace Atrum::Math {
 			return Quaternion(-x, -y, -z, w);
 		}
 
+		void LhZRemove() {
+
+			Vector3 forward = this->RotateVector(Vector3::ForwardLh());
+
+			Vector3 right = Vector3::UpLh().CrossLh(forward);
+
+			if (right.LengthSquare() < 0.00001f) {
+				return;
+			}
+
+			right.Normalize();
+
+			Vector3 up = forward.CrossLh(right);
+			up.Normalize();
+
+			(*this) = Quaternion::FromAxes(right, up, forward);
+			this->Normalize();
+
+		}
+
+		[[nodiscard]] Quaternion LhZRemoved() const {
+
+			Quaternion result = (*this);
+
+			result.LhZRemove();
+
+			return result;
+
+		}
+
+		void RhZRemove() {
+
+			Vector3 forward = this->RotateVector(Vector3::ForwardRh());
+
+			Vector3 right = Vector3::UpRh().CrossRh(forward);
+
+			if (right.LengthSquare() < 0.00001f) {
+				return;
+			}
+
+			right.Normalize();
+
+			Vector3 up = forward.CrossRh(right);
+			up.Normalize();
+
+			(*this) = Quaternion::FromAxes(right, up, forward);
+			this->Normalize();
+
+		}
+
+		[[nodiscard]] Quaternion RhZRemoved() const {
+
+			Quaternion result = (*this);
+
+			result.RhZRemove();
+
+			return result;
+
+		}
+
 		[[nodiscard]] Matrix4x4 MakeRotateMatrixRh() const {
 
 			float x2 = x * x;
@@ -251,7 +315,13 @@ namespace Atrum::Math {
 
 		[[nodiscard]] static Quaternion FromAxisAngle(const Vector3& unitVector, const float angle) {
 
-			assert(unitVector.Length() <= 1.00001f && unitVector.Length() >= 0.99999f);
+#ifdef _DEBUG
+
+			float length = unitVector.Length();
+
+			assert(length <= 1.00001f && length >= 0.99999f);
+
+#endif
 
 			float halfAngle = angle * 0.5f;
 			float sin = std::sin(halfAngle);
@@ -300,7 +370,11 @@ namespace Atrum::Math {
 		}
 
 		[[nodiscard]] static Quaternion FromLhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
-			Matrix4x4 lookAtMatrix = Matrix4x4::LhLookAt(target, eye, up);
+			return FromLhLookAt(target - eye, up);
+		}
+
+		[[nodiscard]] static Quaternion FromLhLookAt(const Vector3& forward, const Vector3& up) {
+			Matrix4x4 lookAtMatrix = Matrix4x4::LhLookAt(forward, up);
 
 			Quaternion lookAtQ = FromRotateMatrix(lookAtMatrix);
 
@@ -310,7 +384,22 @@ namespace Atrum::Math {
 
 		}
 
-		[[nodiscard]] Vector3 RotateVector(const Vector3& vector) const {
+		[[nodiscard]] static Quaternion FromRhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up) {
+			return FromRhLookAt(target - eye, up);
+		}
+
+		[[nodiscard]] static Quaternion FromRhLookAt(const Vector3& forward, const Vector3& up) {
+			Matrix4x4 lookAtMatrix = Matrix4x4::RhLookAt(forward, up);
+
+			Quaternion lookAtQ = FromRotateMatrix(lookAtMatrix);
+
+			lookAtQ.Normalize();
+
+			return lookAtQ;
+
+		}
+
+		[[nodiscard]] constexpr Vector3 RotateVector(const Vector3& vector) const {
 
 			Quaternion p{ vector.x, vector.y, vector.z, 0.0f };
 
@@ -323,7 +412,7 @@ namespace Atrum::Math {
 
 		}
 
-		[[nodiscard]] static Quaternion FromTwoDirection(Vector3 from, Vector3 to) {
+		[[nodiscard]] static Quaternion FromLhTwoDirection(Vector3 from, Vector3 to) {
 
 			from.Normalize();
 			to.Normalize();
@@ -336,11 +425,11 @@ namespace Atrum::Math {
 
 			if (dot < -0.99999f) {
 
-				Vector3 axis = kRight.Cross(from);
+				Vector3 axis = kRight.CrossLh(from);
 
 				if (axis.Length() < 0.001f) {
 
-					axis = kUp.Cross(from);
+					axis = kUp.CrossLh(from);
 
 				}
 
@@ -348,8 +437,79 @@ namespace Atrum::Math {
 
 			}
 
-			Vector3 axis = from.Cross(to);
+			Vector3 axis = from.CrossLh(to);
 			Quaternion q = { axis.x, axis.y, axis.z, dot + 1.0f };
+
+			return q.Normalized();
+
+		}
+
+		[[nodiscard]] static Quaternion FromRhTwoDirection(Vector3 from, Vector3 to) {
+
+			from.Normalize();
+			to.Normalize();
+
+			constexpr Vector3 kRight = { 1.0f, 0.0f, 0.0f };
+
+			constexpr Vector3 kUp = { 0.0f, 1.0f, 0.0f };
+
+			float dot = from.Dot(to);
+
+			if (dot < -0.99999f) {
+
+				Vector3 axis = kRight.CrossRh(from);
+
+				if (axis.Length() < 0.001f) {
+
+					axis = kUp.CrossRh(from);
+
+				}
+
+				return Quaternion{ axis.x, axis.y, axis.z, 0.0f };
+
+			}
+
+			Vector3 axis = from.CrossRh(to);
+			Quaternion q = { axis.x, axis.y, axis.z, dot + 1.0f };
+
+			return q.Normalized();
+
+		}
+
+		[[nodiscard]] static Quaternion FromAxes(const Vector3& right, const Vector3& up, const Vector3& forward) {
+
+			Vector3 r = right.Normalized();
+			Vector3 u = up.Normalized();
+			Vector3 f = forward.Normalized();
+
+			Quaternion q;
+			float trace = r.x + u.y + f.z;
+
+			if (trace > 0.0f) {
+				float s = std::sqrt(trace + 1.0f) * 2.0f; // s = 4 * w
+				q.w = 0.25f * s;
+				q.x = (u.z - f.y) / s;
+				q.y = (f.x - r.z) / s;
+				q.z = (r.y - u.x) / s;
+			} else if ((r.x > u.y) && (r.x > f.z)) {
+				float s = std::sqrt(1.0f + r.x - u.y - f.z) * 2.0f; // s = 4 * x
+				q.w = (u.z - f.y) / s;
+				q.x = 0.25f * s;
+				q.y = (u.x + r.y) / s;
+				q.z = (f.x + r.z) / s;
+			} else if (u.y > f.z) {
+				float s = std::sqrt(1.0f + u.y - r.x - f.z) * 2.0f; // s = 4 * y
+				q.w = (f.x - r.z) / s;
+				q.x = (u.x + r.y) / s;
+				q.y = 0.25f * s;
+				q.z = (f.y + u.z) / s;
+			} else {
+				float s = std::sqrt(1.0f + f.z - r.x - u.y) * 2.0f; // s = 4 * z
+				q.w = (r.y - u.x) / s;
+				q.x = (f.x + r.z) / s;
+				q.y = (f.y + u.z) / s;
+				q.z = 0.25f * s;
+			}
 
 			return q.Normalized();
 

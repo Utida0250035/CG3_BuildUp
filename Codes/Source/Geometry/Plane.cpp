@@ -11,7 +11,7 @@ namespace Atrum::Geometry {
 		M::Vector3 aToB = pointB - pointA;
 		M::Vector3 btoC = pointC - pointB;
 
-		plane.normal = aToB.Cross(btoC).Normalized();
+		plane.normal = aToB.CrossLh(btoC).Normalized();
 
 		plane.distance = pointA.Dot(plane.normal);
 
