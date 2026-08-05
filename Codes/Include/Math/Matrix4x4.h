@@ -235,9 +235,11 @@ namespace Atrum::Math {
 
 		// LookAt行列(左手系)
 		static Matrix4x4 LhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up);
+		static Matrix4x4 LhLookAt(const Vector3& forward, const Vector3& up);
 
 		// LookAt行列(右手系)
 		static Matrix4x4 RhLookAt(const Vector3& target, const Vector3& eye, const Vector3& up);
+		static Matrix4x4 RhLookAt(const Vector3& forward, const Vector3& up);
 
 		Vector3 ToEuler() const;
 
