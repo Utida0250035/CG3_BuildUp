@@ -16,6 +16,12 @@
 
 #endif
 
+#ifdef USE_IMGUI
+
+#include "ForDebug/ImGui.h"
+
+#endif
+
 namespace Atrum::Math {
 
 	struct DEPRECATED_OLD_TRANSFORM Transform {
@@ -34,6 +40,28 @@ namespace Atrum::Math {
 
 		}
 
+#ifdef USE_IMGUI
+
+		void ImGui(const std::string& label = "transform") {
+
+			constexpr float kThirtySecond = 0.03125f;
+
+			if (ImGui::BeginChild(label.c_str(), ImGui::kChildSize, ImGui::kChildFlags)) {
+
+				ImGui::Text(label.c_str());
+
+				ImGui::DragFloat3("scale", &scale.x, kThirtySecond);
+				ImGui::DragFloat3("rotate", &rotate.x, kThirtySecond);
+				ImGui::DragFloat3("translate", &translate.x, kThirtySecond);
+
+			}
+
+			ImGui::EndChild();
+
+		}
+
+#endif
+
 	};
 
 	struct TransformLH {
@@ -47,6 +75,35 @@ namespace Atrum::Math {
 
 		}
 
+#ifdef USE_IMGUI
+
+		void ImGui(const std::string& label = "transform") {
+
+			constexpr float kThirtySecond = 0.03125f;
+
+			if (ImGui::BeginChild(label.c_str(), ImGui::kChildSize, ImGui::kChildFlags)) {
+
+				ImGui::Text(label.c_str());
+
+				ImGui::DragFloat3("scale", &scale.x, kThirtySecond);
+				ImGui::DragFloat4("quaternion", &quaternion.x, kThirtySecond);
+
+				if (ImGui::IsItemActive()) {
+
+					quaternion.Normalize();
+
+				}
+
+				ImGui::DragFloat3("translate", &translate.x, kThirtySecond);
+
+			}
+
+			ImGui::EndChild();
+
+		}
+
+#endif
+
 	};
 
 	struct TransformRH {
@@ -59,6 +116,35 @@ namespace Atrum::Math {
 			return Matrix4x4::ToRightHanded(Matrix4x4::World(translate, quaternion, scale));
 
 		}
+
+#ifdef USE_IMGUI
+
+		void ImGui(const std::string& label = "transform") {
+
+			constexpr float kThirtySecond = 0.03125f;
+
+			if (ImGui::BeginChild(label.c_str(), ImGui::kChildSize, ImGui::kChildFlags)) {
+
+				ImGui::Text(label.c_str());
+
+				ImGui::DragFloat3("scale", &scale.x, kThirtySecond);
+				ImGui::DragFloat4("quaternion", &quaternion.x, kThirtySecond);
+
+				if (ImGui::IsItemActive()) {
+
+					quaternion.Normalize();
+
+				}
+
+				ImGui::DragFloat3("translate", &translate.x, kThirtySecond);
+
+			}
+
+			ImGui::EndChild();
+
+		}
+
+#endif
 
 	};
 

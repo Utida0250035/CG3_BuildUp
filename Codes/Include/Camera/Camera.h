@@ -21,7 +21,7 @@ namespace Atrum {
 		// 平行移動
 		Math::Vector3 translate_{ 0.0f,0.0f, -10.0f };
 
-		Math::Vector3 rotate_{};
+		Math::Vector3 deltaRotate_{};
 
 		// クオータニオン
 		Math::Quaternion quaternion_{};
@@ -42,7 +42,7 @@ namespace Atrum {
 		}
 
 		void UpdateMatrix() {
-			viewMatrix_ = Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrixRh(), Math::Matrix4x4::Translate(translate_));
+			viewMatrix_ = Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrixLh(), Math::Matrix4x4::Translate(translate_));
 		}
 
 		/* ゲッター */
@@ -60,17 +60,17 @@ namespace Atrum {
 
 		void AddRotateFirstPerson(const Math::Vector3& add) {
 
-			rotate_ += add;
+			deltaRotate_ = add;
 
-			rotate_.x = std::clamp(rotate_.x, -std::numbers::pi_v<float> *-0.5f, std::numbers::pi_v<float> *0.5f);
+			deltaRotate_.x = std::clamp(deltaRotate_.x, -std::numbers::pi_v<float> *-0.5f, std::numbers::pi_v<float> *0.5f);
 
-			Math::Quaternion yawQ = Math::Quaternion::FromAxisAngle(Math::Vector3::Up(), rotate_.y);
+			Math::Quaternion yawQ = Math::Quaternion::FromAxisAngle(Math::Vector3::UpLh(), deltaRotate_.y);
 
-			Math::Quaternion pitchQ = Math::Quaternion::FromAxisAngle(Math::Vector3::Right(), rotate_.x);
+			Math::Quaternion pitchQ = Math::Quaternion::FromAxisAngle(Math::Vector3::RightLh(), deltaRotate_.x);
 
-			Math::Quaternion rollQ = Math::Quaternion::FromAxisAngle(Math::Vector3::Forward(), rotate_.z);
+			Math::Quaternion rollQ = Math::Quaternion::FromAxisAngle(Math::Vector3::ForwardLh(), deltaRotate_.z);
 
-			quaternion_ = (yawQ * pitchQ).Normalized();
+			quaternion_ = (pitchQ * yawQ * rollQ * quaternion_).Normalized();
 
 		}
 

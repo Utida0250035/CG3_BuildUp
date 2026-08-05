@@ -36,7 +36,6 @@ namespace Atrum::Debug {
 
 		Math::Vector3 pivot_{ 0.0f, 0.0f, 0.0f };
 		float distance_ = 50.0f;
-		Math::Quaternion pivotQuaternion_{};
 
 #endif
 
@@ -51,7 +50,6 @@ namespace Atrum::Debug {
 		float& RefDistance() { return distance_; }
 		Math::Vector3& RefTranslate() { return translate_; }
 		Math::Quaternion& RefQuaternion() { return quaternion_; }
-		Math::Quaternion& RefPivotQuaternion() { return pivotQuaternion_; }
 		Math::Vector3& RefPivot() { return pivot_; };
 		DebugCameraMode GetMode() const { return mode_; }
 

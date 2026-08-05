@@ -113,7 +113,7 @@ namespace Atrum::Geometry {
 				Math::Vector3 v1 = collisionVertices[i1];
 				Math::Vector3 v2 = collisionVertices[i2];
 
-				Math::Vector3 normal = (v1 - v0).Cross(v2 - v0);
+				Math::Vector3 normal = (v1 - v0).CrossLh(v2 - v0);
 
 				if (normal.Length() <= 0.000001f) {
 					normal = { 0.0f, 1.0f, 0.0f };
