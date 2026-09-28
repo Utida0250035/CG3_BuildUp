@@ -21,7 +21,7 @@
 
 namespace {
 
-	using Atrum::LeakChecker;
+	using Atrum::CoUnInitializer;
 
 	using Atrum::Input::PlayInput;
 	using Atrum::Input::Key;
@@ -69,9 +69,9 @@ namespace {
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
-	LeakChecker leakChecker;
+	CoUnInitializer coUnInitializer;
 
-	// エンジンインスタンスの取得
+		// エンジンインスタンスの取得
 	Atrum::Engine* atrum = Atrum::Engine::GetInstance();
 
 	// エンジンの初期化
@@ -80,7 +80,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	// fps設定
 	atrum->SetFps(60);
 
-	// 乱数シード生成
+		// 乱数シード生成
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	/* プレイヤー入力 */
@@ -516,6 +516,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	///
 	/// ↓終了処理
 	/// 
+
+	planeModel.reset();
+	multiMeshModel.reset();
+	multiMtlModel.reset();
 
 	atrum->Finalize();
 

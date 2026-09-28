@@ -27,6 +27,18 @@ namespace Atrum {
 
 		void CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device);
 
+		void UnMap() {
+
+			if (indexResource_ && indexData_) {
+
+				indexResource_->Unmap(0, nullptr);
+
+				indexData_ = nullptr;
+
+			}
+
+		}
+
 		/* カウント加算 */
 
 		void AddDrewCount(const uint32_t add) { indexDrewCount_ += add; }
@@ -44,6 +56,14 @@ namespace Atrum {
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return indexResource_->GetGPUVirtualAddress(); }
 
 		D3D12_INDEX_BUFFER_VIEW* PGetBufferView() { return &indexBufferView_; }
+
+		/* デストラクタ */
+
+		~IndexBuffer() {
+
+			this->UnMap();
+
+		}
 
 	};
 

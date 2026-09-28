@@ -75,12 +75,16 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		
 			case kLightModelLambert:
 				cos = saturate(nDotL);
-				output.color = gMaterial.color * textureColor * cos * gDirectionalLight.intensity * float4(gDirectionalLight.color, 1.0f);
+				output.color.rgb = gMaterial.color.rgb * textureColor.rgb * cos * gDirectionalLight.intensity * gDirectionalLight.color.rgb;
+				output.color.a = gMaterial.color.a * textureColor.a;
+
 				break;
 		
 			case kLightModelHalfLambert:
 				cos = pow(nDotL * 0.5f + 0.5f, 2.0f);
-				output.color = gMaterial.color * textureColor * cos * gDirectionalLight.intensity * float4(gDirectionalLight.color, 1.0f);
+				output.color.rgb = gMaterial.color.rgb * textureColor.rgb * cos * gDirectionalLight.intensity * gDirectionalLight.color.rgb;
+				output.color.a = gMaterial.color.a * textureColor.a;
+
 				break;
 		
 			default:

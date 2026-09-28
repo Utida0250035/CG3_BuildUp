@@ -30,6 +30,18 @@ namespace Atrum {
 
 		}
 
+		void UnMap() {
+
+			if (resource_ && data_) {
+
+				resource_->Unmap(0, nullptr);
+
+				data_ = nullptr;
+
+			}
+
+		}
+
 		/* ゲッター */
 
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
@@ -37,6 +49,14 @@ namespace Atrum {
 		/* セッター */
 
 		void SetData(const T& data) { memcpy(data_, &data, sizeof(T)); }
+
+		/* デストラクタ */
+
+		~SingleConstantBuffer() {
+
+			this->UnMap();
+
+		}
 
 	};
 
@@ -61,6 +81,18 @@ namespace Atrum {
 
 		}
 
+		void UnMap() {
+
+			if (resource_ && data_) {
+
+				resource_->Unmap(0, nullptr);
+
+				data_ = nullptr;
+
+			}
+
+		}
+
 		/* ゲッター */
 
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
@@ -68,6 +100,14 @@ namespace Atrum {
 		/* セッター */
 
 		void SetData(const T& data, const size_t index) { data_[index] = data; }
+
+		/* デストラクタ */
+
+		~MultiConstantBuffer() {
+
+			this->UnMap();
+
+		}
 
 	};
 

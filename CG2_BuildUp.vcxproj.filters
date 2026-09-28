@@ -438,6 +438,9 @@
     <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h">
       <Filter>Codes\Include\ForDebug</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Blend\BlendMode.h">
+      <Filter>Codes\Include\Engine\Blend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -601,6 +604,9 @@
     </Filter>
     <Filter Include="Codes\Include\ForDebug">
       <UniqueIdentifier>{0a2a2f1e-216f-4fb0-9e46-6ea7f15ab3c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Blend">
+      <UniqueIdentifier>{a708f76c-a504-428d-8f97-e936e6dd4bb2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

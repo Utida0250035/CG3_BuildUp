@@ -213,4 +213,10 @@ namespace Atrum {
 
 	}
 
+	void DrawSprite::Finalize() {
+
+		
+
+	}
+
 }
