@@ -66,6 +66,16 @@ namespace Atrum {
 
 			if (instance_) {
 
+				for (auto& ptr : instance_->assetModelMap_) {
+
+					const auto& pModel = ptr.second.lock();
+
+					if (pModel) {
+						pModel->ReleaseGPUResources();
+					}
+
+				}
+
 				delete instance_;
 				instance_ = nullptr;
 

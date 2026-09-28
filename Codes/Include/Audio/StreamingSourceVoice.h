@@ -54,13 +54,17 @@ namespace Atrum::Audio {
 
 		~StreamingSourceVoice() {
 
-			if (state == VoiceState::Playing) {
+			if (pVoice) {
 
-				pVoice->Stop();
+				if (state == VoiceState::Playing) {
+
+					pVoice->Stop();
+
+				}
+
+				pVoice->DestroyVoice();
 
 			}
-
-			pVoice->DestroyVoice();
 
 		}
 

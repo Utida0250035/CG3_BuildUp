@@ -660,10 +660,19 @@ void AtrumEngine::Finalize() {
 
 #endif
 
-  /* */
+#ifdef _DEBUG
 
-  // COMの終了処理
-  CoUninitialize();
+  /* NVIDIAグラフィクスドライバの浮動小数点例外(修正難)への応急処置 */
+
+  //// 浮動小数点例外を無効にする
+  //unsigned int currentControl;
+
+  //// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) の例外を無効化
+
+  //_controlfp_s(&currentControl, _MCW_EM, _MCW_EM);
+
+#endif
+
 }
 
 ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width,
@@ -837,7 +846,7 @@ void AtrumEngine::SetBlendModeForFlame(const BlendMode &blendMode) {
       graphicsPSObjects[static_cast<uint32_t>(blendMode)]->GetPSO());
 }
 
-LeakChecker::~LeakChecker() {
+CoUnInitializer::~CoUnInitializer() {
 
   OutputDebugStringA("\nleakCheck\n\n");
 
@@ -849,6 +858,10 @@ LeakChecker::~LeakChecker() {
     debug->ReportLiveObjects(DXGI_DEBUG_APP, DXGI_DEBUG_RLO_ALL);
     debug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_ALL);
   }
+
+  // COMの終了処理
+  CoUninitialize();
+
 }
 
 } // namespace Atrum

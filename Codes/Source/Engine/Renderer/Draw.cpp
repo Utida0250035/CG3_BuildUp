@@ -381,4 +381,9 @@ namespace Atrum {
 
 	}
 
+	void Draw::Finalize() {
+
+
+	}
+
 }
