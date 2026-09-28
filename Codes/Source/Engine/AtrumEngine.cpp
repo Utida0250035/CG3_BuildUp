@@ -1,4 +1,4 @@
-#include "Engine/Alias/CoreAlias.h"
+﻿#include "Engine/Alias/CoreAlias.h"
 
 #include "Audio/Audio.h"
 #include "Cast/StaticCast.h"
@@ -664,12 +664,12 @@ void AtrumEngine::Finalize() {
 
   /* NVIDIAグラフィクスドライバの浮動小数点例外(修正難)への応急処置 */
 
-  //// 浮動小数点例外を無効にする
-  //unsigned int currentControl;
+  // 浮動小数点例外を無効にする
+  unsigned int currentControl;
 
-  //// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) の例外を無効化
+  // 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) の例外を無効化
 
-  //_controlfp_s(&currentControl, _MCW_EM, _MCW_EM);
+  _controlfp_s(&currentControl, _MCW_EM, _MCW_EM);
 
 #endif
 
