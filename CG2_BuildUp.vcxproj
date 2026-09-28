@@ -226,6 +226,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h" />
     <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h" />
     <ClInclude Include="Codes\Include\Engine\AtrumEngine.h" />
+    <ClInclude Include="Codes\Include\Engine\Blend\BlendMode.h" />
     <ClInclude Include="Codes\Include\Engine\Command\CommandContext.h" />
     <ClInclude Include="Codes\Include\Engine\Command\Fence.h" />
     <ClInclude Include="Codes\Include\Engine\Device\RenderDevice.h" />
