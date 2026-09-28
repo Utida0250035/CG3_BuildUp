@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Engine/Blend/BlendMode.h"
+
 #include <wrl/client.h>
 
 #include <d3d12.h>
@@ -9,55 +11,56 @@
 
 namespace Atrum {
 
-	class PipelineState {
+class PipelineState {
 
-	private:
+private:
+  template <typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-		template<typename T>
-		using ComPtr = Microsoft::WRL::ComPtr<T>;
+  /* BlendMode */
 
-		/* InputLayout */
+  // BlendMode
+  BlendMode mode_ = BlendMode::NORMAL;
 
-		// InputLayoutの設定
-		D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[3]{};
+  /* InputLayout */
 
-		// inputLayout
-		D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
+  // InputLayoutの設定
+  D3D12_INPUT_ELEMENT_DESC inputElementDescriptions_[3]{};
 
+  // inputLayout
+  D3D12_INPUT_LAYOUT_DESC inputLayoutDesc_{};
 
-		/* 描画State */
+  /* 描画State */
 
-		// BlendState
-		D3D12_BLEND_DESC blendDesc_{};
+  // BlendState
+  D3D12_BLEND_DESC blendDesc_{};
 
-		// RasterizerState
-		D3D12_RASTERIZER_DESC rasterizerDesc_{};
+  // RasterizerState
+  D3D12_RASTERIZER_DESC rasterizerDesc_{};
 
-		// DepthStencilState
-		D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
+  // DepthStencilState
+  D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
 
+  /* PSO */
 
-		/* PSO */
+  // PSOの設定
+  D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc_{};
 
-		// PSOの設定
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc_{};
+  // PSO
+  ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
 
-		// PSO
-		ComPtr<ID3D12PipelineState> pipelineState_ = nullptr;
+  void SetupInputLayout();
+  void SetupBlendState();
+  void SetupRasterizerState();
+  void SetupDepthStencilState();
 
-		void SetupInputLayout();
-		void SetupBlendState();
-		void SetupRasterizerState();
-		void SetupDepthStencilState();
+public:
+  void Initialize(ID3D12RootSignature *rootSignature, ID3D12Device *device,
+                  IDxcBlob *vertexShaderBlob, IDxcBlob *pixelShaderBlob,
+                  BlendMode mode = BlendMode::NORMAL);
 
-	public:
+  /* ゲッター */
 
-		void Initialize(ID3D12RootSignature* rootSignature, ID3D12Device* device, IDxcBlob* vertexShaderBlob, IDxcBlob* pixelShaderBlob);
+  ID3D12PipelineState *GetPSO() const { return pipelineState_.Get(); }
+};
 
-		/* ゲッター */
-
-		ID3D12PipelineState* GetPSO() const { return pipelineState_.Get(); }
-
-	};
-
-}
+} // namespace Atrum
