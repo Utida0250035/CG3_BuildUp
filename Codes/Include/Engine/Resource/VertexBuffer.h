@@ -27,6 +27,17 @@ namespace Atrum {
 	public:
 
 		void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
+		
+		void UnMap() {
+
+			if (vertexResource_ && vertexData_) {
+
+				vertexResource_->Unmap(0, nullptr);
+				vertexData_ = nullptr;
+
+			}
+
+		}
 
 		/* カウント加算 */
 
@@ -45,6 +56,14 @@ namespace Atrum {
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return vertexResource_->GetGPUVirtualAddress(); }
 
 		D3D12_VERTEX_BUFFER_VIEW* PGetVertexBufferView() { return &vertexBufferView_; }
+
+		/* デストラクタ */
+
+		~VertexBuffer() {
+
+			this->UnMap();
+
+		}
 
 	};
 

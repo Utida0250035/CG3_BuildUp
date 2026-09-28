@@ -35,7 +35,13 @@ void PipelineState::SetupBlendState() {
 
   switch (mode_) {
 
-  case BlendMode::NORMAL:
+  case BlendMode::NONE:
+    // 全ての色要素を書き込む
+    renderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+    break;
+
+  default:
 
     renderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
     renderTarget.BlendEnable = TRUE;
@@ -45,12 +51,6 @@ void PipelineState::SetupBlendState() {
     renderTarget.SrcBlendAlpha = D3D12_BLEND_ONE;
     renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
     renderTarget.DestBlendAlpha = D3D12_BLEND_ZERO;
-
-    break;
-
-  default:
-    // 全ての色要素を書き込む
-    renderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
     break;
   }

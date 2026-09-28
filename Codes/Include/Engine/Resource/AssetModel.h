@@ -31,6 +31,18 @@ namespace Atrum {
 		// 頂点バッファビュー
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
+		void UnMap() {
+			
+			if (vertexResource) {
+
+				//vertexResource->Unmap(0, nullptr);
+
+				vertices.clear();
+
+			}
+		
+		}
+
 #ifdef _DEBUG
 
 	// データ名
@@ -52,6 +64,18 @@ namespace Atrum {
 		// マテリアルデータ
 		MaterialData* materialData = nullptr;
 
+		void UnMap() {
+
+			if (materialResource && materialData) {
+
+				materialResource->Unmap(0, nullptr);
+
+				materialData = nullptr;
+
+			}
+
+		}
+
 #ifdef _DEBUG
 
 	// テクスチャのファイルパス
@@ -68,6 +92,16 @@ namespace Atrum {
 
 		std::shared_ptr<AssetMeshData> mesh;
 		std::shared_ptr<AssetMaterialData> material;
+
+		void UnMap() {
+
+			mesh->UnMap();
+			material->UnMap();
+
+			mesh.reset();
+			material.reset();
+
+		}
 
 	};
 
@@ -154,6 +188,23 @@ namespace Atrum {
 		}
 
 #endif
+
+		void ReleaseGPUResources() {
+
+			if (transformationResource_ && transformationData_) {
+
+				transformationResource_->Unmap(0, nullptr);
+				transformationData_ = nullptr;
+
+			}
+
+			for (auto& meshNode : meshNodes_) {
+				meshNode.UnMap();
+			}
+
+			meshNodes_.clear();
+
+		}
 
 	};
 

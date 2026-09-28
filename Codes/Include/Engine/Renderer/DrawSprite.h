@@ -121,6 +121,7 @@ namespace Atrum {
 		/// <param name="width"> 太さ </param>
 		void DrawSpriteLine(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector2& start, const Math::Vector2& end, const float& width, const float& posZ);
 
+		void Finalize();
 
 		DrawSprite operator=(const DrawSprite& source) = delete;
 		DrawSprite(const DrawSprite& source) = delete;

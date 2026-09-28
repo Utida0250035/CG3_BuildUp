@@ -423,9 +423,9 @@ public:
 
 using Engine = AtrumEngine;
 
-struct LeakChecker {
+struct CoUnInitializer {
 
-  ~LeakChecker();
+  ~CoUnInitializer();
 };
 
 } // namespace Atrum

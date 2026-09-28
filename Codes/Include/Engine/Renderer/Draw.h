@@ -116,6 +116,8 @@ namespace Atrum {
 		Draw operator=(const Draw& source) = delete;
 		Draw(const Draw& source) = delete;
 
+		void Finalize();
+
 		static Draw* GetInstance() {
 
 			if (!instance_) {
