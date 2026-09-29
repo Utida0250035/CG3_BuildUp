@@ -5,6 +5,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Development|x64">
+      <Configuration>Development</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -31,6 +35,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -42,6 +53,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <MultiProcFXC>true</MultiProcFXC>
@@ -49,6 +63,11 @@
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <MultiProcFXC>true</MultiProcFXC>
+    <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <MultiProcFXC>true</MultiProcFXC>
     <EnableClangTidyCodeAnalysis>false</EnableClangTidyCodeAnalysis>
     <RunCodeAnalysis>true</RunCodeAnalysis>
@@ -128,6 +147,45 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
+      <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
+      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <LinkTimeCodeGeneration />
+    </Link>
+    <FxCompile>
+      <ShaderModel>6.8</ShaderModel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalOptions>-HV 2021 -enable-16bit-types %(AdditionalOptions)</AdditionalOptions>
+    </FxCompile>
+    <PostBuildEvent>
+      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
+    </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Codes\Source\Application\main.cpp" />
     <ClCompile Include="Codes\Source\Audio\Audio.cpp" />
@@ -139,23 +197,57 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp" />
     <ClCompile Include="Codes\Source\Collision\SAT.cpp" />
-    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Command\CommandContext.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Command\Fence.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Device\RenderDevice.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Device\SwapChain.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Pipeline\PipelineState.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Pipeline\RootSignature.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Resource\DescriptorAllocator.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Resource\IndexBuffer.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Resource\ModelStorage.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Resource\TextureStorage.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp" />
+    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Command\CommandContext.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Command\Fence.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Device\RenderDevice.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Device\SwapChain.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Pipeline\PipelineState.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Pipeline\RootSignature.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\DescriptorAllocator.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\IndexBuffer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\ModelStorage.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\TextureStorage.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
@@ -177,27 +269,35 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\imgui_demo.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\imgui_draw.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\imgui_tables.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,27 +387,35 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imgui_impl_dx12.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imgui_internal.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imstb_rectpack.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imstb_textedit.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\imstb_truetype.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
