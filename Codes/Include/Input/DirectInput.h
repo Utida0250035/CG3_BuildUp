@@ -8,11 +8,15 @@
 
 #include <cstdint>
 
+#include <wrl/client.h>
+
 namespace Atrum::Input {
 
 	class DirectInput final {
 
 	private:
+
+		template<typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 		~DirectInput() = default;
 		DirectInput() = default;
@@ -33,9 +37,9 @@ namespace Atrum::Input {
 	private:
 
 		// 入力デバイス
-		IDirectInput8* directInput_ = nullptr;
+		ComPtr<IDirectInput8> directInput_ = nullptr;
 		// キーボード入力
-		IDirectInputDevice8* keyboard_ = nullptr;
+		ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
 
 		// キー入力(今フレーム)
 		BYTE keys_[256]{};
