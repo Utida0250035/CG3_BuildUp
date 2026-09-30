@@ -268,7 +268,7 @@ namespace Atrum::Math {
 
 	Matrix4x4 Matrix4x4::LhLookAt(const Vector3& forward, const Vector3& up) {
 		Vector3 f = forward.Normalized();
-		Vector3 s = up.CrossLh(f).Normalized();
+		Vector3 s = f.CrossLh(up).Normalized();
 		Vector3 u = f.CrossLh(s);
 
 		Matrix4x4 m = Identity();
