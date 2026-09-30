@@ -58,8 +58,6 @@ namespace Atrum::Input {
 		// マウスのクライアント座標
 		Math::Vector2 cursorPos_{};
 
-		static PlayInput* instance_;
-
 	public:
 
 		/// <summary>
@@ -68,24 +66,9 @@ namespace Atrum::Input {
 		/// <returns></returns>
 		static PlayInput* GetInstance() {
 
-			if (!instance_) {
+			static PlayInput instance;
 
-				instance_ = new PlayInput();
-
-			}
-
-			return instance_;
-
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-
-				delete instance_;
-				instance_ = nullptr;
-
-			}
+			return &instance;
 
 		}
 

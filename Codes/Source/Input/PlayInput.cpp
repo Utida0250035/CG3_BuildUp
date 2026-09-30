@@ -8,8 +8,6 @@
 
 namespace Atrum::Input {
 
-	PlayInput* PlayInput::instance_ = nullptr;
-
 	void PlayInput::EndOfFrame() {
 
 		mouseWheel_ = 0;

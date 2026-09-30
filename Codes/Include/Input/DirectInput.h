@@ -21,8 +21,6 @@ namespace Atrum::Input {
 		~DirectInput() = default;
 		DirectInput() = default;
 
-		static DirectInput* instance_;
-
 	public:
 
 		DirectInput(const DirectInput& source) = delete;
@@ -30,24 +28,9 @@ namespace Atrum::Input {
 
 		static DirectInput* GetInstance() {
 
-			if (!instance_) {
+			static DirectInput instance;
 
-				instance_ = new DirectInput();
-
-			}
-
-			return instance_;
-
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-
-				delete instance_;
-				instance_ = nullptr;
-
-			}
+			return &instance;
 
 		}
 
