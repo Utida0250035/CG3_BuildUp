@@ -636,6 +636,9 @@ void AtrumEngine::Finalize() {
 
   temporaryResources_.clear();
 
+  Input::DirectInput::Destroy();
+  Input::PlayInput::Destroy();
+
 #ifdef USE_IMGUI
 
   ImGui_ImplDX12_Shutdown();

@@ -3,6 +3,8 @@
 
 namespace Atrum::Input {
 
+	DirectInput* DirectInput::instance_ = nullptr;
+
 	void DirectInput::Initialize(HINSTANCE hInstance, HWND hwnd) {
 
 		/* 入力デバイス */
