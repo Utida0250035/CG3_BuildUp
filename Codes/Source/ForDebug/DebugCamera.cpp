@@ -19,7 +19,7 @@ namespace Atrum::Debug {
 
 	void DebugCamera::Initialize() {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		input_ = I::PlayInput::GetInstance();
 
@@ -41,7 +41,7 @@ namespace Atrum::Debug {
 
 #endif
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		if (input_->IsKeyTrigger(I::Key::F5)) {
 

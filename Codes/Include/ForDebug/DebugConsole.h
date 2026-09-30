@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 #include <Windows.h>
 #include <iostream>
@@ -13,7 +13,7 @@ namespace Atrum::Debug {
 	void OpenDebugConsole()
 	{
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		AllocConsole();
 

@@ -4,7 +4,7 @@
 #include "Math/Vector2.h"
 #include <memory>
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 namespace Atrum::Input {
 
@@ -16,7 +16,7 @@ namespace Atrum::Input {
 
 namespace Atrum::Debug {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	enum class DebugCameraMode {
 		FREE, ORBIT
@@ -26,7 +26,7 @@ namespace Atrum::Debug {
 
 	class DebugCamera : public Camera {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	private:
 
@@ -45,7 +45,7 @@ namespace Atrum::Debug {
 
 		void Update() override;
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		float& RefDistance() { return distance_; }
 		Math::Vector3& RefTranslate() { return translate_; }

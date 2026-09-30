@@ -9,7 +9,7 @@ namespace Atrum::Debug {
 
 	void Log([[maybe_unused]] const std::string& message) {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		OutputDebugStringA(("\n" + message + "\n\n").c_str());
 
@@ -19,7 +19,7 @@ namespace Atrum::Debug {
 
 	void LogFile::Initialize() {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	// logsフォルダを作成
 		std::filesystem::create_directory("Logs");
@@ -61,7 +61,7 @@ namespace Atrum::Debug {
 
 	void LogFile::Log([[maybe_unused]] const std::wstring& message) {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	// ログをファイルに出力
 		logStream_ << std::endl << WStringToString(message) << std::endl;
@@ -76,7 +76,7 @@ namespace Atrum::Debug {
 
 	LogFile::~LogFile() {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		logStream_.close();
 

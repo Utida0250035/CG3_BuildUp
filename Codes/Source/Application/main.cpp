@@ -55,7 +55,7 @@ namespace {
 
 	using Atrum::Json::JsonTest;
 
-#ifdef  _DEBUG
+#ifdef  DEVELOPMENT
 
 	using Atrum::Debug::DebugCamera;
 
@@ -183,7 +183,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* デバッグカメラ */
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	std::unique_ptr<DebugCamera> camera = nullptr;
 

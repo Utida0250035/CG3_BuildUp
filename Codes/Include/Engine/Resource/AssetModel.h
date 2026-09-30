@@ -13,7 +13,7 @@
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 #include <string>
 #endif
 
@@ -43,7 +43,7 @@ namespace Atrum {
 		
 		}
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	// データ名
 		std::string name;
@@ -76,7 +76,7 @@ namespace Atrum {
 
 		}
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 	// テクスチャのファイルパス
 		std::string textureFilePathDebug = "";
@@ -127,7 +127,7 @@ namespace Atrum {
 		// メッシュと対応マテリアルの塊
 		std::vector<AssetMeshNode> meshNodes_{};
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		std::string objFilePathDebug_ = "";
 		std::string mtlFilePathDebug_ = "";
@@ -171,7 +171,7 @@ namespace Atrum {
 
 		}
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 		std::string GetTexturePath() {
 

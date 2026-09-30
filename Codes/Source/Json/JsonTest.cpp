@@ -9,7 +9,7 @@
 
 #endif
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
 namespace Atrum::Math {
 	// nlohmann/json がこの関数を自動的に見つけます
@@ -29,9 +29,9 @@ namespace Atrum::Math {
 
 namespace Atrum::Json {
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Atrum::Json::JsonTest::JsonData, name, position, positions, numFloat, numInt, numInt32bit, numUINT32bit);
+	DEFINE_JSON(Atrum::Json::JsonTest::JsonData, name, position, positions, numFloat, numInt, numInt32bit, numUINT32bit);
 
 #endif
 
