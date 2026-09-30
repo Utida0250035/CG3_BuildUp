@@ -272,7 +272,7 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
 #endif
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
   // 浮動小数点例外を有効にする
   unsigned int currentControl;
@@ -644,7 +644,7 @@ void AtrumEngine::Finalize() {
 
 #endif
 
-#ifdef _DEBUG
+#ifdef DEVELOPMENT
 
   /* NVIDIAグラフィクスドライバの浮動小数点例外(修正難)への応急処置 */
 
