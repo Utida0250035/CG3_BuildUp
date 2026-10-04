@@ -65,6 +65,7 @@ namespace Atrum {
 		/// <returns></returns>
 		void Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
 
+		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 		void Resize(const int32_t clientWidth, const int32_t clientHeight) {
 

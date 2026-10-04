@@ -37,6 +37,8 @@ namespace Atrum {
 
 			hwnd_ = wmInfo.info.win.window;
 
+			SetWindowLongPtr(hwnd_, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WindowProc));
+
 		}
 
 	}
@@ -66,6 +68,12 @@ namespace Atrum {
 
 		// クライアント領域の高さ
 		clientHeight_ = clientHeight_;
+
+	}
+
+	LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+
+		return DefWindowProc(hwnd, msg, wParam, lParam);
 
 	}
 
