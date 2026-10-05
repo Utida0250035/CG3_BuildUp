@@ -318,7 +318,7 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   // DirectInput
   directInput_ = I::DirectInput::GetInstance();
-  directInput_->Initialize(window_->GetHInstance(), window_->GetHWnd());
+  directInput_->Initialize(window_.get());
 
   // SDL2入力
   playInput_ = I::PlayInput::GetInstance();

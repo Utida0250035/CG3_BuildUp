@@ -1,11 +1,26 @@
-#include <Windows.h>
-
 #include "Engine/Platform/Window/Window.h"
+#include "ForDebug/Log.h"
 #include <cassert>
 #include <SDL_syswm.h>
-#include <imgui/imgui_impl_dx12.h>
+#include <Windows.h>
+#include <imgui/imgui_impl_sdl2.h>
 
 namespace Atrum {
+
+	LRESULT CALLBACK Window::MySubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
+
+		switch (uMsg)
+		{
+			case WM_CLOSE:
+				Debug::LogFile::GetInstance()->Log("WM_CLOSE\n");
+				break;
+			default:
+				break;
+		}
+
+		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+
+	}
 
 	void Window::Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight) {
 
@@ -39,6 +54,17 @@ namespace Atrum {
 			hWnd_ = wmInfo.info.win.window;
 
 			hInstance_ = reinterpret_cast<HINSTANCE>(GetWindowLongPtr(hWnd_, GWLP_HINSTANCE));
+
+			UINT_PTR subclassId = 1;
+			DWORD_PTR refData = 0;
+
+			BOOL success = SetWindowSubclass(hWnd_, MySubclassProc, subclassId, refData);
+
+			if (!success) {
+
+				assert(false && "FAILED(Window Init) : SetWindowSubclass()");
+
+			}
 
 		}
 
@@ -77,6 +103,20 @@ namespace Atrum {
 	void Window::Resize(const int32_t newWidth, const int32_t newHeight) {
 
 		SDL_SetWindowSize(ptr_, newWidth, newHeight);
+
+	}
+
+	Window::~Window() {
+
+		if (ptr_) {
+
+			SDL_DestroyWindow(ptr_);
+
+		}
+
+		SDL_Quit();
+
+		Debug::LogFile::GetInstance()->Log("SDL2: Quit");
 
 	}
 

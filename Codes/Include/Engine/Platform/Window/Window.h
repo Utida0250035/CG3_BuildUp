@@ -1,11 +1,13 @@
 #pragma once
-#include "ForDebug/Log.h"
 #include <SDL.h>
 #include <string>
-#include <windef.h>
+#include <windows.h>
 
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
+
+#include <commctrl.h>
+#pragma comment(lib, "comctl32.lib")
 
 namespace Atrum {
 
@@ -16,11 +18,15 @@ namespace Atrum {
 		// SDL2ウィンドウ実体
 		SDL_Window* ptr_ = nullptr;
 
+		static inline constexpr int32_t kDefaultClientWidth = 1280;
+
+		static inline constexpr int32_t kDefaultClientHeight = 720;
+
 		// クライアント領域の幅
-		int32_t clientWidth_ = 0;
+		int32_t clientWidth_ = kDefaultClientWidth;
 
 		// クライアント領域の高さ
-		int32_t clientHeight_ = 0;
+		int32_t clientHeight_ = kDefaultClientHeight;
 
 		// ウィンドウ矩形
 		RECT wRc_{};
@@ -42,22 +48,12 @@ namespace Atrum {
 
 	public:
 
+		static LRESULT CALLBACK MySubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR);
+
 		/// <summary>
 		/// デストラクタ
 		/// </summary>
-		~Window() {
-
-			if (ptr_) {
-
-				SDL_DestroyWindow(ptr_);
-
-			}
-
-			SDL_Quit();
-
-			Debug::LogFile::GetInstance()->Log("SDL2: Quit");
-
-		}
+		~Window();
 
 		/// <summary>
 		/// ウィンドウの初期化
@@ -66,7 +62,7 @@ namespace Atrum {
 		/// <param name="clientWidth"></param>
 		/// <param name="clientHeight"></param>
 		/// <returns></returns>
-		void Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
+		void Initialize(const std::string& windowLabel, const int32_t& clientWidth = kDefaultClientWidth, const int32_t& clientHeight = kDefaultClientHeight);
 
 		void Resize(const int32_t newWidth, const int32_t newHeight);
 

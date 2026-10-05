@@ -10,6 +10,10 @@
 
 #include <wrl/client.h>
 
+namespace Atrum {
+	class Window;
+}
+
 namespace Atrum::Input {
 
 	class DirectInput final {
@@ -36,6 +40,8 @@ namespace Atrum::Input {
 
 	private:
 
+		Window* window_ = nullptr;
+
 		// 入力デバイス
 		ComPtr<IDirectInput8> directInput_ = nullptr;
 		// キーボード入力
@@ -53,7 +59,7 @@ namespace Atrum::Input {
 		/// </summary>
 		/// <param name="hInstance"> インスタンスハンドル </param>
 		/// <param name="hwnd"> ウィンドウハンドル </param>
-		void Initialize(HINSTANCE hInstance, HWND hwnd);
+		void Initialize(Window* window);
 
 		/// <summary>
 		/// 入力の更新

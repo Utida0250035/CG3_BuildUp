@@ -1,14 +1,17 @@
 #include "Input/DirectInput.h"
 #include <cassert>
+#include "Engine/Platform/Window/window.h"
 
 namespace Atrum::Input {
 
-	void DirectInput::Initialize(HINSTANCE hInstance, HWND hwnd) {
+	void DirectInput::Initialize(Window* window) {
+
+		window_ = window;
 
 		/* 入力デバイス */
 
 		HRESULT hr = DirectInput8Create(
-			hInstance,
+			window_->GetHInstance(),
 			DIRECTINPUT_VERSION, IID_IDirectInput8,
 			(void**)&directInput_,
 			nullptr
@@ -26,7 +29,7 @@ namespace Atrum::Input {
 		assert(SUCCEEDED(hr));
 
 		// 排他制御レベルのリセット
-		hr = keyboard_->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		hr = keyboard_->SetCooperativeLevel(window_->GetHWnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 
 	}
 
