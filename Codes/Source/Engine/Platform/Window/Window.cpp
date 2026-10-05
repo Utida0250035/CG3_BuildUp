@@ -5,6 +5,12 @@
 #include <Windows.h>
 #include <imgui/imgui_impl_sdl2.h>
 
+// cspell:disable
+
+#pragma comment(lib, "winmm.lib")
+
+// cspell:enable
+
 namespace Atrum {
 
 	LRESULT CALLBACK Window::MySubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR, DWORD_PTR) {
@@ -67,6 +73,8 @@ namespace Atrum {
 			}
 
 		}
+
+		timeBeginPeriod(1);
 
 	}
 
