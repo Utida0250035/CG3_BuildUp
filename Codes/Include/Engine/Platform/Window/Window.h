@@ -13,14 +13,15 @@ namespace Atrum {
 
 	class Window {
 
+	public:
+		static inline constexpr int32_t kDefaultClientWidth = 1280;
+
+		static inline constexpr int32_t kDefaultClientHeight = 720;
+
 	private:
 
 		// SDL2ウィンドウ実体
 		SDL_Window* ptr_ = nullptr;
-
-		static inline constexpr int32_t kDefaultClientWidth = 1280;
-
-		static inline constexpr int32_t kDefaultClientHeight = 720;
 
 		// クライアント領域の幅
 		int32_t clientWidth_ = kDefaultClientWidth;

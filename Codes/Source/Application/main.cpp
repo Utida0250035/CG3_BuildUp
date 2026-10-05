@@ -71,16 +71,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	CoUnInitializer coUnInitializer;
 
-		// エンジンインスタンスの取得
+	// エンジンインスタンスの取得
 	Atrum::Engine* atrum = Atrum::Engine::GetInstance();
 
 	// エンジンの初期化
-	atrum->Initialize("CG2", 1280, 720);
+	atrum->Initialize("CG3");
 
 	// fps設定
 	atrum->SetFps(60);
 
-		// 乱数シード生成
+	// 乱数シード生成
 	srand(static_cast<unsigned int>(time(nullptr)));
 
 	/* プレイヤー入力 */
