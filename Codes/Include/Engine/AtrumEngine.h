@@ -71,6 +71,8 @@ namespace Atrum {
 	class Draw;
 	class DrawSprite;
 
+	class FrameDeltaTime;
+
 	namespace Audio {
 
 		class AudioManager;
@@ -149,16 +151,18 @@ namespace Atrum {
 		ComPtr<ID3D12Resource> depthStencilResource_ = nullptr;
 
 	private:
-	  /* 時間管理 */
-
-	  // 次フレームまでのカウント
-		float countForNextFrame_ = 0.0f;
+		/* 時間管理 */
 
 		// fps(フレーム/s)
 		float secondsPerFrame_ = 0.0f;
 
-		// 時間差分
-		std::unique_ptr<DeltaTime> deltaTimeManager_ = nullptr;
+		/* 時間差分 */
+
+		// フレーム間の記録
+		FrameDeltaTime* frameDeltaTime_ = nullptr;
+		
+		// fps調整用
+		std::unique_ptr<DeltaTime> deltaTime_ = nullptr;
 
 		/* プレイヤー入力 */
 
@@ -197,6 +201,36 @@ namespace Atrum {
 		~AtrumEngine() = default;
 
 		/// <summary>
+		/// 初期化 ImGui
+		/// </summary>
+		void InitImGui(D3D12_RENDER_TARGET_VIEW_DESC rtvDesc);
+
+		/// <summary>
+		/// 追加の例外を有効化
+		/// </summary>
+		void EnableAdditionalException();
+
+		/// <summary>
+		/// 初期化 アセットストレージ(複数)
+		/// </summary>
+		void InitAssetStorages();
+
+		/// <summary>
+		/// 初期化 深度ステンシル系
+		/// </summary>
+		void InitDepthStencil();
+
+		/// <summary>
+		/// 初期化 描画クラス
+		/// </summary>
+		void InitRenderer();
+
+		/// <summary>
+		/// 初期化 プレイヤー入力クラス
+		/// </summary>
+		void InitPlayInput();
+
+		/// <summary>
 		/// <summary>
 		/// 初期化処理 平行光源Bufferの作成
 		/// </summary>
@@ -232,7 +266,7 @@ namespace Atrum {
 		/// 裏の処理と×ボタン判定を行う
 		/// </summary>
 		/// <returns></returns>
-		bool Process() const;
+		bool Process();
 
 #ifdef USE_IMGUI
 

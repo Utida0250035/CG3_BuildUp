@@ -38,6 +38,7 @@
 #include <string>
 #include <strsafe.h>
 #include <vector>
+#include <thread>
 
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
@@ -122,6 +123,133 @@ namespace Atrum {
 	void AtrumEngine::SetFps(const int32_t& fps) {
 
 		secondsPerFrame_ = 1.0f / static_cast<float>(fps);
+
+	}
+
+	void AtrumEngine::InitImGui(D3D12_RENDER_TARGET_VIEW_DESC rtvDesc) {
+
+#ifdef USE_IMGUI
+
+// ImGuiの初期化
+
+		IMGUI_CHECKVERSION();
+
+		ImGui::CreateContext();
+
+		ImGui::StyleColorsDark();
+
+		ImGui_ImplSDL2_InitForD3D(window_->GetWindow());
+
+		DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
+
+		imguiSrvHandle = srvAllocator_->Allocate();
+
+		ImGui_ImplDX12_Init(renderDevice_->GetDevice(), SwapChain::kBackBufferCount,
+			rtvDesc.Format, srvAllocator_->GetDescriptorHeap(),
+			imguiSrvHandle.cpu, imguiSrvHandle.gpu);
+
+		ImGuiIO& io = ImGui::GetIO();
+
+		io.Fonts->Build();
+
+#endif
+
+	}
+
+	void AtrumEngine::EnableAdditionalException() {
+
+#ifdef DEVELOPMENT
+
+// 浮動小数点例外を有効にする
+		unsigned int currentControl;
+
+		// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) を有効化
+
+		_controlfp_s(&currentControl, 0u, _MCW_EM);
+
+		_controlfp_s(&currentControl,
+			static_cast<unsigned int>(~(_EM_ZERODIVIDE | _EM_INVALID)),
+			_MCW_EM);
+
+#endif
+
+	}
+
+	void AtrumEngine::InitAssetStorages() {
+
+		/* アセットストレージの初期化 */
+
+		pTextureStorage_ = TextureStorage::GetInstance();
+		pTextureStorage_->Initialize(
+			commandContextDirect_.get(), fenceManager_.get(), swapChainManager_.get(),
+			srvAllocator_.get(), renderDevice_->GetDevice(), &temporaryResources_);
+
+		uint32_t modelDefaultTexture =
+			pTextureStorage_->GetTexture("./Assets/Images/white4x4.png");
+
+		pModelStorage_ = ModelStorage::GetInstance();
+		pModelStorage_->Initialize(commandContextDirect_.get(),
+			renderDevice_->GetDevice(), &temporaryResources_,
+			modelDefaultTexture);
+
+	}
+
+	void AtrumEngine::InitDepthStencil() {
+
+		// 深度ステンシルリソースの生成
+		depthStencilResource_ =
+			this->CreateDepthStencilResource(window_->GetClientWidth(), window_->GetClientHeight());
+
+		// 深度ステンシルディスクリプタの生成
+		dsvAllocator_ = std::make_unique<DescriptorAllocator>();
+		dsvAllocator_->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false,
+			L"dsvDescriptor", renderDevice_->GetDevice());
+
+		// DSVの設定
+		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
+		// Format 基本Resourceに合わせる
+		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		// 2dTexture
+		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+		// DSVHeapの先頭にDSVを作る
+		renderDevice_->GetDevice()->CreateDepthStencilView(
+			depthStencilResource_.Get(), &dsvDesc, dsvAllocator_->GetCpuStart());
+
+	}
+
+	void AtrumEngine::InitRenderer() {
+
+		/* 描画クラスの初期化 */
+
+		pDraw_ = Draw::GetInstance();
+		pDraw_->Initialize(renderDevice_->GetDevice(), commandContextDirect_.get(),
+			srvAllocator_.get());
+
+		pDrawSprite_ = DrawSprite::GetInstance();
+		pDrawSprite_->Initialize(renderDevice_->GetDevice(),
+			commandContextDirect_.get(), srvAllocator_.get(),
+			window_->GetClientWidth(), window_->GetClientHeight());
+
+	}
+
+	void AtrumEngine::InitPlayInput() {
+
+		/* 入力デバイスの初期化 */
+
+		SDL_SysWMinfo wmInfo{};
+		SDL_VERSION(&wmInfo.version);
+
+		if (!SDL_GetWindowWMInfo(window_->GetWindow(), &wmInfo)) {
+			assert(false);
+		}
+
+		// DirectInput
+		directInput_ = I::DirectInput::GetInstance();
+		directInput_->Initialize(window_.get());
+
+		// SDL2入力
+		playInput_ = I::PlayInput::GetInstance();
+
 	}
 
 	void AtrumEngine::Initialize(const std::string& windowLabel,
@@ -184,12 +312,12 @@ namespace Atrum {
 		srvAllocator_->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true,
 			L"srvDescriptors", renderDevice_->GetDevice());
 
-// fenceの管理インスタンスを生成
+		// fenceの管理インスタンスを生成
 		fenceManager_ = std::make_unique<Fence>();
 		fenceManager_->Initialize(renderDevice_->GetDevice(),
 			SwapChain::kBackBufferCount);
 
-// ルートシグネチャの作成
+		// ルートシグネチャの作成
 		rootSignature_ = std::make_unique<RootSignature>();
 		rootSignature_->Initialize(renderDevice_->GetDevice());
 
@@ -211,117 +339,28 @@ namespace Atrum {
 				shaderCompiler_->GetPixelShaderBlob(), static_cast<BlendMode>(i));
 		}
 
-		/* 描画クラスの初期化 */
+		this->InitRenderer();
 
-		pDraw_ = Draw::GetInstance();
-		pDraw_->Initialize(renderDevice_->GetDevice(), commandContextDirect_.get(),
-			srvAllocator_.get());
+		/**/
 
-		pDrawSprite_ = DrawSprite::GetInstance();
-		pDrawSprite_->Initialize(renderDevice_->GetDevice(),
-			commandContextDirect_.get(), srvAllocator_.get(),
-			clientWidth, clientHeight);
-
-/**/
-
-// 平行光源Bufferの生成
+		// 平行光源Bufferの生成
 		this->CreateDirectionalLightBuffer();
 
-		// 深度ステンシルリソースの生成
-		depthStencilResource_ =
-			this->CreateDepthStencilResource(clientWidth, clientHeight);
+		this->InitDepthStencil();
 
-		// 深度ステンシルディスクリプタの生成
-		dsvAllocator_ = std::make_unique<DescriptorAllocator>();
-		dsvAllocator_->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false,
-			L"dsvDescriptor", renderDevice_->GetDevice());
+		this->InitImGui(rtvDesc);
 
-// DSVの設定
-		D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-		// Format 基本Resourceに合わせる
-		dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		// 2dTexture
-		dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-		// DSVHeapの先頭にDSVを作る
-		renderDevice_->GetDevice()->CreateDepthStencilView(
-			depthStencilResource_.Get(), &dsvDesc, dsvAllocator_->GetCpuStart());
+		this->EnableAdditionalException();
 
-#ifdef USE_IMGUI
+		this->InitAssetStorages();
 
-  // ImGuiの初期化
+		this->InitPlayInput();
 
-		IMGUI_CHECKVERSION();
+		/* 時間差分マネージャーの生成 */
 
-		ImGui::CreateContext();
-
-		ImGui::StyleColorsDark();
-
-		ImGui_ImplSDL2_InitForD3D(window_->GetWindow());
-
-		DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
-
-		imguiSrvHandle = srvAllocator_->Allocate();
-
-		ImGui_ImplDX12_Init(renderDevice_->GetDevice(), SwapChain::kBackBufferCount,
-			rtvDesc.Format, srvAllocator_->GetDescriptorHeap(),
-			imguiSrvHandle.cpu, imguiSrvHandle.gpu);
-
-		ImGuiIO& io = ImGui::GetIO();
-
-		io.Fonts->Build();
-
-#endif
-
-#ifdef DEVELOPMENT
-
-  // 浮動小数点例外を有効にする
-		unsigned int currentControl;
-
-		// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) を有効化
-
-		_controlfp_s(&currentControl, 0u, _MCW_EM);
-
-		_controlfp_s(&currentControl,
-			static_cast<unsigned int>(~(_EM_ZERODIVIDE | _EM_INVALID)),
-			_MCW_EM);
-
-#endif
-
-  /* アセットストレージの初期化 */
-
-		pTextureStorage_ = TextureStorage::GetInstance();
-		pTextureStorage_->Initialize(
-			commandContextDirect_.get(), fenceManager_.get(), swapChainManager_.get(),
-			srvAllocator_.get(), renderDevice_->GetDevice(), &temporaryResources_);
-
-		uint32_t modelDefaultTexture =
-			pTextureStorage_->GetTexture("./Assets/Images/white4x4.png");
-
-		pModelStorage_ = ModelStorage::GetInstance();
-		pModelStorage_->Initialize(commandContextDirect_.get(),
-			renderDevice_->GetDevice(), &temporaryResources_,
-			modelDefaultTexture);
-
-/* 時間差分マネージャーの生成 */
-
-		deltaTimeManager_.reset(new DeltaTime());
-
-		/* 入力デバイスの初期化 */
-
-		SDL_SysWMinfo wmInfo{};
-		SDL_VERSION(&wmInfo.version);
-
-		if (!SDL_GetWindowWMInfo(window_->GetWindow(), &wmInfo)) {
-
-			assert(false);
-		}
-
-		// DirectInput
-		directInput_ = I::DirectInput::GetInstance();
-		directInput_->Initialize(window_.get());
-
-		// SDL2入力
-		playInput_ = I::PlayInput::GetInstance();
+		frameDeltaTime_ = FrameDeltaTime::GetInstance();
+		frameDeltaTime_->Initialize();
+		deltaTime_.reset(new DeltaTime());
 
 		/* 音源マネージャーの初期化 */
 
@@ -336,7 +375,7 @@ namespace Atrum {
 
 	}
 
-	bool AtrumEngine::Process() const {
+	bool AtrumEngine::Process() {
 
 		assert(isInitialized_ && "AtrumEngine is not initialized");
 
@@ -410,9 +449,27 @@ namespace Atrum {
 			}
 		}
 
+		deltaTime_->CalcDeltaTime();
+
+		if (deltaTime_->GetDeltaTime() < secondsPerFrame_) {
+
+			float sleepSec = secondsPerFrame_ - deltaTime_->GetDeltaTime();
+
+			auto sleepMicroSec = static_cast<long long>(sleepSec * 1000000.0f);
+
+			if (sleepMicroSec > 1000) {
+
+				std::this_thread::sleep_for(std::chrono::microseconds(sleepMicroSec));
+
+			}
+
+		}
+
 		directInput_->Update();
 
 		audio_->Update();
+
+		frameDeltaTime_->CalcDeltaTime();
 
 		return true;
 	}
@@ -456,7 +513,7 @@ namespace Atrum {
 
 		// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
 		barrier.Transition.pResource =
-			swapChainManager_->GetSwapChainResourceCurrent().Get();
+			swapChainManager_->GetSwapChainResourceCurrent();
 
 		// 遷移前(現在)のResourceState
 		barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
@@ -487,7 +544,7 @@ namespace Atrum {
 		commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1,
 			descriptorHeaps);
 
-// Viewportを設定
+		// Viewportを設定
 		commandContextDirect_->GetCommandList()->RSSetViewports(
 			1, &window_->GetViewport());
 
@@ -553,7 +610,7 @@ namespace Atrum {
 
 		// バリアを張る対象のリソース(現在のバックバッファに対して行なう)
 		barrier.Transition.pResource =
-			swapChainManager_->GetSwapChainResourceCurrent().Get();
+			swapChainManager_->GetSwapChainResourceCurrent();
 
 		// 画面に描く処理が終了し画面に映すため状態を遷移
 		// RenderTargetからPresentにする
@@ -576,7 +633,7 @@ namespace Atrum {
 		fenceManager_->Signal(commandContextDirect_->GetCommandQueue(),
 			swapChainManager_->GetBackBufferIndex());
 
-// 次のフレーム番号を取得する
+		// 次のフレーム番号を取得する
 		swapChainManager_->UpdateBackBufferIndex();
 
 		fenceManager_->WaitForNextBuffer(swapChainManager_->GetBackBufferIndex());
@@ -644,9 +701,9 @@ namespace Atrum {
 
 #ifdef DEVELOPMENT
 
-  /* NVIDIAグラフィクスドライバの浮動小数点例外(修正難)への応急処置 */
+		/* NVIDIAグラフィクスドライバの浮動小数点例外(修正難)への応急処置 */
 
-  // 浮動小数点例外を無効にする
+		// 浮動小数点例外を無効にする
 		unsigned int currentControl;
 
 		// 0除算 (_EM_ZERODIVIDE) と 無効な操作（NaN発生など）(_EM_INVALID) の例外を無効化

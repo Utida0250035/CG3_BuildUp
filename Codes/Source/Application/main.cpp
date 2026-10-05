@@ -51,7 +51,7 @@ namespace {
 	using Atrum::LightModel;
 	using Atrum::DirectionalLightData;
 
-	using Atrum::DeltaTime;
+	using Atrum::FrameDeltaTime;
 
 	using Atrum::Json::JsonTest;
 
@@ -76,7 +76,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	// エンジンの初期化
 	atrum->Initialize("CG3");
-
+	
 	// fps設定
 	atrum->SetFps(60);
 
@@ -167,12 +167,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	bool isLightingEnable = true;
 
-
-	/* deltaTime */
-
-	std::unique_ptr<DeltaTime> deltaTimeCalc = std::make_unique<DeltaTime>();
-	float deltaTime = 0.0f;
-
 	/* タイムカウント */
 
 	float timeCount = 0.0f;
@@ -234,10 +228,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓ 更新ここから
 		///
 
-		deltaTimeCalc->CalcDeltaTime();
-		deltaTime = deltaTimeCalc->GetDeltaTime();
-
-		timeCount += deltaTime;
+		timeCount += FrameDeltaTime::GetInstance()->GetDeltaTime();
 
 		Vector2 cursorPos = playInput->GetCursorPos();
 
@@ -250,6 +241,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		jsonTest.jsonVal.ImGui("./Assets/Sample/test.json");
 
 		ImGui::Begin("debug");
+
+		ImGui::Text("frameDeltaTime: %f", FrameDeltaTime::GetInstance()->GetDeltaTime());
 
 		ImGui::Text("timeCount: %f", timeCount);
 

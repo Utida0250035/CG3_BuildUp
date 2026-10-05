@@ -45,9 +45,9 @@ namespace Atrum {
 
 		/* ゲッター */
 
-		ComPtr<IDXGISwapChain4>& GetSwapChain() { return swapChain_; }
-		ComPtr<ID3D12Resource>& GetSwapChainResourceCurrent() { return swapChainResources_[backBufferIndex_]; }
-		ComPtr<ID3D12Resource>& GetSwapChainResource(const size_t index) { return swapChainResources_[index]; }
+		IDXGISwapChain4* GetSwapChain() { return swapChain_.Get(); }
+		ID3D12Resource* GetSwapChainResourceCurrent() { return swapChainResources_[backBufferIndex_].Get(); }
+		ID3D12Resource* GetSwapChainResource(const size_t index) { return swapChainResources_[index].Get(); }
 		UINT GetBackBufferIndex() const { return backBufferIndex_; }
 		D3D12_CPU_DESCRIPTOR_HANDLE* PGetRtvHandles() { return rtvHandles_; }
 		D3D12_CPU_DESCRIPTOR_HANDLE* PGetRtvHandleCurrent() { return &rtvHandles_[backBufferIndex_]; }
