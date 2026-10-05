@@ -36,6 +36,8 @@ namespace Atrum {
 		// シザー矩形
 		D3D12_RECT scissorRect_{};
 
+		void SizeInit(const int32_t clientWidth, const int32_t clientHeight);
+
 		void UpdateMetrics();
 
 	public:
@@ -66,16 +68,7 @@ namespace Atrum {
 		/// <returns></returns>
 		void Initialize(const std::string& windowLabel, const int32_t& clientWidth, const int32_t& clientHeight);
 
-		static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
-
-		void Resize(const int32_t clientWidth, const int32_t clientHeight) {
-
-			clientWidth_ = clientWidth;
-			clientHeight_ = clientHeight;
-
-			UpdateMetrics();
-
-		}
+		void Resize(const int32_t newWidth, const int32_t newHeight);
 
 		/* ゲッター */
 

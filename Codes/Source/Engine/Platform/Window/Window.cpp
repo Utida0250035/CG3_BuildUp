@@ -3,6 +3,7 @@
 #include "Engine/Platform/Window/Window.h"
 #include <cassert>
 #include <SDL_syswm.h>
+#include <imgui/imgui_impl_dx12.h>
 
 namespace Atrum {
 
@@ -31,15 +32,13 @@ namespace Atrum {
 		SDL_SysWMinfo wmInfo{};
 		SDL_VERSION(&wmInfo.version);
 
-		Resize(clientWidth, clientHeight);
+		SizeInit(clientWidth, clientHeight);
 
 		if (SDL_GetWindowWMInfo(ptr_, &wmInfo)) {
 
 			hWnd_ = wmInfo.info.win.window;
 
 			hInstance_ = reinterpret_cast<HINSTANCE>(GetWindowLongPtr(hWnd_, GWLP_HINSTANCE));
-
-			SetWindowLongPtr(hWnd_, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WindowProc));
 
 		}
 
@@ -66,9 +65,18 @@ namespace Atrum {
 
 	}
 
-	LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	void Window::SizeInit(const int32_t clientWidth, const int32_t clientHeight) {
 
-		return DefWindowProc(hwnd, msg, wParam, lParam);
+		clientWidth_ = clientWidth;
+		clientHeight_ = clientHeight;
+
+		UpdateMetrics();
+
+	}
+
+	void Window::Resize(const int32_t newWidth, const int32_t newHeight) {
+
+		SDL_SetWindowSize(ptr_, newWidth, newHeight);
 
 	}
 

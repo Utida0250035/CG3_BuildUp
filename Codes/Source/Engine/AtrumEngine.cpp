@@ -333,6 +333,7 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
   D::LogFile::GetInstance()->Log("Hello World!");
 
   isInitialized_ = true;
+
 }
 
 bool AtrumEngine::Process() const {
