@@ -177,7 +177,7 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
   swapChainManager_->Initialize(
       clientWidth, clientHeight, renderDevice_->GetDevice(),
       renderDevice_->GetDxgiFactory(), commandContextDirect_->GetCommandQueue(),
-      window_->GetHwnd(), rtvAllocator_.get(), rtvDesc);
+      window_->GetHWnd(), rtvAllocator_.get(), rtvDesc);
 
   // SRVディスクリプタヒープの生成
   srvAllocator_ = std::make_unique<DescriptorAllocator>();
@@ -316,12 +316,9 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
     assert(false);
   }
 
-  HINSTANCE hInstance = reinterpret_cast<HINSTANCE>(
-      GetWindowLongPtr(wmInfo.info.win.window, GWLP_HINSTANCE));
-
   // DirectInput
   directInput_ = I::DirectInput::GetInstance();
-  directInput_->Initialize(hInstance, window_->GetHwnd());
+  directInput_->Initialize(window_->GetHInstance(), window_->GetHWnd());
 
   // SDL2入力
   playInput_ = I::PlayInput::GetInstance();

@@ -23,11 +23,12 @@ namespace Atrum {
 		int32_t clientHeight_ = 0;
 
 		// ウィンドウ矩形
-		RECT wrc_{};
+		RECT wRc_{};
 
 		// ウィンドウハンドル
-		HWND hwnd_{};
+		HWND hWnd_{};
 
+		HINSTANCE hInstance_{};
 
 		// ビューポート
 		D3D12_VIEWPORT viewport_{};
@@ -100,14 +101,19 @@ namespace Atrum {
 		/// 
 		/// </summary>
 		/// <returns> ウィンドウ矩形 </returns>
-		RECT GetWrc() const { return wrc_; }
+		RECT GetWRc() const { return wRc_; }
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns> ウィンドウハンドル </returns>
-		HWND GetHwnd() const { return hwnd_; }
+		HWND GetHWnd() const { return hWnd_; }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns> インスタンスハンドル </returns>
+		HINSTANCE GetHInstance() const { return hInstance_; }
 
 		/// <summary>
 		/// 

@@ -35,9 +35,11 @@ namespace Atrum {
 
 		if (SDL_GetWindowWMInfo(ptr_, &wmInfo)) {
 
-			hwnd_ = wmInfo.info.win.window;
+			hWnd_ = wmInfo.info.win.window;
 
-			SetWindowLongPtr(hwnd_, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WindowProc));
+			hInstance_ = reinterpret_cast<HINSTANCE>(GetWindowLongPtr(hWnd_, GWLP_HINSTANCE));
+
+			SetWindowLongPtr(hWnd_, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(WindowProc));
 
 		}
 
@@ -61,13 +63,6 @@ namespace Atrum {
 		scissorRect_.right = clientWidth_;
 		scissorRect_.top = 0;
 		scissorRect_.bottom = clientHeight_;
-
-
-		// クライアント領域の幅
-		clientWidth_ = clientWidth_;
-
-		// クライアント領域の高さ
-		clientHeight_ = clientHeight_;
 
 	}
 
