@@ -7,8 +7,8 @@
     "ignoreCase": false,
     "allowCompoundWords": false,
     "ignorePaths": [
-        ".node_env/**/*",
-        "node_modules/**/*",
+        "**/.node_env/**/*",
+        "**/node_modules/**/*",
         "**/Externals/**/*",
         "**/x64/**/*",
         "**/*.vcxproj*",
@@ -16,7 +16,8 @@
         ".cspell/**/*",
         "**/*.cmd",
         "**/*/nul",
-        "packages/**/*"
+        "**/packages/**/*",
+        "**/Generated/**/*"
     ],
     "files": [
         "**/*.{cpp,h,hlsl,hlsli,txt,md}"
