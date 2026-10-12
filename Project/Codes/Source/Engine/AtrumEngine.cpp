@@ -126,7 +126,7 @@ namespace Atrum {
 
 	}
 
-	void AtrumEngine::InitImGui(D3D12_RENDER_TARGET_VIEW_DESC rtvDesc) {
+	void AtrumEngine::InitImGui([[maybe_unused]]D3D12_RENDER_TARGET_VIEW_DESC rtvDesc) {
 
 #ifdef USE_IMGUI
 
@@ -151,10 +151,6 @@ namespace Atrum {
 		ImGuiIO& io = ImGui::GetIO();
 
 		io.Fonts->Build();
-
-#else
-
-		(void)rtvDesc;
 
 #endif
 
