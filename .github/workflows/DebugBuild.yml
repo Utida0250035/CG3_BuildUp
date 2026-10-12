@@ -22,8 +22,11 @@ jobs:
         with:
           msbuild-architecture: x64
 
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v3
+
       - name: Restore NuGet Packages
-        run: msbuild ${{env.SOLUTION_FILE_PATH}} /t:Restore /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
       - name: Build
         run: msbuild ${{env.SOLUTION_FILE_PATH}} /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
