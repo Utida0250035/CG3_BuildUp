@@ -21,11 +21,12 @@ jobs:
         with:
           msbuild-architecture: x64
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v3
+      - name: Copy packages to Project directory
+        run: |
+          if (Test-Path packages) {
+              Copy-Item -Recurse -Force packages Project/packages
+          }
+        shell: pwsh
 
-      - name: Restore NuGet Packages
-        run: nuget restore Project/CG2_BuildUp.vcxproj
-
-      - name: Build
+      - name: Build Core
         run: msbuild Project/CG2_BuildUp.slnx /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
