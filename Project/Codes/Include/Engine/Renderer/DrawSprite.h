@@ -109,7 +109,7 @@ namespace Atrum {
 		/// <param name="textureIndex"> テクスチャ番号 </param>
 		/// <param name="textureColor"> テクスチャ色(補正) </param>
 		/// <param name="plateTransform"> 板の座標情報 </param>
-		void DrawSpriteRect(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& rectTransform, const Math::Vector2& rectSize);
+		void DrawSpriteRect(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& rectTransform, const Math::Vector2& spriteSize, const Math::Vector2& leftTop = { 0.0f, 0.0f });
 
 		/// <summary>
 		/// 2D線の描画

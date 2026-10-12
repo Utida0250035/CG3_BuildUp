@@ -821,12 +821,12 @@ namespace Atrum {
 		const M::Vector4& textureColor,
 		const M::Transform& uvTransform,
 		const M::Transform& rectTransform,
-		const M::Vector2& rectSize) {
+		const M::Vector2& spriteSize, const M::Vector2& spriteLeftTop) {
 
 		assert(isInitialized_ && "AtrumEngine is not initialized");
 
 		pDrawSprite_->DrawSpriteRect(textureIndex, textureColor, uvTransform,
-			rectTransform, rectSize);
+			rectTransform, spriteSize, spriteLeftTop);
 	}
 
 	void AtrumEngine::DrawSpriteLine(const uint32_t& textureIndex,
