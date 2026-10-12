@@ -16,6 +16,10 @@ namespace Atrum {
 
 		// 使用するSRVディスクリプタの番号
 		uint32_t srvIndex = 1;
+
+		uint32_t width = 0;
+		uint32_t height = 0;
+
 	};
 
 }

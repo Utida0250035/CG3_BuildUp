@@ -393,12 +393,14 @@ namespace Atrum {
 		/// </summary>
 		/// <param name="textureIndex"> テクスチャ番号 </param>
 		/// <param name="textureColor"> テクスチャ色(補正) </param>
-		/// <param name="plateTransform"> 板の座標情報 </param>
+		/// <param name="rectTransform"> スプライトの座標情報 </param>
+		/// <param name="spriteSize"> 切り抜き範囲 </param>
+		/// <param name="spriteLeftTop"> 切り抜き支点 </param>
 		void DrawSpriteRect(const uint32_t& textureIndex,
 			const Math::Vector4& textureColor,
 			const Math::Transform& uvTransform,
 			const Math::Transform& rectTransform,
-			const Math::Vector2& rectSize);
+			const Math::Vector2& spriteSize, const Math::Vector2& spriteLeftTop);
 
 		/// <summary>
 		/// 2D線の描画

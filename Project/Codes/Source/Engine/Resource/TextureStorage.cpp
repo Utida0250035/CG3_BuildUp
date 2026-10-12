@@ -261,6 +261,8 @@ namespace Atrum {
 		const DirectX::TexMetadata& metaData = mipImages.GetMetadata();
 
 		texture.resource = this->CreateTextureResource(metaData);
+		texture.width = static_cast<uint32_t>(metaData.width);
+		texture.height = static_cast<uint32_t>(metaData.height);
 
 		assert(texture.resource);
 
@@ -312,6 +314,18 @@ namespace Atrum {
 
 		// 作成したテクスチャの番号を返す
 		return textures_.back().srvIndex;
+
+	}
+
+	uint32_t TextureStorage::GetTextureWidth(const uint32_t textureIndex) {
+
+		return textures_[textureIndex - 1].width;
+
+	}
+
+	uint32_t TextureStorage::GetTextureHeight(const uint32_t textureIndex) {
+
+		return textures_[textureIndex - 1].height;
 
 	}
 

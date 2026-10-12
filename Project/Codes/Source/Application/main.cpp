@@ -152,6 +152,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	Transform spriteTransform{};
 	Transform spriteUvTransform{};
 	Vector2 spriteSize{ 64.0f, 64.0f };
+	Vector2 spriteTrimLeftTop{ 0.0f, 0.0f };
 	uint32_t spriteTexture = textureWhite;
 	Vector4 spriteColor = Vector4::White();
 
@@ -421,6 +422,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			ImGui::DragFloat4("color", &spriteColor.x, kThirtySecond);
 
+			ImGui::DragFloat2("size", &spriteSize.x, kThirtySecond);
+
+			ImGui::DragFloat2("trimLeftTop", &spriteTrimLeftTop.x, kThirtySecond);
+
 		}
 
 		ImGui::EndChild();
@@ -494,7 +499,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// Sprite準備
 		atrum->PrepareSprite();
 
-		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize);
+		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize, spriteTrimLeftTop);
 
 
 		// 描画処理(後)

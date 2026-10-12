@@ -56,6 +56,8 @@ namespace Atrum {
 		void Initialize(CommandContext* commandContextDirect, Fence* fence, SwapChain* swapChain, DescriptorAllocator* srvAllocator, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
 
 		uint32_t GetTexture(const std::string& filePath);
+		uint32_t GetTextureWidth(const uint32_t textureIndex);
+		uint32_t GetTextureHeight(const uint32_t textureIndex);
 
 		TextureStorage operator=(const TextureStorage& source) = delete;
 		TextureStorage(const TextureStorage& source) = delete;

@@ -5,11 +5,12 @@
 #include "Engine/Resource/IndexBuffer.h"
 #include "Engine/Resource/VertexBuffer.h"
 #include "Math/Transform.h"
+#include "Engine/Resource/TextureStorage.h"
 
 namespace {
 
-	
-	
+
+
 	using Atrum::Math::Vector2;
 	using Atrum::Math::Vector3;
 	using Atrum::Math::Vector4;
@@ -121,7 +122,35 @@ namespace Atrum {
 
 	}
 
-	void DrawSprite::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& rectSize) {
+	void DrawSprite::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& spriteSize, const Vector2& leftTop) {
+
+		TextureStorage* textureStorage = TextureStorage::GetInstance();
+
+		// 画像サイズ
+		Vector2 sourceTextureSize = { static_cast<float>(textureStorage->GetTextureWidth(textureIndex)), static_cast<float>(textureStorage->GetTextureHeight(textureIndex)) };
+
+		sourceTextureSize.x = std::max(sourceTextureSize.x, 1e-5f);
+		sourceTextureSize.y = std::max(sourceTextureSize.y, 1e-5f);
+
+		Vector2 uvMin = { leftTop.x / sourceTextureSize.x, leftTop.y / sourceTextureSize.y };
+		Vector2 uvMax = { (leftTop.x + spriteSize.x) / sourceTextureSize.x, (leftTop.y + spriteSize.y) / sourceTextureSize.y };
+
+		uvMin.x = std::clamp(uvMin.x, 0.0f, 1.0f);
+		uvMin.y = std::clamp(uvMin.y, 0.0f, 1.0f);
+
+		uvMax.x = std::clamp(uvMax.x, 0.0f, 1.0f);
+		uvMax.y = std::clamp(uvMax.y, 0.0f, 1.0f);
+
+		Vector2 spriteMin = leftTop;
+		Vector2 spriteMax = { leftTop.x + spriteSize.x, leftTop.y + spriteSize.y };
+
+		spriteMin.x = std::clamp(spriteMin.x, 0.0f, sourceTextureSize.x);
+		spriteMin.y = std::clamp(spriteMin.y, 0.0f, sourceTextureSize.y);
+
+		spriteMax.x = std::clamp(spriteMax.x, 0.0f, sourceTextureSize.x);
+		spriteMax.y = std::clamp(spriteMax.y, 0.0f, sourceTextureSize.y);
+
+		Vector2 spriteSizeCalc = spriteMax - spriteMin;
 
 		// 三角形のTransform
 		Matrix4x4 worldMatrix = rectTransform.MakeWorldMatrix();
@@ -151,7 +180,7 @@ namespace Atrum {
 
 		uint32_t vertexCount = vertexBuffer_->GetDrewCount();
 
-		Vector2 halfSize = rectSize * 0.5f;
+		Vector2 halfSize = spriteSizeCalc * 0.5f;
 
 		uint32_t indexCount = indexBuffer_->GetDrewCount();
 
@@ -161,26 +190,26 @@ namespace Atrum {
 		VertexData.normal = Vector3{ 0.0f, 0.0f, -1.0f };
 
 		// 左下
-		VertexData.texCoord = { 0.0f, 1.0f };
-		VertexData.position = { -halfSize.x, halfSize.y, 0.0f, 1.0f };
+		VertexData.texCoord = { uvMin.x, uvMax.y };
+		VertexData.position = { spriteMin.x, spriteMax.y, 0.0f, 1.0f };
 
 		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
 
 		// 左上
-		VertexData.texCoord = { 0.0f, 0.0f };
-		VertexData.position = { -halfSize.x, -halfSize.y, 0.0f, 1.0f };
+		VertexData.texCoord = uvMin;
+		VertexData.position = { spriteMin.x, spriteMin.y, 0.0f, 1.0f };
 
 		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
 
 		// 右下
-		VertexData.texCoord = { 1.0f, 1.0f };
-		VertexData.position = { halfSize.x, halfSize.y, 0.0f, 1.0f };
+		VertexData.texCoord = uvMax;
+		VertexData.position = { spriteMax.x, spriteMax.y, 0.0f, 1.0f };
 
 		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
 
 		// 右上
-		VertexData.texCoord = { 1.0f, 0.0f };
-		VertexData.position = { halfSize.x, -halfSize.y, 0.0f, 1.0f };
+		VertexData.texCoord = { uvMax.x, uvMin.y };
+		VertexData.position = { spriteMax.x, spriteMin.y, 0.0f, 1.0f };
 
 		vertexBuffer_->SetVertexData(VertexData, vertexCount++);
 
@@ -215,7 +244,7 @@ namespace Atrum {
 
 	void DrawSprite::Finalize() {
 
-		
+
 
 	}
 
