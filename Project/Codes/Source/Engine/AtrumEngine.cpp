@@ -152,6 +152,10 @@ namespace Atrum {
 
 		io.Fonts->Build();
 
+#else
+
+		(void)rtvDesc;
+
 #endif
 
 	}
