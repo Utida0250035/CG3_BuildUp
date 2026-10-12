@@ -27,36 +27,59 @@ jobs:
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v2
 
-      # 4. NuGet パッケージを復元
+
       - name: Restore NuGet packages
         shell: pwsh
         run: |
-          $packagesConfig = "Project/packages.config"
+          Write-Host "Searching for NuGet configuration files..."
 
-          if (!(Test-Path $packagesConfig)) {
-            Write-Error "packages.config not found: $packagesConfig"
-            Write-Host "Search for packages.config files:"
-            Get-ChildItem -Path . -Filter packages.config -Recurse |
+          $configFiles = @(
+            Get-ChildItem -Path . -Filter packages.config -Recurse -File |
+              Where-Object {
+                $_.FullName -notmatch '[\\/](\.git|\.vs|bin|obj)[\\/]'
+              }
+          )
+
+          if ($configFiles.Count -gt 0) {
+            foreach ($config in $configFiles) {
+              Write-Host "Restoring: $($config.FullName)"
+
+              nuget restore $config.FullName `
+                -PackagesDirectory "$env:GITHUB_WORKSPACE/Project/packages" `
+                -NonInteractive
+
+              if ($LASTEXITCODE -ne 0) {
+                exit $LASTEXITCODE
+              }
+            }
+          }
+          else {
+            Write-Host "No packages.config found."
+
+            Write-Host "Searching for NuGet-related files..."
+            Get-ChildItem -Path . -Recurse -File |
+              Where-Object {
+                $_.Name -match '(^packages\.config$|\.nuget\.config$|\.props$|\.targets$|\.vcxproj$|\.slnx$)'
+              } |
               Select-Object -ExpandProperty FullName
+
+            Write-Host "Checking for an existing SDL2 targets file..."
+            Get-ChildItem -Path . -Filter sdl2.redist.targets -Recurse -File |
+              Select-Object -ExpandProperty FullName
+
+            Write-Error "Cannot determine the correct NuGet restore method. See the discovered files above."
             exit 1
           }
 
-          nuget restore $packagesConfig `
-            -PackagesDirectory "Project/packages" `
-            -NonInteractive
-
-          if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-          }
-
-          $sdlTargets = "Project/packages/sdl2.redist.2.0.5/build/native/sdl2.redist.targets"
+          Write-Host "Checking SDL2 targets..."
+          $sdlTargets = Join-Path $env:GITHUB_WORKSPACE "Project/packages/sdl2.redist.2.0.5/build/native/sdl2.redist.targets"
 
           if (!(Test-Path $sdlTargets)) {
-            Write-Error "SDL2 NuGet targets not found: $sdlTargets"
+            Write-Error "SDL2 targets file is still missing: $sdlTargets"
             exit 1
           }
 
-          Write-Host "SDL2 NuGet package restored successfully."
+          Write-Host "SDL2 targets found."
 
       # 5. Debug ビルド
       - name: Build Debug
