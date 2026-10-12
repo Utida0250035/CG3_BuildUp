@@ -6,7 +6,6 @@ on:
       - master
 
 env:
-  SOLUTION_FILE_PATH: Project/CG2_BuildUp.slnx
   CONFIGURATION: Debug
 
 jobs:
@@ -22,5 +21,11 @@ jobs:
         with:
           msbuild-architecture: x64
 
-      - name: Build with Restore
-        run: msbuild ${{env.SOLUTION_FILE_PATH}} /restore /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v3
+
+      - name: Restore NuGet Packages
+        run: nuget restore Project/CG2_BuildUp.vcxproj
+
+      - name: Build
+        run: msbuild Project/CG2_BuildUp.slnx /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
