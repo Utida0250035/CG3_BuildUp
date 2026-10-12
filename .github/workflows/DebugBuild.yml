@@ -1,32 +1,73 @@
+
 name: DebugBuild
 
 on:
   push:
     branches:
-      - master
-
-env:
-  CONFIGURATION: Debug
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: windows-2025-vs2026
+    runs-on: windows-2022
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      # 1. リポジトリを取得
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v3
-        with:
-          msbuild-architecture: x64
+      # 2. Visual Studio の MSBuild を設定
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
 
-      - name: Copy packages to Project directory
-        run: |
-          if (Test-Path packages) {
-              Copy-Item -Recurse -Force packages Project/packages
-          }
+      # 3. NuGet CLI を設定
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+      # 4. NuGet パッケージを復元
+      - name: Restore NuGet packages
         shell: pwsh
+        run: |
+          $packagesConfig = "Project/packages.config"
 
-      - name: Build Core
-        run: msbuild Project/CG2_BuildUp.slnx /p:Platform=x64,Configuration=${{env.CONFIGURATION}}
+          if (!(Test-Path $packagesConfig)) {
+            Write-Error "packages.config not found: $packagesConfig"
+            Write-Host "Search for packages.config files:"
+            Get-ChildItem -Path . -Filter packages.config -Recurse |
+              Select-Object -ExpandProperty FullName
+            exit 1
+          }
+
+          nuget restore $packagesConfig `
+            -PackagesDirectory "Project/packages" `
+            -NonInteractive
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+
+          $sdlTargets = "Project/packages/sdl2.redist.2.0.5/build/native/sdl2.redist.targets"
+
+          if (!(Test-Path $sdlTargets)) {
+            Write-Error "SDL2 NuGet targets not found: $sdlTargets"
+            exit 1
+          }
+
+          Write-Host "SDL2 NuGet package restored successfully."
+
+      # 5. Debug ビルド
+      - name: Build Debug
+        shell: pwsh
+        run: |
+          msbuild "Project/CG2_BuildUp.slnx" `
+            /m `
+            /p:Configuration=Debug `
+            /p:Platform=x64 `
+            /verbosity:minimal
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
