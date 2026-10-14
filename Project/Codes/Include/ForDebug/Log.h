@@ -51,7 +51,7 @@ namespace Atrum::Debug {
 		/// インスタンス取得
 		/// </summary>
 		/// <returns></returns>
-		static LogFile* GetInstance() {
+		static LogFile* Instance() {
 
 			static LogFile instance;
 

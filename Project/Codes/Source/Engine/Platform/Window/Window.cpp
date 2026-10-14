@@ -18,7 +18,7 @@ namespace Atrum {
 		switch (uMsg)
 		{
 			case WM_CLOSE:
-				Debug::LogFile::GetInstance()->Log("WM_CLOSE\n");
+				Debug::LogFile::Instance()->Log("WM_CLOSE\n");
 				break;
 			default:
 				break;
@@ -124,7 +124,7 @@ namespace Atrum {
 
 		SDL_Quit();
 
-		Debug::LogFile::GetInstance()->Log("SDL2: Quit");
+		Debug::LogFile::Instance()->Log("SDL2: Quit");
 
 	}
 

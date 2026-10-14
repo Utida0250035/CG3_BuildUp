@@ -125,7 +125,7 @@ namespace Atrum::Audio {
 
 		bool IsPlaying(const AudioHandle& handle);
 
-		static AudioManager* GetInstance() {
+		static AudioManager* Instance() {
 
 			if (!instance_) {
 

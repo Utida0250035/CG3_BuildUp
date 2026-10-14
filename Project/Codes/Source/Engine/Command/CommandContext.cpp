@@ -23,7 +23,7 @@ namespace Atrum {
 		hr = commandQueue_->SetName(L"commandQueue");
 		assert(SUCCEEDED(hr));
 
-		Debug::LogFile::GetInstance()->Log("Created CommandQueue");
+		Debug::LogFile::Instance()->Log("Created CommandQueue");
 
 	}
 
@@ -48,7 +48,7 @@ namespace Atrum {
 
 		}
 
-		Debug::LogFile::GetInstance()->Log("Created CommandAllocators");
+		Debug::LogFile::Instance()->Log("Created CommandAllocators");
 
 	}
 
@@ -67,7 +67,7 @@ namespace Atrum {
 		hr = commandList_->SetName(L"commandList");
 		assert(SUCCEEDED(hr));
 
-		Debug::LogFile::GetInstance()->Log("Created CommandList");
+		Debug::LogFile::Instance()->Log("Created CommandList");
 
 	}
 

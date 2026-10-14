@@ -30,7 +30,7 @@ namespace Atrum {
 		// 1頂点当たりのサイズ
 		vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-		D::LogFile::GetInstance()->Log("Created VertexBuffer");
+		D::LogFile::Instance()->Log("Created VertexBuffer");
 
 	}
 

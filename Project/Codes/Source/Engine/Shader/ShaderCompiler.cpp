@@ -23,7 +23,7 @@ namespace Atrum {
 		hr = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
 		assert(SUCCEEDED(hr));
 
-		D::LogFile::GetInstance()->Log("Initialized DXC");
+		D::LogFile::Instance()->Log("Initialized DXC");
 
 	}
 
@@ -37,14 +37,14 @@ namespace Atrum {
 		pixelShaderBlob_ = this->Compile(L"Assets/Shaders/Object3d.PS.hlsl", L"ps_6_0");
 		assert(pixelShaderBlob_ != nullptr);
 
-		D::LogFile::GetInstance()->Log("Shaders Compiled");
+		D::LogFile::Instance()->Log("Shaders Compiled");
 
 	}
 
 	ComPtr<IDxcBlob> ShaderCompiler::Compile(const std::wstring& filePath, const wchar_t* profile) {
 
 		// これからシェーダーをコンパイルする旨をログ出力
-		D::LogFile::GetInstance()->Log(WStringToString(std::format(L"Begin CompileShader, path:{}, profile:{}", filePath, profile)));
+		D::LogFile::Instance()->Log(WStringToString(std::format(L"Begin CompileShader, path:{}, profile:{}", filePath, profile)));
 
 		/*
 		hlslファイルを読む
@@ -115,7 +115,7 @@ namespace Atrum {
 		if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
 			// 警告・エラーがある場合はログ出力して止める
 
-			D::LogFile::GetInstance()->Log(shaderError->GetStringPointer());
+			D::LogFile::Instance()->Log(shaderError->GetStringPointer());
 
 			shaderError->Release();
 
@@ -133,13 +133,13 @@ namespace Atrum {
 		assert(SUCCEEDED(hr));
 
 		// 成功した旨のログ出力
-		D::LogFile::GetInstance()->Log(WStringToString(std::format(L"Compile Succeeded, path:{}, profile:{}", filePath, profile)));
+		D::LogFile::Instance()->Log(WStringToString(std::format(L"Compile Succeeded, path:{}, profile:{}", filePath, profile)));
 
 		// もう使わないリソースを解放
 		shaderSource->Release();
 		shaderResult->Release();
 
-		D::LogFile::GetInstance()->Log("shader Compiled");
+		D::LogFile::Instance()->Log("shader Compiled");
 
 		return shaderBlob;
 

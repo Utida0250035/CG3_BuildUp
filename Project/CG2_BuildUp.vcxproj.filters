@@ -136,9 +136,6 @@
     <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
       <Filter>Codes\Source\Engine\Platform\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\System\EntityStorage.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
@@ -150,9 +147,6 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp">
       <Filter>Codes\Source\File</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity.cpp">
-      <Filter>Codes\Source\System</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp">
       <Filter>Codes\Source\Collision2D</Filter>
@@ -353,15 +347,6 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h">
       <Filter>Codes\Include\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Component.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\EntityStorage.h">
-      <Filter>Codes\Include\System</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
       <Filter>Codes\Include\Engine\Alias</Filter>
@@ -607,6 +592,9 @@
     </Filter>
     <Filter Include="Codes\Include\Engine\Blend">
       <UniqueIdentifier>{a708f76c-a504-428d-8f97-e936e6dd4bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Editor">
+      <UniqueIdentifier>{24119c78-05c7-4984-8dd8-d9542f0e1179}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -124,7 +124,7 @@ namespace Atrum {
 
 	void DrawSprite::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& spriteSize, const Vector2& leftTop) {
 
-		TextureStorage* textureStorage = TextureStorage::GetInstance();
+		TextureStorage* textureStorage = TextureStorage::Instance();
 
 		// 画像サイズ
 		Vector2 sourceTextureSize = { static_cast<float>(textureStorage->GetTextureWidth(textureIndex)), static_cast<float>(textureStorage->GetTextureHeight(textureIndex)) };

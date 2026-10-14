@@ -62,7 +62,7 @@ namespace Atrum {
 		TextureStorage operator=(const TextureStorage& source) = delete;
 		TextureStorage(const TextureStorage& source) = delete;
 
-		static TextureStorage* GetInstance() {
+		static TextureStorage* Instance() {
 
 			if (instance_ == nullptr) {
 

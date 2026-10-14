@@ -64,7 +64,7 @@ namespace Atrum::Input {
 		/// インスタンスの取得
 		/// </summary>
 		/// <returns></returns>
-		static PlayInput* GetInstance() {
+		static PlayInput* Instance() {
 
 			static PlayInput instance;
 

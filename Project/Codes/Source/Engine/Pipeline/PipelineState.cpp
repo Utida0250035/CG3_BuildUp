@@ -24,7 +24,7 @@ void PipelineState::SetupInputLayout() {
   inputLayoutDesc_.pInputElementDescs = inputElementDescriptions_;
   inputLayoutDesc_.NumElements = _countof(inputElementDescriptions_);
 
-  Debug::LogFile::GetInstance()->Log("Finished SetUp InputLayout");
+  Debug::LogFile::Instance()->Log("Finished SetUp InputLayout");
 }
 
 void PipelineState::SetupBlendState() {
@@ -55,7 +55,7 @@ void PipelineState::SetupBlendState() {
     break;
   }
 
-  Debug::LogFile::GetInstance()->Log("Finished SetUp BlendState");
+  Debug::LogFile::Instance()->Log("Finished SetUp BlendState");
 }
 
 void PipelineState::SetupRasterizerState() {
@@ -68,7 +68,7 @@ void PipelineState::SetupRasterizerState() {
   // 三角形の中を塗りつぶす
   rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
 
-  Debug::LogFile::GetInstance()->Log("Finished SetUp RasterizerState");
+  Debug::LogFile::Instance()->Log("Finished SetUp RasterizerState");
 }
 
 void PipelineState::SetupDepthStencilState() {
@@ -82,7 +82,7 @@ void PipelineState::SetupDepthStencilState() {
   // 比較関数をLessEqualとする(近ければ描画される)
   depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-  Debug::LogFile::GetInstance()->Log("Finished SetUp DepthStencilState");
+  Debug::LogFile::Instance()->Log("Finished SetUp DepthStencilState");
 }
 
 void PipelineState::Initialize(ID3D12RootSignature *rootSignature,
@@ -137,7 +137,7 @@ void PipelineState::Initialize(ID3D12RootSignature *rootSignature,
       &pipelineStateDesc_, IID_PPV_ARGS(&pipelineState_));
   assert(SUCCEEDED(hr));
 
-  Debug::LogFile::GetInstance()->Log("Created PSO");
+  Debug::LogFile::Instance()->Log("Created PSO");
 }
 
 } // namespace Atrum

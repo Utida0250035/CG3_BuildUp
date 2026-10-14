@@ -30,7 +30,7 @@ namespace Atrum {
 		// 1番号当たりのサイズ
 		indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
-		D::LogFile::GetInstance()->Log("Created IndexBuffer");
+		D::LogFile::Instance()->Log("Created IndexBuffer");
 
 	}
 

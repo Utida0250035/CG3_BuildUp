@@ -72,7 +72,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	CoUnInitializer coUnInitializer;
 
 	// エンジンインスタンスの取得
-	Atrum::Engine* atrum = Atrum::Engine::GetInstance();
+	Atrum::Engine* atrum = Atrum::Engine::Instance();
 
 	// エンジンの初期化
 	atrum->Initialize("CG3");
@@ -85,7 +85,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* プレイヤー入力 */
 
-	PlayInput* playInput = PlayInput::GetInstance();
+	PlayInput* playInput = PlayInput::Instance();
 
 	/* テクスチャ */
 
@@ -99,7 +99,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	/* 音源 */
 
-	AudioManager* audio = AudioManager::GetInstance();
+	AudioManager* audio = AudioManager::Instance();
 
 
 	[[maybe_unused]] size_t bgmShiningStarMp3 = 0;
@@ -229,7 +229,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		/// ↓ 更新ここから
 		///
 
-		timeCount += FrameDeltaTime::GetInstance()->GetDeltaTime();
+		timeCount += FrameDeltaTime::Instance()->GetDeltaTime();
 
 		Vector2 cursorPos = playInput->GetCursorPos();
 
@@ -243,7 +243,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		ImGui::Begin("debug");
 
-		ImGui::Text("frameDeltaTime: %f", FrameDeltaTime::GetInstance()->GetDeltaTime());
+		ImGui::Text("frameDeltaTime: %f", FrameDeltaTime::Instance()->GetDeltaTime());
 
 		ImGui::Text("timeCount: %f", timeCount);
 

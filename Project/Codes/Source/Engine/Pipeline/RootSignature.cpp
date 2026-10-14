@@ -86,7 +86,7 @@ namespace Atrum {
 
 		if (FAILED(hr)) {
 
-			Debug::LogFile::GetInstance()->Log(reinterpret_cast<char*>(errorBlob_->GetBufferPointer()));
+			Debug::LogFile::Instance()->Log(reinterpret_cast<char*>(errorBlob_->GetBufferPointer()));
 
 			assert(false);
 
@@ -96,7 +96,7 @@ namespace Atrum {
 		hr = device->CreateRootSignature(0, signatureBlob_->GetBufferPointer(), signatureBlob_->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
 		assert(SUCCEEDED(hr));
 
-		Debug::LogFile::GetInstance()->Log("Created RootSignature");
+		Debug::LogFile::Instance()->Log("Created RootSignature");
 
 	}
 

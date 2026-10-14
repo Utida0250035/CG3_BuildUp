@@ -18,7 +18,7 @@ namespace Atrum {
 		*/
 		assert(SUCCEEDED(hr));
 
-		Debug::LogFile::GetInstance()->Log("Created DxgiFactory");
+		Debug::LogFile::Instance()->Log("Created DxgiFactory");
 
 	}
 
@@ -42,7 +42,7 @@ namespace Atrum {
 				// ソフトウェアアダプタでなければ採用
 
 				// 採用したアダプタの情報をログに出力
-				Debug::LogFile::GetInstance()->Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
+				Debug::LogFile::Instance()->Log(WStringToString(std::format(L"Use Adapter:{}\n", adapterDesc.Description)));
 
 				break;
 
@@ -56,7 +56,7 @@ namespace Atrum {
 		// 適切なアダプターが見当たらない場合は起動不可
 		assert(useAdapter_ != nullptr);
 
-		Debug::LogFile::GetInstance()->Log("SelectAdapter worked correctly.");
+		Debug::LogFile::Instance()->Log("SelectAdapter worked correctly.");
 
 	}
 
@@ -82,7 +82,7 @@ namespace Atrum {
 
 				// ログ出力
 
-				Debug::LogFile::GetInstance()->Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
+				Debug::LogFile::Instance()->Log(std::format("FeatureLevel: {}\n", featureLevelStrings[i]));
 
 				break;
 
@@ -95,7 +95,7 @@ namespace Atrum {
 
 		device_->SetName(L"device");
 
-		Debug::LogFile::GetInstance()->Log("Created ID3D12Device");
+		Debug::LogFile::Instance()->Log("Created ID3D12Device");
 
 	}
 
@@ -110,7 +110,7 @@ namespace Atrum {
 		this->CreateDevice();
 
 		// デバイス初期化完了のログを出す
-		Debug::LogFile::GetInstance()->Log("Complete Init RenderDevice");
+		Debug::LogFile::Instance()->Log("Complete Init RenderDevice");
 
 		isInitialized_ = true;
 

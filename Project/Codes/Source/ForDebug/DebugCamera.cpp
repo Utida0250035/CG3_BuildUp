@@ -21,7 +21,7 @@ namespace Atrum::Debug {
 
 #ifdef DEVELOPMENT
 
-		input_ = I::PlayInput::GetInstance();
+		input_ = I::PlayInput::Instance();
 
 #endif
 

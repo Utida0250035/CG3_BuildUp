@@ -34,7 +34,7 @@ namespace Atrum {
 
 		}
 
-		Debug::LogFile::GetInstance()->Log("Created SwapChain");
+		Debug::LogFile::Instance()->Log("Created SwapChain");
 
 		rtvAllocator->Initialize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, kBackBufferCount, false, L"rtvDescriptors", device);
 

@@ -33,7 +33,7 @@ namespace Atrum {
 		[[maybe_unused]] HRESULT hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &resourceDesc, resourceState, nullptr, IID_PPV_ARGS(&resource));
 		assert(SUCCEEDED(hr));
 
-		D::LogFile::GetInstance()->Log("Created BufferResource");
+		D::LogFile::Instance()->Log("Created BufferResource");
 
 		return resource;
 

@@ -41,7 +41,7 @@ namespace Atrum {
 
 		}
 
-		D::LogFile::GetInstance()->Log("Created " + WStringToString(descriptorName));
+		D::LogFile::Instance()->Log("Created " + WStringToString(descriptorName));
 
 		isInitialized_ = true;
 
@@ -75,7 +75,7 @@ namespace Atrum {
 		handle.cpu.ptr = cpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
 		handle.gpu.ptr = gpuStart_.ptr + static_cast<size_t>(descriptorSize_ * handle.index);
 
-		D::LogFile::GetInstance()->Log("Allocate Descriptor");
+		D::LogFile::Instance()->Log("Allocate Descriptor");
 
 		return handle;
 

@@ -50,7 +50,7 @@ namespace Atrum {
 		ModelStorage operator=(const ModelStorage& source) = delete;
 		ModelStorage(const ModelStorage& source) = delete;
 
-		static ModelStorage* GetInstance() {
+		static ModelStorage* Instance() {
 
 			if (instance_ == nullptr) {
 

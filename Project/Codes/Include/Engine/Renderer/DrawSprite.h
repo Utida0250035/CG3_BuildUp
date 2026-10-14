@@ -126,7 +126,7 @@ namespace Atrum {
 		DrawSprite operator=(const DrawSprite& source) = delete;
 		DrawSprite(const DrawSprite& source) = delete;
 
-		static DrawSprite* GetInstance() {
+		static DrawSprite* Instance() {
 
 			if (!instance_) {
 

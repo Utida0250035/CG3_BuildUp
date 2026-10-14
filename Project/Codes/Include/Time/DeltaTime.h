@@ -42,7 +42,7 @@ class FrameDeltaTime final {
 	FrameDeltaTime(const FrameDeltaTime& source) = delete;
 	FrameDeltaTime operator=(const FrameDeltaTime& source) = delete;
 
-	static FrameDeltaTime* GetInstance() {
+	static FrameDeltaTime* Instance() {
 		static FrameDeltaTime instance;
 
 		return &instance;

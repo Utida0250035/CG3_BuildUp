@@ -34,7 +34,7 @@ namespace Atrum {
 		if (!std::filesystem::exists(filePath)) {
 			// ファイルが見つからなければ失敗
 			std::wstring errorMessage = L"NotFoundFile:\n" + filePathBuffer;
-			D::LogFile::GetInstance()->Log(WStringToString(errorMessage));
+			D::LogFile::Instance()->Log(WStringToString(errorMessage));
 			MessageBoxW(nullptr, errorMessage.c_str(), L"Not Found Texture", MB_OK | MB_ICONERROR);
 
 			assert(false && "textureFile not found");
@@ -310,7 +310,7 @@ namespace Atrum {
 		// 配列に所有権を移動
 		textures_.emplace_back(texture);
 
-		D::LogFile::GetInstance()->Log("Got Texture: " + filePath);
+		D::LogFile::Instance()->Log("Got Texture: " + filePath);
 
 		// 作成したテクスチャの番号を返す
 		return textures_.back().srvIndex;

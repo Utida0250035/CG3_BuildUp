@@ -17,131 +17,153 @@
 
 namespace Atrum {
 
-	class VertexBuffer;
-	class IndexBuffer;
-	class CommandContext;
-	class DescriptorAllocator;
+class VertexBuffer;
+class IndexBuffer;
+class CommandContext;
+class DescriptorAllocator;
 
-	class AssetModel;
+class AssetModel;
 
-	class AtrumEngine;
+class AtrumEngine;
 
-	class Draw final {
+class Draw final {
 
-	private:
+private:
+  friend AtrumEngine;
 
-		friend AtrumEngine;
+  const Math::Matrix4x4 kPerspectiveFovMatrix =
+      Math::Matrix4x4::PerspectiveFov(0.5f, 1.77777f, 0.125f, 1024.0f);
 
-		const Math::Matrix4x4 kPerspectiveFovMatrix = Math::Matrix4x4::PerspectiveFov(0.5f, 1.77777f, 0.125f, 1024.0f);
+  Math::Matrix4x4 viewMatrix_{};
 
-		Math::Matrix4x4 viewMatrix_{};
+  std::unique_ptr<VertexBuffer> vertexBuffer_ = nullptr;
 
-		std::unique_ptr<VertexBuffer> vertexBuffer_ = nullptr;
+  std::unique_ptr<IndexBuffer> indexBuffer_ = nullptr;
 
-		std::unique_ptr<IndexBuffer> indexBuffer_ = nullptr;
+  std::unique_ptr<MultiConstantBuffer<MaterialData>> materialBuffer_ = nullptr;
 
-		std::unique_ptr<MultiConstantBuffer<MaterialData>> materialBuffer_ = nullptr;
+  std::unique_ptr<MultiConstantBuffer<TransformationData>>
+      transformationBuffer_ = nullptr;
 
-		std::unique_ptr<MultiConstantBuffer<TransformationData>> transformationBuffer_ = nullptr;
+  uint32_t constantBufferCount_ = 0;
 
-		uint32_t constantBufferCount_ = 0;
+  CommandContext *pCommandContextDirect_ = nullptr;
+  DescriptorAllocator *pSrvAllocator_ = nullptr;
+  ID3D12Device *pDevice_ = nullptr;
 
+  Draw() = default;
+  ~Draw() = default;
 
-		CommandContext* pCommandContextDirect_ = nullptr;
-		DescriptorAllocator* pSrvAllocator_ = nullptr;
-		ID3D12Device* pDevice_ = nullptr;
+  static Draw *instance_;
 
-		Draw() = default;
-		~Draw() = default;
+  /// <summary>
+  /// 三角形の描画呼び出し
+  /// </summary>
+  void DrawTriangleCall(const uint32_t &textureIndex,
+                        D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		static Draw* instance_;
+  /// <summary>
+  /// 3D実体の描画呼び出し(モデル除く)
+  /// </summary>
+  void DrawCall(const uint32_t &textureIndex,
+                const uint32_t &indexDataCountInInstance,
+                const uint32_t &vertexCountInInstance,
+                D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  void DrawCall(const uint32_t &textureIndex,
+                const uint32_t &vertexCountInInstance,
+                D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
+  /// <summary>
+  /// 初期化処理 MaterialBufferの作成
+  /// </summary>
+  void CreateMaterialBuffer();
 
-		/// <summary>
-		/// 三角形の描画呼び出し
-		/// </summary>
-		void DrawTriangleCall(const uint32_t& textureIndex, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  /// <summary>
+  /// 初期化処理 TransformationBufferの作成
+  /// </summary>
+  void CreateTransformationBuffer();
 
-		/// <summary>
-		/// 3D実体の描画呼び出し(モデル除く)
-		/// </summary>
-		void DrawCall(const uint32_t& textureIndex, const uint32_t& indexDataCountInInstance, const uint32_t& vertexCountInInstance, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
-		void DrawCall(const uint32_t& textureIndex, const uint32_t& vertexCountInInstance, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  /// <summary>
+  /// 初期化処理 VertexBufferの生成
+  /// </summary>
+  void CreateVertexBuffer();
 
-		/// <summary>
-		/// 初期化処理 MaterialBufferの作成
-		/// </summary>
-		void CreateMaterialBuffer();
+  /// <summary>
+  /// 初期化処理 IndexBufferの生成
+  /// </summary>
+  void CreateIndexBuffer();
 
-		/// <summary>
-		/// 初期化処理 TransformationBufferの作成
-		/// </summary>
-		void CreateTransformationBuffer();
+  inline static constexpr uint32_t kMaxDrawCount = 4096;
 
-		/// <summary>
-		/// 初期化処理 VertexBufferの生成
-		/// </summary>
-		void CreateVertexBuffer();
+  // 画面上の頂点の最大描画数
+  inline static constexpr uint32_t kVertexMaxDrawCount = 16384;
 
-		/// <summary>
-		/// 初期化処理 IndexBufferの生成
-		/// </summary>
-		void CreateIndexBuffer();
+  // ビューポート
+  D3D12_VIEWPORT viewport_{};
 
-		inline static constexpr uint32_t kMaxDrawCount = 4096;
+  // シザー矩形
+  D3D12_RECT scissorRect_{};
 
-		// 画面上の頂点の最大描画数
-		inline static constexpr uint32_t kVertexMaxDrawCount = 16384;
+public:
+  void Initialize(ID3D12Device *device, CommandContext *commandContext,
+                  DescriptorAllocator *srvAllocator);
 
-		// ビューポート
-		D3D12_VIEWPORT viewport_{};
+  void DrawTriangle(const uint32_t &textureIndex,
+                    const Math::Vector4 &textureColor,
+                    const Math::Transform &uvTransform,
+                    const Math::Transform &triangleTransform,
+                    const std::array<VertexData, 3> &vertexData,
+                    const bool isLighting,
+                    D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		// シザー矩形
-		D3D12_RECT scissorRect_{};
+  void DrawAsymmetricPyramid(
+      const uint32_t &textureIndex, const Math::Vector4 &textureColor,
+      const Math::Transform &uvTransform, const Math::Vector3 &scale,
+      const Math::Quaternion &rotate, const Math::Vector3 &translate,
+      const Geometry::PyramidMesh &mesh, const bool isLighting,
+      D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-	public:
+  void DrawSphere(const uint32_t &textureIndex,
+                  const Math::Vector4 &textureColor,
+                  const Math::Transform &uvTransform,
+                  const Math::Transform &sphereTransform, const float radius,
+                  const uint32_t subdivision, const bool isLighting,
+                  D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void Initialize(ID3D12Device* device, CommandContext* commandContext, DescriptorAllocator* srvAllocator);
+  void DrawModel(AssetModel *model, const Math::Transform &transform,
+                 const bool isLighting,
+                 D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void DrawTriangle(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& triangleTransform, const std::array<VertexData, 3>& vertexData, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  void DrawModel(AssetModel *model, const Math::Matrix4x4 &worldMatrix,
+                 const bool isLighting,
+                 D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		void DrawAsymmetricPyramid(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector3& scale, const Math::Quaternion& rotate, const Math::Vector3& translate, const Geometry::PyramidMesh& mesh, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  void SetViewMatrix(const Math::Matrix4x4 &mat) { viewMatrix_ = mat; }
 
-		void DrawSphere(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Transform& sphereTransform, const float radius, const uint32_t subdivision, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  Draw operator=(const Draw &source) = delete;
+  Draw(const Draw &source) = delete;
 
-		void DrawModel(AssetModel* model, const Math::Transform& transform, const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+  void Finalize();
 
-		void SetViewMatrix(const Math::Matrix4x4& mat) { viewMatrix_ = mat; }
+  static Draw *Instance() {
 
-		Draw operator=(const Draw& source) = delete;
-		Draw(const Draw& source) = delete;
+    if (!instance_) {
 
-		void Finalize();
+      instance_ = new Draw();
+    }
 
-		static Draw* GetInstance() {
+    return instance_;
+  }
 
-			if (!instance_) {
+  static void Destroy() {
 
-				instance_ = new Draw();
+    if (instance_) {
 
-			}
+      delete instance_;
 
-			return instance_;
+      instance_ = nullptr;
+    }
+  }
+};
 
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-
-				delete instance_;
-
-				instance_ = nullptr;
-
-			}
-
-		}
-
-	};
-
-}
+} // namespace Atrum

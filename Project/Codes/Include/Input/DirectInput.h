@@ -11,79 +11,73 @@
 #include <wrl/client.h>
 
 namespace Atrum {
-	class Window;
+class Window;
 }
 
 namespace Atrum::Input {
 
-	class DirectInput final {
+class DirectInput final {
 
-	private:
+private:
+  template <typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-		template<typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+  ~DirectInput() = default;
+  DirectInput() = default;
 
-		~DirectInput() = default;
-		DirectInput() = default;
+public:
+  DirectInput(const DirectInput &source) = delete;
+  DirectInput operator=(const DirectInput &source) = delete;
 
-	public:
+  static DirectInput *Instance() {
 
-		DirectInput(const DirectInput& source) = delete;
-		DirectInput operator=(const DirectInput& source) = delete;
+    static DirectInput instance;
 
-		static DirectInput* GetInstance() {
+    return &instance;
+  }
 
-			static DirectInput instance;
+private:
+  Window *window_ = nullptr;
 
-			return &instance;
+  // 入力デバイス
+  ComPtr<IDirectInput8> directInput_ = nullptr;
+  // キーボード入力
+  ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
 
-		}
+  // キー入力(今フレーム)
+  BYTE keys_[256]{};
+  // キー入力(前フレーム)
+  BYTE preKeys_[256]{};
 
-	private:
+public:
+  /// <summary>
+  /// 入力デバイスの初期化
+  /// </summary>
+  /// <param name="hInstance"> インスタンスハンドル </param>
+  /// <param name="hwnd"> ウィンドウハンドル </param>
+  void Initialize(Window *window);
 
-		Window* window_ = nullptr;
+  /// <summary>
+  /// 入力の更新
+  /// </summary>
+  void Update();
 
-		// 入力デバイス
-		ComPtr<IDirectInput8> directInput_ = nullptr;
-		// キーボード入力
-		ComPtr<IDirectInputDevice8> keyboard_ = nullptr;
+  /// <summary>
+  /// キーの長押し検知
+  /// </summary>
+  /// <param name="keyIndex"> キー番号 </param>
+  bool IsKeyPress(const uint8_t keyIndex);
 
-		// キー入力(今フレーム)
-		BYTE keys_[256]{};
-		// キー入力(前フレーム)
-		BYTE preKeys_[256]{};
+  /// <summary>
+  /// キーの押下検知
+  /// </summary>
+  /// <param name="keyIndex"> キー番号 </param>
+  bool IsKeyTrigger(const uint8_t keyIndex);
 
-	public:
+  /// <summary>
+  /// キーの離し検知
+  /// </summary>
+  /// <param name="keyIndex"> キー番号 </param>
+  bool IsKeyRelease(const uint8_t keyIndex);
+};
 
-		/// <summary>
-		/// 入力デバイスの初期化
-		/// </summary>
-		/// <param name="hInstance"> インスタンスハンドル </param>
-		/// <param name="hwnd"> ウィンドウハンドル </param>
-		void Initialize(Window* window);
-
-		/// <summary>
-		/// 入力の更新
-		/// </summary>
-		void Update();
-
-		/// <summary>
-		/// キーの長押し検知
-		/// </summary>
-		/// <param name="keyIndex"> キー番号 </param>
-		bool IsKeyPress(const uint8_t keyIndex);
-
-		/// <summary>
-		/// キーの押下検知
-		/// </summary>
-		/// <param name="keyIndex"> キー番号 </param>
-		bool IsKeyTrigger(const uint8_t keyIndex);
-
-		/// <summary>
-		/// キーの離し検知
-		/// </summary>
-		/// <param name="keyIndex"> キー番号 </param>
-		bool IsKeyRelease(const uint8_t keyIndex);
-
-	};
-
-}
+} // namespace Atrum::Input

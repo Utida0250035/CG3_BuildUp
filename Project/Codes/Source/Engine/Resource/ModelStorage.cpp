@@ -112,13 +112,13 @@ namespace Atrum {
 						// 既存フラグを立てて次のusemtlまで処理を飛ばす
 						isMeshExist = true;
 
-						D::LogFile::GetInstance()->Log("GetMeshFromTable: " + meshName);
+						D::LogFile::Instance()->Log("GetMeshFromTable: " + meshName);
 
 						break;
 
 					}
 
-					D::LogFile::GetInstance()->Log("LoadMesh: " + meshName);
+					D::LogFile::Instance()->Log("LoadMesh: " + meshName);
 
 					break;
 
@@ -405,7 +405,7 @@ namespace Atrum {
 					textureFilePath = directoryPath + "/" + textureFileName;
 
 					// ファイルパスを基にテクスチャ取得
-					assetMaterial->textureSrvIndex = TextureStorage::GetInstance()->GetTexture(textureFilePath);
+					assetMaterial->textureSrvIndex = TextureStorage::Instance()->GetTexture(textureFilePath);
 
 					assetMaterialData.emplace_back(assetMaterial);
 
@@ -523,7 +523,7 @@ namespace Atrum {
 
 						isMaterialExist = true;
 
-						D::LogFile::GetInstance()->Log("GetMtlFromTable: " + mtlName);
+						D::LogFile::Instance()->Log("GetMtlFromTable: " + mtlName);
 
 						break;
 
@@ -531,7 +531,7 @@ namespace Atrum {
 
 					assetMaterial.reset(new AssetMaterialData());
 
-					D::LogFile::GetInstance()->Log("LoadMtl: " + mtlName);
+					D::LogFile::Instance()->Log("LoadMtl: " + mtlName);
 
 					break;
 
