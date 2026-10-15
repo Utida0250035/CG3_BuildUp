@@ -35,6 +35,8 @@ public:
 
   virtual void ResolveDependence() {}
 
+  virtual void DevelopGui() {}
+
   const Entity *GetOwner() const { return owner_; }
   Entity &RefOwner() { return *owner_; }
   void SetOwner(Entity *owner) { owner_ = owner; }

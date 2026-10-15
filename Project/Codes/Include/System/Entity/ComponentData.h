@@ -22,6 +22,8 @@ public:
 
     return *owner_;
   }
+
+  virtual void DevelopGui() {};
 };
 
 } // namespace Atrum

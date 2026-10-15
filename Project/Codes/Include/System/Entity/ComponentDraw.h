@@ -28,6 +28,8 @@ public:
 
   virtual void ResolveDependence() {}
 
+  virtual void DevelopGui() {}
+
 protected:
   const Entity *GetOwner() const { return owner_; }
   Entity &RefOwner() { return *owner_; }

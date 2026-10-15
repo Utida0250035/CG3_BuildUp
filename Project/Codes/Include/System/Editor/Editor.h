@@ -2,15 +2,12 @@
 
 namespace Atrum {
 
-class Editor {
+class Editor final {
 private:
 public:
   void Initialize();
   void Update();
   void Draw();
-  void Save();
-  void Load();
-  void Apply();
 };
 
 } // namespace Atrum
