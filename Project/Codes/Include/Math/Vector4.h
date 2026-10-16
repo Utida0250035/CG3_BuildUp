@@ -127,6 +127,13 @@ namespace Atrum::Math {
 
 		}
 
+#ifdef USE_IMGUI
+
+		void DragGui(const char* label);
+
+		void ColorEdit(const char* label = "color");
+
+#endif
 
 	};
 

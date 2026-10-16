@@ -420,7 +420,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
-			ImGui::DragFloat4("color", &spriteColor.x, kThirtySecond);
+			spriteColor.ColorEdit();
 
 			ImGui::DragFloat2("size", &spriteSize.x, kThirtySecond);
 
@@ -459,7 +459,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			}
 
-			ImGui::DragFloat4("color", &sphereColor.x, kThirtySecond);
+			sphereColor.ColorEdit();
 
 		}
 

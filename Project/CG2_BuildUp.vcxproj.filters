@@ -157,6 +157,9 @@
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp">
       <Filter>Codes\Source\ForDebug</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Transform.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
