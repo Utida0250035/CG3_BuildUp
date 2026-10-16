@@ -50,6 +50,9 @@ namespace Atrum {
 				renderTarget.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
 				renderTarget.DestBlend = D3D12_BLEND_ONE;
+				renderTarget.SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+				renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlendAlpha = D3D12_BLEND_ONE;
 
 				break;
 
@@ -58,6 +61,9 @@ namespace Atrum {
 				renderTarget.SrcBlend = D3D12_BLEND_ZERO;
 				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
 				renderTarget.DestBlend = D3D12_BLEND_SRC_COLOR;
+				renderTarget.SrcBlendAlpha = D3D12_BLEND_ZERO;
+				renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlendAlpha = D3D12_BLEND_ONE;
 
 				break;
 
@@ -66,6 +72,9 @@ namespace Atrum {
 				renderTarget.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
 				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
 				renderTarget.DestBlend = D3D12_BLEND_ONE;
+				renderTarget.SrcBlendAlpha = D3D12_BLEND_ONE;
+				renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlendAlpha = D3D12_BLEND_ONE;
 
 				break;
 
@@ -76,6 +85,9 @@ namespace Atrum {
 				renderTarget.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
 				renderTarget.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+				renderTarget.SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+				renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
 
 				break;
 		}
