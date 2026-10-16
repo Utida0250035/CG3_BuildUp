@@ -33,27 +33,49 @@ namespace Atrum {
 
 		auto& renderTarget = blendDesc_.RenderTarget[0];
 
+		// 全ての色要素を書き込む
+		renderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		renderTarget.BlendEnable = TRUE;
+
 		switch (mode_) {
 
 			case BlendMode::NONE:
-			  // 全ての色要素を書き込む
-				renderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+				renderTarget.BlendEnable = FALSE;
 
 				break;
 
+			case BlendMode::ADD:
+
+				renderTarget.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlend = D3D12_BLEND_ONE;
+
+				break;
+
+			case BlendMode::MULTIPLY:
+
+				renderTarget.SrcBlend = D3D12_BLEND_ZERO;
+				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlend = D3D12_BLEND_SRC_COLOR;
+
+				break;
+
+			case BlendMode::SCREEN:
+
+				renderTarget.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
+				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlend = D3D12_BLEND_ONE;
+
+				break;
 
 			case BlendMode::NORMAL:
 				[[fallthrough]];
 			default:
 
-				renderTarget.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-				renderTarget.BlendEnable = TRUE;
 				renderTarget.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
 				renderTarget.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-				renderTarget.SrcBlendAlpha = D3D12_BLEND_ONE;
-				renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-				renderTarget.DestBlendAlpha = D3D12_BLEND_ZERO;
 
 				break;
 		}
