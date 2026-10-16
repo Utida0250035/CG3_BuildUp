@@ -459,7 +459,7 @@ public:
 
   void SetBlendMode(const BlendMode &blendMode);
 
-  void SetBlendModeForFlame(const BlendMode &blendMode);
+  void SetBlendModeForFrame(const BlendMode &blendMode);
 };
 
 using Engine = AtrumEngine;

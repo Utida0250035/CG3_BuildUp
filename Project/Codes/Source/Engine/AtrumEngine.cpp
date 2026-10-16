@@ -879,7 +879,7 @@ void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
 }
 
-void AtrumEngine::SetBlendModeForFlame(const BlendMode &blendMode) {
+void AtrumEngine::SetBlendModeForFrame(const BlendMode &blendMode) {
   // PSOを設定
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode)]->GetPSO());

@@ -110,14 +110,33 @@ namespace Atrum {
 
 	void PipelineState::SetupDepthStencilState() {
 
-	  // Depthの機能を有効化する
+		// Depthの機能を有効化する
 		depthStencilDesc_.DepthEnable = true;
-
-		// 書き込みする
-		depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 
 		// 比較関数をLessEqualとする(近ければ描画される)
 		depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+
+		// Stencilの機能を無効化
+		depthStencilDesc_.StencilEnable = FALSE;
+
+		switch (mode_)
+		{
+			case BlendMode::NONE:
+				[[fallthrough]];
+			case BlendMode::BINARY_ALPHA:
+
+				// 書き込みする
+				depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+
+				break;
+
+			default:
+
+				// 書き込みしない
+				depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+
+				break;
+		}
 
 		Debug::LogFile::Instance()->Log("Finished SetUp DepthStencilState");
 	}

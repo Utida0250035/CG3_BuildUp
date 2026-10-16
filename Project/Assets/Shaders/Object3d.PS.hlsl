@@ -66,6 +66,12 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		
 	}
 	
+#ifdef USE_CLIP
+
+	clip(textureColor.a - 0.5f);
+
+#endif
+
 	float nDotL = dot(normalize(input.normal), -gDirectionalLight.direction);
 	float cos = 0.0f;
 	
