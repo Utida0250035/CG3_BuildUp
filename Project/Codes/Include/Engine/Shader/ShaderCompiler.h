@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 
 #include <wrl/client.h>
 #include <dxcapi.h>
@@ -24,8 +25,11 @@ namespace Atrum {
         // pixelShaderのコンパイル結果
         ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
 
+        // pixelShaderのコンパイル結果(2値抜き(BinaryAlpha)用)
+        ComPtr<IDxcBlob> psBinaryAlphaBlob_ = nullptr;
+
         // コンパイルを実行するインターフェース
-        ComPtr<IDxcBlob> Compile(const std::wstring& filePath, const wchar_t* profile);
+        ComPtr<IDxcBlob> Compile(const std::wstring& filePath, const wchar_t* profile, const std::vector<std::wstring>& defines = {});
 
     public:
 
@@ -38,6 +42,7 @@ namespace Atrum {
 
         IDxcBlob* GetVertexShaderBlob() const { return vertexShaderBlob_.Get(); }
         IDxcBlob* GetPixelShaderBlob() const { return pixelShaderBlob_.Get(); }
+        IDxcBlob* GetPsBinaryAlphaBlob() const { return psBinaryAlphaBlob_.Get(); }
 
     };
 

@@ -325,13 +325,26 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   // PSOの生成
 
+  std::vector<IDxcBlob*> psBlobs{};
+
+  psBlobs.resize(static_cast<uint32_t>(BlendMode::MODE_COUNT));
+
+  for (auto& psBlob : psBlobs) {
+
+      psBlob = shaderCompiler_->GetPixelShaderBlob();
+
+  }
+
+  psBlobs[static_cast<uint32_t>(BlendMode::BINARY_ALPHA)] = shaderCompiler_->GetPsBinaryAlphaBlob();
+
   for (uint32_t i = 0; i < static_cast<uint32_t>(BlendMode::MODE_COUNT); ++i) {
     graphicsPSObjects[i] = std::make_unique<PipelineState>();
 
     graphicsPSObjects[i]->Initialize(
         rootSignature_->GetRootSignature(), renderDevice_->GetDevice(),
         shaderCompiler_->GetVertexShaderBlob(),
-        shaderCompiler_->GetPixelShaderBlob(), static_cast<BlendMode>(i));
+        psBlobs[i], static_cast<BlendMode>(i));
+
   }
 
   this->InitRenderer();
@@ -879,7 +892,7 @@ void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
 }
 
-void AtrumEngine::SetBlendModeForFlame(const BlendMode &blendMode) {
+void AtrumEngine::SetBlendModeForFrame(const BlendMode &blendMode) {
   // PSOを設定
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode)]->GetPSO());

@@ -489,7 +489,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		// 描画処理(前)
 		atrum->PreDraw();
 
+		atrum->SetBlendModeForFrame(Atrum::BlendMode::BINARY_ALPHA);
+
 		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, sphereRadius, sphereSubdivision, isLightingEnable);
+
+		atrum->SetBlendModeForFrame(Atrum::BlendMode::NONE);
 
 		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
 		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);

@@ -32,16 +32,19 @@ namespace Atrum {
 		// Shaderをコンパイルする
 
 		vertexShaderBlob_ = this->Compile(L"Assets/Shaders/Object3d.VS.hlsl", L"vs_6_0");
-		assert(vertexShaderBlob_ != nullptr);
+		assert(vertexShaderBlob_);
 
 		pixelShaderBlob_ = this->Compile(L"Assets/Shaders/Object3d.PS.hlsl", L"ps_6_0");
-		assert(pixelShaderBlob_ != nullptr);
+		assert(pixelShaderBlob_);
+
+		psBinaryAlphaBlob_ = this->Compile(L"Assets/Shaders/Object3d.PS.hlsl", L"ps_6_0", { L"USE_CLIP=1" });
+		assert(psBinaryAlphaBlob_);
 
 		D::LogFile::Instance()->Log("Shaders Compiled");
 
 	}
 
-	ComPtr<IDxcBlob> ShaderCompiler::Compile(const std::wstring& filePath, const wchar_t* profile) {
+	ComPtr<IDxcBlob> ShaderCompiler::Compile(const std::wstring& filePath, const wchar_t* profile, const std::vector<std::wstring>& defines) {
 
 		// これからシェーダーをコンパイルする旨をログ出力
 		D::LogFile::Instance()->Log(WStringToString(std::format(L"Begin CompileShader, path:{}, profile:{}", filePath, profile)));
@@ -66,7 +69,7 @@ namespace Atrum {
 		/*
 		コンパイルする
 		*/
-		LPCWSTR arguments[] = {
+		std::vector<std::wstring> argumentsString = {
 
 			// コンパイル対象のhlslファイル名
 			filePath.c_str(),
@@ -88,15 +91,32 @@ namespace Atrum {
 
 		};
 
+		for (const auto& define : defines) {
+
+			argumentsString.push_back(L"-D");
+
+			argumentsString.push_back(define);
+
+		}
+
+		std::vector<LPCWSTR> arguments{};
+		arguments.reserve(argumentsString.size());
+
+		for (const auto& str : argumentsString) {
+
+			arguments.push_back(str.c_str());
+
+		}
+
 		// 実際にShaderをコンパイルする
-		IDxcResult* shaderResult = nullptr;
+		ComPtr<IDxcResult> shaderResult = nullptr;
 		hr = dxcCompiler_->Compile(
 			// 読み込んだファイル
 			&shaderSourceBuffer,
 			// コンパイル設定
-			arguments,
+			arguments.data(),
 			// コンパイル設定の数
-			_countof(arguments),
+			static_cast<UINT32>(arguments.size()),
 			// includeが含まれた諸々
 			includeHandler_.Get(),
 			// コンパイル結果
