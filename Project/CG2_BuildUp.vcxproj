@@ -271,6 +271,17 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector4.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Editor.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHitSphere.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Entity.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
+    <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -386,6 +397,23 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Math\Vector3.h" />
     <ClInclude Include="Codes\Include\Math\Vector4.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Editor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Behavior.h" />
+    <ClInclude Include="Codes\Include\System\Entity\BehaviorBox.h" />
+    <ClInclude Include="Codes\Include\System\Entity\ComponentData.h" />
+    <ClInclude Include="Codes\Include\System\Entity\ComponentDraw.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpDirection.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHealthHit.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHitSphere.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpLhRigidBody.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMesh.h" />
+    <ClInclude Include="Codes\Include\System\Entity\ComponentUpd.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Entity.h" />
+    <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h" />
+    <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
+    <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
+    <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h" />
     <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

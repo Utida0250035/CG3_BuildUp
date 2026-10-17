@@ -160,6 +160,39 @@
     <ClCompile Include="Codes\Source\Math\Transform.cpp">
       <Filter>Codes\Source\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
+      <Filter>Codes\Source\System\Editor\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Editor.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHitSphere.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Entity.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp">
+      <Filter>Codes\Source\System\Registry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -429,6 +462,57 @@
     <ClInclude Include="Codes\Include\Engine\Blend\BlendMode.h">
       <Filter>Codes\Include\Engine\Blend</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h">
+      <Filter>Codes\Include\System\Registry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpDirection.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHealthHit.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHitSphere.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpLhRigidBody.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMesh.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Behavior.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\BehaviorBox.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\ComponentData.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\ComponentDraw.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\ComponentUpd.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Entity.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\EntityType.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\HitJudge.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h">
+      <Filter>Codes\Include\System\Editor\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Editor.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -598,6 +682,42 @@
     </Filter>
     <Filter Include="Codes\Include\Engine\Editor">
       <UniqueIdentifier>{24119c78-05c7-4984-8dd8-d9542f0e1179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor">
+      <UniqueIdentifier>{acaac1ff-1d68-4ebd-b6de-d57ff55fe00f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Entity">
+      <UniqueIdentifier>{31d986c4-8083-4d39-b3cd-6023ad5efe86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Registry">
+      <UniqueIdentifier>{611ce7d8-a7bc-4870-865a-6321bc685817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Entity\Behaviors">
+      <UniqueIdentifier>{5e94dcf8-97d8-49b0-96c9-169e9e63ef45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Entity\Components">
+      <UniqueIdentifier>{87eb2582-9e08-49b1-8166-290cd229d974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor\Inspector">
+      <UniqueIdentifier>{0b99a92f-fc93-4f98-ba58-088fff9e0005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor">
+      <UniqueIdentifier>{306ef221-1e95-45a9-9a6b-1e9158724edd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Entity">
+      <UniqueIdentifier>{fec8e7ed-d544-49b0-a2ef-067065e8574a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Registry">
+      <UniqueIdentifier>{1939217a-f051-4a45-a1a9-964729a8392e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Inspector">
+      <UniqueIdentifier>{88d53e12-8119-43f0-96b9-e850038a3a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Entity\Behaviors">
+      <UniqueIdentifier>{0d9765a3-ac2c-4f48-9040-1faab6ee96a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Entity\Components">
+      <UniqueIdentifier>{76e5bafd-8811-43d6-8a27-2708d2b5c4bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
