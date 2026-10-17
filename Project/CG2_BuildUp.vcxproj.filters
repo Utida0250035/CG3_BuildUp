@@ -513,6 +513,9 @@
     <ClInclude Include="Codes\Include\System\Editor\Editor.h">
       <Filter>Codes\Include\System\Editor</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -718,6 +721,9 @@
     </Filter>
     <Filter Include="Codes\Source\System\Entity\Components">
       <UniqueIdentifier>{76e5bafd-8811-43d6-8a27-2708d2b5c4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Camera\CameraController">
+      <UniqueIdentifier>{8ffa189f-ce82-4d70-9fad-c2aa429b8125}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
