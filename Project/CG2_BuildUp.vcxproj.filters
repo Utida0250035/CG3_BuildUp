@@ -193,6 +193,9 @@
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp">
       <Filter>Codes\Source\System\Registry</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -516,6 +519,15 @@
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraController.h">
       <Filter>Codes\Include\Camera\CameraController</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\Particle.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -724,6 +736,12 @@
     </Filter>
     <Filter Include="Codes\Include\Camera\CameraController">
       <UniqueIdentifier>{8ffa189f-ce82-4d70-9fad-c2aa429b8125}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Particle">
+      <UniqueIdentifier>{90df6385-27ef-44a9-b3a5-dc4411f402a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Particle">
+      <UniqueIdentifier>{a5e74e78-1bee-45df-a031-8de53a34a0f4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

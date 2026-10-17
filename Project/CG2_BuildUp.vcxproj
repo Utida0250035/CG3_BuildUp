@@ -281,6 +281,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\System\Entity\Entity.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
+    <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
@@ -414,6 +415,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
     <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
+    <ClInclude Include="Codes\Include\System\Particle\Particle.h" />
+    <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h" />
+    <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h" />
     <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h" />
     <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
