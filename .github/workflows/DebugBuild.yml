@@ -1,0 +1,105 @@
+
+name: DebugBuild
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2025-vs2026
+
+    steps:
+      # 1. リポジトリを取得
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Visual Studio の MSBuild を設定
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v3
+        with:
+          vs-version: '[18.0,19.0)'
+          msbuild-architecture: x64
+
+      - name: Verify Visual Studio version
+        shell: pwsh
+        run: |
+          where.exe msbuild
+          msbuild -version
+
+      # 3. NuGet CLI を設定
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v2
+
+
+      - name: Restore NuGet packages
+        shell: pwsh
+        run: |
+          Write-Host "Searching for NuGet configuration files..."
+
+          $configFiles = @(
+            Get-ChildItem -Path . -Filter packages.config -Recurse -File |
+              Where-Object {
+                $_.FullName -notmatch '[\\/](\.git|\.vs|bin|obj)[\\/]'
+              }
+          )
+
+          if ($configFiles.Count -gt 0) {
+            foreach ($config in $configFiles) {
+              Write-Host "Restoring: $($config.FullName)"
+
+              nuget restore $config.FullName `
+                -PackagesDirectory "$env:GITHUB_WORKSPACE/Project/packages" `
+                -NonInteractive
+
+              if ($LASTEXITCODE -ne 0) {
+                exit $LASTEXITCODE
+              }
+            }
+          }
+          else {
+            Write-Host "No packages.config found."
+
+            Write-Host "Searching for NuGet-related files..."
+            Get-ChildItem -Path . -Recurse -File |
+              Where-Object {
+                $_.Name -match '(^packages\.config$|\.nuget\.config$|\.props$|\.targets$|\.vcxproj$|\.slnx$)'
+              } |
+              Select-Object -ExpandProperty FullName
+
+            Write-Host "Checking for an existing SDL2 targets file..."
+            Get-ChildItem -Path . -Filter sdl2.redist.targets -Recurse -File |
+              Select-Object -ExpandProperty FullName
+
+            Write-Error "Cannot determine the correct NuGet restore method. See the discovered files above."
+            exit 1
+          }
+
+          Write-Host "Checking SDL2 targets..."
+          $sdlTargets = Join-Path $env:GITHUB_WORKSPACE "Project/packages/sdl2.redist.2.0.5/build/native/sdl2.redist.targets"
+
+          if (!(Test-Path $sdlTargets)) {
+            Write-Error "SDL2 targets file is still missing: $sdlTargets"
+            exit 1
+          }
+
+          Write-Host "SDL2 targets found."
+
+      # 5. Debug ビルド
+      - name: Build Debug
+        shell: pwsh
+        run: |
+          msbuild "Project/CG2_BuildUp.slnx" `
+            /m `
+            /p:Configuration=Debug `
+            /p:Platform=x64 `
+            /verbosity:minimal
+
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
