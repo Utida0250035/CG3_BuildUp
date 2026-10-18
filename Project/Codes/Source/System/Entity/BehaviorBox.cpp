@@ -1,7 +1,7 @@
-#include "../System/BehaviorBox.h"
+#include "System/Entity/BehaviorBox.h"
 
-#include "../System/Behavior.h"
-#include "../System/Entity.h"
+#include "System/Entity/Behavior.h"
+#include "System/Entity/Entity.h"
 
 namespace Atrum {
 

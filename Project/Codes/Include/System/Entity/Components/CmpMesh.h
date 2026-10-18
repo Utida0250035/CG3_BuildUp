@@ -1,6 +1,6 @@
 #include "Math/Transform.h"
 #include "Math/Vector4.h"
-#include "Resource/AssetModel.h"
+#include "Engine/Resource/AssetModel.h"
 #include "System/Entity/ComponentDraw.h"
 
 namespace Atrum {

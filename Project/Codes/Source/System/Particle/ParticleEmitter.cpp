@@ -10,7 +10,7 @@ void ParticleEmitter::Emit() {
       Math::Vector3 localPos = {0.0f, 0.0f, 0.0f};
 
       if (param_.emitShape == ParticleEmitShape::Circle) {
-        float angle =
+        
       }
     }
   }

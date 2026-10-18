@@ -1,6 +1,6 @@
-#include "../System/HitJudge.h"
-#include "../System/CmpHitSphere.h"
-#include "../System/Entity.h"
+#include "System/Entity/HitJudge.h"
+#include "System/Entity/Components/CmpHitSphere.h"
+#include "System/Entity/Entity.h"
 #include <cassert>
 
 #ifdef _DEBUG

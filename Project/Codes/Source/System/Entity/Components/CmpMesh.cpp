@@ -8,7 +8,7 @@ namespace Atrum {
 void CmpMesh::Initialize() {}
 
 void CmpMesh::Draw() {
-  Atrum::AtrumEngine::Instance()->DrawModel(model_, RefOwner().RefTransform(),
+  Atrum::AtrumEngine::Instance()->DrawModel(model_, GetOwner()->GetWorldMatrix(),
                                             false);
 }
 

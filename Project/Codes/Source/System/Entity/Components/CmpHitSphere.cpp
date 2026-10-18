@@ -1,5 +1,5 @@
-#include "../System/CmpHitSphere.h"
-#include "../System/HitJudge.h"
+#include "System/Entity/Components/CmpHitSphere.h"
+#include "System/Entity/HitJudge.h"
 
 namespace Atrum {
 

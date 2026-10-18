@@ -2,8 +2,8 @@
 
 #include "Hash/Hash64.h"
 #include "Math/Vector3.h"
-#include "Particle/Particle.h"
-#include "Particle/ParticleParam.h"
+#include "System/Particle/Particle.h"
+#include "System/Particle/ParticleParam.h"
 #include <random>
 #include <vector>
 
@@ -38,6 +38,8 @@ private:
 #ifdef DEVELOPMENT
     name_ = emitterName;
 #endif
+
+    particles_.resize(particleMaxCount);
 
     for (auto &p : particles_) {
       p.isActive = false;

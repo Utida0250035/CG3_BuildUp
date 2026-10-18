@@ -1,14 +1,14 @@
-#include "../System/CmpHealthHit.h"
-#include "../System/CmpHitSphere.h"
-#include "../System/Entity.h"
-#include "../Time/DeltaTime.h"
-#include "../Audio/Audio.h"
+#include "System/Entity/Components/CmpHealthHit.h"
+#include "System/Entity/Components/CmpHitSphere.h"
+#include "System/Entity/Entity.h"
+#include "Time/DeltaTime.h"
+#include "Audio/Audio.h"
 
 namespace Atrum {
 
 void CmpHealthHit::ResolveDependence() {
 	cmpHitSphere_ = RefOwner().GetUpdCmp<CmpHitSphere>();
-	frameDeltaTime_ = FrameDeltaTime::GetInstance();
+	frameDeltaTime_ = FrameDeltaTime::Instance();
 }
 
 void CmpHealthHit::Initialize() {
@@ -40,7 +40,7 @@ void CmpHealthHit::Update() {
 				if (healthCount_ > 0) {
 					healthCount_--;
 					invincibleTimer_ = invincibleTime_;
-					Atrum::Audio::Manager::GetInstance()->Play(Atrum::Audio::Manager::GetInstance()->Get("./Resources/seHit.mp3"));
+					Atrum::Audio::Manager::Instance()->Play(Atrum::Audio::Manager::Instance()->Get("./Resources/seHit.mp3"));
 				}
 
 				break;

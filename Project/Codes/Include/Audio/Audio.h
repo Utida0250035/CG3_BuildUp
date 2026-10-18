@@ -119,6 +119,13 @@ namespace Atrum::Audio {
 		/// <returns> 音源ハンドル </returns>
 		size_t Load(const std::string& filePath);
 
+		/// <summary>
+		/// 読み込み済み音源の取得
+		/// </summary>
+		/// <param name="filePath"> ファイルパス </param>
+		/// <returns> 音源ハンドル </returns>
+		size_t Get(const std::string& filePath);
+
 		AudioHandle Play(const size_t soundIndex, const bool isLoop = false, const long long startTime100ns = 0);
 
 		void Stop(const AudioHandle& handle);

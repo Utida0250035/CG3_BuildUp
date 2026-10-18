@@ -213,6 +213,16 @@ namespace Atrum::Audio {
 
 	}
 
+	size_t AudioManager::Get(const std::string& filePath) {
+
+		auto search = soundIndexMap_.find(Hash64(filePath));
+
+		assert(search != soundIndexMap_.end());
+
+		return search->second;
+
+	}
+
 	AudioHandle AudioManager::PlayShort(const size_t soundIndex, const bool isLoop) {
 
 		assert(soundIndex < soundDataStorage_.size());

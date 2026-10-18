@@ -30,7 +30,7 @@ namespace Atrum::Visual {
 		// 発生時の大きさ
 		float startScale = 0.0f;
 		// 消滅時の大きさ
-		float startScale = 0.0f;
+		float endScale = 0.0f;
 		// 現在の大きさ
 		float currentScale = 0.0f;
 
