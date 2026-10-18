@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Hash/Hash64.h"
+#include "System/Hash64.h"
 #include "Math/Vector3.h"
 #include "System/Particle/Particle.h"
 #include "System/Particle/ParticleParam.h"

@@ -1,7 +1,7 @@
 #include "System/Entity/Components/CmpHealthHit.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Entity.h"
-#include "Time/DeltaTime.h"
+#include "System/DeltaTime.h"
 #include "Audio/Audio.h"
 
 namespace Atrum {

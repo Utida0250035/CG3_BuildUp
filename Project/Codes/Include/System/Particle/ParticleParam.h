@@ -1,13 +1,16 @@
 #pragma once
 
+#include "Geometry/AABB.h"
+#include "Geometry/Sphere.h"
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
+#include "System/SimulationSpace.h"
 
 namespace Atrum::Visual {
 
 enum class ParticleEmitMode { BURST, CONTINUOUS };
 
-enum class ParticleEmitShape { Point, Circle, Box };
+enum class ParticleEmitShape { POINT, CIRCLE_XZ, CIRCLE_XY, CIRCLE_YZ, AABB };
 
 enum class ParticleMovementMode { DIRECTIONAL, RADIAL_SPREAD, RADIAL_CONVERGE };
 
@@ -19,20 +22,19 @@ struct ParticleKillFieldParam {
   bool isUse = false;
   ParticleKillFieldMode mode = ParticleKillFieldMode::INSIDE;
   ParticleKillFieldShape shape = ParticleKillFieldShape::SPHERE;
-  float localSphereRadius = 0.0f;
-  Math::Vector3 localAabbMin{};
-  Math::Vector3 localAabbMax{};
-
-  bool isFollowsEmitter = true;
-  Math::Vector3 localOffset{};
-  Math::Vector3 worldPos{};
+  Geometry::Sphere localSphere{};
+  Geometry::AABB localAabb{};
+  SimulationSpace simulationSpaceFromEmitter = SimulationSpace::LOCAL;
+  Math::Vector3 position{};
 };
 
 struct ParticleParam {
 
+  SimulationSpace simulationSpaceFromEmitter = SimulationSpace::WORLD;
+
   ParticleEmitMode emitMode = ParticleEmitMode::BURST;
 
-  ParticleEmitShape emitShape = ParticleEmitShape::Point;
+  ParticleEmitShape emitShape = ParticleEmitShape::POINT;
   float emitSphereRadius = 0.0f;
   Math::Vector3 emitAabbMin{};
   Math::Vector3 emitAabbMax{};

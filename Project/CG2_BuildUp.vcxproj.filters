@@ -127,9 +127,6 @@
     <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
       <Filter>Codes\Source\Engine\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Json\JsonTest.cpp">
-      <Filter>Codes\Source\Json</Filter>
-    </ClCompile>
     <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>External_ImGui\misc\cpp</Filter>
     </ClCompile>
@@ -196,6 +193,9 @@
     <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp">
       <Filter>Codes\Source\System\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
+      <Filter>Codes\Source\System\Json</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -243,9 +243,6 @@
     <ClInclude Include="Codes\Include\String\ConvertString.h">
       <Filter>Codes\Include\String</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Time\DeltaTime.h">
-      <Filter>Codes\Include\Time</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Input\DirectInput.h">
       <Filter>Codes\Include\Input</Filter>
     </ClInclude>
@@ -254,9 +251,6 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Cast\StaticCast.h">
       <Filter>Codes\Include\Cast</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Hash\Hash64.h">
-      <Filter>Codes\Include\Hash</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\HitMesh.h">
       <Filter>Codes\Include\Collision</Filter>
@@ -375,17 +369,8 @@
     <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h">
       <Filter>Codes\Include\Engine\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Json\JsonHandler.h">
-      <Filter>Codes\Include\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Json\JsonTest.h">
-      <Filter>Codes\Include\Json</Filter>
-    </ClInclude>
     <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <Filter>External_ImGui\misc\cpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h">
-      <Filter>Codes\Include\Json</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
       <Filter>Codes\Include\Engine\Alias</Filter>
@@ -528,6 +513,27 @@
     <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h">
       <Filter>Codes\Include\System\Particle</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\Json\JsonHandler.h">
+      <Filter>Codes\Include\System\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Json\JsonTest.h">
+      <Filter>Codes\Include\System\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Json\PfrJsonHandler.h">
+      <Filter>Codes\Include\System\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Hash64.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\DeltaTime.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Random.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\SimulationSpace.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -560,17 +566,11 @@
     <Filter Include="Codes\Include\Cast">
       <UniqueIdentifier>{9eeb6520-60b5-4226-9134-f18ceac9201c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Time">
-      <UniqueIdentifier>{47f80d08-288b-40d8-8c8f-dccc9fbaafb0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Codes\Include\Input">
       <UniqueIdentifier>{e98cc502-bb96-4358-8138-75bf81e062de}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Math">
       <UniqueIdentifier>{e3d4e1db-67e0-4c75-92c1-08772d568d50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Hash">
-      <UniqueIdentifier>{573e1403-88c0-48b4-90b0-836f58fe5ac6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Engine">
       <UniqueIdentifier>{71d6de3f-d2d0-4ef9-8d96-9b61f3ded539}</UniqueIdentifier>
@@ -643,12 +643,6 @@
     </Filter>
     <Filter Include="Codes\Source\Engine\Shader">
       <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Json">
-      <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Json">
-      <UniqueIdentifier>{273621d6-0f20-451f-98cc-e8d51793d29f}</UniqueIdentifier>
     </Filter>
     <Filter Include="External_ImGui\misc">
       <UniqueIdentifier>{0dbabe86-272b-4b16-905c-b4b2feb15a43}</UniqueIdentifier>
@@ -742,6 +736,12 @@
     </Filter>
     <Filter Include="Codes\Include\System\Particle">
       <UniqueIdentifier>{a5e74e78-1bee-45df-a031-8de53a34a0f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Json">
+      <UniqueIdentifier>{273621d6-0f20-451f-98cc-e8d51793d29f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Json">
+      <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

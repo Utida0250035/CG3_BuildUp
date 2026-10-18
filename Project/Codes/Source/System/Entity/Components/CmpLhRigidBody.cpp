@@ -1,6 +1,6 @@
 #include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Entity.h"
-#include "Time/DeltaTime.h"
+#include "System/DeltaTime.h"
 
 namespace Atrum {
 

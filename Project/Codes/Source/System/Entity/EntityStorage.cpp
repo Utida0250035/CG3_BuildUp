@@ -1,5 +1,5 @@
 #include "System/Entity/EntityStorage.h"
-#include "Hash/Hash64.h"
+#include "System/Hash64.h"
 #include "System/Entity/Entity.h"
 
 #include <cassert>

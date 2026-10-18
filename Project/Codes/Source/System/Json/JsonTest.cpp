@@ -1,7 +1,7 @@
 #include "Math/Vector3.h"
 
-#include "Json/JsonTest.h"
-#include "Json/JsonHandler.h"
+#include "System/Json/JsonTest.h"
+#include "System/Json/JsonHandler.h"
 
 #ifdef USE_IMGUI
 

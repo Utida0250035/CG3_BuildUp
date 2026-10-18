@@ -12,8 +12,8 @@
 #include "Geometry/Triangle.h"
 #include "Input/DirectInput.h"
 #include "Input/PlayInput.h"
-#include "Json/JsonTest.h"
-#include "Time/DeltaTime.h"
+#include "System/Json/JsonTest.h"
+#include "System/DeltaTime.h"
 #include <format>
 #include <iostream>
 #include <memory>

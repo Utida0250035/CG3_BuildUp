@@ -1,5 +1,5 @@
 #pragma once
-#include "Hash/Hash64.h"
+#include "System/Hash64.h"
 #include "System/Entity/ComponentData.h"
 #include "System/Entity/ComponentDraw.h"
 #include "System/Entity/ComponentUpd.h"

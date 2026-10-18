@@ -262,7 +262,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
-    <ClCompile Include="Codes\Source\Json\JsonTest.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp" />
@@ -281,6 +280,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\System\Entity\Entity.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
+    <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
@@ -382,13 +382,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Geometry\Plane.h" />
     <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h" />
     <ClInclude Include="Codes\Include\Geometry\Triangle.h" />
-    <ClInclude Include="Codes\Include\Hash\Hash64.h" />
     <ClInclude Include="Codes\Include\Hit\HitCircle.h" />
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
-    <ClInclude Include="Codes\Include\Json\JsonHandler.h" />
-    <ClInclude Include="Codes\Include\Json\JsonTest.h" />
-    <ClInclude Include="Codes\Include\Json\PfrJsonHandler.h" />
     <ClInclude Include="Codes\Include\Math\Lerp.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
     <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />
@@ -399,6 +395,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Math\Vector3.h" />
     <ClInclude Include="Codes\Include\Math\Vector4.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
+    <ClInclude Include="Codes\Include\System\DeltaTime.h" />
     <ClInclude Include="Codes\Include\System\Editor\Editor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h" />
     <ClInclude Include="Codes\Include\System\Entity\Behavior.h" />
@@ -415,11 +412,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
     <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
+    <ClInclude Include="Codes\Include\System\Hash64.h" />
+    <ClInclude Include="Codes\Include\System\Json\JsonHandler.h" />
+    <ClInclude Include="Codes\Include\System\Json\JsonTest.h" />
+    <ClInclude Include="Codes\Include\System\Json\PfrJsonHandler.h" />
     <ClInclude Include="Codes\Include\System\Particle\Particle.h" />
     <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h" />
     <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h" />
+    <ClInclude Include="Codes\Include\System\Random.h" />
     <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h" />
-    <ClInclude Include="Codes\Include\Time\DeltaTime.h" />
+    <ClInclude Include="Codes\Include\System\SimulationSpace.h" />
     <ClInclude Include="Externals\imgui\imgui.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
