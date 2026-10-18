@@ -19,9 +19,9 @@ struct ParticleKillFieldParam {
   bool isUse = false;
   ParticleKillFieldMode mode = ParticleKillFieldMode::INSIDE;
   ParticleKillFieldShape shape = ParticleKillFieldShape::SPHERE;
-  float sphereRadius = 0.0f;
-  Math::Vector3 aabbMin{};
-  Math::Vector3 aabbMax{};
+  float localSphereRadius = 0.0f;
+  Math::Vector3 localAabbMin{};
+  Math::Vector3 localAabbMax{};
 
   bool isFollowsEmitter = true;
   Math::Vector3 localOffset{};
