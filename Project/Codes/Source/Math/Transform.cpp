@@ -30,9 +30,17 @@ void Transform::ImGui(const char *label) {
 
 #endif
 
-void to_json(nlohmann::json &json, const Transform &transform) {}
+void to_json(nlohmann::json &json, const Transform &transform) {
+  json = nlohmann::json{{"scale", transform.scale},
+                        {"rotate", transform.rotate},
+                        {"translate", transform.translate}};
+}
 
-void from_json(const nlohmann::json &json, Transform &transform) {}
+void from_json(const nlohmann::json &json, Transform &transform) {
+  transform.scale = json.value("scale", transform.scale);
+  transform.rotate = json.value("rotate", transform.rotate);
+  transform.translate = json.value("translate", transform.translate);
+}
 
 #ifdef USE_IMGUI
 
@@ -60,8 +68,17 @@ void TransformLH::ImGui(const char *label) {
 
 #endif
 
-void to_json(nlohmann::json &json, const TransformLH &transform) {}
-void from_json(const nlohmann::json &json, TransformLH &transform) {}
+void to_json(nlohmann::json &json, const TransformLH &transform) {
+  json = nlohmann::json{{"scale", transform.scale},
+                        {"quaternion", transform.quaternion},
+                        {"translate", transform.translate}};
+}
+
+void from_json(const nlohmann::json &json, TransformLH &transform) {
+  transform.scale = json.value("scale", transform.scale);
+  transform.quaternion = json.value("quaternion", transform.quaternion);
+  transform.translate = json.value("translate", transform.translate);
+}
 
 #ifdef USE_IMGUI
 
@@ -89,7 +106,16 @@ void TransformRH::ImGui(const char *label) {
 
 #endif
 
-void to_json(nlohmann::json &json, const TransformRH &transform);
-void from_json(const nlohmann::json &json, TransformRH &transform);
+void to_json(nlohmann::json &json, const TransformRH &transform) {
+  json = nlohmann::json{{"scale", transform.scale},
+                        {"quaternion", transform.quaternion},
+                        {"translate", transform.translate}};
+}
+
+void from_json(const nlohmann::json &json, TransformRH &transform) {
+  transform.scale = json.value("scale", transform.scale);
+  transform.quaternion = json.value("quaternion", transform.quaternion);
+  transform.translate = json.value("translate", transform.translate);
+}
 
 } // namespace Atrum::Math

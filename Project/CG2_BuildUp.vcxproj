@@ -258,6 +258,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
+    <ClCompile Include="Codes\Source\Geometry\GeometryRandom.cpp" />
     <ClCompile Include="Codes\Source\Geometry\OBB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
@@ -282,6 +283,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp" />
+    <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp" />
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
