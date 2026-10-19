@@ -140,8 +140,11 @@ Math::Vector3 Emitter::ResolveSpawnLocalPos(Layer &layer) {
                                         layer.param.emitCircle.center);
 
   case EmitShape::POINT:
-    return layer.param.emitPointPos;
+      return layer.param.emitPointPos;
+  default:
+      return Math::Vector3::Zero();
   }
+
 }
 
 Math::Vector3
