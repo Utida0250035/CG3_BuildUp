@@ -127,53 +127,12 @@ private:
 #endif
 
 public:
-  void Draw(const Math::Transform &transform, Math::Matrix4x4 viewMatrix,
-            const D3D12_GPU_VIRTUAL_ADDRESS &directionalLightAddr,
-            ID3D12GraphicsCommandList *commandList,
-            DescriptorAllocator *srvAllocator,
-            const Math::Matrix4x4 &perspectiveFovMatrix,
-            const bool isLighting) {
-
-    // 三角形のTransform
-    Math::Matrix4x4 worldMatrix = transform.MakeWorldMatrix();
-
-    transformationData_->world = worldMatrix;
-
-    transformationData_->wvp = worldMatrix * viewMatrix * perspectiveFovMatrix;
-
-    commandList->SetGraphicsRootConstantBufferView(
-        1, transformationResource_->GetGPUVirtualAddress());
-
-    commandList->SetGraphicsRootConstantBufferView(3, directionalLightAddr);
-
-    DescriptorAllocator::DescriptorHandle textureHandle{};
-
-    for (auto &meshNode : meshNodes_) {
-
-      meshNode.material->materialData->isLightingEnable = isLighting;
-
-      textureHandle =
-          srvAllocator->GetHandle(meshNode.material->textureSrvIndex);
-
-      // SRVのDescriptorTableの先頭を設定 rootParameter[2]
-      commandList->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
-
-      commandList->SetGraphicsRootConstantBufferView(
-          0, meshNode.material->materialResource->GetGPUVirtualAddress());
-
-      commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
-
-      commandList->DrawInstanced(
-          static_cast<UINT>(meshNode.mesh->vertices.size()), 1, 0, 0);
-    }
-  }
-
   void Draw(const Math::Matrix4x4 worldMatrix, Math::Matrix4x4 viewMatrix,
             const D3D12_GPU_VIRTUAL_ADDRESS &directionalLightAddr,
             ID3D12GraphicsCommandList *commandList,
             DescriptorAllocator *srvAllocator,
-            const Math::Matrix4x4 &perspectiveFovMatrix,
-            const bool isLighting) {
+            const Math::Matrix4x4 &perspectiveFovMatrix, const bool isLighting,
+            const Math::Vector4 &color = Math::Vector4::White()) {
 
     transformationData_->world = worldMatrix;
 
@@ -189,6 +148,8 @@ public:
     for (auto &meshNode : meshNodes_) {
 
       meshNode.material->materialData->isLightingEnable = isLighting;
+
+      meshNode.material->materialData->color = color;
 
       textureHandle =
           srvAllocator->GetHandle(meshNode.material->textureSrvIndex);

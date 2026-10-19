@@ -429,7 +429,8 @@ public:
                  const bool isLighting);
 
   void DrawModel(AssetModel *model, const Math::Matrix4x4 &worldMatrix,
-                 const bool isLighting);
+                 const bool isLighting,
+                 const Math::Vector4 &color = Math::Vector4::White());
 
   /// <summary>
   /// テクスチャの取得

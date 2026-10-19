@@ -1,4 +1,5 @@
 #include "System/Particle/ParticleEmitter.h"
+#include "Engine/AtrumEngine.h"
 #include "Geometry/GeometryRandom.h"
 #include "Math/Lerp.h"
 #include "Math/Vector3.h"
@@ -216,6 +217,34 @@ void Emitter::ResolveContinuousEmit(const size_t layerIndex) {
     while (layer.accumulator >= layer.param.emitRate) {
       EmitOneLayer(layerIndex);
       layer.accumulator -= layer.param.emitRate;
+    }
+  }
+}
+
+void Emitter::Draw() {
+
+  Math::TransformLH particleTransform{};
+
+  for (size_t i = 0; i < layers_.size(); ++i) {
+
+    const auto &layer = layers_[i];
+
+    if (layer.isFinished)
+      continue;
+
+    const auto &layerParticles = particles_[i];
+
+    for (const auto &p : layerParticles) {
+      if (!p.isActive)
+        continue;
+
+      particleTransform.translate = p.position;
+      particleTransform.quaternion = p.rotation;
+      particleTransform.scale = p.currentScale;
+
+      Atrum::Engine::Instance()->DrawModel(layer.model.get(),
+                                           particleTransform.MakeWorldMatrix(),
+                                           false, p.currentColor);
     }
   }
 }

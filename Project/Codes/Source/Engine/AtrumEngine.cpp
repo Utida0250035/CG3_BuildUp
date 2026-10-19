@@ -1,7 +1,7 @@
+#include "Engine/AtrumEngine.h"
 #include "Audio/Audio.h"
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
-#include "Engine/AtrumEngine.h"
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Device/RenderDevice.h"
 #include "Engine/Renderer/Draw.h"
@@ -23,6 +23,9 @@
 #include "String/ConvertString.h"
 #include "System/DeltaTime.h"
 #include "System/Hash64.h"
+#include <SDL.h>
+#include <SDL_syswm.h>
+#include <Windows.h>
 #include <cassert>
 #include <cfloat>
 #include <cstdint>
@@ -31,14 +34,11 @@
 #include <fstream>
 #include <memory>
 #include <numbers>
-#include <SDL.h>
-#include <SDL_syswm.h>
 #include <sstream>
 #include <string>
 #include <strsafe.h>
 #include <thread>
 #include <vector>
-#include <Windows.h>
 
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
@@ -325,26 +325,25 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   // PSOの生成
 
-  std::vector<IDxcBlob*> psBlobs{};
+  std::vector<IDxcBlob *> psBlobs{};
 
   psBlobs.resize(static_cast<uint32_t>(BlendMode::MODE_COUNT));
 
-  for (auto& psBlob : psBlobs) {
+  for (auto &psBlob : psBlobs) {
 
-      psBlob = shaderCompiler_->GetPixelShaderBlob();
-
+    psBlob = shaderCompiler_->GetPixelShaderBlob();
   }
 
-  psBlobs[static_cast<uint32_t>(BlendMode::BINARY_ALPHA)] = shaderCompiler_->GetPsBinaryAlphaBlob();
+  psBlobs[static_cast<uint32_t>(BlendMode::BINARY_ALPHA)] =
+      shaderCompiler_->GetPsBinaryAlphaBlob();
 
   for (uint32_t i = 0; i < static_cast<uint32_t>(BlendMode::MODE_COUNT); ++i) {
     graphicsPSObjects[i] = std::make_unique<PipelineState>();
 
-    graphicsPSObjects[i]->Initialize(
-        rootSignature_->GetRootSignature(), renderDevice_->GetDevice(),
-        shaderCompiler_->GetVertexShaderBlob(),
-        psBlobs[i], static_cast<BlendMode>(i));
-
+    graphicsPSObjects[i]->Initialize(rootSignature_->GetRootSignature(),
+                                     renderDevice_->GetDevice(),
+                                     shaderCompiler_->GetVertexShaderBlob(),
+                                     psBlobs[i], static_cast<BlendMode>(i));
   }
 
   this->InitRenderer();
@@ -863,8 +862,8 @@ void AtrumEngine::DrawModel(AssetModel *model, const M::Transform &transform,
 
 void AtrumEngine::DrawModel(AssetModel *model,
                             const Math::Matrix4x4 &worldMatrix,
-                            const bool isLighting) {
-  pDraw_->DrawModel(model, worldMatrix, isLighting,
+                            const bool isLighting, const Math::Vector4 &color) {
+  pDraw_->DrawModel(model, worldMatrix, color, isLighting,
                     directionalLightBuffer_->GetGpuVirtualAddress());
 }
 

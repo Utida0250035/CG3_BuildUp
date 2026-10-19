@@ -135,7 +135,7 @@ public:
                  D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
   void DrawModel(AssetModel *model, const Math::Matrix4x4 &worldMatrix,
-                 const bool isLighting,
+                 const Math::Vector4 &color, const bool isLighting,
                  D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
   void SetViewMatrix(const Math::Matrix4x4 &mat) { viewMatrix_ = mat; }
