@@ -1,7 +1,7 @@
 #pragma once
+#include <filesystem>
 #include <fstream>
 #include <nlohmann/json.hpp>
-#include <filesystem>
 
 #define DEFINE_JSON NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE
 
@@ -10,61 +10,65 @@ namespace Atrum::Json {
 /// <summary>
 /// JSON操作クラス 汎用 シリアライズ定義済み前提
 /// </summary>
-	class JsonHandler {
+class JsonHandler {
 
-	private:
-		using json = nlohmann::json;
+private:
+  using json = nlohmann::json;
+  JsonHandler() = default;
+  ~JsonHandler() = default;
 
-	public:
+  JsonHandler(const JsonHandler &) = delete;
+  JsonHandler &operator=(const JsonHandler &) = delete;
 
-		/// <summary>
-		/// jsonファイルからの読み込み
-		/// </summary>
-		/// <typeparam name="T"> 任意の構造体 </typeparam>
-		/// <param name="fileName"></param>
-		/// <returns></returns>
-		template<typename T>
-		static T LoadFromFile(const std::string& filePath) {
+  JsonHandler(JsonHandler &&) = delete;
+  JsonHandler &operator=(JsonHandler &&) = delete;
 
-			std::ifstream file(filePath);
-			if (!file.is_open()) {
-				throw std::runtime_error("nlohmann: Json file not found");
-			}
+public:
+  /// <summary>
+  /// jsonファイルからの読み込み
+  /// </summary>
+  /// <typeparam name="T"> 任意の構造体 </typeparam>
+  /// <param name="fileName"></param>
+  /// <returns></returns>
+  template <typename T> static T LoadFromFile(const std::string &filePath) {
 
-			json j;
-			file >> j;
+    std::ifstream file(filePath);
+    if (!file.is_open()) {
+      throw std::runtime_error("nlohmann: Json file not found");
+    }
 
-			file.close();
+    json j;
+    file >> j;
 
-			return j.get<T>();
-		}
+    file.close();
 
-		/// <summary>
-		/// jsonファイルへの出力
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="fileName"></param>
-		/// <param name="data"></param>
-		template <typename T>
-		static void SaveToFile(const std::string& filePath, const T& data) {
+    return j.get<T>();
+  }
 
-			std::filesystem::path path(filePath);
+  /// <summary>
+  /// jsonファイルへの出力
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
+  /// <param name="fileName"></param>
+  /// <param name="data"></param>
+  template <typename T>
+  static void SaveToFile(const std::string &filePath, const T &data) {
 
-			std::filesystem::create_directories(path.parent_path());
+    std::filesystem::path path(filePath);
 
-			std::ofstream file(path);
-			if (!file.is_open()) {
-				throw std::runtime_error("nlohmann: Json file could not open");
-			}
+    std::filesystem::create_directories(path.parent_path());
 
-			json j = data;
-			file << j.dump(4);
-			file.flush();
+    std::ofstream file(path);
+    if (!file.is_open()) {
+      throw std::runtime_error("nlohmann: Json file could not open");
+    }
 
-			file.close();
+    json j = data;
+    file << j.dump(4);
+    file.flush();
 
-		}
+    file.close();
+  }
+};
 
-	};
-
-}
+} // namespace Atrum::Json

@@ -5,54 +5,78 @@
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 #include "System/SimulationSpace.h"
+#include <nlohmann/json_fwd.hpp>
+#include <string>
 
-namespace Atrum::Visual {
+namespace Atrum::Visual::Particle {
 
-enum class ParticleEmitMode { BURST, CONTINUOUS };
+enum class EmitMode { BURST, CONTINUOUS };
 
-enum class ParticleEmitShape { POINT, CIRCLE_XZ, CIRCLE_XY, CIRCLE_YZ, AABB };
+enum class EmitShape { POINT, CIRCLE_XZ, CIRCLE_XY, CIRCLE_YZ, AABB, SPHERE };
 
-enum class ParticleMovementMode { DIRECTIONAL, RADIAL_SPREAD, RADIAL_CONVERGE };
+enum class MovementMode { DIRECTIONAL, RADIAL_SPREAD, RADIAL_CONVERGE };
 
-enum class ParticleKillFieldMode { OUTSIDE, INSIDE };
+enum class KillFieldMode { OUTSIDE, INSIDE };
 
-enum class ParticleKillFieldShape { SPHERE, AABB };
+enum class KillFieldShape { SPHERE, AABB };
 
-struct ParticleKillFieldParam {
+struct KillFieldParam {
   bool isUse = false;
-  ParticleKillFieldMode mode = ParticleKillFieldMode::INSIDE;
-  ParticleKillFieldShape shape = ParticleKillFieldShape::SPHERE;
+  KillFieldMode mode = KillFieldMode::INSIDE;
+  KillFieldShape shape = KillFieldShape::SPHERE;
   Geometry::Sphere localSphere{};
   Geometry::AABB localAabb{};
   SimulationSpace simulationSpaceFromEmitter = SimulationSpace::LOCAL;
   Math::Vector3 position{};
 };
 
-struct ParticleParam {
+void to_json(nlohmann::json &j, const KillFieldParam &killFieldParam);
+void from_json(const nlohmann::json &j, KillFieldParam &killFieldParam);
+
+struct EmitCircle {
+  Math::Vector3 center{};
+  float radius = 0.0f;
+};
+
+void to_json(nlohmann::json &j, const EmitCircle &emitCircle);
+void from_json(const nlohmann::json &j, EmitCircle &emitCircle);
+
+struct Param {
 
   SimulationSpace simulationSpaceFromEmitter = SimulationSpace::WORLD;
 
-  ParticleEmitMode emitMode = ParticleEmitMode::BURST;
+  EmitMode emitMode = EmitMode::BURST;
 
-  ParticleEmitShape emitShape = ParticleEmitShape::POINT;
-  float emitSphereRadius = 0.0f;
-  Math::Vector3 emitAabbMin{};
-  Math::Vector3 emitAabbMax{};
+  // 形状選択
+  EmitShape emitShape = EmitShape::POINT;
 
-  ParticleMovementMode movementMode = ParticleMovementMode::DIRECTIONAL;
+  // 球データ
+  Geometry::Sphere emitSphere{};
+
+  // AABBデータ
+  Geometry::AABB emitAabb{};
+
+  // 円データ
+  EmitCircle emitCircle{};
+
+  // 点データ
+  Math::Vector3 emitPointPos{};
+
+  // 運動選択
+  MovementMode movementMode = MovementMode::DIRECTIONAL;
 
   // CONTINUOUS用 1秒間の発射数(1/emitRate[s]につき1つ)
   float emitRate = 0.0f;
   // BURST用 1回の発射数
   size_t burstCount = 0;
-  // CONTINUOUS用 エミッターの寿命を無くして発生をループさせるかどうか
+  // CONTINUOUS用 断続時間を無くして発生をループさせるかどうか
   bool isLooping = false;
-  // CONTINUOUS用 エミッターの寿命[s]
-  float emitterLifeTime = 0.0f;
+  // CONTINUOUS用 発生断続時間[s]
+  float duration = 0.0f;
 
   // 生存時間 ランダム幅
-  float minLife = 0.0f;
-  float maxLife = 0.0f;
+  float minLifeDuration = 0.0f;
+  float maxLifeDuration = 0.0f;
 
   // 速度と拡散・加減速
   Math::Vector3 baseVelocity = {0.0f, 0.0f, 0.0f};
@@ -61,15 +85,26 @@ struct ParticleParam {
   float damping = 0.0f;                              // 空気抵抗（減衰）
 
   // スケール変化
-  float startScale = 0.0f;
-  float endScale = 0.0f;
+  Math::Vector3 startScale{};
+  Math::Vector3 endScale{};
 
   // カラー変化（発生時 〜 消失時）
   Math::Vector4 startColor = {0.0f, 0.0f, 0.0f, 0.0f};
   Math::Vector4 endColor = {0.0f, 0.0f, 0.0f, 0.0f};
 
   // キルフィールド設定
-  ParticleKillFieldParam killFieldParam{};
+  KillFieldParam killFieldParam{};
+
+  // プールの最大粒子数
+  size_t maxCount = 0;
+
+  std::string objDirectoryPath = "";
+  std::string objFileName = "";
+  std::string mtlDirectoryPath = "";
+  std::string mtlFileName = "";
 };
 
-} // namespace Atrum::Visual
+void to_json(nlohmann::json &j, const Param &param);
+void from_json(const nlohmann::json &j, Param &param);
+
+} // namespace Atrum::Visual::Particle

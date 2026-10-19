@@ -8,74 +8,87 @@
 
 namespace Atrum {
 
-	class Camera {
+class Camera {
 
-	protected:
+protected:
+  // 透視投影
+  Math::Matrix4x4 perspectiveFovMatrix_ =
+      Math::Matrix4x4::PerspectiveFov(0.5f, 1.77777f, 0.125f, 128.0f);
 
-		// 透視投影
-		Math::Matrix4x4 perspectiveFovMatrix_ = Math::Matrix4x4::PerspectiveFov(0.5f, 1.77777f, 0.125f, 128.0f);
+  // 正射影
+  Math::Matrix4x4 orthographicMatrix_ = Math::Matrix4x4::Orthographic(
+      0.0f, 0.0f, 1280.0f, 720.0f, 0.0001f, 100.0f);
 
-		// 正射影
-		Math::Matrix4x4 orthographicMatrix_ = Math::Matrix4x4::Orthographic(0.0f, 0.0f, 1280.0f, 720.0f, 0.0001f, 100.0f);
+  // 平行移動
+  Math::Vector3 translate_{0.0f, 0.0f, -10.0f};
 
-		// 平行移動
-		Math::Vector3 translate_{ 0.0f,0.0f, -10.0f };
+  Math::Vector3 deltaRotate_{};
 
-		Math::Vector3 deltaRotate_{};
+  // クオータニオン
+  Math::Quaternion quaternion_{};
 
-		// クオータニオン
-		Math::Quaternion quaternion_{};
+  // ビュー行列
+  Math::Matrix4x4 viewMatrix_{};
 
-		// ビュー行列
-		Math::Matrix4x4 viewMatrix_{};
+public:
+  virtual void Initialize() {}
+  virtual void Update() { UpdateMatrix(); }
 
+  void CreateOrthographicMatrix(const int32_t clientWidth,
+                                const int32_t clientHeight) {
+    orthographicMatrix_ =
+        Math::Matrix4x4::Orthographic(0.0f, 0.0f, Cast::Float(clientWidth),
+                                      Cast::Float(clientHeight), 0.0f, 100.0f);
+  }
 
-	public:
+  void UpdateMatrix() {
+    viewMatrix_ =
+        Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrixLh(),
+                                   Math::Matrix4x4::Translate(translate_));
+  }
 
-		virtual void Initialize() {}
-		virtual void Update() {
-			UpdateMatrix();
-		}
+  /* ゲッター */
 
-		void CreateOrthographicMatrix(const int32_t clientWidth, const int32_t clientHeight) {
-			orthographicMatrix_ = Math::Matrix4x4::Orthographic(0.0f, 0.0f, Cast::Float(clientWidth), Cast::Float(clientHeight), 0.0f, 100.0f);
-		}
+  Math::Matrix4x4 GetViewMatrix() const { return viewMatrix_; }
+  Math::Matrix4x4 GetPerspectiveFovMatrix() const {
+    return perspectiveFovMatrix_;
+  }
+  Math::Matrix4x4 GetOrthographicMatrix() const { return orthographicMatrix_; }
 
-		void UpdateMatrix() {
-			viewMatrix_ = Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrixLh(), Math::Matrix4x4::Translate(translate_));
-		}
+  /* セッター */
 
-		/* ゲッター */
+  void SetPerspectiveFovMatrix(const Math::Matrix4x4 &matrix) {
+    perspectiveFovMatrix_ = matrix;
+  }
+  void SetOrthographicMatrix(const Math::Matrix4x4 &matrix) {
+    orthographicMatrix_ = matrix;
+  }
 
-		Math::Matrix4x4 GetViewMatrix() const { return viewMatrix_; }
-		Math::Matrix4x4 GetPerspectiveFovMatrix() const { return perspectiveFovMatrix_; }
-		Math::Matrix4x4 GetOrthographicMatrix() const { return orthographicMatrix_; }
+  void SetTranslate(const Math::Vector3 &translate) { translate_ = translate; }
 
-		/* セッター */
+  /* 加算 */
 
-		void SetPerspectiveFovMatrix(const Math::Matrix4x4& matrix) { perspectiveFovMatrix_ = matrix; }
-		void SetOrthographicMatrix(const Math::Matrix4x4& matrix) { orthographicMatrix_ = matrix; }
+  void AddRotateFirstPerson(const Math::Vector3 &add) {
 
-		/* 加算 */
+    deltaRotate_ = add;
 
-		void AddRotateFirstPerson(const Math::Vector3& add) {
+    deltaRotate_.x =
+        std::clamp(deltaRotate_.x, -std::numbers::pi_v<float> * -0.5f,
+                   std::numbers::pi_v<float> * 0.5f);
 
-			deltaRotate_ = add;
+    Math::Quaternion yawQ =
+        Math::Quaternion::FromAxisAngle(Math::Vector3::UpLh(), deltaRotate_.y);
 
-			deltaRotate_.x = std::clamp(deltaRotate_.x, -std::numbers::pi_v<float> *-0.5f, std::numbers::pi_v<float> *0.5f);
+    Math::Quaternion pitchQ = Math::Quaternion::FromAxisAngle(
+        Math::Vector3::RightLh(), deltaRotate_.x);
 
-			Math::Quaternion yawQ = Math::Quaternion::FromAxisAngle(Math::Vector3::UpLh(), deltaRotate_.y);
+    Math::Quaternion rollQ = Math::Quaternion::FromAxisAngle(
+        Math::Vector3::ForwardLh(), deltaRotate_.z);
 
-			Math::Quaternion pitchQ = Math::Quaternion::FromAxisAngle(Math::Vector3::RightLh(), deltaRotate_.x);
+    quaternion_ = (pitchQ * yawQ * rollQ * quaternion_).Normalized();
+  }
 
-			Math::Quaternion rollQ = Math::Quaternion::FromAxisAngle(Math::Vector3::ForwardLh(), deltaRotate_.z);
+  void AddTranslate(const Math::Vector3 &add) { translate_ += add; }
+};
 
-			quaternion_ = (pitchQ * yawQ * rollQ * quaternion_).Normalized();
-
-		}
-
-		void AddTranslate(const Math::Vector3& add) { translate_ += add; }
-
-	};
-
-}
+} // namespace Atrum

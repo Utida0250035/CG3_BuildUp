@@ -1,133 +1,117 @@
 #pragma once
 #include <cmath>
+#include <nlohmann/json_fwd.hpp>
 
 namespace Atrum::Math {
 
-	struct Vector2 {
-		float x;
-		float y;
+struct Vector2 {
+  float x;
+  float y;
 
-		constexpr void operator+=(const Vector2& other) {
+  constexpr void operator+=(const Vector2 &other) {
 
-			x += other.x;
-			y += other.y;
+    x += other.x;
+    y += other.y;
+  }
 
-		}
+  constexpr Vector2 operator+(const Vector2 &other) const {
 
-		constexpr Vector2 operator+(const Vector2& other) const {
+    Vector2 result = (*this);
+    result += other;
 
-			Vector2 result = (*this);
-			result += other;
+    return result;
+  }
 
-			return result;
+  constexpr Vector2 &operator-=(const Vector2 &other) {
 
-		}
+    x -= other.x;
+    y -= other.y;
 
-		constexpr Vector2& operator-=(const Vector2& other) {
+    return (*this);
+  }
 
-			x -= other.x;
-			y -= other.y;
+  inline constexpr Vector2 operator-(const Vector2 &other) const {
 
-			return (*this);
+    Vector2 result = (*this);
+    result -= other;
 
-		}
+    return result;
+  }
 
-		inline constexpr Vector2 operator-(const Vector2& other) const {
+  inline constexpr Vector2 &operator*=(const float scalar) {
 
-			Vector2 result = (*this);
-			result -= other;
+    x *= scalar;
+    y *= scalar;
 
-			return result;
+    return (*this);
+  }
 
-		}
+  inline constexpr Vector2 operator*(const float scalar) const {
 
-		inline constexpr Vector2& operator*=(const float scalar) {
+    Vector2 result = (*this);
+    result *= scalar;
 
-			x *= scalar;
-			y *= scalar;
+    return result;
+  }
 
-			return (*this);
+  inline constexpr Vector2 &operator/=(const float scalar) {
 
-		}
+    x /= scalar;
+    y /= scalar;
 
-		inline constexpr Vector2 operator*(const float scalar) const {
+    return (*this);
+  }
 
-			Vector2 result = (*this);
-			result *= scalar;
+  inline constexpr Vector2 operator/(const float scalar) const {
 
-			return result;
+    Vector2 result = (*this);
+    result /= scalar;
 
-		}
+    return result;
+  }
 
-		inline constexpr Vector2& operator/=(const float scalar) {
+  float Length() const;
 
-			x /= scalar;
-			y /= scalar;
+  constexpr float LengthSquare() const { return x * x + y * y; }
 
-			return (*this);
+  void Normalize() {
 
-		}
+    float length = Length();
 
-		inline constexpr Vector2 operator/(const float scalar) const {
+    if (length == 0.0f) {
 
-			Vector2 result = (*this);
-			result /= scalar;
+      return;
+    }
 
-			return result;
+    (*this) /= length;
+  }
 
-		}
+  [[nodiscard]] Vector2 Normalized() const {
 
+    Vector2 normalized = (*this);
 
-		float Length() const;
+    normalized.Normalize();
 
-		constexpr float LengthSquare() const {
+    return normalized;
+  }
 
-			return x * x + y * y;
+  constexpr float Dot(const Vector2 &other) const {
 
-		}
+    return x * other.x + y * other.y;
+  }
 
-		void Normalize() {
+  constexpr float Cross(const Vector2 &other) const {
 
-			float length = Length();
+    return x * other.y - y * other.x;
+  }
+};
 
-			if (length == 0.0f) {
+inline constexpr Vector2 operator*(const float scalar, const Vector2 &vector) {
 
-				return;
-
-			}
-
-			(*this) /= length;
-
-		}
-
-		[[nodiscard]]Vector2 Normalized() const {
-
-			Vector2 normalized = (*this);
-
-			normalized.Normalize();
-
-			return normalized;
-
-		}
-
-		constexpr float Dot(const Vector2& other) const {
-
-			return x * other.x + y * other.y;
-
-		}
-
-		constexpr float Cross(const Vector2& other) const {
-
-			return x * other.y - y * other.x;
-
-		}
-
-	};
-
-	inline constexpr Vector2 operator*(const float scalar, const Vector2& vector) {
-
-		return { scalar * vector.x, scalar * vector.y };
-
-	}
-
+  return {scalar * vector.x, scalar * vector.y};
 }
+
+void to_json(nlohmann::json &j, const Vector2 &vector);
+void from_json(const nlohmann::json &j, Vector2 &vector);
+
+} // namespace Atrum::Math

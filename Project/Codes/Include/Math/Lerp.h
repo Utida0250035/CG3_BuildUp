@@ -1,11 +1,14 @@
 #pragma once
 
-namespace Atrum::Interpolation {
+#include <cmath>
+#include <concepts>
 
-	inline constexpr float Lerp(const float startValue, const float endValue, const float t) {
+namespace Atrum::Math {
 
-		return (1 - t) * startValue + t * endValue;
-
-	}
-
+template <typename T = float>
+  requires std::is_floating_point_v<T>
+inline constexpr T Lerp(const T startValue, const T endValue, const T t) {
+  return std::lerp(startValue, endValue, t);
 }
+
+} // namespace Atrum::Math
