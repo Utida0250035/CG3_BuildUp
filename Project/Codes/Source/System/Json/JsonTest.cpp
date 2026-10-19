@@ -12,13 +12,11 @@
 #ifdef DEVELOPMENT
 
 namespace Atrum::Math {
-	// nlohmann/json がこの関数を自動的に見つけます
-	static void to_json(nlohmann::json& j, const Vector3& v) {
+	void to_json(nlohmann::json& j, const Vector3& v) {
 		j = nlohmann::json{ {"x", v.x}, {"y", v.y}, {"z", v.z} };
 	}
 
-	static void from_json(const nlohmann::json& j, Vector3& v) {
-		// v = ... という代入演算子を通さない書き方なので確実に動きます
+	void from_json(const nlohmann::json& j, Vector3& v) {
 		j.at("x").get_to(v.x);
 		j.at("y").get_to(v.y);
 		j.at("z").get_to(v.z);
