@@ -196,6 +196,12 @@
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
       <Filter>Codes\Source\System\Json</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Geometry\GeometryRandom.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">

@@ -17,7 +17,7 @@ std::pair<float, float> GeometryRandom::InCircle2D(const float radius) {
   return {r * std::cos(theta), r * std::sin(theta)};
 }
 
-float GeometryRandom::AngleRad(float minRad = 0.0f, float maxRad = kNum2Pi) {
+float GeometryRandom::AngleRad(float minRad, float maxRad) {
   return Alg::Random::Float(minRad, maxRad);
 }
 
@@ -25,7 +25,7 @@ float GeometryRandom::Angle0ToPi() {
   return Alg::Random::Float(0.0f, std::numbers::pi_v<float>);
 }
 
-float GeometryRandom::AngleDeg(float minDeg = 0.0f, float maxDeg = 360.0f) {
+float GeometryRandom::AngleDeg(float minDeg, float maxDeg) {
   return Alg::Random::Float(minDeg, maxDeg);
 }
 
