@@ -257,15 +257,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
+    <ClCompile Include="Codes\Source\Geometry\AABB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
     <ClCompile Include="Codes\Source\Geometry\GeometryRandom.cpp" />
     <ClCompile Include="Codes\Source\Geometry\OBB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
+    <ClCompile Include="Codes\Source\Geometry\Sphere.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp" />
+    <ClCompile Include="Codes\Source\Math\Quaternion.cpp" />
     <ClCompile Include="Codes\Source\Math\Transform.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector2.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
@@ -320,7 +323,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\AL3_KamataEngine3D\DirectXGame\Easing.h" />
     <ClInclude Include="Codes\Include\Audio\Audio.h" />
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
@@ -387,6 +389,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Hit\HitCircle.h" />
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
+    <ClInclude Include="Codes\Include\Math\Easing.h" />
     <ClInclude Include="Codes\Include\Math\Lerp.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
     <ClInclude Include="Codes\Include\Math\Matrix4x4.h" />

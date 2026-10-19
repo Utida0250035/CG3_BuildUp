@@ -11,18 +11,6 @@
 
 #ifdef DEVELOPMENT
 
-namespace Atrum::Math {
-	void to_json(nlohmann::json& j, const Vector3& v) {
-		j = nlohmann::json{ {"x", v.x}, {"y", v.y}, {"z", v.z} };
-	}
-
-	void from_json(const nlohmann::json& j, Vector3& v) {
-		j.at("x").get_to(v.x);
-		j.at("y").get_to(v.y);
-		j.at("z").get_to(v.z);
-	}
-}
-
 #endif
 
 namespace Atrum::Json {

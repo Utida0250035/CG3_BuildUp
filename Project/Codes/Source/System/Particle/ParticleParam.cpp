@@ -3,26 +3,27 @@
 
 namespace Atrum::Visual::Particle {
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(EmitMode, { EmitMode::BURST, "BURST" },
-		{ EmitMode::CONTINUOUS, "CONTINUOUS" });
+	NLOHMANN_JSON_SERIALIZE_ENUM(EmitMode, { { EmitMode::BURST, "BURST" },
+		{ EmitMode::CONTINUOUS, "CONTINUOUS" } });
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(EmitShape, { EmitShape::POINT, "POINT" },
+	NLOHMANN_JSON_SERIALIZE_ENUM(EmitShape, { { EmitShape::POINT, "POINT" },
 		{ EmitShape::CIRCLE_XZ, "CIRCLE_XZ" },
 		{ EmitShape::CIRCLE_XY, "CIRCLE_XY" },
 		{ EmitShape::CIRCLE_YZ, "CIRCLE_YZ" },
 		{ EmitShape::AABB, "AABB" },
-		{ EmitShape::SPHERE, "SPHERE" });
+		{ EmitShape::SPHERE, "SPHERE" } });
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(MovementMode,
-		{ MovementMode::DIRECTIONAL, "DIRECTIONAL" },
+		{ { MovementMode::DIRECTIONAL, "DIRECTIONAL" },
 		{ MovementMode::RADIAL_CONVERGE, "RADIAL_CONVERGE" },
-		{ MovementMode::RADIAL_SPREAD, "RADIAL_SPREAD" });
+		{ MovementMode::RADIAL_SPREAD, "RADIAL_SPREAD" } });
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(KillFieldMode, { KillFieldMode::OUTSIDE, "OUTSIDE" },
-		{ KillFieldMode::INSIDE, "INSIDE" });
+	NLOHMANN_JSON_SERIALIZE_ENUM(KillFieldMode, { { KillFieldMode::OUTSIDE, "OUTSIDE" },
+		{ KillFieldMode::INSIDE, "INSIDE" } });
 
-	NLOHMANN_JSON_SERIALIZE_ENUM(KillFieldShape, { KillFieldShape::SPHERE, "SPHERE",
-												  KillFieldShape::AABB, "AABB" });
+	NLOHMANN_JSON_SERIALIZE_ENUM(KillFieldShape, { { KillFieldShape::SPHERE, "SPHERE" },
+		{ KillFieldShape::AABB, "AABB" } });
+
 
 	void to_json(nlohmann::json& j, const KillFieldParam& killFieldParam) {
 
@@ -47,6 +48,7 @@ namespace Atrum::Visual::Particle {
 			"simulationSpaceFromEmitter", killFieldParam.simulationSpaceFromEmitter);
 		killFieldParam.position = j.value("position", killFieldParam.position);
 	}
+
 
 	void to_json(nlohmann::json& j, const EmitCircle& emitCircle) {
 		j = nlohmann::json{ { "center", emitCircle.center },

@@ -202,6 +202,15 @@
     <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp">
       <Filter>Codes\Source\System\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Quaternion.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Geometry\Sphere.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Geometry\AABB.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -414,9 +423,6 @@
     <ClInclude Include="Codes\Include\File\FileSize.h">
       <Filter>Codes\Include\File</Filter>
     </ClInclude>
-    <ClInclude Include="..\AL3_KamataEngine3D\DirectXGame\Easing.h">
-      <Filter>Codes\Include\Math</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Math\Lerp.h">
       <Filter>Codes\Include\Math</Filter>
     </ClInclude>
@@ -539,6 +545,9 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\System\SimulationSpace.h">
       <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Easing.h">
+      <Filter>Codes\Include\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
