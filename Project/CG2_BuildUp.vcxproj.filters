@@ -758,5 +758,8 @@
     <Filter Include="Codes\Include\System\Json">
       <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Codes\Source\System\Scripting">
+      <UniqueIdentifier>{6c889fca-37fe-4b22-a6d5-1f773f7192c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
