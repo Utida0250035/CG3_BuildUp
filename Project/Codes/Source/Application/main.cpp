@@ -485,7 +485,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform,
                      isLightingEnable);
 
+    atrum->SetBlendMode(Atrum::BlendMode::NORMAL);
+
     particleEmitter->Draw();
+
+    atrum->SetBlendMode(Atrum::BlendMode::NONE);
 
     // Sprite準備
     atrum->PrepareSprite();
