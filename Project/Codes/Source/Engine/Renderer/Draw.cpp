@@ -1,4 +1,4 @@
-#include "Engine/Alias/CoreAlias.h"
+﻿#include "Engine/Alias/CoreAlias.h"
 
 #include "Cast/StaticCast.h"
 #include "Engine/Command/CommandContext.h"

@@ -1,4 +1,4 @@
-#include "System/Particle/ParticleEmitter.h"
+﻿#include "System/Particle/ParticleEmitter.h"
 #include "Engine/AtrumEngine.h"
 #include "Geometry/GeometryRandom.h"
 #include "Math/Lerp.h"
@@ -6,6 +6,7 @@
 #include "System/DeltaTime.h"
 #include "System/Json/JsonHandler.h"
 #include "System/Random.h"
+#include "Engine/AtrumEngine.h"
 #include <cassert>
 #include <filesystem>
 #include <numbers>
