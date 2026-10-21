@@ -4,16 +4,17 @@
 #include "Collision/CollisionManager.h"
 #include "Collision/HitMesh.h"
 #include "Collision/HitMeshBuilder.h"
+#include "Engine/AtrumEngine.h"
 #include "ForDebug/DebugCamera.h"
 #include "ForDebug/Log.h"
-#include "Engine/AtrumEngine.h"
 #include "Geometry/OBB.h"
 #include "Geometry/PyramidMesh.h"
 #include "Geometry/Triangle.h"
 #include "Input/DirectInput.h"
 #include "Input/PlayInput.h"
-#include "System/Json/JsonTest.h"
 #include "System/DeltaTime.h"
+#include "System/Json/JsonTest.h"
+#include "System/Particle/ParticleEmitter.h"
 #include <format>
 #include <iostream>
 #include <memory>
@@ -21,512 +22,496 @@
 
 namespace {
 
-	using Atrum::CoUnInitializer;
+using Atrum::CoUnInitializer;
 
-	using Atrum::Input::PlayInput;
-	using Atrum::Input::Key;
+using Atrum::Input::Key;
+using Atrum::Input::PlayInput;
 
-	using Atrum::Audio::AudioManager;
-	using Atrum::Audio::AudioHandle;
-	using Atrum::Audio::To100nsPositive;
+using Atrum::Audio::AudioHandle;
+using Atrum::Audio::AudioManager;
+using Atrum::Audio::To100nsPositive;
 
-	using Atrum::Math::Transform;
+using Atrum::Math::Transform;
 
-	using Atrum::Math::Vector2;
-	using Atrum::Math::Vector3;
-	using Atrum::Math::Vector4;
+using Atrum::Math::Vector2;
+using Atrum::Math::Vector3;
+using Atrum::Math::Vector4;
 
-	using Atrum::Math::Matrix4x4;
-	using Atrum::Math::Quaternion;
+using Atrum::Math::Matrix4x4;
+using Atrum::Math::Quaternion;
 
-	using Atrum::Physics::HitMesh;
-	using Atrum::Physics::HitMeshBuilder;
-	using Atrum::Physics::CollisionManager;
+using Atrum::Physics::CollisionManager;
+using Atrum::Physics::HitMesh;
+using Atrum::Physics::HitMeshBuilder;
 
-	using Atrum::Geometry::Triangle;
-	using Atrum::Geometry::PyramidMesh;
+using Atrum::Geometry::PyramidMesh;
+using Atrum::Geometry::Triangle;
 
+using Atrum::DirectionalLightData;
+using Atrum::LightModel;
+using Atrum::VertexData;
 
-	using Atrum::VertexData;
-	using Atrum::LightModel;
-	using Atrum::DirectionalLightData;
+using Atrum::FrameDeltaTime;
 
-	using Atrum::FrameDeltaTime;
-
-	using Atrum::Json::JsonTest;
-
-#ifdef  DEVELOPMENT
-
-	using Atrum::Debug::DebugCamera;
-
-#else
-
-	using Atrum::Camera;
-
-#endif //  _DEBUG
-
-}
-
-int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
-
-	CoUnInitializer coUnInitializer;
-
-	// エンジンインスタンスの取得
-	Atrum::Engine* atrum = Atrum::Engine::Instance();
-
-	// エンジンの初期化
-	atrum->Initialize("CG3");
-	
-	// fps設定
-	atrum->SetFps(60);
-
-	// 乱数シード生成
-	srand(static_cast<unsigned int>(time(nullptr)));
-
-	/* プレイヤー入力 */
-
-	PlayInput* playInput = PlayInput::Instance();
-
-	/* テクスチャ */
-
-	const char* textureFilePaths[3] = {
-		"./Assets/Images/ForStudy/uvChecker.png",
-		"./Assets/Images/ForStudy/monsterBall.png",
-		"./Assets/Images/white4x4.png"
-	};
-
-	uint32_t textureWhite = atrum->GetTexture(textureFilePaths[2]);
-
-	/* 音源 */
-
-	AudioManager* audio = AudioManager::Instance();
-
-
-	[[maybe_unused]] size_t bgmShiningStarMp3 = 0;
-	[[maybe_unused]] size_t bgmShiningStarM4a = 0;
-
-	{
-
-		std::string name = "./Assets/Audios/bgmShiningStar";
-
-		bgmShiningStarMp3 = audio->Load(name + ".mp3");
-		bgmShiningStarM4a = audio->Load(name + ".m4a");
-
-	}
-
-	AudioHandle bgmPlayHandle{};
-
-	[[maybe_unused]] size_t seOnePointMp3 = audio->Load("./Assets/Audios/seOnePoint.mp3");
-	[[maybe_unused]] size_t seOnePointM4a = audio->Load("./Assets/Audios/seOnePoint.m4a");
-	[[maybe_unused]] size_t seOnePointWav = audio->Load("./Assets/Audios/seOnePoint.wav");
-
-	const char* kStudyObjectsFolderName = "./Assets/Objects/ForStudy";
-
-	/* 平面3dModel */
-
-	auto planeModel = atrum->GetModel(kStudyObjectsFolderName, "plane.obj", kStudyObjectsFolderName, "plane.mtl");
-	Transform planeModelTransform = { Vector3{1.0f, 1.0f, 1.0f}, Vector3{}, Vector3{} };
-	planeModelTransform.translate.z = -20.0f;
-
-	/* 複数メッシュ3dModel */
-
-	auto multiMeshModel = atrum->GetModel(kStudyObjectsFolderName, "multiMesh.obj", kStudyObjectsFolderName, "multiMesh.mtl");
-	Transform multiMeshModelTransform{};
-
-	/* 複数マテリアル3dModel */
-
-	auto multiMtlModel = atrum->GetModel(kStudyObjectsFolderName, "multiMaterial.obj", kStudyObjectsFolderName, "multiMaterial.mtl");
-	Transform multiMtlModelTransform{};
-
-	/* 球 */
-
-	Transform sphereTransform{};
-	Transform sphereUvTransform{};
-	float sphereRadius = 0.1f;
-	uint32_t sphereTexture = textureWhite;
-	Vector4 sphereColor = Vector4::White();
-	uint32_t sphereSubdivision = 12;
-
-	/* Sprite */
-
-	Transform spriteTransform{};
-	Transform spriteUvTransform{};
-	Vector2 spriteSize{ 64.0f, 64.0f };
-	Vector2 spriteTrimLeftTop{ 0.0f, 0.0f };
-	uint32_t spriteTexture = textureWhite;
-	Vector4 spriteColor = Vector4::White();
-
-
-	/* DirectionalLight */
-
-	DirectionalLightData directionalLightData = DirectionalLightData{
-		.color = Vector3{1.0f, 1.0f, 1.0f},
-		.direction = Vector3{0.0f, -1.0f, 0.0f},
-		.intensity = 10.0f,
-		.lightModel = LightModel::HalfLambert
-	};
-
-	bool isLightingEnable = true;
-
-	/* タイムカウント */
-
-	float timeCount = 0.0f;
-
-	/* 乱数初期化 */
-
-	srand(static_cast<unsigned int>(time(nullptr)));
-
-	/* デバッグカメラ */
+using Atrum::Json::JsonTest;
 
 #ifdef DEVELOPMENT
 
-	std::unique_ptr<DebugCamera> camera = nullptr;
-
-	camera = std::make_unique<DebugCamera>();
+using Atrum::Debug::DebugCamera;
 
 #else
 
-	std::unique_ptr<Camera> camera = nullptr;
+using Atrum::Camera;
 
-	camera = std::make_unique<Camera>();
+#endif //  _DEBUG
+
+} // namespace
+
+int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
+
+  CoUnInitializer coUnInitializer;
+
+  // エンジンインスタンスの取得
+  Atrum::Engine *atrum = Atrum::Engine::Instance();
+
+  // エンジンの初期化
+  atrum->Initialize("CG3");
+
+  // fps設定
+  atrum->SetFps(60);
+
+  // 乱数シード生成
+  srand(static_cast<unsigned int>(time(nullptr)));
+
+  /* プレイヤー入力 */
+
+  PlayInput *playInput = PlayInput::Instance();
+
+  /* テクスチャ */
+
+  const char *textureFilePaths[3] = {"./Assets/Images/ForStudy/uvChecker.png",
+                                     "./Assets/Images/ForStudy/monsterBall.png",
+                                     "./Assets/Images/white4x4.png"};
+
+  uint32_t textureWhite = atrum->GetTexture(textureFilePaths[2]);
+
+  /* 音源 */
+
+  AudioManager *audio = AudioManager::Instance();
+
+  [[maybe_unused]] size_t bgmShiningStarMp3 = 0;
+  [[maybe_unused]] size_t bgmShiningStarM4a = 0;
+
+  {
+
+    std::string name = "./Assets/Audios/bgmShiningStar";
+
+    bgmShiningStarMp3 = audio->Load(name + ".mp3");
+    bgmShiningStarM4a = audio->Load(name + ".m4a");
+  }
+
+  AudioHandle bgmPlayHandle{};
+
+  [[maybe_unused]] size_t seOnePointMp3 =
+      audio->Load("./Assets/Audios/seOnePoint.mp3");
+  [[maybe_unused]] size_t seOnePointM4a =
+      audio->Load("./Assets/Audios/seOnePoint.m4a");
+  [[maybe_unused]] size_t seOnePointWav =
+      audio->Load("./Assets/Audios/seOnePoint.wav");
+
+  const char *kStudyObjectsFolderName = "./Assets/Objects/ForStudy";
+
+  /* 平面3dModel */
+
+  auto planeModel = atrum->GetModel(kStudyObjectsFolderName, "plane.obj",
+                                    kStudyObjectsFolderName, "plane.mtl");
+  Transform planeModelTransform = {Vector3{1.0f, 1.0f, 1.0f}, Vector3{},
+                                   Vector3{}};
+  planeModelTransform.translate.z = -20.0f;
+
+  /* 複数メッシュ3dModel */
+
+  auto multiMeshModel =
+      atrum->GetModel(kStudyObjectsFolderName, "multiMesh.obj",
+                      kStudyObjectsFolderName, "multiMesh.mtl");
+  Transform multiMeshModelTransform{};
+
+  /* 複数マテリアル3dModel */
+
+  auto multiMtlModel =
+      atrum->GetModel(kStudyObjectsFolderName, "multiMaterial.obj",
+                      kStudyObjectsFolderName, "multiMaterial.mtl");
+  Transform multiMtlModelTransform{};
+
+  /* 球 */
+
+  Transform sphereTransform{};
+  Transform sphereUvTransform{};
+  float sphereRadius = 0.1f;
+  uint32_t sphereTexture = textureWhite;
+  Vector4 sphereColor = Vector4::White();
+  uint32_t sphereSubdivision = 12;
+
+  /* Sprite */
+
+  Transform spriteTransform{};
+  Transform spriteUvTransform{};
+  Vector2 spriteSize{64.0f, 64.0f};
+  Vector2 spriteTrimLeftTop{0.0f, 0.0f};
+  uint32_t spriteTexture = textureWhite;
+  Vector4 spriteColor = Vector4::White();
+
+  /* DirectionalLight */
+
+  DirectionalLightData directionalLightData =
+      DirectionalLightData{.color = Vector3{1.0f, 1.0f, 1.0f},
+                           .direction = Vector3{0.0f, -1.0f, 0.0f},
+                           .intensity = 10.0f,
+                           .lightModel = LightModel::HalfLambert};
+
+  bool isLightingEnable = true;
+
+  /* タイムカウント */
+
+  float timeCount = 0.0f;
+
+  /* 乱数初期化 */
+
+  srand(static_cast<unsigned int>(time(nullptr)));
+
+  /* デバッグカメラ */
+
+#ifdef DEVELOPMENT
+
+  std::unique_ptr<DebugCamera> camera = nullptr;
+
+  camera = std::make_unique<DebugCamera>();
+
+#else
+
+  std::unique_ptr<Camera> camera = nullptr;
+
+  camera = std::make_unique<Camera>();
 
 #endif
 
-	camera->Initialize();
+  camera->Initialize();
 
-
-
-	camera->CreateOrthographicMatrix(1280, 720);
+  camera->CreateOrthographicMatrix(1280, 720);
 
 #ifdef USE_IMGUI
 
-	/* ImGui */
+  /* ImGui */
 
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+  ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-	/* Json入出力テスト */
+  /* Json入出力テスト */
 
-	JsonTest jsonTest;
+  JsonTest jsonTest;
 
 #endif
 
-	/* 32分の1の数 */
-	[[maybe_unused]] constexpr float kThirtySecond = 0.03125f;
+  /* 32分の1の数 */
+  [[maybe_unused]] constexpr float kThirtySecond = 0.03125f;
 
-	while (atrum->Process()) {
-		// ウィンドウの×ボタンが押されるまでループ
+  /* パーティクルエミッタ 仮置き 管理用クラス作成予定 */
+  std::unique_ptr<Atrum::Visual::Particle::Emitter> particleEmitter =
+      std::make_unique<Atrum::Visual::Particle::Emitter>();
 
-		/*============== メインループ =================*/
+  particleEmitter->Initialize("");
+
+  while (atrum->Process()) {
+    // ウィンドウの×ボタンが押されるまでループ
+
+    /*============== メインループ =================*/
 
 #ifdef USE_IMGUI
 
-		// ImGuiにフレーム開始を通知
-		atrum->ImGuiNewFrame();
+    // ImGuiにフレーム開始を通知
+    atrum->ImGuiNewFrame();
 
 #endif
 
-		///
-		/// ↓ 更新ここから
-		///
+    ///
+    /// ↓ 更新ここから
+    ///
 
-		timeCount += FrameDeltaTime::Instance()->GetDeltaTime();
+    timeCount += FrameDeltaTime::Instance()->GetDeltaTime();
 
-		Vector2 cursorPos = playInput->GetCursorPos();
+    Vector2 cursorPos = playInput->GetCursorPos();
 
-		Vector2 cursorDelta = playInput->GetCursorDelta();
+    Vector2 cursorDelta = playInput->GetCursorDelta();
 
-		[[maybe_unused]] int32_t mouseWheel = playInput->GetMouseWheel();
+    [[maybe_unused]] int32_t mouseWheel = playInput->GetMouseWheel();
 
 #ifdef USE_IMGUI
 
-		jsonTest.jsonVal.ImGui("./Assets/Sample/test.json");
+    jsonTest.jsonVal.ImGui("./Assets/Sample/test.json");
 
-		ImGui::Begin("debug");
+    ImGui::Begin("debug");
 
-		ImGui::Text("frameDeltaTime: %f", FrameDeltaTime::Instance()->GetDeltaTime());
+    ImGui::Text("frameDeltaTime: %f",
+                FrameDeltaTime::Instance()->GetDeltaTime());
 
-		ImGui::Text("timeCount: %f", timeCount);
+    ImGui::Text("timeCount: %f", timeCount);
 
-		ImGui::DragInt("mouseWheel", &mouseWheel);
+    ImGui::DragInt("mouseWheel", &mouseWheel);
 
-		ImGui::DragFloat2("cursorPos", &cursorPos.x);
+    ImGui::DragFloat2("cursorPos", &cursorPos.x);
 
-		ImGui::DragFloat2("cursorDelta", &cursorDelta.x);
+    ImGui::DragFloat2("cursorDelta", &cursorDelta.x);
 
-		ImGui::End();
+    ImGui::End();
 
-		ImGui::Begin("audio");
+    ImGui::Begin("audio");
 
-		if (ImGui::BeginChild("shiningStar", ImGui::kChildSize, ImGui::kChildFlags)) {
+    if (ImGui::BeginChild("shiningStar", ImGui::kChildSize,
+                          ImGui::kChildFlags)) {
 
-			ImGui::Text("shiningStar");
+      ImGui::Text("shiningStar");
 
-			const char* extensions[] = {
-				"mp3",
-				"m4a"
-			};
+      const char *extensions[] = {"mp3", "m4a"};
 
-			const size_t soundIndices[] = {
-				bgmShiningStarMp3,
-				bgmShiningStarM4a
-			};
+      const size_t soundIndices[] = {bgmShiningStarMp3, bgmShiningStarM4a};
 
-			for (size_t i = 0; i < 2; ++i) {
+      for (size_t i = 0; i < 2; ++i) {
 
-				ImGui::SmallButton(extensions[i]);
+        ImGui::SmallButton(extensions[i]);
 
-				if (ImGui::IsItemActivated()) {
+        if (ImGui::IsItemActivated()) {
 
-					if (audio->IsPlaying(bgmPlayHandle)) {
+          if (audio->IsPlaying(bgmPlayHandle)) {
 
-						audio->Stop(bgmPlayHandle);
+            audio->Stop(bgmPlayHandle);
+          }
 
-					}
+          bgmPlayHandle =
+              audio->Play(soundIndices[i], false, To100nsPositive(0.5f));
+        }
+      }
+    }
 
-					bgmPlayHandle = audio->Play(soundIndices[i], false, To100nsPositive(0.5f));
+    ImGui::EndChild();
 
-				}
+    if (ImGui::BeginChild("seOnePoint", ImGui::kChildSize,
+                          ImGui::kChildFlags)) {
 
-			}
+      ImGui::Text("seOnePoint");
 
-		}
+      const char *extensions[] = {"mp3", "wav", "m4a"};
 
-		ImGui::EndChild();
+      const size_t soundIndices[] = {seOnePointMp3, seOnePointWav,
+                                     seOnePointM4a};
 
-		if (ImGui::BeginChild("seOnePoint", ImGui::kChildSize, ImGui::kChildFlags)) {
+      for (size_t i = 0; i < 3; ++i) {
 
-			ImGui::Text("seOnePoint");
+        ImGui::SmallButton(extensions[i]);
 
-			const char* extensions[] = {
-				"mp3",
-				"wav",
-				"m4a"
-			};
+        if (ImGui::IsItemActivated()) {
 
-			const size_t soundIndices[] = {
-				seOnePointMp3,
-				seOnePointWav,
-				seOnePointM4a
-			};
+          audio->Play(soundIndices[i]);
+        }
+      }
+    }
 
-			for (size_t i = 0; i < 3; ++i) {
+    ImGui::EndChild();
 
-				ImGui::SmallButton(extensions[i]);
+    ImGui::End();
 
-				if (ImGui::IsItemActivated()) {
+    /* デバッグカメラGUI */
 
-					audio->Play(soundIndices[i]);
+    ImGui::Begin("DebugCamera");
 
-				}
+    ImGui::Text("mode: %d", camera->GetMode());
 
-			}
+    ImGui::DragFloat("distance", &camera->RefDistance());
 
-		}
+    ImGui::DragFloat3("translate", &camera->RefTranslate().x);
 
-		ImGui::EndChild();
+    ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, kThirtySecond);
 
-		ImGui::End();
+    if (ImGui::IsItemActive()) {
 
+      camera->RefQuaternion().Normalize();
+    }
 
-		/* デバッグカメラGUI */
+    ImGui::DragFloat3("pivot", &camera->RefPivot().x, kThirtySecond);
 
-		ImGui::Begin("DebugCamera");
+    const Vector3 &pivot = camera->RefPivot();
+    const Vector3 &translate = camera->RefTranslate();
 
-		ImGui::Text("mode: %d", camera->GetMode());
+    Vector3 direction = (pivot - translate).Normalized();
+    Vector3 calculatedDirection =
+        camera->RefQuaternion().RotateVector({0.0f, 0.0f, -1.0f});
 
-		ImGui::DragFloat("distance", &camera->RefDistance());
+    ImGui::DragFloat3("direction", &direction.x);
+    ImGui::DragFloat3("direction(calc)", &calculatedDirection.x);
 
-		ImGui::DragFloat3("translate", &camera->RefTranslate().x);
+    ImGui::End();
 
-		ImGui::DragFloat4("quaternion", &camera->RefQuaternion().x, kThirtySecond);
+    /* 光源GUI */
 
-		if (ImGui::IsItemActive()) {
+    ImGui::Begin("directionalLight");
 
-			camera->RefQuaternion().Normalize();
+    directionalLightData.ImGui();
 
-		}
+    ImGui::End();
 
-		ImGui::DragFloat3("pivot", &camera->RefPivot().x, kThirtySecond);
+    /* 平面3dモデルGUI */
 
-		const Vector3& pivot = camera->RefPivot();
-		const Vector3& translate = camera->RefTranslate();
+    ImGui::Begin("planeModel");
 
-		Vector3 direction = (pivot - translate).Normalized();
-		Vector3 calculatedDirection = camera->RefQuaternion().RotateVector({ 0.0f, 0.0f, -1.0f });
+    planeModelTransform.ImGui();
 
-		ImGui::DragFloat3("direction", &direction.x);
-		ImGui::DragFloat3("direction(calc)", &calculatedDirection.x);
+    ImGui::End();
 
-		ImGui::End();
+    /* 複数メッシュ3dモデルGUI */
 
+    ImGui::Begin("multiMeshModel");
 
+    multiMeshModelTransform.ImGui();
 
-		/* 光源GUI */
+    ImGui::End();
 
-		ImGui::Begin("directionalLight");
+    /* 複数マテリアル3dモデルGUI */
 
-		directionalLightData.ImGui();
+    ImGui::Begin("multiMaterialModel");
 
-		ImGui::End();
+    multiMtlModelTransform.ImGui();
 
-		/* 平面3dモデルGUI */
+    ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
 
-		ImGui::Begin("planeModel");
+    ImGui::End();
 
-		planeModelTransform.ImGui();
+    /* スプライトGUI */
 
-		ImGui::End();
+    ImGui::Begin("sprite");
 
-		/* 複数メッシュ3dモデルGUI */
+    spriteTransform.ImGui();
 
-		ImGui::Begin("multiMeshModel");
+    spriteUvTransform.ImGui("uvTransform");
 
-		multiMeshModelTransform.ImGui();
+    if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
-		ImGui::End();
+      ImGui::Text("texture");
 
-		/* 複数マテリアル3dモデルGUI */
+      for (const auto &path : textureFilePaths) {
 
-		ImGui::Begin("multiMaterialModel");
+        ImGui::Selectable(path);
 
-		multiMtlModelTransform.ImGui();
+        if (ImGui::IsItemActivated()) {
 
-		ImGui::Text(("texture: " + multiMtlModel->GetTexturePath()).c_str());
+          spriteTexture = atrum->GetTexture(path);
+        }
+      }
 
-		ImGui::End();
+      spriteColor.ColorEdit();
 
+      ImGui::DragFloat2("size", &spriteSize.x, kThirtySecond);
 
-		/* スプライトGUI */
+      ImGui::DragFloat2("trimLeftTop", &spriteTrimLeftTop.x, kThirtySecond);
+    }
 
-		ImGui::Begin("sprite");
+    ImGui::EndChild();
 
-		spriteTransform.ImGui();
+    ImGui::End();
 
-		spriteUvTransform.ImGui("uvTransform");
+    /* 球GUI */
 
-		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
+    ImGui::Begin("sphere");
 
-			ImGui::Text("texture");
+    sphereTransform.ImGui();
 
-			for (const auto& path : textureFilePaths) {
+    ImGui::DragFloat("radius", &sphereRadius, kThirtySecond);
 
-				ImGui::Selectable(path);
+    sphereUvTransform.ImGui("uvTransform");
 
-				if (ImGui::IsItemActivated()) {
+    if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
 
-					spriteTexture = atrum->GetTexture(path);
+      ImGui::Text("texture");
 
-				}
+      for (const auto &path : textureFilePaths) {
 
-			}
+        ImGui::Selectable(path);
 
-			spriteColor.ColorEdit();
+        if (ImGui::IsItemActivated()) {
 
-			ImGui::DragFloat2("size", &spriteSize.x, kThirtySecond);
+          sphereTexture = atrum->GetTexture(path);
+        }
+      }
 
-			ImGui::DragFloat2("trimLeftTop", &spriteTrimLeftTop.x, kThirtySecond);
+      sphereColor.ColorEdit();
+    }
 
-		}
+    ImGui::EndChild();
 
-		ImGui::EndChild();
+    ImGui::End();
 
-		ImGui::End();
-
-
-		/* 球GUI */
-
-		ImGui::Begin("sphere");
-
-		sphereTransform.ImGui();
-
-		ImGui::DragFloat("radius", &sphereRadius, kThirtySecond);
-
-		sphereUvTransform.ImGui("uvTransform");
-
-		if (ImGui::BeginChild("texture", ImGui::kChildSize, ImGui::kChildFlags)) {
-
-			ImGui::Text("texture");
-
-			for (const auto& path : textureFilePaths) {
-
-				ImGui::Selectable(path);
-
-				if (ImGui::IsItemActivated()) {
-
-					sphereTexture = atrum->GetTexture(path);
-
-				}
-
-			}
-
-			sphereColor.ColorEdit();
-
-		}
-
-		ImGui::EndChild();
-
-		ImGui::End();
-
-		atrum->ImGuiRender();
+    atrum->ImGuiRender();
 
 #endif
 
-		camera->Update();
+    particleEmitter->Update();
 
-		///
-		/// ↑更新ここまで
-		/// 
+    camera->Update();
 
-		///
-		/// ↓描画ここから
-		/// 
+    ///
+    /// ↑更新ここまで
+    ///
 
-		atrum->SetViewMatrix(camera->GetViewMatrix());
+    ///
+    /// ↓描画ここから
+    ///
 
-		// 光源データの設定
-		atrum->SetDirectionalLightData(directionalLightData);
+    atrum->SetCamera(camera.get());
 
-		// 描画処理(前)
-		atrum->PreDraw();
+    // 光源データの設定
+    atrum->SetDirectionalLightData(directionalLightData);
 
-		atrum->SetBlendModeForFrame(Atrum::BlendMode::BINARY_ALPHA);
+    // 描画処理(前)
+    atrum->PreDraw();
 
-		atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform, sphereTransform, sphereRadius, sphereSubdivision, isLightingEnable);
+    atrum->SetBlendModeForFrame(Atrum::BlendMode::BINARY_ALPHA);
 
-		atrum->SetBlendModeForFrame(Atrum::BlendMode::NONE);
+    atrum->DrawSphere(sphereTexture, sphereColor, sphereUvTransform,
+                      sphereTransform, sphereRadius, sphereSubdivision,
+                      isLightingEnable);
 
-		atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
-		atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform, isLightingEnable);
-		atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform, isLightingEnable);
+    atrum->SetBlendModeForFrame(Atrum::BlendMode::NONE);
 
+    atrum->DrawModel(planeModel.get(), planeModelTransform, isLightingEnable);
+    atrum->DrawModel(multiMeshModel.get(), multiMeshModelTransform,
+                     isLightingEnable);
+    atrum->DrawModel(multiMtlModel.get(), multiMtlModelTransform,
+                     isLightingEnable);
 
-		// Sprite準備
-		atrum->PrepareSprite();
+    particleEmitter->Draw();
 
-		atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform, spriteTransform, spriteSize, spriteTrimLeftTop);
+    // Sprite準備
+    atrum->PrepareSprite();
 
+    atrum->DrawSpriteRect(spriteTexture, spriteColor, spriteUvTransform,
+                          spriteTransform, spriteSize, spriteTrimLeftTop);
 
-		// 描画処理(後)
-		atrum->PostDraw();
+    // 描画処理(後)
+    atrum->PostDraw();
 
-		///
-		/// ↑描画ここまで
-		/// 
+    ///
+    /// ↑描画ここまで
+    ///
+  }
 
-	}
+  ///
+  /// ↓終了処理
+  ///
 
-	///
-	/// ↓終了処理
-	/// 
+  planeModel.reset();
+  multiMeshModel.reset();
+  multiMtlModel.reset();
 
-	planeModel.reset();
-	multiMeshModel.reset();
-	multiMtlModel.reset();
+  atrum->Finalize();
 
-	atrum->Finalize();
+  Atrum::Engine::Destroy();
 
-	Atrum::Engine::Destroy();
-
-	return 0;
-
+  return 0;
 }

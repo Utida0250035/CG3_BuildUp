@@ -6,13 +6,16 @@
 #include "System/DeltaTime.h"
 #include "System/Json/JsonHandler.h"
 #include "System/Random.h"
+#include "Engine/AtrumEngine.h"
 #include <cassert>
+#include <filesystem>
 #include <numbers>
 
 namespace {
 namespace Alg = Atrum::Algorithm;
 namespace M = Atrum::Math;
 namespace G = Atrum::Geometry;
+namespace fs = std::filesystem;
 } // namespace
 
 namespace Atrum::Visual::Particle {
@@ -20,8 +23,14 @@ namespace Atrum::Visual::Particle {
 void Emitter::Initialize(const char *jsonFilePath) {
   frameDeltaTime_ = FrameDeltaTime::Instance();
 
-  std::vector<Param> params =
-      Json::JsonHandler::LoadFromFile<std::vector<Param>>(jsonFilePath);
+  std::vector<Param> params{};
+
+  if (fs::exists(jsonFilePath)) {
+
+    params = Json::JsonHandler::LoadFromFile<std::vector<Param>>(jsonFilePath);
+  } else {
+    params.emplace_back();
+  }
 
   layers_.resize(params.size());
 
@@ -29,6 +38,10 @@ void Emitter::Initialize(const char *jsonFilePath) {
 
   for (size_t i = 0; i < layers_.size(); ++i) {
     layers_[i].param = params[i];
+
+    layers_[i].model = Engine::Instance()->GetModel(
+        params[i].objDirectoryPath, params[i].objFileName,
+        params[i].mtlDirectoryPath, params[i].mtlFileName);
 
     assert(layers_[i].param.emitRate > 0.0f);
     assert(layers_[i].param.duration > 0.0f);
@@ -140,11 +153,10 @@ Math::Vector3 Emitter::ResolveSpawnLocalPos(Layer &layer) {
                                         layer.param.emitCircle.center);
 
   case EmitShape::POINT:
-      return layer.param.emitPointPos;
+    return layer.param.emitPointPos;
   default:
-      return Math::Vector3::Zero();
+    return Math::Vector3::Zero();
   }
-
 }
 
 Math::Vector3

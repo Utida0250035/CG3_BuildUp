@@ -233,6 +233,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
@@ -352,11 +353,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Command\Fence.h" />
     <ClInclude Include="Codes\Include\Engine\Device\RenderDevice.h" />
     <ClInclude Include="Codes\Include\Engine\Device\SwapChain.h" />
+    <ClInclude Include="Codes\Include\Engine\EngineFwd.h" />
     <ClInclude Include="Codes\Include\Engine\Pipeline\PipelineState.h" />
     <ClInclude Include="Codes\Include\Engine\Pipeline\RootSignature.h" />
     <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h" />

@@ -1,7 +1,8 @@
-#include "Engine/AtrumEngine.h"
 #include "Audio/Audio.h"
+#include "Camera/Camera.h"
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
+#include "Engine/AtrumEngine.h"
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Device/RenderDevice.h"
 #include "Engine/Renderer/Draw.h"
@@ -23,9 +24,6 @@
 #include "String/ConvertString.h"
 #include "System/DeltaTime.h"
 #include "System/Hash64.h"
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <Windows.h>
 #include <cassert>
 #include <cfloat>
 #include <cstdint>
@@ -34,11 +32,14 @@
 #include <fstream>
 #include <memory>
 #include <numbers>
+#include <SDL.h>
+#include <SDL_syswm.h>
 #include <sstream>
 #include <string>
 #include <strsafe.h>
 #include <thread>
 #include <vector>
+#include <Windows.h>
 
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
@@ -223,9 +224,7 @@ void AtrumEngine::InitRenderer() {
 
   pDrawSprite_ = DrawSprite::Instance();
   pDrawSprite_->Initialize(renderDevice_->GetDevice(),
-                           commandContextDirect_.get(), srvAllocator_.get(),
-                           window_->GetClientWidth(),
-                           window_->GetClientHeight());
+                           commandContextDirect_.get(), srvAllocator_.get());
 }
 
 void AtrumEngine::InitPlayInput() {
@@ -880,8 +879,9 @@ std::shared_ptr<AssetModel> AtrumEngine::GetModel(
                                   directoryPathMtl, mtlFileName);
 }
 
-void AtrumEngine::SetViewMatrix(const M::Matrix4x4 &mat) {
-  pDraw_->viewMatrix_ = mat;
+void AtrumEngine::SetCamera(Camera *camera) {
+  pDraw_->SetCamera(camera);
+  pDrawSprite_->SetCamera(camera);
 }
 
 void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
