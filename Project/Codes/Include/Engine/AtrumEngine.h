@@ -358,11 +358,17 @@ public:
   /// <param name="cameraTransform"> カメラの座標情報 </param>
   /// <param name="vertexData"> 球の半径 </param>
   /// <param name="directionalLightData"> 平行光源データ(option) </param>
-  void DrawSphere(const uint32_t &textureIndex,
-                  const Math::Vector4 &textureColor,
-                  const Math::Transform &uvTransform,
-                  const Math::Transform &sphereTransform, const float radius,
-                  const uint32_t subdivision, const bool isLighting = false);
+  void DrawSphere(const uint32_t& textureIndex,
+      const Math::Vector4& textureColor,
+      const Math::Transform& uvTransform,
+      const Math::Transform& sphereTransform, const float radius,
+      const uint32_t subdivision, const bool isLighting = false);
+
+  void DrawSphere(const uint32_t& textureIndex,
+      const Math::Vector4& textureColor,
+      const Math::Transform& uvTransform,
+      const Math::Matrix4x4& worldMatrix, const float radius,
+      const uint32_t subdivision = 16, const bool isLighting = false);
 
   /// <summary>
   /// Spriteの準備

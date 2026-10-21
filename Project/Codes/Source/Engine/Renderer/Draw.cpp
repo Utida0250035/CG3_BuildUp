@@ -263,14 +263,24 @@ namespace Atrum {
 		const uint32_t subdivision, const bool isLighting,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
-// 球のM::Transform
+		// 球のM::Transform
 		M::Matrix4x4 sphereWorldMatrix = sphereTransform.MakeWorldMatrix();
+
+		this->DrawSphere(textureIndex, textureColor, uvTransform, sphereWorldMatrix, radius, subdivision, isLighting, directionalLightAddress);
+	}
+
+	void Draw::DrawSphere(const uint32_t& textureIndex,
+		const Math::Vector4& textureColor,
+		const Math::Transform& uvTransform,
+		const Math::Matrix4x4& worldMatrix, const float radius,
+		const uint32_t subdivision, const bool isLighting,
+		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
 		TransformationData transformationData{};
 
 		transformationData.wvp =
-			sphereWorldMatrix * camera_->GetViewProjectionMatrix();
-		transformationData.world = sphereWorldMatrix;
+			worldMatrix * camera_->GetViewProjectionMatrix();
+		transformationData.world = worldMatrix;
 
 		transformationBuffer_->SetData(transformationData, constantBufferCount_);
 
@@ -380,6 +390,7 @@ namespace Atrum {
 		this->DrawCall(textureIndex, indexDataCount - indexBuffer_->GetDrewCount(),
 			vertexDataCount - vertexBuffer_->GetDrewCount(),
 			directionalLightAddress);
+
 	}
 
 	void Draw::DrawAsymmetricPyramid(
@@ -437,7 +448,7 @@ namespace Atrum {
 
 		model->Draw(transform.MakeWorldMatrix(), camera_->GetViewMatrix(), directionalLightAddress,
 			pCommandContextDirect_->GetCommandList(), pSrvAllocator_,
-			camera_->GetPerspectiveFovMatrix(), isLighting);
+			camera_->GetPerspectiveFovMatrix(), isLighting, Math::Vector4::White(), constantBufferCount_, materialBuffer_.get(), transformationBuffer_.get());
 	}
 
 	void Draw::DrawModel(AssetModel* model, const Math::Matrix4x4& worldMatrix,
@@ -446,7 +457,7 @@ namespace Atrum {
 
 		model->Draw(worldMatrix, camera_->GetViewMatrix(), directionalLightAddress,
 			pCommandContextDirect_->GetCommandList(), pSrvAllocator_,
-			camera_->GetPerspectiveFovMatrix(), isLighting, color);
+			camera_->GetPerspectiveFovMatrix(), isLighting, color, constantBufferCount_, materialBuffer_.get(), transformationBuffer_.get());
 	}
 
 	void Draw::Finalize() {}

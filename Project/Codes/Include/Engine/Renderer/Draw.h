@@ -129,6 +129,13 @@ namespace Atrum {
 			const uint32_t subdivision, const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
+		void DrawSphere(const uint32_t& textureIndex,
+			const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform,
+			const Math::Matrix4x4& worldMatrix, const float radius,
+			const uint32_t subdivision, const bool isLighting,
+			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+
 		void DrawModel(AssetModel* model, const Math::Transform& transform,
 			const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);

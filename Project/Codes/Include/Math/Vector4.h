@@ -53,6 +53,10 @@ struct Vector4 {
     return (*this);
   }
 
+  constexpr Vector4 operator*(const Vector4& vector) const {
+      return { x * vector.x, y * vector.y, z * vector.z, w * vector.w };
+  }
+
   constexpr Vector4 operator*(const float scalar) const {
     Vector4 result = (*this);
     result *= scalar;

@@ -802,6 +802,17 @@ void AtrumEngine::DrawSphere(const uint32_t &textureIndex,
                      directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+void AtrumEngine::DrawSphere(const uint32_t& textureIndex,
+    const Math::Vector4& textureColor,
+    const Math::Transform& uvTransform,
+    const Math::Matrix4x4& worldMatrix, const float radius,
+    const uint32_t subdivision, const bool isLighting) {
+
+    pDraw_->DrawSphere(textureIndex, textureColor, uvTransform, worldMatrix,
+        radius, subdivision, isLighting,
+        directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
 void AtrumEngine::DrawAsymmetricPyramid(
     const uint32_t &textureIndex, const M::Vector4 &textureColor,
     const M::Transform &uvTransform, const M::Vector3 &scale,

@@ -562,46 +562,37 @@ namespace Atrum {
 
 #endif
 
-
-		//assert(assetMaterialData.size() == colors.size());
-		//assert(assetMaterialData.size() == lightingEnableData.size());
-
 		for (size_t i = 0; i < assetMaterialData.size(); ++i) {
-
-			if (assetMaterialData[i]->materialResource) {
-
-				continue;
-
-			}
-
-			// マテリアルリソースの生成
-			assetMaterialData[i]->materialResource = CreateUploadBuffer(sizeof(MaterialData), pDevice_);
-			// 書き込み用アドレスの確保
-			assetMaterialData[i]->materialResource->Map(0u, nullptr, reinterpret_cast<void**>(&assetMaterialData[i]->materialData));
-
-			assetMaterialData[i]->materialData->uvTransformMatrix = M::Matrix4x4::Identity();
 
 			if (i >= colors.size()) {
 
-				assetMaterialData[i]->materialData->color = Atrum::Math::Vector4::White();
+				assetMaterialData[i]->baseColor = Atrum::Math::Vector4::White();
 
 			} else {
 
-				assetMaterialData[i]->materialData->color = colors[i];
+				assetMaterialData[i]->baseColor = colors[i];
 
 			}
 
 			if (i >= lightingEnableData.size()) {
 
-				assetMaterialData[i]->materialData->isLightingEnable = false;
+				assetMaterialData[i]->isLightingEnable = false;
 
 			} else {
 
-				assetMaterialData[i]->materialData->isLightingEnable = lightingEnableData[i];
+				assetMaterialData[i]->isLightingEnable = lightingEnableData[i];
 
 			}
 
-			assetMaterialData[i]->materialData->isUseTexture = (assetMaterialData[i]->textureSrvIndex != 0);
+			assetMaterialData[i]->isUseTexture = (assetMaterialData[i]->textureSrvIndex != 0);
+
+			// ★ テクスチャが指定されていない場合はデフォルトの白テクスチャインデックスを適用する
+			if (assetMaterialData[i]->textureSrvIndex == 0) {
+				assetMaterialData[i]->textureSrvIndex = defaultTextureSrvIndex_;
+#ifdef _DEBUG
+				assetMaterialData[i]->textureFilePathDebug = "./Assets/Images/white4x4.png";
+#endif
+			}
 
 		}
 
@@ -636,10 +627,6 @@ namespace Atrum {
 		}
 
 		assetMaterialData.clear();
-
-		// 座標変換リソース・データ
-		assetModelData->transformationResource_ = CreateUploadBuffer(sizeof(TransformationData), pDevice_);
-		assetModelData->transformationResource_->Map(0u, nullptr, reinterpret_cast<void**>(&assetModelData->transformationData_));
 
 #ifdef _DEBUG
 
