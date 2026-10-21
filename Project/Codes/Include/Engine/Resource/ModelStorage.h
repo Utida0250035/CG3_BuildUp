@@ -71,7 +71,7 @@ namespace Atrum {
 					const auto& pModel = ptr.second.lock();
 
 					if (pModel) {
-						pModel->ReleaseGPUResources();
+						pModel->ReleaseResources();
 					}
 
 				}

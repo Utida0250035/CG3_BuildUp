@@ -4,6 +4,7 @@
 #include "Math/Matrix4x4.h"
 #include "Math/Transform.h"
 #include "TransformationData.h"
+#include "ConstantBuffer.h"
 #include "VertexData.h"
 
 #include <memory>
@@ -21,182 +22,178 @@
 namespace Atrum {
 
 /* Asset用 Mesh */
-struct AssetMeshData {
+	struct AssetMeshData {
 
-  // 頂点データ
-  std::vector<VertexData> vertices;
+	  // 頂点データ
+		std::vector<VertexData> vertices;
 
-  // 頂点リソース
-  Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
+		// 頂点リソース
+		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource = nullptr;
 
-  // 頂点バッファビュー
-  D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
+		// 頂点バッファビュー
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
 
-  void UnMap() {
+		void UnMap() {
 
-    if (vertexResource) {
+			if (vertexResource) {
 
-      // vertexResource->Unmap(0, nullptr);
+			  // vertexResource->Unmap(0, nullptr);
 
-      vertices.clear();
-    }
-  }
+				vertices.clear();
+			}
+		}
 
 #ifdef DEVELOPMENT
 
   // データ名
-  std::string name;
+		std::string name;
 
 #endif
-};
+	};
 
-/* Asset用 Material */
-struct AssetMaterialData {
+	/* Asset用 Material */
+	struct AssetMaterialData {
 
-  // srvディスクリプタヒープ上の番号
-  uint32_t textureSrvIndex = 0u;
+	  // srvディスクリプタヒープ上の番号
+		uint32_t textureSrvIndex = 0u;
 
-  // マテリアルリソース
-  Microsoft::WRL::ComPtr<ID3D12Resource> materialResource = nullptr;
+		Math::Vector4 baseColor = Math::Vector4::White();
 
-  // マテリアルデータ
-  MaterialData *materialData = nullptr;
+		bool isUseTexture = true;
 
-  void UnMap() {
-
-    if (materialResource && materialData) {
-
-      materialResource->Unmap(0, nullptr);
-
-      materialData = nullptr;
-    }
-  }
+		bool isLightingEnable = false;
 
 #ifdef DEVELOPMENT
 
   // テクスチャのファイルパス
-  std::string textureFilePathDebug = "";
+		std::string textureFilePathDebug = "";
 
-  // データ名
-  std::string name;
+		// データ名
+		std::string name;
 
 #endif
-};
+	};
 
-struct AssetMeshNode {
+	struct AssetMeshNode {
 
-  std::shared_ptr<AssetMeshData> mesh;
-  std::shared_ptr<AssetMaterialData> material;
+		std::shared_ptr<AssetMeshData> mesh;
+		std::shared_ptr<AssetMaterialData> material;
 
-  void UnMap() {
+	};
 
-    mesh->UnMap();
-    material->UnMap();
+	class AtrumEngine;
+	class ModelStorage;
 
-    mesh.reset();
-    material.reset();
-  }
-};
+	/* Asset用 Model */
+	class AssetModel {
 
-class AtrumEngine;
-class ModelStorage;
+	private:
+		friend AtrumEngine;
 
-/* Asset用 Model */
-class AssetModel {
+		friend ModelStorage;
 
-private:
-  friend AtrumEngine;
-
-  friend ModelStorage;
-
-  // 座標変換リソース
-  Microsoft::WRL::ComPtr<ID3D12Resource> transformationResource_ = nullptr;
-  // 座標変換データ
-  TransformationData *transformationData_ = nullptr;
-
-  // メッシュの塊の添え字検索
-  std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
-  // メッシュと対応マテリアルの塊
-  std::vector<AssetMeshNode> meshNodes_{};
+		// メッシュの塊の添え字検索
+		std::unordered_map<uint64_t, size_t> nodeHashToIndexTable_{};
+		// メッシュと対応マテリアルの塊
+		std::vector<AssetMeshNode> meshNodes_{};
 
 #ifdef DEVELOPMENT
 
-  std::string objFilePathDebug_ = "";
-  std::string mtlFilePathDebug_ = "";
+		std::string objFilePathDebug_ = "";
+		std::string mtlFilePathDebug_ = "";
 
 #endif
 
-public:
-  void Draw(const Math::Matrix4x4 worldMatrix, Math::Matrix4x4 viewMatrix,
-            const D3D12_GPU_VIRTUAL_ADDRESS &directionalLightAddr,
-            ID3D12GraphicsCommandList *commandList,
-            DescriptorAllocator *srvAllocator,
-            const Math::Matrix4x4 &perspectiveFovMatrix, const bool isLighting,
-            const Math::Vector4 &color = Math::Vector4::White()) {
+	public:
+		void Draw(const Math::Matrix4x4 worldMatrix, Math::Matrix4x4 viewMatrix,
+			const D3D12_GPU_VIRTUAL_ADDRESS& directionalLightAddr,
+			ID3D12GraphicsCommandList* commandList,
+			DescriptorAllocator* srvAllocator,
+			const Math::Matrix4x4& perspectiveFovMatrix, const bool isLighting,
+			const Math::Vector4& color,
+			uint32_t& ioConstantBufferCount,
+			MultiConstantBuffer<MaterialData>* materialBuffer,
+			MultiConstantBuffer<TransformationData>* transformationBuffer
+			) {
 
-    transformationData_->world = worldMatrix;
+			TransformationData transformationData{};
 
-    transformationData_->wvp = worldMatrix * viewMatrix * perspectiveFovMatrix;
+			transformationData.wvp =
+				worldMatrix * viewMatrix * perspectiveFovMatrix;
+			transformationData.world = worldMatrix;
 
-    commandList->SetGraphicsRootConstantBufferView(
-        1, transformationResource_->GetGPUVirtualAddress());
+			MaterialData materialData{};
 
-    commandList->SetGraphicsRootConstantBufferView(3, directionalLightAddr);
+			commandList->SetGraphicsRootConstantBufferView(3, directionalLightAddr);
 
-    DescriptorAllocator::DescriptorHandle textureHandle{};
+			DescriptorAllocator::DescriptorHandle textureHandle{};
 
-    for (auto &meshNode : meshNodes_) {
+			D3D12_GPU_VIRTUAL_ADDRESS transformOffsetAddr{};
+			
+			D3D12_GPU_VIRTUAL_ADDRESS materialOffsetAddr{};
 
-      meshNode.material->materialData->isLightingEnable = isLighting;
+			for (auto& meshNode : meshNodes_) {
 
-      meshNode.material->materialData->color = color;
+				transformationBuffer->SetData(transformationData, ioConstantBufferCount);
 
-      textureHandle =
-          srvAllocator->GetHandle(meshNode.material->textureSrvIndex);
+				// TransformMatrix (WVP) のアドレス計算
+				transformOffsetAddr =
+					transformationBuffer->GetGpuVirtualAddress() +
+					(ioConstantBufferCount * sizeof(TransformationData));
+				// GPUに設定(rootParameter0)
+				commandList->SetGraphicsRootConstantBufferView(
+					1, transformOffsetAddr);
 
-      // SRVのDescriptorTableの先頭を設定 rootParameter[2]
-      commandList->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+				materialData.color = color* meshNode.material->baseColor;
 
-      commandList->SetGraphicsRootConstantBufferView(
-          0, meshNode.material->materialResource->GetGPUVirtualAddress());
+				materialData.uvTransformMatrix = Math::Matrix4x4::Identity();
 
-      commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
+				materialData.isLightingEnable = isLighting;
 
-      commandList->DrawInstanced(
-          static_cast<UINT>(meshNode.mesh->vertices.size()), 1, 0, 0);
-    }
-  }
+				materialBuffer->SetData(materialData, ioConstantBufferCount);
+
+				materialOffsetAddr =
+					materialBuffer->GetGpuVirtualAddress() +
+					(ioConstantBufferCount * sizeof(MaterialData));
+				// GPUに設定(rootParameter1)
+				commandList->SetGraphicsRootConstantBufferView(
+					0, materialOffsetAddr);
+
+				textureHandle =
+					srvAllocator->GetHandle(meshNode.material->textureSrvIndex);
+
+				// SRVのDescriptorTableの先頭を設定 rootParameter[2]
+				commandList->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+				commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
+
+				commandList->DrawInstanced(
+					static_cast<UINT>(meshNode.mesh->vertices.size()), 1, 0, 0);
+
+				++ioConstantBufferCount;
+			}
+		}
 
 #ifdef DEVELOPMENT
 
-  std::string GetTexturePath() {
+		std::string GetTexturePath() {
 
-    std::string result{};
+			std::string result{};
 
-    for (const auto &meshNode : meshNodes_) {
+			for (const auto& meshNode : meshNodes_) {
 
-      result += "\n" + meshNode.material->textureFilePathDebug;
-    }
+				result += "\n" + meshNode.material->textureFilePathDebug;
+			}
 
-    return result;
-  }
+			return result;
+		}
 
 #endif
 
-  void ReleaseGPUResources() {
+		void ReleaseResources() {
 
-    if (transformationResource_ && transformationData_) {
-
-      transformationResource_->Unmap(0, nullptr);
-      transformationData_ = nullptr;
-    }
-
-    for (auto &meshNode : meshNodes_) {
-      meshNode.UnMap();
-    }
-
-    meshNodes_.clear();
-  }
-};
+			meshNodes_.clear();
+		}
+	};
 
 } // namespace Atrum

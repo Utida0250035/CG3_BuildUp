@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Cast/StaticCast.h"
 #include "Collision/HitMesh.h"
 #include "Engine/Blend/BlendMode.h"
@@ -58,27 +58,6 @@
 namespace Atrum {
 
 namespace fs = ::std::filesystem;
-
-namespace Input {
-
-class DirectInput;
-class PlayInput;
-
-} // namespace Input
-
-class ModelStorage;
-class TextureStorage;
-
-class Draw;
-class DrawSprite;
-
-class FrameDeltaTime;
-
-namespace Audio {
-
-class AudioManager;
-
-}
 
 class AtrumEngine final {
 
@@ -379,11 +358,17 @@ public:
   /// <param name="cameraTransform"> カメラの座標情報 </param>
   /// <param name="vertexData"> 球の半径 </param>
   /// <param name="directionalLightData"> 平行光源データ(option) </param>
-  void DrawSphere(const uint32_t &textureIndex,
-                  const Math::Vector4 &textureColor,
-                  const Math::Transform &uvTransform,
-                  const Math::Transform &sphereTransform, const float radius,
-                  const uint32_t subdivision, const bool isLighting = false);
+  void DrawSphere(const uint32_t& textureIndex,
+      const Math::Vector4& textureColor,
+      const Math::Transform& uvTransform,
+      const Math::Transform& sphereTransform, const float radius,
+      const uint32_t subdivision, const bool isLighting = false);
+
+  void DrawSphere(const uint32_t& textureIndex,
+      const Math::Vector4& textureColor,
+      const Math::Transform& uvTransform,
+      const Math::Matrix4x4& worldMatrix, const float radius,
+      const uint32_t subdivision = 16, const bool isLighting = false);
 
   /// <summary>
   /// Spriteの準備
@@ -457,7 +442,7 @@ public:
     directionalLightBuffer_->SetData(data);
   }
 
-  void SetCamera(Camera* camera);
+  void SetCamera(Camera *camera);
 
   void SetBlendMode(const BlendMode &blendMode);
 

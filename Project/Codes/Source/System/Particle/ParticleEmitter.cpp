@@ -1,4 +1,4 @@
-#include "System/Particle/ParticleEmitter.h"
+﻿#include "System/Particle/ParticleEmitter.h"
 #include "Engine/AtrumEngine.h"
 #include "Geometry/GeometryRandom.h"
 #include "Math/Lerp.h"
@@ -152,6 +152,9 @@ Math::Vector3 Emitter::ResolveSpawnLocalPos(Layer &layer) {
     return Geometry::Random::InCircleYZ(layer.param.emitCircle.radius,
                                         layer.param.emitCircle.center);
 
+  case EmitShape::SPHERE:
+    return Geometry::Random::InSphere(layer.param.emitSphere);
+
   case EmitShape::POINT:
     return layer.param.emitPointPos;
   default:
@@ -180,6 +183,30 @@ void Emitter::ParticleInit(Particle &particle, Layer &layer) {
 
   particle.lifeDuration = Alg::Random::Float(layer.param.minLifeDuration,
                                              layer.param.maxLifeDuration);
+
+  Math::Vector3 randomVel{Alg::Random::Float(-layer.param.velocityRandom.x,
+                                             layer.param.velocityRandom.x),
+                          Alg::Random::Float(-layer.param.velocityRandom.y,
+                                             layer.param.velocityRandom.y),
+                          Alg::Random::Float(-layer.param.velocityRandom.z,
+                                             layer.param.velocityRandom.z)};
+
+  switch (layer.param.movementMode) {
+  case MovementMode::DIRECTIONAL:
+
+  case MovementMode::RADIAL_SPREAD: {
+    Math::Vector3 dir = localPos;
+    if (dir.LengthSquare() > 1e-5f) {
+      dir.Normalize();
+    } else {
+      dir = {0.0f, 1.0f, 0.0f};
+    }
+    float speed = layer.param.baseVelocity.Length();
+    particle.velocity = (dir * speed) + randomVel;
+  }
+  default:
+    particle.velocity = layer.param.baseVelocity + randomVel;
+  }
 
   particle.lifeTimePassed = 0.0f;
 
@@ -229,9 +256,9 @@ void Emitter::ResolveContinuousEmit(const size_t layerIndex) {
 
     layer.accumulator += frameDeltaTime_->GetDeltaTime();
 
-    while (layer.accumulator >= layer.param.emitRate) {
+    while (layer.accumulator >= 1.0f / layer.param.emitRate) {
       EmitOneLayer(layerIndex);
-      layer.accumulator -= layer.param.emitRate;
+      layer.accumulator -= 1.0f / layer.param.emitRate;
     }
   }
 }

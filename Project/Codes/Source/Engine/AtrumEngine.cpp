@@ -1,4 +1,4 @@
-#include "Audio/Audio.h"
+﻿#include "Audio/Audio.h"
 #include "Camera/Camera.h"
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
@@ -802,6 +802,17 @@ void AtrumEngine::DrawSphere(const uint32_t &textureIndex,
                      directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+void AtrumEngine::DrawSphere(const uint32_t& textureIndex,
+    const Math::Vector4& textureColor,
+    const Math::Transform& uvTransform,
+    const Math::Matrix4x4& worldMatrix, const float radius,
+    const uint32_t subdivision, const bool isLighting) {
+
+    pDraw_->DrawSphere(textureIndex, textureColor, uvTransform, worldMatrix,
+        radius, subdivision, isLighting,
+        directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
 void AtrumEngine::DrawAsymmetricPyramid(
     const uint32_t &textureIndex, const M::Vector4 &textureColor,
     const M::Transform &uvTransform, const M::Vector3 &scale,
@@ -879,9 +890,9 @@ std::shared_ptr<AssetModel> AtrumEngine::GetModel(
                                   directoryPathMtl, mtlFileName);
 }
 
-void AtrumEngine::SetCamera(Camera* camera) {
-    pDraw_->SetCamera(camera);
-    pDrawSprite_->SetCamera(camera);
+void AtrumEngine::SetCamera(Camera *camera) {
+  pDraw_->SetCamera(camera);
+  pDrawSprite_->SetCamera(camera);
 }
 
 void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
