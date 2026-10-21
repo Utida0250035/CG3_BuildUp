@@ -19,6 +19,8 @@ protected:
   Math::Matrix4x4 orthographicMatrix_ = Math::Matrix4x4::Orthographic(
       0.0f, 0.0f, 1280.0f, 720.0f, 0.0001f, 100.0f);
 
+  Math::Matrix4x4 viewProjectionMatrix_{};
+
   // 平行移動
   Math::Vector3 translate_{0.0f, 0.0f, -10.0f};
 
@@ -45,6 +47,9 @@ public:
     viewMatrix_ =
         Math::Matrix4x4::InverseRT(quaternion_.MakeRotateMatrixLh(),
                                    Math::Matrix4x4::Translate(translate_));
+
+    viewProjectionMatrix_ = viewMatrix_ * perspectiveFovMatrix_;
+
   }
 
   /* ゲッター */
@@ -53,6 +58,9 @@ public:
   Math::Matrix4x4 GetPerspectiveFovMatrix() const {
     return perspectiveFovMatrix_;
   }
+
+  Math::Matrix4x4 GetViewProjectionMatrix() const { return viewProjectionMatrix_; }
+
   Math::Matrix4x4 GetOrthographicMatrix() const { return orthographicMatrix_; }
 
   /* セッター */

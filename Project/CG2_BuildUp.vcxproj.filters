@@ -214,6 +214,9 @@
     <ClCompile Include="Codes\Source\Engine\Resource\LightData.cpp">
       <Filter>Codes\Source\Engine\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -552,6 +555,12 @@
     <ClInclude Include="Codes\Include\Engine\Resource\LightData.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\EngineFwd.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -763,6 +772,12 @@
     </Filter>
     <Filter Include="Codes\Source\Engine\Renderer\Shader">
       <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Renderer\Lighting">
+      <UniqueIdentifier>{80c16848-f1f2-4e58-b177-2037eea09806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Renderer\Lighting">
+      <UniqueIdentifier>{61d04f0d-2e9c-4859-b3a9-167fae6c1e34}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

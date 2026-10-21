@@ -6,20 +6,21 @@
 #include "Engine/Command/Fence.h"
 #include "Engine/Device/RenderDevice.h"
 #include "Engine/Device/SwapChain.h"
+#include "Engine/EngineFwd.h"
 #include "Engine/Pipeline/PipelineState.h"
 #include "Engine/Pipeline/RootSignature.h"
 #include "Engine/Platform/Window/Window.h"
+#include "Engine/Renderer/Shader/ShaderCompiler.h"
 #include "Engine/Resource/AssetModel.h"
 #include "Engine/Resource/ConstantBuffer.h"
 #include "Engine/Resource/DescriptorAllocator.h"
-#include "Engine/Resource/LightData.h"
 #include "Engine/Resource/IndexBuffer.h"
+#include "Engine/Resource/LightData.h"
 #include "Engine/Resource/MaterialData.h"
 #include "Engine/Resource/Texture.h"
 #include "Engine/Resource/TransformationData.h"
 #include "Engine/Resource/VertexBuffer.h"
 #include "Engine/Resource/VertexData.h"
-#include "Engine/Renderer/Shader/ShaderCompiler.h"
 #include "ForDebug/Log.h"
 #include "Geometry/PyramidMesh.h"
 #include "Math/Matrix3x3.h"
@@ -29,16 +30,16 @@
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 #include "System/DeltaTime.h"
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <Windows.h>
 #include <array>
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <SDL.h>
+#include <SDL_syswm.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <Windows.h>
 #include <wrl/client.h>
 
 #include <d3d12.h>
@@ -456,7 +457,7 @@ public:
     directionalLightBuffer_->SetData(data);
   }
 
-  void SetViewMatrix(const Math::Matrix4x4 &mat);
+  void SetCamera(Camera* camera);
 
   void SetBlendMode(const BlendMode &blendMode);
 

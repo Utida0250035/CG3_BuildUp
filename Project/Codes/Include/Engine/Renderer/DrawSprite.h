@@ -21,6 +21,8 @@ namespace Atrum {
 
 	class AtrumEngine;
 
+	class Camera;
+
 	class DrawSprite final {
 
 	private:
@@ -91,12 +93,11 @@ namespace Atrum {
 
 		static DrawSprite* instance_;
 
-		// 正射影
-		Math::Matrix4x4 orthographicMatrix_{};
+		Camera* camera_ = nullptr;
 
 	public:
 
-		void Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator, const uint32_t clientWidth, const uint32_t clientHeight);
+		void Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator);
 
 		/// <summary>
 		/// Spriteの準備
@@ -122,6 +123,12 @@ namespace Atrum {
 		void DrawSpriteLine(const uint32_t& textureIndex, const Math::Vector4& textureColor, const Math::Transform& uvTransform, const Math::Vector2& start, const Math::Vector2& end, const float& width, const float& posZ);
 
 		void Finalize();
+
+		/* セッター */
+
+		void SetCamera(Camera* camera) { camera_ = camera; }
+
+		/* シングルトン */
 
 		DrawSprite operator=(const DrawSprite& source) = delete;
 		DrawSprite(const DrawSprite& source) = delete;

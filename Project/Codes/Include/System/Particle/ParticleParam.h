@@ -45,13 +45,13 @@ struct Param {
 
   SimulationSpace simulationSpaceFromEmitter = SimulationSpace::WORLD;
 
-  EmitMode emitMode = EmitMode::BURST;
+  EmitMode emitMode = EmitMode::CONTINUOUS;
 
   // 形状選択
-  EmitShape emitShape = EmitShape::POINT;
+  EmitShape emitShape = EmitShape::SPHERE;
 
   // 球データ
-  Geometry::Sphere emitSphere{};
+  Geometry::Sphere emitSphere{{}, 8.0f};
 
   // AABBデータ
   Geometry::AABB emitAabb{};
@@ -66,17 +66,17 @@ struct Param {
   MovementMode movementMode = MovementMode::DIRECTIONAL;
 
   // CONTINUOUS用 1秒間の発射数(1/emitRate[s]につき1つ)
-  float emitRate = 0.0f;
+  float emitRate = 5.0f;
   // BURST用 1回の発射数
   size_t burstCount = 0;
   // CONTINUOUS用 断続時間を無くして発生をループさせるかどうか
   bool isLooping = false;
   // CONTINUOUS用 発生断続時間[s]
-  float duration = 0.0f;
+  float duration = 20.0f;
 
   // 生存時間 ランダム幅
-  float minLifeDuration = 0.0f;
-  float maxLifeDuration = 0.0f;
+  float minLifeDuration = 0.5f;
+  float maxLifeDuration = 1.0f;
 
   // 速度と拡散・加減速
   Math::Vector3 baseVelocity = {0.0f, 0.0f, 0.0f};
@@ -85,23 +85,23 @@ struct Param {
   float damping = 0.0f;                              // 空気抵抗（減衰）
 
   // スケール変化
-  Math::Vector3 startScale{};
-  Math::Vector3 endScale{};
+  Math::Vector3 startScale = Math::Vector3::One();
+  Math::Vector3 endScale = Math::Vector3::One();
 
   // カラー変化（発生時 〜 消失時）
-  Math::Vector4 startColor = {0.0f, 0.0f, 0.0f, 0.0f};
-  Math::Vector4 endColor = {0.0f, 0.0f, 0.0f, 0.0f};
+  Math::Vector4 startColor = {1.0f, 1.0f, 1.0f, 1.0f};
+  Math::Vector4 endColor = {1.0f, 1.0f, 1.0f, 0.0f};
 
   // キルフィールド設定
   KillFieldParam killFieldParam{};
 
   // プールの最大粒子数
-  size_t maxCount = 0;
+  size_t maxCount = 32;
 
-  std::string objDirectoryPath = "";
-  std::string objFileName = "";
-  std::string mtlDirectoryPath = "";
-  std::string mtlFileName = "";
+  std::string objDirectoryPath = "./Assets/Objects/unitSphere";
+  std::string objFileName = "unitSphere.obj";
+  std::string mtlDirectoryPath = "./Assets/Objects/unitSphere";
+  std::string mtlFileName = "unitSphere.mtl";
 };
 
 void to_json(nlohmann::json &j, const Param &param);

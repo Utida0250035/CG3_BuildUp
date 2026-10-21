@@ -6,6 +6,7 @@
 #include "Engine/Resource/VertexBuffer.h"
 #include "Math/Transform.h"
 #include "Engine/Resource/TextureStorage.h"
+#include "Camera/Camera.h"
 
 namespace {
 
@@ -23,15 +24,13 @@ namespace Atrum {
 
 	DrawSprite* DrawSprite::instance_ = nullptr;
 
-	void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator, const uint32_t clientWidth, const uint32_t clientHeight) {
+	void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator) {
 
 		pDevice_ = device;
 
 		pCommandContextDirect_ = commandContextDirect;
 
 		pSrvAllocator_ = srvAllocator;
-
-		orthographicMatrix_ = Matrix4x4::Orthographic(0.0f, 0.0f, Cast::Float(clientWidth), Cast::Float(clientHeight), 0.0f, 100.0f);
 
 		CreateVertexBuffer();
 
@@ -157,7 +156,7 @@ namespace Atrum {
 
 		TransformationData TransformData{};
 
-		TransformData.wvp = worldMatrix * orthographicMatrix_;
+		TransformData.wvp = worldMatrix * camera_->GetOrthographicMatrix();
 		TransformData.world = worldMatrix;
 
 		transformationBuffer_->SetData(TransformData, constantBufferCount_);
