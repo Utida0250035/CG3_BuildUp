@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Resource/ConstantBuffer.h"
-#include "Engine/Resource/DirectionalLightData.h"
+#include "Engine/Resource/LightData.h"
 #include "Engine/Resource/MaterialData.h"
 #include "Engine/Resource/TransformationData.h"
 #include "Engine/Resource/VertexData.h"

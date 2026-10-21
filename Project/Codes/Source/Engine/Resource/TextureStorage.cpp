@@ -319,13 +319,22 @@ namespace Atrum {
 
 	uint32_t TextureStorage::GetTextureWidth(const uint32_t textureIndex) {
 
+#ifdef NDEBUG
+		return textures_[textureIndex].width;
+#else
 		return textures_[textureIndex - 1].width;
+#endif
 
 	}
 
 	uint32_t TextureStorage::GetTextureHeight(const uint32_t textureIndex) {
 
+#ifdef NDEBUG
+		return textures_[textureIndex].height;
+#else
 		return textures_[textureIndex - 1].height;
+#endif
+
 
 	}
 

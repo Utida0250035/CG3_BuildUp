@@ -124,9 +124,6 @@
     <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp">
       <Filter>Codes\Source\Engine\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
-      <Filter>Codes\Source\Engine\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>External_ImGui\misc\cpp</Filter>
     </ClCompile>
@@ -210,6 +207,12 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\AABB.cpp">
       <Filter>Codes\Source\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\LightData.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -330,9 +333,6 @@
     <ClInclude Include="Codes\Include\Engine\Resource\DescriptorAllocator.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Resource\DirectionalLightData.h">
-      <Filter>Codes\Include\Engine\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Resource\IndexBuffer.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
@@ -380,9 +380,6 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Device\SwapChain.h">
       <Filter>Codes\Include\Engine\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h">
-      <Filter>Codes\Include\Engine\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <Filter>External_ImGui\misc\cpp</Filter>
@@ -549,6 +546,12 @@
     <ClInclude Include="Codes\Include\Math\Easing.h">
       <Filter>Codes\Include\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h">
+      <Filter>Codes\Include\Engine\Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -626,9 +629,6 @@
     <Filter Include="Codes\Include\Engine\Platform">
       <UniqueIdentifier>{01783b0c-1a01-466e-84f5-37eb1cba87f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Engine\Shader">
-      <UniqueIdentifier>{bf984495-4469-4975-a802-0d0449e3ef2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Codes\Include\Engine\Platform\Window">
       <UniqueIdentifier>{b8cc9764-0571-44ed-95ee-c1ba811f88c1}</UniqueIdentifier>
     </Filter>
@@ -655,9 +655,6 @@
     </Filter>
     <Filter Include="Codes\Source\Engine\Resource">
       <UniqueIdentifier>{68dd256d-1b97-42f7-8df7-c01f1a744bb0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Engine\Shader">
-      <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
     </Filter>
     <Filter Include="External_ImGui\misc">
       <UniqueIdentifier>{0dbabe86-272b-4b16-905c-b4b2feb15a43}</UniqueIdentifier>
@@ -760,6 +757,12 @@
     </Filter>
     <Filter Include="Codes\Source\System\Scripting">
       <UniqueIdentifier>{6c889fca-37fe-4b22-a6d5-1f773f7192c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Renderer\Shader">
+      <UniqueIdentifier>{bf984495-4469-4975-a802-0d0449e3ef2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Renderer\Shader">
+      <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

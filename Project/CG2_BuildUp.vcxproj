@@ -233,6 +233,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
@@ -242,6 +243,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Engine\Resource\IndexBuffer.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\LightData.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\ModelStorage.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
@@ -249,9 +251,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp">
-      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Shader\ShaderCompiler.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
@@ -358,12 +357,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\CreateBufferResource.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\DescriptorAllocator.h" />
-    <ClInclude Include="Codes\Include\Engine\Resource\DirectionalLightData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\IndexBuffer.h" />
+    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\MaterialData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ModelStorage.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\Texture.h" />
@@ -371,7 +371,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Resource\TransformationData.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\VertexBuffer.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
-    <ClInclude Include="Codes\Include\Engine\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\File\FileSize.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h" />
