@@ -273,6 +273,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Math\Vector2.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector4.cpp" />
+    <ClCompile Include="Codes\Source\Scene\ChangeScene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\ChangeSceneFade.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandChangeScene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandScene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\GameOrder.cpp" />
+    <ClCompile Include="Codes\Source\Scene\Scene.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Editor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp" />
@@ -401,6 +407,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Math\Vector2.h" />
     <ClInclude Include="Codes\Include\Math\Vector3.h" />
     <ClInclude Include="Codes\Include\Math\Vector4.h" />
+    <ClInclude Include="Codes\Include\Scene\ChangeScene.h" />
+    <ClInclude Include="Codes\Include\Scene\ChangeSceneFade.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandChangeScene.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
+    <ClInclude Include="Codes\Include\Scene\GameOrder.h" />
+    <ClInclude Include="Codes\Include\Scene\Scene.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
     <ClInclude Include="Codes\Include\System\DeltaTime.h" />
     <ClInclude Include="Codes\Include\System\Editor\Editor.h" />

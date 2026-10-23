@@ -1,6 +1,6 @@
-﻿#include "GameOrder.h"
-#include "CommandChangeScene.h"
-#include "CommandScene.h"
+﻿#include "Scene/GameOrder.h"
+#include "Scene/CommandChangeScene.h"
+#include "Scene/CommandScene.h"
 #include <chrono>
 
 /// <summary>

@@ -1,4 +1,4 @@
-﻿#include "ChangeScene.h"
+﻿#include "Scene/ChangeScene.h"
 
 /// <summary>
 /// シーン遷移類 > 基底クラス > コンストラクタ

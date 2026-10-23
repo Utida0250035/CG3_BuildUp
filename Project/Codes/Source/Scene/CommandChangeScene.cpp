@@ -1,5 +1,5 @@
-﻿#include "CommandChangeScene.h"
-#include "CommandScene.h"
+﻿#include "Scene/CommandChangeScene.h"
+#include "Scene/CommandScene.h"
 
 /// <summary>
 /// 指令類 > シーン遷移指令 > コンストラクタ

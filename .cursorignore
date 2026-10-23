@@ -1,0 +1,9 @@
+build/
+node_modules/**/*
+bin/**
+*.fbx
+*.obj
+*.png
+*.tga
+*.mp3
+*.wav

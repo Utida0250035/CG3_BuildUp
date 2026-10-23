@@ -217,6 +217,24 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp">
       <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\ChangeScene.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\ChangeSceneFade.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandChangeScene.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandScene.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\GameOrder.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\Scene.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -561,6 +579,24 @@
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h">
       <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\ChangeScene.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\ChangeSceneFade.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\CommandChangeScene.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\CommandScene.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\GameOrder.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\Scene.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External_ImGui">
@@ -778,6 +814,12 @@
     </Filter>
     <Filter Include="Codes\Include\Engine\Renderer\Lighting">
       <UniqueIdentifier>{61d04f0d-2e9c-4859-b3a9-167fae6c1e34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Scene">
+      <UniqueIdentifier>{c4e8a1d2-91b3-4e7f-a6c5-0d2f8b3e4a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Scene">
+      <UniqueIdentifier>{d5f9b2e3-a2c4-4f80-b7d6-1e3a9c4f5b82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

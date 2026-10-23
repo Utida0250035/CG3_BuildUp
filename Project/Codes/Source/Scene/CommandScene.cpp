@@ -1,4 +1,4 @@
-﻿#include "CommandScene.h"
+﻿#include "Scene/CommandScene.h"
 #include "SceneTitle.h"
 
 /// <summary>

@@ -25,11 +25,14 @@
 #include "System/DeltaTime.h"
 #include "System/Hash64.h"
 #include <cassert>
+#include <chrono>
 #include <cfloat>
 #include <cstdint>
 #include <filesystem>
+#ifdef DEVELOPMENT
 #include <format>
 #include <fstream>
+#endif
 #include <memory>
 #include <numbers>
 #include <SDL.h>
@@ -59,6 +62,33 @@
 #include <d3d12sdklayers.h>
 
 #endif
+
+namespace {
+
+#ifdef DEVELOPMENT
+
+// #region agent log
+void AgentDebugLog(const char *location, const char *message,
+                   const char *hypothesisId, const std::string &dataJson) {
+  const auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
+                             std::chrono::system_clock::now().time_since_epoch())
+                             .count();
+  std::ofstream log(
+      R"(./.cursor/debug-db6cac.log)",
+      std::ios::app);
+  if (!log) {
+    return;
+  }
+  log << std::format(
+             R"({{"sessionId":"db6cac","runId":"pre-fix","hypothesisId":"{}","location":"{}","message":"{}","data":{},"timestamp":{}}})",
+             hypothesisId, location, message, dataJson, timestamp)
+      << "\n";
+}
+// #endregion
+
+#endif
+
+} // namespace
 
 namespace Atrum {
 
@@ -503,6 +533,25 @@ void AtrumEngine::PreDraw() {
 
   swapChainManager_->UpdateBackBufferIndex();
 
+#ifdef DEVELOPMENT
+
+  // #region agent log
+  {
+    static uint32_t preDrawLogCount = 0;
+    if (preDrawLogCount < 30) {
+      AgentDebugLog(
+          "AtrumEngine.cpp:PreDraw",
+          "frame start back buffer",
+          "C",
+          std::format(R"({{"backBufferIndex":{}}})",
+                      swapChainManager_->GetBackBufferIndex()));
+      ++preDrawLogCount;
+    }
+  }
+  // #endregion
+
+#endif
+
   D3D12_RESOURCE_BARRIER barrier{};
 
   // バリアの種類
@@ -661,6 +710,44 @@ void AtrumEngine::PostDraw() {
           swapChainManager_->GetBackBufferIndex()),
       nullptr);
   assert(SUCCEEDED(hr));
+
+#ifdef DEVELOPMENT
+
+  // #region agent log
+  {
+    static uint32_t postDrawLogCount = 0;
+    if (postDrawLogCount < 60) {
+      HRESULT deviceRemovedReason = S_OK;
+      if (renderDevice_ && renderDevice_->GetDevice()) {
+        deviceRemovedReason =
+            renderDevice_->GetDevice()->GetDeviceRemovedReason();
+      }
+      const uint32_t drawVertexCount = pDraw_->vertexBuffer_->GetDrewCount();
+      const uint32_t drawIndexCount = pDraw_->indexBuffer_->GetDrewCount();
+      const bool drawVertexOverflow =
+          drawVertexCount > Draw::kVertexMaxDrawCount;
+      const bool drawCbOverflow =
+          pDraw_->constantBufferCount_ >= Draw::kMaxDrawCount;
+      const bool spriteCbOverflow =
+          pDrawSprite_->constantBufferCount_ >= DrawSprite::kMaxDrawCount;
+      AgentDebugLog(
+          "AtrumEngine.cpp:PostDraw",
+          "frame draw usage",
+          "A,B,D",
+          std::format(
+              R"({{"backBufferIndex":{},"drawConstantBufferCount":{},"drawVertexCount":{},"drawIndexCount":{},"drawVertexMax":{},"drawCbMax":{},"spriteConstantBufferCount":{},"drawVertexOverflow":{},"drawCbOverflow":{},"spriteCbOverflow":{},"deviceRemovedHr":{}}})",
+              swapChainManager_->GetBackBufferIndex(),
+              pDraw_->constantBufferCount_, drawVertexCount, drawIndexCount,
+              Draw::kVertexMaxDrawCount, Draw::kMaxDrawCount,
+              pDrawSprite_->constantBufferCount_, drawVertexOverflow,
+              drawCbOverflow, spriteCbOverflow,
+              static_cast<long>(deviceRemovedReason)));
+      ++postDrawLogCount;
+    }
+  }
+  // #endregion
+
+#endif
 
   // 描画頂点数のカウントをリセット
   pDrawSprite_->vertexBuffer_->ResetDrewCount();
