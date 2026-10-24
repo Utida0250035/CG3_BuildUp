@@ -1,28 +1,28 @@
-﻿#include "Scene/GameOrder.h"
+#include "Scene/GameOrder.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
 #include <chrono>
 
-/// <summary>
-/// ゲーム統制 > コンストラクタ
-/// </summary>
-GameOrder::GameOrder() {
+namespace Atrum {
 
-	// プレイヤー入力のインスタンス取得
-	playerInput_ = PlayerInput::GetInstance();
+	/// <summary>
+	/// ゲーム統制 > コンストラクタ
+	/// </summary>
+	GameOrder::GameOrder() {
 
-	// シーン指令のインスタンス取得
-	commandScene_ = CommandScene::GetInstance();
+		frameDeltaTime_ = FrameDeltaTime::Instance();
 
-	commandChangeScene_ = CommandChangeScene::GetInstance();
+		frameDeltaTime_->Initialize();
 
-	// 現在時間を設定
-	preTime_ = std::chrono::steady_clock::now();
+		audio_ = Audio::Manager::Instance();
 
-	// 現在時間をコピー
-	currentTime_ = preTime_;
+		// シーン指令のインスタンス取得
+		commandScene_ = CommandScene::Instance();
 
-	// デルタタイムに0マイクロ秒を設定
-	deltaTime_ = std::chrono::duration<float>::zero();
+		commandChangeScene_ = CommandChangeScene::Instance();
+
+		AbstractInput::Instance()->Initialize();
+
+	}
 
 }

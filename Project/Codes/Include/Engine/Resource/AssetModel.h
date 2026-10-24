@@ -165,6 +165,8 @@ namespace Atrum {
 				// SRVのDescriptorTableの先頭を設定 rootParameter[2]
 				commandList->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
 
+				commandList->IASetPrimitiveTopology(
+				    D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 				commandList->IASetVertexBuffers(0u, 1u, &meshNode.mesh->vertexBufferView);
 
 				commandList->DrawInstanced(

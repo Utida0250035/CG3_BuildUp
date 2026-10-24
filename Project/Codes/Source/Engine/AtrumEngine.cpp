@@ -643,9 +643,12 @@ void AtrumEngine::PostDraw() {
 
 #ifdef USE_IMGUI
 
-  // ImGuiの描画コマンドを積む
-  ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(),
-                                commandContextDirect_->GetCommandList());
+  // ImGui::Render() 後のみ有効（未呼び出し時は GetDrawData() が null になり得る）
+  if (ImDrawData *drawData = ImGui::GetDrawData();
+      drawData != nullptr && drawData->Valid) {
+    ImGui_ImplDX12_RenderDrawData(drawData,
+                                  commandContextDirect_->GetCommandList());
+  }
 
 #endif
 

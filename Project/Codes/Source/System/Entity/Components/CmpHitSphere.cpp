@@ -4,7 +4,7 @@
 namespace Atrum {
 
 void CmpHitSphere::ResolveDependence() {
-	hitJudge_ = HitJudge::GetInstance();
+	hitJudge_ = HitJudge::Instance();
 	hitJudge_->Register(this);
 }
 

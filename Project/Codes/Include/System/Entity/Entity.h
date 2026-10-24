@@ -251,6 +251,9 @@ public:
   Math::Matrix4x4 GetWorldMatrix() const;
   Math::Vector3 GetWorldPosition() const;
 
+  /// ローカル座標点をワールド座標へ変換する
+  Math::Vector3 TransformLocalPointToWorld(const Math::Vector3 &localPoint) const;
+
   bool IsActive() const { return state_ == State::Active; }
 
   void RemoveChild(Entity *target) { std::erase(childs_, target); }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Engine/Resource/ConstantBuffer.h"
 #include "Engine/Resource/LightData.h"
@@ -83,6 +83,11 @@ namespace Atrum {
 		void CreateTransformationBuffer();
 
 		/// <summary>
+		/// モデル描画後にバッチ用 VB/IB を PreDraw と同じ状態へ戻す
+		/// </summary>
+		void RestoreBatchGeometryBindings();
+
+		/// <summary>
 		/// 初期化処理 VertexBufferの生成
 		/// </summary>
 		void CreateVertexBuffer();
@@ -94,8 +99,8 @@ namespace Atrum {
 
 		inline static constexpr uint32_t kMaxDrawCount = 4096;
 
-		// 画面上の頂点の最大描画数
-		inline static constexpr uint32_t kVertexMaxDrawCount = 16384;
+		// 画面上の頂点・インデックスの最大数（背景球＋弾＋戦闘パーティクルが同時に乗る量）
+		inline static constexpr uint32_t kVertexMaxDrawCount = 65536;
 
 		// ビューポート
 		D3D12_VIEWPORT viewport_{};

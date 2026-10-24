@@ -1,6 +1,6 @@
 #include "Input/AbstractInput.h"
 #include "Input/PlayInput.h"
-#include "Time/DeltaTime.h"
+#include "System/DeltaTime.h"
 
 namespace {
 
@@ -10,18 +10,15 @@ namespace I = Atrum::Input;
 
 namespace Atrum {
 
-void AbstractInput::Initialize() { input_ = I::PlayInput::GetInstance(); }
+void AbstractInput::Initialize() { input_ = I::PlayInput::Instance(); }
 
 void AbstractInput::Update() {
 
   data_ = {};
   leftStickInput_ = {};
 
-  isKeyboardInput_ = false;
-
-  // キーボード入力か否かの判定
-
-  //
+  // コントローラー未実装の間はキーボード入力を使う
+  isKeyboardInput_ = true;
 
   if (isKeyboardInput_) {
 
@@ -72,7 +69,7 @@ void AbstractInput::Update() {
 
   if (spacedVectorTimer_ > 0.0f) {
 
-    spacedVectorTimer_ -= FrameDeltaTime::GetInstance()->GetDeltaTime();
+    spacedVectorTimer_ -= FrameDeltaTime::Instance()->GetDeltaTime();
 
     if (spacedVectorTimer_ <= 0.0f) {
 

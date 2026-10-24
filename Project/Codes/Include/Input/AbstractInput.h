@@ -60,7 +60,7 @@ public:
 
   const InputData &GetData() { return data_; }
 
-  static AbstractInput *GetInstance() {
+  static AbstractInput *Instance() {
     static AbstractInput instance;
     return &instance;
   }

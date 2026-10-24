@@ -163,6 +163,10 @@ inline constexpr Math::Vector3 Lerp(const Math::Vector3 &start,
           Math::Lerp(start.z, end.z, t)};
 }
 
+/// 原点からの方向を球面補間し、距離は線形補間する
+Math::Vector3 Slerp(const Math::Vector3 &start, const Math::Vector3 &end,
+                    float t);
+
 void to_json(nlohmann::json &j, const Vector3 &vector);
 void from_json(const nlohmann::json &j, Vector3 &vector);
 

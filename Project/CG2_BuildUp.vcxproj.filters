@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Externals\imgui\imgui.cpp">
@@ -29,6 +29,9 @@
       <Filter>Codes\Source\Time</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp">
+      <Filter>Codes\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Input\AbstractInput.cpp">
       <Filter>Codes\Source\Input</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
@@ -142,6 +145,12 @@
     <ClCompile Include="Codes\Source\File\FileSize.cpp">
       <Filter>Codes\Source\File</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraFlipHorizontal.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraFlipVertical.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp">
       <Filter>Codes\Source\Collision2D</Filter>
     </ClCompile>
@@ -178,6 +187,75 @@
     <ClCompile Include="Codes\Source\System\Entity\Entity.cpp">
       <Filter>Codes\Source\System\Entity</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehDodge.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSweep.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemySwingShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyWallShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehRush.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehWalkAndJump.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpBehavior.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpDrawBullet.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpDrawHitSphere.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpEnemy.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpMeshSphere.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpMeshSpheres.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpSkyDome.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Visual\SkyDome.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpOrbiter.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpReflectAbleBullet.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpRotator.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\CmpSwing.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\EntityFactory.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\CmpInput.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp">
       <Filter>Codes\Source\System\Entity</Filter>
     </ClCompile>
@@ -187,11 +265,20 @@
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp">
       <Filter>Codes\Source\System\Registry</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\EmitterManager.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\GameCombatParticleEffects.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp">
       <Filter>Codes\Source\System\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
       <Filter>Codes\Source\System\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\SimulationSpace.cpp">
+      <Filter>Codes\Source\System</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\GeometryRandom.cpp">
       <Filter>Codes\Source\Geometry</Filter>
@@ -235,6 +322,21 @@
     <ClCompile Include="Codes\Source\Scene\Scene.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\BossDeathPresentation.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneGame.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneResult.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externals\imgui\imgui.h">
@@ -267,6 +369,12 @@
     <ClInclude Include="Codes\Include\Camera\Camera.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraFlipHorizontal.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraFlipVertical.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
@@ -283,6 +391,9 @@
       <Filter>Codes\Include\String</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Input\DirectInput.h">
+      <Filter>Codes\Include\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Input\AbstractInput.h">
       <Filter>Codes\Include\Input</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Input\PlayInput.h">
@@ -516,6 +627,105 @@
     <ClInclude Include="Codes\Include\System\Entity\Entity.h">
       <Filter>Codes\Include\System\Entity</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehDodge.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyMeteor.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSweep.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemySwingShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyWallShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehRush.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehWalkAndJump.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpBehavior.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpChildEntitys.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpDrawBullet.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpDrawHitSphere.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpEnemy.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpMeshSphere.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpMeshSpheres.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpOrbiter.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpParry.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpReflectAbleBullet.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpRotator.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpScroll.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpSkyDome.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Visual\SkyDome.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CmpSwing.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\DataComponent.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\DrawComponent.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\EntityFactory.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\CmpInput.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\PlaySe.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\StageBounds.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\UpdComponent.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\WhiteTexture.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\WindowSize.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h">
       <Filter>Codes\Include\System\Entity</Filter>
     </ClInclude>
@@ -535,6 +745,12 @@
       <Filter>Codes\Include\Camera\CameraController</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Particle\Particle.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\EmitterManager.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\GameCombatParticleEffects.h">
       <Filter>Codes\Include\System\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h">
@@ -595,6 +811,21 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\Scene.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\BossDeathPresentation.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneGame.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneResult.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneTitle.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
   </ItemGroup>
@@ -718,6 +949,12 @@
     </Filter>
     <Filter Include="Codes\Source\System">
       <UniqueIdentifier>{b4c8cc52-40b6-4403-aacb-4a4394894018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Playable">
+      <UniqueIdentifier>{a1c3e7b4-6d28-4f91-9c05-7e2b8d4a1f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Playable">
+      <UniqueIdentifier>{b2d4f8c5-7e39-4a02-ad16-8f3c9e5b2064}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Engine\Alias">
       <UniqueIdentifier>{2b1c6f48-a18b-40c9-b796-de6a332e2d15}</UniqueIdentifier>

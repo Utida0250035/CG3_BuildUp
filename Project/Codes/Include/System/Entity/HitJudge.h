@@ -25,7 +25,7 @@ public:
   HitJudge operator=(const HitJudge &source) = delete;
   HitJudge(const HitJudge &source) = delete;
 
-  static HitJudge *GetInstance() {
+  static HitJudge *Instance() {
     static HitJudge instance;
     return &instance;
   }

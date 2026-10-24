@@ -1,10 +1,21 @@
 #include "ForDebug/Log.h"
 #include "Engine/Device/RenderDevice.h"
 #include "String/ConvertString.h"
+#include <Windows.h>
 #include <cassert>
+#include <cstdlib>
 #include <format>
 
 namespace Atrum {
+
+namespace {
+
+[[noreturn]] void ReportRenderDeviceFatalError(const wchar_t *message) {
+  MessageBoxW(nullptr, message, L"CG2 BuildUp", MB_OK | MB_ICONERROR);
+  std::abort();
+}
+
+} // namespace
 
 	void RenderDevice::CreateDxgiFactory() {
 
@@ -54,6 +65,11 @@ namespace Atrum {
 		}
 
 		// 適切なアダプターが見当たらない場合は起動不可
+		if (useAdapter_ == nullptr) {
+			ReportRenderDeviceFatalError(
+			    L"D3D12 対応の GPU が見つかりません。\n"
+			    L"グラフィックドライバを更新するか、対応 GPU で実行してください。");
+		}
 		assert(useAdapter_ != nullptr);
 
 		Debug::LogFile::Instance()->Log("SelectAdapter worked correctly.");
@@ -91,6 +107,11 @@ namespace Atrum {
 		}
 
 		// デバイスの生成が成功しなかった場合は実行不可
+		if (device_ == nullptr) {
+			ReportRenderDeviceFatalError(
+			    L"Direct3D 12 デバイスを作成できませんでした。\n"
+			    L"Feature Level 12.0 以上が必要です。");
+		}
 		assert(device_ != nullptr);
 
 		device_->SetName(L"device");

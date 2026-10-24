@@ -33,6 +33,11 @@ public:
   void Initialize() override;
   void Update() override;
 
+  /// <summary>
+  /// 攻撃元エンティティの種別が HurterTypes に含まれるときダメージを1与える（無敵中は false）
+  /// </summary>
+  bool TryTakeDamageFrom(const Entity *attacker);
+
   void SetHurterTypes(const std::vector<EntityType> &hurterTypes) {
     for (const auto &type : hurterTypes) {
       hurterTypes_.emplace(type);

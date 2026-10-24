@@ -87,6 +87,14 @@ public:
     return 1.0f + c3 * (ratio - 1.0f) * (ratio - 1.0f) * (ratio - 1.0f) +
            c1 * (ratio - 1.0f) * (ratio - 1.0f);
   }
-}
+
+  static constexpr float InBack(const float ratio) {
+
+    constexpr float c1 = 1.70158f;
+    constexpr float c3 = c1 + 1.0f;
+
+    return c3 * ratio * ratio * ratio - c1 * ratio * ratio;
+  }
+};
 
 } // namespace Atrum::Math

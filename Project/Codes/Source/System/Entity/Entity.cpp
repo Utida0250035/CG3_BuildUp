@@ -7,10 +7,14 @@ namespace Atrum {
 Entity::~Entity() {
   if (parent_) {
     parent_->RemoveChild(this);
+    parent_ = nullptr;
   }
 
+  // 子の実体は CmpChildEntitys や CmpParry が持つ
   for (auto &child : childs_) {
-    delete child;
+    if (child) {
+      child->parent_ = nullptr;
+    }
   }
 
   childs_.clear();
@@ -94,6 +98,15 @@ Math::Vector3 Entity::GetWorldPosition() const {
 
   Math::Matrix4x4 worldMatrix = GetWorldMatrix();
 
+  return {worldMatrix[3][0], worldMatrix[3][1], worldMatrix[3][2]};
+}
+
+Math::Vector3 Entity::TransformLocalPointToWorld(
+    const Math::Vector3 &localPoint) const {
+  Math::TransformLH localTransform{};
+  localTransform.translate = localPoint;
+  const Math::Matrix4x4 worldMatrix =
+      localTransform.MakeWorldMatrix() * GetWorldMatrix();
   return {worldMatrix[3][0], worldMatrix[3][1], worldMatrix[3][2]};
 }
 

@@ -45,7 +45,7 @@ public:
 
   void Update();
 
-  static EntityStorage *GetInstance() {
+  static EntityStorage *Instance() {
 
     if (!instance) {
 
@@ -71,7 +71,7 @@ struct EntityHandle {
   uint64_t id_ = 0;
   uint64_t nameHash_ = 0;
 
-  bool IsValid() const { return EntityStorage::GetInstance()->IsValid(*this); }
+  bool IsValid() const { return EntityStorage::Instance()->IsValid(*this); }
 
   Entity *operator->() const {
     assert(ptr_);

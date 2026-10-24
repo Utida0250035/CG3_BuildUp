@@ -10,6 +10,7 @@
 #include "System/Hash64.h"
 #include "String/ConvertString.h"
 
+#include <cstdlib>
 #include <filesystem>
 
 namespace Atrum {
@@ -38,7 +39,8 @@ namespace Atrum {
 			MessageBoxW(nullptr, errorMessage.c_str(), L"Not Found Texture", MB_OK | MB_ICONERROR);
 
 			assert(false && "textureFile not found");
-
+			// Release（NDEBUG）では assert が無効のため、未定義動作を避けて終了する
+			std::abort();
 		}
 
 		// テクスチャファイルを読んでプログラムで扱えるようにする

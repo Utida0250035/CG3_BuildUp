@@ -41,6 +41,11 @@ public:
   bool GetIsActive() const { return isActive_; }
 
   std::vector<Entity *> GetHitEntitys();
+  
+  ~CmpHitSphere() {
+      Finalize();
+  }
+
 };
 
 } // namespace Atrum

@@ -1,14 +1,18 @@
-﻿#include "Scene/CommandChangeScene.h"
+#include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
+
+namespace Atrum {
 
 /// <summary>
 /// 指令類 > シーン遷移指令 > コンストラクタ
 /// </summary>
-CommandChangeScene::CommandChangeScene() {
+	CommandChangeScene::CommandChangeScene() {
 
-	commandScene_ = CommandScene::GetInstance();
-	nextScene_ = nullptr;
-	changeSceneEffect_.release();
-	isExecute_ = true;
+		commandScene_ = CommandScene::Instance();
+		nextScene_ = nullptr;
+		changeSceneEffect_.release();
+		isExecute_ = true;
+
+	}
 
 }

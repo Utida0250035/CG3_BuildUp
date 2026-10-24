@@ -21,6 +21,21 @@ namespace Atrum {
 
 	namespace fs = std::filesystem;
 
+	// weak_ptr キャッシュが期限切れのときは map から除去して nullptr を返す
+	std::shared_ptr<AssetMaterialData> LockMaterialCacheEntry(
+	    std::unordered_map<uint64_t, std::weak_ptr<AssetMaterialData>> &map,
+	    const uint64_t key) {
+		const auto search = map.find(key);
+		if (search == map.end()) {
+			return nullptr;
+		}
+		if (std::shared_ptr<AssetMaterialData> locked = search->second.lock()) {
+			return locked;
+		}
+		map.erase(search);
+		return nullptr;
+	}
+
 	ModelStorage* ModelStorage::instance_ = nullptr;
 
 	void ModelStorage::Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex) {
@@ -103,13 +118,17 @@ namespace Atrum {
 
 					if (search != assetMeshMap_.end()) {
 						// メッシュが作成済テーブルに存在する場合
+						std::shared_ptr<AssetMeshData> cachedMesh =
+						    search->second.lock();
+						if (cachedMesh == nullptr) {
+							assetMeshMap_.erase(search);
+							break;
+						}
 
-						// メッシュ作成完了 配列に保存
-						assetMeshNodes.emplace_back(search->second.lock(), nullptr);
+						assetMeshNodes.emplace_back(cachedMesh, nullptr);
 
 						useMaterialNames.emplace_back("");
 
-						// 既存フラグを立てて次のusemtlまで処理を飛ばす
 						isMeshExist = true;
 
 						D::LogFile::Instance()->Log("GetMeshFromTable: " + meshName);
@@ -293,6 +312,10 @@ namespace Atrum {
 
 			auto& mesh = meshNode.mesh;
 
+			if (mesh == nullptr) {
+				continue;
+			}
+
 			if (mesh->vertexResource) {
 
 				continue;
@@ -409,7 +432,7 @@ namespace Atrum {
 
 					assetMaterialData.emplace_back(assetMaterial);
 
-					assetMaterialMap_.emplace(Hash64(mtlName), assetMaterial);
+					assetMaterialMap_.insert_or_assign(Hash64(mtlName), assetMaterial);
 
 					isMaterialUseTexture = true;
 
@@ -493,7 +516,8 @@ namespace Atrum {
 
 							assetMaterialData.emplace_back(assetMaterial);
 
-							assetMaterialMap_.emplace(Hash64(mtlName), assetMaterial);
+							assetMaterialMap_.insert_or_assign(Hash64(mtlName),
+							                                   assetMaterial);
 
 						}
 
@@ -507,13 +531,12 @@ namespace Atrum {
 
 					mtlName = filePath + "?" + mtlName;
 
-					auto search = assetMaterialMap_.find(Hash64(mtlName));
+					const uint64_t materialKey = Hash64(mtlName);
 
-					if (search != assetMaterialMap_.end()) {
+					if (std::shared_ptr<AssetMaterialData> cached =
+					        LockMaterialCacheEntry(assetMaterialMap_, materialKey)) {
 
-						assert(search->second.lock());
-
-						assetMaterialData.emplace_back(search->second.lock());
+						assetMaterialData.emplace_back(cached);
 
 						// 色配列に空データを追加
 						colors.emplace_back();
@@ -545,20 +568,19 @@ namespace Atrum {
 
 			assetMaterialData.emplace_back(assetMaterial);
 
-			assetMaterialMap_.emplace(Hash64(mtlName), assetMaterial);
+			assetMaterialMap_.insert_or_assign(Hash64(mtlName), assetMaterial);
 
 		}
 
 #ifdef _DEBUG
 
-		for (auto& registered : assetMaterialMap_) {
-
-
-			assert(registered.second.lock());
-
-
+		for (auto it = assetMaterialMap_.begin(); it != assetMaterialMap_.end();) {
+			if (!it->second.lock()) {
+				it = assetMaterialMap_.erase(it);
+			} else {
+				++it;
+			}
 		}
-
 
 #endif
 
@@ -618,11 +640,14 @@ namespace Atrum {
 
 		for (size_t i = 0; i < assetModelData->meshNodes_.size(); ++i) {
 
-			auto search = assetMaterialMap_.find(Hash64(directoryPathMtl + "/" + mtlFileName + "?" + useMaterialNames[i]));
+			const uint64_t meshMaterialKey = Hash64(
+			    directoryPathMtl + "/" + mtlFileName + "?" + useMaterialNames[i]);
 
-			assert(search != assetMaterialMap_.end());
+			std::shared_ptr<AssetMaterialData> meshMaterial =
+			    LockMaterialCacheEntry(assetMaterialMap_, meshMaterialKey);
+			assert(meshMaterial && "MTL と OBJ のマテリアル名が一致しません");
 
-			assetModelData->meshNodes_[i].material = search->second.lock();
+			assetModelData->meshNodes_[i].material = meshMaterial;
 
 		}
 
@@ -635,8 +660,12 @@ namespace Atrum {
 
 #endif
 
-	// ファイル名(区切り連結)のハッシュ化
-		uint64_t manageHash = Hash64((objFileName + "|" + mtlFileName).c_str());
+	// GetModel と同じキーで登録しないと二回目以降 CreateModel が走り、
+	// メッシュキャッシュ経由でマテリアル名が空になり得る
+		const uint64_t manageHash = Hash64(
+		    (directoryPathObj + "/" + objFileName + "|" + directoryPathMtl + "/" +
+		     mtlFileName)
+		        .c_str());
 
 		// モデルテーブルへ追加
 		assetModelMap_.emplace(manageHash, assetModelData);

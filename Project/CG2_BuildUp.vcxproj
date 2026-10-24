@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -107,8 +107,9 @@
       <AdditionalOptions>-HV 2021 -enable-16bit-types %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
     <PostBuildEvent>
-      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
+      <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -145,8 +146,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <AdditionalOptions>-HV 2021 -enable-16bit-types %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
     <PostBuildEvent>
-      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
+      <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -184,8 +186,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <AdditionalOptions>-HV 2021 -enable-16bit-types %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
     <PostBuildEvent>
-      <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
-copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
+      <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
+copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -198,6 +201,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraFlipHorizontal.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraFlipVertical.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraFocusPushController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraGameIntroController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraPoseBlendController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp" />
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp" />
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
@@ -255,6 +266,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
+    <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\AABB.cpp" />
@@ -264,6 +276,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Geometry\Plane.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Sphere.cpp" />
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
+    <ClCompile Include="Codes\Source\Input\AbstractInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
@@ -279,7 +292,39 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\Scene\CommandScene.cpp" />
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp" />
     <ClCompile Include="Codes\Source\Scene\Scene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\BossDeathPresentation.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGame.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneResult.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\System\BehDodge.cpp" />
+    <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp" />
+    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSweep.cpp" />
+    <ClCompile Include="Codes\Source\System\BossCombatCleanup.cpp" />
+    <ClCompile Include="Codes\Source\System\OrbiterChildUtils.cpp" />
+    <ClCompile Include="Codes\Source\System\BehEnemyShot.cpp" />
+    <ClCompile Include="Codes\Source\System\BehEnemySwingShot.cpp" />
+    <ClCompile Include="Codes\Source\System\BehEnemyWallShot.cpp" />
+    <ClCompile Include="Codes\Source\System\BehRush.cpp" />
+    <ClCompile Include="Codes\Source\System\BehWalkAndJump.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpBehavior.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpDrawBullet.cpp" />
+    <ClCompile Include="Codes\Source\System\AttackTelegraph\AttackTelegraphDraw.cpp" />
+    <ClCompile Include="Codes\Source\System\AttackTelegraph\AttackTelegraphUtils.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpDrawAttackTelegraph.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpDrawHitSphere.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpEnemy.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpMeshSphere.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpMeshSpheres.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpSkyDome.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpOrbiter.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpReflectAbleBullet.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpRotator.cpp" />
+    <ClCompile Include="Codes\Source\System\CmpSwing.cpp" />
+    <ClCompile Include="Codes\Source\System\EntityFactory.cpp" />
+    <ClCompile Include="Codes\Source\System\Playable\CmpInput.cpp" />
+    <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Editor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp" />
@@ -291,8 +336,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp" />
+    <ClCompile Include="Codes\Source\System\SimulationSpace.cpp" />
+    <ClCompile Include="Codes\Source\System\Particle\EmitterManager.cpp" />
+    <ClCompile Include="Codes\Source\System\Particle\GameCombatParticleEffects.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp" />
+    <ClCompile Include="Codes\Source\Visual\SkyDome.cpp" />
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp" />
     <ClCompile Include="Codes\Source\Time\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
@@ -338,7 +387,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Audio\VoiceCallBack.h" />
     <ClInclude Include="Codes\Include\Audio\VoiceState.h" />
     <ClInclude Include="Codes\Include\Camera\Camera.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraFlipHorizontal.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraFlipVertical.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraController.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraFocusPushController.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraGameIntroController.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraPoseBlendController.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h" />
+    <ClInclude Include="Codes\Include\Camera\StageViewCamera.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
     <ClInclude Include="Codes\Include\Collision2D\Collision2D.h" />
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h" />
@@ -381,6 +437,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Engine\Resource\VertexBuffer.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
     <ClInclude Include="Codes\Include\File\FileSize.h" />
+    <ClInclude Include="Codes\Include\File\SetWorkingDirectoryToExecutable.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugLayer.h" />
@@ -396,6 +453,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Geometry\Triangle.h" />
     <ClInclude Include="Codes\Include\Hit\HitCircle.h" />
     <ClInclude Include="Codes\Include\Input\DirectInput.h" />
+    <ClInclude Include="Codes\Include\Input\AbstractInput.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
     <ClInclude Include="Codes\Include\Math\Easing.h" />
     <ClInclude Include="Codes\Include\Math\Lerp.h" />
@@ -413,7 +471,51 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
     <ClInclude Include="Codes\Include\Scene\GameOrder.h" />
     <ClInclude Include="Codes\Include\Scene\Scene.h" />
+    <ClInclude Include="Codes\Include\Scene\BossDeathPresentation.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGame.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneResult.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
+    <ClInclude Include="Codes\Include\System\BehDodge.h" />
+    <ClInclude Include="Codes\Include\System\BehEnemyMeteor.h" />
+    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSweep.h" />
+    <ClInclude Include="Codes\Include\System\BossCombatCleanup.h" />
+    <ClInclude Include="Codes\Include\System\OrbiterChildUtils.h" />
+    <ClInclude Include="Codes\Include\System\BehEnemyShot.h" />
+    <ClInclude Include="Codes\Include\System\BehEnemySwingShot.h" />
+    <ClInclude Include="Codes\Include\System\BehEnemyWallShot.h" />
+    <ClInclude Include="Codes\Include\System\BehRush.h" />
+    <ClInclude Include="Codes\Include\System\BehWalkAndJump.h" />
+    <ClInclude Include="Codes\Include\System\CmpBehavior.h" />
+    <ClInclude Include="Codes\Include\System\CmpChildEntitys.h" />
+    <ClInclude Include="Codes\Include\System\CmpDrawBullet.h" />
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\AttackTelegraphDraw.h" />
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\AttackTelegraphSegment.h" />
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\AttackTelegraphUtils.h" />
+    <ClInclude Include="Codes\Include\System\CmpAttackTelegraph.h" />
+    <ClInclude Include="Codes\Include\System\CmpDrawAttackTelegraph.h" />
+    <ClInclude Include="Codes\Include\System\CmpDrawHitSphere.h" />
+    <ClInclude Include="Codes\Include\System\CmpEnemy.h" />
+    <ClInclude Include="Codes\Include\System\CmpMeshSphere.h" />
+    <ClInclude Include="Codes\Include\System\CmpMeshSpheres.h" />
+    <ClInclude Include="Codes\Include\System\CmpOrbiter.h" />
+    <ClInclude Include="Codes\Include\System\CmpParry.h" />
+    <ClInclude Include="Codes\Include\System\CmpReflectAbleBullet.h" />
+    <ClInclude Include="Codes\Include\System\CmpRotator.h" />
+    <ClInclude Include="Codes\Include\System\CmpScroll.h" />
+    <ClInclude Include="Codes\Include\System\CmpSkyDome.h" />
+    <ClInclude Include="Codes\Include\System\CmpSwing.h" />
+    <ClInclude Include="Codes\Include\System\DataComponent.h" />
+    <ClInclude Include="Codes\Include\System\DrawComponent.h" />
+    <ClInclude Include="Codes\Include\System\EntityFactory.h" />
+    <ClInclude Include="Codes\Include\System\Playable\CmpInput.h" />
+    <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h" />
+    <ClInclude Include="Codes\Include\System\PlaySe.h" />
+    <ClInclude Include="Codes\Include\System\StageBounds.h" />
+    <ClInclude Include="Codes\Include\System\UpdComponent.h" />
+    <ClInclude Include="Codes\Include\System\WhiteTexture.h" />
+    <ClInclude Include="Codes\Include\System\WindowSize.h" />
     <ClInclude Include="Codes\Include\System\DeltaTime.h" />
     <ClInclude Include="Codes\Include\System\Editor\Editor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h" />
@@ -436,8 +538,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll</Command>
     <ClInclude Include="Codes\Include\System\Json\JsonTest.h" />
     <ClInclude Include="Codes\Include\System\Json\PfrJsonHandler.h" />
     <ClInclude Include="Codes\Include\System\Particle\Particle.h" />
+    <ClInclude Include="Codes\Include\System\Particle\EmitterManager.h" />
+    <ClInclude Include="Codes\Include\System\Particle\GameCombatParticleEffects.h" />
     <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h" />
     <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h" />
+    <ClInclude Include="Codes\Include\Visual\SkyDome.h" />
     <ClInclude Include="Codes\Include\System\Random.h" />
     <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h" />
     <ClInclude Include="Codes\Include\System\SimulationSpace.h" />

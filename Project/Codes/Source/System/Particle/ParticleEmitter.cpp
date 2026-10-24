@@ -1,4 +1,4 @@
-﻿#include "System/Particle/ParticleEmitter.h"
+#include "System/Particle/ParticleEmitter.h"
 #include "Engine/AtrumEngine.h"
 #include "Geometry/GeometryRandom.h"
 #include "Math/Lerp.h"
@@ -6,8 +6,10 @@
 #include "System/DeltaTime.h"
 #include "System/Json/JsonHandler.h"
 #include "System/Random.h"
+#include "System/WhiteTexture.h"
 #include "Engine/AtrumEngine.h"
 #include <cassert>
+#include <algorithm>
 #include <filesystem>
 #include <numbers>
 
@@ -20,15 +22,18 @@ namespace fs = std::filesystem;
 
 namespace Atrum::Visual::Particle {
 
-void Emitter::Initialize(const char *jsonFilePath) {
+void Emitter::Initialize(const char *jsonFilePath, bool useBuiltinSphereDraw) {
   frameDeltaTime_ = FrameDeltaTime::Instance();
 
   std::vector<Param> params{};
 
   if (fs::exists(jsonFilePath)) {
-
     params = Json::JsonHandler::LoadFromFile<std::vector<Param>>(jsonFilePath);
   } else {
+#if defined(DEVELOPMENT) && !defined(NDEBUG)
+    // 実行時 CWD（exe 横の Assets）に JSON が無いと、下のデフォルト Param が使われ JSON 調整が効かない
+    assert(false && "Particle JSON が見つかりません（ビルド後の Assets コピーを確認）");
+#endif
     params.emplace_back();
   }
 
@@ -39,15 +44,39 @@ void Emitter::Initialize(const char *jsonFilePath) {
   for (size_t i = 0; i < layers_.size(); ++i) {
     layers_[i].param = params[i];
 
-    layers_[i].model = Engine::Instance()->GetModel(
-        params[i].objDirectoryPath, params[i].objFileName,
-        params[i].mtlDirectoryPath, params[i].mtlFileName);
+    layers_[i].useBuiltinSphere = useBuiltinSphereDraw;
+    if (!useBuiltinSphereDraw) {
+      const std::string objPath =
+          params[i].objDirectoryPath + "/" + params[i].objFileName;
+      const std::string mtlPath =
+          params[i].mtlDirectoryPath + "/" + params[i].mtlFileName;
+      if (fs::exists(objPath) && fs::exists(mtlPath)) {
+        layers_[i].model = Engine::Instance()->GetModel(
+            params[i].objDirectoryPath, params[i].objFileName,
+            params[i].mtlDirectoryPath, params[i].mtlFileName);
+      }
+      layers_[i].useBuiltinSphere = (layers_[i].model == nullptr);
+    }
 
     assert(layers_[i].param.emitRate > 0.0f);
     assert(layers_[i].param.duration > 0.0f);
     assert(layers_[i].param.maxCount > 0);
 
     particles_[i].resize(layers_[i].param.maxCount);
+  }
+}
+
+void Emitter::PrepareForOneShot() {
+  for (size_t i = 0; i < layers_.size(); ++i) {
+    Layer &layer = layers_[i];
+    layer.accumulator = 0.0f;
+    layer.elapsedSeconds = 0.0f;
+    layer.hasBurst = false;
+    layer.isFinished = false;
+
+    for (Particle &particle : particles_[i]) {
+      particle.isActive = false;
+    }
   }
 }
 
@@ -121,7 +150,6 @@ void Emitter::Update() {
 size_t Emitter::ResolveSpawnCount(Layer &layer) {
 
   if (layer.param.emitMode == EmitMode::BURST) {
-    layer.hasBurst = true;
     return layer.param.burstCount;
 
   } else if (layer.param.emitMode == EmitMode::CONTINUOUS) {
@@ -203,9 +231,11 @@ void Emitter::ParticleInit(Particle &particle, Layer &layer) {
     }
     float speed = layer.param.baseVelocity.Length();
     particle.velocity = (dir * speed) + randomVel;
+    break;
   }
   default:
     particle.velocity = layer.param.baseVelocity + randomVel;
+    break;
   }
 
   particle.lifeTimePassed = 0.0f;
@@ -242,6 +272,10 @@ void Emitter::EmitOneLayer(const size_t layerIndex) {
         break;
       }
     }
+  }
+
+  if (layer.param.emitMode == EmitMode::BURST && spawnedCount > 0) {
+    layer.hasBurst = true;
   }
 }
 
@@ -284,9 +318,20 @@ void Emitter::Draw() {
       particleTransform.quaternion = p.rotation;
       particleTransform.scale = p.currentScale;
 
-      Atrum::Engine::Instance()->DrawModel(layer.model.get(),
-                                           particleTransform.MakeWorldMatrix(),
-                                           false, p.currentColor);
+      if (layer.useBuiltinSphere || layer.model == nullptr) {
+        const float radius =
+            std::max({p.currentScale.x, p.currentScale.y, p.currentScale.z});
+        // 戦闘演出は同フレーム大量描画になりやすいため细分を抑える
+        constexpr uint32_t kBuiltinSphereSubdivision = 2;
+        Atrum::Engine::Instance()->DrawSphere(
+            WhiteTextureIndex(), p.currentColor, Math::Transform{},
+            particleTransform.MakeWorldMatrix(), radius,
+            kBuiltinSphereSubdivision, false);
+      } else {
+        Atrum::Engine::Instance()->DrawModel(
+            layer.model.get(), particleTransform.MakeWorldMatrix(), false,
+            p.currentColor);
+      }
     }
   }
 }
