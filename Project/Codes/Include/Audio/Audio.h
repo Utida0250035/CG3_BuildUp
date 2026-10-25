@@ -83,9 +83,12 @@ namespace Atrum::Audio {
 
 		AudioHandle PlayShort(const size_t soundIndex, const bool isLoop);
 
-		size_t FindFreeStreamingVoice() const;
+		size_t AcquireStreamingVoiceIndex();
+		void ResetStreamingVoice(StreamingSourceVoice &voice);
+		void ResetShortVoice(SourceVoice &voice);
+		void ReleaseWaitingShortVoices();
 
-		void PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns);
+		bool PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns);
 
 		bool SubmitInitialBuffer(StreamingSourceVoice& voice, const bool isLoop);
 
@@ -130,6 +133,12 @@ namespace Atrum::Audio {
 
 		void Stop(const AudioHandle& handle);
 
+		/// ストリーミング BGM 用ボイスをすべて停止（シーン切替・プール枯渇対策）
+		void StopAllStreamingVoices();
+
+		/// 短尺ループ（5MB 未満 BGM 等）の占有を解放
+		void StopAllLoopingShortVoices();
+
 		bool IsPlaying(const AudioHandle& handle);
 
 		static AudioManager* Instance() {
@@ -162,8 +171,6 @@ namespace Atrum::Audio {
 	};
 
 	using Manager = AudioManager;
-
-	using Handle = AudioHandle;
 
 
 	inline LONGLONG To100nsPositive(const float seconds) {

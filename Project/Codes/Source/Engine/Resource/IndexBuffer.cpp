@@ -8,6 +8,8 @@ namespace Atrum {
 
 	void IndexBuffer::CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device) {
 
+		indexMaxCount_ = indexMaxCount;
+
 		indexResource_ = CreateUploadBuffer(sizeof(uint32_t) * indexMaxCount, device);
 
 		indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));

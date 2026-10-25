@@ -8,6 +8,8 @@ namespace Atrum {
 
 	void VertexBuffer::CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device) {
 
+		vertexMaxCount_ = vertexMaxCount;
+
 		vertexResource_ = CreateUploadBuffer(sizeof(VertexData) * vertexMaxCount, device);
 
 		vertexResource_->Map(0, nullptr, reinterpret_cast<void**>(&vertexData_));

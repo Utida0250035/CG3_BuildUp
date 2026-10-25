@@ -1,10 +1,3 @@
 #include "System/SimulationSpace.h"
 
-#include <nlohmann/json.hpp>
-
-namespace Atrum {
-
-NLOHMANN_JSON_SERIALIZE_ENUM(SimulationSpace, {SimulationSpace::LOCAL, "LOCAL"},
-                             {SimulationSpace::WORLD, "WORLD"})
-
-}
+// SimulationSpace の JSON 変換は ParticleParam.cpp に定義（テンプレート可視性のため）

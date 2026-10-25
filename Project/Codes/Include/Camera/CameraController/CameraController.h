@@ -1,12 +1,17 @@
 #pragma once
 
-#include "Camera/Camera.h"
+#include "Camera/StageViewCamera.h"
 
 namespace Atrum {
+
+class Camera;
 
 class CameraController {
 protected:
   Camera *camera_ = nullptr;
+
+  void ApplyStageViewPose(const StageViewCameraPose &pose) const;
+  void SyncDebugCameraFromStageViewPose(const StageViewCameraPose &pose) const;
 
 public:
   virtual void Initialize() = 0;

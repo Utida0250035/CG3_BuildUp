@@ -32,8 +32,9 @@ namespace Atrum::Visual::Particle {
 			bool hasBurst = false;
 			// 共通 終了フラグ
 			bool isFinished = false;
-			// 共通 使用3Dモデル
+			// 共通 使用3Dモデル（nullptr のときは DrawSphere で描画）
 			std::shared_ptr<AssetModel> model = nullptr;
+			bool useBuiltinSphere = true;
 		};
 
 #ifdef DEVELOPMENT
@@ -82,7 +83,10 @@ namespace Atrum::Visual::Particle {
 			return particles_;
 		}
 
-		void Initialize(const char* jsonFilePath);
+		/// @param useBuiltinSphereDraw true のとき OBJ を読まず DrawSphere で描画（戦闘演出向け）
+		void Initialize(const char* jsonFilePath, bool useBuiltinSphereDraw = false);
+		/// ワンショット再発火用にレイヤー状態と粒子をリセットする
+		void PrepareForOneShot();
 		void Emit();
 		void Update();
 		void Draw();

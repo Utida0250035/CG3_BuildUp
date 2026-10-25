@@ -24,6 +24,8 @@ namespace Atrum {
 		// 画面上に描画済みの頂点の数
 		uint32_t vertexDrewCount_ = 0;
 
+		uint32_t vertexMaxCount_ = 0;
+
 	public:
 
 		void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
@@ -45,7 +47,12 @@ namespace Atrum {
 
 		/* セッター */
 
-		void SetVertexData(const VertexData& vertexData, const uint32_t index) { vertexData_[index] = vertexData; }
+		void SetVertexData(const VertexData& vertexData, const uint32_t index) {
+			if (index >= vertexMaxCount_) {
+				return;
+			}
+			vertexData_[index] = vertexData;
+		}
 
 		void ResetDrewCount() { vertexDrewCount_ = 0; }
 

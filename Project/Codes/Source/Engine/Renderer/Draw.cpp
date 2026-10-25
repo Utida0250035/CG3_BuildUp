@@ -15,6 +15,38 @@
 #include "Camera/Camera.h"
 
 #include <numbers>
+#ifdef DEVELOPMENT
+#include <chrono>
+#include <fstream>
+#include <format>
+#endif
+
+namespace {
+
+#ifdef DEVELOPMENT
+
+// #region agent log
+void AgentDebugLogDraw(const char *location, const char *message,
+                       const char *hypothesisId, const std::string &dataJson) {
+  const auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(
+                             std::chrono::system_clock::now().time_since_epoch())
+                             .count();
+  std::ofstream log(
+      R"(./.cursor/debug-db6cac.log)",
+      std::ios::app);
+  if (!log) {
+    return;
+  }
+  log << std::format(
+             R"({{"sessionId":"db6cac","runId":"pre-fix","hypothesisId":"{}","location":"{}","message":"{}","data":{},"timestamp":{}}})",
+             hypothesisId, location, message, dataJson, timestamp)
+      << "\n";
+}
+// #endregion
+
+#endif
+
+} // namespace
 
 namespace Atrum {
 
@@ -71,6 +103,10 @@ namespace Atrum {
 	void Draw::DrawTriangleCall(const uint32_t& textureIndex,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
+		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
+
 		assert(constantBufferCount_ + 1 < kMaxDrawCount &&
 			"constantBufferCount over maxCount(Sphere)");
 
@@ -116,6 +152,10 @@ namespace Atrum {
 		const uint32_t& indexDataCountInInstance,
 		const uint32_t& vertexCountInInstance,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
 
 		assert(constantBufferCount_ + 1 < kMaxDrawCount &&
 			"constantBufferCount over maxCount(Sphere)");
@@ -164,6 +204,10 @@ namespace Atrum {
 	void Draw::DrawCall(const uint32_t& textureIndex,
 		const uint32_t& vertexCountInInstance,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
 
 		assert(constantBufferCount_ + 1 < kMaxDrawCount &&
 			"constantBufferCount over maxCount(Sphere)");
@@ -387,8 +431,36 @@ namespace Atrum {
 			}
 		}
 
-		this->DrawCall(textureIndex, indexDataCount - indexBuffer_->GetDrewCount(),
-			vertexDataCount - vertexBuffer_->GetDrewCount(),
+		const uint32_t sphereIndexCount =
+			indexDataCount - indexBuffer_->GetDrewCount();
+		const uint32_t sphereVertexCount =
+			vertexDataCount - vertexBuffer_->GetDrewCount();
+
+#ifdef DEVELOPMENT
+
+		// #region agent log
+		{
+			static uint32_t sphereLogCount = 0;
+			if (sphereLogCount < 5) {
+				const bool vertexWriteOverflow = vertexDataCount > kVertexMaxDrawCount;
+				const bool indexWriteOverflow = indexDataCount > kVertexMaxDrawCount;
+				AgentDebugLogDraw(
+					"Draw.cpp:DrawSphere",
+					"sphere batch sizes",
+					"A,E",
+					std::format(
+						R"({{"subdivision":{},"sphereVertexCount":{},"sphereIndexCount":{},"vertexWriteIndex":{},"indexWriteIndex":{},"vertexMax":{},"constantBufferIndex":{},"vertexWriteOverflow":{},"indexWriteOverflow":{}}})",
+						subdivision, sphereVertexCount, sphereIndexCount, vertexDataCount,
+						indexDataCount, kVertexMaxDrawCount, constantBufferCount_,
+						vertexWriteOverflow, indexWriteOverflow));
+				++sphereLogCount;
+			}
+		}
+		// #endregion
+
+#endif
+
+		this->DrawCall(textureIndex, sphereIndexCount, sphereVertexCount,
 			directionalLightAddress);
 
 	}
@@ -442,6 +514,16 @@ namespace Atrum {
 			directionalLightAddress);
 	}
 
+	void Draw::RestoreBatchGeometryBindings() {
+		// AssetModel::Draw はメッシュ固有 VB を IA に載せる。DrawSphere 等に戻す
+		pCommandContextDirect_->GetCommandList()->IASetVertexBuffers(
+		    0, 1, vertexBuffer_->PGetVertexBufferView());
+		pCommandContextDirect_->GetCommandList()->IASetIndexBuffer(
+		    indexBuffer_->PGetBufferView());
+		pCommandContextDirect_->GetCommandList()->IASetPrimitiveTopology(
+		    D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
+
 	void Draw::DrawModel(AssetModel* model, const M::Transform& transform,
 		const bool isLighting,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
@@ -449,6 +531,7 @@ namespace Atrum {
 		model->Draw(transform.MakeWorldMatrix(), camera_->GetViewMatrix(), directionalLightAddress,
 			pCommandContextDirect_->GetCommandList(), pSrvAllocator_,
 			camera_->GetPerspectiveFovMatrix(), isLighting, Math::Vector4::White(), constantBufferCount_, materialBuffer_.get(), transformationBuffer_.get());
+		RestoreBatchGeometryBindings();
 	}
 
 	void Draw::DrawModel(AssetModel* model, const Math::Matrix4x4& worldMatrix,
@@ -458,6 +541,7 @@ namespace Atrum {
 		model->Draw(worldMatrix, camera_->GetViewMatrix(), directionalLightAddress,
 			pCommandContextDirect_->GetCommandList(), pSrvAllocator_,
 			camera_->GetPerspectiveFovMatrix(), isLighting, color, constantBufferCount_, materialBuffer_.get(), transformationBuffer_.get());
+		RestoreBatchGeometryBindings();
 	}
 
 	void Draw::Finalize() {}

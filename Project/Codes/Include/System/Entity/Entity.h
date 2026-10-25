@@ -251,12 +251,16 @@ public:
   Math::Matrix4x4 GetWorldMatrix() const;
   Math::Vector3 GetWorldPosition() const;
 
+  /// ローカル座標点をワールド座標へ変換する
+  Math::Vector3 TransformLocalPointToWorld(const Math::Vector3 &localPoint) const;
+
   bool IsActive() const { return state_ == State::Active; }
 
   void RemoveChild(Entity *target) { std::erase(childs_, target); }
 
   void SetParent(Entity *newParent);
   const Entity *GetParent() { return parent_; };
+  const std::vector<Entity *> &GetChilds() const { return childs_; };
 
   void SetHash(const uint64_t nameHash) { nameHash_ = nameHash; }
 

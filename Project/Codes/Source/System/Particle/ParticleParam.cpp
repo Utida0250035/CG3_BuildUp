@@ -1,7 +1,39 @@
 #include "System/Particle/ParticleParam.h"
+#include "System/SimulationSpace.h"
 #include <nlohmann/json.hpp>
 
+namespace Atrum {
+
+// 同一 TU で Param::from_json から参照できるようここで定義する
+NLOHMANN_JSON_SERIALIZE_ENUM(
+    SimulationSpace,
+    {{SimulationSpace::LOCAL, "LOCAL"}, {SimulationSpace::WORLD, "WORLD"}})
+
+} // namespace Atrum
+
 namespace Atrum::Visual::Particle {
+
+namespace {
+
+// size_t は nlohmann::json::value / get の対象外のため、整数経由で読む
+size_t ReadJsonSize(const nlohmann::json &j, const char *key, const size_t fallback) {
+	if (!j.contains(key) || j.at(key).is_null()) {
+		return fallback;
+	}
+	// JSON の整数は number_integer として入ることが多い
+	return static_cast<size_t>(j.at(key).get<std::int64_t>());
+}
+
+// j.value() 経由だと nlohmann 標準の enum（数値）変換が選ばれるため ADL で読む
+template <typename EnumT>
+void AssignEnumIfPresent(const nlohmann::json &j, const char *key, EnumT &out) {
+	if (!j.contains(key) || j.at(key).is_null()) {
+		return;
+	}
+	from_json(j.at(key), out);
+}
+
+} // namespace
 
 	NLOHMANN_JSON_SERIALIZE_ENUM(EmitMode, { { EmitMode::BURST, "BURST" },
 		{ EmitMode::CONTINUOUS, "CONTINUOUS" } });
@@ -39,13 +71,13 @@ namespace Atrum::Visual::Particle {
 
 	void from_json(const nlohmann::json& j, KillFieldParam& killFieldParam) {
 		killFieldParam.isUse = j.value("isUse", killFieldParam.isUse);
-		killFieldParam.mode = j.value("mode", killFieldParam.mode);
-		killFieldParam.shape = j.value("shape", killFieldParam.shape);
+		AssignEnumIfPresent(j, "mode", killFieldParam.mode);
+		AssignEnumIfPresent(j, "shape", killFieldParam.shape);
 		killFieldParam.localSphere =
 			j.value("localSphere", killFieldParam.localSphere);
 		killFieldParam.localAabb = j.value("localAabb", killFieldParam.localAabb);
-		killFieldParam.simulationSpaceFromEmitter = j.value(
-			"simulationSpaceFromEmitter", killFieldParam.simulationSpaceFromEmitter);
+		AssignEnumIfPresent(j, "simulationSpaceFromEmitter",
+		                    killFieldParam.simulationSpaceFromEmitter);
 		killFieldParam.position = j.value("position", killFieldParam.position);
 	}
 
@@ -94,17 +126,17 @@ namespace Atrum::Visual::Particle {
 
 	void from_json(const nlohmann::json& j, Param& param) {
 
-		param.simulationSpaceFromEmitter =
-			j.value("simulationSpaceFromEmitter", param.simulationSpaceFromEmitter);
-		param.emitMode = j.value("emitMode", param.emitMode);
-		param.emitShape = j.value("emitShape", param.emitShape);
+		AssignEnumIfPresent(j, "simulationSpaceFromEmitter",
+		                    param.simulationSpaceFromEmitter);
+		AssignEnumIfPresent(j, "emitMode", param.emitMode);
+		AssignEnumIfPresent(j, "emitShape", param.emitShape);
 		param.emitSphere = j.value("emitSphere", param.emitSphere);
 		param.emitAabb = j.value("emitAabb", param.emitAabb);
 		param.emitCircle = j.value("emitCircle", param.emitCircle);
 		param.emitPointPos = j.value("emitPointPos", param.emitPointPos);
-		param.movementMode = j.value("movementMode", param.movementMode);
+		AssignEnumIfPresent(j, "movementMode", param.movementMode);
 		param.emitRate = j.value("emitRate", param.emitRate);
-		param.burstCount = j.value("burstCount", param.burstCount);
+		param.burstCount = ReadJsonSize(j, "burstCount", param.burstCount);
 		param.isLooping = j.value("isLooping", param.isLooping);
 		param.duration = j.value("duration", param.duration);
 		param.minLifeDuration = j.value("minLifeDuration", param.minLifeDuration);
@@ -118,7 +150,7 @@ namespace Atrum::Visual::Particle {
 		param.startColor = j.value("startColor", param.startColor);
 		param.endColor = j.value("endColor", param.endColor);
 		param.killFieldParam = j.value("killFieldParam", param.killFieldParam);
-		param.maxCount = j.value("maxCount", param.maxCount);
+		param.maxCount = ReadJsonSize(j, "maxCount", param.maxCount);
 		param.objDirectoryPath = j.value("objDirectoryPath", param.objDirectoryPath);
 		param.objFileName = j.value("objFileName", param.objFileName);
 		param.mtlDirectoryPath = j.value("mtlDirectoryPath", param.mtlDirectoryPath);

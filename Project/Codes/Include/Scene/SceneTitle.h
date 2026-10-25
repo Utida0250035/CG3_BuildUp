@@ -1,0 +1,44 @@
+#pragma once
+
+#include "Audio/AudioHandle.h"
+#include "Scene.h"
+#include <memory>
+#include <vector>
+
+namespace Atrum {
+class Entity;
+}
+
+/// <summary>
+/// タイトルシーン
+/// </summary>
+class SceneTitle : public Scene {
+public:
+  SceneTitle();
+  ~SceneTitle() override = default;
+
+  void EnterScene() override;
+  void Update() override;
+  void ExitScene() override;
+
+  /// <summary>
+  /// シングルトンインスタンス
+  /// </summary>
+  static SceneTitle *Instance();
+
+  bool IsStageViewCameraLocked() const override { return true; }
+
+protected:
+  void DrawScene() override;
+
+private:
+  Atrum::Audio::Handle sceneBgmHandle_{};
+  std::unique_ptr<Atrum::Entity> skyDome_;
+  std::vector<std::unique_ptr<Atrum::Entity>> backgrounds_;
+  std::vector<std::unique_ptr<Atrum::Entity>> foregroundGroundClouds_;
+
+  void ClearBackgrounds();
+  void SpawnBackgrounds();
+  void UpdateBackgrounds();
+  void DrawBackgrounds();
+};

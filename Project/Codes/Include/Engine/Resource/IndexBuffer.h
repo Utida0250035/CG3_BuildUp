@@ -23,6 +23,8 @@ namespace Atrum {
 		// 頂点インデックスカウント
 		uint32_t indexDrewCount_ = 0;
 
+		uint32_t indexMaxCount_ = 0;
+
 	public:
 
 		void CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device);
@@ -45,7 +47,12 @@ namespace Atrum {
 
 		/* セッター */
 
-		void SetIndexData(const uint32_t indexData, const uint32_t index) { indexData_[index] = indexData; }
+		void SetIndexData(const uint32_t indexData, const uint32_t index) {
+			if (index >= indexMaxCount_) {
+				return;
+			}
+			indexData_[index] = indexData;
+		}
 
 		void ResetDrewCount() { indexDrewCount_ = 0; }
 

@@ -1,0 +1,53 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "SPHERE",
+    "emitSphere": {
+      "center": { "x": 0.0, "y": 0.0, "z": 0.0 },
+      "radius": 0.14
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 24,
+    "duration": 0.6,
+    "minLifeDuration": 0.25,
+    "maxLifeDuration": 0.42,
+    "baseVelocity": { "x": 0.0, "y": 6.0, "z": 0.0 },
+    "velocityRandom": { "x": 2.0, "y": 2.0, "z": 0.75 },
+    "acceleration": { "x": 0.0, "y": -11.0, "z": 0.0 },
+    "startScale": { "x": 0.62, "y": 0.62, "z": 0.62 },
+    "endScale": { "x": 0.07, "y": 0.07, "z": 0.07 },
+    "startColor": { "x": 1.25, "y": 0.75, "z": 0.2, "w": 1.0 },
+    "endColor": { "x": 1.05, "y": 0.12, "z": 0.03, "w": 0.0 },
+    "maxCount": 32,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  },
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "POINT",
+    "emitPointPos": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 8,
+    "duration": 0.25,
+    "minLifeDuration": 0.12,
+    "maxLifeDuration": 0.22,
+    "baseVelocity": { "x": 0.0, "y": 3.5, "z": 0.0 },
+    "velocityRandom": { "x": 1.4, "y": 1.4, "z": 0.5 },
+    "acceleration": { "x": 0.0, "y": -7.0, "z": 0.0 },
+    "startScale": { "x": 0.85, "y": 0.85, "z": 0.85 },
+    "endScale": { "x": 0.22, "y": 0.22, "z": 0.22 },
+    "startColor": { "x": 1.45, "y": 1.2, "z": 0.4, "w": 1.0 },
+    "endColor": { "x": 1.05, "y": 0.3, "z": 0.08, "w": 0.0 },
+    "maxCount": 12,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  }
+]

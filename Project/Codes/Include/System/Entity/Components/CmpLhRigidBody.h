@@ -20,6 +20,9 @@ private:
   // 重力を使用するか
   bool isUseGravity_ = true;
 
+  // 画面端で位置を止めるか
+  bool isUseSpaceEnd_ = true;
+
 public:
   constexpr UpdCmpGroup UpdGroup() const override {
     return UpdCmpGroup::PHYSICS;
@@ -40,6 +43,10 @@ public:
   void SetGravity(const Math::Vector3 &gravity) { gravity_ = gravity; }
   void SetIsUseGravity(const bool isUseGravity) {
     isUseGravity_ = isUseGravity;
+  }
+
+  void SetIsUseSpaceEnd(const bool isUseSpaceEnd) {
+    isUseSpaceEnd_ = isUseSpaceEnd;
   }
 };
 

@@ -8,6 +8,8 @@
 #include "Engine/Resource/TextureStorage.h"
 #include "Camera/Camera.h"
 
+#include <cassert>
+
 namespace {
 
 
@@ -76,6 +78,10 @@ namespace Atrum {
 
 	void DrawSprite::DrawSpriteCall(const uint32_t& textureIndex) {
 
+		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
+
 		assert(constantBufferCount_ + 1 < kMaxDrawCount);
 
 		// TransformMatrix (WVP) のアドレス計算
@@ -122,6 +128,11 @@ namespace Atrum {
 	}
 
 	void DrawSprite::DrawSpriteRect(const uint32_t& textureIndex, const Vector4& textureColor, const Transform& uvTransform, const Transform& rectTransform, const Vector2& spriteSize, const Vector2& leftTop) {
+
+		if (camera_ == nullptr) {
+			assert(false && "DrawSprite: SetCamera を呼んでから描画してください");
+			return;
+		}
 
 		TextureStorage* textureStorage = TextureStorage::Instance();
 

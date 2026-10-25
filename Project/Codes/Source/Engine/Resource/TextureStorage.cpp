@@ -10,6 +10,7 @@
 #include "System/Hash64.h"
 #include "String/ConvertString.h"
 
+#include <cstdlib>
 #include <filesystem>
 
 namespace Atrum {
@@ -38,7 +39,8 @@ namespace Atrum {
 			MessageBoxW(nullptr, errorMessage.c_str(), L"Not Found Texture", MB_OK | MB_ICONERROR);
 
 			assert(false && "textureFile not found");
-
+			// Release（NDEBUG）では assert が無効のため、未定義動作を避けて終了する
+			std::abort();
 		}
 
 		// テクスチャファイルを読んでプログラムで扱えるようにする
@@ -317,24 +319,40 @@ namespace Atrum {
 
 	}
 
+namespace {
+
+const Texture *FindTextureBySrvIndex(const std::vector<Texture> &textures,
+                                   const uint32_t srvIndex) {
+  for (const Texture &texture : textures) {
+    if (texture.srvIndex == srvIndex) {
+      return &texture;
+    }
+  }
+
+  return nullptr;
+}
+
+} // namespace
+
 	uint32_t TextureStorage::GetTextureWidth(const uint32_t textureIndex) {
 
-#ifdef NDEBUG
-		return textures_[textureIndex].width;
-#else
-		return textures_[textureIndex - 1].width;
-#endif
+		const Texture *texture = FindTextureBySrvIndex(textures_, textureIndex);
+		if (texture == nullptr) {
+			return 0;
+		}
+
+		return texture->width;
 
 	}
 
 	uint32_t TextureStorage::GetTextureHeight(const uint32_t textureIndex) {
 
-#ifdef NDEBUG
-		return textures_[textureIndex].height;
-#else
-		return textures_[textureIndex - 1].height;
-#endif
+		const Texture *texture = FindTextureBySrvIndex(textures_, textureIndex);
+		if (texture == nullptr) {
+			return 0;
+		}
 
+		return texture->height;
 
 	}
 

@@ -6,7 +6,14 @@ namespace Atrum {
 
 class Entity;
 
-enum class DrawCmpGroup { NONE };
+enum class DrawCmpGroup : uint64_t {
+  NONE = 0,
+  // 外側の本体（先に描画し、内側の球の縁として見えるようにする）
+  MESH_BODY = 0,
+  HIT_SPHERE_VISUAL = 10,
+  ATTACK_TELEGRAPH = 15,
+  BULLET_VISUAL = 20,
+};
 
 // 全ての描画パーツの基底
 class ComponentDraw {

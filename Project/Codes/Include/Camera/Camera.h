@@ -63,6 +63,8 @@ public:
 
   Math::Matrix4x4 GetOrthographicMatrix() const { return orthographicMatrix_; }
 
+  Math::Vector3 GetTranslate() const { return translate_; }
+
   /* セッター */
 
   void SetPerspectiveFovMatrix(const Math::Matrix4x4 &matrix) {
@@ -73,6 +75,22 @@ public:
   }
 
   void SetTranslate(const Math::Vector3 &translate) { translate_ = translate; }
+
+  /// <summary>
+  /// 指定位置から注視点を向く（正射影スプライトと透視3Dの両方で共通の視点）
+  /// </summary>
+  void LookAt(const Math::Vector3 &eye, const Math::Vector3 &target,
+              const Math::Vector3 &up = Math::Vector3::UpLh()) {
+    translate_ = eye;
+    quaternion_ = Math::Quaternion::FromLhLookAt(target, eye, up).Normalized();
+  }
+
+  /// <summary>
+  /// 現在の視線を基準としたローカル回転をクオータニオンに乗算する
+  /// </summary>
+  void AddLocalRotation(const Math::Quaternion &localDelta) {
+    quaternion_ = (quaternion_ * localDelta).Normalized();
+  }
 
   /* 加算 */
 

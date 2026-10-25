@@ -37,5 +37,7 @@ void to_json(nlohmann::json &json, const Vector4 &vector) {
 void from_json(const nlohmann::json &json, Vector4 &vector) {
   vector.x = json.value("x", vector.x);
   vector.y = json.value("y", vector.y);
+  vector.z = json.value("z", vector.z);
+  vector.w = json.value("w", vector.w);
 }
 } // namespace Atrum::Math

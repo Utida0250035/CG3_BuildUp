@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "CommandScene.h"
 #include "ChangeScene.h"
@@ -6,125 +6,129 @@
 #include <cassert>
 #include <memory>
 
+namespace Atrum {
+
 /// <summary>
 /// 指令類 > シーン遷移指令
 /// 
 /// シーン間の遷移処理の指令クラス
 /// </summary>
-class CommandChangeScene final {
+	class CommandChangeScene final {
 
-private:
+	private:
 
-	/// <summary>
-	/// 遷移エフェクトのインスタンス
-	/// </summary>
-	std::unique_ptr<ChangeScene> changeSceneEffect_;
+		/// <summary>
+		/// 遷移エフェクトのインスタンス
+		/// </summary>
+		std::unique_ptr<ChangeScene> changeSceneEffect_;
 
-	/// <summary>
-	/// シーン処理へのアクセス
-	/// </summary>
-	CommandScene* commandScene_;
+		/// <summary>
+		/// シーン処理へのアクセス
+		/// </summary>
+		CommandScene* commandScene_;
 
-	/// <summary>
-	/// 次のシーン
-	/// </summary>
-	Scene* nextScene_;
+		/// <summary>
+		/// 次のシーン
+		/// </summary>
+		Scene* nextScene_;
 
-	/// <summary>
-	/// 実行フラグ
-	/// </summary>
-	bool isExecute_;
+		/// <summary>
+		/// 実行フラグ
+		/// </summary>
+		bool isExecute_;
 
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	CommandChangeScene();
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		CommandChangeScene();
 
-	/// <summary>
-	/// デストラクタ 空
-	/// </summary>
-	~CommandChangeScene() = default;
+		/// <summary>
+		/// デストラクタ 空
+		/// </summary>
+		~CommandChangeScene() = default;
 
-public:
+	public:
 
-	/// <summary>
-	/// コピーコンストラクタの削除
-	/// </summary>
-	/// <param name="source"></param>
-	CommandChangeScene(const CommandChangeScene& source) = delete;
+		/// <summary>
+		/// コピーコンストラクタの削除
+		/// </summary>
+		/// <param name="source"></param>
+		CommandChangeScene(const CommandChangeScene& source) = delete;
 
-	/// <summary>
-	/// 代入演算子のオーバーロードの削除
-	/// </summary>
-	/// <param name="source"></param>
-	/// <returns></returns>
-	CommandChangeScene& operator=(const CommandChangeScene& source) = delete;
+		/// <summary>
+		/// 代入演算子のオーバーロードの削除
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
+		CommandChangeScene& operator=(const CommandChangeScene& source) = delete;
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns> 遷移エフェクト指令の静的インスタンス </returns>
-	static CommandChangeScene* GetInstance() {
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns> 遷移エフェクト指令の静的インスタンス </returns>
+		static CommandChangeScene* Instance() {
 
-		static CommandChangeScene instance;
+			static CommandChangeScene instance;
 
-		return &instance;
+			return &instance;
 
-	}
+		}
 
-	/// <summary>
-	/// シーン遷移の更新処理 (注: ゲーム指令のRun関数でのみ実行すること)
-	/// </summary>
-	void Update() {
+		/// <summary>
+		/// シーン遷移の更新処理 (注: ゲーム指令のRun関数でのみ実行すること)
+		/// </summary>
+		void Update() {
 
-		if (isExecute_) {
+			if (isExecute_) {
 
-			if (changeSceneEffect_ == nullptr) {
-				// シーン遷移エフェクトが空のポインタであれば
+				if (changeSceneEffect_ == nullptr) {
+					// シーン遷移エフェクトが空のポインタであれば
 
-				// 即座にシーン遷移
-				commandScene_->ChangeScene(nextScene_);
+					// 即座にシーン遷移
+					commandScene_->ChangeScene(nextScene_);
 
-				// 次のシーンに空のポインタを設定
-				nextScene_ = nullptr;
+					// 次のシーンに空のポインタを設定
+					nextScene_ = nullptr;
 
-				// 処理中フラグを折る
-				isExecute_ = false;
+					// 処理中フラグを折る
+					isExecute_ = false;
 
-			} else {
-				// シーン遷移エフェクトが空のポインタでなければ
+				} else {
+					// シーン遷移エフェクトが空のポインタでなければ
 
-				// シーン遷移エフェクトの処理
-				//==============================
-				
-				// 更新
-				changeSceneEffect_.get()->Update();
+					// シーン遷移エフェクトの処理
+					//==============================
 
-				// 更新後に処理中フラグfalseかつ遷移フラグfalse→エラー 使用したシーン遷移クラスの処理を見直すこと
-				assert(changeSceneEffect_.get()->GetIsProcess() || changeSceneEffect_.get()->GetIsSceneChange());
+					// 更新
+					changeSceneEffect_.get()->Update();
 
-				if (changeSceneEffect_.get()->GetIsSceneChange()) {
+					// 更新後に処理中フラグfalseかつ遷移フラグfalse→エラー 使用したシーン遷移クラスの処理を見直すこと
+					assert(changeSceneEffect_.get()->GetIsProcess() || changeSceneEffect_.get()->GetIsSceneChange());
 
-					if (nextScene_ != nullptr) {
-						// 遷移先シーンが空のポインタでなければ
+					if (changeSceneEffect_.get()->GetIsSceneChange()) {
 
-						// シーン遷移を行なう
-						commandScene_->ChangeScene(nextScene_);
+						if (nextScene_ != nullptr) {
+							// 遷移先シーンが空のポインタでなければ
 
-						// 遷移先シーンに空のポインタを設定
-						nextScene_ = nullptr;
+							// シーン遷移を行なう
+							commandScene_->ChangeScene(nextScene_);
 
-					}
+							// 遷移先シーンに空のポインタを設定
+							nextScene_ = nullptr;
 
-					if (!changeSceneEffect_.get()->GetIsProcess()) {
-						// シーン遷移エフェクトが終了していれば
-						//======================================
+						}
 
-						// エフェクトを空のポインタにする
-						changeSceneEffect_.release();
+						if (!changeSceneEffect_.get()->GetIsProcess()) {
+							// シーン遷移エフェクトが終了していれば
+							//======================================
 
-						// 処理中フラグを折る
-						isExecute_ = false;
+							// エフェクトを破棄する
+							changeSceneEffect_.reset();
+
+							// 処理中フラグを折る
+							isExecute_ = false;
+
+						}
 
 					}
 
@@ -134,64 +138,64 @@ public:
 
 		}
 
-	}
+		/// <summary>
+		/// シーン遷移の描画処理 (注:ゲーム指令のRun関数でのみ実行すること)
+		/// </summary>
+		void Draw() {
 
-	/// <summary>
-	/// シーン遷移の描画処理 (注:ゲーム指令のRun関数でのみ実行すること)
-	/// </summary>
-	void Draw() {
+			if (isExecute_) {
+				// 実行中であれば
 
-		if (isExecute_) {
-			// 実行中であれば
+				if (changeSceneEffect_.get() != nullptr) {
+					// シーン遷移エフェクトが空のポインタでなければ
 
-			if (changeSceneEffect_.get() != nullptr) {
-				// シーン遷移エフェクトが空のポインタでなければ
+					// シーン遷移エフェクトを描画
+					changeSceneEffect_.get()->Draw();
 
-				// シーン遷移エフェクトを描画
-				changeSceneEffect_.get()->Draw();
+				}
 
 			}
 
 		}
 
-	}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns> シーン遷移の処理中フラグ </returns>
+		bool GetIsExecute() const {
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <returns> シーン遷移の処理中フラグ </returns>
-	bool GetIsExecute() const {
-
-		return isExecute_;
-
-	}
-
-	/// <summary>
-	/// シーン遷移の設定 (注: 各シーンの更新処理でのみ実行すること)
-	/// </summary>
-	/// <param name="nextScene"> 次のシーンのインスタンス</param>
-	/// <param name="newEffect"> 遷移エフェクトのインスタンス (無しにするも可) </param>
-	void Set(Scene* nextScene, ChangeScene* newEffect = nullptr) {
-
-		if (!isExecute_) {
-			// 実行フラグが立っていなければ
-
-			if (newEffect != nullptr) {
-				// 新しい遷移エフェクトが空のポインタでなければ
-
-				// 遷移エフェクトを設定
-				changeSceneEffect_.reset(newEffect);
-
-			}
-
-			// 次のシーンを設定
-			nextScene_ = nextScene;
-
-			// 実行フラグを立てる
-			isExecute_ = true;
+			return isExecute_;
 
 		}
 
-	}
+		/// <summary>
+		/// シーン遷移の設定 (注: 各シーンの更新処理でのみ実行すること)
+		/// </summary>
+		/// <param name="nextScene"> 次のシーンのインスタンス</param>
+		/// <param name="newEffect"> 遷移エフェクトのインスタンス (無しにするも可) </param>
+		void Set(Scene* nextScene, ChangeScene* newEffect = nullptr) {
 
-};
+			if (!isExecute_) {
+				// 実行フラグが立っていなければ
+
+				if (newEffect != nullptr) {
+					// 新しい遷移エフェクトが空のポインタでなければ
+
+					// 遷移エフェクトを設定
+					changeSceneEffect_.reset(newEffect);
+
+				}
+
+				// 次のシーンを設定
+				nextScene_ = nextScene;
+
+				// 実行フラグを立てる
+				isExecute_ = true;
+
+			}
+
+		}
+
+	};
+
+}
