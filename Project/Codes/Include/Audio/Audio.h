@@ -83,7 +83,8 @@ namespace Atrum::Audio {
 
 		AudioHandle PlayShort(const size_t soundIndex, const bool isLoop);
 
-		size_t FindFreeStreamingVoice() const;
+		size_t AcquireStreamingVoiceIndex();
+		void ResetStreamingVoice(StreamingSourceVoice &voice);
 
 		void PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns);
 
@@ -129,6 +130,9 @@ namespace Atrum::Audio {
 		AudioHandle Play(const size_t soundIndex, const bool isLoop = false, const long long startTime100ns = 0);
 
 		void Stop(const AudioHandle& handle);
+
+		/// ストリーミング BGM 用ボイスをすべて停止（シーン切替・プール枯渇対策）
+		void StopAllStreamingVoices();
 
 		bool IsPlaying(const AudioHandle& handle);
 

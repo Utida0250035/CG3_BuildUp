@@ -79,7 +79,7 @@ void SceneGame::EnterScene() {
 }
 
 void SceneGame::ExitScene() {
-  Atrum::StopSe(sceneBgmHandle_);
+  Atrum::StopBgmLoop(sceneBgmHandle_);
   sceneBgmHandle_ = {};
   introCameraController_.reset();
   bossDeathCameraController_.reset();
@@ -394,7 +394,7 @@ void SceneGame::RequestRestartRound() {
 }
 
 void SceneGame::OnBossDefeated() {
-  Atrum::StopSe(sceneBgmHandle_);
+  Atrum::StopBgmLoop(sceneBgmHandle_);
   sceneBgmHandle_ = {};
 
   if (!boss_) {

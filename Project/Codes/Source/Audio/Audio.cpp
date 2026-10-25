@@ -284,25 +284,71 @@ namespace Atrum::Audio {
 
 	}
 
-	size_t AudioManager::FindFreeStreamingVoice() const {
+	void AudioManager::ResetStreamingVoice(StreamingSourceVoice &voice) {
 
-		size_t voiceIndex = 0;
+		if (voice.pVoice != nullptr) {
 
-		for (auto& pSourceVoice : streamingSourceVoicePool_) {
+			voice.pVoice->Stop();
+			voice.pVoice->FlushSourceBuffers();
 
-			if (pSourceVoice->state == VoiceState::Stopped) {
+		}
 
-				return voiceIndex;
+		voice.pReader.Reset();
+		voice.state = VoiceState::Stopped;
+		voice.playId = 65536;
+		voice.isLoop = false;
+		voice.nextBufferIndex = 0;
 
+	}
+
+	void AudioManager::StopAllStreamingVoices() {
+
+		for (std::unique_ptr<StreamingSourceVoice> &streamingVoice :
+		     streamingSourceVoicePool_) {
+
+			if (streamingVoice != nullptr) {
+				ResetStreamingVoice(*streamingVoice);
 			}
 
-			voiceIndex++;
+		}
 
+	}
+
+	size_t AudioManager::AcquireStreamingVoiceIndex() {
+
+		auto findStoppedVoice = [this]() -> size_t {
+			size_t voiceIndex = 0;
+
+			for (const std::unique_ptr<StreamingSourceVoice> &streamingVoice :
+			     streamingSourceVoicePool_) {
+
+				if (streamingVoice != nullptr &&
+				    streamingVoice->state == VoiceState::Stopped) {
+					return voiceIndex;
+				}
+
+				++voiceIndex;
+			}
+
+			return static_cast<size_t>(-1);
+		};
+
+		if (const size_t voiceIndex = findStoppedVoice();
+		    voiceIndex != static_cast<size_t>(-1)) {
+			return voiceIndex;
+		}
+
+		// playId 不一致などで Stop できず残った BGM 用ボイスを解放する
+		StopAllStreamingVoices();
+
+		if (const size_t voiceIndex = findStoppedVoice();
+		    voiceIndex != static_cast<size_t>(-1)) {
+			return voiceIndex;
 		}
 
 		assert(false && "Streaming voice pool is full");
 
-		return 65536;
+		return static_cast<size_t>(-1);
 
 	}
 
@@ -380,6 +426,8 @@ namespace Atrum::Audio {
 
 		}
 
+		ResetStreamingVoice(voice);
+
 		return false;
 
 	}
@@ -387,8 +435,11 @@ namespace Atrum::Audio {
 	AudioHandle AudioManager::PlayStreaming(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
 		assert(soundIndex < soundDataStorage_.size());
 
-		// 空きボイスを探す（ストリーミング用プールから）
-		size_t voiceIndex = FindFreeStreamingVoice();
+		const size_t voiceIndex = AcquireStreamingVoiceIndex();
+		if (voiceIndex == static_cast<size_t>(-1) ||
+		    voiceIndex >= streamingSourceVoicePool_.size()) {
+			return {};
+		}
 
 		// IDの発行
 		size_t currentPlayId = nextPlayId_++;
@@ -401,6 +452,10 @@ namespace Atrum::Audio {
 		// ストリーミング開始処理
 		// ファイルを開き、最初のバッファをSubmitしてStart()する専用の関数
 		bool isSuccess = InitializeStreaming(voiceIndex, soundIndex, isLoop, startTime100ns);
+
+		if (!isSuccess) {
+			streamingVoice->playId = 65536;
+		}
 
 		// 5. ハンドルを返す
 		return AudioHandle{
@@ -505,6 +560,9 @@ namespace Atrum::Audio {
 
 				sSrcVoice->state = VoiceState::Stopped;
 				sSrcVoice->playId = 65536;
+				sSrcVoice->isLoop = false;
+				sSrcVoice->nextBufferIndex = 0;
+				sSrcVoice->startTime100ns = 0;
 
 			}
 
@@ -518,6 +576,9 @@ namespace Atrum::Audio {
 
 			srcVoice->pVoice->Stop();
 			srcVoice->pVoice->FlushSourceBuffers();
+			srcVoice->isLoop = false;
+			srcVoice->nextBufferIndex = 0;
+			srcVoice->startTime100ns = 0;
 
 			srcVoice->state = VoiceState::Stopped;
 			srcVoice->playId = 0;

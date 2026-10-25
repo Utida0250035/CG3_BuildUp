@@ -1,12 +1,11 @@
 #include "System/BossCombatEnrage.h"
+#include "System/BossFacingUtils.h"
 #include "System/CmpEnemy.h"
 #include "System/BehEnemyBurstShot.h"
 #include "System/BehEnemyBulletCurtainFixedRing.h"
 #include "System/BehEnemyBulletCurtainRadialFan.h"
 #include "System/BehEnemyMeteor.h"
 #include "System/BehEnemyDepthRush.h"
-#include "System/BehEnemyOrbiterSalvo.h"
-#include "System/BehEnemyOrbiterSpoke.h"
 #include "System/BehEnemyShot.h"
 #include "System/BehEnemySpreadShot.h"
 #include "System/BehEnemyWallShot.h"
@@ -87,6 +86,10 @@ void CmpEnemy::Update() {
   ApplyBossBodyColorFromHealth(RefOwner());
   BossCombatEnrage::SyncOrbiterRotateSpeeds(RefOwner());
 
+  if (Entity *player = player_) {
+    ApplyBossFacingTowardPlayer(RefOwner(), *player);
+  }
+
   behaviorBox_.Execute();
 
   if (patternTransitionWarmupTimer_ > 0.0f) {
@@ -112,12 +115,7 @@ void CmpEnemy::Update() {
   case 8:
     behaviorBox_.Transition(new BehEnemyDepthRush());
     break;
-  case 11:
-    behaviorBox_.Transition(new BehEnemyOrbiterSalvo());
-    break;
-  case 14:
-    behaviorBox_.Transition(new BehEnemyOrbiterSpoke());
-    break;
+  // 11 / 14: オービター弾（3D 方向）は奥行きが分かりにくいため一旦未使用
   case 17:
     behaviorBox_.Transition(new BehEnemyBulletCurtainRadialFan());
     break;

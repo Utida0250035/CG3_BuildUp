@@ -777,6 +777,9 @@
     <ClInclude Include="Codes\Include\System\PlaySe.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\PlayerParryReach.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\System\StageBounds.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>

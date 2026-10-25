@@ -41,6 +41,24 @@ inline constexpr const char *kSkyDomeObjectDirectory =
 inline constexpr const char *kSkyDomeObjFileName = "SkyDome.obj";
 inline constexpr const char *kSkyDomeMtlFileName = "SkyDome.mtl";
 
+/// ステージカメラは -Z 側から pivot を見る。ボスの正面は手前（-Z）＋自機方向。
+Math::Vector3 ComputeBossFaceForward(const Math::Vector3 &bossPosition,
+                                   const Entity *player) {
+  Math::Vector3 towardScreenFront{0.0f, 0.0f, -1.0f};
+  if (player == nullptr) {
+    return towardScreenFront;
+  }
+
+  Math::Vector3 toPlayer = player->GetWorldPosition() - bossPosition;
+  toPlayer.z = 0.0f;
+  if (toPlayer.LengthSquare() <= 1.0e-8f) {
+    return towardScreenFront;
+  }
+
+  toPlayer = toPlayer.Normalized();
+  return (toPlayer * 0.45f + towardScreenFront * 0.55f).Normalized();
+}
+
 } // namespace
 
 std::unique_ptr<Entity> EntityFactory::PlayerParry() {
@@ -137,9 +155,10 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
   enemyAstro->SetEntityType(EntityType::ENEMY);
 
   Math::TransformLH initialTransform{};
-  initialTransform.quaternion =
-      Math::Quaternion::FromAxisAngle(Math::Vector3::UpLh(), std::numbers::pi_v<float> * 0.5f);
   initialTransform.translate = {8.0f, 0.0f, 0.0f};
+  initialTransform.quaternion = Math::Quaternion::FromLhLookAt(
+      ComputeBossFaceForward(initialTransform.translate, player),
+      Math::Vector3::UpLh());
   enemyAstro->SetInitialTransform(initialTransform);
 
   enemyAstro->AddUpdCmp<CmpHitSphere>();
@@ -179,23 +198,23 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
   enemyAstro->GetUpdCmp<CmpEnemy>()->SetPlayer(player);
 
   const float orbiterHitRadius = 0.4f;
-  const float orbiterRadius = 0.5f;
-  const float distance = 1.5f;
   const Math::Vector4 orbiterColor = bossShellOrange;
-  const Math::Vector3 defaultInitialTransform = {distance, 0.0f, 0.0f};
-  const Math::Vector3 defaultOrbitAxis = Math::Vector3::UpLh();
+  const Math::Vector3 orbitAxis = Math::Vector3::ForwardLh();
 
   struct OrbitConfig {
-    Math::Vector3 axisRotateByDegree{};
-    float rotateSpeedByDegree;
+    float orbitRadius = 1.5f;
+    float meshRadius = 0.5f;
+    /// 度/秒（符号で回転方向）
+    float rotateSpeedByDegree = 180.0f;
+    float startAngleByDegree = 0.0f;
   };
 
   const std::vector<OrbitConfig> orbitConfigs{
-      {{0.0f, 0.0f, 0.0f}, 180.0f},
-      {{45.0f, 0.0f, 0.0f}, 150.0f},
-      {{30.0f, 0.0f, 15.0f}, 200.0f},
-      {{90.0f, 0.0f, 30.0f}, 360.0f},
-      {{60.0f, 30.0f, 70.0f}, 200.0f},
+      {1.35f, 0.46f, 210.0f, 0.0f},
+      {1.70f, 0.52f, -175.0f, 48.0f},
+      {1.50f, 0.44f, 255.0f, 96.0f},
+      {1.85f, 0.55f, -300.0f, 144.0f},
+      {1.25f, 0.42f, 330.0f, 204.0f},
   };
 
   std::vector<Entity *> orbiters;
@@ -207,25 +226,35 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
     orbiter->AddUpdCmp<CmpHitSphere>();
 
     orbiter->GetDrawCmp<CmpMeshSphere>()->SetColor(orbiterColor);
-    orbiter->GetDrawCmp<CmpMeshSphere>()->SetRadius(orbiterRadius);
+    orbiter->GetDrawCmp<CmpMeshSphere>()->SetRadius(config.meshRadius);
     orbiter->GetUpdCmp<CmpHitSphere>()->SetSpheres({{{}, orbiterHitRadius}});
 
-    const Math::Matrix4x4 orbitAxisRotateMatrix =
-        Math::Matrix4x4::Rotate(config.axisRotateByDegree / 180.0f * std::numbers::pi_v<float>);
-
+    const float startAngleRad =
+        config.startAngleByDegree / 180.0f * std::numbers::pi_v<float>;
     Math::TransformLH orbiterInitialTransform{};
-    orbiterInitialTransform.translate = orbitAxisRotateMatrix.Transform(defaultInitialTransform);
+    orbiterInitialTransform.translate = {
+        std::cos(startAngleRad) * config.orbitRadius,
+        std::sin(startAngleRad) * config.orbitRadius,
+        0.0f};
     orbiter->SetInitialTransform(orbiterInitialTransform);
 
     CmpOrbiter *cmpOrbiter = orbiter->GetUpdCmp<CmpOrbiter>();
-    cmpOrbiter->SetRotateAxis(orbitAxisRotateMatrix.Transform(defaultOrbitAxis));
-    cmpOrbiter->SetRotateSpeed(config.rotateSpeedByDegree / 180.0f * std::numbers::pi_v<float>);
+    cmpOrbiter->SetRotateAxis(orbitAxis);
+    cmpOrbiter->SetRotateSpeed(config.rotateSpeedByDegree / 180.0f *
+                               std::numbers::pi_v<float>);
     orbiters.push_back(orbiter);
   }
 
   enemyAstro->GetUpdCmp<CmpChildEntitys>()->AddChilds(orbiters);
   enemyAstro->ResolveDependencies();
   enemyAstro->Initialize();
+
+  for (Entity *orbiter : orbiters) {
+    if (orbiter != nullptr && orbiter->HasUpdCmp<CmpOrbiter>()) {
+      orbiter->GetUpdCmp<CmpOrbiter>()->CaptureDefaults();
+    }
+  }
+
   return enemyAstro;
 }
 

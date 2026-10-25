@@ -54,7 +54,7 @@ void SceneResult::DrawScene() {
 }
 
 void SceneResult::ExitScene() {
-  Atrum::StopSe(sceneBgmHandle_);
+  Atrum::StopBgmLoop(sceneBgmHandle_);
   sceneBgmHandle_ = {};
   ClearBackgrounds();
 }

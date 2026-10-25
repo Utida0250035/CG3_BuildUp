@@ -16,6 +16,25 @@
 
 namespace Atrum {
 
+namespace {
+
+float BattlePlaneZ(const CmpEnemy *cmpEnemy) {
+  if (cmpEnemy == nullptr) {
+    return 0.0f;
+  }
+  const Entity *player = cmpEnemy->GetPlayer();
+  return player != nullptr ? player->GetWorldPosition().z : 0.0f;
+}
+
+Math::Vector3 SnapToBattlePlane(const Math::Vector3 &worldPosition,
+                                const float planeZ) {
+  Math::Vector3 onPlane = worldPosition;
+  onPlane.z = planeZ;
+  return onPlane;
+}
+
+} // namespace
+
 void BehEnemyBulletCurtainRadialFan::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
@@ -42,8 +61,11 @@ void BehEnemyBulletCurtainRadialFan::RegisterFanTelegraph() {
     return;
   }
 
-  const Math::Vector3 start = RefGrandOwner().GetWorldPosition();
-  const Math::Vector3 toPlayer = player->GetWorldPosition() - start;
+  const float planeZ = BattlePlaneZ(cmpEnemy_);
+  const Math::Vector3 start =
+      SnapToBattlePlane(RefGrandOwner().GetWorldPosition(), planeZ);
+  Math::Vector3 toPlayer = player->GetWorldPosition() - start;
+  toPlayer.z = 0.0f;
   const float baseAngle = std::atan2(toPlayer.y, toPlayer.x);
 
   if (kFanTelegraphLineCount <= 1) {
@@ -69,8 +91,11 @@ void BehEnemyBulletCurtainRadialFan::FireFanVolley() {
     return;
   }
 
-  const Math::Vector3 start = RefGrandOwner().GetWorldPosition();
-  const Math::Vector3 toPlayer = player->GetWorldPosition() - start;
+  const float planeZ = BattlePlaneZ(cmpEnemy_);
+  const Math::Vector3 start =
+      SnapToBattlePlane(RefGrandOwner().GetWorldPosition(), planeZ);
+  Math::Vector3 toPlayer = player->GetWorldPosition() - start;
+  toPlayer.z = 0.0f;
   const float baseAngle = std::atan2(toPlayer.y, toPlayer.x);
 
   for (uint32_t i = 0; i < kFanBulletCount; ++i) {

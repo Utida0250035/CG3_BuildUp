@@ -81,6 +81,12 @@ inline void StopSe(const Audio::Handle &handle) {
   Audio::Manager::Instance()->Stop(handle);
 }
 
+/// シーン BGM を停止（ハンドル不一致で残ったストリーミングボイスも解放）
+inline void StopBgmLoop(const Audio::Handle &handle) {
+  StopSe(handle);
+  Audio::Manager::Instance()->StopAllStreamingVoices();
+}
+
 /// BGM をループ再生（候補パスのうち存在するファイルを使用）
 inline Audio::Handle PlayBgmLoop(
     const std::initializer_list<const char *> candidatePaths) {
@@ -88,6 +94,9 @@ inline Audio::Handle PlayBgmLoop(
   if (path.empty()) {
     return {};
   }
+
+  // 前シーンの BGM がボイスを掴んだまま残ると、以降 Play が失敗して無音になる
+  Audio::Manager::Instance()->StopAllStreamingVoices();
 
   return PlaySeLoop(path);
 }

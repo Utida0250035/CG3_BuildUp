@@ -5,10 +5,18 @@
 namespace Atrum {
 
 void CmpDrawBullet::ResolveDependence() {
-  cmpBullet_ = RefOwner().GetUpdCmp<CmpReflectAbleBullet>();
+  if (RefOwner().HasUpdCmp<CmpReflectAbleBullet>()) {
+    cmpBullet_ = RefOwner().GetUpdCmp<CmpReflectAbleBullet>();
+  } else {
+    cmpBullet_ = nullptr;
+  }
 }
 
 void CmpDrawBullet::Draw() {
+  if (cmpBullet_ == nullptr) {
+    return;
+  }
+
   for (auto &bullet : cmpBullet_->RefBullets()) {
     if (bullet) {
       bullet->Draw();

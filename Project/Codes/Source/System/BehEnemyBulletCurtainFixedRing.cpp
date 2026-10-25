@@ -16,6 +16,25 @@
 
 namespace Atrum {
 
+namespace {
+
+float BattlePlaneZ(const CmpEnemy *cmpEnemy) {
+  if (cmpEnemy == nullptr) {
+    return 0.0f;
+  }
+  const Entity *player = cmpEnemy->GetPlayer();
+  return player != nullptr ? player->GetWorldPosition().z : 0.0f;
+}
+
+Math::Vector3 SnapToBattlePlane(const Math::Vector3 &worldPosition,
+                                const float planeZ) {
+  Math::Vector3 onPlane = worldPosition;
+  onPlane.z = planeZ;
+  return onPlane;
+}
+
+} // namespace
+
 void BehEnemyBulletCurtainFixedRing::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
@@ -30,8 +49,11 @@ void BehEnemyBulletCurtainFixedRing::BeginTelegraph() {
 
   Entity *player = cmpEnemy_->GetPlayer();
   if (player != nullptr) {
-    const Math::Vector3 start = RefGrandOwner().GetWorldPosition();
-    const Math::Vector3 toPlayer = player->GetWorldPosition() - start;
+    const float planeZ = BattlePlaneZ(cmpEnemy_);
+    const Math::Vector3 start =
+        SnapToBattlePlane(RefGrandOwner().GetWorldPosition(), planeZ);
+    Math::Vector3 toPlayer = player->GetWorldPosition() - start;
+    toPlayer.z = 0.0f;
     ringBaseAngleRadians_ = std::atan2(toPlayer.y, toPlayer.x);
   } else {
     ringBaseAngleRadians_ = 0.0f;
@@ -50,7 +72,9 @@ void BehEnemyBulletCurtainFixedRing::RegisterRingTelegraph() {
     return;
   }
 
-  const Math::Vector3 start = RefGrandOwner().GetWorldPosition();
+  const float planeZ = BattlePlaneZ(cmpEnemy_);
+  const Math::Vector3 start =
+      SnapToBattlePlane(RefGrandOwner().GetWorldPosition(), planeZ);
   const float step = (2.0f * std::numbers::pi_v<float>) /
                      static_cast<float>(kRingBulletCount);
 
@@ -66,7 +90,9 @@ void BehEnemyBulletCurtainFixedRing::FireRingVolley() {
     return;
   }
 
-  const Math::Vector3 start = RefGrandOwner().GetWorldPosition();
+  const float planeZ = BattlePlaneZ(cmpEnemy_);
+  const Math::Vector3 start =
+      SnapToBattlePlane(RefGrandOwner().GetWorldPosition(), planeZ);
   const float step = (2.0f * std::numbers::pi_v<float>) /
                      static_cast<float>(kRingBulletCount);
 

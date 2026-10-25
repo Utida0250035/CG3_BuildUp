@@ -9,7 +9,8 @@ class FrameDeltaTime;
 
 class CmpOrbiter : public ComponentUpd {
 private:
-  Math::Vector3 rotateAxis_ = Math::Vector3::UpLh();
+  /// 画面に平行な XY 平面（Z 軸回り）で公転する
+  Math::Vector3 rotateAxis_ = Math::Vector3::ForwardLh();
   float rotateSpeed_ = 0.0f;
   float baselineRotateSpeed_ = 0.0f;
   FrameDeltaTime *frameDeltaTime_ = nullptr;

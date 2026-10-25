@@ -33,6 +33,7 @@ public:
 
   BehaviorBox &RefBehaviorBox() { return behaviorBox_; }
   Entity *GetPlayer() { return player_; }
+  const Entity *GetPlayer() const { return player_; }
   void SetPlayer(Entity *player) { player_ = player; }
 };
 

@@ -6,6 +6,7 @@
 #include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Entity.h"
 #include "System/Particle/GameCombatParticleEffects.h"
+#include "System/PlayerParryReach.h"
 #include "System/PlaySe.h"
 #include "System/StageBounds.h"
 
@@ -220,6 +221,14 @@ void CmpReflectAbleBullet::Update() {
       continue;
     }
 
+    if (bullet->GetEntityType() == EntityType::ENEMY_WEAPON &&
+        IsOutsidePlayerParryReachAabb(bullet->GetWorldPosition())) {
+      bullet->Finalize();
+      reflectAbleBullets_.erase(reflectAbleBullets_.begin() +
+                                static_cast<std::ptrdiff_t>(index));
+      continue;
+    }
+
     ++index;
   }
 }
@@ -268,7 +277,18 @@ void CmpReflectAbleBullet::LateResolveCombatHits() {
 }
 
 void CmpReflectAbleBullet::Shot(Entity *bullet) {
-  reflectAbleBullets_.emplace_back(bullet);
+  if (bullet == nullptr) {
+    return;
+  }
+
+  std::unique_ptr<Entity> owned(bullet);
+  if (owned->GetEntityType() == EntityType::ENEMY_WEAPON &&
+      IsOutsidePlayerParryReachAabb(owned->GetWorldPosition())) {
+    owned->Finalize();
+    return;
+  }
+
+  reflectAbleBullets_.emplace_back(std::move(owned));
 }
 
 } // namespace Atrum
