@@ -10,6 +10,8 @@
 namespace Atrum {
 
 inline constexpr float kHealthHitHurtFlashSeconds = 0.5f;
+/// 自機被弾後の無敵時間（秒）
+inline constexpr float kPlayerDamageInvincibleSeconds = 2.0f;
 
 class CmpHitSphere;
 class FrameDeltaTime;
@@ -53,6 +55,8 @@ public:
   bool GetIsHurt() const { return isHurt_; }
 
   bool IsHurtFlashActive() const { return hurtFlashTimer_ > 0.0f; }
+
+  bool IsInvincible() const { return invincibleTimer_ > 0.0f; }
 
   Math::Vector4 GetHurtFlashColor() const;
 

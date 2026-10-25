@@ -190,7 +190,9 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 
 		soundData->wfEx = StandardWaveFormatEx();
 
-		return soundDataStorage_.size() - 1;
+		const size_t index = soundDataStorage_.size() - 1;
+		soundIndexMap_.emplace(Hash64(filePath), index);
+		return index;
 
 	}
 
@@ -394,32 +396,44 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 
 	size_t AudioManager::AcquireStreamingVoiceIndex() {
 
-		auto findStoppedVoice = [this]() -> size_t {
-			size_t voiceIndex = 0;
+		const size_t poolSize = streamingSourceVoicePool_.size();
+		if (poolSize <= 1) {
+			return static_cast<size_t>(-1);
+		}
 
-			for (const std::unique_ptr<StreamingSourceVoice> &streamingVoice :
-			     streamingSourceVoicePool_) {
+		// ボイス 0 は PlaySceneBgm 専用。PlayStreaming では触らない
+		const size_t kFirstGeneralStreamingVoiceIndex = 1;
 
+		auto findStoppedVoice = [this](const size_t beginIndex,
+		                               const size_t endIndex) -> size_t {
+			for (size_t voiceIndex = beginIndex; voiceIndex < endIndex;
+			     ++voiceIndex) {
+				const std::unique_ptr<StreamingSourceVoice> &streamingVoice =
+				    streamingSourceVoicePool_[voiceIndex];
 				if (streamingVoice != nullptr &&
 				    streamingVoice->state == VoiceState::Stopped) {
 					return voiceIndex;
 				}
-
-				++voiceIndex;
 			}
 
 			return static_cast<size_t>(-1);
 		};
 
-		if (const size_t voiceIndex = findStoppedVoice();
+		if (const size_t voiceIndex = findStoppedVoice(
+		        kFirstGeneralStreamingVoiceIndex, poolSize);
 		    voiceIndex != static_cast<size_t>(-1)) {
 			return voiceIndex;
 		}
 
-		// playId 不一致などで Stop できず残った BGM 用ボイスを解放する
-		StopAllStreamingVoices();
+		for (size_t voiceIndex = kFirstGeneralStreamingVoiceIndex;
+		     voiceIndex < poolSize; ++voiceIndex) {
+			if (streamingSourceVoicePool_[voiceIndex] != nullptr) {
+				ResetStreamingVoice(*streamingSourceVoicePool_[voiceIndex]);
+			}
+		}
 
-		if (const size_t voiceIndex = findStoppedVoice();
+		if (const size_t voiceIndex = findStoppedVoice(
+		        kFirstGeneralStreamingVoiceIndex, poolSize);
 		    voiceIndex != static_cast<size_t>(-1)) {
 			return voiceIndex;
 		}

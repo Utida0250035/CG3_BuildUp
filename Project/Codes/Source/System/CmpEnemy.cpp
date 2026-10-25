@@ -2,8 +2,6 @@
 #include "System/BossFacingUtils.h"
 #include "System/CmpEnemy.h"
 #include "System/BehEnemyBurstShot.h"
-#include "System/BehEnemyBulletCurtainFixedRing.h"
-#include "System/BehEnemyBulletCurtainRadialFan.h"
 #include "System/BehEnemyMeteor.h"
 #include "System/BehEnemyDepthRush.h"
 #include "System/BehEnemyShot.h"
@@ -20,8 +18,8 @@ namespace Atrum {
 
 namespace {
 
-/// 特殊行動（メテオ・壁弾・突進・オービター・弾幕）のローテーション周期
-constexpr uint64_t kSpecialPatternCycle = 20;
+/// 特殊行動のローテーション周期（大きいほど弾幕系の間隔が空く）
+constexpr uint64_t kSpecialPatternCycle = 28;
 
 constexpr Math::Vector4 kBossDefaultShellColor{0.75f, 0.25f, 0.125f, 0.45f};
 constexpr Math::Vector4 kBossDefaultInnerColor{0.75f, 0.25f, 0.125f, 1.0f};
@@ -63,14 +61,17 @@ void CmpEnemy::Initialize() {
 }
 
 void CmpEnemy::TransitionNextShotBehavior() {
-  switch (shotPatternIndex_ % 3) {
+  // 通常ローテ：狙い撃ち＋突進を多め、拡散・連射は控えめ
+  switch (shotPatternIndex_ % 5) {
   case 0:
+  case 1:
+  case 2:
     behaviorBox_.Transition(new BehEnemyShot());
     break;
-  case 1:
+  case 3:
     behaviorBox_.Transition(new BehEnemySpreadShot());
     break;
-  case 2:
+  case 4:
     behaviorBox_.Transition(new BehEnemyBurstShot());
     break;
   }
@@ -106,22 +107,18 @@ void CmpEnemy::Update() {
   }
 
   switch ((transitionCount + 1) % kSpecialPatternCycle) {
-  case 0:
-    behaviorBox_.Transition(new BehEnemyMeteor());
-    break;
-  case 4:
-    behaviorBox_.Transition(new BehEnemyWallShot());
-    break;
-  case 8:
+  case 7:
+  case 14:
+  case 21:
     behaviorBox_.Transition(new BehEnemyDepthRush());
     break;
-  // 11 / 14: オービター弾（3D 方向）は奥行きが分かりにくいため一旦未使用
-  case 17:
-    behaviorBox_.Transition(new BehEnemyBulletCurtainRadialFan());
+  case 24:
+    behaviorBox_.Transition(new BehEnemyMeteor());
     break;
-  case 19:
-    behaviorBox_.Transition(new BehEnemyBulletCurtainFixedRing());
+  case 26:
+    behaviorBox_.Transition(new BehEnemyWallShot());
     break;
+  // 放射／固定リング弾幕は頻度を下げるためローテから外す
   default:
     break;
   }

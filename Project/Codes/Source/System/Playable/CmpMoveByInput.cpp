@@ -7,12 +7,41 @@
 #include "System/Entity/Components/CmpDirection.h"
 #include "System/Entity/Components/CmpHealthHit.h"
 #include "System/Entity/Components/CmpHitSphere.h"
+#include "System/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Entity.h"
 #include "System/PlaySe.h"
 #include "System/StageBounds.h"
 
 namespace Atrum::Player {
+
+namespace {
+
+void ApplyDirectionMarkerColor(Entity *marker, const Math::Vector4 &baseColor,
+                               const bool visible) {
+  if (marker == nullptr) {
+    return;
+  }
+
+  CmpMeshSphere *mesh = marker->GetDrawCmp<CmpMeshSphere>();
+  if (mesh == nullptr) {
+    return;
+  }
+
+  Math::Vector4 color = baseColor;
+  if (!visible) {
+    color.w = 0.0f;
+  }
+  mesh->SetColor(color);
+}
+
+} // namespace
+
+void CmpMoveByInput2D::SetDirectionMarkerBaseColors(
+    const Math::Vector4 &forwardColor, const Math::Vector4 &rearColor) {
+  directionMarkerForwardBaseColor_ = forwardColor;
+  directionMarkerRearBaseColor_ = rearColor;
+}
 
 void CmpMoveByInput2D::ResolveDependence() {
   cmpInput_ = CmpInput::Instance();
@@ -115,24 +144,62 @@ void CmpMoveByInput2D::Update() {
     }
   }
 
-  if (cmpHealthHit_ != nullptr && cmpHealthHit_->IsHurtFlashActive()) {
-    cmpMesh_->SetColor(cmpHealthHit_->GetHurtFlashColor());
-  } else if (invincibleTimer_ > 0.0f) {
-    cmpHitSphere_->SetIsActive(false);
-    if (isInvincibleColorWaitNextFrame_) {
-      isInvincibleColorWaitNextFrame_ = false;
-      cmpMesh_->SetColor(Math::Vector4::White());
-    } else {
-      cmpMesh_->SetColor(invincibleColor);
+  const bool damageInvincible =
+      cmpHealthHit_ != nullptr && cmpHealthHit_->IsInvincible();
+
+  if (damageInvincible) {
+    if (!wasDamageInvincible_) {
+      damageInvincibleBlinkTimer_ = 0.0f;
     }
 
-    invincibleTimer_ -= frameDeltaTime_->GetDeltaTime();
-    if (invincibleTimer_ <= 0.0f) {
-      invincibleTimer_ = 0.0f;
+    constexpr float kDamageInvincibleBlinkPeriod = 0.12f;
+    damageInvincibleBlinkTimer_ += frameDeltaTime_->GetDeltaTime();
+    const bool showMesh =
+        static_cast<int>(damageInvincibleBlinkTimer_ /
+                         kDamageInvincibleBlinkPeriod) %
+            2 ==
+        0;
+
+    cmpHitSphere_->SetIsActive(false);
+
+    if (showMesh) {
+      cmpMesh_->SetColor(Math::Vector4::White());
+    } else {
+      Math::Vector4 hidden = Math::Vector4::White();
+      hidden.w = 0.0f;
+      cmpMesh_->SetColor(hidden);
     }
+
+    ApplyDirectionMarkerColor(directionMarkerForward_,
+                              directionMarkerForwardBaseColor_, showMesh);
+    ApplyDirectionMarkerColor(directionMarkerRear_,
+                              directionMarkerRearBaseColor_, showMesh);
   } else {
-    cmpMesh_->SetColor(Math::Vector4::White());
+    damageInvincibleBlinkTimer_ = 0.0f;
+
+    if (invincibleTimer_ > 0.0f) {
+      cmpHitSphere_->SetIsActive(false);
+      if (isInvincibleColorWaitNextFrame_) {
+        isInvincibleColorWaitNextFrame_ = false;
+        cmpMesh_->SetColor(Math::Vector4::White());
+      } else {
+        cmpMesh_->SetColor(invincibleColor);
+      }
+
+      invincibleTimer_ -= frameDeltaTime_->GetDeltaTime();
+      if (invincibleTimer_ <= 0.0f) {
+        invincibleTimer_ = 0.0f;
+      }
+    } else {
+      cmpMesh_->SetColor(Math::Vector4::White());
+      ApplyDirectionMarkerColor(directionMarkerForward_,
+                                directionMarkerForwardBaseColor_, true);
+      ApplyDirectionMarkerColor(directionMarkerRear_,
+                                directionMarkerRearBaseColor_, true);
+    }
   }
+
+  wasDamageInvincible_ = damageInvincible;
 
   UpdateDirectionMarkerPositions();
 }

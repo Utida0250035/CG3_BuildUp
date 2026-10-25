@@ -77,6 +77,7 @@ void CameraGameIntroController::SkipIntro() {
     return;
   }
 
+  PlaySubmitSe();
   FinishIntro();
 }
 

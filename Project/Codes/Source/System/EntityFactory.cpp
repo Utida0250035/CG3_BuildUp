@@ -1,4 +1,5 @@
 #include "System/EntityFactory.h"
+#include "System/CombatBulletTuning.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Quaternion.h"
 #include "Math/Transform.h"
@@ -98,6 +99,7 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   CmpHealthHit *cmpHealthHit = playerParry->GetUpdCmp<CmpHealthHit>();
   cmpHealthHit->SetHurterTypes({EntityType::ENEMY, EntityType::ENEMY_WEAPON});
   cmpHealthHit->SetInitialHealthCount(5);
+  cmpHealthHit->SetInvincibleTime(kPlayerDamageInvincibleSeconds);
 
   CmpParry *cmpParry = playerParry->GetDataCmp<CmpParry>();
   cmpParry->SetEntParry(Parry(playerParry.get()).release());
@@ -140,6 +142,8 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   cmpMoveByInput->SetDirectionMarkers(directionMarkerForward,
                                       directionMarkerRear,
                                       kDirectionMarkerSideOffset);
+  cmpMoveByInput->SetDirectionMarkerBaseColors(forwardMarkerColor,
+                                               rearMarkerColor);
   cmpMoveByInput->SetInitialDirectionFaceSignX(1.0f);
 
   playerParry->GetUpdCmp<CmpChildEntitys>()->AddChilds(
@@ -307,6 +311,8 @@ std::vector<std::unique_ptr<Entity>> EntityFactory::ForegroundGroundClouds() {
   };
 
   // 固定配置。kGroundHeight(-4)・自機半径0.5 の足元(y≈-4.5)まで雲が届くよう接地帯で下層と接続
+  // alpha は弾影が透けるよう全体を少しだけ下げる（各 spec は相対の濃さ）
+  static constexpr float kCloudAlphaScale = 0.84f;
   static constexpr GroundCloudSpec kSpecs[] = {
       // 左端（LeftEndX=-14 より外側）
       {-16.4f, -6.6f, 0.0f, 3.0f, 0.97f},  {-15.0f, -6.45f, 0.05f, 2.55f, 0.96f},
@@ -345,7 +351,8 @@ std::vector<std::unique_ptr<Entity>> EntityFactory::ForegroundGroundClouds() {
     cloud->AddDrawCmp<CmpMeshSphere>();
 
     CmpMeshSphere *mesh = cloud->GetDrawCmp<CmpMeshSphere>();
-    mesh->SetColor({1.0f, 1.0f, 1.0f, spec.alpha});
+    mesh->SetColor(
+        {1.0f, 1.0f, 1.0f, spec.alpha * kCloudAlphaScale});
     mesh->SetRadius(spec.radius);
     // 前景雲は形状を粗くして描画負荷を抑える
     mesh->SetSubdivision(4);
@@ -377,10 +384,12 @@ std::unique_ptr<Entity> EntityFactory::SkyDome(Camera *camera) {
   return skyDomeEntity;
 }
 
-std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(const Math::Vector3 &velocity, const Math::Vector3 &position) {
+std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(
+    const Math::Vector3 &velocity, const Math::Vector3 &position) {
   std::unique_ptr<Entity> bullet = std::make_unique<Entity>();
   Math::TransformLH initialTransform{};
   initialTransform.translate = position;
+  initialTransform.translate.z = 0.0f;
   bullet->SetInitialTransform(initialTransform);
   bullet->SetEntityType(EntityType::ENEMY_WEAPON);
 
@@ -392,16 +401,17 @@ std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(const Math::Vector3 &ve
 
   CmpMeshSphere *cmpMeshSphere = bullet->GetDrawCmp<CmpMeshSphere>();
   cmpMeshSphere->SetRadius(0.5f);
-  cmpMeshSphere->SetSubdivision(4);
-  cmpMeshSphere->SetColor({0.75f, 0.1f, 0.1f, 1.0f});
-  // 弾は色味を保つためライティングしない（ボス本体やオービター等の CmpMeshSphere 既定で ON）
-  cmpMeshSphere->SetLightingEnabled(false);
+  cmpMeshSphere->SetSubdivision(6);
+  cmpMeshSphere->SetColor({0.82f, 0.12f, 0.12f, 1.0f});
+  cmpMeshSphere->SetLightingEnabled(true);
 
   bullet->ResolveDependencies();
   bullet->Initialize();
 
   CmpLhRigidBody *cmpLhRigidBody = bullet->GetUpdCmp<CmpLhRigidBody>();
-  cmpLhRigidBody->RefVelocity() = velocity;
+  Math::Vector3 planeVelocity = ScaleBulletVelocity(velocity);
+  planeVelocity.z = 0.0f;
+  cmpLhRigidBody->RefVelocity() = planeVelocity;
   cmpLhRigidBody->SetIsUseGravity(false);
   cmpLhRigidBody->SetIsUseSpaceEnd(false);
   return bullet;

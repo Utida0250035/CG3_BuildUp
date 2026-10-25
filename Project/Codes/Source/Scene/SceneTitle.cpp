@@ -39,6 +39,7 @@ void SceneTitle::Update() {
   UpdateBackgrounds();
 
   if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
+    Atrum::PlaySubmitSe();
     Atrum::CommandChangeScene::Instance()->Set(SceneGame::Instance(),
                                                new Atrum::ChangeSceneFade());
   }

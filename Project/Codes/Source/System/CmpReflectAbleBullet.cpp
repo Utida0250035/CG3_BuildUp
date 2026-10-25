@@ -1,4 +1,5 @@
 #include "System/CmpReflectAbleBullet.h"
+#include "System/CombatBulletTuning.h"
 #include "System/CmpChildEntitys.h"
 #include "System/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpHealthHit.h"
@@ -44,9 +45,9 @@ void PlayBossHitByReflectedBulletSe() {
   PlaySe(sePath);
 }
 
-bool EntitiesOverlapByHitSphere(const Entity &a, const Entity &b) {
-  const CmpHitSphere *hitA = a.GetUpdCmp<CmpHitSphere>();
-  const CmpHitSphere *hitB = b.GetUpdCmp<CmpHitSphere>();
+bool EntitiesOverlapByHitSphere(Entity &a, Entity &b) {
+  CmpHitSphere *hitA = a.GetUpdCmp<CmpHitSphere>();
+  CmpHitSphere *hitB = b.GetUpdCmp<CmpHitSphere>();
   if (hitA == nullptr || hitB == nullptr || !hitA->GetIsActive() ||
       !hitB->GetIsActive()) {
     return false;
@@ -119,7 +120,6 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
       bullet->SetEntityType(EntityType::PLAYER_ITEM);
       cmpLhRigidBody->RefVelocity() = {};
       cmpMeshSphere->SetColor(kReflectedBulletColor);
-      bullet->RefTransform().translate = bullet->GetWorldPosition();
       bullet->SetParent(nullptr);
       PlayPlayerParrySe();
       Particle::Combat::PlayParryReflectEffect(
@@ -141,8 +141,8 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
       }
     }
   } else if (bullet->GetEntityType() == EntityType::PLAYER_ITEM) {
-    constexpr float reflectedSpeed = 16.0f;
-    const Math::Vector3 toOwner =
+    constexpr float reflectedSpeed = 16.0f * kBulletSpeedGlobalScale;
+    Math::Vector3 toOwner =
         bulletOwner.GetWorldPosition() - bullet->GetWorldPosition();
     const float toOwnerLengthSq = toOwner.LengthSquare();
     if (toOwnerLengthSq > 1.0e-8f) {
@@ -262,6 +262,13 @@ void CmpReflectAbleBullet::Update() {
     }
 
     bullet->Update();
+
+    if (bullet->GetEntityType() == EntityType::ENEMY_WEAPON) {
+      bullet->RefTransform().translate.z = 0.0f;
+      if (CmpLhRigidBody *body = bullet->GetUpdCmp<CmpLhRigidBody>()) {
+        body->RefVelocity().z = 0.0f;
+      }
+    }
 
     if (IsOutsideCombatAreaAabb(bullet->GetWorldPosition())) {
       bullet->Finalize();

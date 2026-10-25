@@ -63,6 +63,8 @@ private:
   void DrawEntities();
   void DrawBattleHud();
   void DrawIntroScreenUi();
+  void DrawHowToPlayUi();
+  void MaintainSceneBgmIfNeeded();
 
   void CheckRoundEnd();
   void RequestTransitionToResult();

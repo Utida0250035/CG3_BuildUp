@@ -73,7 +73,7 @@ void SceneGame::EnterScene() {
   Atrum::Particle::Combat::SetEffectCamera(GetCamera());
   Atrum::CombatCameraShake::Instance().Reset();
   Atrum::PlayerDamageScreenVignette::Instance().Reset();
-  Atrum::SceneScreenUi::PreloadGameIntroUiTextures();
+  Atrum::SceneScreenUi::PreloadGameSceneUiTextures();
   sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmGame.mp3",
                                         "./Resources/bgmGame.mp3"});
 }
@@ -117,6 +117,8 @@ void SceneGame::Update() {
     return;
   }
 
+  MaintainSceneBgmIfNeeded();
+
   if (introCameraController_ && !introCameraController_->IsFinished()) {
     if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
       introCameraController_->SkipIntro();
@@ -150,6 +152,7 @@ void SceneGame::DrawScene() {
   Atrum::Particle::Combat::DrawCombatParticleEffects();
   DrawBattleHud();
   DrawIntroScreenUi();
+  DrawHowToPlayUi();
 }
 
 void SceneGame::DrawIntroScreenUi() {
@@ -164,6 +167,30 @@ void SceneGame::DrawIntroScreenUi() {
   }
 
   Atrum::SceneScreenUi::DrawGameIntroHowToNextUi(engine, GetCamera());
+}
+
+void SceneGame::MaintainSceneBgmIfNeeded() {
+  if (pendingDefeat_ != DefeatKind::None) {
+    return;
+  }
+
+  Atrum::Audio::AudioManager *audio = Atrum::Audio::Manager::Instance();
+  if (sceneBgmHandle_.isSuccess &&
+      audio->IsPlaying(sceneBgmHandle_)) {
+    return;
+  }
+
+  sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmGame.mp3",
+                                        "./Resources/bgmGame.mp3"});
+}
+
+void SceneGame::DrawHowToPlayUi() {
+  Atrum::AtrumEngine *engine = Atrum::AtrumEngine::Instance();
+  if (engine == nullptr || GetCamera() == nullptr) {
+    return;
+  }
+
+  Atrum::SceneScreenUi::DrawGameHowToPlayUi(engine, GetCamera());
 }
 
 void SceneGame::DrawBattleHud() {

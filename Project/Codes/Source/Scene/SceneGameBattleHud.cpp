@@ -76,11 +76,14 @@ void DrawPlayerHealthIcons(AtrumEngine *engine, const uint32_t health,
   constexpr float kMarginTop = 16.0f;
   constexpr float kIconSize = 28.0f;
   constexpr float kIconGap = 6.0f;
-  const Math::Vector4 iconColor{0.35f, 0.9f, 1.0f, 1.0f};
+  const Math::Vector4 aliveIconColor{0.35f, 0.9f, 1.0f, 1.0f};
+  const Math::Vector4 lostIconColor{0.92f, 0.14f, 0.12f, 1.0f};
 
-  const uint32_t displayCount = health <= healthMax ? health : healthMax;
-  for (uint32_t i = 0; i < displayCount; ++i) {
+  const uint32_t clampedHealth = std::min(health, healthMax);
+  for (uint32_t i = 0; i < healthMax; ++i) {
     const float x = kMarginLeft + static_cast<float>(i) * (kIconSize + kIconGap);
+    const Math::Vector4 &iconColor =
+        i < clampedHealth ? aliveIconColor : lostIconColor;
     DrawPlayerHeartIcon(engine, iconColor, x, kMarginTop);
   }
 }

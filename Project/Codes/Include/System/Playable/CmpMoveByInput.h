@@ -49,6 +49,12 @@ private:
   float invincibleTimer_ = 0.0f;
   bool isAirJumpVariable_ = false;
 
+  /// 被弾無敵中の点滅用
+  float damageInvincibleBlinkTimer_ = 0.0f;
+  bool wasDamageInvincible_ = false;
+  Math::Vector4 directionMarkerForwardBaseColor_{0.85f, 0.75f, 0.2f, 1.0f};
+  Math::Vector4 directionMarkerRearBaseColor_{0.85f, 0.75f, 0.2f, 0.45f};
+
 public:
   constexpr UpdCmpGroup UpdGroup() const override { return UpdCmpGroup::MOVEMENT; }
 
@@ -60,6 +66,8 @@ public:
 
   void SetDirectionMarkers(Entity *forwardMarker, Entity *rearMarker,
                            const float sideOffset);
+  void SetDirectionMarkerBaseColors(const Math::Vector4 &forwardColor,
+                                    const Math::Vector4 &rearColor);
   void SetInitialDirectionFaceSignX(const float signX) {
     directionMarkerFaceSignX_ = signX;
   }

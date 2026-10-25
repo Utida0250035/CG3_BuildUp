@@ -65,6 +65,12 @@ inline void PlaySeCandidates(
   PlaySe(path);
 }
 
+/// 決定・スキップ（Submit）用 SE
+inline void PlaySubmitSe() {
+  PlaySeCandidates({"./Assets/Audios/seSubmit.mp3",
+                    "./Resources/seSubmit.mp3"});
+}
+
 /// ループ再生。ファイルが無い場合は失敗した Handle を返す
 inline Audio::Handle PlaySeLoop(const std::string &path) {
   const size_t index = PlaySeDetail::GetOrLoadSeIndex(path);

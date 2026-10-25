@@ -18,6 +18,7 @@ namespace {
 struct UiTextures {
   uint32_t title = UINT32_MAX;
   uint32_t howToNext = UINT32_MAX;
+  uint32_t howToPlay = UINT32_MAX;
   uint32_t clear = UINT32_MAX;
 };
 
@@ -155,6 +156,12 @@ void PreloadGameIntroUiTextures() {
       LoadTextureFromFileNames({"howToNext.png", "howtoNext.png"});
 }
 
+void PreloadGameSceneUiTextures() {
+  PreloadGameIntroUiTextures();
+  uiTextures_.howToPlay =
+      LoadTextureFromFileNames({"howToPlay.png"});
+}
+
 void PrepareDraw(AtrumEngine *engine, Camera *camera) {
   if (engine == nullptr || camera == nullptr) {
     return;
@@ -225,6 +232,28 @@ void DrawGameIntroHowToNextUi(AtrumEngine *engine, Camera *camera) {
 
   DrawTextureTopLeft(engine, uiTextures_.howToNext,
                      screenWidth - width - kMargin, kMargin);
+}
+
+void DrawGameHowToPlayUi(AtrumEngine *engine, Camera *camera) {
+  if (uiTextures_.howToPlay == UINT32_MAX) {
+    return;
+  }
+
+  PrepareDraw(engine, camera);
+
+  constexpr float kMargin = 16.0f;
+  constexpr float kHowToPlayDisplayScale = 0.75f;
+  const float screenHeight =
+      static_cast<float>(Window::kDefaultClientHeight);
+  const float fullHeight = GetTextureHeight(uiTextures_.howToPlay);
+
+  // 左下角を (kMargin, 画面下端 - kMargin) に固定
+  const float left = kMargin;
+  const float top =
+      screenHeight - kMargin - fullHeight * kHowToPlayDisplayScale;
+
+  DrawTextureTopLeft(engine, uiTextures_.howToPlay, left, top,
+                     {1.0f, 1.0f, 1.0f, 1.0f}, kHowToPlayDisplayScale);
 }
 
 } // namespace Atrum::SceneScreenUi

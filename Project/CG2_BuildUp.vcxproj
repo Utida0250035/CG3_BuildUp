@@ -508,6 +508,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSalvo.h" />
     <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSpoke.h" />
     <ClInclude Include="Codes\Include\System\BossCombatEnrage.h" />
+    <ClInclude Include="Codes\Include\System\CombatBulletTuning.h" />
     <ClInclude Include="Codes\Include\System\BehEnemySwingShot.h" />
     <ClInclude Include="Codes\Include\System\BehEnemyWallShot.h" />
     <ClInclude Include="Codes\Include\System\BehRush.h" />
@@ -539,6 +540,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h" />
     <ClInclude Include="Codes\Include\System\PlaySe.h" />
     <ClInclude Include="Codes\Include\System\StageBounds.h" />
+    <ClInclude Include="Codes\Include\System\BulletDepthVisual.h" />
     <ClInclude Include="Codes\Include\System\PlayerParryReach.h" />
     <ClInclude Include="Codes\Include\System\UpdComponent.h" />
     <ClInclude Include="Codes\Include\System\WhiteTexture.h" />

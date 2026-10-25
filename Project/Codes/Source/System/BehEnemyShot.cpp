@@ -34,7 +34,10 @@ void BehEnemyShot::Execute() {
         RefGrandOwner(), shotCoolTime_);
     const Math::Vector3 direction =
         (cmpEnemy_->GetPlayer()->GetWorldPosition() - RefGrandOwner().GetWorldPosition()).Normalized();
-    cmpBullet_->Shot(EntityFactory::LinearEnemyBullet(direction * bulletSpeed_, RefGrandOwner().GetTransform().translate).release());
+    cmpBullet_->Shot(EntityFactory::LinearEnemyBullet(
+                         direction * bulletSpeed_,
+                         RefGrandOwner().GetTransform().translate)
+                         .release());
     ++shotCount_;
     PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
                       "./Resources/seEnemyShot.mp3"});

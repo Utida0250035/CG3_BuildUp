@@ -24,6 +24,11 @@ inline constexpr StageViewFocusSubjectSize kBossDefeatFocusSubject{1.05f,
                                                                      1.05f};
 inline constexpr float kBossDefeatCameraPushSeconds = 2.2f;
 
+/// 戦闘カメラ：真横ではなく pivot より少し上・手前寄りから見下ろす
+inline constexpr float kStageBattleViewEyeHeightAbovePivotY = 3.6f;
+inline constexpr float kStageBattleViewEyeSideOffsetX = -2.25f;
+inline constexpr float kStageBattleViewDistanceScale = 1.15f;
+
 /// 戦闘エリア全体が画面に収まるカメラ姿勢
 StageViewCameraPose ComputeStageBattleViewPose();
 

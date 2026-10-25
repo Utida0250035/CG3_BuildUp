@@ -22,7 +22,9 @@ float GetAspectRatio() {
 }
 
 StageViewCameraPose ComputeViewPose(const Math::Vector3 &pivot, float viewHalfHeight,
-                                    float viewHalfWidth, float distanceScale) {
+                                    float viewHalfWidth, float distanceScale,
+                                    const float eyeHeightAbovePivotY,
+                                    const float eyeSideOffsetX) {
   const float aspectRatio = GetAspectRatio();
   const float halfTan = std::tan(kPerspectiveFovY * 0.5f);
   const float distanceForHeight = viewHalfHeight / halfTan;
@@ -31,9 +33,17 @@ StageViewCameraPose ComputeViewPose(const Math::Vector3 &pivot, float viewHalfHe
   const float eyeBackFromStage =
       std::max(distanceForHeight, distanceForWidth) * distanceScale;
 
+  // 高さを上げた分、画面端が切れにくいよう距離を少し伸ばす
+  const float elevationFitScale =
+      1.0f + std::max(eyeHeightAbovePivotY, 0.0f) /
+                 std::max(viewHalfHeight, 1.0e-3f) * 0.12f;
+  const float adjustedBack = eyeBackFromStage * elevationFitScale;
+
   StageViewCameraPose pose{};
   pose.pivot = pivot;
-  pose.eye = {pivot.x, pivot.y, pivot.z - eyeBackFromStage};
+  pose.eye = {pivot.x + eyeSideOffsetX,
+              pivot.y + eyeHeightAbovePivotY,
+              pivot.z - adjustedBack};
   return pose;
 }
 
@@ -53,14 +63,18 @@ StageViewCameraPose ComputeStageBattleViewPose() {
   const float viewWidth = (kRightEndX - kLeftEndX) * 0.5f;
 
   const Math::Vector3 pivot{centerX, centerY, 0.0f};
-  return ComputeViewPose(pivot, viewHeight, viewWidth, 1.08f);
+  return ComputeViewPose(pivot, viewHeight, viewWidth,
+                         kStageBattleViewDistanceScale,
+                         kStageBattleViewEyeHeightAbovePivotY,
+                         kStageBattleViewEyeSideOffsetX);
 }
 
 StageViewCameraPose ComputeFocusViewPose(const Math::Vector3 &focusWorld,
                                          float subjectHalfHeight,
                                          float subjectHalfWidth) {
-  return ComputeViewPose(focusWorld, subjectHalfHeight, subjectHalfWidth,
-                         1.12f);
+  return ComputeViewPose(focusWorld, subjectHalfHeight, subjectHalfWidth, 1.12f,
+                         kStageBattleViewEyeHeightAbovePivotY * 0.85f,
+                         kStageBattleViewEyeSideOffsetX * 0.75f);
 }
 
 void ApplyStageViewCameraPose(Camera *camera, const StageViewCameraPose &pose) {
