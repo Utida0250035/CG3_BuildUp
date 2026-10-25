@@ -260,6 +260,7 @@ public:
 
   void SetParent(Entity *newParent);
   const Entity *GetParent() { return parent_; };
+  const std::vector<Entity *> &GetChilds() const { return childs_; };
 
   void SetHash(const uint64_t nameHash) { nameHash_ = nameHash; }
 

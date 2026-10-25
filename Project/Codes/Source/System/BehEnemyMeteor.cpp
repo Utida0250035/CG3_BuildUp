@@ -11,6 +11,8 @@
 #include "System/PlaySe.h"
 #include "System/StageBounds.h"
 
+#include <filesystem>
+
 namespace Atrum {
 
 void BehEnemyMeteor::ResolveDependence() {
@@ -19,36 +21,33 @@ void BehEnemyMeteor::ResolveDependence() {
   frameDeltaTime_ = FrameDeltaTime::Instance();
 }
 
-void BehEnemyMeteor::BeginTelegraphPhase() {
-  phase_ = Phase::Telegraph;
-  telegraphTimer_ = kDropAttackTelegraphSeconds;
-}
-
 void BehEnemyMeteor::Initialize() {
+  phase_ = Phase::Telegraph;
+  telegraphCount_ = 0;
   shotCount_ = 0;
-  BeginTelegraphPhase();
-}
+  timer_ = kIntervalSeconds;
 
-void BehEnemyMeteor::FireMeteor() {
   Entity *player = cmpEnemy_->GetPlayer();
-  if (player == nullptr) {
-    return;
+  const float initialX = player != nullptr ? player->GetWorldPosition().x
+                                           : RefGrandOwner().GetWorldPosition().x;
+  for (float &x : targetXPositions_) {
+    x = initialX;
   }
 
+  // 1回目の予告（即座に開始）
+  telegraphCount_ = 1;
+  telegraphWarningPending_ = true;
+}
+
+void BehEnemyMeteor::FireMeteor(const float targetX) {
   cmpBullet_->Shot(EntityFactory::LinearEnemyBullet(
                        {0.0f, -bulletSpeed_, 0.0f},
-                       {player->GetWorldPosition().x, bulletShotY_, 0.0f})
+                       {targetX, bulletShotY_, 0.0f})
                        .release());
-  ++shotCount_;
   PlaySe("./Resources/seEnemyShot.mp3");
 }
 
-void BehEnemyMeteor::TransitionToRushIfFinished() {
-  if (shotCount_ < shotCountMax_) {
-    return;
-  }
-
-  shotCount_ = shotCountMax_;
+void BehEnemyMeteor::TransitionToRush() {
   BehRush *behRush = new BehRush();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
   cmpEnemy_->RefBehaviorBox().Transition(behRush);
@@ -56,39 +55,63 @@ void BehEnemyMeteor::TransitionToRushIfFinished() {
 
 void BehEnemyMeteor::Execute() {
   const float deltaTime = frameDeltaTime_->GetDeltaTime();
-
-  if (phase_ == Phase::Telegraph) {
-    if (Entity *player = cmpEnemy_->GetPlayer()) {
-      if (CmpAttackTelegraph *telegraph =
-              RefGrandOwner().GetDataCmp<CmpAttackTelegraph>()) {
-        AddVerticalDropTelegraph(telegraph, player->GetWorldPosition().x,
-                                 bulletShotY_, kGroundHeight);
-      }
-    }
-
-    telegraphTimer_ -= deltaTime;
-    if (telegraphTimer_ > 0.0f) {
-      TransitionToRushIfFinished();
-      return;
-    }
-
-    FireMeteor();
-    TransitionToRushIfFinished();
-    if (shotCount_ >= shotCountMax_) {
-      return;
-    }
-
-    phase_ = Phase::IntervalWait;
-    intervalTimer_ = intervalAfterShot_;
+  Entity *player = cmpEnemy_->GetPlayer();
+  if (player == nullptr) {
     return;
   }
 
-  intervalTimer_ -= deltaTime;
-  if (intervalTimer_ <= 0.0f) {
-    BeginTelegraphPhase();
+  // 予測線の描画
+  if (CmpAttackTelegraph *telegraph =
+          RefGrandOwner().GetDataCmp<CmpAttackTelegraph>()) {
+    if (phase_ == Phase::Telegraph) {
+      for (uint32_t i = 0; i < telegraphCount_; ++i) {
+        AddVerticalDropTelegraph(telegraph, targetXPositions_[i], bulletShotY_,
+                                 kGroundHeight);
+      }
+    } else if (phase_ == Phase::RapidFire) {
+      for (uint32_t i = shotCount_; i < kMeteorCount; ++i) {
+        AddVerticalDropTelegraph(telegraph, targetXPositions_[i], bulletShotY_,
+                                 kGroundHeight);
+      }
+    }
   }
 
-  TransitionToRushIfFinished();
+  if (phase_ == Phase::Telegraph) {
+    if (telegraphWarningPending_) {
+      PlayBulletWarningSound();
+      telegraphWarningPending_ = false;
+    }
+
+    timer_ -= deltaTime;
+    if (timer_ <= 0.0f) {
+      if (telegraphCount_ < kMeteorCount) {
+        // 次の予告（プレイヤーの現在X座標をロックオンして警告音）
+        targetXPositions_[telegraphCount_] = player->GetWorldPosition().x;
+        ++telegraphCount_;
+        PlayBulletWarningSound();
+        timer_ += kIntervalSeconds;
+      } else {
+        // 全3回の予告が完了 -> 発射フェーズへ
+        phase_ = Phase::RapidFire;
+        timer_ = 0.0f; // 初弾を直ちに発射
+      }
+    }
+    return;
+  }
+
+  if (phase_ == Phase::RapidFire) {
+    timer_ -= deltaTime;
+    if (timer_ <= 0.0f) {
+      if (shotCount_ < kMeteorCount) {
+        FireMeteor(targetXPositions_[shotCount_]);
+        ++shotCount_;
+        timer_ += kIntervalSeconds;
+      } else {
+        // 3発発射後のインターバル経過で突進へ
+        TransitionToRush();
+      }
+    }
+  }
 }
 
 } // namespace Atrum

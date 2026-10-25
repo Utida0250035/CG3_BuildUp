@@ -163,8 +163,6 @@ namespace Atrum::Audio {
 
 	using Manager = AudioManager;
 
-	using Handle = AudioHandle;
-
 
 	inline LONGLONG To100nsPositive(const float seconds) {
 

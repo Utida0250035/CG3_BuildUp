@@ -8,6 +8,8 @@
 #include "Scene/SceneTitle.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
+#include "Scene/SceneScreenUi.h"
+#include "System/PlaySe.h"
 
 namespace {
 
@@ -27,7 +29,10 @@ void SetupStageLighting() {
 
 void SceneResult::EnterScene() {
   SetupStageViewCamera();
+  Atrum::SceneScreenUi::PreloadResultUiTextures();
   SpawnBackgrounds();
+  sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmResult.mp3",
+                                        "./Resources/bgmResult.mp3"});
 }
 
 void SceneResult::Update() {
@@ -42,9 +47,17 @@ void SceneResult::Update() {
 void SceneResult::DrawScene() {
   SetupStageLighting();
   DrawBackgrounds();
+
+  if (Atrum::AtrumEngine *engine = Atrum::AtrumEngine::Instance()) {
+    Atrum::SceneScreenUi::DrawResultSceneUi(engine, GetCamera());
+  }
 }
 
-void SceneResult::ExitScene() { ClearBackgrounds(); }
+void SceneResult::ExitScene() {
+  Atrum::StopSe(sceneBgmHandle_);
+  sceneBgmHandle_ = {};
+  ClearBackgrounds();
+}
 
 void SceneResult::SpawnBackgrounds() {
   ClearBackgrounds();

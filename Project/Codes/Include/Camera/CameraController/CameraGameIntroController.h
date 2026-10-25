@@ -38,6 +38,7 @@ private:
   static constexpr float kHpBarRevealDurationSeconds = 1.25f;
   static constexpr float kCameraPullBackDurationSeconds = 1.6f;
 
+  void PlayBossHpBarGlowSe();
   void FinishIntro();
 };
 

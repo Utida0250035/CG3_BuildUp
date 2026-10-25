@@ -266,6 +266,7 @@ namespace Atrum::Audio {
 
 				handle.voiceIndex = voiceIndex;
 				handle.playId = nextPlayId_++;
+				handle.isSuccess = true;
 
 				pSourceVoice->playId = handle.playId;
 
@@ -519,6 +520,7 @@ namespace Atrum::Audio {
 			srcVoice->pVoice->FlushSourceBuffers();
 
 			srcVoice->state = VoiceState::Stopped;
+			srcVoice->playId = 0;
 
 		}
 

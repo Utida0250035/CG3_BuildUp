@@ -27,6 +27,7 @@ private:
   float bulletShotY_ = kBarrageSpawnTopY;
   uint32_t shotCount_ = 0;
   uint32_t shotCountMax_ = 2;
+  bool telegraphWarningPending_ = false;
 
   void FireVolley();
   void BeginTelegraphPhase();

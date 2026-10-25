@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/AudioHandle.h"
 #include "Scene.h"
 #include <memory>
 #include <vector>
@@ -31,6 +32,7 @@ protected:
   void DrawScene() override;
 
 private:
+  Atrum::Audio::Handle sceneBgmHandle_{};
   std::unique_ptr<Atrum::Entity> skyDome_;
   std::vector<std::unique_ptr<Atrum::Entity>> backgrounds_;
   std::vector<std::unique_ptr<Atrum::Entity>> foregroundGroundClouds_;

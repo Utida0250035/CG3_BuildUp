@@ -7,6 +7,7 @@ namespace Atrum {
 namespace Input {
 
 class PlayInput;
+class XInputController;
 
 }
 
@@ -42,6 +43,7 @@ private:
   InputData data_{};
 
   Input::PlayInput *input_ = nullptr;
+  Input::XInputController *gamepad_ = nullptr;
 
   float spacedVectorTimer_ = 0.0f;
   float spacedVectorTime_ = 0.5f;

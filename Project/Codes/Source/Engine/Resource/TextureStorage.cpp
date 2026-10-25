@@ -319,24 +319,40 @@ namespace Atrum {
 
 	}
 
+namespace {
+
+const Texture *FindTextureBySrvIndex(const std::vector<Texture> &textures,
+                                   const uint32_t srvIndex) {
+  for (const Texture &texture : textures) {
+    if (texture.srvIndex == srvIndex) {
+      return &texture;
+    }
+  }
+
+  return nullptr;
+}
+
+} // namespace
+
 	uint32_t TextureStorage::GetTextureWidth(const uint32_t textureIndex) {
 
-#ifdef NDEBUG
-		return textures_[textureIndex].width;
-#else
-		return textures_[textureIndex - 1].width;
-#endif
+		const Texture *texture = FindTextureBySrvIndex(textures_, textureIndex);
+		if (texture == nullptr) {
+			return 0;
+		}
+
+		return texture->width;
 
 	}
 
 	uint32_t TextureStorage::GetTextureHeight(const uint32_t textureIndex) {
 
-#ifdef NDEBUG
-		return textures_[textureIndex].height;
-#else
-		return textures_[textureIndex - 1].height;
-#endif
+		const Texture *texture = FindTextureBySrvIndex(textures_, textureIndex);
+		if (texture == nullptr) {
+			return 0;
+		}
 
+		return texture->height;
 
 	}
 

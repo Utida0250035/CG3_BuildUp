@@ -25,6 +25,7 @@
 #include "Engine/AtrumEngine.h"
 #include "Engine/Resource/AssetModel.h"
 #include "System/Entity/Entity.h"
+#include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/Playable/CmpMoveByInput.h"
 #include <iterator>
 #include <numbers>
@@ -57,7 +58,7 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   playerParry->AddUpdCmp<CmpHitSphere>();
   playerParry->AddUpdCmp<CmpHealthHit>();
   playerParry->AddDrawCmp<CmpMesh>();
-  playerParry->AddDrawCmp<CmpDrawHitSphere>();
+  playerParry->AddDrawCmp<Player::CmpDrawPlayerParryField>();
   playerParry->AddDataCmp<CmpParry>();
   playerParry->AddUpdCmp<CmpChildEntitys>();
   playerParry->AddUpdCmp<CmpSwing>();
@@ -172,6 +173,8 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
   CmpHealthHit *cmpHealthHit = enemyAstro->GetUpdCmp<CmpHealthHit>();
   cmpHealthHit->SetHurterTypes({EntityType::PLAYER_ITEM});
   cmpHealthHit->SetInitialHealthCount(32);
+  cmpHealthHit->SetInvincibleTime(0.01f);
+  cmpHealthHit->SetStackReflectedBulletDamage(true);
 
   enemyAstro->GetUpdCmp<CmpEnemy>()->SetPlayer(player);
 
@@ -229,7 +232,7 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
 std::vector<std::unique_ptr<Entity>> EntityFactory::ScrollSpheres() {
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-  // 遠景装飾：数と球の细分を抑えて 3D 描画予算を戦闘演出に回す
+  // 遠景球の個数と細分を抑えて 3D 描画予算を戦闘演出に回す
   constexpr size_t kBackgroundSphereCount = 12;
   constexpr uint32_t kBackgroundSphereSubdivision = 2;
   constexpr Math::Vector4 kBackgroundSphereColor{1.0f, 1.0f, 1.0f, 0.3f};
@@ -276,7 +279,7 @@ std::vector<std::unique_ptr<Entity>> EntityFactory::ForegroundGroundClouds() {
 
   // 固定配置。kGroundHeight(-4)・自機半径0.5 の足元(y≈-4.5)まで雲が届くよう接地帯で下層と接続
   static constexpr GroundCloudSpec kSpecs[] = {
-      // 左端（kLeftEndX=-14 より外側）
+      // 左端（LeftEndX=-14 より外側）
       {-16.4f, -6.6f, 0.0f, 3.0f, 0.97f},  {-15.0f, -6.45f, 0.05f, 2.55f, 0.96f},
       // 右端
       {16.4f, -6.6f, 0.0f, 3.0f, 0.97f},   {15.0f, -6.45f, -0.05f, 2.55f, 0.96f},
@@ -362,7 +365,7 @@ std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(const Math::Vector3 &ve
   cmpMeshSphere->SetRadius(0.5f);
   cmpMeshSphere->SetSubdivision(4);
   cmpMeshSphere->SetColor({0.75f, 0.1f, 0.1f, 1.0f});
-  // 弾は色味を保つためライティングしない（ボス本体・オービター等は CmpMeshSphere 既定で ON）
+  // 弾は色味を保つためライティングしない（ボス本体やオービター等の CmpMeshSphere 既定で ON）
   cmpMeshSphere->SetLightingEnabled(false);
 
   bullet->ResolveDependencies();

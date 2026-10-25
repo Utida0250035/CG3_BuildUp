@@ -18,4 +18,6 @@ namespace Atrum::Audio {
 
 	};
 
+	using Handle = AudioHandle;
+
 }

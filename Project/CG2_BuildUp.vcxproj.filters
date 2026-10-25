@@ -37,6 +37,9 @@
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
       <Filter>Codes\Source\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Input\XInputController.cpp">
+      <Filter>Codes\Source\Input</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp">
       <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
@@ -151,6 +154,12 @@
     <ClCompile Include="Codes\Source\Camera\CameraFlipVertical.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CombatCameraShake.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp">
       <Filter>Codes\Source\Collision2D</Filter>
     </ClCompile>
@@ -193,10 +202,31 @@
     <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSweep.cpp">
+    <ClCompile Include="Codes\Source\System\BehEnemyDepthRush.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\BehEnemyShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemySpreadShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyBurstShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyBulletCurtainFixedRing.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyBulletCurtainRadialFan.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSalvo.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSpoke.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BossCombatEnrage.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\BehEnemySwingShot.cpp">
@@ -331,6 +361,9 @@
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -375,6 +408,12 @@
     <ClInclude Include="Codes\Include\Camera\CameraFlipVertical.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CombatCameraShake.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\PlayerDamageScreenVignette.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
@@ -397,6 +436,9 @@
       <Filter>Codes\Include\Input</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Input\PlayInput.h">
+      <Filter>Codes\Include\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Input\XInputController.h">
       <Filter>Codes\Include\Input</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Cast\StaticCast.h">
@@ -633,10 +675,31 @@
     <ClInclude Include="Codes\Include\System\BehEnemyMeteor.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSweep.h">
+    <ClInclude Include="Codes\Include\System\BehEnemyDepthRush.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\BehEnemyShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemySpreadShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyBurstShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyBulletCurtainFixedRing.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyBulletCurtainRadialFan.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSalvo.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSpoke.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BossCombatEnrage.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\BehEnemySwingShot.h">
@@ -820,6 +883,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneScreenUi.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneResult.h">

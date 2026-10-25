@@ -5,10 +5,26 @@
 #include "System/BossCombatCleanup.h"
 #include "System/Entity/Entity.h"
 #include "System/Particle/GameCombatParticleEffects.h"
+#include "System/PlaySe.h"
 
 #include <algorithm>
 
 namespace Atrum {
+
+namespace {
+
+void PlayBossDeathBoomSe() {
+  const std::string sePath = PlaySeDetail::ResolveExistingSePath(
+      {"./Assets/Audios/seBossDeathBoom.mp3",
+       "./Resources/seBossDeathBoom.mp3"});
+  if (sePath.empty()) {
+    return;
+  }
+
+  PlaySe(sePath);
+}
+
+} // namespace
 
 Math::Vector3 BossDeathPresentation::SampleExplosionLocalOffset(
     const int index, const int count, const float radius) {
@@ -25,6 +41,7 @@ void BossDeathPresentation::FireExplosionAtLocalOffset(
       boss_->TransformLocalPointToWorld(localOffset);
   Particle::Combat::PlayBossDeathExplosionEffect(worldPosition,
                                                  explosionEffectSerial_++);
+  PlayBossDeathBoomSe();
 }
 
 void BossDeathPresentation::Begin(Entity *boss) {

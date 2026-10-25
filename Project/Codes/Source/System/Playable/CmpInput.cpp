@@ -1,4 +1,6 @@
 #include "System/Playable/CmpInput.h"
+
+#include "Input/XInputController.h"
 #include "System/DeltaTime.h"
 
 namespace Atrum::Player {
@@ -6,8 +8,10 @@ namespace Atrum::Player {
 void CmpInput::ResolveDependence() { frameDeltaTime_ = FrameDeltaTime::Instance(); }
 
 void CmpInput::Update() {
+  using Input::GamepadButton;
   using Input::Key;
   Input::PlayInput *input = Input::PlayInput::Instance();
+  Input::XInputController *gamepad = Input::XInputController::Instance();
 
   isJumpKeyPrePush_ = inputData_.isJumpPress;
   inputData_ = {};
@@ -17,6 +21,10 @@ void CmpInput::Update() {
   }
   if (input->IsKeyPress(Key::D)) {
     inputData_.vec2Input.x += 1.0f;
+  }
+
+  if (gamepad != nullptr) {
+    gamepad->AddDirectionInput(inputData_.vec2Input);
   }
 
   if (inputData_.vec2Input.LengthSquare() > 1.01f) {
@@ -57,11 +65,25 @@ void CmpInput::Update() {
   }
 
   inputData_.isDashPress = isDashPress_;
-  inputData_.isJumpTrigger = input->IsKeyTrigger(Key::W);
-  inputData_.isJumpPress = input->IsKeyPress(Key::W);
+
+  const bool jumpKeyboardTrigger = input->IsKeyTrigger(Key::W);
+  const bool jumpKeyboardPress = input->IsKeyPress(Key::W);
+  const bool jumpPadTrigger =
+      gamepad != nullptr && gamepad->IsButtonTrigger(GamepadButton::B);
+  const bool jumpPadPress =
+      gamepad != nullptr && gamepad->IsButtonPress(GamepadButton::B);
+  inputData_.isJumpTrigger = jumpKeyboardTrigger || jumpPadTrigger;
+  inputData_.isJumpPress = jumpKeyboardPress || jumpPadPress;
   inputData_.isJumpRelease = isJumpKeyPrePush_ && !inputData_.isJumpPress;
-  inputData_.isAttackTrigger = input->IsKeyTrigger(Key::SPACE);
-  inputData_.isAttackPress = input->IsKeyPress(Key::SPACE);
+
+  const bool attackKeyboardTrigger = input->IsKeyTrigger(Key::SPACE);
+  const bool attackKeyboardPress = input->IsKeyPress(Key::SPACE);
+  const bool attackPadTrigger =
+      gamepad != nullptr && gamepad->IsButtonTrigger(GamepadButton::A);
+  const bool attackPadPress =
+      gamepad != nullptr && gamepad->IsButtonPress(GamepadButton::A);
+  inputData_.isAttackTrigger = attackKeyboardTrigger || attackPadTrigger;
+  inputData_.isAttackPress = attackKeyboardPress || attackPadPress;
   inputData_.isAttackRelease = false;
 }
 

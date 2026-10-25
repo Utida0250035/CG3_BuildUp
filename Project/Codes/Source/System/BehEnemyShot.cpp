@@ -1,4 +1,5 @@
 #include "System/BehEnemyShot.h"
+#include "System/BossCombatEnrage.h"
 #include "System/AttackTelegraph/AttackTelegraphUtils.h"
 #include "System/BehRush.h"
 #include "System/CmpAttackTelegraph.h"
@@ -18,19 +19,34 @@ void BehEnemyShot::ResolveDependence() {
 }
 
 void BehEnemyShot::Initialize() {
-  shotCoolTimer_ = shotCoolTime_;
+  shotCoolTimer_ = BossCombatEnrage::ScaleShotCoolTimeSeconds(
+      RefGrandOwner(), shotCoolTime_);
   shotCount_ = 0;
+  bulletWarningPending_ = true;
 }
 
 void BehEnemyShot::Execute() {
+  const uint32_t shotCountMax =
+      BossCombatEnrage::ScaleShotCountMax(RefGrandOwner(), shotCountMax_);
+
   if (shotCoolTimer_ <= 0.0f) {
-    shotCoolTimer_ = shotCoolTime_;
+    shotCoolTimer_ = BossCombatEnrage::ScaleShotCoolTimeSeconds(
+        RefGrandOwner(), shotCoolTime_);
     const Math::Vector3 direction =
         (cmpEnemy_->GetPlayer()->GetWorldPosition() - RefGrandOwner().GetWorldPosition()).Normalized();
     cmpBullet_->Shot(EntityFactory::LinearEnemyBullet(direction * bulletSpeed_, RefGrandOwner().GetTransform().translate).release());
     ++shotCount_;
     PlaySe("./Resources/seEnemyShot.mp3");
+
+    if (shotCount_ < shotCountMax) {
+      bulletWarningPending_ = true;
+    }
   } else {
+    if (bulletWarningPending_) {
+      PlayBulletWarningSound();
+      bulletWarningPending_ = false;
+    }
+
     if (Entity *player = cmpEnemy_->GetPlayer()) {
       if (CmpAttackTelegraph *telegraph =
               RefGrandOwner().GetDataCmp<CmpAttackTelegraph>()) {
@@ -48,11 +64,11 @@ void BehEnemyShot::Execute() {
     }
   }
 
-  if (shotCount_ < shotCountMax_) {
+  if (shotCount_ < shotCountMax) {
     return;
   }
 
-  shotCount_ = shotCountMax_;
+  shotCount_ = shotCountMax;
   BehRush *behRush = new BehRush();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
   cmpEnemy_->RefBehaviorBox().Transition(behRush);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/AudioHandle.h"
 #include "Scene.h"
 #include <cstdint>
 #include <memory>
@@ -7,6 +8,7 @@
 
 namespace Atrum {
 class BossDeathPresentation;
+class PlayerDeathPresentation;
 class CameraFocusPushController;
 class CameraGameIntroController;
 class Entity;
@@ -34,6 +36,7 @@ protected:
 private:
   enum class DefeatKind : uint8_t { None, Boss, Player };
 
+  Atrum::Audio::Handle sceneBgmHandle_{};
   std::unique_ptr<Atrum::Entity> player_;
   std::unique_ptr<Atrum::Entity> boss_;
   std::unique_ptr<Atrum::Entity> skyDome_;
@@ -42,10 +45,12 @@ private:
 
   DefeatKind pendingDefeat_ = DefeatKind::None;
   bool bossDeathResultTransitionRequested_ = false;
+  bool playerDeathRestartTransitionRequested_ = false;
 
   std::unique_ptr<Atrum::CameraGameIntroController> introCameraController_;
   std::unique_ptr<Atrum::CameraFocusPushController> bossDeathCameraController_;
   std::unique_ptr<Atrum::BossDeathPresentation> bossDeathPresentation_;
+  std::unique_ptr<Atrum::PlayerDeathPresentation> playerDeathPresentation_;
 
   void SpawnEntities();
   void ClearEntities();
@@ -54,8 +59,10 @@ private:
   /// カメラ演出中：Orbiter の回転のみ更新（攻撃・移動・自機入力は行わない）
   void UpdateIntroPresentation();
   void UpdateBossDeathPresentation();
+  void UpdatePlayerDeathPresentation();
   void DrawEntities();
   void DrawBattleHud();
+  void DrawIntroScreenUi();
 
   void CheckRoundEnd();
   void RequestTransitionToResult();

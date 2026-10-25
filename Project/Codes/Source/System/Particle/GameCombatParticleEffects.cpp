@@ -24,6 +24,8 @@ inline constexpr const char *kBossHitReflectedEmitterName =
     "combat_boss_hit_reflected";
 inline constexpr const char *kBossDeathExplosionEmitterNamePrefix =
     "combat_boss_death_explosion_";
+inline constexpr const char *kPlayerDeathDamageEmitterNamePrefix =
+    "combat_player_death_damage_";
 
 /// 戦闘演出は OBJ 再読込を避け、DrawSphere で描画する
 inline constexpr bool kUseBuiltinSphereDraw = true;
@@ -60,6 +62,13 @@ void PlayPlayerHitByEnemyBulletEffect(const Math::Vector3 &worldPosition) {
   CombatEmitterManager()->AddOneShotEmitter(
       kPlayerHitEmitterName, kPlayerHitEnemyBulletParticleJson, worldPosition,
       kUseBuiltinSphereDraw);
+}
+
+void PlayPlayerDeathDamageScatterEffect(const Math::Vector3 &worldPosition,
+                                        const uint32_t sequenceId) {
+  PlayOneShotEffect(kPlayerDeathDamageEmitterNamePrefix,
+                    kPlayerHitEnemyBulletParticleJson, worldPosition,
+                    sequenceId);
 }
 
 void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,

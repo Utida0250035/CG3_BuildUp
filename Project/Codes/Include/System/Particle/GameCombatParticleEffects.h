@@ -24,6 +24,10 @@ void PlayBossHitByReflectedBulletEffect(const Math::Vector3 &worldPosition);
 /// </summary>
 void PlayPlayerHitByEnemyBulletEffect(const Math::Vector3 &worldPosition);
 
+/// 自機撃墜演出用のダメージパーティクル（sequenceId でエミッタ名を一意化）
+void PlayPlayerDeathDamageScatterEffect(const Math::Vector3 &worldPosition,
+                                        uint32_t sequenceId);
+
 /// <summary>
 /// ボス撃破演出用の爆発パーティクル（sequenceId でエミッタ名を一意化）
 /// </summary>

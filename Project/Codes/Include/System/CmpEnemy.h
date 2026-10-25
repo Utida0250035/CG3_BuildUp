@@ -15,13 +15,11 @@ private:
   BehaviorBox behaviorBox_{};
   FrameDeltaTime *frameDeltaTime_ = nullptr;
 
-  uint64_t behaviorTransitionCountForShotMeteor_ = 10;
-  uint64_t behaviorTransitionCountForWallShot_ = 6;
-  uint64_t behaviorTransitionCountForOrbiterSweep_ = 8;
-
   /// シーン入場直後はメテオ／壁弾などの強制パターン遷移を抑止する
   float patternTransitionWarmupTimer_ = 0.0f;
   static constexpr float kPatternTransitionWarmupTime = 3.0f;
+
+  uint32_t shotPatternIndex_ = 0;
 
 public:
   constexpr UpdCmpGroup UpdGroup() const override { return UpdCmpGroup::INPUT; }
@@ -29,6 +27,9 @@ public:
   void ResolveDependence() override;
   void Initialize() override;
   void Update() override;
+
+  /// 行動ループで次の射撃挙動（通常・拡散・連射）へ遷移する
+  void TransitionNextShotBehavior();
 
   BehaviorBox &RefBehaviorBox() { return behaviorBox_; }
   Entity *GetPlayer() { return player_; }

@@ -10,7 +10,19 @@ class Entity;
 
 namespace OrbiterChildUtils {
 
+/// ボス中心からのオービター最大距離（m）
+inline constexpr float kBossOrbiterMaxDistanceFromBoss = 2.0f;
+
 size_t CountBossOrbiters(Entity &boss);
+
+void ClampBossOrbiterDistanceFromBoss(
+    Entity &boss,
+    float maxDistance = kBossOrbiterMaxDistanceFromBoss);
+
+void ForEachBossOrbiterEntity(
+    Entity &boss,
+    const std::function<void(Entity &orbiterEntity, size_t index,
+                             size_t orbiterCount)> &callback);
 
 void ForEachBossOrbiter(
     Entity &boss,

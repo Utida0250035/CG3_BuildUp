@@ -16,6 +16,7 @@ private:
   Math::Vector3 destinationPos_{};
   float endTime_ = 3.0f;
   float timer_ = 0.0f;
+  bool meleeTelegraphSessionStarted_ = false;
 
 public:
   void ResolveDependence() override;

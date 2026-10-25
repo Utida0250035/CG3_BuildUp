@@ -22,6 +22,26 @@ Math::Vector3 CombatEffectPoint(const Entity &a, const Entity &b) {
 /// 反射弾の表示色（CmpDrawHitSphere の水色と揃える）
 constexpr Math::Vector4 kReflectedBulletColor{0.2f, 0.85f, 1.0f, 1.0f};
 
+void PlayPlayerParrySe() {
+  const std::string sePath = PlaySeDetail::ResolveExistingSePath(
+      {"./Assets/Audios/sePlayerParry.mp3", "./Resources/sePlayerParry.mp3"});
+  if (sePath.empty()) {
+    return;
+  }
+
+  PlaySe(sePath);
+}
+
+void PlayBossHitByReflectedBulletSe() {
+  const std::string sePath = PlaySeDetail::ResolveExistingSePath(
+      {"./Assets/Audios/seBossHit.mp3", "./Resources/seBossHit.mp3"});
+  if (sePath.empty()) {
+    return;
+  }
+
+  PlaySe(sePath);
+}
+
 /// 管理弾（直線・メテオ・壁弾など）1発分の当たり・反射・ボス命中
 bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
                                EntityType reflectorType) {
@@ -51,7 +71,7 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
       cmpMeshSphere->SetColor(kReflectedBulletColor);
       bullet->RefTransform().translate = bullet->GetWorldPosition();
       bullet->SetParent(nullptr);
-      PlaySe("./Resources/seParry.mp3");
+      PlayPlayerParrySe();
       Particle::Combat::PlayParryReflectEffect(
           CombatEffectPoint(*bullet, *hitEntity));
       return false;
@@ -89,12 +109,15 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
         continue;
       }
 
-      // ボス CmpHealthHit::Update は弾移動より先に走るため、ここでダメージを確定する
+      // ボス被弾はここだけで確定（CmpHealthHit::Update では反射弾を見ない）
       CmpHealthHit *bossHealth = hitEntity->GetUpdCmp<CmpHealthHit>();
-      bossHealth->TryTakeDamageFrom(bullet);
+      if (!bossHealth->TryTakeDamageFrom(bullet)) {
+        return false;
+      }
 
       Particle::Combat::PlayBossHitByReflectedBulletEffect(
           CombatEffectPoint(*bullet, *hitEntity));
+      PlayBossHitByReflectedBulletSe();
       return true;
     }
   }
@@ -138,18 +161,7 @@ void ProcessAttachedEnemyWeapon(Entity *weapon) {
   s_parryOverlapping.insert(weapon);
   Particle::Combat::PlayParryReflectEffect(
       CombatEffectPoint(*weapon, *parryTarget));
-  PlaySe("./Resources/seParry.mp3");
-}
-
-bool IsOutOfStageBounds(const Math::Vector3 &position) {
-  constexpr float kSpaceTopBuffer = 8.0f;
-  constexpr float kSpaceSideBuffer = 8.0f;
-  constexpr float kSpaceBottomBuffer = 0.25f;
-
-  return position.x >= kRightEndX + kSpaceSideBuffer ||
-         position.x <= kLeftEndX - kSpaceSideBuffer ||
-         position.y >= kCeilHeight + kSpaceTopBuffer ||
-         position.y <= kGroundHeight - kSpaceBottomBuffer;
+  PlayPlayerParrySe();
 }
 
 void RefreshBulletHitSphere(Entity *bullet) {
@@ -194,7 +206,7 @@ void CmpReflectAbleBullet::Update() {
 
     bullet->Update();
 
-    if (IsOutOfStageBounds(bullet->GetWorldPosition())) {
+    if (IsOutsideCombatAreaAabb(bullet->GetWorldPosition())) {
       bullet->Finalize();
       reflectAbleBullets_.erase(reflectAbleBullets_.begin() +
                                 static_cast<std::ptrdiff_t>(index));

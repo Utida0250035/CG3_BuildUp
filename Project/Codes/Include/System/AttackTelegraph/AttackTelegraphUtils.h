@@ -39,4 +39,20 @@ void RegisterBossOrbiterGatherTelegraph(Entity &boss,
                                         CmpAttackTelegraph *telegraph,
                                         const Math::Vector4 &lineColor);
 
+/// 弾を撃つ前の予測線が出た際に警告音（seBossBulletWarn.mp3）を鳴らす
+void PlayBulletWarningSound();
+
+/// 赤色（反射不可）の予測線表示開始時（seBossMeleeWarn.mp3）
+void PlayBossMeleeWarnSound();
+
+/// 赤予測線の表示区間を区切る（フェーズ開始時に呼ぶ）
+void BeginBossMeleeTelegraphSession(CmpAttackTelegraph *telegraph);
+
+/// ボス赤予測線を登録（同一セッション内の初回登録で seBossMeleeWarn.mp3）
+void AddBossMeleeTelegraphLine(CmpAttackTelegraph *telegraph,
+                               const Math::Vector3 &start,
+                               const Math::Vector3 &end);
+
+bool IsBossMeleeTelegraphColor(const Math::Vector4 &color);
+
 } // namespace Atrum

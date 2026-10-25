@@ -19,6 +19,8 @@ private:
   float bulletSpeed_ = 8.0f;
   uint32_t shotCount_ = 0;
   uint32_t shotCountMax_ = 2;
+  /// 予測線表示開始時に一度だけ警告音を鳴らす
+  bool bulletWarningPending_ = false;
 
 public:
   void ResolveDependence() override;

@@ -9,6 +9,7 @@
 namespace Atrum {
 
 class CmpDirection;
+class CmpHealthHit;
 class CmpHitSphere;
 class Entity;
 class FrameDeltaTime;
@@ -16,6 +17,8 @@ class CmpSwing;
 class CmpMesh;
 
 namespace Player {
+
+class CmpDrawPlayerParryField;
 
 class CmpMoveByInput2D : public ComponentUpd {
 private:
@@ -28,6 +31,8 @@ private:
   CmpHitSphere *cmpHitSphere_ = nullptr;
   CmpSwing *cmpSwingWeapon_ = nullptr;
   CmpMesh *cmpMesh_ = nullptr;
+  CmpHealthHit *cmpHealthHit_ = nullptr;
+  CmpDrawPlayerParryField *cmpDrawPlayerParryField_ = nullptr;
   CmpDirection *cmpDirection_ = nullptr;
 
   Entity *directionMarkerForward_ = nullptr;
@@ -38,8 +43,6 @@ private:
   Math::Vector4 invincibleColor = {0.75f, 0.75f, 0.1f, 1.0f};
   bool isInvincibleColorWaitNextFrame_ = false;
 
-  float dodgeCoolTimer_ = 0.0f;
-  float dodgeCoolTime_ = 0.5f;
   float parryDuration_ = 0.25f;
   float parryTimer_ = 0.0f;
   float invincibleDuration_ = 0.03125f;

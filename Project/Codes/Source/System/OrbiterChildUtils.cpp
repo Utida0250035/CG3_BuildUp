@@ -1,8 +1,10 @@
 #include "System/OrbiterChildUtils.h"
 
 #include "System/CmpChildEntitys.h"
+#include "System/CmpOrbiter.h"
 #include "System/Entity/Entity.h"
 
+#include <cmath>
 #include <memory>
 #include <numbers>
 
@@ -65,6 +67,53 @@ void UpdateBossOrbiterMovementOnly(Entity &boss) {
       continue;
     }
     child->GetUpdCmp<CmpOrbiter>()->Update();
+  }
+}
+
+void ClampBossOrbiterDistanceFromBoss(Entity &boss, const float maxDistance) {
+  if (!boss.HasUpdCmp<CmpChildEntitys>() || maxDistance <= 0.0f) {
+    return;
+  }
+
+  CmpChildEntitys *childEntitys = boss.GetUpdCmp<CmpChildEntitys>();
+  for (const std::unique_ptr<Entity> &child : childEntitys->RefChilds()) {
+    if (!child || !child->HasUpdCmp<CmpOrbiter>()) {
+      continue;
+    }
+
+    Math::Vector3 &localTranslate = child->RefTransform().translate;
+    const float lengthSq = localTranslate.LengthSquare();
+    const float maxSq = maxDistance * maxDistance;
+    if (lengthSq <= maxSq || lengthSq <= 1e-8f) {
+      continue;
+    }
+
+    localTranslate =
+        localTranslate * (maxDistance / std::sqrt(lengthSq));
+  }
+}
+
+void ForEachBossOrbiterEntity(
+    Entity &boss,
+    const std::function<void(Entity &orbiterEntity, size_t index,
+                             size_t orbiterCount)> &callback) {
+  if (!boss.HasUpdCmp<CmpChildEntitys>()) {
+    return;
+  }
+
+  const size_t orbiterCount = CountBossOrbiters(boss);
+  if (orbiterCount == 0) {
+    return;
+  }
+
+  CmpChildEntitys *childEntitys = boss.GetUpdCmp<CmpChildEntitys>();
+  size_t index = 0;
+  for (const std::unique_ptr<Entity> &child : childEntitys->RefChilds()) {
+    if (!child || !child->HasUpdCmp<CmpOrbiter>()) {
+      continue;
+    }
+    callback(*child, index, orbiterCount);
+    ++index;
   }
 }
 

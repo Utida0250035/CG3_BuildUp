@@ -1,10 +1,11 @@
 #include "System/Playable/CmpMoveByInput.h"
-#include "System/BehDodge.h"
+#include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/BehWalkAndJump.h"
 #include "System/CmpParry.h"
 #include "System/CmpSwing.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Components/CmpDirection.h"
+#include "System/Entity/Components/CmpHealthHit.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Entity.h"
@@ -26,6 +27,11 @@ void CmpMoveByInput2D::ResolveDependence() {
   cmpHitSphere_ = RefOwner().GetUpdCmp<CmpHitSphere>();
   cmpSwingWeapon_ = RefOwner().GetUpdCmp<CmpSwing>();
   cmpMesh_ = RefOwner().GetDrawCmp<CmpMesh>();
+  cmpHealthHit_ = RefOwner().GetUpdCmp<CmpHealthHit>();
+  if (RefOwner().HasDrawCmp<CmpDrawPlayerParryField>()) {
+    cmpDrawPlayerParryField_ =
+        RefOwner().GetDrawCmp<CmpDrawPlayerParryField>();
+  }
 }
 
 void CmpMoveByInput2D::SetDirectionMarkers(Entity *forwardMarker,
@@ -73,8 +79,10 @@ void CmpMoveByInput2D::Update() {
   if (parryCmpHitSphere_ != nullptr) {
     parryCmpHitSphere_->SetIsActive(false);
   }
+  if (cmpDrawPlayerParryField_ != nullptr) {
+    cmpDrawPlayerParryField_->SetVisible(false);
+  }
   cmpHitSphere_->SetIsActive(true);
-  cmpMesh_->SetColor(Math::Vector4::White());
 
   if (inputData_.isJumpTrigger) {
     if (RefOwner().GetWorldPosition().y <= kGroundHeight) {
@@ -96,16 +104,22 @@ void CmpMoveByInput2D::Update() {
 
   if (parryTimer_ > 0.0f && parryCmpHitSphere_ != nullptr) {
     parryCmpHitSphere_->SetIsActive(true);
+    if (cmpDrawPlayerParryField_ != nullptr) {
+      cmpDrawPlayerParryField_->SetVisible(true);
+    }
     parryTimer_ -= frameDeltaTime_->GetDeltaTime();
     if (parryTimer_ < 0.0f) {
       parryTimer_ = 0.0f;
     }
   }
 
-  if (invincibleTimer_ > 0.0f) {
+  if (cmpHealthHit_ != nullptr && cmpHealthHit_->IsHurtFlashActive()) {
+    cmpMesh_->SetColor(cmpHealthHit_->GetHurtFlashColor());
+  } else if (invincibleTimer_ > 0.0f) {
     cmpHitSphere_->SetIsActive(false);
     if (isInvincibleColorWaitNextFrame_) {
       isInvincibleColorWaitNextFrame_ = false;
+      cmpMesh_->SetColor(Math::Vector4::White());
     } else {
       cmpMesh_->SetColor(invincibleColor);
     }
@@ -113,24 +127,9 @@ void CmpMoveByInput2D::Update() {
     invincibleTimer_ -= frameDeltaTime_->GetDeltaTime();
     if (invincibleTimer_ <= 0.0f) {
       invincibleTimer_ = 0.0f;
-      cmpMesh_->SetColor(Math::Vector4::White());
     }
-  }
-
-  if (inputData_.isDodgeTrigger && dodgeCoolTimer_ <= 0.0f) {
-    BehDodge *behDodge = new BehDodge();
-    behDodge->SetPBehaviorBox(&behaviorBox_);
-    behDodge->SetNextBehavior(new BehWalkAndJump());
-    behaviorBox_.Transition(behDodge);
-    dodgeCoolTimer_ = dodgeCoolTime_;
-    PlaySe("./Resources/seStep.mp3");
-  }
-
-  if (dodgeCoolTimer_ > 0.0f) {
-    dodgeCoolTimer_ -= frameDeltaTime_->GetDeltaTime();
-    if (dodgeCoolTimer_ < 0.0f) {
-      dodgeCoolTimer_ = 0.0f;
-    }
+  } else {
+    cmpMesh_->SetColor(Math::Vector4::White());
   }
 
   UpdateDirectionMarkerPositions();

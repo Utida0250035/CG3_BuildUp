@@ -12,9 +12,6 @@ namespace Atrum {
 
 namespace {
 
-constexpr uint32_t kTelegraphSphereSubdivision = 3;
-constexpr float kTelegraphSphereRadius = 0.055f;
-
 void DrawTelegraphSegment(AtrumEngine *engine,
                           const AttackTelegraphSegment &segment) {
   const Math::Vector3 delta = segment.end - segment.start;
@@ -23,16 +20,17 @@ void DrawTelegraphSegment(AtrumEngine *engine,
     return;
   }
 
-  const int stepCount =
-      std::max(2, static_cast<int>(length / 0.35f) + 1);
+  const int stepCount = std::max(
+      2, static_cast<int>(length / kAttackTelegraphLineSphereStep) + 1);
   const Math::Vector3 step = delta / static_cast<float>(stepCount - 1);
 
   for (int i = 0; i < stepCount; ++i) {
     Math::Transform transform{};
     transform.translate = segment.start + step * static_cast<float>(i);
-    engine->DrawSphere(WhiteTextureIndex(), segment.color, Math::Transform{},
-                       transform.MakeWorldMatrix(), kTelegraphSphereRadius,
-                       kTelegraphSphereSubdivision, false);
+    engine->DrawSphere(
+        WhiteTextureIndex(), segment.color, Math::Transform{},
+        transform.MakeWorldMatrix(), kAttackTelegraphLineSphereRadius,
+        kAttackTelegraphLineSphereSubdivision, false);
   }
 }
 

@@ -1,4 +1,5 @@
 #include "System/BehEnemyWallShot.h"
+#include "System/BossCombatEnrage.h"
 
 #include "System/AttackTelegraph/AttackTelegraphUtils.h"
 #include "System/BehRush.h"
@@ -21,7 +22,9 @@ void BehEnemyWallShot::ResolveDependence() {
 
 void BehEnemyWallShot::BeginTelegraphPhase() {
   phase_ = Phase::Telegraph;
-  telegraphTimer_ = kDropAttackTelegraphSeconds;
+  telegraphTimer_ = BossCombatEnrage::ScaleShotCoolTimeSeconds(
+      RefGrandOwner(), kDropAttackTelegraphSeconds);
+  telegraphWarningPending_ = true;
 }
 
 void BehEnemyWallShot::Initialize() {
@@ -62,11 +65,13 @@ void BehEnemyWallShot::FireVolley() {
 }
 
 void BehEnemyWallShot::TransitionToRushIfFinished() {
-  if (shotCount_ < shotCountMax_) {
+  const uint32_t shotCountMax =
+      BossCombatEnrage::ScaleShotCountMax(RefGrandOwner(), shotCountMax_);
+  if (shotCount_ < shotCountMax) {
     return;
   }
 
-  shotCount_ = shotCountMax_;
+  shotCount_ = shotCountMax;
   BehRush *behRush = new BehRush();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
   cmpEnemy_->RefBehaviorBox().Transition(behRush);
@@ -76,6 +81,11 @@ void BehEnemyWallShot::Execute() {
   const float deltaTime = frameDeltaTime_->GetDeltaTime();
 
   if (phase_ == Phase::Telegraph) {
+    if (telegraphWarningPending_) {
+      PlayBulletWarningSound();
+      telegraphWarningPending_ = false;
+    }
+
     if (CmpAttackTelegraph *telegraph =
             RefGrandOwner().GetDataCmp<CmpAttackTelegraph>()) {
       RegisterWallShotDropTelegraph(telegraph, bulletShotY_, kGroundHeight,
@@ -90,12 +100,15 @@ void BehEnemyWallShot::Execute() {
 
     FireVolley();
     TransitionToRushIfFinished();
-    if (shotCount_ >= shotCountMax_) {
+    const uint32_t shotCountMax =
+        BossCombatEnrage::ScaleShotCountMax(RefGrandOwner(), shotCountMax_);
+    if (shotCount_ >= shotCountMax) {
       return;
     }
 
     phase_ = Phase::IntervalWait;
-    intervalTimer_ = intervalBetweenVolleys_;
+    intervalTimer_ = BossCombatEnrage::ScaleShotCoolTimeSeconds(
+        RefGrandOwner(), intervalBetweenVolleys_);
     return;
   }
 

@@ -1,13 +1,33 @@
 #include "Camera/CameraController/CameraGameIntroController.h"
 
 #include "System/DeltaTime.h"
+#include "System/PlaySe.h"
 
 #include <algorithm>
 
 namespace Atrum {
 
+namespace {
+
+constexpr const char *kBossHpBarGlowSeAssetPath =
+    "./Assets/Audios/seBossHpBarGlow.mp3";
+constexpr const char *kBossHpBarGlowSeResourcePath =
+    "./Resources/seBossHpBarGlow.mp3";
+
+} // namespace
+
 void CameraGameIntroController::Initialize() {
   pullBackBlend_.Initialize();
+}
+
+void CameraGameIntroController::PlayBossHpBarGlowSe() {
+  const std::string sePath = PlaySeDetail::ResolveExistingSePath(
+      {kBossHpBarGlowSeAssetPath, kBossHpBarGlowSeResourcePath});
+  if (sePath.empty()) {
+    return;
+  }
+
+  PlaySe(sePath);
 }
 
 void CameraGameIntroController::BeginIntro(
@@ -21,6 +41,7 @@ void CameraGameIntroController::BeginIntro(
       kBossIntroFocusSubject.halfWidth);
 
   ApplyStageViewPose(bossFocusPose_);
+  PlayBossHpBarGlowSe();
 }
 
 void CameraGameIntroController::Update() {
