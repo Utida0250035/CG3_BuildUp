@@ -10,6 +10,7 @@
 #include "System/PlaySe.h"
 #include "System/StageBounds.h"
 
+#include <cmath>
 #include <unordered_set>
 
 namespace Atrum {
@@ -41,6 +42,54 @@ void PlayBossHitByReflectedBulletSe() {
   }
 
   PlaySe(sePath);
+}
+
+bool EntitiesOverlapByHitSphere(const Entity &a, const Entity &b) {
+  const CmpHitSphere *hitA = a.GetUpdCmp<CmpHitSphere>();
+  const CmpHitSphere *hitB = b.GetUpdCmp<CmpHitSphere>();
+  if (hitA == nullptr || hitB == nullptr || !hitA->GetIsActive() ||
+      !hitB->GetIsActive()) {
+    return false;
+  }
+
+  const Math::Vector3 worldA = a.GetWorldPosition();
+  const Math::Vector3 worldB = b.GetWorldPosition();
+
+  for (const HitSphere &sphereA : hitA->GetSpheres()) {
+    const Math::Vector3 centerA = worldA + sphereA.localOffset;
+
+    for (const HitSphere &sphereB : hitB->GetSpheres()) {
+      const Math::Vector3 centerB = worldB + sphereB.localOffset;
+      const float reachRadius = sphereA.radius + sphereB.radius;
+
+      if ((centerB - centerA).LengthSquare() <= reachRadius * reachRadius) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool TryApplyReflectedBulletBossHit(Entity *bullet, Entity &bossEntity) {
+  if (bullet == nullptr || bossEntity.GetEntityType() != EntityType::ENEMY ||
+      !bossEntity.HasUpdCmp<CmpHealthHit>()) {
+    return false;
+  }
+
+  if (!EntitiesOverlapByHitSphere(*bullet, bossEntity)) {
+    return false;
+  }
+
+  CmpHealthHit *bossHealth = bossEntity.GetUpdCmp<CmpHealthHit>();
+  if (!bossHealth->TryTakeDamageFrom(bullet)) {
+    return false;
+  }
+
+  Particle::Combat::PlayBossHitByReflectedBulletEffect(
+      CombatEffectPoint(*bullet, bossEntity));
+  PlayBossHitByReflectedBulletSe();
+  return true;
 }
 
 /// 管理弾（直線・メテオ・壁弾など）1発分の当たり・反射・ボス命中
@@ -95,31 +144,31 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
     constexpr float reflectedSpeed = 16.0f;
     const Math::Vector3 toOwner =
         bulletOwner.GetWorldPosition() - bullet->GetWorldPosition();
-    cmpLhRigidBody->RefVelocity() = toOwner.Normalized() * reflectedSpeed;
+    const float toOwnerLengthSq = toOwner.LengthSquare();
+    if (toOwnerLengthSq > 1.0e-8f) {
+      cmpLhRigidBody->RefVelocity() =
+          toOwner * (reflectedSpeed / std::sqrt(toOwnerLengthSq));
+    }
 
-    // オービター等（ENEMY_WEAPON）に触れただけでは弾を消さない
-    for (Entity *hitEntity : hitEntitys) {
-      if (hitEntity->GetEntityType() == EntityType::ENEMY_WEAPON) {
-        return false;
-      }
+    // ボス本体（弾の所有者）を優先。オービター接触だけでは命中判定を打ち切らない
+    if (TryApplyReflectedBulletBossHit(bullet, bulletOwner)) {
+      return true;
     }
 
     for (Entity *hitEntity : hitEntitys) {
-      if (hitEntity->GetEntityType() != EntityType::ENEMY ||
-          !hitEntity->HasUpdCmp<CmpHealthHit>()) {
+      if (hitEntity == nullptr ||
+          hitEntity->GetEntityType() == EntityType::ENEMY_WEAPON) {
         continue;
       }
 
-      // ボス被弾はここだけで確定（CmpHealthHit::Update では反射弾を見ない）
-      CmpHealthHit *bossHealth = hitEntity->GetUpdCmp<CmpHealthHit>();
-      if (!bossHealth->TryTakeDamageFrom(bullet)) {
-        return false;
+      if (hitEntity->GetEntityType() != EntityType::ENEMY ||
+          !hitEntity->HasUpdCmp<CmpHealthHit>() || hitEntity == &bulletOwner) {
+        continue;
       }
 
-      Particle::Combat::PlayBossHitByReflectedBulletEffect(
-          CombatEffectPoint(*bullet, *hitEntity));
-      PlayBossHitByReflectedBulletSe();
-      return true;
+      if (TryApplyReflectedBulletBossHit(bullet, *hitEntity)) {
+        return true;
+      }
     }
   }
 
