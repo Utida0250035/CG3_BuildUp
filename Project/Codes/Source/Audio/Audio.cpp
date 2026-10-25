@@ -16,6 +16,12 @@
 
 namespace Atrum::Audio {
 
+namespace {
+
+inline constexpr size_t kBgmStreamingVoiceIndex = 0;
+
+} // namespace
+
 	AudioManager* AudioManager::instance_ = nullptr;
 
 	AudioManager::~AudioManager() {
@@ -77,6 +83,11 @@ namespace Atrum::Audio {
 			}
 
 			if (streamingVoice->state == VoiceState::Waiting) {
+
+				if (streamingVoice->isLoop &&
+				    TryRecoverLoopingStreamingVoice(*streamingVoice)) {
+					continue;
+				}
 
 				streamingVoice->pVoice->Stop();
 				streamingVoice->pVoice->FlushSourceBuffers();
@@ -360,6 +371,7 @@ namespace Atrum::Audio {
 		}
 
 		voice.pReader.Reset();
+		voice.remainingData.clear();
 		voice.state = VoiceState::Stopped;
 		voice.playId = 65536;
 		voice.isLoop = false;
@@ -605,6 +617,79 @@ namespace Atrum::Audio {
 			return false;
 
 		}
+
+	}
+
+	bool AudioManager::TryRecoverLoopingStreamingVoice(StreamingSourceVoice &voice) {
+
+		if (!voice.isLoop || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		AudioDecoder::Seek(voice, voice.startTime100ns);
+
+		if (!RefillBuffer(voice)) {
+			return false;
+		}
+
+		const HRESULT hr = voice.pVoice->Start();
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		voice.state = VoiceState::Playing;
+		return true;
+
+	}
+
+	AudioHandle AudioManager::PlaySceneBgm(const size_t soundIndex) {
+
+		StopAllStreamingVoices();
+		StopAllLoopingShortVoices();
+
+		if (soundIndex >= soundDataStorage_.size()) {
+			return {};
+		}
+
+		auto &data = soundDataStorage_[soundIndex];
+
+		if (data->isSuitableStreaming) {
+
+			if (kBgmStreamingVoiceIndex >= streamingSourceVoicePool_.size()) {
+				return {};
+			}
+
+			auto &streamingVoice = *streamingSourceVoicePool_[kBgmStreamingVoiceIndex];
+			ResetStreamingVoice(streamingVoice);
+
+			const uint64_t currentPlayId = nextPlayId_++;
+			streamingVoice.playId = currentPlayId;
+			streamingVoice.soundIndex = soundIndex;
+
+			const bool isSuccess = InitializeStreaming(
+			    kBgmStreamingVoiceIndex, soundIndex, true, 0);
+
+			if (!isSuccess) {
+				streamingVoice.playId = 65536;
+			}
+
+			return AudioHandle{
+			    .soundIndex = soundIndex,
+			    .voiceIndex = kBgmStreamingVoiceIndex,
+			    .isStreaming = true,
+			    .playId = currentPlayId,
+			    .isSuccess = isSuccess,
+			};
+		}
+
+		AudioHandle handle = PlayShort(soundIndex, true);
+		if (handle.isSuccess) {
+			return handle;
+		}
+
+		ReleaseWaitingShortVoices();
+		StopAllLoopingShortVoices();
+		return PlayShort(soundIndex, true);
 
 	}
 

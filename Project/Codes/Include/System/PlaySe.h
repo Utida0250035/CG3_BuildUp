@@ -99,11 +99,18 @@ inline Audio::Handle PlayBgmLoop(
     return {};
   }
 
-  // 前シーンの BGM がボイスを掴んだまま残ると、以降 Play が失敗して無音になる
-  Audio::Manager::Instance()->StopAllStreamingVoices();
-  Audio::Manager::Instance()->StopAllLoopingShortVoices();
+  const size_t index = PlaySeDetail::GetOrLoadSeIndex(path);
+  if (index == static_cast<size_t>(-1)) {
+    return {};
+  }
 
-  return PlaySeLoop(path);
+  Audio::AudioManager *audio = Audio::Manager::Instance();
+  Audio::Handle handle = audio->PlaySceneBgm(index);
+  if (!handle.isSuccess) {
+    // デコーダ／ボイス状態の不整合時に 1 度だけ再試行
+    handle = audio->PlaySceneBgm(index);
+  }
+  return handle;
 }
 
 } // namespace Atrum

@@ -109,6 +109,8 @@ namespace Atrum::Audio {
 
 		bool RefillBuffer(StreamingSourceVoice& voice);
 
+		bool TryRecoverLoopingStreamingVoice(StreamingSourceVoice &voice);
+
 	public:
 
 		void Initialize();
@@ -130,6 +132,9 @@ namespace Atrum::Audio {
 		size_t Get(const std::string& filePath);
 
 		AudioHandle Play(const size_t soundIndex, const bool isLoop = false, const long long startTime100ns = 0);
+
+		/// シーン BGM 専用（ストリーミングは固定ボイス・ループ途切れ時の復帰前提）
+		AudioHandle PlaySceneBgm(const size_t soundIndex);
 
 		void Stop(const AudioHandle& handle);
 
