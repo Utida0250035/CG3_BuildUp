@@ -188,8 +188,12 @@ namespace Atrum::Audio {
 		std::vector<uint8_t> pBuffer;
 		WAVEFORMATEX* wfEx = new WAVEFORMATEX();
 
-		[[maybe_unused]] bool result = AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
-		assert(result);
+		const bool result =
+		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
+		if (!result) {
+			CoTaskMemFree(wfEx);
+			return static_cast<size_t>(-1);
+		}
 
 		this->AddSource(*wfEx, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);
 
@@ -201,7 +205,15 @@ namespace Atrum::Audio {
 
 	size_t AudioManager::Load(const std::string& filePath) {
 
-		assert(!soundIndexMap_.contains(Hash64(filePath)));
+		if (!std::filesystem::exists(filePath)) {
+			return static_cast<size_t>(-1);
+		}
+
+		const uint64_t pathHash = Hash64(filePath);
+		if (const auto found = soundIndexMap_.find(pathHash);
+		    found != soundIndexMap_.end()) {
+			return found->second;
+		}
 
 		if (IsSuitableStreaming(filePath)) {
 
@@ -223,59 +235,113 @@ namespace Atrum::Audio {
 
 	}
 
-	AudioHandle AudioManager::PlayShort(const size_t soundIndex, const bool isLoop) {
+	void AudioManager::ResetShortVoice(SourceVoice &voice) {
 
-		assert(soundIndex < soundDataStorage_.size());
+		if (voice.pVoice != nullptr) {
 
-		HRESULT hr{};
-
-		auto& soundData = soundDataStorage_[soundIndex];
-
-		XAUDIO2_BUFFER buf{};
-		buf.pAudioData = soundData->pBuffer.data();
-		buf.AudioBytes = soundData->bufferSize;
-		buf.Flags = XAUDIO2_END_OF_STREAM;
-
-		if (isLoop) {
-
-			buf.LoopCount = XAUDIO2_LOOP_INFINITE;
-
-		} else {
-
-			buf.LoopCount = 0;
+			voice.pVoice->Stop();
+			voice.pVoice->FlushSourceBuffers();
 
 		}
 
-		size_t voiceIndex = 0;
+		voice.state = VoiceState::Stopped;
+		voice.playId = 0;
+		voice.isLoopPlayback = false;
+		voice.loopSoundIndex = static_cast<size_t>(-1);
 
-		AudioHandle handle{};
-		handle.isStreaming = false;
-		handle.soundIndex = soundIndex;
+	}
 
-		for (auto& pSourceVoice : sourceVoicePool_) {
+	void AudioManager::ReleaseWaitingShortVoices() {
 
-			if (pSourceVoice->state == VoiceState::Stopped) {
+		for (std::unique_ptr<SourceVoice> &sourceVoice : sourceVoicePool_) {
 
-				pSourceVoice->state = VoiceState::Playing;
-
-				hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
-				assert(SUCCEEDED(hr));
-
-				hr = pSourceVoice->pVoice->Start();
-				assert(SUCCEEDED(hr));
-
-				handle.voiceIndex = voiceIndex;
-				handle.playId = nextPlayId_++;
-				handle.isSuccess = true;
-
-				pSourceVoice->playId = handle.playId;
-
-				return handle;
-
+			if (sourceVoice != nullptr &&
+			    sourceVoice->state == VoiceState::Waiting) {
+				ResetShortVoice(*sourceVoice);
 			}
 
-			voiceIndex++;
+		}
 
+	}
+
+	void AudioManager::StopAllLoopingShortVoices() {
+
+		for (std::unique_ptr<SourceVoice> &sourceVoice : sourceVoicePool_) {
+
+			if (sourceVoice != nullptr && sourceVoice->isLoopPlayback) {
+				ResetShortVoice(*sourceVoice);
+			}
+
+		}
+
+	}
+
+	AudioHandle AudioManager::PlayShort(const size_t soundIndex, const bool isLoop) {
+
+		if (soundIndex >= soundDataStorage_.size()) {
+			return {};
+		}
+
+		auto tryPlayShort = [this, soundIndex, isLoop]() -> AudioHandle {
+			HRESULT hr{};
+
+			auto &soundData = soundDataStorage_[soundIndex];
+
+			XAUDIO2_BUFFER buf{};
+			buf.pAudioData = soundData->pBuffer.data();
+			buf.AudioBytes = soundData->bufferSize;
+			buf.Flags = XAUDIO2_END_OF_STREAM;
+			buf.LoopCount = isLoop ? XAUDIO2_LOOP_INFINITE : 0;
+
+			size_t voiceIndex = 0;
+
+			AudioHandle handle{};
+			handle.isStreaming = false;
+			handle.soundIndex = soundIndex;
+
+			for (std::unique_ptr<SourceVoice> &pSourceVoice : sourceVoicePool_) {
+
+				if (pSourceVoice != nullptr &&
+				    pSourceVoice->state == VoiceState::Stopped) {
+
+					hr = pSourceVoice->pVoice->SubmitSourceBuffer(&buf);
+					if (FAILED(hr)) {
+						return {};
+					}
+
+					hr = pSourceVoice->pVoice->Start();
+					if (FAILED(hr)) {
+						pSourceVoice->pVoice->FlushSourceBuffers();
+						return {};
+					}
+
+					pSourceVoice->state = VoiceState::Playing;
+					pSourceVoice->isLoopPlayback = isLoop;
+					pSourceVoice->loopSoundIndex =
+					    isLoop ? soundIndex : static_cast<size_t>(-1);
+
+					handle.voiceIndex = voiceIndex;
+					handle.playId = nextPlayId_++;
+					handle.isSuccess = true;
+					pSourceVoice->playId = handle.playId;
+
+					return handle;
+				}
+
+				++voiceIndex;
+			}
+
+			return {};
+		};
+
+		if (AudioHandle handle = tryPlayShort(); handle.isSuccess) {
+			return handle;
+		}
+
+		ReleaseWaitingShortVoices();
+
+		if (AudioHandle handle = tryPlayShort(); handle.isSuccess) {
+			return handle;
 		}
 
 		assert(false && "no empty sourceVoice");
@@ -352,29 +418,41 @@ namespace Atrum::Audio {
 
 	}
 
-	void AudioManager::PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns) {
+	bool AudioManager::PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns) {
 
-		// IMFSourceReader の作成
-		// soundDataStorage_ からファイルパスを取得してリーダーを生成
-		auto& path = soundDataStorage_[soundIndex]->filePath; // もしパスを保持していれば
-		[[maybe_unused]] HRESULT hr = MFCreateSourceReaderFromURL(path.c_str(), nullptr, &voice.pReader);
-		assert(SUCCEEDED(hr));
+		if (soundIndex >= soundDataStorage_.size()) {
+			return false;
+		}
 
-		//IMFSourceReader作成後、読み込みループに入る前に実行
+		auto& path = soundDataStorage_[soundIndex]->filePath;
+		HRESULT hr = MFCreateSourceReaderFromURL(path.c_str(), nullptr, &voice.pReader);
+		if (FAILED(hr)) {
+			return false;
+		}
+
 		ComPtr<IMFMediaType> pPCMType;
-		MFCreateMediaType(&pPCMType);
+		hr = MFCreateMediaType(&pPCMType);
+		if (FAILED(hr)) {
+			return false;
+		}
+
 		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
 		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
 		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
 		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
 		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4); // 2ch * 16bit / 8
+		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4);
 		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
-		voice.pReader->SetCurrentMediaType(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr, pPCMType.Get());
+		hr = voice.pReader->SetCurrentMediaType(
+		    static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr,
+		    pPCMType.Get());
+		if (FAILED(hr)) {
+			return false;
+		}
 
 		voice.startTime100ns = startTime100ns;
 
-		AudioDecoder::Seek(voice, startTime100ns);
+		return AudioDecoder::Seek(voice, startTime100ns);
 
 	}
 
@@ -413,7 +491,10 @@ namespace Atrum::Audio {
 
 		assert(voice.state == VoiceState::Stopped);
 
-		PrepareStreamingDecoder(voice, soundIndex, startTime100ns);
+		if (!PrepareStreamingDecoder(voice, soundIndex, startTime100ns)) {
+			ResetStreamingVoice(voice);
+			return false;
+		}
 
 		if (SubmitInitialBuffer(voice, isLoop)) {
 
@@ -529,6 +610,10 @@ namespace Atrum::Audio {
 
 	AudioHandle AudioManager::Play(const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
 
+		if (soundIndex >= soundDataStorage_.size()) {
+			return {};
+		}
+
 		auto& data = soundDataStorage_[soundIndex];
 
 		if (data->isSuitableStreaming) {
@@ -551,40 +636,29 @@ namespace Atrum::Audio {
 
 		if (handle.isStreaming) {
 
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return;
+			}
+
 			auto& sSrcVoice = streamingSourceVoicePool_[handle.voiceIndex];
 
 			if (sSrcVoice && sSrcVoice->playId == handle.playId) {
-
-				sSrcVoice->pVoice->Stop();
-				sSrcVoice->pVoice->FlushSourceBuffers();
-
-				sSrcVoice->state = VoiceState::Stopped;
-				sSrcVoice->playId = 65536;
-				sSrcVoice->isLoop = false;
-				sSrcVoice->nextBufferIndex = 0;
-				sSrcVoice->startTime100ns = 0;
-
+				ResetStreamingVoice(*sSrcVoice);
 			}
 
 			return;
 
 		}
 
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return;
+		}
+
 		auto& srcVoice = sourceVoicePool_[handle.voiceIndex];
 
 		if (srcVoice && srcVoice->playId == handle.playId) {
-
-			srcVoice->pVoice->Stop();
-			srcVoice->pVoice->FlushSourceBuffers();
-			srcVoice->isLoop = false;
-			srcVoice->nextBufferIndex = 0;
-			srcVoice->startTime100ns = 0;
-
-			srcVoice->state = VoiceState::Stopped;
-			srcVoice->playId = 0;
-
+			ResetShortVoice(*srcVoice);
 		}
-
 
 	}
 

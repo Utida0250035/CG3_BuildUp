@@ -19,6 +19,10 @@ namespace Atrum::Audio {
 
 		uint64_t playId = 0;
 
+		/// PlayShort(..., isLoop=true) 時のみ使用（BGM 停止・占有解放用）
+		bool isLoopPlayback = false;
+		size_t loopSoundIndex = static_cast<size_t>(-1);
+
 		~SourceVoice() {
 
 			if (state == VoiceState::Playing) {

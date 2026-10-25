@@ -10,8 +10,8 @@ namespace Atrum {
 
 		commandScene_ = CommandScene::Instance();
 		nextScene_ = nullptr;
-		changeSceneEffect_.release();
-		isExecute_ = true;
+		changeSceneEffect_.reset();
+		isExecute_ = false;
 
 	}
 

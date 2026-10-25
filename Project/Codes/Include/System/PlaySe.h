@@ -21,6 +21,9 @@ inline size_t GetOrLoadSeIndex(const std::string &path) {
   const auto found = cache.find(path);
   if (found == cache.end()) {
     const size_t index = audio->Load(path);
+    if (index == static_cast<size_t>(-1)) {
+      return static_cast<size_t>(-1);
+    }
     cache.emplace(path, index);
     return index;
   }
@@ -85,6 +88,7 @@ inline void StopSe(const Audio::Handle &handle) {
 inline void StopBgmLoop(const Audio::Handle &handle) {
   StopSe(handle);
   Audio::Manager::Instance()->StopAllStreamingVoices();
+  Audio::Manager::Instance()->StopAllLoopingShortVoices();
 }
 
 /// BGM をループ再生（候補パスのうち存在するファイルを使用）
@@ -97,6 +101,7 @@ inline Audio::Handle PlayBgmLoop(
 
   // 前シーンの BGM がボイスを掴んだまま残ると、以降 Play が失敗して無音になる
   Audio::Manager::Instance()->StopAllStreamingVoices();
+  Audio::Manager::Instance()->StopAllLoopingShortVoices();
 
   return PlaySeLoop(path);
 }
