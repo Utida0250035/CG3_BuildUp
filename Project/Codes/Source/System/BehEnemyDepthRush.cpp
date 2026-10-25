@@ -158,7 +158,8 @@ void BehEnemyDepthRush::Execute() {
 
     phase_ = Phase::ChargeToPlayer;
     chargeTimer_ = 0.0f;
-    PlaySe("./Resources/seEnemyShot.mp3");
+    PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                      "./Resources/seEnemyShot.mp3"});
     return;
   }
 

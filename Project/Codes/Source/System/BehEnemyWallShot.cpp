@@ -43,7 +43,8 @@ void BehEnemyWallShot::FireVolley() {
                          {shotX, bulletShotY_, 0.0f})
                          .release());
   }
-  PlaySe("./Resources/seEnemyShot.mp3");
+  PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                    "./Resources/seEnemyShot.mp3"});
 
   std::vector<float> slowBulletShotX;
   for (float x = 0.5f + kLeftEndX; x < kRightEndX; x += 8.0f) {
@@ -59,7 +60,8 @@ void BehEnemyWallShot::FireVolley() {
                          {shotX, bulletShotY_, 0.0f})
                          .release());
   }
-  PlaySe("./Resources/seEnemyShot.mp3");
+  PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                    "./Resources/seEnemyShot.mp3"});
 
   ++shotCount_;
 }

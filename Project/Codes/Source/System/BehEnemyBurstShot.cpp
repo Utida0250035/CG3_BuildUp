@@ -45,7 +45,8 @@ void BehEnemyBurstShot::Execute() {
             direction * bulletSpeed_, RefGrandOwner().GetTransform().translate)
             .release());
     ++shotCount_;
-    PlaySe("./Resources/seEnemyShot.mp3");
+    PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                      "./Resources/seEnemyShot.mp3"});
   } else {
     if (bulletWarningPending_) {
       PlayBulletWarningSound();

@@ -55,4 +55,7 @@ void AddBossMeleeTelegraphLine(CmpAttackTelegraph *telegraph,
 
 bool IsBossMeleeTelegraphColor(const Math::Vector4 &color);
 
+/// シーン退出・再戦時に近接警告 SE 用の静的状態をクリアする
+void ResetBossMeleeTelegraphWarnSessions();
+
 } // namespace Atrum

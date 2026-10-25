@@ -91,9 +91,11 @@ void CmpMoveByInput2D::Update() {
       isAirJumpVariable_ = true;
       isInvincibleColorWaitNextFrame_ = true;
       cmpSwingWeapon_->StartSwing();
-      PlaySe("./Resources/seSwingWeapon.mp3");
+      PlaySeCandidates({"./Assets/Audios/seSwingWeapon.mp3",
+                        "./Resources/seSwingWeapon.mp3"});
     } else if (isAirJumpVariable_) {
-      PlaySe("./Resources/seSwingWeapon.mp3");
+      PlaySeCandidates({"./Assets/Audios/seSwingWeapon.mp3",
+                        "./Resources/seSwingWeapon.mp3"});
       cmpSwingWeapon_->StartSwing();
       invincibleTimer_ = invincibleDuration_;
       parryTimer_ = parryDuration_;

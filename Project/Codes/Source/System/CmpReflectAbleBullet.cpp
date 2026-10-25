@@ -125,6 +125,10 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
   return false;
 }
 
+std::unordered_set<Entity *> s_parryOverlapping{};
+
+void ClearParryOverlapping() { s_parryOverlapping.clear(); }
+
 /// ボス子实体の ENEMY_WEAPON（オービター等）
 void ProcessAttachedEnemyWeapon(Entity *weapon) {
   if (weapon == nullptr || weapon->GetEntityType() != EntityType::ENEMY_WEAPON) {
@@ -139,7 +143,6 @@ void ProcessAttachedEnemyWeapon(Entity *weapon) {
   cmpHitSphere->Update();
 
   // 重なっている間は毎フレーム発火すると、反射演出の描画枠を埋め尽くす
-  static std::unordered_set<Entity *> s_parryOverlapping;
   Entity *parryTarget = nullptr;
   for (Entity *hitEntity : cmpHitSphere->GetHitEntitys()) {
     if (hitEntity->GetEntityType() != EntityType::PLAYER_WEAPON) {
@@ -174,6 +177,10 @@ void RefreshBulletHitSphere(Entity *bullet) {
 }
 
 } // namespace
+
+void CmpReflectAbleBullet::ResetAttachedWeaponParryOverlapTracking() {
+  ClearParryOverlapping();
+}
 
 void CmpReflectAbleBullet::Initialize() {
   for (auto &bullet : reflectAbleBullets_) {

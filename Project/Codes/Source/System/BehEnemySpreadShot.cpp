@@ -59,7 +59,8 @@ void BehEnemySpreadShot::Execute() {
     }
 
     ++shotCount_;
-    PlaySe("./Resources/seEnemyShot.mp3");
+    PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                      "./Resources/seEnemyShot.mp3"});
 
     if (shotCount_ < shotCountMax) {
       bulletWarningPending_ = true;

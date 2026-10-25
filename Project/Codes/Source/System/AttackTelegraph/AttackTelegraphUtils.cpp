@@ -181,6 +181,10 @@ void BeginBossMeleeTelegraphSession(CmpAttackTelegraph *telegraph) {
   bossMeleeWarnPlayedByTelegraph[telegraph] = false;
 }
 
+void ResetBossMeleeTelegraphWarnSessions() {
+  bossMeleeWarnPlayedByTelegraph.clear();
+}
+
 void AddBossMeleeTelegraphLine(CmpAttackTelegraph *telegraph,
                                const Math::Vector3 &start,
                                const Math::Vector3 &end) {

@@ -44,7 +44,8 @@ void BehEnemyMeteor::FireMeteor(const float targetX) {
                        {0.0f, -bulletSpeed_, 0.0f},
                        {targetX, bulletShotY_, 0.0f})
                        .release());
-  PlaySe("./Resources/seEnemyShot.mp3");
+  PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                    "./Resources/seEnemyShot.mp3"});
 }
 
 void BehEnemyMeteor::TransitionToRush() {

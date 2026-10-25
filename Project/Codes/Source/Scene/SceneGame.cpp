@@ -14,6 +14,7 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneResult.h"
+#include "System/BossCombatCleanup.h"
 #include "System/OrbiterChildUtils.h"
 #include "System/CmpSkyDome.h"
 #include "System/CmpParry.h"
@@ -83,6 +84,7 @@ void SceneGame::ExitScene() {
   introCameraController_.reset();
   bossDeathCameraController_.reset();
   ClearEntities();
+  Atrum::ResetBossCombatSessionState();
   Atrum::Particle::Combat::ClearCombatParticleEffects();
 }
 

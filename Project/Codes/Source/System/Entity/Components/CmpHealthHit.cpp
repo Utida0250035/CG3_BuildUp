@@ -78,10 +78,10 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 		CombatCameraShake::Instance().RequestPlayerHitShake();
 		PlayerDamageScreenVignette::Instance().RequestShow();
 	} else if (RefOwner().GetEntityType() == EntityType::ENEMY) {
-		PlaySe("./Resources/seHit.mp3");
+		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});
 		CombatCameraShake::Instance().RequestBossHitShake();
 	} else {
-		PlaySe("./Resources/seHit.mp3");
+		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});
 	}
 	// 管理外の ENEMY_WEAPON（オービター等）被弾用。管理弾は CmpReflectAbleBullet 側で演出
 	if (attacker->GetEntityType() == EntityType::ENEMY_WEAPON &&

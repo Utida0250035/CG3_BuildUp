@@ -18,10 +18,11 @@ inline constexpr const char *kPlayerHitEnemyBulletParticleJson =
 inline constexpr const char *kBossDeathExplosionParticleJson =
     "./Assets/Particles/boss_death_explosion.json";
 
-inline constexpr const char *kParryReflectEmitterName = "combat_parry_reflect";
-inline constexpr const char *kPlayerHitEmitterName = "combat_player_hit";
-inline constexpr const char *kBossHitReflectedEmitterName =
-    "combat_boss_hit_reflected";
+inline constexpr const char *kParryReflectEmitterNamePrefix =
+    "combat_parry_reflect_";
+inline constexpr const char *kPlayerHitEmitterNamePrefix = "combat_player_hit_";
+inline constexpr const char *kBossHitReflectedEmitterNamePrefix =
+    "combat_boss_hit_reflected_";
 inline constexpr const char *kBossDeathExplosionEmitterNamePrefix =
     "combat_boss_death_explosion_";
 inline constexpr const char *kPlayerDeathDamageEmitterNamePrefix =
@@ -47,21 +48,22 @@ void PlayOneShotEffect(const char *emitterNamePrefix, const char *jsonFilePath,
 } // namespace
 
 void PlayParryReflectEffect(const Math::Vector3 &worldPosition) {
-  CombatEmitterManager()->AddOneShotEmitter(
-      kParryReflectEmitterName, kParryReflectParticleJson, worldPosition,
-      kUseBuiltinSphereDraw);
+  static uint32_t sequence = 0;
+  PlayOneShotEffect(kParryReflectEmitterNamePrefix, kParryReflectParticleJson,
+                    worldPosition, ++sequence);
 }
 
 void PlayBossHitByReflectedBulletEffect(const Math::Vector3 &worldPosition) {
-  CombatEmitterManager()->AddOneShotEmitter(
-      kBossHitReflectedEmitterName, kBossHitReflectedParticleJson,
-      worldPosition, kUseBuiltinSphereDraw);
+  static uint32_t sequence = 0;
+  PlayOneShotEffect(kBossHitReflectedEmitterNamePrefix,
+                    kBossHitReflectedParticleJson, worldPosition, ++sequence);
 }
 
 void PlayPlayerHitByEnemyBulletEffect(const Math::Vector3 &worldPosition) {
-  CombatEmitterManager()->AddOneShotEmitter(
-      kPlayerHitEmitterName, kPlayerHitEnemyBulletParticleJson, worldPosition,
-      kUseBuiltinSphereDraw);
+  static uint32_t sequence = 0;
+  PlayOneShotEffect(kPlayerHitEmitterNamePrefix,
+                    kPlayerHitEnemyBulletParticleJson, worldPosition,
+                    ++sequence);
 }
 
 void PlayPlayerDeathDamageScatterEffect(const Math::Vector3 &worldPosition,

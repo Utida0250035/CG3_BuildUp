@@ -50,6 +50,18 @@ inline void PlaySe(const std::string &path) {
   Audio::Manager::Instance()->Play(index);
 }
 
+/// Assets / Resources など複数候補から存在する SE を再生
+inline void PlaySeCandidates(
+    const std::initializer_list<const char *> candidatePaths) {
+  const std::string path =
+      PlaySeDetail::ResolveExistingSePath(candidatePaths);
+  if (path.empty()) {
+    return;
+  }
+
+  PlaySe(path);
+}
+
 /// ループ再生。ファイルが無い場合は失敗した Handle を返す
 inline Audio::Handle PlaySeLoop(const std::string &path) {
   const size_t index = PlaySeDetail::GetOrLoadSeIndex(path);

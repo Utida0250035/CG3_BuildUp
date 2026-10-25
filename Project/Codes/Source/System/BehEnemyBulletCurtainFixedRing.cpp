@@ -78,7 +78,8 @@ void BehEnemyBulletCurtainFixedRing::FireRingVolley() {
             .release());
   }
 
-  PlaySe("./Resources/seEnemyShot.mp3");
+  PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                    "./Resources/seEnemyShot.mp3"});
 }
 
 void BehEnemyBulletCurtainFixedRing::TransitionToRushIfFinished() {

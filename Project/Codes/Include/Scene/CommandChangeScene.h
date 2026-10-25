@@ -122,8 +122,8 @@ namespace Atrum {
 							// シーン遷移エフェクトが終了していれば
 							//======================================
 
-							// エフェクトを空のポインタにする
-							changeSceneEffect_.release();
+							// エフェクトを破棄する
+							changeSceneEffect_.reset();
 
 							// 処理中フラグを折る
 							isExecute_ = false;

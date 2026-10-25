@@ -1,5 +1,6 @@
 #include "System/BossCombatCleanup.h"
 
+#include "System/AttackTelegraph/AttackTelegraphUtils.h"
 #include "System/CmpAttackTelegraph.h"
 #include "System/CmpReflectAbleBullet.h"
 #include "System/Entity/Entity.h"
@@ -23,6 +24,11 @@ void ClearBossAttackTelegraphAndBullets(Entity &boss) {
     }
   }
   cmpReflectAbleBullet->RefBullets().clear();
+}
+
+void ResetBossCombatSessionState() {
+  CmpReflectAbleBullet::ResetAttachedWeaponParryOverlapTracking();
+  ResetBossMeleeTelegraphWarnSessions();
 }
 
 } // namespace Atrum

@@ -33,6 +33,9 @@ public:
 
   void Shot(Entity *bullet);
 
+  /// オービターパリィ重複抑止（再戦・シーン退出時にクリア）
+  static void ResetAttachedWeaponParryOverlapTracking();
+
   std::vector<std::unique_ptr<Entity>> &RefBullets() { return reflectAbleBullets_; }
 };
 
