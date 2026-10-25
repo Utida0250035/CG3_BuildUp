@@ -1,4 +1,4 @@
-﻿#include "Engine/AtrumEngine.h"
+#include "Engine/AtrumEngine.h"
 #include "File/SetWorkingDirectoryToExecutable.h"
 #include "Scene/GameOrder.h"
 
@@ -10,7 +10,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
   }
 
   Atrum::Engine *engine = Atrum::Engine::Instance();
-  engine->Initialize("CG2 BuildUp");
+  engine->Initialize("LE2A_03_ウチダ_コウタ_ジャンパリィ");
   engine->SetFps(60);
 
   // フェード等で使用する白テクスチャを先に読み込む
