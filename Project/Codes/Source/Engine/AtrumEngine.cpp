@@ -904,6 +904,35 @@ void AtrumEngine::DrawBillboard(const uint32_t &textureIndex,
                         directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+void AtrumEngine::DrawLine3D(const uint32_t &textureIndex,
+                             const M::Vector4 &textureColor,
+                             const M::Transform &uvTransform,
+                             const M::Vector3 &worldStart,
+                             const M::Vector3 &worldEnd, const float width,
+                             const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawLine3D(textureIndex, textureColor, uvTransform, worldStart,
+                     worldEnd, width, isLighting,
+                     directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
+void AtrumEngine::DrawDashedLine3D(const uint32_t &textureIndex,
+                                   const M::Vector4 &textureColor,
+                                   const M::Transform &uvTransform,
+                                   const M::Vector3 &worldStart,
+                                   const M::Vector3 &worldEnd, const float width,
+                                   const float dashLength, const float gapLength,
+                                   const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawDashedLine3D(textureIndex, textureColor, uvTransform, worldStart,
+                           worldEnd, width, dashLength, gapLength, isLighting,
+                           directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
 void AtrumEngine::DrawAsymmetricPyramid(
     const uint32_t &textureIndex, const M::Vector4 &textureColor,
     const M::Transform &uvTransform, const M::Matrix4x4 &worldMatrix,

@@ -370,6 +370,27 @@ public:
                      const bool isLighting = false);
 
   /// <summary>
+  /// 3D ワールド空間の線（カメラ向きリボン）
+  /// </summary>
+  void DrawLine3D(const uint32_t &textureIndex,
+                  const Math::Vector4 &textureColor,
+                  const Math::Transform &uvTransform,
+                  const Math::Vector3 &worldStart,
+                  const Math::Vector3 &worldEnd, const float width,
+                  const bool isLighting = false);
+
+  /// <summary>
+  /// 3D ワールド空間の破線（カメラ向きリボン）
+  /// </summary>
+  void DrawDashedLine3D(const uint32_t &textureIndex,
+                        const Math::Vector4 &textureColor,
+                        const Math::Transform &uvTransform,
+                        const Math::Vector3 &worldStart,
+                        const Math::Vector3 &worldEnd, const float width,
+                        const float dashLength, const float gapLength,
+                        const bool isLighting = false);
+
+  /// <summary>
   /// Spriteの準備
   /// </summary>
   void PrepareSprite();

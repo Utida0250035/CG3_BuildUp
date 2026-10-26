@@ -8,6 +8,7 @@
 #include "Geometry/PyramidMesh.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Transform.h"
+#include "Math/Vector3.h"
 
 #include <memory>
 
@@ -137,6 +138,23 @@ namespace Atrum {
 			const Math::Vector4& textureColor,
 			const Math::Transform& uvTransform,
 			const Math::Matrix4x4& worldMatrix,
+			const bool isLighting,
+			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+
+		/// ワールド座標の太線（カメラ向きリボン、Object3d パイプライン）
+		void DrawLine3D(const uint32_t& textureIndex,
+			const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform,
+			const Math::Vector3& worldStart, const Math::Vector3& worldEnd,
+			const float width, const bool isLighting,
+			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+
+		/// ワールド座標の破線（DrawLine3D を dash / gap 長で分割）
+		void DrawDashedLine3D(const uint32_t& textureIndex,
+			const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform,
+			const Math::Vector3& worldStart, const Math::Vector3& worldEnd,
+			const float width, const float dashLength, const float gapLength,
 			const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 

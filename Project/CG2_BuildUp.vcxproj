@@ -243,6 +243,9 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Engine\Renderer\BillboardMatrix.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Line3DGeometry.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
@@ -306,6 +309,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\System\BehDodge.cpp" />
@@ -440,6 +444,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Engine\Pipeline\RootSignature.h" />
     <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\BillboardMatrix.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Line3DGeometry.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h" />
@@ -501,6 +506,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Scene\SceneResult.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorReferenceGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorUi.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
     <ClInclude Include="Codes\Include\System\BehDodge.h" />

@@ -12,6 +12,7 @@
 #include "Input/PlayInput.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "System/Editor/Particle/ParticleEditorReferenceGrid.h"
 #include "System/Editor/Particle/ParticleEditorUi.h"
 #endif
 
@@ -164,6 +165,12 @@ void SceneParticleEditor::DrawScene() {
 	}
 
 	engine->SetCamera(GetCamera());
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+	engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
+	DrawParticleEditorReferenceGrid(engine);
+#endif
+
 	engine->SetBlendModeForFrame(Atrum::BlendMode::ADD);
 	previewEmitter_->Draw();
 	engine->SetBlendModeForFrame(Atrum::BlendMode::NONE);

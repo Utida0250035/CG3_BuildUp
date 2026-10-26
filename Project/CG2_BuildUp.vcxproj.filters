@@ -88,6 +88,9 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\BillboardMatrix.cpp">
       <Filter>Codes\Source\Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Line3DGeometry.cpp">
+      <Filter>Codes\Source\Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
       <Filter>Codes\Source\Engine\Renderer</Filter>
     </ClCompile>
@@ -297,6 +300,9 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
       <Filter>Codes\Source\System\Editor\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp">
+      <Filter>Codes\Source\System\Editor\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp">
       <Filter>Codes\Source\System\Editor\Particle</Filter>
@@ -553,6 +559,9 @@
       <Filter>Codes\Include\Engine\Platform\Window</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\BillboardMatrix.h">
+      <Filter>Codes\Include\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Line3DGeometry.h">
       <Filter>Codes\Include\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h">
@@ -824,6 +833,9 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h">
       <Filter>Codes\Include\System\Editor\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorReferenceGrid.h">
+      <Filter>Codes\Include\System\Editor\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorUi.h">
       <Filter>Codes\Include\System\Editor\Particle</Filter>

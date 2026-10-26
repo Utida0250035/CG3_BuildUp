@@ -6,6 +6,7 @@
 #include "Engine/Pipeline/PipelineState.h"
 #include "Engine/Pipeline/RootSignature.h"
 #include "Engine/Renderer/Draw.h"
+#include "Engine/Renderer/Line3DGeometry.h"
 #include "Engine/Resource/AssetModel.h"
 #include "Engine/Resource/DescriptorAllocator.h"
 #include "Engine/Resource/IndexBuffer.h"
@@ -13,6 +14,7 @@
 #include "Geometry/PyramidMesh.h"
 #include "Camera/Camera.h"
 
+#include <algorithm>
 #include <array>
 #include <numbers>
 #ifdef DEVELOPMENT
@@ -518,6 +520,105 @@ namespace Atrum {
 		}
 
 		this->DrawCall(textureIndex, 6, 4, directionalLightAddress);
+	}
+
+	void Draw::DrawLine3D(const uint32_t& textureIndex,
+		const Math::Vector4& textureColor,
+		const Math::Transform& uvTransform,
+		const Math::Vector3& worldStart, const Math::Vector3& worldEnd,
+		const float width, const bool isLighting,
+		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (camera_ == nullptr) {
+			assert(false && "DrawLine3D: SetCamera を呼んでから描画してください");
+			return;
+		}
+
+		std::array<M::Vector3, 4> worldPositions{};
+		M::Vector3 faceNormal{};
+		if (!Renderer::BuildCameraFacingLineQuad(
+				worldStart, worldEnd, width, camera_->GetTranslate(),
+				worldPositions, faceNormal)) {
+			return;
+		}
+
+		const M::Matrix4x4 worldMatrix = M::Matrix4x4::Identity();
+		const M::Matrix4x4 viewProjection = camera_->GetViewProjectionMatrix();
+
+		TransformationData transformationData{};
+		transformationData.wvp = worldMatrix * viewProjection;
+		transformationData.world = worldMatrix;
+		transformationBuffer_->SetData(transformationData, constantBufferCount_);
+
+		MaterialData materialData{};
+		materialData.color = textureColor;
+		M::Matrix4x4 uvTransformMatrix = M::Matrix4x4::Scale(uvTransform.scale);
+		uvTransformMatrix *= M::Matrix4x4::RotateZ(uvTransform.rotate.z);
+		uvTransformMatrix *= M::Matrix4x4::Translate(uvTransform.translate);
+		materialData.uvTransformMatrix = uvTransformMatrix;
+		materialData.isLightingEnable = isLighting;
+		materialData.isUseTexture = true;
+		materialBuffer_->SetData(materialData, constantBufferCount_);
+
+		const std::array<M::Vector2, 4> texCoords{
+			M::Vector2{0.0f, 1.0f},
+			M::Vector2{1.0f, 1.0f},
+			M::Vector2{0.0f, 0.0f},
+			M::Vector2{1.0f, 0.0f},
+		};
+
+		const uint32_t vertexStart = vertexBuffer_->GetDrewCount();
+		for (size_t i = 0; i < worldPositions.size(); ++i) {
+			const M::Vector3& p = worldPositions[i];
+			VertexData vertex{};
+			vertex.position = M::Vector4{p.x, p.y, p.z, 1.0f};
+			vertex.texCoord = texCoords[i];
+			vertex.normal = faceNormal;
+			vertexBuffer_->SetVertexData(vertex, vertexStart + static_cast<uint32_t>(i));
+		}
+
+		const uint32_t indexStart = indexBuffer_->GetDrewCount();
+		const std::array<uint32_t, 6> indices{0, 2, 1, 2, 3, 1};
+		for (size_t i = 0; i < indices.size(); ++i) {
+			indexBuffer_->SetIndexData(indices[i], indexStart + static_cast<uint32_t>(i));
+		}
+
+		this->DrawCall(textureIndex, 6, 4, directionalLightAddress);
+	}
+
+	void Draw::DrawDashedLine3D(const uint32_t& textureIndex,
+		const Math::Vector4& textureColor,
+		const Math::Transform& uvTransform,
+		const Math::Vector3& worldStart, const Math::Vector3& worldEnd,
+		const float width, const float dashLength, const float gapLength,
+		const bool isLighting,
+		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		const Math::Vector3 delta = worldEnd - worldStart;
+		const float totalLength = delta.Length();
+		if (totalLength < 1.0e-4f) {
+			return;
+		}
+
+		const float clampedDash = std::max(dashLength, 1.0e-4f);
+		const float clampedGap = std::max(gapLength, 0.0f);
+		const Math::Vector3 direction = delta / totalLength;
+
+		float traveled = 0.0f;
+		while (traveled < totalLength) {
+			const float segmentEndDistance =
+				std::min(traveled + clampedDash, totalLength);
+			const Math::Vector3 segmentStart =
+				worldStart + direction * traveled;
+			const Math::Vector3 segmentEnd =
+				worldStart + direction * segmentEndDistance;
+
+			this->DrawLine3D(textureIndex, textureColor, uvTransform,
+				segmentStart, segmentEnd, width, isLighting,
+				directionalLightAddress);
+
+			traveled = segmentEndDistance + clampedGap;
+		}
 	}
 
 	void Draw::DrawAsymmetricPyramid(
