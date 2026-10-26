@@ -20,6 +20,16 @@ enum class KillFieldMode { OUTSIDE, INSIDE };
 
 enum class KillFieldShape { SPHERE, AABB };
 
+/// 粒子1枚あたりの描画方法
+enum class RenderMode {
+  /// エンジン内蔵の球（DrawSphere）
+  BUILTIN_SPHERE,
+  /// Param で指定した OBJ/MTL モデル
+  MODEL,
+  /// カメラ向きの板ポリ＋任意テクスチャ
+  BILLBOARD
+};
+
 struct KillFieldParam {
   bool isUse = false;
   KillFieldMode mode = KillFieldMode::INSIDE;
@@ -97,6 +107,11 @@ struct Param {
 
   // プールの最大粒子数
   size_t maxCount = 32;
+
+  RenderMode renderMode = RenderMode::BUILTIN_SPHERE;
+
+  /// BILLBOARD 用テクスチャ（GetTexture に渡すパス）
+  std::string textureFilePath = "./Assets/Images/white4x4.png";
 
   std::string objDirectoryPath = "./Assets/Objects/unitSphere";
   std::string objFileName = "unitSphere.obj";

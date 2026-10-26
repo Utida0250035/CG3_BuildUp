@@ -1,4 +1,4 @@
-#include "System/CmpDrawHitSphere.h"
+#include "System/Entity/Components/CmpDrawHitSphere.h"
 #include "Engine/AtrumEngine.h"
 #include "Math/Transform.h"
 #include "System/Entity/Components/CmpHitSphere.h"

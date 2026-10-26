@@ -1,4 +1,4 @@
-#include "System/CmpRotator.h"
+#include "System/Entity/Components/CmpRotator.h"
 #include "Math/Quaternion.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"

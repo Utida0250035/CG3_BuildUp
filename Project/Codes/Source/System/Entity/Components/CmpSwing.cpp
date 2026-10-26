@@ -1,4 +1,4 @@
-#include "System/CmpSwing.h"
+#include "System/Entity/Components/CmpSwing.h"
 #include "Math/Quaternion.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"

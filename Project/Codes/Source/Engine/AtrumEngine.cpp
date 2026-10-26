@@ -903,6 +903,20 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex,
         directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+void AtrumEngine::DrawBillboard(const uint32_t &textureIndex,
+                                const M::Vector4 &textureColor,
+                                const M::Transform &uvTransform,
+                                const M::Vector3 &worldPosition,
+                                const M::Vector3 &worldScale,
+                                const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawBillboard(textureIndex, textureColor, uvTransform, worldPosition,
+                        worldScale, isLighting,
+                        directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
 void AtrumEngine::DrawAsymmetricPyramid(
     const uint32_t &textureIndex, const M::Vector4 &textureColor,
     const M::Transform &uvTransform, const M::Vector3 &scale,

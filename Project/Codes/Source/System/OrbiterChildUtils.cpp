@@ -1,7 +1,7 @@
 #include "System/OrbiterChildUtils.h"
 
-#include "System/CmpChildEntitys.h"
-#include "System/CmpOrbiter.h"
+#include "System/Entity/Components/CmpChildEntitys.h"
+#include "System/Entity/Components/CmpOrbiter.h"
 #include "System/Entity/Entity.h"
 
 #include <cmath>

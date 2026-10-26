@@ -63,10 +63,9 @@ bool IsEmitterParticleInactive(
 Atrum::Visual::Particle::Emitter *
 EmitterManager::AddOneShotEmitter(const std::string &emitterName,
                                   const char *jsonFilePath,
-                                  const Math::Vector3 &worldPosition,
-                                  const bool useBuiltinSphereDraw) {
+                                  const Math::Vector3 &worldPosition) {
   auto emitter = std::make_unique<Atrum::Visual::Particle::Emitter>();
-  emitter->Initialize(jsonFilePath, useBuiltinSphereDraw);
+  emitter->Initialize(jsonFilePath);
 
   Atrum::Visual::Particle::Emitter *rawEmitter = emitter.get();
   Register(emitterName, std::move(emitter));

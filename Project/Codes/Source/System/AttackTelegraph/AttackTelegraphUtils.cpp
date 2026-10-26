@@ -2,9 +2,9 @@
 
 #include "Math/Matrix4x4.h"
 #include "Math/Transform.h"
-#include "System/CmpAttackTelegraph.h"
-#include "System/CmpChildEntitys.h"
-#include "System/CmpOrbiter.h"
+#include "System/AttackTelegraph/CmpAttackTelegraph.h"
+#include "System/Entity/Components/CmpChildEntitys.h"
+#include "System/Entity/Components/CmpOrbiter.h"
 #include "System/Entity/Entity.h"
 #include "System/PlaySe.h"
 #include "System/StageBounds.h"

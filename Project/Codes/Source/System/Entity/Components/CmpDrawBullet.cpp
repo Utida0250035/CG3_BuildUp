@@ -1,5 +1,5 @@
-#include "System/CmpDrawBullet.h"
-#include "System/CmpReflectAbleBullet.h"
+#include "System/Entity/Components/CmpDrawBullet.h"
+#include "System/Entity/Components/CmpReflectAbleBullet.h"
 #include "System/Entity/Entity.h"
 
 namespace Atrum {

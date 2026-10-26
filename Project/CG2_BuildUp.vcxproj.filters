@@ -1,152 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Externals\imgui\imgui.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\imgui_demo.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\imgui_draw.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\imgui_tables.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
-      <Filter>External_ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
-      <Filter>Codes\Source\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Time\DeltaTime.cpp">
-      <Filter>Codes\Source\Time</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Input\DirectInput.cpp">
-      <Filter>Codes\Source\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Input\AbstractInput.cpp">
-      <Filter>Codes\Source\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
-      <Filter>Codes\Source\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Input\XInputController.cpp">
-      <Filter>Codes\Source\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\Bezier.cpp">
-      <Filter>Codes\Source\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp">
-      <Filter>Codes\Source\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\String\ConvertString.cpp">
-      <Filter>Codes\Source\String</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp">
-      <Filter>Codes\Source\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Application\main.cpp">
       <Filter>Codes\Source\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp">
-      <Filter>Codes\Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp">
-      <Filter>Codes\Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp">
-      <Filter>Codes\Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\OBB.cpp">
-      <Filter>Codes\Source\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\Plane.cpp">
-      <Filter>Codes\Source\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Collision\SAT.cpp">
-      <Filter>Codes\Source\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Vector4.cpp">
-      <Filter>Codes\Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Vector3.cpp">
-      <Filter>Codes\Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Vector2.cpp">
-      <Filter>Codes\Source\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
-      <Filter>Codes\Source\Engine</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Audio\Audio.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Command\CommandContext.cpp">
-      <Filter>Codes\Source\Engine\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Command\Fence.cpp">
-      <Filter>Codes\Source\Engine\Command</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Device\RenderDevice.cpp">
-      <Filter>Codes\Source\Engine\Device</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Device\SwapChain.cpp">
-      <Filter>Codes\Source\Engine\Device</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Pipeline\RootSignature.cpp">
-      <Filter>Codes\Source\Engine\Pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Pipeline\PipelineState.cpp">
-      <Filter>Codes\Source\Engine\Pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
-      <Filter>Codes\Source\Engine\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp">
-      <Filter>Codes\Source\Engine\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\DescriptorAllocator.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\IndexBuffer.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\ModelStorage.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\TextureStorage.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
-      <Filter>External_ImGui\misc\cpp</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
-      <Filter>Codes\Source\Engine\Platform\Window</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp">
-      <Filter>Codes\Source\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\File\FileSize.cpp">
-      <Filter>Codes\Source\File</Filter>
+    <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraController.cpp">
+      <Filter>Codes\Source\Camera\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraFocusPushController.cpp">
+      <Filter>Codes\Source\Camera\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraGameIntroController.cpp">
+      <Filter>Codes\Source\Camera\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraController\CameraPoseBlendController.cpp">
+      <Filter>Codes\Source\Camera\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp">
+      <Filter>Codes\Source\Camera\CameraController</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Camera\CameraFlipHorizontal.cpp">
       <Filter>Codes\Source\Camera</Filter>
@@ -160,8 +43,86 @@
     <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp">
       <Filter>Codes\Source\Collision2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Collision\SAT.cpp">
+      <Filter>Codes\Source\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Command\CommandContext.cpp">
+      <Filter>Codes\Source\Engine\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Command\Fence.cpp">
+      <Filter>Codes\Source\Engine\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Device\RenderDevice.cpp">
+      <Filter>Codes\Source\Engine\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Device\SwapChain.cpp">
+      <Filter>Codes\Source\Engine\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Pipeline\PipelineState.cpp">
+      <Filter>Codes\Source\Engine\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Pipeline\RootSignature.cpp">
+      <Filter>Codes\Source\Engine\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
+      <Filter>Codes\Source\Engine\Platform\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
+      <Filter>Codes\Source\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\DrawSprite.cpp">
+      <Filter>Codes\Source\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\DescriptorAllocator.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\IndexBuffer.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\LightData.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\ModelStorage.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\TextureStorage.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Resource\VertexBuffer.cpp">
+      <Filter>Codes\Source\Engine\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\File\FileSize.cpp">
+      <Filter>Codes\Source\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp">
+      <Filter>Codes\Source\File</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp">
       <Filter>Codes\Source\ForDebug</Filter>
@@ -169,170 +130,62 @@
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp">
       <Filter>Codes\Source\ForDebug</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Transform.cpp">
-      <Filter>Codes\Source\Math</Filter>
+    <ClCompile Include="Codes\Source\Geometry\AABB.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
-      <Filter>Codes\Source\System\Editor\Inspector</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Editor\Editor.cpp">
-      <Filter>Codes\Source\System\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp">
-      <Filter>Codes\Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHitSphere.cpp">
-      <Filter>Codes\Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp">
-      <Filter>Codes\Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp">
-      <Filter>Codes\Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp">
-      <Filter>Codes\Source\System\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Entity.cpp">
-      <Filter>Codes\Source\System\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehDodge.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyDepthRush.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyShot.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemySpreadShot.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyBurstShot.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyBulletCurtainFixedRing.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyBulletCurtainRadialFan.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSalvo.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSpoke.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BossCombatEnrage.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemySwingShot.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehEnemyWallShot.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehRush.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\BehWalkAndJump.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpBehavior.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpDrawBullet.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpDrawHitSphere.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpEnemy.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpMeshSphere.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpMeshSpheres.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpSkyDome.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\Visual\SkyDome.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpOrbiter.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpReflectAbleBullet.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpRotator.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\CmpSwing.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\EntityFactory.cpp">
-      <Filter>Codes\Source\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Playable\CmpInput.cpp">
-      <Filter>Codes\Source\System\Playable</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp">
-      <Filter>Codes\Source\System\Playable</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp">
-      <Filter>Codes\Source\System\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp">
-      <Filter>Codes\Source\System\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp">
-      <Filter>Codes\Source\System\Registry</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Particle\EmitterManager.cpp">
-      <Filter>Codes\Source\System\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Particle\GameCombatParticleEffects.cpp">
-      <Filter>Codes\Source\System\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp">
-      <Filter>Codes\Source\System\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
-      <Filter>Codes\Source\System\Json</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\SimulationSpace.cpp">
-      <Filter>Codes\Source\System</Filter>
+    <ClCompile Include="Codes\Source\Geometry\Bezier.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\GeometryRandom.cpp">
       <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp">
-      <Filter>Codes\Source\System\Particle</Filter>
+    <ClCompile Include="Codes\Source\Geometry\OBB.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Math\Quaternion.cpp">
-      <Filter>Codes\Source\Math</Filter>
+    <ClCompile Include="Codes\Source\Geometry\Plane.cpp">
+      <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Geometry\Sphere.cpp">
       <Filter>Codes\Source\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Geometry\AABB.cpp">
-      <Filter>Codes\Source\Geometry</Filter>
+    <ClCompile Include="Codes\Source\Input\AbstractInput.cpp">
+      <Filter>Codes\Source\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp">
-      <Filter>Codes\Source\Engine\Renderer\Shader</Filter>
+    <ClCompile Include="Codes\Source\Input\DirectInput.cpp">
+      <Filter>Codes\Source\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Resource\LightData.cpp">
-      <Filter>Codes\Source\Engine\Resource</Filter>
+    <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
+      <Filter>Codes\Source\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp">
-      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    <ClCompile Include="Codes\Source\Input\XInputController.cpp">
+      <Filter>Codes\Source\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Matrix3x3Physics.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Quaternion.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Transform.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Vector2.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Vector3.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Math\Vector4.cpp">
+      <Filter>Codes\Source\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\BossDeathPresentation.cpp">
+      <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\ChangeScene.cpp">
       <Filter>Codes\Source\Scene</Filter>
@@ -349,10 +202,10 @@
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\Scene.cpp">
+    <ClCompile Include="Codes\Source\Scene\PlayerDeathPresentation.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\BossDeathPresentation.cpp">
+    <ClCompile Include="Codes\Source\Scene\Scene.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneGame.cpp">
@@ -361,46 +214,247 @@
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp">
+    <ClCompile Include="Codes\Source\Scene\SceneResult.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\SceneResult.cpp">
+    <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\String\ConvertString.cpp">
+      <Filter>Codes\Source\String</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AttackTelegraph\AttackTelegraphDraw.cpp">
+      <Filter>Codes\Source\System\AttackTelegraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AttackTelegraph\AttackTelegraphUtils.cpp">
+      <Filter>Codes\Source\System\AttackTelegraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AttackTelegraph\CmpDrawAttackTelegraph.cpp">
+      <Filter>Codes\Source\System\AttackTelegraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehDodge.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyBulletCurtainFixedRing.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyBulletCurtainRadialFan.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyBurstShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyDepthRush.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSalvo.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyOrbiterSpoke.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemySpreadShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemySwingShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehEnemyWallShot.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehRush.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BehWalkAndJump.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BossCombatCleanup.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\BossCombatEnrage.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\DeltaTime.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Editor.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
+      <Filter>Codes\Source\System\Editor\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBehavior.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpDrawBullet.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpDrawHitSphere.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEnemy.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpHitSphere.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMeshSphere.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMeshSpheres.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpOrbiter.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpReflectAbleBullet.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpSwing.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Entity.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\EntityFactory.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
+      <Filter>Codes\Source\System\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\OrbiterChildUtils.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\EmitterManager.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\GameCombatParticleEffects.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\ParticleEmitter.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\CmpDrawPlayerParryField.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\CmpInput.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp">
+      <Filter>Codes\Source\System\Registry</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\SimulationSpace.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Visual\CmpSkyDome.cpp">
+      <Filter>Codes\Source\Visual</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Visual\SkyDome.cpp">
+      <Filter>Codes\Source\Visual</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_demo.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_draw.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_impl_dx12.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_impl_sdl2.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_tables.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\imgui_widgets.cpp">
+      <Filter>Externals\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>Externals\imgui\misc\cpp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Externals\imgui\imgui.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\imgui_internal.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\imstb_rectpack.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\imstb_textedit.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\imstb_truetype.h">
-      <Filter>External_ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\AudioHandle.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\SourceVoice.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\StreamingVoiceCallBack.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\VoiceCallBack.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\VoiceState.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Camera\Camera.h">
       <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraFocusPushController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraGameIntroController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\CameraPoseBlendController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\CameraFlipHorizontal.h">
       <Filter>Codes\Include\Camera</Filter>
@@ -414,35 +468,23 @@
     <ClInclude Include="Codes\Include\Camera\PlayerDamageScreenVignette.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\StageViewCamera.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Cast\StaticCast.h">
+      <Filter>Codes\Include\Cast</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Collision2D\Collision2D.h">
+      <Filter>Codes\Include\Collision2D</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\CollisionTypes.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\Bezier.h">
-      <Filter>Codes\Include\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Collision\ContactConstraint.h">
       <Filter>Codes\Include\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\String\ConvertString.h">
-      <Filter>Codes\Include\String</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Input\DirectInput.h">
-      <Filter>Codes\Include\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Input\AbstractInput.h">
-      <Filter>Codes\Include\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Input\PlayInput.h">
-      <Filter>Codes\Include\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Input\XInputController.h">
-      <Filter>Codes\Include\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Cast\StaticCast.h">
-      <Filter>Codes\Include\Cast</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\HitMesh.h">
       <Filter>Codes\Include\Collision</Filter>
@@ -450,56 +492,74 @@
     <ClInclude Include="Codes\Include\Collision\HitMeshBuilder.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h">
-      <Filter>Codes\Include\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Matrix4x4.h">
-      <Filter>Codes\Include\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Matrix3x3.h">
-      <Filter>Codes\Include\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\OBB.h">
-      <Filter>Codes\Include\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\Plane.h">
-      <Filter>Codes\Include\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h">
-      <Filter>Codes\Include\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\Triangle.h">
-      <Filter>Codes\Include\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Quaternion.h">
-      <Filter>Codes\Include\Math</Filter>
+    <ClInclude Include="Codes\Include\Collision\PhysicsBridge.h">
+      <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Collision\SAT.h">
       <Filter>Codes\Include\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Transform.h">
-      <Filter>Codes\Include\Math</Filter>
+    <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Vector2.h">
-      <Filter>Codes\Include\Math</Filter>
+    <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Vector3.h">
-      <Filter>Codes\Include\Math</Filter>
+    <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Vector4.h">
-      <Filter>Codes\Include\Math</Filter>
+    <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h">
+      <Filter>Codes\Include\Engine\Alias</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\AtrumEngine.h">
       <Filter>Codes\Include\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h">
-      <Filter>Codes\Include\Engine\Resource</Filter>
+    <ClInclude Include="Codes\Include\Engine\Blend\BlendMode.h">
+      <Filter>Codes\Include\Engine\Blend</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Command\CommandContext.h">
+      <Filter>Codes\Include\Engine\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Command\Fence.h">
+      <Filter>Codes\Include\Engine\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Device\RenderDevice.h">
+      <Filter>Codes\Include\Engine\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Device\SwapChain.h">
+      <Filter>Codes\Include\Engine\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\EngineFwd.h">
+      <Filter>Codes\Include\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Pipeline\PipelineState.h">
+      <Filter>Codes\Include\Engine\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Pipeline\RootSignature.h">
+      <Filter>Codes\Include\Engine\Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h">
       <Filter>Codes\Include\Engine\Platform\Window</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Command\CommandContext.h">
-      <Filter>Codes\Include\Engine\Command</Filter>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h">
+      <Filter>Codes\Include\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h">
+      <Filter>Codes\Include\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h">
+      <Filter>Codes\Include\Engine\Renderer\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Resource\CreateBufferResource.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
@@ -508,6 +568,9 @@
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Resource\IndexBuffer.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Resource\MaterialData.h">
@@ -531,83 +594,14 @@
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h">
       <Filter>Codes\Include\Engine\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h">
-      <Filter>Codes\Include\Engine\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h">
-      <Filter>Codes\Include\Engine\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h">
-      <Filter>Codes\Include\Engine\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Pipeline\PipelineState.h">
-      <Filter>Codes\Include\Engine\Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Pipeline\RootSignature.h">
-      <Filter>Codes\Include\Engine\Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Command\Fence.h">
-      <Filter>Codes\Include\Engine\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Device\RenderDevice.h">
-      <Filter>Codes\Include\Engine\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Device\SwapChain.h">
-      <Filter>Codes\Include\Engine\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
-      <Filter>External_ImGui\misc\cpp</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Alias\CoreAlias.h">
-      <Filter>Codes\Include\Engine\Alias</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Alias\PhysicsAlias.h">
-      <Filter>Codes\Include\Engine\Alias</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Alias\GeometryAlias.h">
-      <Filter>Codes\Include\Engine\Alias</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Alias\InputAlias.h">
-      <Filter>Codes\Include\Engine\Alias</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Alias\DebugAlias.h">
-      <Filter>Codes\Include\Engine\Alias</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h">
-      <Filter>Codes\Include\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\VoiceState.h">
-      <Filter>Codes\Include\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h">
-      <Filter>Codes\Include\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\VoiceCallBack.h">
-      <Filter>Codes\Include\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\StreamingVoiceCallBack.h">
-      <Filter>Codes\Include\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\SourceVoice.h">
-      <Filter>Codes\Include\Audio</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\File\FileSize.h">
       <Filter>Codes\Include\File</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Math\Lerp.h">
-      <Filter>Codes\Include\Math</Filter>
+    <ClInclude Include="Codes\Include\File\SetWorkingDirectoryToExecutable.h">
+      <Filter>Codes\Include\File</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Collision2D\Collision2D.h">
-      <Filter>Codes\Include\Collision2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\AudioHandle.h">
-      <Filter>Codes\Include\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Hit\HitCircle.h">
-      <Filter>Codes\Include\Hit</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Collision\PhysicsBridge.h">
-      <Filter>Codes\Include\Collision</Filter>
+    <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h">
+      <Filter>Codes\Include\ForDebug</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h">
       <Filter>Codes\Include\ForDebug</Filter>
@@ -627,239 +621,71 @@
     <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h">
       <Filter>Codes\Include\ForDebug</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h">
-      <Filter>Codes\Include\ForDebug</Filter>
+    <ClInclude Include="Codes\Include\Geometry\Bezier.h">
+      <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Blend\BlendMode.h">
-      <Filter>Codes\Include\Engine\Blend</Filter>
+    <ClInclude Include="Codes\Include\Geometry\GeometryTypes.h">
+      <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h">
-      <Filter>Codes\Include\System\Registry</Filter>
+    <ClInclude Include="Codes\Include\Geometry\OBB.h">
+      <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpDirection.h">
-      <Filter>Codes\Include\System\Entity\Components</Filter>
+    <ClInclude Include="Codes\Include\Geometry\Plane.h">
+      <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHealthHit.h">
-      <Filter>Codes\Include\System\Entity\Components</Filter>
+    <ClInclude Include="Codes\Include\Geometry\PyramidMesh.h">
+      <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHitSphere.h">
-      <Filter>Codes\Include\System\Entity\Components</Filter>
+    <ClInclude Include="Codes\Include\Geometry\Triangle.h">
+      <Filter>Codes\Include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpLhRigidBody.h">
-      <Filter>Codes\Include\System\Entity\Components</Filter>
+    <ClInclude Include="Codes\Include\Hit\HitCircle.h">
+      <Filter>Codes\Include\Hit</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMesh.h">
-      <Filter>Codes\Include\System\Entity\Components</Filter>
+    <ClInclude Include="Codes\Include\Input\AbstractInput.h">
+      <Filter>Codes\Include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Behavior.h">
-      <Filter>Codes\Include\System\Entity</Filter>
+    <ClInclude Include="Codes\Include\Input\DirectInput.h">
+      <Filter>Codes\Include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\BehaviorBox.h">
-      <Filter>Codes\Include\System\Entity</Filter>
+    <ClInclude Include="Codes\Include\Input\PlayInput.h">
+      <Filter>Codes\Include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\ComponentData.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\ComponentDraw.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\ComponentUpd.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Entity.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehDodge.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyMeteor.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyDepthRush.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyShot.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemySpreadShot.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyBurstShot.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyBulletCurtainFixedRing.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyBulletCurtainRadialFan.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSalvo.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSpoke.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BossCombatEnrage.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemySwingShot.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehEnemyWallShot.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehRush.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\BehWalkAndJump.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpBehavior.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpChildEntitys.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpDrawBullet.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpDrawHitSphere.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpEnemy.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpMeshSphere.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpMeshSpheres.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpOrbiter.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpParry.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpReflectAbleBullet.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpRotator.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpScroll.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpSkyDome.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Visual\SkyDome.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\CmpSwing.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\DataComponent.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\DrawComponent.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\EntityFactory.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Playable\CmpInput.h">
-      <Filter>Codes\Include\System\Playable</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h">
-      <Filter>Codes\Include\System\Playable</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\PlaySe.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\PlayerParryReach.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\StageBounds.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\UpdComponent.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\WhiteTexture.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\WindowSize.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\EntityType.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\HitJudge.h">
-      <Filter>Codes\Include\System\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h">
-      <Filter>Codes\Include\System\Editor\Inspector</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Editor\Editor.h">
-      <Filter>Codes\Include\System\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\Camera\CameraController\CameraController.h">
-      <Filter>Codes\Include\Camera\CameraController</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\Particle.h">
-      <Filter>Codes\Include\System\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\EmitterManager.h">
-      <Filter>Codes\Include\System\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\GameCombatParticleEffects.h">
-      <Filter>Codes\Include\System\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h">
-      <Filter>Codes\Include\System\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h">
-      <Filter>Codes\Include\System\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Json\JsonHandler.h">
-      <Filter>Codes\Include\System\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Json\JsonTest.h">
-      <Filter>Codes\Include\System\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Json\PfrJsonHandler.h">
-      <Filter>Codes\Include\System\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Hash64.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\DeltaTime.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Random.h">
-      <Filter>Codes\Include\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\SimulationSpace.h">
-      <Filter>Codes\Include\System</Filter>
+    <ClInclude Include="Codes\Include\Input\XInputController.h">
+      <Filter>Codes\Include\Input</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Math\Easing.h">
       <Filter>Codes\Include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h">
-      <Filter>Codes\Include\Engine\Renderer\Shader</Filter>
+    <ClInclude Include="Codes\Include\Math\Lerp.h">
+      <Filter>Codes\Include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Resource\LightData.h">
-      <Filter>Codes\Include\Engine\Resource</Filter>
+    <ClInclude Include="Codes\Include\Math\Matrix3x3.h">
+      <Filter>Codes\Include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\EngineFwd.h">
-      <Filter>Codes\Include\Engine</Filter>
+    <ClInclude Include="Codes\Include\Math\Matrix3x3Physics.h">
+      <Filter>Codes\Include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h">
-      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    <ClInclude Include="Codes\Include\Math\Matrix4x4.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Quaternion.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Transform.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Vector2.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Vector3.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Math\Vector4.h">
+      <Filter>Codes\Include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\BossDeathPresentation.h">
+      <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\ChangeScene.h">
       <Filter>Codes\Include\Scene</Filter>
@@ -876,10 +702,10 @@
     <ClInclude Include="Codes\Include\Scene\GameOrder.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Scene\Scene.h">
+    <ClInclude Include="Codes\Include\Scene\PlayerDeathPresentation.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Scene\BossDeathPresentation.h">
+    <ClInclude Include="Codes\Include\Scene\Scene.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneGame.h">
@@ -888,28 +714,298 @@
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Scene\SceneScreenUi.h">
+    <ClInclude Include="Codes\Include\Scene\SceneResult.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Scene\SceneResult.h">
+    <ClInclude Include="Codes\Include\Scene\SceneScreenUi.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\String\ConvertString.h">
+      <Filter>Codes\Include\String</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\AttackTelegraphDraw.h">
+      <Filter>Codes\Include\System\AttackTelegraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\AttackTelegraphSegment.h">
+      <Filter>Codes\Include\System\AttackTelegraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\AttackTelegraphUtils.h">
+      <Filter>Codes\Include\System\AttackTelegraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\CmpAttackTelegraph.h">
+      <Filter>Codes\Include\System\AttackTelegraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AttackTelegraph\CmpDrawAttackTelegraph.h">
+      <Filter>Codes\Include\System\AttackTelegraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehDodge.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyBulletCurtainFixedRing.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyBulletCurtainRadialFan.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyBurstShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyDepthRush.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyMeteor.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSalvo.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyOrbiterSpoke.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemySpreadShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemySwingShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehEnemyWallShot.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehRush.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BehWalkAndJump.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BossCombatCleanup.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BossCombatEnrage.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\BulletDepthVisual.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\CombatBulletTuning.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\DataComponent.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\DeltaTime.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\DrawComponent.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Editor.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h">
+      <Filter>Codes\Include\System\Editor\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Behavior.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\BehaviorBox.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\ComponentData.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\ComponentDraw.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBehavior.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpChildEntitys.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpDirection.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpDrawBullet.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpDrawHitSphere.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEnemy.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHealthHit.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpHitSphere.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpLhRigidBody.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMesh.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMeshSphere.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMeshSpheres.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpOrbiter.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpParry.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpReflectAbleBullet.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpRotator.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpScroll.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpSwing.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\ComponentUpd.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Entity.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\EntityType.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\HitJudge.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\EntityFactory.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Hash64.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Json\JsonHandler.h">
+      <Filter>Codes\Include\System\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Json\JsonTest.h">
+      <Filter>Codes\Include\System\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Json\PfrJsonHandler.h">
+      <Filter>Codes\Include\System\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\OrbiterChildUtils.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\EmitterManager.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\GameCombatParticleEffects.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\Particle.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\ParticleEmitter.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\CmpDrawPlayerParryField.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\CmpInput.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\PlayerParryReach.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\PlaySe.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Random.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h">
+      <Filter>Codes\Include\System\Registry</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\SimulationSpace.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\StageBounds.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\UpdComponent.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\WhiteTexture.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\WindowSize.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Visual\CmpSkyDome.h">
+      <Filter>Codes\Include\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Visual\SkyDome.h">
+      <Filter>Codes\Include\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_impl_dx12.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_impl_sdl2.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imgui_internal.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_rectpack.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_textedit.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\imstb_truetype.h">
+      <Filter>Externals\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
+      <Filter>Externals\imgui\misc\cpp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="External_ImGui">
-      <UniqueIdentifier>{b84c2eb2-f9c0-4ff2-8c64-bc55f932ce27}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Codes">
       <UniqueIdentifier>{900e000f-fc5b-488b-b4d8-7d759bc1668f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Externals">
+      <UniqueIdentifier>{e6d7cb03-2013-4a77-96ba-0289a09979b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include">
+      <UniqueIdentifier>{f9374064-b9b6-4a98-b8c4-b862cd099077}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source">
       <UniqueIdentifier>{aba49542-c454-4ea9-95d7-e0043e600fcf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include">
-      <UniqueIdentifier>{f9374064-b9b6-4a98-b8c4-b862cd099077}</UniqueIdentifier>
+    <Filter Include="Externals\imgui">
+      <UniqueIdentifier>{c33319bd-46b2-47d0-a2d6-b991ee43506e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Audio">
       <UniqueIdentifier>{6508fe82-ebc6-4ce8-a1a3-9669a7d9439d}</UniqueIdentifier>
@@ -917,17 +1013,29 @@
     <Filter Include="Codes\Include\Camera">
       <UniqueIdentifier>{fab0dd0f-4bcf-4682-8e86-3c54b9585db2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Codes\Include\Cast">
+      <UniqueIdentifier>{9eeb6520-60b5-4226-9134-f18ceac9201c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Codes\Include\Collision">
       <UniqueIdentifier>{ab78ce32-9e4d-4923-ac88-7d3bb0febbd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Collision2D">
+      <UniqueIdentifier>{3eb16e80-e4f8-4156-8e78-e8b2bab360ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine">
+      <UniqueIdentifier>{71d6de3f-d2d0-4ef9-8d96-9b61f3ded539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\File">
+      <UniqueIdentifier>{274a45f7-dd64-41f6-8e40-42003c11168e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\ForDebug">
+      <UniqueIdentifier>{0a2a2f1e-216f-4fb0-9e46-6ea7f15ab3c3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Geometry">
       <UniqueIdentifier>{ce92aacf-c447-45c1-9ac8-cc9606b1e0a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\String">
-      <UniqueIdentifier>{8864796d-ca41-4260-80c9-df344277779c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Cast">
-      <UniqueIdentifier>{9eeb6520-60b5-4226-9134-f18ceac9201c}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Hit">
+      <UniqueIdentifier>{cb46afd9-da2e-48bf-a17d-a539f1fedb1f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Input">
       <UniqueIdentifier>{e98cc502-bb96-4358-8138-75bf81e062de}</UniqueIdentifier>
@@ -935,11 +1043,44 @@
     <Filter Include="Codes\Include\Math">
       <UniqueIdentifier>{e3d4e1db-67e0-4c75-92c1-08772d568d50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Engine">
-      <UniqueIdentifier>{71d6de3f-d2d0-4ef9-8d96-9b61f3ded539}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Scene">
+      <UniqueIdentifier>{c4e8a1d2-91b3-4e7f-a6c5-0d2f8b3e4a71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\String">
+      <UniqueIdentifier>{8864796d-ca41-4260-80c9-df344277779c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System">
+      <UniqueIdentifier>{de234864-88d9-4480-be8f-35cce704131c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Visual">
+      <UniqueIdentifier>{975a9d53-5a1f-4b51-aba4-8cc0e7ad55c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Application">
+      <UniqueIdentifier>{3628ce2a-aeb0-48b2-abc7-4cc1ccff95de}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\Audio">
       <UniqueIdentifier>{e1b3bdf8-57d6-458f-8fbe-0421561214c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Camera">
+      <UniqueIdentifier>{f3d998a9-a901-4b49-9d65-e0bd66c0d577}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Collision">
+      <UniqueIdentifier>{ae939f77-4abd-4f98-ab84-f6d15fce7840}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Collision2D">
+      <UniqueIdentifier>{95e0e672-b12c-4306-9e9b-18d4d660b930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine">
+      <UniqueIdentifier>{1047fd15-02f6-4873-aa2d-b98aeb2fdf9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\File">
+      <UniqueIdentifier>{f81827bf-835d-4f65-b2bc-94780a23554c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\ForDebug">
+      <UniqueIdentifier>{430c27db-76c5-4d81-859c-5149fb5e6687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Geometry">
+      <UniqueIdentifier>{8d888d4b-98d9-4c6a-a1f9-52776ee0c918}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\Input">
       <UniqueIdentifier>{bc38a932-5962-47ab-819f-0f216676e320}</UniqueIdentifier>
@@ -947,23 +1088,32 @@
     <Filter Include="Codes\Source\Math">
       <UniqueIdentifier>{4867987e-9274-414c-ba3d-e3e33988819e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\Time">
-      <UniqueIdentifier>{c24392f0-037a-4d5c-bdbb-8e8730ca9c08}</UniqueIdentifier>
+    <Filter Include="Codes\Source\Scene">
+      <UniqueIdentifier>{d5f9b2e3-a2c4-4f80-b7d6-1e3a9c4f5b82}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\String">
       <UniqueIdentifier>{ed221189-606f-408e-ba68-df02a5959626}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\Geometry">
-      <UniqueIdentifier>{8d888d4b-98d9-4c6a-a1f9-52776ee0c918}</UniqueIdentifier>
+    <Filter Include="Codes\Source\System">
+      <UniqueIdentifier>{b4c8cc52-40b6-4403-aacb-4a4394894018}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\Application">
-      <UniqueIdentifier>{3628ce2a-aeb0-48b2-abc7-4cc1ccff95de}</UniqueIdentifier>
+    <Filter Include="Codes\Source\Visual">
+      <UniqueIdentifier>{f5def07a-e030-410e-9637-428eb81cb980}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\Engine">
-      <UniqueIdentifier>{1047fd15-02f6-4873-aa2d-b98aeb2fdf9f}</UniqueIdentifier>
+    <Filter Include="Externals\imgui\misc">
+      <UniqueIdentifier>{1d28c7bb-05ea-496d-a8b9-2bfdadd788ce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\Collision">
-      <UniqueIdentifier>{ae939f77-4abd-4f98-ab84-f6d15fce7840}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Camera\CameraController">
+      <UniqueIdentifier>{8ffa189f-ce82-4d70-9fad-c2aa429b8125}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Alias">
+      <UniqueIdentifier>{2b1c6f48-a18b-40c9-b796-de6a332e2d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Blend">
+      <UniqueIdentifier>{a708f76c-a504-428d-8f97-e936e6dd4bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Engine\Command">
+      <UniqueIdentifier>{61c20277-3e19-49ba-a326-e61cc7a21adb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Engine\Device">
       <UniqueIdentifier>{e274a08f-f09a-49b4-9f02-a608783a9700}</UniqueIdentifier>
@@ -974,17 +1124,35 @@
     <Filter Include="Codes\Include\Engine\Platform">
       <UniqueIdentifier>{01783b0c-1a01-466e-84f5-37eb1cba87f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Engine\Platform\Window">
-      <UniqueIdentifier>{b8cc9764-0571-44ed-95ee-c1ba811f88c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Engine\Command">
-      <UniqueIdentifier>{61c20277-3e19-49ba-a326-e61cc7a21adb}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Engine\Renderer">
+      <UniqueIdentifier>{a0d020ec-bffe-4362-a8e8-aa456089693b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Engine\Resource">
       <UniqueIdentifier>{10d85e9a-9d0b-4c22-8609-a4c85ef5f1eb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Engine\Renderer">
-      <UniqueIdentifier>{a0d020ec-bffe-4362-a8e8-aa456089693b}</UniqueIdentifier>
+    <Filter Include="Codes\Include\System\AttackTelegraph">
+      <UniqueIdentifier>{bcbe9f73-3e1f-451d-92cd-c501698a58b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor">
+      <UniqueIdentifier>{acaac1ff-1d68-4ebd-b6de-d57ff55fe00f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Entity">
+      <UniqueIdentifier>{31d986c4-8083-4d39-b3cd-6023ad5efe86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Json">
+      <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Particle">
+      <UniqueIdentifier>{a5e74e78-1bee-45df-a031-8de53a34a0f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Playable">
+      <UniqueIdentifier>{a1c3e7b4-6d28-4f91-9c05-7e2b8d4a1f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Registry">
+      <UniqueIdentifier>{611ce7d8-a7bc-4870-865a-6321bc685817}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Camera\CameraController">
+      <UniqueIdentifier>{4adcc9a8-d6b1-43b1-842f-fd98e704c443}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\Engine\Command">
       <UniqueIdentifier>{838c3640-e1bf-4d2e-8af8-0e95f3998cef}</UniqueIdentifier>
@@ -995,83 +1163,17 @@
     <Filter Include="Codes\Source\Engine\Pipeline">
       <UniqueIdentifier>{32446860-bb4b-4ef5-887d-ee72f3961786}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Codes\Source\Engine\Platform">
+      <UniqueIdentifier>{ba388e11-bca2-4111-9b76-fd724bb50223}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Codes\Source\Engine\Renderer">
       <UniqueIdentifier>{3e594e86-fa9e-4325-9e74-bccdfc7e4128}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\Engine\Resource">
       <UniqueIdentifier>{68dd256d-1b97-42f7-8df7-c01f1a744bb0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="External_ImGui\misc">
-      <UniqueIdentifier>{0dbabe86-272b-4b16-905c-b4b2feb15a43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="External_ImGui\misc\cpp">
-      <UniqueIdentifier>{1adedc12-3918-4693-88d9-d24a107eb95e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Engine\Platform">
-      <UniqueIdentifier>{ba388e11-bca2-4111-9b76-fd724bb50223}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Engine\Platform\Window">
-      <UniqueIdentifier>{3d5600ac-200c-4a80-8960-697df1bf22c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System">
-      <UniqueIdentifier>{de234864-88d9-4480-be8f-35cce704131c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\System">
-      <UniqueIdentifier>{b4c8cc52-40b6-4403-aacb-4a4394894018}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Playable">
-      <UniqueIdentifier>{a1c3e7b4-6d28-4f91-9c05-7e2b8d4a1f63}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\System\Playable">
-      <UniqueIdentifier>{b2d4f8c5-7e39-4a02-ad16-8f3c9e5b2064}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Engine\Alias">
-      <UniqueIdentifier>{2b1c6f48-a18b-40c9-b796-de6a332e2d15}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\File">
-      <UniqueIdentifier>{274a45f7-dd64-41f6-8e40-42003c11168e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\File">
-      <UniqueIdentifier>{f81827bf-835d-4f65-b2bc-94780a23554c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Collision2D">
-      <UniqueIdentifier>{3eb16e80-e4f8-4156-8e78-e8b2bab360ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Collision2D">
-      <UniqueIdentifier>{95e0e672-b12c-4306-9e9b-18d4d660b930}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Hit">
-      <UniqueIdentifier>{cb46afd9-da2e-48bf-a17d-a539f1fedb1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\ForDebug">
-      <UniqueIdentifier>{430c27db-76c5-4d81-859c-5149fb5e6687}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\ForDebug">
-      <UniqueIdentifier>{0a2a2f1e-216f-4fb0-9e46-6ea7f15ab3c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Engine\Blend">
-      <UniqueIdentifier>{a708f76c-a504-428d-8f97-e936e6dd4bb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Engine\Editor">
-      <UniqueIdentifier>{24119c78-05c7-4984-8dd8-d9542f0e1179}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Editor">
-      <UniqueIdentifier>{acaac1ff-1d68-4ebd-b6de-d57ff55fe00f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Entity">
-      <UniqueIdentifier>{31d986c4-8083-4d39-b3cd-6023ad5efe86}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Registry">
-      <UniqueIdentifier>{611ce7d8-a7bc-4870-865a-6321bc685817}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Entity\Behaviors">
-      <UniqueIdentifier>{5e94dcf8-97d8-49b0-96c9-169e9e63ef45}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Entity\Components">
-      <UniqueIdentifier>{87eb2582-9e08-49b1-8166-290cd229d974}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\System\Editor\Inspector">
-      <UniqueIdentifier>{0b99a92f-fc93-4f98-ba58-088fff9e0005}</UniqueIdentifier>
+    <Filter Include="Codes\Source\System\AttackTelegraph">
+      <UniqueIdentifier>{e456f0b4-118d-4b05-a199-800e8c273bc6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\System\Editor">
       <UniqueIdentifier>{306ef221-1e95-45a9-9a6b-1e9158724edd}</UniqueIdentifier>
@@ -1079,53 +1181,50 @@
     <Filter Include="Codes\Source\System\Entity">
       <UniqueIdentifier>{fec8e7ed-d544-49b0-a2ef-067065e8574a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\System\Registry">
-      <UniqueIdentifier>{1939217a-f051-4a45-a1a9-964729a8392e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\System\Editor\Inspector">
-      <UniqueIdentifier>{88d53e12-8119-43f0-96b9-e850038a3a6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\System\Entity\Behaviors">
-      <UniqueIdentifier>{0d9765a3-ac2c-4f48-9040-1faab6ee96a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\System\Entity\Components">
-      <UniqueIdentifier>{76e5bafd-8811-43d6-8a27-2708d2b5c4bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Camera\CameraController">
-      <UniqueIdentifier>{8ffa189f-ce82-4d70-9fad-c2aa429b8125}</UniqueIdentifier>
+    <Filter Include="Codes\Source\System\Json">
+      <UniqueIdentifier>{273621d6-0f20-451f-98cc-e8d51793d29f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\System\Particle">
       <UniqueIdentifier>{90df6385-27ef-44a9-b3a5-dc4411f402a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\System\Particle">
-      <UniqueIdentifier>{a5e74e78-1bee-45df-a031-8de53a34a0f4}</UniqueIdentifier>
+    <Filter Include="Codes\Source\System\Playable">
+      <UniqueIdentifier>{b2d4f8c5-7e39-4a02-ad16-8f3c9e5b2064}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\System\Json">
-      <UniqueIdentifier>{273621d6-0f20-451f-98cc-e8d51793d29f}</UniqueIdentifier>
+    <Filter Include="Codes\Source\System\Registry">
+      <UniqueIdentifier>{1939217a-f051-4a45-a1a9-964729a8392e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\System\Json">
-      <UniqueIdentifier>{cb654370-62b6-4bdc-a581-70619720f64c}</UniqueIdentifier>
+    <Filter Include="Externals\imgui\misc\cpp">
+      <UniqueIdentifier>{dab0e6de-7639-4810-9604-6cfe957056bc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\System\Scripting">
-      <UniqueIdentifier>{6c889fca-37fe-4b22-a6d5-1f773f7192c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Include\Engine\Renderer\Shader">
-      <UniqueIdentifier>{bf984495-4469-4975-a802-0d0449e3ef2d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Engine\Renderer\Shader">
-      <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Codes\Source\Engine\Renderer\Lighting">
-      <UniqueIdentifier>{80c16848-f1f2-4e58-b177-2037eea09806}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Engine\Platform\Window">
+      <UniqueIdentifier>{b8cc9764-0571-44ed-95ee-c1ba811f88c1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Include\Engine\Renderer\Lighting">
       <UniqueIdentifier>{61d04f0d-2e9c-4859-b3a9-167fae6c1e34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Include\Scene">
-      <UniqueIdentifier>{c4e8a1d2-91b3-4e7f-a6c5-0d2f8b3e4a71}</UniqueIdentifier>
+    <Filter Include="Codes\Include\Engine\Renderer\Shader">
+      <UniqueIdentifier>{bf984495-4469-4975-a802-0d0449e3ef2d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Codes\Source\Scene">
-      <UniqueIdentifier>{d5f9b2e3-a2c4-4f80-b7d6-1e3a9c4f5b82}</UniqueIdentifier>
+    <Filter Include="Codes\Include\System\Editor\Inspector">
+      <UniqueIdentifier>{0b99a92f-fc93-4f98-ba58-088fff9e0005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Entity\Components">
+      <UniqueIdentifier>{87eb2582-9e08-49b1-8166-290cd229d974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Platform\Window">
+      <UniqueIdentifier>{3d5600ac-200c-4a80-8960-697df1bf22c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Renderer\Lighting">
+      <UniqueIdentifier>{80c16848-f1f2-4e58-b177-2037eea09806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Engine\Renderer\Shader">
+      <UniqueIdentifier>{89a205ff-6654-4b11-897b-0edd9cd64644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Inspector">
+      <UniqueIdentifier>{88d53e12-8119-43f0-96b9-e850038a3a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Entity\Components">
+      <UniqueIdentifier>{76e5bafd-8811-43d6-8a27-2708d2b5c4bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-#include "System/CmpOrbiter.h"
+#include "System/Entity/Components/CmpOrbiter.h"
 
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"

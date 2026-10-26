@@ -141,6 +141,15 @@ namespace Atrum {
 			const uint32_t subdivision, const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
+		/// カメラ向きの板ポリ（ワールド配置・非ライティング向け）
+		void DrawBillboard(const uint32_t& textureIndex,
+			const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform,
+			const Math::Vector3& worldPosition,
+			const Math::Vector3& worldScale,
+			const bool isLighting,
+			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+
 		void DrawModel(AssetModel* model, const Math::Transform& transform,
 			const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);

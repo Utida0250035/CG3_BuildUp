@@ -1,6 +1,6 @@
 #include "System/BossCombatEnrage.h"
 
-#include "System/CmpOrbiter.h"
+#include "System/Entity/Components/CmpOrbiter.h"
 #include "System/Entity/Components/CmpHealthHit.h"
 #include "System/Entity/Entity.h"
 #include "System/OrbiterChildUtils.h"

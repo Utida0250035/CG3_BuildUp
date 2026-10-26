@@ -1,9 +1,9 @@
 #include "System/BehEnemyDepthRush.h"
 
 #include "System/AttackTelegraph/AttackTelegraphUtils.h"
-#include "System/CmpAttackTelegraph.h"
-#include "System/CmpEnemy.h"
-#include "System/CmpOrbiter.h"
+#include "System/AttackTelegraph/CmpAttackTelegraph.h"
+#include "System/Entity/Components/CmpEnemy.h"
+#include "System/Entity/Components/CmpOrbiter.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 #include "System/OrbiterChildUtils.h"

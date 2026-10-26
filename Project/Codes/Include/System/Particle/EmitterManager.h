@@ -52,8 +52,7 @@ public:
   /// </summary>
   Atrum::Visual::Particle::Emitter *
   AddOneShotEmitter(const std::string &emitterName, const char *jsonFilePath,
-                    const Math::Vector3 &worldPosition,
-                    bool useBuiltinSphereDraw = false);
+                    const Math::Vector3 &worldPosition);
 
   /// 最初に見つかった同名エミッタ（後方互換）
   Atrum::Visual::Particle::Emitter *Find(const std::string &name);

@@ -1,7 +1,7 @@
-#include "System/CmpDrawAttackTelegraph.h"
+#include "System/AttackTelegraph/CmpDrawAttackTelegraph.h"
 
 #include "System/AttackTelegraph/AttackTelegraphDraw.h"
-#include "System/CmpAttackTelegraph.h"
+#include "System/AttackTelegraph/CmpAttackTelegraph.h"
 #include "System/Entity/Entity.h"
 
 namespace Atrum {

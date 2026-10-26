@@ -1,8 +1,8 @@
 #include "System/BossCombatCleanup.h"
 
 #include "System/AttackTelegraph/AttackTelegraphUtils.h"
-#include "System/CmpAttackTelegraph.h"
-#include "System/CmpReflectAbleBullet.h"
+#include "System/AttackTelegraph/CmpAttackTelegraph.h"
+#include "System/Entity/Components/CmpReflectAbleBullet.h"
 #include "System/Entity/Entity.h"
 
 namespace Atrum {

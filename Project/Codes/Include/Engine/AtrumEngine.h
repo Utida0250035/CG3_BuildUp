@@ -370,6 +370,13 @@ public:
       const Math::Matrix4x4& worldMatrix, const float radius,
       const uint32_t subdivision = 16, const bool isLighting = false);
 
+  void DrawBillboard(const uint32_t &textureIndex,
+                     const Math::Vector4 &textureColor,
+                     const Math::Transform &uvTransform,
+                     const Math::Vector3 &worldPosition,
+                     const Math::Vector3 &worldScale,
+                     const bool isLighting = false);
+
   /// <summary>
   /// Spriteの準備
   /// </summary>

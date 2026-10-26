@@ -1,4 +1,4 @@
-#include "System/CmpMeshSphere.h"
+#include "System/Entity/Components/CmpMeshSphere.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Math/Transform.h"

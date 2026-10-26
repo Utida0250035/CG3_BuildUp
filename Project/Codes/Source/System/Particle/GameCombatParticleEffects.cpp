@@ -28,9 +28,6 @@ inline constexpr const char *kBossDeathExplosionEmitterNamePrefix =
 inline constexpr const char *kPlayerDeathDamageEmitterNamePrefix =
     "combat_player_death_damage_";
 
-/// 戦闘演出は OBJ 再読込を避け、DrawSphere で描画する
-inline constexpr bool kUseBuiltinSphereDraw = true;
-
 Particle::Emitter::EmitterManager *CombatEmitterManager() {
   return Particle::Emitter::EmitterManager::Instance();
 }
@@ -41,8 +38,7 @@ void PlayOneShotEffect(const char *emitterNamePrefix, const char *jsonFilePath,
   const std::string emitterName =
       std::string(emitterNamePrefix) + std::to_string(sequenceId);
   CombatEmitterManager()->AddOneShotEmitter(emitterName, jsonFilePath,
-                                            worldPosition,
-                                            kUseBuiltinSphereDraw);
+                                            worldPosition);
 }
 
 } // namespace

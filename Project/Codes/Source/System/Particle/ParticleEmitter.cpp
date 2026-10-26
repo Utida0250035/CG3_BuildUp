@@ -22,7 +22,7 @@ namespace fs = std::filesystem;
 
 namespace Atrum::Visual::Particle {
 
-void Emitter::Initialize(const char *jsonFilePath, bool useBuiltinSphereDraw) {
+void Emitter::Initialize(const char *jsonFilePath) {
   frameDeltaTime_ = FrameDeltaTime::Instance();
 
   std::vector<Param> params{};
@@ -44,8 +44,8 @@ void Emitter::Initialize(const char *jsonFilePath, bool useBuiltinSphereDraw) {
   for (size_t i = 0; i < layers_.size(); ++i) {
     layers_[i].param = params[i];
 
-    layers_[i].useBuiltinSphere = useBuiltinSphereDraw;
-    if (!useBuiltinSphereDraw) {
+    switch (layers_[i].param.renderMode) {
+    case RenderMode::MODEL: {
       const std::string objPath =
           params[i].objDirectoryPath + "/" + params[i].objFileName;
       const std::string mtlPath =
@@ -55,7 +55,29 @@ void Emitter::Initialize(const char *jsonFilePath, bool useBuiltinSphereDraw) {
             params[i].objDirectoryPath, params[i].objFileName,
             params[i].mtlDirectoryPath, params[i].mtlFileName);
       }
-      layers_[i].useBuiltinSphere = (layers_[i].model == nullptr);
+#if defined(DEVELOPMENT) && !defined(NDEBUG)
+      if (layers_[i].model == nullptr) {
+        assert(false &&
+               "RenderMode::MODEL ですが OBJ/MTL を読み込めませんでした");
+      }
+#endif
+      break;
+    }
+    case RenderMode::BILLBOARD: {
+      if (fs::exists(layers_[i].param.textureFilePath)) {
+        layers_[i].billboardTextureIndex =
+            Engine::Instance()->GetTexture(layers_[i].param.textureFilePath);
+      } else {
+        layers_[i].billboardTextureIndex = WhiteTextureIndex();
+#if defined(DEVELOPMENT) && !defined(NDEBUG)
+        assert(false && "RenderMode::BILLBOARD ですが textureFilePath が無効です");
+#endif
+      }
+      break;
+    }
+    case RenderMode::BUILTIN_SPHERE:
+    default:
+      break;
     }
 
     assert(layers_[i].param.emitRate > 0.0f);
@@ -299,6 +321,15 @@ void Emitter::ResolveContinuousEmit(const size_t layerIndex) {
 
 void Emitter::Draw() {
 
+  Atrum::Engine *engine = Atrum::Engine::Instance();
+  if (engine == nullptr) {
+    return;
+  }
+
+  if (camera_ != nullptr) {
+    engine->SetCamera(camera_);
+  }
+
   Math::TransformLH particleTransform{};
 
   for (size_t i = 0; i < layers_.size(); ++i) {
@@ -318,19 +349,31 @@ void Emitter::Draw() {
       particleTransform.quaternion = p.rotation;
       particleTransform.scale = p.currentScale;
 
-      if (layer.useBuiltinSphere || layer.model == nullptr) {
+      switch (layer.param.renderMode) {
+      case RenderMode::BUILTIN_SPHERE: {
         const float radius =
             std::max({p.currentScale.x, p.currentScale.y, p.currentScale.z});
         // 戦闘演出は同フレーム大量描画になりやすいため细分を抑える
         constexpr uint32_t kBuiltinSphereSubdivision = 2;
-        Atrum::Engine::Instance()->DrawSphere(
-            WhiteTextureIndex(), p.currentColor, Math::Transform{},
-            particleTransform.MakeWorldMatrix(), radius,
-            kBuiltinSphereSubdivision, false);
-      } else {
-        Atrum::Engine::Instance()->DrawModel(
-            layer.model.get(), particleTransform.MakeWorldMatrix(), false,
-            p.currentColor);
+        engine->DrawSphere(WhiteTextureIndex(), p.currentColor, Math::Transform{},
+                           particleTransform.MakeWorldMatrix(), radius,
+                           kBuiltinSphereSubdivision, false);
+        break;
+      }
+      case RenderMode::MODEL:
+        if (layer.model != nullptr) {
+          engine->DrawModel(layer.model.get(),
+                            particleTransform.MakeWorldMatrix(), false,
+                            p.currentColor);
+        }
+        break;
+      case RenderMode::BILLBOARD:
+        engine->DrawBillboard(layer.billboardTextureIndex, p.currentColor,
+                              Math::Transform{}, p.position, p.currentScale,
+                              false);
+        break;
+      default:
+        break;
       }
     }
   }

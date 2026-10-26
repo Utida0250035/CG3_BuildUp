@@ -1,6 +1,6 @@
 #pragma once
 
-#include "System/CmpOrbiter.h"
+#include "System/Entity/Components/CmpOrbiter.h"
 #include <cstddef>
 #include <functional>
 

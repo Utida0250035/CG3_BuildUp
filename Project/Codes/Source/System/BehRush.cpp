@@ -2,8 +2,8 @@
 #include "Math/Easing.h"
 #include "Math/Vector3.h"
 #include "System/AttackTelegraph/AttackTelegraphUtils.h"
-#include "System/CmpAttackTelegraph.h"
-#include "System/CmpEnemy.h"
+#include "System/AttackTelegraph/CmpAttackTelegraph.h"
+#include "System/Entity/Components/CmpEnemy.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 

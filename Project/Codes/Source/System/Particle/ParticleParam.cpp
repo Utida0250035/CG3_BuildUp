@@ -56,6 +56,11 @@ void AssignEnumIfPresent(const nlohmann::json &j, const char *key, EnumT &out) {
 	NLOHMANN_JSON_SERIALIZE_ENUM(KillFieldShape, { { KillFieldShape::SPHERE, "SPHERE" },
 		{ KillFieldShape::AABB, "AABB" } });
 
+	NLOHMANN_JSON_SERIALIZE_ENUM(RenderMode,
+		{ { RenderMode::BUILTIN_SPHERE, "BUILTIN_SPHERE" },
+			{ RenderMode::MODEL, "MODEL" },
+			{ RenderMode::BILLBOARD, "BILLBOARD" } });
+
 
 	void to_json(nlohmann::json& j, const KillFieldParam& killFieldParam) {
 
@@ -118,6 +123,8 @@ void AssignEnumIfPresent(const nlohmann::json &j, const char *key, EnumT &out) {
 			{ "endColor", param.endColor },
 			{ "killFieldParam", param.killFieldParam },
 			{ "maxCount", param.maxCount },
+			{ "renderMode", param.renderMode },
+			{ "textureFilePath", param.textureFilePath },
 			{ "objDirectoryPath", param.objDirectoryPath },
 			{ "objFileName", param.objFileName },
 			{ "mtlDirectoryPath", param.mtlDirectoryPath },
@@ -151,6 +158,8 @@ void AssignEnumIfPresent(const nlohmann::json &j, const char *key, EnumT &out) {
 		param.endColor = j.value("endColor", param.endColor);
 		param.killFieldParam = j.value("killFieldParam", param.killFieldParam);
 		param.maxCount = ReadJsonSize(j, "maxCount", param.maxCount);
+		AssignEnumIfPresent(j, "renderMode", param.renderMode);
+		param.textureFilePath = j.value("textureFilePath", param.textureFilePath);
 		param.objDirectoryPath = j.value("objDirectoryPath", param.objDirectoryPath);
 		param.objFileName = j.value("objFileName", param.objFileName);
 		param.mtlDirectoryPath = j.value("mtlDirectoryPath", param.mtlDirectoryPath);

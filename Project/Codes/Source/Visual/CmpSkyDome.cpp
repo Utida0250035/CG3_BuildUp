@@ -1,4 +1,4 @@
-#include "System/CmpSkyDome.h"
+#include "Visual/CmpSkyDome.h"
 
 #include "Camera/Camera.h"
 namespace Atrum {

@@ -14,6 +14,7 @@
 #include "Math/Quaternion.h"
 #include "Camera/Camera.h"
 
+#include <array>
 #include <numbers>
 #ifdef DEVELOPMENT
 #include <chrono>
@@ -463,6 +464,125 @@ namespace Atrum {
 		this->DrawCall(textureIndex, sphereIndexCount, sphereVertexCount,
 			directionalLightAddress);
 
+	}
+
+	namespace {
+
+	// 行ベクトル規約（mul(v, M)）向けのカメラ正対ビルボード行列
+	M::Matrix4x4 MakeCameraFacingBillboardWorld(const M::Vector3& worldPosition,
+		const M::Vector3& worldScale,
+		const M::Matrix4x4& viewMatrix) {
+
+		M::Matrix4x4 rotation = M::Matrix4x4::Identity();
+		rotation.m[0][0] = viewMatrix.m[0][0];
+		rotation.m[0][1] = viewMatrix.m[1][0];
+		rotation.m[0][2] = viewMatrix.m[2][0];
+		rotation.m[1][0] = viewMatrix.m[0][1];
+		rotation.m[1][1] = viewMatrix.m[1][1];
+		rotation.m[1][2] = viewMatrix.m[2][1];
+		rotation.m[2][0] = viewMatrix.m[0][2];
+		rotation.m[2][1] = viewMatrix.m[1][2];
+		rotation.m[2][2] = viewMatrix.m[2][2];
+
+		const M::Vector3 halfScale{
+			std::max(worldScale.x, 1e-5f) * 0.5f,
+			std::max(worldScale.y, 1e-5f) * 0.5f,
+			1.0f,
+		};
+
+		return M::Matrix4x4::Scale(halfScale) * rotation *
+			M::Matrix4x4::Translate(worldPosition);
+	}
+
+	M::Vector4 TransformPoint(const M::Matrix4x4& matrix, const M::Vector4& point) {
+		M::Vector4 result{};
+		for (size_t column = 0; column < 4; ++column) {
+			result.x += point.x * matrix.m[0][column];
+			result.y += point.y * matrix.m[1][column];
+			result.z += point.z * matrix.m[2][column];
+			result.w += point.w * matrix.m[3][column];
+		}
+		return result;
+	}
+
+	M::Vector3 TransformNormal(const M::Matrix4x4& matrix, const M::Vector3& normal) {
+		const M::Vector4 transformed =
+			TransformPoint(matrix, M::Vector4{ normal.x, normal.y, normal.z, 0.0f });
+		M::Vector3 result{ transformed.x, transformed.y, transformed.z };
+		result.Normalize();
+		return result;
+	}
+
+	} // namespace
+
+	void Draw::DrawBillboard(const uint32_t& textureIndex,
+		const Math::Vector4& textureColor,
+		const Math::Transform& uvTransform,
+		const Math::Vector3& worldPosition,
+		const Math::Vector3& worldScale,
+		const bool isLighting,
+		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (camera_ == nullptr) {
+			assert(false && "DrawBillboard: SetCamera を呼んでから描画してください");
+			return;
+		}
+
+		const M::Matrix4x4 worldMatrix = MakeCameraFacingBillboardWorld(
+			worldPosition, worldScale, camera_->GetViewMatrix());
+
+		TransformationData transformationData{};
+		transformationData.wvp =
+			worldMatrix * camera_->GetViewProjectionMatrix();
+		transformationData.world = worldMatrix;
+
+		transformationBuffer_->SetData(transformationData, constantBufferCount_);
+
+		MaterialData materialData{};
+		materialData.color = textureColor;
+
+		M::Matrix4x4 uvTransformMatrix = M::Matrix4x4::Scale(uvTransform.scale);
+		uvTransformMatrix *= M::Matrix4x4::RotateZ(uvTransform.rotate.z);
+		uvTransformMatrix *= M::Matrix4x4::Translate(uvTransform.translate);
+		materialData.uvTransformMatrix = uvTransformMatrix;
+		materialData.isLightingEnable = isLighting;
+		materialData.isUseTexture = true;
+
+		materialBuffer_->SetData(materialData, constantBufferCount_);
+
+		const M::Vector3 faceNormal =
+			TransformNormal(worldMatrix, M::Vector3{ 0.0f, 0.0f, 1.0f });
+
+		const std::array<M::Vector4, 4> localPositions{
+			M::Vector4{ -1.0f, -1.0f, 0.0f, 1.0f },
+			M::Vector4{ 1.0f, -1.0f, 0.0f, 1.0f },
+			M::Vector4{ -1.0f, 1.0f, 0.0f, 1.0f },
+			M::Vector4{ 1.0f, 1.0f, 0.0f, 1.0f },
+		};
+
+		const std::array<M::Vector2, 4> texCoords{
+			M::Vector2{ 0.0f, 1.0f },
+			M::Vector2{ 1.0f, 1.0f },
+			M::Vector2{ 0.0f, 0.0f },
+			M::Vector2{ 1.0f, 0.0f },
+		};
+
+		const uint32_t vertexStart = vertexBuffer_->GetDrewCount();
+		for (size_t i = 0; i < localPositions.size(); ++i) {
+			VertexData vertex{};
+			vertex.position = TransformPoint(worldMatrix, localPositions[i]);
+			vertex.texCoord = texCoords[i];
+			vertex.normal = faceNormal;
+			vertexBuffer_->SetVertexData(vertex, vertexStart + static_cast<uint32_t>(i));
+		}
+
+		const uint32_t indexStart = indexBuffer_->GetDrewCount();
+		const std::array<uint32_t, 6> indices{ 0, 1, 2, 1, 3, 2 };
+		for (size_t i = 0; i < indices.size(); ++i) {
+			indexBuffer_->SetIndexData(vertexStart + indices[i], indexStart + static_cast<uint32_t>(i));
+		}
+
+		this->DrawCall(textureIndex, 6, 4, directionalLightAddress);
 	}
 
 	void Draw::DrawAsymmetricPyramid(
