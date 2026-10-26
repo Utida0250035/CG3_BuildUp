@@ -64,6 +64,10 @@ namespace Atrum::Visual::Particle {
 
 		void ResolveContinuousEmit(const size_t layerIndex);
 
+		void ConfigureLayerResources(Layer &layer);
+
+		void ResetLayerRuntimeState(Layer &layer, const size_t layerIndex);
+
 	public:
 		Emitter() = default;
 		~Emitter() = default;
@@ -85,8 +89,20 @@ namespace Atrum::Visual::Particle {
 		}
 
 		void Initialize(const char* jsonFilePath);
+
+		/// メモリ上の Param 配列からレイヤーを構築する（エディタ用）
+		void InitializeFromParams(const std::vector<Param> &params);
+
+		/// Param を差し替えてプレビューを最初から再生する
+		void RebuildFromParams(const std::vector<Param> &params);
+
+		[[nodiscard]] std::vector<Param> ExportParams() const;
+
 		/// ワンショット再発火用にレイヤー状態と粒子をリセットする
 		void PrepareForOneShot();
+
+		/// バースト発火＋連続発生タイマーのリセット（プレビュー再生）
+		void RestartPreview();
 		void Emit();
 		void Update();
 		void Draw();

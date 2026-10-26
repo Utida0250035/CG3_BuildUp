@@ -22,70 +22,97 @@ namespace fs = std::filesystem;
 
 namespace Atrum::Visual::Particle {
 
-void Emitter::Initialize(const char *jsonFilePath) {
+void Emitter::ConfigureLayerResources(Layer &layer) {
+  layer.model = nullptr;
+  layer.billboardTextureIndex = WhiteTextureIndex();
+
+  switch (layer.param.renderMode) {
+  case RenderMode::MODEL: {
+    const std::string objPath =
+        layer.param.objDirectoryPath + "/" + layer.param.objFileName;
+    const std::string mtlPath =
+        layer.param.mtlDirectoryPath + "/" + layer.param.mtlFileName;
+    if (fs::exists(objPath) && fs::exists(mtlPath)) {
+      layer.model = Engine::Instance()->GetModel(
+          layer.param.objDirectoryPath, layer.param.objFileName,
+          layer.param.mtlDirectoryPath, layer.param.mtlFileName);
+    }
+    break;
+  }
+  case RenderMode::BILLBOARD: {
+    if (fs::exists(layer.param.textureFilePath)) {
+      layer.billboardTextureIndex =
+          Engine::Instance()->GetTexture(layer.param.textureFilePath);
+    }
+    break;
+  }
+  case RenderMode::BUILTIN_SPHERE:
+  default:
+    break;
+  }
+}
+
+void Emitter::ResetLayerRuntimeState(Layer &layer, const size_t layerIndex) {
+  layer.accumulator = 0.0f;
+  layer.elapsedSeconds = 0.0f;
+  layer.hasBurst = false;
+  layer.isFinished = false;
+
+  assert(layer.param.emitRate > 0.0f);
+  assert(layer.param.duration > 0.0f);
+  assert(layer.param.maxCount > 0);
+
+  particles_[layerIndex].resize(layer.param.maxCount);
+  for (Particle &particle : particles_[layerIndex]) {
+    particle.isActive = false;
+  }
+}
+
+void Emitter::InitializeFromParams(const std::vector<Param> &params) {
   frameDeltaTime_ = FrameDeltaTime::Instance();
 
+  layers_.resize(params.size());
+  particles_.resize(params.size());
+
+  for (size_t i = 0; i < layers_.size(); ++i) {
+    layers_[i].param = params[i];
+    ConfigureLayerResources(layers_[i]);
+    ResetLayerRuntimeState(layers_[i], i);
+  }
+}
+
+void Emitter::Initialize(const char *jsonFilePath) {
   std::vector<Param> params{};
 
   if (fs::exists(jsonFilePath)) {
     params = Json::JsonHandler::LoadFromFile<std::vector<Param>>(jsonFilePath);
   } else {
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
-    // 実行時 CWD（exe 横の Assets）に JSON が無いと、下のデフォルト Param が使われ JSON 調整が効かない
     assert(false && "Particle JSON が見つかりません（ビルド後の Assets コピーを確認）");
 #endif
     params.emplace_back();
   }
 
-  layers_.resize(params.size());
+  InitializeFromParams(params);
+}
 
-  particles_.resize(layers_.size());
+void Emitter::RebuildFromParams(const std::vector<Param> &params) {
+  InitializeFromParams(params);
+  RestartPreview();
+}
 
-  for (size_t i = 0; i < layers_.size(); ++i) {
-    layers_[i].param = params[i];
-
-    switch (layers_[i].param.renderMode) {
-    case RenderMode::MODEL: {
-      const std::string objPath =
-          params[i].objDirectoryPath + "/" + params[i].objFileName;
-      const std::string mtlPath =
-          params[i].mtlDirectoryPath + "/" + params[i].mtlFileName;
-      if (fs::exists(objPath) && fs::exists(mtlPath)) {
-        layers_[i].model = Engine::Instance()->GetModel(
-            params[i].objDirectoryPath, params[i].objFileName,
-            params[i].mtlDirectoryPath, params[i].mtlFileName);
-      }
-#if defined(DEVELOPMENT) && !defined(NDEBUG)
-      if (layers_[i].model == nullptr) {
-        assert(false &&
-               "RenderMode::MODEL ですが OBJ/MTL を読み込めませんでした");
-      }
-#endif
-      break;
-    }
-    case RenderMode::BILLBOARD: {
-      if (fs::exists(layers_[i].param.textureFilePath)) {
-        layers_[i].billboardTextureIndex =
-            Engine::Instance()->GetTexture(layers_[i].param.textureFilePath);
-      } else {
-        layers_[i].billboardTextureIndex = WhiteTextureIndex();
-#if defined(DEVELOPMENT) && !defined(NDEBUG)
-        assert(false && "RenderMode::BILLBOARD ですが textureFilePath が無効です");
-#endif
-      }
-      break;
-    }
-    case RenderMode::BUILTIN_SPHERE:
-    default:
-      break;
-    }
-
-    assert(layers_[i].param.emitRate > 0.0f);
-    assert(layers_[i].param.duration > 0.0f);
-    assert(layers_[i].param.maxCount > 0);
-
-    particles_[i].resize(layers_[i].param.maxCount);
+std::vector<Param> Emitter::ExportParams() const {
+  std::vector<Param> params;
+  params.reserve(layers_.size());
+  for (const Layer &layer : layers_) {
+    params.push_back(layer.param);
   }
+  return params;
+}
+
+void Emitter::RestartPreview() {
+  PrepareForOneShot();
+  Emit();
 }
 
 void Emitter::PrepareForOneShot() {

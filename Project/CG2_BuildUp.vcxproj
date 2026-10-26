@@ -302,6 +302,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\System\BehDodge.cpp" />
     <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp" />
@@ -494,6 +496,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Scene\SceneScreenUi.h" />
     <ClInclude Include="Codes\Include\Scene\SceneResult.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorUi.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
     <ClInclude Include="Codes\Include\System\BehDodge.h" />
     <ClInclude Include="Codes\Include\System\BehEnemyMeteor.h" />

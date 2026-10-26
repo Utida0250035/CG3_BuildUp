@@ -214,6 +214,9 @@
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -291,6 +294,9 @@
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
       <Filter>Codes\Source\System\Editor\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp">
+      <Filter>Codes\Source\System\Editor\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp">
       <Filter>Codes\Source\System\Entity</Filter>
@@ -714,6 +720,9 @@
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneResult.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
@@ -809,6 +818,9 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Editor\Inspector\InspectorEntity.h">
       <Filter>Codes\Include\System\Editor\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorUi.h">
+      <Filter>Codes\Include\System\Editor\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Entity\Behavior.h">
       <Filter>Codes\Include\System\Entity</Filter>
@@ -1208,6 +1220,9 @@
     <Filter Include="Codes\Include\System\Editor\Inspector">
       <UniqueIdentifier>{0b99a92f-fc93-4f98-ba58-088fff9e0005}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Codes\Include\System\Editor\Particle">
+      <UniqueIdentifier>{a696b120-2f2d-4270-a225-c03f7744a264}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Codes\Include\System\Entity\Components">
       <UniqueIdentifier>{87eb2582-9e08-49b1-8166-290cd229d974}</UniqueIdentifier>
     </Filter>
@@ -1222,6 +1237,9 @@
     </Filter>
     <Filter Include="Codes\Source\System\Editor\Inspector">
       <UniqueIdentifier>{88d53e12-8119-43f0-96b9-e850038a3a6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Particle">
+      <UniqueIdentifier>{62f2e732-80dc-4f4c-8348-b41abe4d7c0a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Codes\Source\System\Entity\Components">
       <UniqueIdentifier>{76e5bafd-8811-43d6-8a27-2708d2b5c4bf}</UniqueIdentifier>

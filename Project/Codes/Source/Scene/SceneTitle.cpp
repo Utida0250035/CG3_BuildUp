@@ -6,6 +6,9 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneGame.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "Scene/SceneParticleEditor.h"
+#endif
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
 #include "Scene/SceneScreenUi.h"
@@ -38,7 +41,17 @@ void SceneTitle::EnterScene() {
 void SceneTitle::Update() {
   UpdateBackgrounds();
 
-  if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
+  const Atrum::InputData &input = Atrum::AbstractInput::Instance()->GetData();
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (input.isZoomTrigger) {
+    Atrum::CommandChangeScene::Instance()->Set(
+        SceneParticleEditor::Instance(), new Atrum::ChangeSceneFade());
+    return;
+  }
+#endif
+
+  if (input.isSubmitTrigger) {
     Atrum::PlaySubmitSe();
     Atrum::CommandChangeScene::Instance()->Set(SceneGame::Instance(),
                                                new Atrum::ChangeSceneFade());
