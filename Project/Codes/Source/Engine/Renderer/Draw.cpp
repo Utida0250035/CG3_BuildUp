@@ -11,7 +11,6 @@
 #include "Engine/Resource/IndexBuffer.h"
 #include "Engine/Resource/VertexBuffer.h"
 #include "Geometry/PyramidMesh.h"
-#include "Math/Quaternion.h"
 #include "Camera/Camera.h"
 
 #include <array>
@@ -254,19 +253,16 @@ namespace Atrum {
 	void Draw::DrawTriangle(const uint32_t& textureIndex,
 		const M::Vector4& textureColor,
 		const M::Transform& uvTransform,
-		const M::Transform& triangleTransform,
+		const M::Matrix4x4& worldMatrix,
 		const std::array<VertexData, 3>& vertexData,
 		const bool isLighting,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
-// 三角形のM::Transform
-		M::Matrix4x4 triangleWorldMatrix = triangleTransform.MakeWorldMatrix();
-
 		TransformationData transformationData{};
 
 		transformationData.wvp =
-			triangleWorldMatrix * camera_->GetViewProjectionMatrix();
-		transformationData.world = triangleWorldMatrix;
+			worldMatrix * camera_->GetViewProjectionMatrix();
+		transformationData.world = worldMatrix;
 
 		transformationBuffer_->SetData(transformationData, constantBufferCount_);
 
@@ -299,19 +295,6 @@ namespace Atrum {
 
 		// 描画
 		this->DrawTriangleCall(textureIndex, directionalLightAddress);
-	}
-
-	void Draw::DrawSphere(const uint32_t& textureIndex,
-		const M::Vector4& textureColor,
-		const M::Transform& uvTransform,
-		const M::Transform& sphereTransform, const float radius,
-		const uint32_t subdivision, const bool isLighting,
-		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
-
-		// 球のM::Transform
-		M::Matrix4x4 sphereWorldMatrix = sphereTransform.MakeWorldMatrix();
-
-		this->DrawSphere(textureIndex, textureColor, uvTransform, sphereWorldMatrix, radius, subdivision, isLighting, directionalLightAddress);
 	}
 
 	void Draw::DrawSphere(const uint32_t& textureIndex,
@@ -466,60 +449,10 @@ namespace Atrum {
 
 	}
 
-	namespace {
-
-	// 行ベクトル規約（mul(v, M)）向けのカメラ正対ビルボード行列
-	M::Matrix4x4 MakeCameraFacingBillboardWorld(const M::Vector3& worldPosition,
-		const M::Vector3& worldScale,
-		const M::Matrix4x4& viewMatrix) {
-
-		M::Matrix4x4 rotation = M::Matrix4x4::Identity();
-		rotation.m[0][0] = viewMatrix.m[0][0];
-		rotation.m[0][1] = viewMatrix.m[1][0];
-		rotation.m[0][2] = viewMatrix.m[2][0];
-		rotation.m[1][0] = viewMatrix.m[0][1];
-		rotation.m[1][1] = viewMatrix.m[1][1];
-		rotation.m[1][2] = viewMatrix.m[2][1];
-		rotation.m[2][0] = viewMatrix.m[0][2];
-		rotation.m[2][1] = viewMatrix.m[1][2];
-		rotation.m[2][2] = viewMatrix.m[2][2];
-
-		const M::Vector3 halfScale{
-			std::max(worldScale.x, 1e-5f) * 0.5f,
-			std::max(worldScale.y, 1e-5f) * 0.5f,
-			1.0f,
-		};
-
-		return M::Matrix4x4::Scale(halfScale) * rotation *
-			M::Matrix4x4::Translate(worldPosition);
-	}
-
-	M::Vector4 TransformPoint(const M::Matrix4x4& matrix, const M::Vector4& point) {
-		M::Vector4 result{};
-		for (size_t column = 0; column < 4; ++column) {
-			result.x += point.x * matrix.m[0][column];
-			result.y += point.y * matrix.m[1][column];
-			result.z += point.z * matrix.m[2][column];
-			result.w += point.w * matrix.m[3][column];
-		}
-		return result;
-	}
-
-	M::Vector3 TransformNormal(const M::Matrix4x4& matrix, const M::Vector3& normal) {
-		const M::Vector4 transformed =
-			TransformPoint(matrix, M::Vector4{ normal.x, normal.y, normal.z, 0.0f });
-		M::Vector3 result{ transformed.x, transformed.y, transformed.z };
-		result.Normalize();
-		return result;
-	}
-
-	} // namespace
-
 	void Draw::DrawBillboard(const uint32_t& textureIndex,
 		const Math::Vector4& textureColor,
 		const Math::Transform& uvTransform,
-		const Math::Vector3& worldPosition,
-		const Math::Vector3& worldScale,
+		const Math::Matrix4x4& worldMatrix,
 		const bool isLighting,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
@@ -527,9 +460,6 @@ namespace Atrum {
 			assert(false && "DrawBillboard: SetCamera を呼んでから描画してください");
 			return;
 		}
-
-		const M::Matrix4x4 worldMatrix = MakeCameraFacingBillboardWorld(
-			worldPosition, worldScale, camera_->GetViewMatrix());
 
 		TransformationData transformationData{};
 		transformationData.wvp =
@@ -550,8 +480,11 @@ namespace Atrum {
 
 		materialBuffer_->SetData(materialData, constantBufferCount_);
 
-		const M::Vector3 faceNormal =
-			TransformNormal(worldMatrix, M::Vector3{ 0.0f, 0.0f, 1.0f });
+		// ローカル +Z が板の表。頂点はローカル座標のまま VS の world/WVP に任せる
+		const M::Vector3 faceNormal{worldMatrix.m[2][0], worldMatrix.m[2][1],
+		                            worldMatrix.m[2][2]};
+		M::Vector3 normalizedFaceNormal = faceNormal;
+		normalizedFaceNormal.Normalize();
 
 		const std::array<M::Vector4, 4> localPositions{
 			M::Vector4{ -1.0f, -1.0f, 0.0f, 1.0f },
@@ -570,9 +503,9 @@ namespace Atrum {
 		const uint32_t vertexStart = vertexBuffer_->GetDrewCount();
 		for (size_t i = 0; i < localPositions.size(); ++i) {
 			VertexData vertex{};
-			vertex.position = TransformPoint(worldMatrix, localPositions[i]);
+			vertex.position = localPositions[i];
 			vertex.texCoord = texCoords[i];
-			vertex.normal = faceNormal;
+			vertex.normal = normalizedFaceNormal;
 			vertexBuffer_->SetVertexData(vertex, vertexStart + static_cast<uint32_t>(i));
 		}
 
@@ -587,15 +520,9 @@ namespace Atrum {
 
 	void Draw::DrawAsymmetricPyramid(
 		const uint32_t& textureIndex, const M::Vector4& textureColor,
-		const M::Transform& uvTransform, const M::Vector3& scale,
-		const M::Quaternion& rotate, const M::Vector3& translate,
+		const M::Transform& uvTransform, const M::Matrix4x4& worldMatrix,
 		const G::PyramidMesh& mesh, const bool isLighting,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
-
-	  // 非対称ピラミッドのM::Transform
-		M::Matrix4x4 worldMatrix = M::Matrix4x4::Scale(scale) *
-			rotate.MakeRotateMatrixRh() *
-			M::Matrix4x4::Translate(translate);
 
 		TransformationData transformationData{};
 
@@ -642,16 +569,6 @@ namespace Atrum {
 		    indexBuffer_->PGetBufferView());
 		pCommandContextDirect_->GetCommandList()->IASetPrimitiveTopology(
 		    D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	}
-
-	void Draw::DrawModel(AssetModel* model, const M::Transform& transform,
-		const bool isLighting,
-		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
-
-		model->Draw(transform.MakeWorldMatrix(), camera_->GetViewMatrix(), directionalLightAddress,
-			pCommandContextDirect_->GetCommandList(), pSrvAllocator_,
-			camera_->GetPerspectiveFovMatrix(), isLighting, Math::Vector4::White(), constantBufferCount_, materialBuffer_.get(), transformationBuffer_.get());
-		RestoreBatchGeometryBindings();
 	}
 
 	void Draw::DrawModel(AssetModel* model, const Math::Matrix4x4& worldMatrix,

@@ -867,29 +867,15 @@ ComPtr<ID3D12Resource> AtrumEngine::CreateDepthStencilResource(int32_t width,
 void AtrumEngine::DrawTriangle(const uint32_t &textureIndex,
                                const M::Vector4 &textureColor,
                                const M::Transform &uvTransform,
-                               const M::Transform &triangleTransform,
+                               const M::Matrix4x4 &worldMatrix,
                                const std::array<VertexData, 3> &vertexData,
                                const bool isLighting) {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawTriangle(textureIndex, textureColor, uvTransform,
-                       triangleTransform, vertexData, isLighting,
+  pDraw_->DrawTriangle(textureIndex, textureColor, uvTransform, worldMatrix,
+                       vertexData, isLighting,
                        directionalLightBuffer_->GetGpuVirtualAddress());
-}
-
-void AtrumEngine::DrawSphere(const uint32_t &textureIndex,
-                             const M::Vector4 &textureColor,
-                             const M::Transform &uvTransform,
-                             const M::Transform &sphereTransform,
-                             const float radius, const uint32_t subdivision,
-                             const bool isLighting) {
-
-  assert(isInitialized_ && "AtrumEngine is not initialized");
-
-  pDraw_->DrawSphere(textureIndex, textureColor, uvTransform, sphereTransform,
-                     radius, subdivision, isLighting,
-                     directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 void AtrumEngine::DrawSphere(const uint32_t& textureIndex,
@@ -898,34 +884,36 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex,
     const Math::Matrix4x4& worldMatrix, const float radius,
     const uint32_t subdivision, const bool isLighting) {
 
-    pDraw_->DrawSphere(textureIndex, textureColor, uvTransform, worldMatrix,
-        radius, subdivision, isLighting,
-        directionalLightBuffer_->GetGpuVirtualAddress());
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawSphere(textureIndex, textureColor, uvTransform, worldMatrix,
+                     radius, subdivision, isLighting,
+                     directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 void AtrumEngine::DrawBillboard(const uint32_t &textureIndex,
                                 const M::Vector4 &textureColor,
                                 const M::Transform &uvTransform,
-                                const M::Vector3 &worldPosition,
-                                const M::Vector3 &worldScale,
+                                const M::Matrix4x4 &worldMatrix,
                                 const bool isLighting) {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawBillboard(textureIndex, textureColor, uvTransform, worldPosition,
-                        worldScale, isLighting,
+  pDraw_->DrawBillboard(textureIndex, textureColor, uvTransform, worldMatrix,
+                        isLighting,
                         directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 void AtrumEngine::DrawAsymmetricPyramid(
     const uint32_t &textureIndex, const M::Vector4 &textureColor,
-    const M::Transform &uvTransform, const M::Vector3 &scale,
-    const M::Quaternion &rotate, const M::Vector3 &translate,
+    const M::Transform &uvTransform, const M::Matrix4x4 &worldMatrix,
     const G::PyramidMesh &mesh, const bool isLighting) {
 
-  pDraw_->DrawAsymmetricPyramid(
-      textureIndex, textureColor, uvTransform, scale, rotate, translate, mesh,
-      isLighting, directionalLightBuffer_->GetGpuVirtualAddress());
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawAsymmetricPyramid(textureIndex, textureColor, uvTransform,
+                                worldMatrix, mesh, isLighting,
+                                directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 void AtrumEngine::PrepareSprite() {
@@ -965,13 +953,6 @@ void AtrumEngine::DrawSpriteCall(const uint32_t &textureIndex) {
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
   pDrawSprite_->DrawSpriteCall(textureIndex);
-}
-
-void AtrumEngine::DrawModel(AssetModel *model, const M::Transform &transform,
-                            const bool isLighting) {
-
-  pDraw_->DrawModel(model, transform, isLighting,
-                    directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 void AtrumEngine::DrawModel(AssetModel *model,

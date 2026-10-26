@@ -1,5 +1,7 @@
 ﻿#include "System/Particle/ParticleEmitter.h"
+#include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/Renderer/BillboardMatrix.h"
 #include "Geometry/GeometryRandom.h"
 #include "Math/Lerp.h"
 #include "Math/Vector3.h"
@@ -7,7 +9,6 @@
 #include "System/Json/JsonHandler.h"
 #include "System/Random.h"
 #include "System/WhiteTexture.h"
-#include "Engine/AtrumEngine.h"
 #include <cassert>
 #include <algorithm>
 #include <filesystem>
@@ -394,11 +395,16 @@ void Emitter::Draw() {
                             p.currentColor);
         }
         break;
-      case RenderMode::BILLBOARD:
+      case RenderMode::BILLBOARD: {
+        Math::Matrix4x4 billboardWorld = Math::Matrix4x4::Identity();
+        if (camera_ != nullptr) {
+          billboardWorld = MakeViewPlaneParallelBillboardWorld(
+              p.position, p.currentScale, camera_->GetViewMatrix());
+        }
         engine->DrawBillboard(layer.billboardTextureIndex, p.currentColor,
-                              Math::Transform{}, p.position, p.currentScale,
-                              false);
+                              Math::Transform{}, billboardWorld, false);
         break;
+      }
       default:
         break;
       }

@@ -240,6 +240,9 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\BillboardMatrix.cpp">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
@@ -436,6 +439,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Engine\Pipeline\PipelineState.h" />
     <ClInclude Include="Codes\Include\Engine\Pipeline\RootSignature.h" />
     <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\BillboardMatrix.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h" />

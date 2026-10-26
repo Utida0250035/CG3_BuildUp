@@ -329,7 +329,7 @@ public:
   void DrawTriangle(const uint32_t &textureIndex,
                     const Math::Vector4 &textureColor,
                     const Math::Transform &uvTransform,
-                    const Math::Transform &triangleTransform,
+                    const Math::Matrix4x4 &worldMatrix,
                     const std::array<VertexData, 3> &vertexData,
                     const bool isLighting = false);
 
@@ -344,8 +344,7 @@ public:
   /// <param name="isLighting"></param>
   void DrawAsymmetricPyramid(
       const uint32_t &textureIndex, const Math::Vector4 &textureColor,
-      const Math::Transform &uvTransform, const Math::Vector3 &scale,
-      const Math::Quaternion &rotate, const Math::Vector3 &translate,
+      const Math::Transform &uvTransform, const Math::Matrix4x4 &worldMatrix,
       const Geometry::PyramidMesh &mesh, const bool isLighting = false);
 
   /// <summary>
@@ -361,20 +360,13 @@ public:
   void DrawSphere(const uint32_t& textureIndex,
       const Math::Vector4& textureColor,
       const Math::Transform& uvTransform,
-      const Math::Transform& sphereTransform, const float radius,
-      const uint32_t subdivision, const bool isLighting = false);
-
-  void DrawSphere(const uint32_t& textureIndex,
-      const Math::Vector4& textureColor,
-      const Math::Transform& uvTransform,
       const Math::Matrix4x4& worldMatrix, const float radius,
       const uint32_t subdivision = 16, const bool isLighting = false);
 
   void DrawBillboard(const uint32_t &textureIndex,
                      const Math::Vector4 &textureColor,
                      const Math::Transform &uvTransform,
-                     const Math::Vector3 &worldPosition,
-                     const Math::Vector3 &worldScale,
+                     const Math::Matrix4x4 &worldMatrix,
                      const bool isLighting = false);
 
   /// <summary>
@@ -418,9 +410,6 @@ public:
   /// <param name="transform"> 3Dモデルの座標変換情報 </param>
   /// <param name="cameraTransform"> カメラの座標変換情報 </param>
   /// <param name="isLighting"> ライティングフラグ </param>
-  void DrawModel(AssetModel *model, const Math::Transform &transform,
-                 const bool isLighting);
-
   void DrawModel(AssetModel *model, const Math::Matrix4x4 &worldMatrix,
                  const bool isLighting,
                  const Math::Vector4 &color = Math::Vector4::White());

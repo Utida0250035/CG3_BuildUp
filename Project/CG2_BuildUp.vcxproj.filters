@@ -85,6 +85,9 @@
     <ClCompile Include="Codes\Source\Engine\Platform\Window\Window.cpp">
       <Filter>Codes\Source\Engine\Platform\Window</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\BillboardMatrix.cpp">
+      <Filter>Codes\Source\Engine\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Draw.cpp">
       <Filter>Codes\Source\Engine\Renderer</Filter>
     </ClCompile>
@@ -548,6 +551,9 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Platform\Window\Window.h">
       <Filter>Codes\Include\Engine\Platform\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\BillboardMatrix.h">
+      <Filter>Codes\Include\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h">
       <Filter>Codes\Include\Engine\Renderer</Filter>

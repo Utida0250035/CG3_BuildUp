@@ -7,7 +7,6 @@
 #include "Engine/Resource/VertexData.h"
 #include "Geometry/PyramidMesh.h"
 #include "Math/Matrix4x4.h"
-#include "Math/Quaternion.h"
 #include "Math/Transform.h"
 
 #include <memory>
@@ -115,23 +114,16 @@ namespace Atrum {
 		void DrawTriangle(const uint32_t& textureIndex,
 			const Math::Vector4& textureColor,
 			const Math::Transform& uvTransform,
-			const Math::Transform& triangleTransform,
+			const Math::Matrix4x4& worldMatrix,
 			const std::array<VertexData, 3>& vertexData,
 			const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
 		void DrawAsymmetricPyramid(
 			const uint32_t& textureIndex, const Math::Vector4& textureColor,
-			const Math::Transform& uvTransform, const Math::Vector3& scale,
-			const Math::Quaternion& rotate, const Math::Vector3& translate,
-			const Geometry::PyramidMesh& mesh, const bool isLighting,
-			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
-
-		void DrawSphere(const uint32_t& textureIndex,
-			const Math::Vector4& textureColor,
 			const Math::Transform& uvTransform,
-			const Math::Transform& sphereTransform, const float radius,
-			const uint32_t subdivision, const bool isLighting,
+			const Math::Matrix4x4& worldMatrix,
+			const Geometry::PyramidMesh& mesh, const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
 		void DrawSphere(const uint32_t& textureIndex,
@@ -141,16 +133,10 @@ namespace Atrum {
 			const uint32_t subdivision, const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
-		/// カメラ向きの板ポリ（ワールド配置・非ライティング向け）
 		void DrawBillboard(const uint32_t& textureIndex,
 			const Math::Vector4& textureColor,
 			const Math::Transform& uvTransform,
-			const Math::Vector3& worldPosition,
-			const Math::Vector3& worldScale,
-			const bool isLighting,
-			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
-
-		void DrawModel(AssetModel* model, const Math::Transform& transform,
+			const Math::Matrix4x4& worldMatrix,
 			const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
