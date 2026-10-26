@@ -6,8 +6,8 @@
 #include <vector>
 
 namespace Atrum {
+
 class Entity;
-}
 
 /// <summary>
 /// リザルトシーン
@@ -42,3 +42,5 @@ private:
   void UpdateBackgrounds();
   void DrawBackgrounds();
 };
+
+} // namespace Atrum

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace Atrum {
+namespace Atrum::Renderer {
 
 Math::Matrix4x4 MakeViewPlaneParallelBillboardWorld(
     const Math::Vector3 &worldPosition, const Math::Vector3 &worldScale,
@@ -17,14 +17,15 @@ Math::Matrix4x4 MakeViewPlaneParallelBillboardWorld(
     }
   }
 
+  // ローカル +Z 面をカメラ側（視線の逆）に向ける
   const Math::Vector3 halfScale{
       std::max(worldScale.x, 1e-5f) * 0.5f,
       std::max(worldScale.y, 1e-5f) * 0.5f,
-      1.0f,
+      -1.0f,
   };
 
   return Math::Matrix4x4::Scale(halfScale) * rotation *
          Math::Matrix4x4::Translate(worldPosition);
 }
 
-} // namespace Atrum
+} // namespace Atrum::Renderer

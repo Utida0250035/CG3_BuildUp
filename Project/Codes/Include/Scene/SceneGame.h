@@ -7,12 +7,12 @@
 #include <vector>
 
 namespace Atrum {
+
 class BossDeathPresentation;
 class PlayerDeathPresentation;
 class CameraFocusPushController;
 class CameraGameIntroController;
 class Entity;
-}
 
 /// <summary>
 /// ゲームプレイシーン
@@ -74,3 +74,5 @@ private:
   void OnBossDefeated();
   void OnPlayerDefeated();
 };
+
+} // namespace Atrum

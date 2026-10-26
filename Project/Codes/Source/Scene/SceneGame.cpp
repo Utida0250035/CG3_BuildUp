@@ -44,6 +44,8 @@ void SetupGameLighting() {
 
 } // namespace
 
+namespace Atrum {
+
 SceneGame::SceneGame() {}
 
 SceneGame *SceneGame::Instance() {
@@ -447,3 +449,5 @@ void SceneGame::OnPlayerDefeated() {
   playerDeathPresentation_ = std::make_unique<Atrum::PlayerDeathPresentation>();
   playerDeathPresentation_->Begin(player_.get());
 }
+
+} // namespace Atrum

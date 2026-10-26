@@ -510,9 +510,11 @@ namespace Atrum {
 		}
 
 		const uint32_t indexStart = indexBuffer_->GetDrewCount();
-		const std::array<uint32_t, 6> indices{ 0, 1, 2, 1, 3, 2 };
+		// DrawCall の BaseVertexLocation が vertexStart になるため、インデックスは
+		// バッチ内相対（DrawSphere と同じ）にする。絶対頂点番号を書くと二重加算で壊れる。
+		const std::array<uint32_t, 6> indices{ 0, 2, 1, 2, 3, 1 };
 		for (size_t i = 0; i < indices.size(); ++i) {
-			indexBuffer_->SetIndexData(vertexStart + indices[i], indexStart + static_cast<uint32_t>(i));
+			indexBuffer_->SetIndexData(indices[i], indexStart + static_cast<uint32_t>(i));
 		}
 
 		this->DrawCall(textureIndex, 6, 4, directionalLightAddress);

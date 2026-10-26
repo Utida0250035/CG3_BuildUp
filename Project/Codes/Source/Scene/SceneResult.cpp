@@ -27,6 +27,8 @@ void SetupStageLighting() {
 
 } // namespace
 
+namespace Atrum {
+
 void SceneResult::EnterScene() {
   SetupStageViewCamera();
   Atrum::SceneScreenUi::PreloadResultUiTextures();
@@ -120,3 +122,5 @@ SceneResult *SceneResult::Instance() {
   static SceneResult instance;
   return &instance;
 }
+
+} // namespace Atrum

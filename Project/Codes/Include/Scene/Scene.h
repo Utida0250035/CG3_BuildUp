@@ -3,6 +3,8 @@
 #include "Camera/Camera.h"
 #include <memory>
 
+namespace Atrum {
+
 /// <summary>
 /// シーン類 > 基底クラス
 /// </summary>
@@ -58,3 +60,5 @@ public:
   /// </summary>
   virtual void ExitScene() = 0;
 };
+
+} // namespace Atrum

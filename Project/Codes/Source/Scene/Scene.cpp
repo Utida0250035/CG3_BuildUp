@@ -11,6 +11,8 @@
 #include "ForDebug/DebugCamera.h"
 #endif
 
+namespace Atrum {
+
 Scene::Scene() { InitializeCamera(); }
 
 Scene::~Scene() = default;
@@ -53,3 +55,5 @@ void Scene::Draw() {
 #endif
   engine->PostDraw();
 }
+
+} // namespace Atrum

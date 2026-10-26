@@ -1,0 +1,244 @@
+[
+    {
+        "acceleration": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "baseVelocity": {
+            "x": 0.0,
+            "y": 16.350000381469727,
+            "z": 0.0
+        },
+        "burstCount": 20,
+        "damping": 0.0,
+        "duration": 16.530000686645508,
+        "emitAabb": {
+            "max": {
+                "x": 6.400000095367432,
+                "y": 1.059999942779541,
+                "z": 6.840000152587891
+            },
+            "min": {
+                "x": -4.440000057220459,
+                "y": -0.20000000298023224,
+                "z": -5.71999979019165
+            }
+        },
+        "emitCircle": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 10.0
+        },
+        "emitMode": "CONTINUOUS",
+        "emitPointPos": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "emitRate": 512.0,
+        "emitShape": "CIRCLE_XZ",
+        "emitSphere": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 0.11999999731779099
+        },
+        "endColor": {
+            "w": 0.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "endScale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "isLooping": true,
+        "killFieldParam": {
+            "isUse": false,
+            "localAabb": {
+                "max": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "localSphere": {
+                "center": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 0.0
+            },
+            "mode": "INSIDE",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "shape": "SPHERE",
+            "simulationSpaceFromEmitter": "LOCAL"
+        },
+        "maxCount": 512,
+        "maxLifeDuration": 1.0800000429153442,
+        "minLifeDuration": 0.1899999976158142,
+        "movementMode": "DIRECTIONAL",
+        "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+        "mtlFileName": "unitSphere.mtl",
+        "objDirectoryPath": "./Assets/Objects/unitSphere",
+        "objFileName": "unitSphere.obj",
+        "renderMode": "BILLBOARD",
+        "simulationSpaceFromEmitter": "WORLD",
+        "startColor": {
+            "w": 0.35686275362968445,
+            "x": 0.0,
+            "y": 0.501960813999176,
+            "z": 0.0
+        },
+        "startScale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "textureFilePath": "./Assets/Images/white4x4.png",
+        "velocityRandom": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    },
+    {
+        "acceleration": {
+            "x": 0.0,
+            "y": -6.5,
+            "z": 0.0
+        },
+        "baseVelocity": {
+            "x": 0.0,
+            "y": 3.5,
+            "z": 0.0
+        },
+        "burstCount": 6,
+        "damping": 0.0,
+        "duration": 0.2199999988079071,
+        "emitAabb": {
+            "max": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "min": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "emitCircle": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 0.0
+        },
+        "emitMode": "BURST",
+        "emitPointPos": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "emitRate": 1.0,
+        "emitShape": "POINT",
+        "emitSphere": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 8.0
+        },
+        "endColor": {
+            "w": 0.0,
+            "x": 0.44999998807907104,
+            "y": 1.0499999523162842,
+            "z": 1.2000000476837158
+        },
+        "endScale": {
+            "x": 0.18000000715255737,
+            "y": 0.18000000715255737,
+            "z": 0.18000000715255737
+        },
+        "isLooping": false,
+        "killFieldParam": {
+            "isUse": false,
+            "localAabb": {
+                "max": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "localSphere": {
+                "center": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 0.0
+            },
+            "mode": "INSIDE",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "shape": "SPHERE",
+            "simulationSpaceFromEmitter": "LOCAL"
+        },
+        "maxCount": 10,
+        "maxLifeDuration": 0.20000000298023224,
+        "minLifeDuration": 0.10000000149011612,
+        "movementMode": "RADIAL_SPREAD",
+        "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+        "mtlFileName": "unitSphere.mtl",
+        "objDirectoryPath": "./Assets/Objects/unitSphere",
+        "objFileName": "unitSphere.obj",
+        "renderMode": "BUILTIN_SPHERE",
+        "simulationSpaceFromEmitter": "WORLD",
+        "startColor": {
+            "w": 1.0,
+            "x": 1.350000023841858,
+            "y": 1.350000023841858,
+            "z": 1.5
+        },
+        "startScale": {
+            "x": 0.7799999713897705,
+            "y": 0.7799999713897705,
+            "z": 0.7799999713897705
+        },
+        "textureFilePath": "./Assets/Images/white4x4.png",
+        "velocityRandom": {
+            "x": 1.2000000476837158,
+            "y": 1.2000000476837158,
+            "z": 0.44999998807907104
+        }
+    }
+]

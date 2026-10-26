@@ -15,7 +15,7 @@ namespace Atrum::ParticleEditor {
 
 /// ImGui パーティクルエディタの状態（シーンが保持）
 struct UiState {
-  std::string jsonFilePath = "./Assets/Particles/parry_reflect.json";
+  std::string jsonFilePath = "../EditorAssets/Particles/editorTest.json";
   int selectedLayerIndex = 0;
   bool requestApplyPreview = false;
   bool requestReloadFromDisk = false;
@@ -24,7 +24,8 @@ struct UiState {
 };
 
 /// メインウィンドウ。操作フラグを立て、Param を直接編集する
-void Draw(UiState &uiState, std::vector<Visual::Particle::Param> &layerParams);
+void Draw(UiState &uiState,
+          std::vector<Atrum::Visual::Particle::Param> &layerParams);
 
 } // namespace Atrum::ParticleEditor
 

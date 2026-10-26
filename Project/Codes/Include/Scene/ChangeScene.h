@@ -1,8 +1,10 @@
-﻿#pragma once
+#pragma once
+
+namespace Atrum {
 
 /// <summary>
 /// シーン遷移類 > 基底クラス
-/// 
+///
 /// シーン遷移の演出用基底クラス
 /// </summary>
 class ChangeScene {
@@ -54,3 +56,5 @@ public:
 	virtual ~ChangeScene() {};
 
 };
+
+} // namespace Atrum

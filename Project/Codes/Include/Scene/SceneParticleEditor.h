@@ -16,6 +16,8 @@ struct UiState;
 } // namespace Atrum::ParticleEditor
 #endif
 
+namespace Atrum {
+
 /// パーティクル JSON の編集・プレビュー専用シーン（Development + ImGui）
 class SceneParticleEditor : public Scene {
 public:
@@ -49,3 +51,5 @@ private:
   void ApplyPreview();
   void HandleEditorRequests();
 };
+
+} // namespace Atrum

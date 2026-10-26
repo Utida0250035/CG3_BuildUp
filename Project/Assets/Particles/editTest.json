@@ -1,0 +1,123 @@
+[
+    {
+        "acceleration": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "baseVelocity": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "burstCount": 0,
+        "damping": 0.0,
+        "duration": 5.0,
+        "emitAabb": {
+            "max": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "min": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "emitCircle": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 0.0
+        },
+        "emitMode": "CONTINUOUS",
+        "emitPointPos": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "emitRate": 5.0,
+        "emitShape": "SPHERE",
+        "emitSphere": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 8.0
+        },
+        "endColor": {
+            "w": 0.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "endScale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "isLooping": false,
+        "killFieldParam": {
+            "isUse": false,
+            "localAabb": {
+                "max": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "min": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "localSphere": {
+                "center": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                },
+                "radius": 0.0
+            },
+            "mode": "INSIDE",
+            "position": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "shape": "SPHERE",
+            "simulationSpaceFromEmitter": "LOCAL"
+        },
+        "maxCount": 32,
+        "maxLifeDuration": 1.0,
+        "minLifeDuration": 0.5,
+        "movementMode": "DIRECTIONAL",
+        "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+        "mtlFileName": "unitSphere.mtl",
+        "objDirectoryPath": "./Assets/Objects/unitSphere",
+        "objFileName": "unitSphere.obj",
+        "renderMode": "MODEL",
+        "simulationSpaceFromEmitter": "WORLD",
+        "startColor": {
+            "w": 1.0,
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "startScale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "textureFilePath": "./Assets/Images/white4x4.png",
+        "velocityRandom": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+]
