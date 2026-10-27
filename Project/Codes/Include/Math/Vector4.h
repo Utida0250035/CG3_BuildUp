@@ -110,6 +110,8 @@ struct Vector4 {
 
   static constexpr Vector4 Black() { return Vector4{0.0f, 0.0f, 0.0f, 1.0f}; }
 
+  static constexpr Vector4 Zero() { return Vector4{ 0.0f, 0.0f, 0.0f, 0.0f }; }
+
 #ifdef USE_IMGUI
 
   void DragGui(const char *label);

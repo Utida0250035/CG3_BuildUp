@@ -8,74 +8,77 @@
 
 namespace Atrum {
 
-class CmpDirection;
-class CmpHealthHit;
-class CmpHitSphere;
-class Entity;
-class FrameDeltaTime;
-class CmpSwing;
-class CmpMesh;
+	class CmpDirection;
+	class CmpHealthHit;
+	class CmpHitSphere;
+	class Entity;
+	class FrameDeltaTime;
+	class CmpSwing;
+	class CmpMesh;
 
-namespace Player {
+	namespace Player {
 
-class CmpDrawPlayerParryField;
+		class CmpDrawPlayerParryField;
 
-class CmpMoveByInput2D : public ComponentUpd {
-private:
-  CmpInput *cmpInput_ = nullptr;
-  InputData inputData_{};
-  FrameDeltaTime *frameDeltaTime_ = nullptr;
-  BehaviorBox behaviorBox_{};
+		class CmpMoveByInput2D : public ComponentUpd {
+		private:
 
-  CmpHitSphere *parryCmpHitSphere_ = nullptr;
-  CmpHitSphere *cmpHitSphere_ = nullptr;
-  CmpSwing *cmpSwingWeapon_ = nullptr;
-  CmpMesh *cmpMesh_ = nullptr;
-  CmpHealthHit *cmpHealthHit_ = nullptr;
-  CmpDrawPlayerParryField *cmpDrawPlayerParryField_ = nullptr;
-  CmpDirection *cmpDirection_ = nullptr;
+			static inline constexpr Math::Vector4 kDefaultColor = { 0.0625f, 0.0625f, 0.0625f, 1.0f };
 
-  Entity *directionMarkerForward_ = nullptr;
-  Entity *directionMarkerRear_ = nullptr;
-  float directionMarkerFaceSignX_ = 1.0f;
-  float directionMarkerSideOffset_ = 0.65f;
+			CmpInput* cmpInput_ = nullptr;
+			InputData inputData_{};
+			FrameDeltaTime* frameDeltaTime_ = nullptr;
+			BehaviorBox behaviorBox_{};
 
-  Math::Vector4 invincibleColor = {0.75f, 0.75f, 0.1f, 1.0f};
-  bool isInvincibleColorWaitNextFrame_ = false;
+			CmpHitSphere* parryCmpHitSphere_ = nullptr;
+			CmpHitSphere* cmpHitSphere_ = nullptr;
+			CmpSwing* cmpSwingWeapon_ = nullptr;
+			CmpMesh* cmpMesh_ = nullptr;
+			CmpHealthHit* cmpHealthHit_ = nullptr;
+			CmpDrawPlayerParryField* cmpDrawPlayerParryField_ = nullptr;
+			CmpDirection* cmpDirection_ = nullptr;
 
-  float parryDuration_ = 0.25f;
-  float parryTimer_ = 0.0f;
-  float invincibleDuration_ = 0.03125f;
-  float invincibleTimer_ = 0.0f;
-  bool isAirJumpVariable_ = false;
+			Entity* directionMarkerForward_ = nullptr;
+			Entity* directionMarkerRear_ = nullptr;
+			float directionMarkerFaceSignX_ = 1.0f;
+			float directionMarkerSideOffset_ = 0.65f;
 
-  /// 被弾無敵中の点滅用
-  float damageInvincibleBlinkTimer_ = 0.0f;
-  bool wasDamageInvincible_ = false;
-  Math::Vector4 directionMarkerForwardBaseColor_{0.85f, 0.75f, 0.2f, 1.0f};
-  Math::Vector4 directionMarkerRearBaseColor_{0.85f, 0.75f, 0.2f, 0.45f};
+			Math::Vector4 invincibleColor = { 0.75f, 0.75f, 0.1f, 1.0f };
+			bool isInvincibleColorWaitNextFrame_ = false;
 
-public:
-  constexpr UpdCmpGroup UpdGroup() const override { return UpdCmpGroup::MOVEMENT; }
+			float parryDuration_ = 0.25f;
+			float parryTimer_ = 0.0f;
+			float invincibleDuration_ = 0.03125f;
+			float invincibleTimer_ = 0.0f;
+			bool isAirJumpVariable_ = false;
 
-  void ResolveDependence() override;
-  void Initialize() override;
-  void Update() override;
+			/// 被弾無敵中の点滅用
+			float damageInvincibleBlinkTimer_ = 0.0f;
+			bool wasDamageInvincible_ = false;
+			Math::Vector4 directionMarkerForwardBaseColor_{ 0.85f, 0.75f, 0.2f, 1.0f };
+			Math::Vector4 directionMarkerRearBaseColor_{ 0.85f, 0.75f, 0.2f, 0.45f };
 
-  BehaviorBox &RefBehaviorBox() { return behaviorBox_; }
+		public:
+			constexpr UpdCmpGroup UpdGroup() const override { return UpdCmpGroup::MOVEMENT; }
 
-  void SetDirectionMarkers(Entity *forwardMarker, Entity *rearMarker,
-                           const float sideOffset);
-  void SetDirectionMarkerBaseColors(const Math::Vector4 &forwardColor,
-                                    const Math::Vector4 &rearColor);
-  void SetInitialDirectionFaceSignX(const float signX) {
-    directionMarkerFaceSignX_ = signX;
-  }
+			void ResolveDependence() override;
+			void Initialize() override;
+			void Update() override;
 
-private:
-  void UpdateDirectionMarkerPositions();
-};
+			BehaviorBox& RefBehaviorBox() { return behaviorBox_; }
 
-} // namespace Player
+			void SetDirectionMarkers(Entity* forwardMarker, Entity* rearMarker,
+				const float sideOffset);
+			void SetDirectionMarkerBaseColors(const Math::Vector4& forwardColor,
+				const Math::Vector4& rearColor);
+			void SetInitialDirectionFaceSignX(const float signX) {
+				directionMarkerFaceSignX_ = signX;
+			}
+
+		private:
+			void UpdateDirectionMarkerPositions();
+		};
+
+	} // namespace Player
 
 } // namespace Atrum

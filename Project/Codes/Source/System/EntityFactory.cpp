@@ -85,7 +85,7 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
 
   CmpMesh *cmpMesh = playerParry->GetDrawCmp<CmpMesh>();
   cmpMesh->SetRadius(0.5f);
-  cmpMesh->SetColor(Math::Vector4::White());
+  cmpMesh->SetColor(Math::Vector4::Black());
 
   CmpLhRigidBody *cmpLhRigidBody = playerParry->GetUpdCmp<CmpLhRigidBody>();
   cmpLhRigidBody->SetGravity({0.0f, -45.0f, 0.0f});
