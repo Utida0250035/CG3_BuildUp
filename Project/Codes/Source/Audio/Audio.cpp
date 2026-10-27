@@ -22,11 +22,12 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 
 } // namespace
 
-	AudioManager* AudioManager::instance_ = nullptr;
+	std::unique_ptr<AudioManager> AudioManager::instance_ = nullptr;
 
 	AudioManager::~AudioManager() {
 
 		sourceVoicePool_.clear();
+		streamingSourceVoicePool_.clear();
 
 		xAudio2_.Reset();
 
@@ -199,18 +200,19 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 	size_t AudioManager::LoadShort(const char* filePath) {
 
 		std::vector<uint8_t> pBuffer;
-		WAVEFORMATEX* wfEx = new WAVEFORMATEX();
+		std::unique_ptr<WAVEFORMATEX> wfEx = std::make_unique<WAVEFORMATEX>();
+		WAVEFORMATEX* wfExPtr = wfEx.get();
 
 		const bool result =
-		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
+		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfExPtr);
 		if (!result) {
-			CoTaskMemFree(wfEx);
+			CoTaskMemFree(wfEx.release());
 			return static_cast<size_t>(-1);
 		}
 
-		this->AddSource(*wfEx, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);
+		this->AddSource(*wfExPtr, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);
 
-		CoTaskMemFree(wfEx);
+		CoTaskMemFree(wfEx.release());
 
 		return soundDataStorage_.size() - 1;
 

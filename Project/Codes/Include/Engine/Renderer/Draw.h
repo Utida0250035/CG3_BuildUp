@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Engine/Resource/ConstantBuffer.h"
 #include "Engine/Resource/LightData.h"
@@ -31,6 +31,11 @@ namespace Atrum {
 	class Draw final {
 
 	private:
+
+		struct Token {
+			explicit Token() = default;
+		};
+
 		friend AtrumEngine;
 
 		Camera* camera_ = nullptr;
@@ -51,9 +56,14 @@ namespace Atrum {
 		ID3D12Device* pDevice_ = nullptr;
 
 		Draw() = default;
+
+	public:
+
 		~Draw() = default;
 
-		static Draw* instance_;
+	private:
+
+		static std::unique_ptr<Draw> instance_;
 
 		/// <summary>
 		/// 三角形の描画呼び出し
@@ -109,6 +119,9 @@ namespace Atrum {
 		D3D12_RECT scissorRect_{};
 
 	public:
+
+		explicit Draw(Token) {};
+
 		void Initialize(ID3D12Device* device, CommandContext* commandContext,
 			DescriptorAllocator* srvAllocator);
 
@@ -173,19 +186,16 @@ namespace Atrum {
 
 			if (!instance_) {
 
-				instance_ = new Draw();
+				instance_ = std::make_unique<Draw>(Token{});
 			}
 
-			return instance_;
+			return instance_.get();
 		}
 
 		static void Destroy() {
 
 			if (instance_) {
-
-				delete instance_;
-
-				instance_ = nullptr;
+				instance_.reset();
 			}
 		}
 	};

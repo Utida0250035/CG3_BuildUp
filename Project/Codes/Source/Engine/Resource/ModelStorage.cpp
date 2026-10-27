@@ -36,7 +36,7 @@ namespace Atrum {
 		return nullptr;
 	}
 
-	ModelStorage* ModelStorage::instance_ = nullptr;
+	std::unique_ptr<ModelStorage> ModelStorage::instance_ = nullptr;
 
 	void ModelStorage::Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex) {
 
@@ -291,7 +291,7 @@ namespace Atrum {
 					assetMeshMap_.emplace(Hash64(meshName), assetMeshData);
 
 					// 解放・再生成して次に備える
-					assetMeshData.reset(new AssetMeshData());
+					assetMeshData.reset(std::make_unique<AssetMeshData>().release());
 
 					break;
 
@@ -552,7 +552,7 @@ namespace Atrum {
 
 					}
 
-					assetMaterial.reset(new AssetMaterialData());
+					assetMaterial.reset(std::make_unique<AssetMaterialData>().release());
 
 					D::LogFile::Instance()->Log("LoadMtl: " + mtlName);
 

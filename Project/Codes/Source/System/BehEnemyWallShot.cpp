@@ -2,15 +2,16 @@
 #include "System/BossCombatEnrage.h"
 
 #include "System/AttackTelegraph/AttackTelegraphUtils.h"
-#include "System/BehRush.h"
 #include "System/AttackTelegraph/CmpAttackTelegraph.h"
+#include "System/BehRush.h"
+#include "System/DeltaTime.h"
 #include "System/Entity/Components/CmpEnemy.h"
 #include "System/Entity/Components/CmpReflectAbleBullet.h"
-#include "System/DeltaTime.h"
 #include "System/EntityFactory.h"
 #include "System/PlaySe.h"
 #include "System/StageBounds.h"
 #include <vector>
+#include <memory>
 
 namespace Atrum {
 
@@ -74,9 +75,9 @@ void BehEnemyWallShot::TransitionToRushIfFinished() {
   }
 
   shotCount_ = shotCountMax;
-  BehRush *behRush = new BehRush();
+  std::unique_ptr<BehRush> behRush = std::make_unique<BehRush>();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
-  cmpEnemy_->RefBehaviorBox().Transition(behRush);
+  cmpEnemy_->RefBehaviorBox().Transition(behRush.release());
 }
 
 void BehEnemyWallShot::Execute() {

@@ -43,7 +43,7 @@ void SceneResult::Update() {
   if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
     Atrum::PlaySubmitSe();
     Atrum::CommandChangeScene::Instance()->Set(SceneTitle::Instance(),
-                                               new Atrum::ChangeSceneFade());
+                                               std::make_unique<ChangeSceneFade>().release());
   }
 }
 

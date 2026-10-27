@@ -8,7 +8,7 @@
 #include <vector>
 
 namespace Atrum {
-class Camera;
+	class Camera;
 } // namespace Atrum
 
 namespace Atrum::Particle::Emitter {
@@ -16,65 +16,77 @@ namespace Atrum::Particle::Emitter {
 /// <summary>
 /// Visual::Particle::Emitter の生成・更新・描画を一括管理する
 /// </summary>
-class EmitterManager {
-public:
-  /// 同名エミッタを複数登録できる 1 エントリ
-  struct RegisteredEmitter {
-    uint64_t nameHash = 0;
-    std::unique_ptr<Atrum::Visual::Particle::Emitter> emitter;
-  };
+	class EmitterManager {
+	public:
+	  /// 同名エミッタを複数登録できる 1 エントリ
+		struct RegisteredEmitter {
+			uint64_t nameHash = 0;
+			std::unique_ptr<Atrum::Visual::Particle::Emitter> emitter;
+		};
 
-private:
-  static EmitterManager *instance_;
+	private:
+		struct Token {
+			explicit Token() = default;
+		};
 
-  EmitterManager() = default;
-  ~EmitterManager() = default;
+		static std::unique_ptr<EmitterManager> instance_;
 
-  std::vector<RegisteredEmitter> emitters_{};
+		EmitterManager() = default;
 
-  Camera *camera_ = nullptr;
+	public:
 
-public:
-  EmitterManager(const EmitterManager &) = delete;
-  EmitterManager &operator=(const EmitterManager &) = delete;
+		~EmitterManager() = default;
 
-  static EmitterManager *Instance();
-  static void Destroy();
+	private:
 
-  /// <summary>
-  /// 名前を付けてエミッタを配列末尾に追加する（同名可）
-  /// </summary>
-  void Register(const std::string &name,
-                std::unique_ptr<Atrum::Visual::Particle::Emitter> &&emitter);
+		std::vector<RegisteredEmitter> emitters_{};
 
-  /// <summary>
-  /// 新規エミッタを生成して Register し、指定位置で 1 回 Emit する
-  /// </summary>
-  Atrum::Visual::Particle::Emitter *
-  AddOneShotEmitter(const std::string &emitterName, const char *jsonFilePath,
-                    const Math::Vector3 &worldPosition);
+		Camera* camera_ = nullptr;
 
-  /// 最初に見つかった同名エミッタ（後方互換）
-  Atrum::Visual::Particle::Emitter *Find(const std::string &name);
-  Atrum::Visual::Particle::Emitter *FindByNameHash(uint64_t nameHash);
+	public:
 
-  void SetCamera(Camera *camera);
+		explicit EmitterManager(Token) {}
 
-  /// 同名の全エミッタで Emit する
-  void Emit(const std::string &name);
-  void EmitAll();
+		EmitterManager(const EmitterManager&) = delete;
+		EmitterManager& operator=(const EmitterManager&) = delete;
 
-  void Update();
-  void Draw();
+		static EmitterManager* Instance();
+		static void Destroy();
 
-  /// <summary>
-  /// アクティブなパーティクルが1つもないエミッタを取り除く
-  /// </summary>
-  void RemoveInactive();
+		/// <summary>
+		/// 名前を付けてエミッタを配列末尾に追加する（同名可）
+		/// </summary>
+		void Register(const std::string& name,
+			std::unique_ptr<Atrum::Visual::Particle::Emitter>&& emitter);
 
-  void Clear();
+/// <summary>
+/// 新規エミッタを生成して Register し、指定位置で 1 回 Emit する
+/// </summary>
+		Atrum::Visual::Particle::Emitter*
+			AddOneShotEmitter(const std::string& emitterName, const char* jsonFilePath,
+				const Math::Vector3& worldPosition);
 
-  const std::vector<RegisteredEmitter> &GetEmitters() const { return emitters_; }
-};
+/// 最初に見つかった同名エミッタ（後方互換）
+		Atrum::Visual::Particle::Emitter* Find(const std::string& name);
+		Atrum::Visual::Particle::Emitter* FindByNameHash(uint64_t nameHash);
+
+		void SetCamera(Camera* camera);
+
+		/// 同名の全エミッタで Emit する
+		void Emit(const std::string& name);
+		void EmitAll();
+
+		void Update();
+		void Draw();
+
+		/// <summary>
+		/// アクティブなパーティクルが1つもないエミッタを取り除く
+		/// </summary>
+		void RemoveInactive();
+
+		void Clear();
+
+		const std::vector<RegisteredEmitter>& GetEmitters() const { return emitters_; }
+	};
 
 } // namespace Atrum::Particle::Emitter

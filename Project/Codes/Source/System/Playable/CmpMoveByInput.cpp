@@ -91,8 +91,8 @@ void CmpMoveByInput2D::UpdateDirectionMarkerPositions() {
 
 void CmpMoveByInput2D::Initialize() {
   behaviorBox_.SetGrandOwner(&RefOwner());
-  behaviorBox_.Transition(new BehWalkAndJump());
-  if (parryCmpHitSphere_ != nullptr) {
+  behaviorBox_.Transition(std::make_unique<BehWalkAndJump>().release());
+  if (parryCmpHitSphere_) {
     parryCmpHitSphere_->SetIsActive(false);
   }
   parryTimer_ = 0.0f;

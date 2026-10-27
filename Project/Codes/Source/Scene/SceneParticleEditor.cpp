@@ -136,7 +136,7 @@ void SceneParticleEditor::Update() {
 
 	if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F1)) {
 		Atrum::CommandChangeScene::Instance()->Set(SceneTitle::Instance(),
-			new Atrum::ChangeSceneFade());
+			std::make_unique<ChangeSceneFade>().release());
 		return;
 	}
 

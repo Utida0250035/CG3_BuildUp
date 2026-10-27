@@ -37,9 +37,9 @@ void BehEnemySwingShot::Execute() {
   }
 
   shotCount_ = shotCountMax_;
-  BehRush *behRush = new BehRush();
+  std::unique_ptr<BehRush> behRush = std::make_unique<BehRush>();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
-  cmpEnemy_->RefBehaviorBox().Transition(behRush);
+  cmpEnemy_->RefBehaviorBox().Transition(behRush.release());
 }
 
 } // namespace Atrum

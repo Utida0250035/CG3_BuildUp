@@ -1,4 +1,4 @@
-﻿#include "Engine/Alias/CoreAlias.h"
+#include "Engine/Alias/CoreAlias.h"
 
 #include "Cast/StaticCast.h"
 #include "Engine/Command/CommandContext.h"
@@ -52,7 +52,7 @@ void AgentDebugLogDraw(const char *location, const char *message,
 
 namespace Atrum {
 
-	Draw* Draw::instance_ = nullptr;
+	std::unique_ptr<Draw> Draw::instance_ = nullptr;
 
 	void Draw::Initialize(ID3D12Device* device,
 		CommandContext* commandContextDirect,

@@ -1,23 +1,24 @@
 #pragma once
 
-#include "Audio/StreamingSourceVoice.h"
-#include "Audio/SourceVoice.h"
 #include "Audio/AudioHandle.h"
-
-#include <unordered_map>
+#include "Audio/SourceVoice.h"
+#include "Audio/StreamingSourceVoice.h"
+#include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace Atrum::Audio {
 
 	class AudioManager {
 
-	private:
-
+	public:
 		~AudioManager();
+
+	private:
 		AudioManager() = default;
 
-		static AudioManager* instance_;
+		static std::unique_ptr<AudioManager> instance_;
 
 		template<typename T>
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -111,7 +112,13 @@ namespace Atrum::Audio {
 
 		bool TryRecoverLoopingStreamingVoice(StreamingSourceVoice &voice);
 
+		struct Token {
+			explicit Token() = default;
+		};
+
 	public:
+
+		explicit AudioManager(Token) {}
 
 		void Initialize();
 
@@ -150,11 +157,11 @@ namespace Atrum::Audio {
 
 			if (!instance_) {
 
-				instance_ = new AudioManager();
+				instance_ = std::make_unique<AudioManager>(Token{});
 
 			}
 
-			return instance_;
+			return instance_.get();
 
 		}
 
@@ -162,9 +169,7 @@ namespace Atrum::Audio {
 
 			if (instance_) {
 
-				delete instance_;
-
-				instance_ = nullptr;
+				instance_.reset();
 
 			}
 

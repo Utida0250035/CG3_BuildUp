@@ -6,7 +6,7 @@
 
 namespace Atrum {
 
-EntityStorage* EntityStorage::instance = nullptr;
+std::unique_ptr<EntityStorage> EntityStorage::instance_ = nullptr;
 
 void EntityStorage::Register(const std::string& name, std::unique_ptr<Entity>&& pEntity) {
 

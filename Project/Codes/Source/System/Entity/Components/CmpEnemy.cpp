@@ -66,13 +66,13 @@ void CmpEnemy::TransitionNextShotBehavior() {
   case 0:
   case 1:
   case 2:
-    behaviorBox_.Transition(new BehEnemyShot());
+    behaviorBox_.Transition(std::make_unique<BehEnemyShot>().release());
     break;
   case 3:
-    behaviorBox_.Transition(new BehEnemySpreadShot());
+    behaviorBox_.Transition(std::make_unique<BehEnemySpreadShot>().release());
     break;
   case 4:
-    behaviorBox_.Transition(new BehEnemyBurstShot());
+    behaviorBox_.Transition(std::make_unique<BehEnemyBurstShot>().release());
     break;
   }
   ++shotPatternIndex_;
@@ -110,13 +110,13 @@ void CmpEnemy::Update() {
   case 7:
   case 14:
   case 21:
-    behaviorBox_.Transition(new BehEnemyDepthRush());
+      behaviorBox_.Transition(std::make_unique<BehEnemyDepthRush>().release());
     break;
   case 24:
-    behaviorBox_.Transition(new BehEnemyMeteor());
+      behaviorBox_.Transition(std::make_unique<BehEnemyMeteor>().release());
     break;
   case 26:
-    behaviorBox_.Transition(new BehEnemyWallShot());
+      behaviorBox_.Transition(std::make_unique<BehEnemyWallShot>().release());
     break;
   // 放射／固定リング弾幕は頻度を下げるためローテから外す
   default:

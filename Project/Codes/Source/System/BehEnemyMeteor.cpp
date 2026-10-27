@@ -12,6 +12,7 @@
 #include "System/StageBounds.h"
 
 #include <filesystem>
+#include <memory>
 
 namespace Atrum {
 
@@ -49,9 +50,9 @@ void BehEnemyMeteor::FireMeteor(const float targetX) {
 }
 
 void BehEnemyMeteor::TransitionToRush() {
-  BehRush *behRush = new BehRush();
+  std::unique_ptr<BehRush> behRush = std::make_unique<BehRush>();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
-  cmpEnemy_->RefBehaviorBox().Transition(behRush);
+  cmpEnemy_->RefBehaviorBox().Transition(behRush.release());
 }
 
 void BehEnemyMeteor::Execute() {

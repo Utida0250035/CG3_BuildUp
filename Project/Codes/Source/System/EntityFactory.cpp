@@ -107,10 +107,10 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   Player::CmpMoveByInput2D *cmpMoveByInput =
       playerParry->GetUpdCmp<Player::CmpMoveByInput2D>();
 
-  Entity *weaponPivot = new Entity();
+  std::unique_ptr<Entity> weaponPivot = std::make_unique<Entity>();
   weaponPivot->AddUpdCmp<CmpChildEntitys>();
   CmpSwing *cmpSwing = playerParry->GetUpdCmp<CmpSwing>();
-  cmpSwing->SetPivot(weaponPivot);
+  cmpSwing->SetPivot(weaponPivot.get());
   cmpSwing->SetSwingSpeed(std::numbers::pi_v<float> * 8.0f);
   cmpSwing->SetSwingDuration(0.25f);
 
@@ -126,14 +126,14 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
 
   auto makeDirectionMarker = [&](const float radius,
                                  const Math::Vector4 &color) -> Entity * {
-    Entity *marker = new Entity();
+    std::unique_ptr<Entity> marker = std::make_unique<Entity>();
     marker->SetIsInheritParentPositionOnly(true);
     marker->AddDrawCmp<CmpMeshSphere>();
     CmpMeshSphere *cmpMarkerMesh = marker->GetDrawCmp<CmpMeshSphere>();
     cmpMarkerMesh->SetRadius(radius);
     cmpMarkerMesh->SetColor(color);
     cmpMarkerMesh->SetSubdivision(8);
-    return marker;
+    return marker.release();
   };
 
   Entity *directionMarkerForward = makeDirectionMarker(0.24f, forwardMarkerColor);
@@ -147,7 +147,7 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   cmpMoveByInput->SetInitialDirectionFaceSignX(1.0f);
 
   playerParry->GetUpdCmp<CmpChildEntitys>()->AddChilds(
-      {weaponPivot, directionMarkerForward, directionMarkerRear});
+      {weaponPivot.release(), directionMarkerForward, directionMarkerRear});
 
   playerParry->ResolveDependencies();
   playerParry->Initialize();
@@ -223,7 +223,7 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
 
   std::vector<Entity *> orbiters;
   for (const OrbitConfig &config : orbitConfigs) {
-    Entity *orbiter = new Entity();
+    std::unique_ptr<Entity> orbiter = std::make_unique<Entity>();
     orbiter->SetEntityType(EntityType::ENEMY_WEAPON);
     orbiter->AddUpdCmp<CmpOrbiter>();
     orbiter->AddDrawCmp<CmpMeshSphere>();
@@ -246,7 +246,7 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
     cmpOrbiter->SetRotateAxis(orbitAxis);
     cmpOrbiter->SetRotateSpeed(config.rotateSpeedByDegree / 180.0f *
                                std::numbers::pi_v<float>);
-    orbiters.push_back(orbiter);
+    orbiters.push_back(orbiter.release());
   }
 
   enemyAstro->GetUpdCmp<CmpChildEntitys>()->AddChilds(orbiters);

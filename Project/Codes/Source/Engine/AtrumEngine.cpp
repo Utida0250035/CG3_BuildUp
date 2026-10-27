@@ -1,4 +1,4 @@
-﻿#include "Audio/Audio.h"
+#include "Audio/Audio.h"
 #include "Camera/Camera.h"
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
@@ -92,7 +92,7 @@ void AgentDebugLog(const char *location, const char *message,
 
 namespace Atrum {
 
-AtrumEngine *AtrumEngine::instance_ = nullptr;
+std::unique_ptr<AtrumEngine> AtrumEngine::instance_ = nullptr;
 
 template <typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -396,7 +396,7 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   frameDeltaTime_ = FrameDeltaTime::Instance();
   frameDeltaTime_->Initialize();
-  deltaTime_.reset(new DeltaTime());
+  deltaTime_ = std::make_unique<DeltaTime>();
 
   /* 音源マネージャーの初期化 */
 

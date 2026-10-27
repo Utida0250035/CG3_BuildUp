@@ -89,13 +89,24 @@ namespace Atrum {
 		inline static constexpr uint32_t kVertexMaxDrawCount = 4096;
 
 		DrawSprite() = default;
+
+	public:
+
 		~DrawSprite() = default;
 
-		static DrawSprite* instance_;
+	private:
+
+		static std::unique_ptr<DrawSprite> instance_;
 
 		Camera* camera_ = nullptr;
 
+		struct Token {
+			explicit Token() = default;
+		};
+
 	public:
+
+		DrawSprite(Token) {}
 
 		void Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator);
 
@@ -137,11 +148,11 @@ namespace Atrum {
 
 			if (!instance_) {
 
-				instance_ = new DrawSprite();
+				instance_ = std::make_unique<DrawSprite>(Token{});
 
 			}
 
-			return instance_;
+			return instance_.get();
 
 		}
 
@@ -149,9 +160,7 @@ namespace Atrum {
 
 			if (instance_) {
 
-				delete instance_;
-
-				instance_ = nullptr;
+				instance_.reset();
 
 			}
 

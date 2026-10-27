@@ -24,7 +24,7 @@ namespace {
 
 namespace Atrum {
 
-	DrawSprite* DrawSprite::instance_ = nullptr;
+	std::unique_ptr<DrawSprite> DrawSprite::instance_ = nullptr;
 
 	void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator) {
 

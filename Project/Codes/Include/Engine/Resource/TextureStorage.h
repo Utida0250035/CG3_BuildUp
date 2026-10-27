@@ -30,7 +30,12 @@ namespace Atrum {
 		std::vector<Texture> textures_{};
 
 		TextureStorage() = default;
+
+	public:
+
 		~TextureStorage() { textures_.clear(); };
+
+	private:
 
 		DirectX::ScratchImage LoadTexture(const std::string& filePath);
 
@@ -42,7 +47,7 @@ namespace Atrum {
 
 		void MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData);
 
-		static TextureStorage* instance_;
+		static std::unique_ptr<TextureStorage> instance_;
 
 		CommandContext* pCommandContextDirect_ = nullptr;
 		Fence* pFence_ = nullptr;
@@ -51,7 +56,13 @@ namespace Atrum {
 		ID3D12Device* pDevice_ = nullptr;
 		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
 
+		struct Token {
+			explicit Token() = default;
+		};
+
 	public:
+
+		explicit TextureStorage(Token) {}
 
 		void Initialize(CommandContext* commandContextDirect, Fence* fence, SwapChain* swapChain, DescriptorAllocator* srvAllocator, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources);
 
@@ -64,23 +75,20 @@ namespace Atrum {
 
 		static TextureStorage* Instance() {
 
-			if (instance_ == nullptr) {
+			if (!instance_) {
 
-				instance_ = new TextureStorage();
+				instance_ = std::make_unique<TextureStorage>(Token{});
 
 			}
 
-			return instance_;
+			return instance_.get();
 
 		}
 
 		static void Destroy() {
 
 			if (instance_) {
-
-				delete instance_;
-				instance_ = nullptr;
-
+				instance_.reset();
 			}
 
 		}

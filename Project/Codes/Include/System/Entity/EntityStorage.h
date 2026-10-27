@@ -14,10 +14,15 @@ struct EntityHandle;
 class EntityStorage final {
 
 private:
-  static EntityStorage *instance;
+  static std::unique_ptr<EntityStorage> instance_;
 
   EntityStorage() { entitys_.reserve(65536); };
+
+public:
+
   ~EntityStorage() = default;
+
+private:
 
   std::vector<std::unique_ptr<Entity>> entitys_{};
 
@@ -34,6 +39,10 @@ private:
 
   void Erase(EntityHandle &handle);
 
+  struct Token {
+      explicit Token() = default;
+  };
+
 public:
   void Register(const std::string &name, std::unique_ptr<Entity> &&pEntity);
 
@@ -45,22 +54,22 @@ public:
 
   void Update();
 
+  explicit EntityStorage(Token) {}
+
   static EntityStorage *Instance() {
 
-    if (!instance) {
+    if (!instance_) {
 
-      instance = new EntityStorage();
+      instance_ = std::make_unique<EntityStorage>(Token{});
     }
 
-    return instance;
+    return instance_.get();
   }
 
   static void Destroy() {
 
-    if (instance) {
-
-      delete instance;
-      instance = nullptr;
+    if (instance_) {
+        instance_.reset();
     }
   }
 };

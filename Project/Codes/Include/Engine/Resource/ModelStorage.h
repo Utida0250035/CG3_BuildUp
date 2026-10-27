@@ -27,9 +27,14 @@ namespace Atrum {
 		uint32_t defaultTextureSrvIndex_ = 1;
 
 		ModelStorage() = default;
+
+	public:
+
 		~ModelStorage() = default;
 
-		static ModelStorage* instance_;
+	private:
+
+		static std::unique_ptr<ModelStorage> instance_;
 
 		CommandContext* pCommandContextDirect_ = nullptr;
 		ID3D12Device* pDevice_ = nullptr;
@@ -39,7 +44,13 @@ namespace Atrum {
 
 		std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
 
+		struct Token {
+			explicit Token() = default;
+		};
+
 	public:
+
+		explicit ModelStorage(Token) {}
 
 		void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex);
 
@@ -54,11 +65,11 @@ namespace Atrum {
 
 			if (instance_ == nullptr) {
 
-				instance_ = new ModelStorage();
+				instance_ = std::make_unique<ModelStorage>(Token{});
 
 			}
 
-			return instance_;
+			return instance_.get();
 
 		}
 
@@ -76,8 +87,7 @@ namespace Atrum {
 
 				}
 
-				delete instance_;
-				instance_ = nullptr;
+				instance_.reset();
 
 			}
 
