@@ -120,11 +120,9 @@ namespace Atrum::Player {
 				isAirJumpVariable_ = true;
 				isInvincibleColorWaitNextFrame_ = true;
 				cmpSwingWeapon_->StartSwing();
-				PlaySeCandidates({ "./Assets/Audios/seSwingWeapon.mp3",
-								  "./Resources/seSwingWeapon.mp3" });
+				PlayPlayerJumpSe();
 			} else if (isAirJumpVariable_) {
-				PlaySeCandidates({ "./Assets/Audios/seSwingWeapon.mp3",
-								  "./Resources/seSwingWeapon.mp3" });
+				PlayPlayerJumpSe();
 				cmpSwingWeapon_->StartSwing();
 				invincibleTimer_ = invincibleDuration_;
 				parryTimer_ = parryDuration_;

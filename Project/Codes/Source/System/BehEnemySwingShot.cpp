@@ -6,6 +6,7 @@
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
+#include "System/PlaySe.h"
 
 namespace Atrum {
 
@@ -24,6 +25,7 @@ void BehEnemySwingShot::Execute() {
     std::unique_ptr<Entity> entBullet = EntityFactory::LinearEnemyBullet({rapidBulletSpeed_, 0.0f, 0.0f}, {});
     entBullet->SetParent(&cmpRotator_->RefPivot());
     cmpBullet_->Shot(entBullet.release());
+    PlayEnemyShotSe();
     ++shotCount_;
   } else {
     shotCoolTimer_ -= frameDeltaTime_->GetDeltaTime();

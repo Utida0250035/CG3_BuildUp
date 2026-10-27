@@ -71,6 +71,18 @@ inline void PlaySubmitSe() {
                     "./Resources/seSubmit.mp3"});
 }
 
+/// 自機ジャンプ
+inline void PlayPlayerJumpSe() {
+  PlaySeCandidates({"./Assets/Audios/sePlayerJump.mp3",
+                    "./Resources/sePlayerJump.mp3"});
+}
+
+/// ボス／敵の弾発射
+inline void PlayEnemyShotSe() {
+  PlaySeCandidates({"./Assets/Audios/seEnemyShot.mp3",
+                    "./Resources/seEnemyShot.mp3"});
+}
+
 /// ループ再生。ファイルが無い場合は失敗した Handle を返す
 inline Audio::Handle PlaySeLoop(const std::string &path) {
   const size_t index = PlaySeDetail::GetOrLoadSeIndex(path);
