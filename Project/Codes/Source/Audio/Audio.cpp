@@ -200,19 +200,18 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 	size_t AudioManager::LoadShort(const char* filePath) {
 
 		std::vector<uint8_t> pBuffer;
-		std::unique_ptr<WAVEFORMATEX> wfEx = std::make_unique<WAVEFORMATEX>();
-		WAVEFORMATEX* wfExPtr = wfEx.get();
+		WAVEFORMATEX* wfEx = nullptr;
 
 		const bool result =
-		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfExPtr);
+		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
 		if (!result) {
-			CoTaskMemFree(wfEx.release());
+			CoTaskMemFree(wfEx);
 			return static_cast<size_t>(-1);
 		}
 
-		this->AddSource(*wfExPtr, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);
+		this->AddSource(*wfEx, std::move(pBuffer), static_cast<UINT>(pBuffer.size()), soundDataStorage_.size(), filePath);
 
-		CoTaskMemFree(wfEx.release());
+		CoTaskMemFree(wfEx);
 
 		return soundDataStorage_.size() - 1;
 
