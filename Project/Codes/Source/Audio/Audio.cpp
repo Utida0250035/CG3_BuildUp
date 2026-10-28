@@ -200,7 +200,7 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 	size_t AudioManager::LoadShort(const char* filePath) {
 
 		std::vector<uint8_t> pBuffer;
-		std::unique_ptr<WAVEFORMATEX> wfEx = std::make_unique<WAVEFORMATEX>();
+		WAVEFORMATEX* wfEx = nullptr;
 		WAVEFORMATEX* wfExPtr = wfEx.get();
 
 		const bool result =
