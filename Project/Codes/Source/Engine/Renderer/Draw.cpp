@@ -8,15 +8,21 @@
 #include "Engine/Renderer/Draw.h"
 #include "Engine/Renderer/Line3DGeometry.h"
 #include "Engine/Resource/AssetModel.h"
+#include "Engine/Resource/CreateBufferResource.h"
 #include "Engine/Resource/DescriptorAllocator.h"
 #include "Engine/Resource/IndexBuffer.h"
+#include "Engine/Resource/ParticleGpuData.h"
 #include "Engine/Resource/VertexBuffer.h"
+#include "Engine/Renderer/BillboardMatrix.h"
 #include "Geometry/PyramidMesh.h"
 #include "Camera/Camera.h"
 
 #include <algorithm>
 #include <array>
+#include <cmath>
+#include <cstring>
 #include <numbers>
+#include <vector>
 #ifdef DEVELOPMENT
 #include <chrono>
 #include <fstream>
@@ -71,6 +77,508 @@ namespace Atrum {
 		CreateMaterialBuffer();
 
 		CreateTransformationBuffer();
+
+		CreateParticleGpuResources();
+
+		CreateParticleInstanceSrv();
+	}
+
+	void Draw::RegisterObject3dAndParticlePipelines(
+	    const std::array<ID3D12PipelineState *,
+	                     static_cast<size_t>(BlendMode::MODE_COUNT)>
+	        &object3dPipelines,
+	    const std::array<ID3D12PipelineState *,
+	                     static_cast<size_t>(BlendMode::MODE_COUNT)>
+	        &particlePipelines) {
+		object3dPipelineByBlend_ = object3dPipelines;
+		particlePipelineByBlend_ = particlePipelines;
+	}
+
+	void Draw::CreateParticleGpuResources() {
+		particleFrameBuffer_ =
+		    std::make_unique<SingleConstantBuffer<ParticleFrameGpuData>>();
+		particleFrameBuffer_->CreateBuffer(pDevice_);
+
+		particleInstanceCapacity_ = kMaxParticleInstances;
+		particleInstanceBufferResource_ = CreateUploadBuffer(
+		    sizeof(ParticleInstanceGpuData) * particleInstanceCapacity_,
+		    pDevice_);
+		particleInstanceBufferResource_->Map(
+		    0, nullptr, reinterpret_cast<void **>(&particleInstanceData_));
+		std::memset(particleInstanceData_, 0,
+		            sizeof(ParticleInstanceGpuData) *
+		                particleInstanceCapacity_);
+	}
+
+	void Draw::CreateParticleInstanceSrv() {
+		particleInstanceSrv_ = pSrvAllocator_->Allocate();
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+		srvDesc.Shader4ComponentMapping =
+		    D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.Buffer.FirstElement = 0;
+		srvDesc.Buffer.NumElements =
+		    static_cast<uint32_t>(particleInstanceCapacity_);
+		srvDesc.Buffer.StructureByteStride =
+		    sizeof(ParticleInstanceGpuData);
+		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+
+		pDevice_->CreateShaderResourceView(particleInstanceBufferResource_.Get(),
+		                                   &srvDesc, particleInstanceSrv_.cpu);
+	}
+
+	void Draw::WriteSphereMeshToBatch(const uint32_t subdivision,
+	                                  const float /*radius*/,
+	                                  uint32_t vertexWriteStart,
+	                                  uint32_t indexWriteStart,
+	                                  uint32_t &outVertexCount,
+	                                  uint32_t &outIndexCount) {
+		namespace M = Math;
+
+		const float kLonEvery =
+		    std::numbers::pi_v<float> * 2.0f / Cast::Float(subdivision);
+		const float kLatEvery =
+		    std::numbers::pi_v<float> / Cast::Float(subdivision);
+
+		VertexData pointA{}, pointB{}, pointC{}, pointD{};
+
+		uint32_t vertexDataCount = vertexWriteStart;
+		uint32_t indexDataCount = indexWriteStart;
+		uint32_t boardCountInSphere = 0;
+		uint32_t baseIndex = 0;
+
+		for (uint32_t latIndex = 0; latIndex < subdivision; ++latIndex) {
+			const float lat = -(std::numbers::pi_v<float> * 0.5f) +
+			                  kLatEvery * Cast::Float(latIndex);
+
+			for (uint32_t lonIndex = 0; lonIndex < subdivision; ++lonIndex) {
+				const float lon = static_cast<float>(lonIndex) * kLonEvery;
+
+				pointA.position =
+				    M::Vector4{cos(lat) * cos(lon), sin(lat), cos(lat) * sin(lon),
+				               0.0f};
+				pointA.position.w = 1.0f;
+				pointA.texCoord =
+				    M::Vector2{Cast::Float(lonIndex) / Cast::Float(subdivision),
+				               1.0f -
+				                   Cast::Float(latIndex) / Cast::Float(subdivision)};
+				pointA.normal = {pointA.position.x, pointA.position.y,
+				                 pointA.position.z};
+				pointA.normal.Normalize();
+
+				pointB.position =
+				    M::Vector4{cos(lat + kLatEvery) * cos(lon),
+				               sin(lat + kLatEvery),
+				               cos(lat + kLatEvery) * sin(lon), 0.0f};
+				pointB.position.w = 1.0f;
+				pointB.texCoord =
+				    M::Vector2{Cast::Float(lonIndex) / Cast::Float(subdivision),
+				               1.0f - Cast::Float(latIndex + 1) /
+				                          Cast::Float(subdivision)};
+				pointB.normal = {pointB.position.x, pointB.position.y,
+				                 pointB.position.z};
+				pointB.normal.Normalize();
+
+				pointC.position = M::Vector4{cos(lat) * cos(lon + kLonEvery), sin(lat),
+				                             cos(lat) * sin(lon + kLonEvery), 0.0f};
+				pointC.position.w = 1.0f;
+				pointC.texCoord = M::Vector2{
+				    Cast::Float(lonIndex + 1) / Cast::Float(subdivision),
+				    1.0f - Cast::Float(latIndex) / Cast::Float(subdivision)};
+				pointC.normal = {pointC.position.x, pointC.position.y,
+				                 pointC.position.z};
+				pointC.normal.Normalize();
+
+				pointD.position =
+				    M::Vector4{cos(lat + kLatEvery) * cos(lon + kLonEvery),
+				               sin(lat + kLatEvery),
+				               cos(lat + kLatEvery) * sin(lon + kLonEvery), 0.0f};
+				pointD.position.w = 1.0f;
+				pointD.texCoord = M::Vector2{
+				    Cast::Float(lonIndex + 1) / Cast::Float(subdivision),
+				    1.0f - Cast::Float(latIndex + 1) / Cast::Float(subdivision)};
+				pointD.normal = {pointD.position.x, pointD.position.y,
+				                 pointD.position.z};
+				pointD.normal.Normalize();
+
+				vertexBuffer_->SetVertexData(pointA, vertexDataCount++);
+				vertexBuffer_->SetVertexData(pointB, vertexDataCount++);
+				vertexBuffer_->SetVertexData(pointC, vertexDataCount++);
+				vertexBuffer_->SetVertexData(pointD, vertexDataCount++);
+
+				baseIndex = boardCountInSphere * 4;
+
+				indexBuffer_->SetIndexData(baseIndex, indexDataCount++);
+				indexBuffer_->SetIndexData(baseIndex + 1, indexDataCount++);
+				indexBuffer_->SetIndexData(baseIndex + 2, indexDataCount++);
+				indexBuffer_->SetIndexData(baseIndex + 1, indexDataCount++);
+				indexBuffer_->SetIndexData(baseIndex + 3, indexDataCount++);
+				indexBuffer_->SetIndexData(baseIndex + 2, indexDataCount++);
+
+				++boardCountInSphere;
+			}
+		}
+
+		outVertexCount = vertexDataCount - vertexWriteStart;
+		outIndexCount = indexDataCount - indexWriteStart;
+	}
+
+	void Draw::WriteBillboardQuadToBatch(uint32_t vertexWriteStart,
+	                                     uint32_t indexWriteStart) {
+		namespace M = Math;
+
+		const M::Vector3 faceNormal{0.0f, 0.0f, 1.0f};
+
+		const std::array<M::Vector4, 4> localPositions{
+		    M::Vector4{-1.0f, -1.0f, 0.0f, 1.0f},
+		    M::Vector4{1.0f, -1.0f, 0.0f, 1.0f},
+		    M::Vector4{-1.0f, 1.0f, 0.0f, 1.0f},
+		    M::Vector4{1.0f, 1.0f, 0.0f, 1.0f},
+		};
+
+		const std::array<M::Vector2, 4> texCoords{
+		    M::Vector2{0.0f, 1.0f},
+		    M::Vector2{1.0f, 1.0f},
+		    M::Vector2{0.0f, 0.0f},
+		    M::Vector2{1.0f, 0.0f},
+		};
+
+		for (size_t i = 0; i < localPositions.size(); ++i) {
+			VertexData vertex{};
+			vertex.position = localPositions[i];
+			vertex.texCoord = texCoords[i];
+			vertex.normal = faceNormal;
+			vertexBuffer_->SetVertexData(
+			    vertex, vertexWriteStart + static_cast<uint32_t>(i));
+		}
+
+		const std::array<uint32_t, 6> indices{0, 2, 1, 2, 3, 1};
+		for (size_t i = 0; i < indices.size(); ++i) {
+			indexBuffer_->SetIndexData(indices[i],
+			                           indexWriteStart +
+			                               static_cast<uint32_t>(i));
+		}
+	}
+
+	void Draw::DrawParticleIndexedInstanced(
+	    uint32_t textureIndex, uint32_t indexCountPerInstance,
+	    uint32_t vertexCountPerInstance, uint32_t startVertexLocation,
+	    uint32_t startIndexLocation, int32_t baseVertexLocation,
+	    uint32_t instanceCount, uint32_t instanceBufferBase,
+	    D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress,
+	    const MaterialData *materialOverride) {
+
+		(void)startVertexLocation;
+
+		if (camera_ == nullptr || instanceCount == 0) {
+			return;
+		}
+
+		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
+
+		const size_t blendIndex = static_cast<size_t>(activeBlendMode_);
+		ID3D12PipelineState *particlePso =
+		    particlePipelineByBlend_[blendIndex];
+		ID3D12PipelineState *objectPso =
+		    object3dPipelineByBlend_[blendIndex];
+		if (particlePso == nullptr || objectPso == nullptr) {
+			assert(false && "DrawParticleIndexedInstanced: PSO が未登録です");
+			return;
+		}
+
+		camera_->UpdateMatrix();
+
+		ParticleFrameGpuData frame{};
+		frame.viewProjection = camera_->GetViewProjectionMatrix();
+		frame.view = camera_->GetViewMatrix();
+		const M::Matrix4x4 invView = frame.view.Inversed();
+		frame.cameraWorld =
+		    M::Vector4{invView.m[3][0], invView.m[3][1], invView.m[3][2], 1.0f};
+		frame.instanceBufferBase = instanceBufferBase;
+		particleFrameBuffer_->SetData(frame);
+
+		MaterialData materialData{};
+		if (materialOverride != nullptr) {
+			materialData = *materialOverride;
+		} else {
+			materialData.color = M::Vector4::White();
+			materialData.uvTransformMatrix = M::Matrix4x4::Identity();
+			materialData.isLightingEnable = false;
+			materialData.isUseTexture = true;
+		}
+		materialBuffer_->SetData(materialData, constantBufferCount_);
+
+		D3D12_GPU_VIRTUAL_ADDRESS materialAddr =
+		    materialBuffer_->GetGpuVirtualAddress() +
+		    (constantBufferCount_ * sizeof(MaterialData));
+
+		auto *cmd = pCommandContextDirect_->GetCommandList();
+
+		cmd->SetGraphicsRootConstantBufferView(0, materialAddr);
+		cmd->SetGraphicsRootConstantBufferView(
+		    4, particleFrameBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootDescriptorTable(5, particleInstanceSrv_.gpu);
+
+		DescriptorAllocator::DescriptorHandle textureHandle =
+		    pSrvAllocator_->GetHandle(textureIndex);
+		cmd->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+		cmd->SetGraphicsRootConstantBufferView(3, directionalLightAddress);
+
+		cmd->SetPipelineState(particlePso);
+		cmd->IASetVertexBuffers(0, 1, vertexBuffer_->PGetVertexBufferView());
+		cmd->IASetIndexBuffer(indexBuffer_->PGetBufferView());
+		cmd->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		(void)vertexCountPerInstance;
+
+		cmd->DrawIndexedInstanced(indexCountPerInstance, instanceCount,
+		                          startIndexLocation, baseVertexLocation, 0);
+
+		cmd->SetPipelineState(objectPso);
+		cmd->SetGraphicsRootConstantBufferView(
+		    0, materialBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootConstantBufferView(
+		    1, transformationBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootConstantBufferView(
+		    3, directionalLightAddress);
+
+		constantBufferCount_++;
+	}
+
+	void Draw::DrawParticleNonIndexedInstanced(
+	    uint32_t textureIndex, const D3D12_VERTEX_BUFFER_VIEW *meshVbv,
+	    uint32_t vertexCountPerInstance, uint32_t instanceCount,
+	    uint32_t instanceBufferBase,
+	    D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress,
+	    const MaterialData *materialOverride) {
+
+		if (camera_ == nullptr || meshVbv == nullptr || instanceCount == 0) {
+			return;
+		}
+
+		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
+
+		const size_t blendIndex = static_cast<size_t>(activeBlendMode_);
+		ID3D12PipelineState *particlePso =
+		    particlePipelineByBlend_[blendIndex];
+		ID3D12PipelineState *objectPso =
+		    object3dPipelineByBlend_[blendIndex];
+		if (particlePso == nullptr || objectPso == nullptr) {
+			assert(false && "DrawParticleNonIndexedInstanced: PSO が未登録です");
+			return;
+		}
+
+		camera_->UpdateMatrix();
+
+		ParticleFrameGpuData frame{};
+		frame.viewProjection = camera_->GetViewProjectionMatrix();
+		frame.view = camera_->GetViewMatrix();
+		const M::Matrix4x4 invView = frame.view.Inversed();
+		frame.cameraWorld =
+		    M::Vector4{invView.m[3][0], invView.m[3][1], invView.m[3][2], 1.0f};
+		frame.instanceBufferBase = instanceBufferBase;
+		particleFrameBuffer_->SetData(frame);
+
+		MaterialData materialData{};
+		if (materialOverride != nullptr) {
+			materialData = *materialOverride;
+		} else {
+			materialData.color = M::Vector4::White();
+			materialData.uvTransformMatrix = M::Matrix4x4::Identity();
+			materialData.isLightingEnable = false;
+			materialData.isUseTexture = true;
+		}
+		materialBuffer_->SetData(materialData, constantBufferCount_);
+
+		D3D12_GPU_VIRTUAL_ADDRESS materialAddr =
+		    materialBuffer_->GetGpuVirtualAddress() +
+		    (constantBufferCount_ * sizeof(MaterialData));
+
+		auto *cmd = pCommandContextDirect_->GetCommandList();
+
+		cmd->SetGraphicsRootConstantBufferView(0, materialAddr);
+		cmd->SetGraphicsRootConstantBufferView(
+		    4, particleFrameBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootDescriptorTable(5, particleInstanceSrv_.gpu);
+
+		DescriptorAllocator::DescriptorHandle textureHandle =
+		    pSrvAllocator_->GetHandle(textureIndex);
+		cmd->SetGraphicsRootDescriptorTable(2, textureHandle.gpu);
+
+		cmd->SetGraphicsRootConstantBufferView(3, directionalLightAddress);
+
+		cmd->SetPipelineState(particlePso);
+		cmd->IASetVertexBuffers(0, 1, meshVbv);
+
+		D3D12_INDEX_BUFFER_VIEW nullIndexView{};
+		nullIndexView.BufferLocation = 0;
+		nullIndexView.SizeInBytes = 0;
+		nullIndexView.Format = DXGI_FORMAT_UNKNOWN;
+		cmd->IASetIndexBuffer(&nullIndexView);
+
+		cmd->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+		cmd->DrawInstanced(vertexCountPerInstance, instanceCount, 0, 0);
+
+		cmd->SetPipelineState(objectPso);
+		cmd->SetGraphicsRootConstantBufferView(
+		    0, materialBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootConstantBufferView(
+		    1, transformationBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootConstantBufferView(
+		    3, directionalLightAddress);
+		cmd->IASetVertexBuffers(0, 1, vertexBuffer_->PGetVertexBufferView());
+		cmd->IASetIndexBuffer(indexBuffer_->PGetBufferView());
+
+		constantBufferCount_++;
+	}
+
+	void Draw::DrawSphereParticlesInstanced(
+	    uint32_t textureIndex, const Math::Transform &uvTransform,
+	    const std::vector<ParticleInstanceGpuData> &instances,
+	    uint32_t subdivision, bool isLighting,
+	    D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (camera_ == nullptr || instances.empty()) {
+			return;
+		}
+
+		(void)isLighting;
+		(void)uvTransform;
+
+		uint32_t geomVertexStart = 0;
+		uint32_t geomIndexStart = 0;
+		uint32_t sphereVertexCount = 0;
+		uint32_t sphereIndexCount = 0;
+		bool geometryWritten = false;
+
+		const size_t total = instances.size();
+		for (size_t offset = 0; offset < total;
+		     offset += kMaxParticleInstances) {
+			const uint32_t batchCount = static_cast<uint32_t>(std::min<size_t>(
+			    kMaxParticleInstances, total - offset));
+
+			std::memcpy(
+			    particleInstanceData_,
+			    instances.data() + offset,
+			    sizeof(ParticleInstanceGpuData) * batchCount);
+
+			if (!geometryWritten) {
+				geomVertexStart = vertexBuffer_->GetDrewCount();
+				geomIndexStart = indexBuffer_->GetDrewCount();
+				WriteSphereMeshToBatch(
+				    subdivision, 1.0f, geomVertexStart, geomIndexStart,
+				    sphereVertexCount, sphereIndexCount);
+				vertexBuffer_->AddDrewCount(sphereVertexCount);
+				indexBuffer_->AddDrewCount(sphereIndexCount);
+				geometryWritten = true;
+			}
+
+			DrawParticleIndexedInstanced(
+			    textureIndex, sphereIndexCount, sphereVertexCount,
+			    geomVertexStart, geomIndexStart,
+			    static_cast<int32_t>(geomVertexStart), batchCount, 0,
+			    directionalLightAddress, nullptr);
+		}
+	}
+
+	void Draw::DrawBillboardParticlesInstanced(
+	    uint32_t textureIndex, const Math::Transform &uvTransform,
+	    const std::vector<ParticleInstanceGpuData> &instances,
+	    bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (camera_ == nullptr || instances.empty()) {
+			return;
+		}
+
+		(void)isLighting;
+		(void)uvTransform;
+
+		constexpr uint32_t kQuadVertexCount = 4;
+		constexpr uint32_t kQuadIndexCount = 6;
+
+		uint32_t geomVertexStart = 0;
+		uint32_t geomIndexStart = 0;
+		bool geometryWritten = false;
+
+		camera_->UpdateMatrix();
+
+		const size_t total = instances.size();
+		for (size_t offset = 0; offset < total;
+		     offset += kMaxParticleInstances) {
+			const uint32_t batchCount = static_cast<uint32_t>(std::min<size_t>(
+			    kMaxParticleInstances, total - offset));
+
+			std::memcpy(
+			    particleInstanceData_,
+			    instances.data() + offset,
+			    sizeof(ParticleInstanceGpuData) * batchCount);
+
+			if (!geometryWritten) {
+				geomVertexStart = vertexBuffer_->GetDrewCount();
+				geomIndexStart = indexBuffer_->GetDrewCount();
+				WriteBillboardQuadToBatch(geomVertexStart, geomIndexStart);
+				vertexBuffer_->AddDrewCount(kQuadVertexCount);
+				indexBuffer_->AddDrewCount(kQuadIndexCount);
+				geometryWritten = true;
+			}
+
+			DrawParticleIndexedInstanced(
+			    textureIndex, kQuadIndexCount, kQuadVertexCount, geomVertexStart,
+			    geomIndexStart, static_cast<int32_t>(geomVertexStart), batchCount,
+			    0, directionalLightAddress, nullptr);
+		}
+	}
+
+	void Draw::DrawModelParticlesInstanced(
+	    AssetModel *model, const std::vector<ParticleInstanceGpuData> &instances,
+	    bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (camera_ == nullptr || model == nullptr || instances.empty()) {
+			return;
+		}
+
+		const auto &nodes = model->GetMeshNodes();
+		if (nodes.empty()) {
+			return;
+		}
+
+		const size_t total = instances.size();
+		for (size_t offset = 0; offset < total;
+		     offset += kMaxParticleInstances) {
+			const uint32_t batchCount = static_cast<uint32_t>(std::min<size_t>(
+			    kMaxParticleInstances, total - offset));
+
+			std::memcpy(
+			    particleInstanceData_,
+			    instances.data() + offset,
+			    sizeof(ParticleInstanceGpuData) * batchCount);
+
+			for (const auto &node : nodes) {
+				if (!node.mesh || !node.material) {
+					continue;
+				}
+
+				MaterialData meshMaterial{};
+				meshMaterial.color = node.material->baseColor;
+				meshMaterial.uvTransformMatrix = M::Matrix4x4::Identity();
+				meshMaterial.isLightingEnable = isLighting ? 1 : 0;
+				meshMaterial.isUseTexture = node.material->isUseTexture ? 1 : 0;
+
+				DrawParticleNonIndexedInstanced(
+				    node.material->textureSrvIndex,
+				    &node.mesh->vertexBufferView,
+				    static_cast<uint32_t>(node.mesh->vertices.size()),
+				    batchCount, 0, directionalLightAddress, &meshMaterial);
+			}
+		}
 	}
 
 	void Draw::CreateVertexBuffer() {

@@ -18,6 +18,7 @@
 #include "Engine/Resource/LightData.h"
 #include "Engine/Resource/MaterialData.h"
 #include "Engine/Resource/Texture.h"
+#include "Engine/Resource/ParticleGpuData.h"
 #include "Engine/Resource/TransformationData.h"
 #include "Engine/Resource/VertexBuffer.h"
 #include "Engine/Resource/VertexData.h"
@@ -112,6 +113,10 @@ namespace Atrum {
 
 		std::unique_ptr<PipelineState>
 			graphicsPSObjects[static_cast<uint32_t>(BlendMode::MODE_COUNT)]{};
+
+		/// Object3d パイプラインと同設定で Vertex のみパーティクル（インスタンス SRV）にした PSO
+		std::unique_ptr<PipelineState> graphicsParticlePSObjects[static_cast<uint32_t>(
+		    BlendMode::MODE_COUNT)]{};
 
 		/* BlendMode */
 
@@ -442,6 +447,21 @@ namespace Atrum {
 		void DrawModel(AssetModel* model, const Math::Matrix4x4& worldMatrix,
 			const bool isLighting,
 			const Math::Vector4& color = Math::Vector4::White());
+
+		/// パーティクル用：同形状を GPU インスタンシングで一括描画
+		void DrawSphereParticlesInstanced(
+		    const uint32_t &textureIndex, const Math::Transform &uvTransform,
+		    const std::vector<ParticleInstanceGpuData> &instances,
+		    uint32_t subdivision, bool isLighting = false);
+
+		void DrawBillboardParticlesInstanced(
+		    const uint32_t &textureIndex, const Math::Transform &uvTransform,
+		    const std::vector<ParticleInstanceGpuData> &instances,
+		    bool isLighting = false);
+
+		void DrawModelParticlesInstanced(
+		    AssetModel *model, const std::vector<ParticleInstanceGpuData> &instances,
+		    bool isLighting = false);
 
 /// <summary>
 /// テクスチャの取得

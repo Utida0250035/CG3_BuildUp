@@ -75,21 +75,24 @@ PixelShaderOutput main(VertexShaderOutput input) {
 	float nDotL = dot(normalize(input.normal), -gDirectionalLight.direction);
 	float cos = 0.0f;
 	
+	float3 materialRgb = gMaterial.color.rgb * input.instanceColor.rgb;
+	float materialAlpha = gMaterial.color.a * input.instanceColor.a;
+
 	if (gMaterial.isLightingEnable) {
 	
 		switch (gDirectionalLight.lightingMode) {
 		
 			case kLightModelLambert:
 				cos = saturate(nDotL);
-				output.color.rgb = gMaterial.color.rgb * textureColor.rgb * cos * gDirectionalLight.intensity * gDirectionalLight.color.rgb;
-				output.color.a = gMaterial.color.a * textureColor.a;
+				output.color.rgb = materialRgb * textureColor.rgb * cos * gDirectionalLight.intensity * gDirectionalLight.color.rgb;
+				output.color.a = materialAlpha * textureColor.a;
 
 				break;
 		
 			case kLightModelHalfLambert:
 				cos = pow(nDotL * 0.5f + 0.5f, 2.0f);
-				output.color.rgb = gMaterial.color.rgb * textureColor.rgb * cos * gDirectionalLight.intensity * gDirectionalLight.color.rgb;
-				output.color.a = gMaterial.color.a * textureColor.a;
+				output.color.rgb = materialRgb * textureColor.rgb * cos * gDirectionalLight.intensity * gDirectionalLight.color.rgb;
+				output.color.a = materialAlpha * textureColor.a;
 
 				break;
 		
@@ -101,7 +104,7 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		
 	} else {
 		
-		output.color = gMaterial.color * textureColor;
+		output.color = float32_t4(materialRgb, materialAlpha) * textureColor;
 		
 	}
 	

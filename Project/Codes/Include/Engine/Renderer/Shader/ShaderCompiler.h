@@ -22,6 +22,9 @@ namespace Atrum {
         // vertexShaderのコンパイル結果
         ComPtr<IDxcBlob> vertexShaderBlob_ = nullptr;
 
+        // パーティクル用 vertexShader（インスタンス StructuredBuffer 参照）
+        ComPtr<IDxcBlob> particleVertexShaderBlob_ = nullptr;
+
         // pixelShaderのコンパイル結果
         ComPtr<IDxcBlob> pixelShaderBlob_ = nullptr;
 
@@ -41,6 +44,7 @@ namespace Atrum {
         /* ゲッター */
 
         IDxcBlob* GetVertexShaderBlob() const { return vertexShaderBlob_.Get(); }
+        IDxcBlob* GetParticleVertexShaderBlob() const { return particleVertexShaderBlob_.Get(); }
         IDxcBlob* GetPixelShaderBlob() const { return pixelShaderBlob_.Get(); }
         IDxcBlob* GetPsBinaryAlphaBlob() const { return psBinaryAlphaBlob_.Get(); }
 

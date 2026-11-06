@@ -33,6 +33,10 @@ void ShaderCompiler::CompileShaders() {
       this->Compile(L"Assets/Shaders/Object3d.VS.hlsl", L"vs_6_0");
   assert(vertexShaderBlob_);
 
+  particleVertexShaderBlob_ =
+      this->Compile(L"Assets/Shaders/Object3dParticle.VS.hlsl", L"vs_6_0");
+  assert(particleVertexShaderBlob_);
+
   pixelShaderBlob_ =
       this->Compile(L"Assets/Shaders/Object3d.PS.hlsl", L"ps_6_0");
   assert(pixelShaderBlob_);

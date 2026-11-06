@@ -192,6 +192,11 @@ namespace Atrum {
 
 #endif
 
+		/// パーティクル等でメッシュ単位にアクセスするため
+		const std::vector<AssetMeshNode> &GetMeshNodes() const {
+			return meshNodes_;
+		}
+
 		void ReleaseResources() {
 
 			meshNodes_.clear();

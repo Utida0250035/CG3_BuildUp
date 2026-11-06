@@ -2,6 +2,7 @@
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Renderer/BillboardMatrix.h"
+#include "Engine/Resource/ParticleGpuData.h"
 #include "Geometry/GeometryRandom.h"
 #include "Math/Lerp.h"
 #include "Math/Vector3.h"
@@ -13,6 +14,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <numbers>
+#include <vector>
 
 namespace {
 	namespace Alg = Atrum::Algorithm;
@@ -377,7 +379,8 @@ namespace Atrum::Visual::Particle {
 			engine->SetCamera(camera_);
 		}
 
-		Math::TransformLH particleTransform{};
+		// 戦闘演出は同フレーム大量描画になりやすいため细分を抑える
+		constexpr uint32_t kBuiltinSphereSubdivision = 2;
 
 		for (size_t i = 0; i < layers_.size(); ++i) {
 
@@ -388,6 +391,11 @@ namespace Atrum::Visual::Particle {
 
 			const auto& layerParticles = particles_[i];
 
+			std::vector<Atrum::ParticleInstanceGpuData> batch;
+			batch.reserve(layer.param.maxCount);
+
+			Math::TransformLH particleTransform{};
+
 			for (const auto& p : layerParticles) {
 				if (!p.isActive)
 					continue;
@@ -396,39 +404,60 @@ namespace Atrum::Visual::Particle {
 				particleTransform.quaternion = p.rotation;
 				particleTransform.scale = p.currentScale;
 
+				Atrum::ParticleInstanceGpuData gpu{};
+				gpu.color = p.currentColor;
+				gpu.radius = 1.0f;
+
 				switch (layer.param.renderMode) {
 					case RenderMode::BUILTIN_SPHERE:
 					{
-						const float radius =
+						gpu.radius =
 							std::max({ p.currentScale.x, p.currentScale.y, p.currentScale.z });
-						// 戦闘演出は同フレーム大量描画になりやすいため细分を抑える
-						constexpr uint32_t kBuiltinSphereSubdivision = 2;
-						engine->DrawSphere(WhiteTextureIndex(), p.currentColor, Math::Transform{},
-							particleTransform.MakeWorldMatrix(), radius,
-							kBuiltinSphereSubdivision, false);
+						particleTransform.scale = Math::Vector3::One();
+						gpu.world = particleTransform.MakeWorldMatrix();
 						break;
 					}
 					case RenderMode::MODEL:
-						if (layer.model != nullptr) {
-							engine->DrawModel(layer.model.get(),
-								particleTransform.MakeWorldMatrix(), false,
-								p.currentColor);
-						}
+						gpu.world = particleTransform.MakeWorldMatrix();
 						break;
 					case RenderMode::BILLBOARD:
 					{
-						Math::Matrix4x4 billboardWorld = Math::Matrix4x4::Identity();
 						if (camera_ != nullptr) {
-							billboardWorld = Renderer::MakeViewPlaneParallelBillboardWorld(
+							gpu.world = Renderer::MakeViewPlaneParallelBillboardWorld(
 								p.position, p.currentScale, camera_->GetViewMatrix());
+						} else {
+							gpu.world = Math::Matrix4x4::Identity();
 						}
-						engine->DrawBillboard(layer.billboardTextureIndex, p.currentColor,
-							Math::Transform{}, billboardWorld, false);
 						break;
 					}
 					default:
-						break;
+						continue;
 				}
+				batch.push_back(gpu);
+			}
+
+			if (batch.empty()) {
+				continue;
+			}
+
+			switch (layer.param.renderMode) {
+				case RenderMode::BUILTIN_SPHERE:
+					engine->DrawSphereParticlesInstanced(
+						WhiteTextureIndex(), Math::Transform{}, batch,
+						kBuiltinSphereSubdivision, false);
+					break;
+				case RenderMode::MODEL:
+					if (layer.model != nullptr) {
+						engine->DrawModelParticlesInstanced(
+							layer.model.get(), batch, false);
+					}
+					break;
+				case RenderMode::BILLBOARD:
+					engine->DrawBillboardParticlesInstanced(
+						layer.billboardTextureIndex, Math::Transform{}, batch, false);
+					break;
+				default:
+					break;
 			}
 		}
 	}

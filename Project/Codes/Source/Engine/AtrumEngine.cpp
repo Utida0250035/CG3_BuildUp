@@ -24,6 +24,7 @@
 #include "String/ConvertString.h"
 #include "System/DeltaTime.h"
 #include "System/Hash64.h"
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <cfloat>
@@ -252,6 +253,22 @@ void AtrumEngine::InitRenderer() {
   pDraw_->Initialize(renderDevice_->GetDevice(), commandContextDirect_.get(),
                      srvAllocator_.get());
 
+  {
+    std::array<ID3D12PipelineState *,
+                static_cast<size_t>(BlendMode::MODE_COUNT)>
+        object3dPso{};
+    std::array<ID3D12PipelineState *,
+                static_cast<size_t>(BlendMode::MODE_COUNT)>
+        particlePso{};
+    for (uint32_t i = 0; i < static_cast<uint32_t>(BlendMode::MODE_COUNT);
+         ++i) {
+      object3dPso[i] = graphicsPSObjects[i]->GetPSO();
+      particlePso[i] = graphicsParticlePSObjects[i]->GetPSO();
+    }
+    pDraw_->RegisterObject3dAndParticlePipelines(object3dPso, particlePso);
+    pDraw_->SetActiveBlendMode(blendMode_);
+  }
+
   pDrawSprite_ = DrawSprite::Instance();
   pDrawSprite_->Initialize(renderDevice_->GetDevice(),
                            commandContextDirect_.get(), srvAllocator_.get());
@@ -373,6 +390,13 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
                                      renderDevice_->GetDevice(),
                                      shaderCompiler_->GetVertexShaderBlob(),
                                      psBlobs[i], static_cast<BlendMode>(i));
+
+    graphicsParticlePSObjects[i] = std::make_unique<PipelineState>();
+
+    graphicsParticlePSObjects[i]->Initialize(
+        rootSignature_->GetRootSignature(), renderDevice_->GetDevice(),
+        shaderCompiler_->GetParticleVertexShaderBlob(), psBlobs[i],
+        static_cast<BlendMode>(i));
   }
 
   this->InitRenderer();
@@ -611,6 +635,8 @@ void AtrumEngine::PreDraw() {
   // PSOを設定
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
+
+  pDraw_->SetActiveBlendMode(blendMode_);
 
   // VBVを設定
   commandContextDirect_->GetCommandList()->IASetVertexBuffers(
@@ -904,6 +930,40 @@ void AtrumEngine::DrawBillboard(const uint32_t &textureIndex,
                         directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+void AtrumEngine::DrawSphereParticlesInstanced(
+    const uint32_t &textureIndex, const M::Transform &uvTransform,
+    const std::vector<ParticleInstanceGpuData> &instances,
+    uint32_t subdivision, const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawSphereParticlesInstanced(
+      textureIndex, uvTransform, instances, subdivision, isLighting,
+      directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
+void AtrumEngine::DrawBillboardParticlesInstanced(
+    const uint32_t &textureIndex, const M::Transform &uvTransform,
+    const std::vector<ParticleInstanceGpuData> &instances,
+    const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawBillboardParticlesInstanced(
+      textureIndex, uvTransform, instances, isLighting,
+      directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
+void AtrumEngine::DrawModelParticlesInstanced(
+    AssetModel *model, const std::vector<ParticleInstanceGpuData> &instances,
+    const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawModelParticlesInstanced(
+      model, instances, isLighting, directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
 void AtrumEngine::DrawLine3D(const uint32_t &textureIndex,
                              const M::Vector4 &textureColor,
                              const M::Transform &uvTransform,
@@ -1014,12 +1074,14 @@ void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
 
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
+  pDraw_->SetActiveBlendMode(blendMode_);
 }
 
 void AtrumEngine::SetBlendModeForFrame(const BlendMode &blendMode) {
   // PSOを設定
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode)]->GetPSO());
+  pDraw_->SetActiveBlendMode(blendMode);
 }
 
 CoUnInitializer::~CoUnInitializer() {
