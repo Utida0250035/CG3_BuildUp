@@ -9,22 +9,6 @@
 
 namespace Atrum::Particle::Emitter {
 
-	std::unique_ptr<EmitterManager> EmitterManager::instance_ = nullptr;
-
-	EmitterManager* EmitterManager::Instance() {
-		if (!instance_) {
-			instance_ = std::make_unique<EmitterManager>(Token{});
-		}
-
-		return instance_.get();
-	}
-
-	void EmitterManager::Destroy() {
-		if (instance_) {
-			instance_.reset();
-		}
-	}
-
 	void EmitterManager::Register(
 		const std::string& name,
 		std::unique_ptr<Atrum::Visual::Particle::Emitter>&& emitter) {
@@ -42,6 +26,29 @@ namespace Atrum::Particle::Emitter {
 		entry.emitter = std::move(emitter);
 
 		emitters_.emplace_back(std::move(entry));
+	}
+
+	void EmitterManager::RemoveByName(const std::string& name) {
+		const uint64_t nameHash = Hash64(name.c_str());
+		emitters_.erase(
+		    std::remove_if(
+		        emitters_.begin(), emitters_.end(),
+		        [nameHash](const RegisteredEmitter& entry) {
+			        return entry.emitter != nullptr &&
+			               entry.nameHash == nameHash;
+		        }),
+		    emitters_.end());
+		retainInactiveEmittersByNameHash_.erase(nameHash);
+	}
+
+	void EmitterManager::SetRetainInactiveByName(const std::string& name,
+	                                           bool retain) {
+		const uint64_t nameHash = Hash64(name.c_str());
+		if (retain) {
+			retainInactiveEmittersByNameHash_.insert(nameHash);
+		} else {
+			retainInactiveEmittersByNameHash_.erase(nameHash);
+		}
 	}
 
 	namespace {
@@ -137,10 +144,17 @@ namespace Atrum::Particle::Emitter {
 	}
 
 	void EmitterManager::RemoveInactive() {
-		const auto isActiveEntry = [](const RegisteredEmitter& entry) {
-			return entry.emitter != nullptr &&
-				!IsEmitterParticleInactive(*entry.emitter);
-		};
+		const auto isActiveEntry =
+		    [this](const RegisteredEmitter& entry) -> bool {
+			    if (entry.emitter == nullptr) {
+				    return false;
+			    }
+			    if (retainInactiveEmittersByNameHash_.count(entry.nameHash) !=
+			        0) {
+				    return true;
+			    }
+			    return !IsEmitterParticleInactive(*entry.emitter);
+		    };
 
 		emitters_.erase(
 			std::remove_if(emitters_.begin(), emitters_.end(),
@@ -152,6 +166,7 @@ namespace Atrum::Particle::Emitter {
 
 	void EmitterManager::Clear() {
 		emitters_.clear();
+		retainInactiveEmittersByNameHash_.clear();
 	}
 
 } // namespace Atrum::Particle::Emitter

@@ -2,6 +2,7 @@
 
 #include "Camera/Camera.h"
 #include "System/Particle/EmitterManager.h"
+#include "Scene/CommandScene.h"
 
 #include <string>
 
@@ -29,16 +30,20 @@ inline constexpr const char *kPlayerDeathDamageEmitterNamePrefix =
     "combat_player_death_damage_";
 
 Particle::Emitter::EmitterManager *CombatEmitterManager() {
-  return Particle::Emitter::EmitterManager::Instance();
+  Atrum::Scene *sceneNow = Atrum::CommandScene::Instance()->GetSceneNow();
+  return sceneNow ? sceneNow->GetParticleEmitterManager() : nullptr;
 }
 
 void PlayOneShotEffect(const char *emitterNamePrefix, const char *jsonFilePath,
                        const Math::Vector3 &worldPosition,
                        const uint32_t sequenceId) {
+  Particle::Emitter::EmitterManager *manager = CombatEmitterManager();
+  if (!manager) {
+    return;
+  }
   const std::string emitterName =
       std::string(emitterNamePrefix) + std::to_string(sequenceId);
-  CombatEmitterManager()->AddOneShotEmitter(emitterName, jsonFilePath,
-                                            worldPosition);
+  manager->AddOneShotEmitter(emitterName, jsonFilePath, worldPosition);
 }
 
 } // namespace
@@ -77,21 +82,30 @@ void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,
 }
 
 void SetEffectCamera(Camera *camera) {
-  CombatEmitterManager()->SetCamera(camera);
+  if (Particle::Emitter::EmitterManager *manager = CombatEmitterManager()) {
+    manager->SetCamera(camera);
+  }
 }
 
 void UpdateCombatParticleEffects() {
   Particle::Emitter::EmitterManager *manager = CombatEmitterManager();
+  if (!manager) {
+    return;
+  }
   manager->Update();
   manager->RemoveInactive();
 }
 
 void DrawCombatParticleEffects() {
-  CombatEmitterManager()->Draw();
+  if (Particle::Emitter::EmitterManager *manager = CombatEmitterManager()) {
+    manager->Draw();
+  }
 }
 
 void ClearCombatParticleEffects() {
-  CombatEmitterManager()->Clear();
+  if (Particle::Emitter::EmitterManager *manager = CombatEmitterManager()) {
+    manager->Clear();
+  }
 }
 
 } // namespace Atrum::Particle::Combat

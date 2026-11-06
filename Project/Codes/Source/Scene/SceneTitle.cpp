@@ -33,6 +33,7 @@ namespace {
 namespace Atrum {
 
 	void SceneTitle::EnterScene() {
+		EnsureCommonResources();
 		SetupStageViewCamera();
 		Atrum::SceneScreenUi::PreloadTitleUiTextures();
 		SpawnBackgrounds();
@@ -70,6 +71,7 @@ namespace Atrum {
 	}
 
 	void SceneTitle::ExitScene() {
+		ReleaseCommonResources();
 		Atrum::StopBgmLoop(sceneBgmHandle_);
 		sceneBgmHandle_ = {};
 		ClearBackgrounds();

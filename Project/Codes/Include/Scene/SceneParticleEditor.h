@@ -6,10 +6,6 @@
 #include <string>
 #include <vector>
 
-namespace Atrum::Visual::Particle {
-class Emitter;
-} // namespace Atrum::Visual::Particle
-
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 namespace Atrum::ParticleEditor {
 struct UiState;
@@ -37,8 +33,6 @@ protected:
   void DrawScene() override;
 
 private:
-  std::unique_ptr<Atrum::Visual::Particle::Emitter> previewEmitter_{};
-
   std::vector<Atrum::Visual::Particle::Param> layerParams_{};
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

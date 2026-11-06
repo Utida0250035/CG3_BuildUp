@@ -6,8 +6,10 @@
 #include "Input/AbstractInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
+#include "Scene/CommandScene.h"
 #include "Scene/SceneTitle.h"
 #include "System/Json/JsonHandler.h"
+#include "System/Particle/EmitterManager.h"
 #include "System/Particle/ParticleEmitter.h"
 #include "Input/PlayInput.h"
 
@@ -21,6 +23,10 @@
 
 namespace {
 
+	/// EmitterManager に登録するプレビュー用の固定名（戦闘用プリフィックスと衝突しない）
+	constexpr const char *kParticleEditorPreviewEmitterName =
+	    "particle_editor_preview";
+
 	void SetupEditorLighting() {
 		Atrum::Math::Vector3 lightDirection{ -0.35f, -0.9f, 0.2f };
 		lightDirection.Normalize();
@@ -31,6 +37,11 @@ namespace {
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
 		Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+	}
+
+	Atrum::Particle::Emitter::EmitterManager *EditorEmitterManager() {
+		Atrum::Scene *sceneNow = Atrum::CommandScene::Instance()->GetSceneNow();
+		return sceneNow ? sceneNow->GetParticleEmitterManager() : nullptr;
 	}
 
 } // namespace
@@ -67,12 +78,19 @@ void SceneParticleEditor::LoadFromJsonPath(const std::string& jsonFilePath) {
 			std::vector<Atrum::Visual::Particle::Param>>(jsonFilePath);
 	}
 
-	if (!previewEmitter_) {
-		previewEmitter_ = std::make_unique<Atrum::Visual::Particle::Emitter>();
+	Atrum::Particle::Emitter::EmitterManager *manager = EditorEmitterManager();
+	if (!manager) {
+		return;
 	}
-	previewEmitter_->SetName("particle_editor_preview");
-	previewEmitter_->SetCamera(GetCamera());
-	previewEmitter_->RebuildFromParams(layerParams_);
+	manager->RemoveByName(kParticleEditorPreviewEmitterName);
+
+	auto emitter = std::make_unique<Atrum::Visual::Particle::Emitter>();
+	emitter->SetName(kParticleEditorPreviewEmitterName);
+	emitter->SetCamera(GetCamera());
+	emitter->RebuildFromParams(layerParams_);
+
+	manager->Register(kParticleEditorPreviewEmitterName, std::move(emitter));
+	manager->SetRetainInactiveByName(kParticleEditorPreviewEmitterName, true);
 }
 
 void SceneParticleEditor::SaveToJsonPath(const std::string& jsonFilePath) {
@@ -80,11 +98,19 @@ void SceneParticleEditor::SaveToJsonPath(const std::string& jsonFilePath) {
 }
 
 void SceneParticleEditor::ApplyPreview() {
-	if (!previewEmitter_) {
-		previewEmitter_ = std::make_unique<Atrum::Visual::Particle::Emitter>();
+	Atrum::Particle::Emitter::EmitterManager *manager = EditorEmitterManager();
+	if (!manager) {
+		return;
 	}
-	previewEmitter_->SetCamera(GetCamera());
-	previewEmitter_->RebuildFromParams(layerParams_);
+	manager->RemoveByName(kParticleEditorPreviewEmitterName);
+
+	auto emitter = std::make_unique<Atrum::Visual::Particle::Emitter>();
+	emitter->SetName(kParticleEditorPreviewEmitterName);
+	emitter->SetCamera(GetCamera());
+	emitter->RebuildFromParams(layerParams_);
+
+	manager->Register(kParticleEditorPreviewEmitterName, std::move(emitter));
+	manager->SetRetainInactiveByName(kParticleEditorPreviewEmitterName, true);
 }
 
 void SceneParticleEditor::HandleEditorRequests() {
@@ -111,14 +137,18 @@ void SceneParticleEditor::HandleEditorRequests() {
 	}
 	if (uiState_->requestReplay) {
 		uiState_->requestReplay = false;
-		if (previewEmitter_) {
-			previewEmitter_->RestartPreview();
+		if (Atrum::Particle::Emitter::EmitterManager *mgr = EditorEmitterManager()) {
+			if (Atrum::Visual::Particle::Emitter *emitter =
+			        mgr->Find(kParticleEditorPreviewEmitterName)) {
+				emitter->RestartPreview();
+			}
 		}
 	}
 #endif
 }
 
 void SceneParticleEditor::EnterScene() {
+	EnsureCommonResources();
 	SetupPreviewCamera();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 	if (uiState_) {
@@ -140,13 +170,22 @@ void SceneParticleEditor::Update() {
 		return;
 	}
 
-	if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::SPACE) && previewEmitter_) {
-		previewEmitter_->RestartPreview();
+	Atrum::Particle::Emitter::EmitterManager *particleManager =
+	    EditorEmitterManager();
+	if (!particleManager) {
+		return;
+	}
+	particleManager->SetCamera(GetCamera());
+
+	if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::SPACE)) {
+		if (Atrum::Visual::Particle::Emitter *emitter =
+		        particleManager->Find(kParticleEditorPreviewEmitterName)) {
+			emitter->RestartPreview();
+		}
 	}
 
-	if (previewEmitter_) {
-		previewEmitter_->SetCamera(GetCamera());
-		previewEmitter_->Update();
+	if (particleManager->Find(kParticleEditorPreviewEmitterName) != nullptr) {
+		particleManager->Update();
 	}
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -160,7 +199,9 @@ void SceneParticleEditor::DrawScene() {
 	SetupEditorLighting();
 
 	Atrum::Engine* engine = Atrum::Engine::Instance();
-	if (engine == nullptr || previewEmitter_ == nullptr) {
+	Atrum::Particle::Emitter::EmitterManager *mgr = EditorEmitterManager();
+	if (engine == nullptr || mgr == nullptr ||
+	    mgr->Find(kParticleEditorPreviewEmitterName) == nullptr) {
 		return;
 	}
 
@@ -172,12 +213,15 @@ void SceneParticleEditor::DrawScene() {
 #endif
 
 	engine->SetBlendModeForFrame(Atrum::BlendMode::ADD);
-	previewEmitter_->Draw();
+	mgr->Draw();
 	engine->SetBlendModeForFrame(Atrum::BlendMode::NONE);
 }
 
 void SceneParticleEditor::ExitScene() {
-	previewEmitter_.reset();
+	if (Atrum::Particle::Emitter::EmitterManager *mgr = EditorEmitterManager()) {
+		mgr->RemoveByName(kParticleEditorPreviewEmitterName);
+	}
+	ReleaseCommonResources();
 	layerParams_.clear();
 }
 

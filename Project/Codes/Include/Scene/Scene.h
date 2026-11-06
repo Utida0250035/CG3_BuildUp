@@ -1,6 +1,7 @@
-﻿#pragma once
+#pragma once
 
 #include "Camera/Camera.h"
+#include "System/Particle/EmitterManager.h"
 #include <memory>
 
 namespace Atrum {
@@ -15,6 +16,15 @@ protected:
   /// シーンごとのカメラ
   /// </summary>
   std::unique_ptr<Atrum::Camera> camera_;
+
+  /// このシーンに紐づくパーティクル（EnterScene で生成、ExitScene で解放）
+  std::unique_ptr<Particle::Emitter::EmitterManager> particleEmitterManager_{};
+
+  /// 未生成なら EmitterManager を構築する（EnsureCommonResources から呼ぶ）
+  void EnsureParticleEmitterManager();
+
+  /// 紐づいたパーティクルマネージャを破棄する（ReleaseCommonResources から呼ぶ）
+  void ReleaseParticleEmitterManager();
 
   void InitializeCamera();
 
@@ -31,6 +41,18 @@ protected:
 public:
   Scene();
   virtual ~Scene();
+
+  /// EnterScene 先頭で呼ぶ。シーン共通リソース（パーティクル等）を確保する
+  void EnsureCommonResources();
+
+  Particle::Emitter::EmitterManager *GetParticleEmitterManager();
+
+  const Particle::Emitter::EmitterManager *GetParticleEmitterManager() const {
+    return particleEmitterManager_.get();
+  }
+
+  /// ExitScene でシーン共通リソースを解放する
+  void ReleaseCommonResources();
 
   Atrum::Camera *GetCamera() { return camera_.get(); }
   const Atrum::Camera *GetCamera() const { return camera_.get(); }

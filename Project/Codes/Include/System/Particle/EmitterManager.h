@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 namespace Atrum {
@@ -24,16 +25,9 @@ namespace Atrum::Particle::Emitter {
 			std::unique_ptr<Atrum::Visual::Particle::Emitter> emitter;
 		};
 
-	private:
-		struct Token {
-			explicit Token() = default;
-		};
-
-		static std::unique_ptr<EmitterManager> instance_;
+	public:
 
 		EmitterManager() = default;
-
-	public:
 
 		~EmitterManager() = default;
 
@@ -41,23 +35,27 @@ namespace Atrum::Particle::Emitter {
 
 		std::vector<RegisteredEmitter> emitters_{};
 
+		/// RemoveInactive で消さないエミッタ（名前ハッシュ）。エディタプレビュー用
+		std::unordered_set<uint64_t> retainInactiveEmittersByNameHash_{};
+
 		Camera* camera_ = nullptr;
 
 	public:
 
-		explicit EmitterManager(Token) {}
-
 		EmitterManager(const EmitterManager&) = delete;
 		EmitterManager& operator=(const EmitterManager&) = delete;
-
-		static EmitterManager* Instance();
-		static void Destroy();
 
 		/// <summary>
 		/// 名前を付けてエミッタを配列末尾に追加する（同名可）
 		/// </summary>
 		void Register(const std::string& name,
 			std::unique_ptr<Atrum::Visual::Particle::Emitter>&& emitter);
+
+		/// 同名の登録をすべて削除（プレビュー差し替え・シーン終了用）
+		void RemoveByName(const std::string& name);
+
+		/// true のとき RemoveInactive から除外する（粒子が消えてもエミッタを残す）
+		void SetRetainInactiveByName(const std::string& name, bool retain);
 
 /// <summary>
 /// 新規エミッタを生成して Register し、指定位置で 1 回 Emit する

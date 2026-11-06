@@ -17,6 +17,26 @@ Scene::Scene() { InitializeCamera(); }
 
 Scene::~Scene() = default;
 
+void Scene::EnsureParticleEmitterManager() {
+  if (!particleEmitterManager_) {
+    particleEmitterManager_ =
+        std::make_unique<Particle::Emitter::EmitterManager>();
+  }
+}
+
+void Scene::ReleaseParticleEmitterManager() {
+  particleEmitterManager_.reset();
+}
+
+void Scene::EnsureCommonResources() { EnsureParticleEmitterManager(); }
+
+void Scene::ReleaseCommonResources() { ReleaseParticleEmitterManager(); }
+
+Particle::Emitter::EmitterManager *Scene::GetParticleEmitterManager() {
+  EnsureParticleEmitterManager();
+  return particleEmitterManager_.get();
+}
+
 void Scene::InitializeCamera() {
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
   camera_ = std::make_unique<Atrum::Debug::DebugCamera>();

@@ -54,6 +54,7 @@ namespace Atrum {
 	}
 
 	void SceneGame::EnterScene() {
+		EnsureCommonResources();
 		pendingDefeat_ = DefeatKind::None;
 		bossDeathResultTransitionRequested_ = false;
 		bossDeathPresentation_.reset();
@@ -81,6 +82,7 @@ namespace Atrum {
 	}
 
 	void SceneGame::ExitScene() {
+		ReleaseCommonResources();
 		Atrum::StopBgmLoop(sceneBgmHandle_);
 		sceneBgmHandle_ = {};
 		introCameraController_.reset();

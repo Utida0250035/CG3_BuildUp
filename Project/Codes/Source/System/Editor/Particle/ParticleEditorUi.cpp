@@ -17,6 +17,9 @@ using Atrum::SimulationSpace;
 using Param = Visual::Particle::Param;
 using Visual::Particle::EmitMode;
 using Visual::Particle::EmitShape;
+using Visual::Particle::KillFieldMode;
+using Visual::Particle::KillFieldParam;
+using Visual::Particle::KillFieldShape;
 using Visual::Particle::MovementMode;
 using Visual::Particle::RenderMode;
 
@@ -102,6 +105,53 @@ bool DrawMovementFields(Param &param) {
         "RADIAL_SPREAD では baseVelocity の大きさのみ速度として使われます");
     break;
   }
+  default:
+    break;
+  }
+
+  return changed;
+}
+
+bool DrawKillFieldParam(KillFieldParam &kf) {
+  bool changed = false;
+
+  changed |= ImGui::Checkbox("killFieldParam.isUse", &kf.isUse);
+
+  const char *killModeNames[] = {"INSIDE", "OUTSIDE"};
+  const KillFieldMode killModeValues[] = {KillFieldMode::INSIDE,
+                                         KillFieldMode::OUTSIDE};
+  changed |= DrawEnumCombo("killFieldParam.mode", kf.mode, killModeNames,
+                          killModeValues, 2);
+
+  const char *killShapeNames[] = {"SPHERE", "AABB"};
+  const KillFieldShape killShapeValues[] = {KillFieldShape::SPHERE,
+                                           KillFieldShape::AABB};
+  changed |= DrawEnumCombo("killFieldParam.shape", kf.shape, killShapeNames,
+                          killShapeValues, 2);
+
+  const char *kfSimNames[] = {"LOCAL", "WORLD"};
+  const SimulationSpace kfSimValues[] = {SimulationSpace::LOCAL,
+                                        SimulationSpace::WORLD};
+  changed |= DrawEnumCombo(
+      "killFieldParam.simulationSpaceFromEmitter",
+      kf.simulationSpaceFromEmitter, kfSimNames, kfSimValues, 2);
+
+  changed |= DrawVector3("killFieldParam.position", kf.position, 0.02f);
+
+  switch (kf.shape) {
+  case KillFieldShape::SPHERE:
+    changed |=
+        DrawVector3("killFieldParam.localSphere.center", kf.localSphere.center,
+                    0.02f);
+    changed |= ImGui::DragFloat("killFieldParam.localSphere.radius",
+                                  &kf.localSphere.radius, 0.02f, 0.0f, 512.0f);
+    break;
+  case KillFieldShape::AABB:
+    changed |= DrawVector3("killFieldParam.localAabb.min", kf.localAabb.min,
+                          0.02f);
+    changed |= DrawVector3("killFieldParam.localAabb.max", kf.localAabb.max,
+                          0.02f);
+    break;
   default:
     break;
   }
@@ -207,6 +257,12 @@ bool DrawLayerParam(Param &param) {
 
   if (ImGui::CollapsingHeader("移動", ImGuiTreeNodeFlags_DefaultOpen)) {
     changed |= DrawMovementFields(param);
+    // 1/s 程度の減衰率（大きいほど速く減速）。0 なら無効
+    changed |= ImGui::DragFloat("damping", &param.damping, 0.05f, 0.0f, 100.0f);
+  }
+
+  if (ImGui::CollapsingHeader("キルフィールド")) {
+    changed |= DrawKillFieldParam(param.killFieldParam);
   }
 
   if (param.renderMode != RenderMode::BUILTIN_SPHERE &&

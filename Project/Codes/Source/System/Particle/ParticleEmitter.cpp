@@ -12,6 +12,7 @@
 #include "System/WhiteTexture.h"
 #include <cassert>
 #include <algorithm>
+#include <cmath>
 #include <filesystem>
 #include <numbers>
 #include <vector>
@@ -24,6 +25,69 @@ namespace {
 } // namespace
 
 namespace Atrum::Visual::Particle {
+
+namespace {
+
+	namespace MH = Atrum::Math;
+	namespace GH = Atrum::Geometry;
+
+	// 点が軸平行 AABB 内にあるか（min ≤ p ≤ max）
+	bool IsInsideAabb(const MH::Vector3 &p, const GH::AABB &aabb) {
+		return p.x >= aabb.min.x && p.x <= aabb.max.x && p.y >= aabb.min.y &&
+		       p.y <= aabb.max.y && p.z >= aabb.min.z && p.z <= aabb.max.z;
+	}
+
+	// killFieldParam の座標系における評価用位置（フィールド原点は position）
+	MH::Vector3 ResolveKillFieldEvaluationPoint(
+	    const MH::Vector3 &particleLocal, const MH::Vector3 &particleWorld,
+	    const KillFieldParam &kf) {
+		if (kf.simulationSpaceFromEmitter == SimulationSpace::LOCAL) {
+			return particleLocal - kf.position;
+		}
+		return particleWorld - kf.position;
+	}
+
+	// キルフィールド形状の内外（形状ローカル座標＝ position 原点）
+	bool IsInsideKillFieldShape(const MH::Vector3 &evaluationPoint,
+	                            const KillFieldParam &kf) {
+		switch (kf.shape) {
+			case KillFieldShape::SPHERE: {
+				const MH::Vector3 delta =
+				    evaluationPoint - kf.localSphere.center;
+				return delta.LengthSquare() <=
+				       kf.localSphere.radius * kf.localSphere.radius;
+			}
+			case KillFieldShape::AABB:
+				return IsInsideAabb(evaluationPoint, kf.localAabb);
+			default:
+				return false;
+		}
+	}
+
+	// mode に応じて「消すべき」なら true
+	bool ShouldKillByField(bool insideField, KillFieldMode mode) {
+		switch (mode) {
+			case KillFieldMode::INSIDE:
+				return insideField;
+			case KillFieldMode::OUTSIDE:
+				return !insideField;
+			default:
+				return false;
+		}
+	}
+
+	// Param の流体抵抗（空気抵抗を主とする）: 速度に対して指数減衰
+	// damping は大きいほど速く止まる（単位: 1/s 程度の減衰率として扱う）
+	void ApplyFluidDamping(MH::Vector3 &velocity, float dampingPerSecond,
+	                       float deltaTime) {
+		if (dampingPerSecond <= 0.0f || deltaTime <= 0.0f) {
+			return;
+		}
+		const float factor = std::exp(-dampingPerSecond * deltaTime);
+		velocity *= factor;
+	}
+
+} // namespace
 
 	void Emitter::ConfigureLayerResources(Layer& layer) {
 		layer.model = nullptr;
@@ -163,11 +227,15 @@ namespace Atrum::Visual::Particle {
 
 			isLayerAnyParticleActive = false;
 
+			const float deltaTime = frameDeltaTime_->GetDeltaTime();
+			const M::Matrix4x4 emitterWorld = transform_.MakeWorldMatrix();
+			const M::Matrix4x4 emitterWorldInverse = emitterWorld.Inversed();
+
 			for (auto& p : layerParticles) {
 				if (!p.isActive)
 					continue;
 
-				p.lifeTimePassed += frameDeltaTime_->GetDeltaTime();
+				p.lifeTimePassed += deltaTime;
 
 				if (p.lifeTimePassed >= p.lifeDuration) {
 					p.isActive = false;
@@ -176,8 +244,32 @@ namespace Atrum::Visual::Particle {
 
 				isLayerAnyParticleActive = true;
 
-				p.velocity += p.acceleration * frameDeltaTime_->GetDeltaTime();
-				p.position += p.velocity * frameDeltaTime_->GetDeltaTime();
+				// 発生座標系（LOCAL）とワールド座標の両方（キルフィールド用）
+				M::Vector3 particleWorld{};
+				M::Vector3 particleLocal{};
+				if (layer.param.simulationSpaceFromEmitter == SimulationSpace::WORLD) {
+					particleWorld = p.position;
+					particleLocal = emitterWorldInverse.Transform(particleWorld);
+				} else {
+					particleLocal = p.position;
+					particleWorld = emitterWorld.Transform(particleLocal);
+				}
+
+				const KillFieldParam& killField = layer.param.killFieldParam;
+				if (killField.isUse) {
+					const M::Vector3 evalPoint = ResolveKillFieldEvaluationPoint(
+					    particleLocal, particleWorld, killField);
+					const bool insideField =
+					    IsInsideKillFieldShape(evalPoint, killField);
+					if (ShouldKillByField(insideField, killField.mode)) {
+						p.isActive = false;
+						continue;
+					}
+				}
+
+				p.velocity += p.acceleration * deltaTime;
+				ApplyFluidDamping(p.velocity, layer.param.damping, deltaTime);
+				p.position += p.velocity * deltaTime;
 
 				p.currentScale = Math::Lerp(p.startScale, p.endScale,
 					p.lifeTimePassed / p.lifeDuration);
@@ -186,7 +278,7 @@ namespace Atrum::Visual::Particle {
 					p.lifeTimePassed / p.lifeDuration);
 			}
 
-			layer.elapsedSeconds += frameDeltaTime_->GetDeltaTime();
+			layer.elapsedSeconds += deltaTime;
 
 			if (layer.param.emitMode == EmitMode::BURST) {
 				if (!isLayerAnyParticleActive && layer.hasBurst) {
@@ -317,6 +409,9 @@ namespace Atrum::Visual::Particle {
 		particle.startScale = layer.param.startScale;
 		particle.endScale = layer.param.endScale;
 		particle.currentScale = particle.startScale;
+
+		particle.acceleration = layer.param.acceleration;
+		particle.damping = layer.param.damping;
 	}
 
 	void Emitter::EmitOneLayer(const size_t layerIndex) {

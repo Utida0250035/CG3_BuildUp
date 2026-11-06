@@ -30,6 +30,7 @@ void SetupStageLighting() {
 namespace Atrum {
 
 void SceneResult::EnterScene() {
+  EnsureCommonResources();
   SetupStageViewCamera();
   Atrum::SceneScreenUi::PreloadResultUiTextures();
   SpawnBackgrounds();
@@ -57,6 +58,7 @@ void SceneResult::DrawScene() {
 }
 
 void SceneResult::ExitScene() {
+  ReleaseCommonResources();
   Atrum::StopBgmLoop(sceneBgmHandle_);
   sceneBgmHandle_ = {};
   ClearBackgrounds();
