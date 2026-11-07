@@ -7,7 +7,9 @@
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneGame.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "Scene/SceneEntityEditor.h"
 #include "Scene/SceneParticleEditor.h"
+#include "Input/PlayInput.h"
 #endif
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
@@ -50,6 +52,11 @@ namespace Atrum {
 		if (input.isZoomTrigger) {
 			Atrum::CommandChangeScene::Instance()->Set(
 				SceneParticleEditor::Instance(), std::make_unique<ChangeSceneFade>().release());
+			return;
+		}
+		if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F2)) {
+			Atrum::CommandChangeScene::Instance()->Set(
+				SceneEntityEditor::Instance(), std::make_unique<ChangeSceneFade>().release());
 			return;
 		}
 #endif

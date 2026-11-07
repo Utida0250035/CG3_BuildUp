@@ -67,17 +67,18 @@ void BehEnemyWallShot::FireVolley() {
   ++shotCount_;
 }
 
-void BehEnemyWallShot::TransitionToRushIfFinished() {
+bool BehEnemyWallShot::TransitionToRushIfFinished() {
   const uint32_t shotCountMax =
       BossCombatEnrage::ScaleShotCountMax(RefGrandOwner(), shotCountMax_);
   if (shotCount_ < shotCountMax) {
-    return;
+    return false;
   }
 
   shotCount_ = shotCountMax;
   std::unique_ptr<BehRush> behRush = std::make_unique<BehRush>();
   behRush->SetDestinationPos(cmpEnemy_->GetPlayer()->GetWorldPosition());
   cmpEnemy_->RefBehaviorBox().Transition(behRush.release());
+  return true;
 }
 
 void BehEnemyWallShot::Execute() {
@@ -102,7 +103,9 @@ void BehEnemyWallShot::Execute() {
     }
 
     FireVolley();
-    TransitionToRushIfFinished();
+    if (TransitionToRushIfFinished()) {
+      return;
+    }
     const uint32_t shotCountMax =
         BossCombatEnrage::ScaleShotCountMax(RefGrandOwner(), shotCountMax_);
     if (shotCount_ >= shotCountMax) {
@@ -120,7 +123,9 @@ void BehEnemyWallShot::Execute() {
     BeginTelegraphPhase();
   }
 
-  TransitionToRushIfFinished();
+  if (TransitionToRushIfFinished()) {
+    return;
+  }
 }
 
 } // namespace Atrum

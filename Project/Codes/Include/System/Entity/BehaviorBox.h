@@ -12,6 +12,12 @@ private:
   Entity *grandOwner_ = nullptr;
   std::unique_ptr<Behavior> behavior_ = nullptr;
   uint64_t transitionCount_ = 0;
+  /// Execute() のコールスタック上では true（この間の Transition は次のティックで適用）
+  bool isExecutingBehavior_ = false;
+  /// Execute 内から Transition されたとき、現在の Behavior の戻り後に差し替える
+  std::unique_ptr<Behavior> pendingTransition_ = nullptr;
+
+  void ApplyPendingTransitionIfAny();
 
 public:
   void Transition(Behavior *behavior);

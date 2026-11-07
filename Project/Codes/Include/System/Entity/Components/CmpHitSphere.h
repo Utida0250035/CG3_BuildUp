@@ -17,6 +17,7 @@ class HitJudge;
 class CmpHitSphere : public ComponentUpd {
 private:
   HitJudge *hitJudge_ = nullptr;
+  bool isRegisteredWithHitJudge_ = false;
 
   std::vector<HitSphere> hitSpheres_{};
   std::vector<Entity *> hitEntitys_{};

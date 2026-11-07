@@ -1,6 +1,7 @@
 #include "System/Entity/HitJudge.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Entity.h"
+#include <algorithm>
 #include <cassert>
 
 #ifdef _DEBUG
@@ -68,8 +69,29 @@ std::vector<Entity*> HitJudge::IsHitOthers(CmpHitSphere* cmpHitSphere) {
 	return hitEntitys;
 }
 
-void HitJudge::Register(CmpHitSphere* cmpHitSphere) { cmpHitSpheres_.push_back(cmpHitSphere); }
+void HitJudge::Register(CmpHitSphere *cmpHitSphere) {
+  if (cmpHitSphere == nullptr) {
+    return;
+  }
+  const auto alreadyRegistered = std::find(cmpHitSpheres_.begin(),
+                                           cmpHitSpheres_.end(),
+                                           cmpHitSphere);
+  if (alreadyRegistered != cmpHitSpheres_.end()) {
+    return;
+  }
+  cmpHitSpheres_.push_back(cmpHitSphere);
+}
 
-void HitJudge::Remove(CmpHitSphere* cmpHitSphere) { std::erase(cmpHitSpheres_, cmpHitSphere); }
+void HitJudge::Remove(CmpHitSphere *cmpHitSphere) {
+  if (cmpHitSphere == nullptr) {
+    return;
+  }
+  const auto it =
+      std::find(cmpHitSpheres_.begin(), cmpHitSpheres_.end(), cmpHitSphere);
+  if (it == cmpHitSpheres_.end()) {
+    return;
+  }
+  cmpHitSpheres_.erase(it);
+}
 
 } // namespace Atrum

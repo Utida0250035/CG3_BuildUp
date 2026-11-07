@@ -5,37 +5,76 @@
 
 namespace Atrum {
 
+void BehaviorBox::ApplyPendingTransitionIfAny() {
+  if (!pendingTransition_) {
+    return;
+  }
+
+  if (behavior_) {
+    behavior_->Finalize();
+  }
+
+  behavior_ = std::move(pendingTransition_);
+
+  assert(grandOwner_);
+
+  behavior_->SetGrandOwner(grandOwner_);
+  behavior_->ResolveDependence();
+
+  behavior_->Initialize();
+
+  transitionCount_++;
+}
+
 void BehaviorBox::Transition(Behavior* newBehavior) {
-	if (behavior_) {
-		behavior_->Finalize();
-	}
+  std::unique_ptr<Behavior> next(newBehavior);
+  assert(next);
 
-	behavior_.reset(newBehavior);
+  // Behavior::Execute() 実行中は this（現在の Behavior）を即座に破棄しない
+  if (isExecutingBehavior_ && behavior_) {
+    assert(!pendingTransition_ && "同一ティックで複数の遷移は未対応です");
+    pendingTransition_ = std::move(next);
+    return;
+  }
 
-	assert(grandOwner_);
+  if (behavior_) {
+    behavior_->Finalize();
+  }
 
-	behavior_->SetGrandOwner(grandOwner_);
-	behavior_->ResolveDependence();
+  behavior_ = std::move(next);
 
-	behavior_->Initialize();
+  assert(grandOwner_);
 
-	transitionCount_++;
+  behavior_->SetGrandOwner(grandOwner_);
+  behavior_->ResolveDependence();
+
+  behavior_->Initialize();
+
+  transitionCount_++;
 }
 
 void BehaviorBox::Execute() {
-	if (!behavior_) {
-		return;
-	}
+  ApplyPendingTransitionIfAny();
 
-	behavior_->Execute();
+  if (!behavior_) {
+    return;
+  }
+
+  isExecutingBehavior_ = true;
+  behavior_->Execute();
+  isExecutingBehavior_ = false;
+
+  ApplyPendingTransitionIfAny();
 }
 
 void BehaviorBox::Finalize() {
-	if (!behavior_) {
-		return;
-	}
+  pendingTransition_.reset();
 
-	behavior_->Finalize();
+  if (!behavior_) {
+    return;
+  }
+
+  behavior_->Finalize();
 }
 
 void BehaviorBox::SetGrandOwner(Entity* entity) { grandOwner_ = entity; }

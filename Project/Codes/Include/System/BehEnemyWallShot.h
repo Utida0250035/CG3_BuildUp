@@ -31,7 +31,8 @@ private:
 
   void FireVolley();
   void BeginTelegraphPhase();
-  void TransitionToRushIfFinished();
+  /// 突進へ遷移した場合は true（呼び出し元はすぐ return すること）
+  bool TransitionToRushIfFinished();
 
 public:
   void ResolveDependence() override;
