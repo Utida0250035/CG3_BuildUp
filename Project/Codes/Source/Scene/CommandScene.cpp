@@ -1,5 +1,10 @@
 ﻿#include "Scene/CommandScene.h"
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "Scene/SceneEntityEditor.h"
+#else
 #include "Scene/SceneTitle.h"
+#endif
 
 namespace Atrum {
 
@@ -8,10 +13,12 @@ namespace Atrum {
 /// </summary>
 CommandScene::CommandScene() {
 
-  // 現在シーンにタイトルシーンを設定
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  sceneNow_ = SceneEntityEditor::Instance();
+#else
   sceneNow_ = SceneTitle::Instance();
+#endif
 
-  // 現在シーンの進入処理
   sceneNow_->EnterScene();
 }
 

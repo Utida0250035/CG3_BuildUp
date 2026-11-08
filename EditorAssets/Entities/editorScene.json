@@ -1,0 +1,64 @@
+{
+  "sceneName": "EditorScene",
+  "entities": [
+    {
+      "instanceName": "Entity_0",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "Entity_0",
+        "entityType": "NONE",
+        "initialTransform": {
+          "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
+          "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 },
+          "translate": { "x": -1.2, "y": 0.0, "z": 0.0 }
+        },
+        "components": [
+          {
+            "kind": "Draw",
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 0.8,
+              "subdivision": 12,
+              "isLightingEnabled": true,
+              "color": { "x": 0.9, "y": 0.4, "z": 0.2, "w": 1.0 }
+            }
+          },
+          {
+            "kind": "Upd",
+            "typeName": "CmpRotator",
+            "params": {
+              "rotateAxis": { "x": 0.0, "y": 1.0, "z": 0.0 },
+              "rotateSpeed": 1.2,
+              "pivotIsOwner": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "instanceName": "Entity_1",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "Entity_1",
+        "entityType": "NONE",
+        "initialTransform": {
+          "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
+          "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 },
+          "translate": { "x": 1.2, "y": 0.0, "z": 0.0 }
+        },
+        "components": [
+          {
+            "kind": "Draw",
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 0.6,
+              "subdivision": 12,
+              "isLightingEnabled": true,
+              "color": { "x": 0.2, "y": 0.5, "z": 0.95, "w": 1.0 }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

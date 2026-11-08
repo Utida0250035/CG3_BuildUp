@@ -1,0 +1,28 @@
+{
+  "tagCatalog": [
+    "PLAYER",
+    "ENEMY",
+    "PLAYER_WEAPON",
+    "ENEMY_WEAPON",
+    "PLAYER_ITEM",
+    "ENEMY_ITEM"
+  ],
+  "roles": {
+    "player": "PLAYER",
+    "enemy": "ENEMY",
+    "playerWeapon": "PLAYER_WEAPON",
+    "enemyWeapon": "ENEMY_WEAPON",
+    "playerItem": "PLAYER_ITEM",
+    "enemyItem": "ENEMY_ITEM"
+  },
+  "combat": {
+    "managedBulletTags": ["ENEMY_WEAPON", "PLAYER_ITEM"],
+    "reflectParry": {
+      "fromTag": "ENEMY_WEAPON",
+      "toTag": "PLAYER_ITEM"
+    },
+    "playerDamageHurterTags": ["ENEMY", "ENEMY_WEAPON"],
+    "enemyDamageHurterTags": ["PLAYER_ITEM"],
+    "parryReflectorRole": "playerWeapon"
+  }
+}

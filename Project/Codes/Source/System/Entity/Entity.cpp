@@ -142,4 +142,42 @@ void Entity::ResolveDependencies() {
   }
 }
 
+void Entity::AddTag(const std::string &tagName) {
+  if (tagName.empty()) {
+    return;
+  }
+  tagHashes_.insert(Hash64(tagName));
+}
+
+void Entity::RemoveTag(const std::string &tagName) {
+  if (tagName.empty()) {
+    return;
+  }
+  tagHashes_.erase(Hash64(tagName));
+}
+
+bool Entity::HasTag(const std::string &tagName) const {
+  if (tagName.empty()) {
+    return false;
+  }
+  return tagHashes_.find(Hash64(tagName)) != tagHashes_.end();
+}
+
+void Entity::SetTagsFromNames(const std::vector<std::string> &tagNames) {
+  tagHashes_.clear();
+  for (const std::string &tagName : tagNames) {
+    if (tagName.empty()) {
+      continue;
+    }
+    tagHashes_.insert(Hash64(tagName));
+  }
+}
+
+void Entity::SetTagHashes(const std::vector<uint64_t> &tagHashes) {
+  tagHashes_.clear();
+  for (const uint64_t tagHash : tagHashes) {
+    tagHashes_.insert(tagHash);
+  }
+}
+
 } // namespace Atrum

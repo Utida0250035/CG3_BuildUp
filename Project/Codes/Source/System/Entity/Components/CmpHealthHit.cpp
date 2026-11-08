@@ -4,6 +4,7 @@
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Entity.h"
+#include "System/Entity/EntityTagRegistry.h"
 #include "System/DeltaTime.h"
 #include "System/Particle/GameCombatParticleEffects.h"
 #include "System/PlaySe.h"
@@ -23,10 +24,16 @@ void PlayPlayerDamageSe() {
 	PlaySe(sePath);
 }
 
+EntityTagRegistry &Tags() {
+	EntityTagRegistry &registry = EntityTagRegistry::Instance();
+	registry.EnsureLoaded();
+	return registry;
+}
+
 } // namespace
 
 Math::Vector4 CmpHealthHit::GetHurtFlashColor() const {
-	if (GetOwner()->GetEntityType() == EntityType::ENEMY) {
+	if (Tags().EntityHasRole(*GetOwner(), "enemy")) {
 		return {1.0f, 0.12f, 0.1f, 0.45f};
 	}
 
@@ -34,7 +41,7 @@ Math::Vector4 CmpHealthHit::GetHurtFlashColor() const {
 }
 
 Math::Vector4 CmpHealthHit::GetHurtFlashInnerColor() const {
-	if (GetOwner()->GetEntityType() == EntityType::ENEMY) {
+	if (Tags().EntityHasRole(*GetOwner(), "enemy")) {
 		return {1.0f, 0.12f, 0.1f, 1.0f};
 	}
 
@@ -56,14 +63,21 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 		return false;
 	}
 
+	const EntityTagRegistry &tags = Tags();
 	const bool isStackedReflectedBullet =
-	    stackReflectedBulletDamage_ &&
-	    attacker->GetEntityType() == EntityType::PLAYER_ITEM;
+	    stackReflectedBulletDamage_ && tags.EntityHasRole(*attacker, "playerItem");
 	if (!isStackedReflectedBullet && invincibleTimer_ > 0.0f) {
 		return false;
 	}
 
-	if (!hurterTypes_.contains(attacker->GetEntityType())) {
+	bool isRegisteredHurter = false;
+	for (const uint64_t tagHash : attacker->GetTagHashes()) {
+		if (hurterTagHashes_.contains(tagHash)) {
+			isRegisteredHurter = true;
+			break;
+		}
+	}
+	if (!isRegisteredHurter) {
 		return false;
 	}
 
@@ -73,18 +87,17 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 	if (!isStackedReflectedBullet) {
 		invincibleTimer_ = invincibleTime_;
 	}
-	if (RefOwner().GetEntityType() == EntityType::PLAYER) {
+	if (tags.EntityHasRole(RefOwner(), "player")) {
 		PlayPlayerDamageSe();
 		CombatCameraShake::Instance().RequestPlayerHitShake();
 		PlayerDamageScreenVignette::Instance().RequestShow();
-	} else if (RefOwner().GetEntityType() == EntityType::ENEMY) {
+	} else if (tags.EntityHasRole(RefOwner(), "enemy")) {
 		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});
 		CombatCameraShake::Instance().RequestBossHitShake();
 	} else {
 		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});
 	}
-	// 管理外の ENEMY_WEAPON（オービター等）被弾用。管理弾は CmpReflectAbleBullet 側で演出
-	if (attacker->GetEntityType() == EntityType::ENEMY_WEAPON &&
+	if (tags.EntityHasRole(*attacker, "enemyWeapon") &&
 	    !attacker->HasUpdCmp<CmpLhRigidBody>()) {
 		Particle::Combat::PlayPlayerHitByEnemyBulletEffect(
 		    attacker->GetWorldPosition());
@@ -111,14 +124,14 @@ void CmpHealthHit::Update() {
 		return;
 	}
 
+	const EntityTagRegistry &tags = Tags();
 	for (const Entity *hitEntity : cmpHitSphere_->GetHitEntitys()) {
 		if (healthCount_ <= 0) {
 			break;
 		}
 
-		// 反射弾は CmpReflectAbleBullet::LateResolveCombatHits で1発1ダメージに確定する
 		if (stackReflectedBulletDamage_ &&
-		    hitEntity->GetEntityType() == EntityType::PLAYER_ITEM) {
+		    tags.EntityHasRole(*hitEntity, "playerItem")) {
 			continue;
 		}
 

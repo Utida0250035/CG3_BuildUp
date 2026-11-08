@@ -1,5 +1,6 @@
 #pragma once
 
+#include "System/Editor/EditorAssetsPaths.h"
 #include "System/Particle/ParticleParam.h"
 #include <cstdint>
 #include <string>
@@ -15,7 +16,8 @@ namespace Atrum::ParticleEditor {
 
 /// ImGui パーティクルエディタの状態（シーンが保持）
 struct UiState {
-  std::string jsonFilePath = "../EditorAssets/Particles/editorTest.json";
+  std::string jsonFilePath =
+      std::string(EditorAssets::kParticlesDirectory) + "/editorTest.json";
   int selectedLayerIndex = 0;
   bool requestApplyPreview = false;
   bool requestReloadFromDisk = false;

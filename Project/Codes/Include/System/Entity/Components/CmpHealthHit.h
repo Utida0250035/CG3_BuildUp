@@ -2,7 +2,6 @@
 
 #include "Math/Vector4.h"
 #include "System/Entity/ComponentUpd.h"
-#include "System/Entity/EntityType.h"
 #include <cstdint>
 #include <set>
 #include <vector>
@@ -20,7 +19,7 @@ class CmpHealthHit : public ComponentUpd {
 private:
   uint32_t healthCount_ = 0;
   uint32_t initialHealthCount_ = 1;
-  std::set<EntityType> hurterTypes_{};
+  std::set<uint64_t> hurterTagHashes_{};
   bool isHurt_ = false;
 
   CmpHitSphere *cmpHitSphere_ = nullptr;
@@ -46,11 +45,12 @@ public:
   /// </summary>
   bool TryTakeDamageFrom(const Entity *attacker);
 
-  void SetHurterTypes(const std::vector<EntityType> &hurterTypes) {
-    for (const auto &type : hurterTypes) {
-      hurterTypes_.emplace(type);
+  void SetHurterTagHashes(const std::vector<uint64_t> &hurterTagHashes) {
+    hurterTagHashes_.clear();
+    for (const uint64_t tagHash : hurterTagHashes) {
+      hurterTagHashes_.insert(tagHash);
     }
-  };
+  }
 
   bool GetIsHurt() const { return isHurt_; }
 

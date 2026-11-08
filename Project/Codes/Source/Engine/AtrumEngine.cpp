@@ -30,6 +30,10 @@
 #include <cfloat>
 #include <cstdint>
 #include <filesystem>
+#ifdef USE_IMGUI
+#include "ForDebug/ImGuiJapaneseFont.h"
+#endif
+
 #ifdef DEVELOPMENT
 #include <format>
 #include <fstream>
@@ -172,17 +176,17 @@ void AtrumEngine::InitImGui(
 
   ImGui_ImplSDL2_InitForD3D(window_->GetWindow());
 
-  DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
+  ImGuiIO &io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+  Atrum::Debug::SetupImGuiJapaneseFont(io);
+  io.Fonts->Build();
 
+  DescriptorAllocator::DescriptorHandle imguiSrvHandle{};
   imguiSrvHandle = srvAllocator_->Allocate();
 
   ImGui_ImplDX12_Init(renderDevice_->GetDevice(), SwapChain::kBackBufferCount,
                       rtvDesc.Format, srvAllocator_->GetDescriptorHeap(),
                       imguiSrvHandle.cpu, imguiSrvHandle.gpu);
-
-  ImGuiIO &io = ImGui::GetIO();
-
-  io.Fonts->Build();
 
 #endif
 }
@@ -621,12 +625,17 @@ void AtrumEngine::PreDraw() {
                                                               descriptorHeaps);
 
   // Viewportを設定
-  commandContextDirect_->GetCommandList()->RSSetViewports(
-      1, &window_->GetViewport());
-
-  // ScissorRectを設定
-  commandContextDirect_->GetCommandList()->RSSetScissorRects(
-      1, &window_->GetScissorRect());
+  if (subViewportOverride_.has_value() && subScissorOverride_.has_value()) {
+    commandContextDirect_->GetCommandList()->RSSetViewports(
+        1, &subViewportOverride_.value());
+    commandContextDirect_->GetCommandList()->RSSetScissorRects(
+        1, &subScissorOverride_.value());
+  } else {
+    commandContextDirect_->GetCommandList()->RSSetViewports(
+        1, &window_->GetViewport());
+    commandContextDirect_->GetCommandList()->RSSetScissorRects(
+        1, &window_->GetScissorRect());
+  }
 
   // RootSignatureを設定 PSOに設定しているが別途の設定が必要
   commandContextDirect_->GetCommandList()->SetGraphicsRootSignature(
@@ -661,6 +670,129 @@ void AtrumEngine::PreDraw() {
   // directionalLight用のCBufferの場所を設定
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
       3, directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
+void AtrumEngine::SetSubViewport(const int x, const int y, const int width,
+                                 const int height) {
+  if (width <= 0 || height <= 0) {
+    ClearSubViewport();
+    return;
+  }
+  D3D12_VIEWPORT viewport{};
+  viewport.TopLeftX = static_cast<float>(x);
+  viewport.TopLeftY = static_cast<float>(y);
+  viewport.Width = static_cast<float>(width);
+  viewport.Height = static_cast<float>(height);
+  viewport.MinDepth = 0.0f;
+  viewport.MaxDepth = 1.0f;
+  subViewportOverride_ = viewport;
+
+  D3D12_RECT scissor{};
+  scissor.left = x;
+  scissor.top = y;
+  scissor.right = x + width;
+  scissor.bottom = y + height;
+  subScissorOverride_ = scissor;
+}
+
+void AtrumEngine::ClearSubViewport() {
+  subViewportOverride_.reset();
+  subScissorOverride_.reset();
+}
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+
+ID3D12Device *AtrumEngine::GetD3DDevice() const { return renderDevice_->GetDevice(); }
+
+ID3D12GraphicsCommandList *AtrumEngine::GetD3DCommandList() const {
+  return commandContextDirect_->GetCommandList();
+}
+
+DescriptorAllocator *AtrumEngine::GetSrvAllocator() { return srvAllocator_.get(); }
+
+D3D12_CPU_DESCRIPTOR_HANDLE AtrumEngine::GetSwapChainRtvCpu() const {
+  return swapChainManager_->GetRtvHandleCurrent();
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE AtrumEngine::GetMainDepthStencilViewCpu() const {
+  return dsvAllocator_->GetCpuStart();
+}
+
+void AtrumEngine::EditorRenderSceneViewTarget(
+    const int width, const int height, ID3D12Resource *colorResource,
+    const D3D12_CPU_DESCRIPTOR_HANDLE colorRtv, ID3D12Resource *depthResource,
+    const D3D12_CPU_DESCRIPTOR_HANDLE depthDsv,
+    const bool colorReadableByShader,
+    const std::function<void()> &drawSceneContent) {
+  if (width <= 0 || height <= 0 || colorResource == nullptr ||
+      depthResource == nullptr || !drawSceneContent) {
+    return;
+  }
+
+  ID3D12GraphicsCommandList *commandList =
+      commandContextDirect_->GetCommandList();
+
+  if (colorReadableByShader) {
+    D3D12_RESOURCE_BARRIER toRender{};
+    toRender.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    toRender.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    toRender.Transition.pResource = colorResource;
+    toRender.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    toRender.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+    toRender.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    commandList->ResourceBarrier(1, &toRender);
+  }
+
+  commandList->OMSetRenderTargets(1, &colorRtv, false, &depthDsv);
+
+  const D3D12_VIEWPORT viewport{
+      0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height),
+      0.0f, 1.0f};
+  const D3D12_RECT scissor{0, 0, width, height};
+  commandList->RSSetViewports(1, &viewport);
+  commandList->RSSetScissorRects(1, &scissor);
+
+  const float clearColor[] = {0.0625f, 0.1875f, 0.125f, 1.0f};
+  commandList->ClearRenderTargetView(colorRtv, clearColor, 0, nullptr);
+  commandList->ClearDepthStencilView(
+      depthDsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+  ClearSubViewport();
+  drawSceneContent();
+
+  D3D12_RESOURCE_BARRIER toSrv{};
+  toSrv.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+  toSrv.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+  toSrv.Transition.pResource = colorResource;
+  toSrv.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+  toSrv.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+  toSrv.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+  commandList->ResourceBarrier(1, &toSrv);
+
+  const D3D12_CPU_DESCRIPTOR_HANDLE swapRtv = GetSwapChainRtvCpu();
+  const D3D12_CPU_DESCRIPTOR_HANDLE mainDsv = GetMainDepthStencilViewCpu();
+  commandList->OMSetRenderTargets(1, &swapRtv, false, &mainDsv);
+
+  ID3D12DescriptorHeap *descriptorHeaps[] = {srvAllocator_->GetDescriptorHeap()};
+  commandList->SetDescriptorHeaps(1, descriptorHeaps);
+
+  commandList->RSSetViewports(1, &window_->GetViewport());
+  commandList->RSSetScissorRects(1, &window_->GetScissorRect());
+}
+
+#endif
+
+void AtrumEngine::ApplySubViewportToCommandList() const {
+  if (!isInitialized_) {
+    return;
+  }
+  if (!subViewportOverride_.has_value() || !subScissorOverride_.has_value()) {
+    return;
+  }
+  commandContextDirect_->GetCommandList()->RSSetViewports(
+      1, &subViewportOverride_.value());
+  commandContextDirect_->GetCommandList()->RSSetScissorRects(
+      1, &subScissorOverride_.value());
 }
 
 void AtrumEngine::PostDraw() {
@@ -704,7 +836,12 @@ void AtrumEngine::PostDraw() {
   // コマンドリストの内容を確定させる
   [[maybe_unused]] HRESULT hr =
       commandContextDirect_->GetCommandList()->Close();
+#if defined(DEVELOPMENT)
+  assert(SUCCEEDED(hr) &&
+         "コマンドリスト Close 失敗。D3D12 デバッグレイヤー出力を確認してください。");
+#else
   assert(SUCCEEDED(hr));
+#endif
 
   // GPUにコマンドリストを実行させる
   ID3D12CommandList *commandLists[] = {commandContextDirect_->GetCommandList()};
@@ -976,6 +1113,21 @@ void AtrumEngine::DrawLine3D(const uint32_t &textureIndex,
   pDraw_->DrawLine3D(textureIndex, textureColor, uvTransform, worldStart,
                      worldEnd, width, isLighting,
                      directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
+void AtrumEngine::DrawLine3DOnFloorPlane(
+    const uint32_t &textureIndex, const M::Vector4 &textureColor,
+    const M::Transform &uvTransform, const M::Vector3 &worldStart,
+    const M::Vector3 &worldEnd, const float lineWidthPixels,
+    const int viewportWidth, const int viewportHeight, const float floorY,
+    const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawLine3DOnFloorPlane(
+      textureIndex, textureColor, uvTransform, worldStart, worldEnd,
+      lineWidthPixels, viewportWidth, viewportHeight, floorY, isLighting,
+      directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 void AtrumEngine::DrawDashedLine3D(const uint32_t &textureIndex,

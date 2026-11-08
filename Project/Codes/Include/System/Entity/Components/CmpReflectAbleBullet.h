@@ -1,7 +1,7 @@
 #pragma once
 
 #include "System/Entity/ComponentUpd.h"
-#include "System/Entity/EntityType.h"
+#include "System/Entity/EntityTagRegistry.h"
 #include "System/StageBounds.h"
 #include <memory>
 #include <vector>
@@ -14,7 +14,7 @@ class CmpReflectAbleBullet : public ComponentUpd {
 private:
   std::vector<std::unique_ptr<Entity>> reflectAbleBullets_{};
 
-  EntityType reflectorType_ = EntityType::PLAYER_WEAPON;
+  uint64_t reflectorTagHash_ = 0;
 
   inline static constexpr float kSpaceTopBuffer = 8.0f;
   inline static constexpr float kSpaceSideBuffer = 8.0f;

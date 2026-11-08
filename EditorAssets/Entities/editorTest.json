@@ -1,30 +1,82 @@
 {
-  "entityName": "entity_editor_preview",
-  "entityType": "NONE",
-  "initialTransform": {
-    "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
-    "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 },
-    "translate": { "x": 0.0, "y": 0.0, "z": 0.0 }
-  },
-  "components": [
-    {
-      "kind": "Draw",
-      "typeName": "CmpMeshSphere",
-      "params": {
-        "radius": 1.0,
-        "subdivision": 12,
-        "isLightingEnabled": true,
-        "color": { "x": 0.9, "y": 0.4, "z": 0.2, "w": 1.0 }
-      }
-    },
-    {
-      "kind": "Upd",
-      "typeName": "CmpRotator",
-      "params": {
-        "rotateAxis": { "x": 0.0, "y": 1.0, "z": 0.0 },
-        "rotateSpeed": 1.2,
-        "pivotIsOwner": true
-      }
+    "components": [
+        {
+            "kind": 1,
+            "params": {
+                "color": {
+                    "w": 1.0,
+                    "x": 0.9,
+                    "y": 0.4,
+                    "z": 0.2
+                },
+                "isLightingEnabled": true,
+                "radius": 1.0,
+                "subdivision": 12
+            },
+            "typeName": "CmpMeshSphere"
+        },
+        {
+            "kind": 0,
+            "params": {
+                "pivotIsOwner": true,
+                "rotateAxis": {
+                    "x": 0.0,
+                    "y": 1.0,
+                    "z": 0.0
+                },
+                "rotateSpeed": 1.2
+            },
+            "typeName": "CmpRotator"
+        },
+        {
+            "kind": 0,
+            "params": {
+                "isActive": true,
+                "spheres": [
+                    {
+                        "localOffset": {
+                            "x": 4.179999828338623,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "radius": 0.5
+                    }
+                ]
+            },
+            "typeName": "CmpHitSphere"
+        },
+        {
+            "kind": 1,
+            "params": {
+                "color": {
+                    "w": 1.0,
+                    "x": 0.20000000298023224,
+                    "y": 0.8500000238418579,
+                    "z": 1.0
+                },
+                "isLightingEnabled": true
+            },
+            "typeName": "CmpDrawHitSphere"
+        }
+    ],
+    "entityName": "entity_editor_preview",
+    "entityType": "NONE",
+    "initialTransform": {
+        "quaternion": {
+            "w": 1.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "scale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "translate": {
+            "x": -4.186999797821045,
+            "y": 0.0,
+            "z": 0.0
+        }
     }
-  ]
 }

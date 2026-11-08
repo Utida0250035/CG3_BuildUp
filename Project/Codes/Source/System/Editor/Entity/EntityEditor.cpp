@@ -1,136 +1,166 @@
 #include "System/Editor/Entity/EntityEditor.h"
 
-#include "Math/Vector3.h"
-#include "Math/Vector4.h"
-#include "System/Entity/Components/CmpDrawHitSphere.h"
-#include "System/Entity/Components/CmpHitSphere.h"
-#include "System/Entity/Components/CmpMeshSphere.h"
-#include "System/Entity/Components/CmpRotator.h"
-#include "System/Entity/Components/CmpScroll.h"
+#include "System/Editor/Scene/EditorSceneAsset.h"
+#include "System/Editor/Entity/EntityEditorTagCatalog.h"
+#include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Entity/Entity.h"
 #include "System/Json/JsonHandler.h"
+#include <algorithm>
 #include <filesystem>
+#include <fstream>
 #include <nlohmann/json.hpp>
 
 namespace Atrum::EntityEditor {
 
-namespace {
-
-void ReadHitSpheresFromJson(const nlohmann::json &j,
-                            std::vector<HitSphere> &out) {
-  out.clear();
-  if (!j.is_array()) {
-    return;
-  }
-  for (const nlohmann::json &item : j) {
-    HitSphere sphere{};
-    sphere.localOffset =
-        item.value("localOffset", Math::Vector3::Zero());
-    sphere.radius = item.value("radius", 1.0f);
-    out.push_back(sphere);
-  }
+EntityDefinition &EntityEditor::SelectedDefinition() {
+  ClampSelectedInstanceIndex();
+  return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)]
+      .definition;
 }
 
-bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
-  if (slot.typeName == "CmpMeshSphere" && slot.kind == ComponentSlotKind::Draw) {
-    entity.AddDrawCmp<CmpMeshSphere>();
-    return true;
-  }
-  if (slot.typeName == "CmpDrawHitSphere" &&
-      slot.kind == ComponentSlotKind::Draw) {
-    entity.AddDrawCmp<CmpDrawHitSphere>();
-    return true;
-  }
-  if (slot.typeName == "CmpRotator" && slot.kind == ComponentSlotKind::Upd) {
-    entity.AddUpdCmp<CmpRotator>();
-    return true;
-  }
-  if (slot.typeName == "CmpScroll" && slot.kind == ComponentSlotKind::Upd) {
-    entity.AddUpdCmp<CmpScroll>();
-    return true;
-  }
-  if (slot.typeName == "CmpHitSphere" && slot.kind == ComponentSlotKind::Upd) {
-    entity.AddUpdCmp<CmpHitSphere>();
-    return true;
-  }
-  return false;
+const EntityDefinition &EntityEditor::SelectedDefinition() const {
+  return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)]
+      .definition;
 }
 
-void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
-  const nlohmann::json &p = slot.params;
-
-  if (slot.typeName == "CmpMeshSphere") {
-    CmpMeshSphere *cmp = entity.GetDrawCmp<CmpMeshSphere>();
-    cmp->SetRadius(p.value("radius", 1.0f));
-    cmp->SetSubdivision(p.value("subdivision", 8u));
-    cmp->SetLightingEnabled(p.value("isLightingEnabled", true));
-    Math::Vector4 color = p.value("color", Math::Vector4::White());
-    cmp->SetColor(color);
-    return;
-  }
-
-  if (slot.typeName == "CmpDrawHitSphere") {
-    CmpDrawHitSphere *cmp = entity.GetDrawCmp<CmpDrawHitSphere>();
-    Math::Vector4 color =
-        p.value("color", Math::Vector4{0.2f, 0.85f, 1.0f, 1.0f});
-    cmp->SetColor(color);
-    cmp->SetLightingEnabled(p.value("isLightingEnabled", false));
-    return;
-  }
-
-  if (slot.typeName == "CmpRotator") {
-    CmpRotator *cmp = entity.GetUpdCmp<CmpRotator>();
-    Math::Vector3 axis = p.value("rotateAxis", Math::Vector3::UpLh());
-    cmp->SetRotateAxis(axis);
-    cmp->SetRotateSpeed(p.value("rotateSpeed", 0.0f));
-    if (p.value("pivotIsOwner", true)) {
-      cmp->SetPivot(&entity);
-    }
-    return;
-  }
-
-  if (slot.typeName == "CmpScroll") {
-    CmpScroll *cmp = entity.GetUpdCmp<CmpScroll>();
-    cmp->SetScrollSpeed(p.value("scrollSpeed", 0.0f));
-    return;
-  }
-
-  if (slot.typeName == "CmpHitSphere") {
-    CmpHitSphere *cmp = entity.GetUpdCmp<CmpHitSphere>();
-    std::vector<HitSphere> spheres;
-    if (p.contains("spheres")) {
-      ReadHitSpheresFromJson(p.at("spheres"), spheres);
-    }
-    if (!spheres.empty()) {
-      cmp->SetSpheres(spheres);
-    }
-    cmp->SetIsActive(p.value("isActive", true));
-  }
+SceneEntityInstance &EntityEditor::SelectedInstance() {
+  ClampSelectedInstanceIndex();
+  return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)];
 }
 
-} // namespace
+const SceneEntityInstance &EntityEditor::SelectedInstance() const {
+  return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)];
+}
+
+void EntityEditor::ClampSelectedInstanceIndex() {
+  if (scene_.instances.empty()) {
+    ui_.selectedInstanceIndex = 0;
+    return;
+  }
+  ui_.selectedInstanceIndex = std::clamp(
+      ui_.selectedInstanceIndex, 0,
+      static_cast<int>(scene_.instances.size()) - 1);
+}
+
+void EntityEditor::AddEmptyInstance() {
+  const std::string name =
+      "Entity_" + std::to_string(scene_.instances.size());
+  SceneEntityInstance instance{};
+  instance.instanceName = name;
+  instance.definition = MakeDefaultEntityDefinition(name);
+  scene_.instances.push_back(std::move(instance));
+  ui_.selectedInstanceIndex =
+      static_cast<int>(scene_.instances.size()) - 1;
+  ui_.requestApplyPreview = true;
+}
+
+void EntityEditor::RemoveSelectedInstance() {
+  if (scene_.instances.size() <= 1) {
+    return;
+  }
+  const int removeIndex = ui_.selectedInstanceIndex;
+  scene_.instances.erase(scene_.instances.begin() + removeIndex);
+  for (SceneEntityInstance &instance : scene_.instances) {
+    if (instance.parentIndex == removeIndex) {
+      instance.parentIndex = -1;
+    } else if (instance.parentIndex > removeIndex) {
+      --instance.parentIndex;
+    }
+  }
+  ClampSelectedInstanceIndex();
+  ui_.requestApplyPreview = true;
+}
+
+bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
+  namespace fs = std::filesystem;
+  if (!fs::exists(prefabPath)) {
+    return false;
+  }
+  std::ifstream file(prefabPath);
+  if (!file.is_open()) {
+    return false;
+  }
+  nlohmann::json json{};
+  file >> json;
+  SceneEntityInstance instance{};
+  if (json.contains("entities") && json.at("entities").is_array()) {
+    EditorSceneDocument prefabScene = json.get<EditorSceneDocument>();
+    if (prefabScene.instances.empty()) {
+      return false;
+    }
+    instance = prefabScene.instances.front();
+    instance.parentIndex = -1;
+  } else {
+    instance.definition = json.get<EntityDefinition>();
+    instance.instanceName = instance.definition.entityName;
+    instance.parentIndex = -1;
+  }
+  if (instance.instanceName.empty()) {
+    instance.instanceName =
+        "Instance_" + std::to_string(scene_.instances.size());
+  }
+  scene_.instances.push_back(std::move(instance));
+  ui_.selectedInstanceIndex =
+      static_cast<int>(scene_.instances.size()) - 1;
+  ui_.requestApplyPreview = true;
+  return true;
+}
 
 void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
   namespace fs = std::filesystem;
   if (!fs::exists(jsonFilePath)) {
-    document_ = EntityDefinition{};
-    ComponentSlot meshSlot{};
-    meshSlot.kind = ComponentSlotKind::Draw;
-    meshSlot.typeName = "CmpMeshSphere";
-    meshSlot.params = DefaultParamsForType("CmpMeshSphere");
-    ComponentSlot rotatorSlot{};
-    rotatorSlot.kind = ComponentSlotKind::Upd;
-    rotatorSlot.typeName = "CmpRotator";
-    rotatorSlot.params = DefaultParamsForType("CmpRotator");
-    document_.components = {meshSlot, rotatorSlot};
+    scene_ = EditorSceneDocument{};
+    scene_.sceneName = "EditorScene";
+    SceneEntityInstance instance{};
+    instance.instanceName = "Entity_0";
+    instance.definition = MakeDefaultEntityDefinition("Entity_0");
+    scene_.instances = {std::move(instance)};
+    ui_.selectedInstanceIndex = 0;
+    ui_.selectedComponentKind = ComponentSlotKind::Draw;
+    ui_.selectedComponentIndex = 0;
     return;
   }
-  document_ = Json::JsonHandler::LoadFromFile<EntityDefinition>(jsonFilePath);
+
+  std::ifstream file(jsonFilePath);
+  if (!file.is_open()) {
+    return;
+  }
+  nlohmann::json json{};
+  file >> json;
+
+  if (json.contains("entities") && json.at("entities").is_array()) {
+    scene_ = json.get<EditorSceneDocument>();
+  } else {
+    scene_ = EditorSceneDocument{};
+    scene_.sceneName = "EditorScene";
+    SceneEntityInstance instance{};
+    instance.definition = json.get<EntityDefinition>();
+    instance.instanceName = instance.definition.entityName;
+    if (instance.instanceName.empty()) {
+      instance.instanceName = "Entity_0";
+    }
+    scene_.instances = {std::move(instance)};
+  }
+
+  ui_.selectedInstanceIndex = 0;
   ui_.selectedComponentIndex = 0;
+  if (!SelectedDefinition().components.empty()) {
+    ui_.selectedComponentKind =
+        SelectedDefinition().components.front().kind;
+  } else {
+    ui_.selectedComponentKind = ComponentSlotKind::Draw;
+  }
+  MergeTagCatalogFromRegistry(scene_);
+  SyncAllEntityDefinitionTags(scene_);
+  SyncTagCatalogFromInstances(scene_);
+  ClampSelectedInstanceIndex();
 }
 
-void EntityEditor::SaveToJsonPath(const std::string &jsonFilePath) const {
-  Json::JsonHandler::SaveToFile(jsonFilePath, document_);
+void EntityEditor::SaveToJsonPath(const std::string &jsonFilePath) {
+  for (SceneEntityInstance &instance : scene_.instances) {
+    RebuildEntityDefinitionTagHashes(instance.definition);
+  }
+  Json::JsonHandler::SaveToFile(jsonFilePath, scene_);
 }
 
 bool EntityEditor::TickPendingRequests() {
@@ -149,25 +179,75 @@ bool EntityEditor::TickPendingRequests() {
     ui_.requestApplyPreview = false;
     needApply = true;
   }
+  if (ui_.requestResetPreview) {
+    ui_.requestResetPreview = false;
+    needApply = true;
+  }
 
   return needApply;
 }
 
-std::unique_ptr<Entity> EntityEditor::BuildPreviewEntity() const {
-  auto entity = std::make_unique<Entity>(document_.entityName);
-  entity->SetEntityType(document_.entityType);
-  entity->SetInitialTransform(document_.initialTransform);
+std::vector<std::unique_ptr<Entity>> EntityEditor::BuildPreviewScene() const {
+  return BuildEntitiesFromSceneDocument(scene_);
+}
 
-  for (const ComponentSlot &slot : document_.components) {
-    if (!TryAddEmptyComponent(*entity, slot)) {
-      continue;
-    }
-    ApplyComponentParams(*entity, slot);
+void EntityEditor::CreateNewSceneFile() {
+  Atrum::Editor::Scene::EnsureScenesDirectoryExists();
+  const std::string path = Atrum::Editor::Scene::MakeUniqueSceneFilePath();
+
+  scene_ = EditorSceneDocument{};
+  scene_.sceneName = Atrum::Editor::Scene::SceneDisplayNameFromPath(path);
+  MergeTagCatalogFromRegistry(scene_);
+  SceneEntityInstance instance{};
+  instance.instanceName = "Entity_0";
+  instance.definition = MakeDefaultEntityDefinition("Entity_0");
+  scene_.instances = {std::move(instance)};
+
+  ui_.jsonFilePath = path;
+  ui_.selectedScenePath = path;
+  ui_.selectedInstanceIndex = 0;
+  ui_.selectedComponentKind = ComponentSlotKind::Draw;
+  ui_.selectedComponentIndex = 0;
+  ui_.requestApplyPreview = true;
+  ui_.requestSaveToDisk = true;
+}
+
+bool EntityEditor::OpenSceneFromPath(const std::string &sceneJsonPath) {
+  if (sceneJsonPath.empty()) {
+    return false;
+  }
+  ui_.jsonFilePath = sceneJsonPath;
+  ui_.selectedScenePath = sceneJsonPath;
+  LoadFromJsonPath(sceneJsonPath);
+  ui_.requestApplyPreview = true;
+  return true;
+}
+
+bool EntityEditor::DeleteSceneFile(const std::string &sceneJsonPath) {
+  if (!Atrum::Editor::Scene::TryDeleteSceneJsonFile(sceneJsonPath)) {
+    return false;
   }
 
-  entity->ResolveDependencies();
-  entity->Initialize();
-  return entity;
+  if (ui_.selectedScenePath == sceneJsonPath) {
+    ui_.selectedScenePath.clear();
+  }
+  if (ui_.pendingDeleteScenePath == sceneJsonPath) {
+    ui_.pendingDeleteScenePath.clear();
+  }
+
+  const bool wasOpen = ui_.jsonFilePath == sceneJsonPath;
+  if (!wasOpen) {
+    return true;
+  }
+
+  const std::vector<std::string> remaining =
+      Atrum::Editor::Scene::ListSceneJsonFiles();
+  if (!remaining.empty()) {
+    return OpenSceneFromPath(remaining.front());
+  }
+
+  CreateNewSceneFile();
+  return true;
 }
 
 } // namespace Atrum::EntityEditor

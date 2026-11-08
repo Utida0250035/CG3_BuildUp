@@ -276,6 +276,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\AABB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
@@ -310,8 +311,20 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp" />
@@ -359,6 +372,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Entity.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp" />
@@ -470,6 +484,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\File\FileSize.h" />
     <ClInclude Include="Codes\Include\File\SetWorkingDirectoryToExecutable.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h" />
+    <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugLayer.h" />
     <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
@@ -512,8 +527,18 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorReferenceGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorUi.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
@@ -582,6 +607,9 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\System\Entity\ComponentUpd.h" />
     <ClInclude Include="Codes\Include\System\Entity\Entity.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityStorage.h" />
+    <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h" />
+    <ClInclude Include="Codes\Include\System\GameAssetsPaths.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
     <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
     <ClInclude Include="Codes\Include\System\Hash64.h" />

@@ -26,6 +26,7 @@
 #include "Engine/AtrumEngine.h"
 #include "Engine/Resource/AssetModel.h"
 #include "System/Entity/Entity.h"
+#include "System/Entity/EntityTagRegistry.h"
 #include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/Playable/CmpMoveByInput.h"
 #include <iterator>
@@ -64,7 +65,8 @@ Math::Vector3 ComputeBossFaceForward(const Math::Vector3 &bossPosition,
 
 std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   std::unique_ptr<Entity> playerParry = std::make_unique<Entity>();
-  playerParry->SetEntityType(EntityType::PLAYER);
+  EntityTagRegistry::Instance().EnsureLoaded();
+  playerParry->AddTag(EntityTagRegistry::Instance().TagNameForRole("player"));
 
   Math::TransformLH initialTransform{};
   initialTransform.quaternion =
@@ -97,7 +99,8 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   cmpHitSphere->SetSpheres({{{}, 0.5f}});
 
   CmpHealthHit *cmpHealthHit = playerParry->GetUpdCmp<CmpHealthHit>();
-  cmpHealthHit->SetHurterTypes({EntityType::ENEMY, EntityType::ENEMY_WEAPON});
+  cmpHealthHit->SetHurterTagHashes(
+      EntityTagRegistry::Instance().PlayerDamageHurterTagHashes());
   cmpHealthHit->SetInitialHealthCount(5);
   cmpHealthHit->SetInvincibleTime(kPlayerDamageInvincibleSeconds);
 
@@ -156,7 +159,7 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
 
 std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
   std::unique_ptr<Entity> enemyAstro = std::make_unique<Entity>();
-  enemyAstro->SetEntityType(EntityType::ENEMY);
+  enemyAstro->AddTag(EntityTagRegistry::Instance().TagNameForRole("enemy"));
 
   Math::TransformLH initialTransform{};
   initialTransform.translate = {8.0f, 0.0f, 0.0f};
@@ -194,7 +197,8 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
   cmpDrawHitSphere->SetLightingEnabled(true);
 
   CmpHealthHit *cmpHealthHit = enemyAstro->GetUpdCmp<CmpHealthHit>();
-  cmpHealthHit->SetHurterTypes({EntityType::PLAYER_ITEM});
+  cmpHealthHit->SetHurterTagHashes(
+      EntityTagRegistry::Instance().EnemyDamageHurterTagHashes());
   cmpHealthHit->SetInitialHealthCount(32);
   cmpHealthHit->SetInvincibleTime(0.01f);
   cmpHealthHit->SetStackReflectedBulletDamage(true);
@@ -224,7 +228,7 @@ std::unique_ptr<Entity> EntityFactory::EnemyAstro(Entity *player) {
   std::vector<Entity *> orbiters;
   for (const OrbitConfig &config : orbitConfigs) {
     std::unique_ptr<Entity> orbiter = std::make_unique<Entity>();
-    orbiter->SetEntityType(EntityType::ENEMY_WEAPON);
+    orbiter->AddTag(EntityTagRegistry::Instance().TagNameForRole("enemyWeapon"));
     orbiter->AddUpdCmp<CmpOrbiter>();
     orbiter->AddDrawCmp<CmpMeshSphere>();
     orbiter->AddUpdCmp<CmpHitSphere>();
@@ -391,7 +395,7 @@ std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(
   initialTransform.translate = position;
   initialTransform.translate.z = 0.0f;
   bullet->SetInitialTransform(initialTransform);
-  bullet->SetEntityType(EntityType::ENEMY_WEAPON);
+  bullet->AddTag(EntityTagRegistry::Instance().TagNameForRole("enemyWeapon"));
 
   bullet->AddUpdCmp<CmpLhRigidBody>();
   bullet->AddUpdCmp<CmpHitSphere>();
@@ -419,7 +423,7 @@ std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(
 
 std::unique_ptr<Entity> EntityFactory::Parry(Entity *parent) {
   std::unique_ptr<Entity> parry = std::make_unique<Entity>();
-  parry->SetEntityType(EntityType::PLAYER_WEAPON);
+  parry->AddTag(EntityTagRegistry::Instance().TagNameForRole("playerWeapon"));
 
   Math::TransformLH initialTransform{};
   initialTransform.translate = {0.25f, 1.0f, 0.0f};

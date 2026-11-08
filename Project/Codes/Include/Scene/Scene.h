@@ -62,6 +62,9 @@ public:
   /// </summary>
   virtual bool IsStageViewCameraLocked() const { return false; }
 
+  /// false のとき DebugCamera は行列のみ更新（エディットビュー外など）
+  virtual bool AllowDebugCameraControl() const { return true; }
+
   /// <summary>
   /// シーン進入関数 純粋仮想
   /// </summary>
@@ -75,7 +78,7 @@ public:
   /// <summary>
   /// 描画関数（PreDraw → シーン描画 → 遷移演出 → PostDraw）
   /// </summary>
-  void Draw();
+  virtual void Draw();
 
   /// <summary>
   /// シーン退出関数 純粋仮想

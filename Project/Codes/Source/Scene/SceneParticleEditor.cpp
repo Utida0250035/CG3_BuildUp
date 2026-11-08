@@ -7,12 +7,15 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
-#include "Scene/SceneTitle.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "Scene/SceneEntityEditor.h"
+#endif
 #include "System/Json/JsonHandler.h"
 #include "System/Particle/EmitterManager.h"
 #include "System/Particle/ParticleEmitter.h"
 #include "Input/PlayInput.h"
 
+#include "System/Editor/EditorAssetsPaths.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/Particle/ParticleEditorReferenceGrid.h"
 #include "System/Editor/Particle/ParticleEditorUi.h"
@@ -154,21 +157,26 @@ void SceneParticleEditor::EnterScene() {
 	if (uiState_) {
 		LoadFromJsonPath(uiState_->jsonFilePath);
 	} else {
-		LoadFromJsonPath("../EditorAssets/Particles/editorTest.json");
+		LoadFromJsonPath(
+		    std::string(Atrum::EditorAssets::kParticlesDirectory) +
+		    "/editorTest.json");
 	}
 #else
-	LoadFromJsonPath("../EditorAssets/Particles/editorTest.json");
+	LoadFromJsonPath(std::string(Atrum::EditorAssets::kParticlesDirectory) +
+	                 "/editorTest.json");
 #endif
 }
 
 void SceneParticleEditor::Update() {
 	HandleEditorRequests();
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
 	if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F1)) {
-		Atrum::CommandChangeScene::Instance()->Set(SceneTitle::Instance(),
+		Atrum::CommandChangeScene::Instance()->Set(SceneEntityEditor::Instance(),
 			std::make_unique<ChangeSceneFade>().release());
 		return;
 	}
+#endif
 
 	Atrum::Particle::Emitter::EmitterManager *particleManager =
 	    EditorEmitterManager();

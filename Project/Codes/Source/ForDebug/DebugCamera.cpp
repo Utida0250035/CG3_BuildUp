@@ -9,6 +9,9 @@
 
 #include "ForDebug/ImGui.h"
 
+#if defined(DEVELOPMENT)
+#include "System/Editor/EditorFrame.h"
+#endif
 
 #endif // USE_IMGUI
 
@@ -31,7 +34,13 @@ namespace Atrum::Debug {
 
 #ifdef USE_IMGUI
 
-		if (ImGui::GetIO().WantCaptureMouse) {
+		const bool editorEditViewHover =
+#if defined(DEVELOPMENT)
+		    Editor::EditorFrame::Instance().EditViewHovered();
+#else
+		    false;
+#endif
+		if (ImGui::GetIO().WantCaptureMouse && !editorEditViewHover) {
 
 			UpdateMatrix();
 

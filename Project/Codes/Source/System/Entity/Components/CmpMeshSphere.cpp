@@ -18,7 +18,7 @@ void CmpMeshSphere::Draw() {
 
   const bool isDepthBullet =
       owner != nullptr &&
-      BulletDepthVisual::IsManagedBulletEntityType(owner->GetEntityType());
+      BulletDepthVisual::IsManagedBulletEntity(*owner);
 
   float pseudoDepth = 0.0f;
   if (isDepthBullet) {
@@ -26,7 +26,7 @@ void CmpMeshSphere::Draw() {
     pseudoDepth = BulletDepthVisual::PseudoDepthLane01FromWorldY(worldY);
     drawRadius *= BulletDepthVisual::DrawScaleFromPseudoDepth(pseudoDepth);
     drawColor = BulletDepthVisual::ModulateBulletColor(
-        colorVec_, pseudoDepth, owner->GetEntityType());
+        colorVec_, pseudoDepth, *owner);
     drawColor.w *= BulletDepthVisual::BodyAlphaFromPseudoDepth(pseudoDepth);
   }
 

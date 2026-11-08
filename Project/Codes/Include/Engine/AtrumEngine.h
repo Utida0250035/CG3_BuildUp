@@ -33,6 +33,7 @@
 #include "System/DeltaTime.h"
 #include <array>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <SDL.h>
@@ -121,6 +122,9 @@ namespace Atrum {
 		/* BlendMode */
 
 		BlendMode blendMode_ = BlendMode::NORMAL;
+
+		std::optional<D3D12_VIEWPORT> subViewportOverride_{};
+		std::optional<D3D12_RECT> subScissorOverride_{};
 
 		/* DirectionalLight(3D専用) */
 
@@ -277,10 +281,31 @@ namespace Atrum {
   /// </summary>
 		void PreDraw();
 
+		/// ImGui のシーンビュー矩形（PreDraw より前に設定し、PreDraw / Apply で GPU に反映）
+		void SetSubViewport(int x, int y, int width, int height);
+		void ClearSubViewport();
+		/// 記録中のコマンドリストへ sub viewport を再適用（DrawScene 内の追従用）
+		void ApplySubViewportToCommandList() const;
+
 		/// <summary>
 		/// 描画処理(後)
 		/// </summary>
 		void PostDraw();
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+		/// エディタ用オフスクリーン RT へシーンを描画（Release ではリンクされない）
+		void EditorRenderSceneViewTarget(
+		    int width, int height, ID3D12Resource *colorResource,
+		    D3D12_CPU_DESCRIPTOR_HANDLE colorRtv, ID3D12Resource *depthResource,
+		    D3D12_CPU_DESCRIPTOR_HANDLE depthDsv, bool colorReadableByShader,
+		    const std::function<void()> &drawSceneContent);
+
+		ID3D12Device *GetD3DDevice() const;
+		ID3D12GraphicsCommandList *GetD3DCommandList() const;
+		DescriptorAllocator *GetSrvAllocator();
+		D3D12_CPU_DESCRIPTOR_HANDLE GetSwapChainRtvCpu() const;
+		D3D12_CPU_DESCRIPTOR_HANDLE GetMainDepthStencilViewCpu() const;
+#endif
 
 		/// <summary>
 		/// エンジンの終了
@@ -391,6 +416,14 @@ namespace Atrum {
 			const Math::Vector3& worldStart,
 			const Math::Vector3& worldEnd, const float width,
 			const bool isLighting = false);
+
+/// XZ 床面上の線（画面上ピクセル幅固定）
+		void DrawLine3DOnFloorPlane(const uint32_t& textureIndex,
+			const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform,
+			const Math::Vector3& worldStart, const Math::Vector3& worldEnd,
+			float lineWidthPixels, int viewportWidth, int viewportHeight,
+			float floorY, const bool isLighting = false);
 
 /// <summary>
 /// 3D ワールド空間の破線（カメラ向きリボン）

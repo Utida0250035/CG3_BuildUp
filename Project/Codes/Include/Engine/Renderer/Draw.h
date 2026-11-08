@@ -234,6 +234,15 @@ namespace Atrum {
 			const float width, const bool isLighting,
 			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
 
+		/// XZ 床面上の太線（画面上ピクセル幅固定。グリッド向け）
+		void DrawLine3DOnFloorPlane(
+			const uint32_t& textureIndex, const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform, const Math::Vector3& worldStart,
+			const Math::Vector3& worldEnd, const float lineWidthPixels,
+			const int viewportWidth, const int viewportHeight,
+			const float floorY, const bool isLighting,
+			D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress);
+
 		/// ワールド座標の破線（DrawLine3D を dash / gap 長で分割）
 		void DrawDashedLine3D(const uint32_t& textureIndex,
 			const Math::Vector4& textureColor,

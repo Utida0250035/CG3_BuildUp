@@ -6,6 +6,7 @@
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Entity.h"
+#include "System/Entity/EntityTagRegistry.h"
 #include "System/Particle/GameCombatParticleEffects.h"
 #include "System/PlayerParryReach.h"
 #include "System/PlaySe.h"
@@ -73,7 +74,9 @@ bool EntitiesOverlapByHitSphere(Entity &a, Entity &b) {
 }
 
 bool TryApplyReflectedBulletBossHit(Entity *bullet, Entity &bossEntity) {
-  if (bullet == nullptr || bossEntity.GetEntityType() != EntityType::ENEMY ||
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+  if (bullet == nullptr || !tags.EntityHasRole(bossEntity, "enemy") ||
       !bossEntity.HasUpdCmp<CmpHealthHit>()) {
     return false;
   }
@@ -95,7 +98,7 @@ bool TryApplyReflectedBulletBossHit(Entity *bullet, Entity &bossEntity) {
 
 /// 管理弾（直線・メテオ・壁弾など）1発分の当たり・反射・ボス命中
 bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
-                               EntityType reflectorType) {
+                               const uint64_t reflectorTagHash) {
   if (bullet == nullptr) {
     return false;
   }
@@ -110,14 +113,16 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
 
   const std::vector<Entity *> hitEntitys = cmpHitSphere->GetHitEntitys();
 
-  if (bullet->GetEntityType() == EntityType::ENEMY_WEAPON) {
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+  if (tags.EntityHasRole(*bullet, "enemyWeapon")) {
     // パリィを先に判定（ジャンプ無敵で自機 Hit が切れていてもメテオ等を跳ねられる）
     for (Entity *hitEntity : hitEntitys) {
-      if (hitEntity->GetEntityType() != reflectorType) {
+      if (!hitEntity->HasTagHash(reflectorTagHash)) {
         continue;
       }
 
-      bullet->SetEntityType(EntityType::PLAYER_ITEM);
+      tags.ApplyReflectParryTagConversion(*bullet);
       cmpLhRigidBody->RefVelocity() = {};
       cmpMeshSphere->SetColor(kReflectedBulletColor);
       bullet->SetParent(nullptr);
@@ -128,7 +133,7 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
     }
 
     for (Entity *hitEntity : hitEntitys) {
-      if (hitEntity->GetEntityType() != EntityType::PLAYER ||
+      if (!tags.EntityHasRole(*hitEntity, "player") ||
           !hitEntity->HasUpdCmp<CmpHealthHit>()) {
         continue;
       }
@@ -140,7 +145,7 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
         return true;
       }
     }
-  } else if (bullet->GetEntityType() == EntityType::PLAYER_ITEM) {
+  } else if (tags.EntityHasRole(*bullet, "playerItem")) {
     constexpr float reflectedSpeed = 16.0f * kBulletSpeedGlobalScale;
     Math::Vector3 toOwner =
         bulletOwner.GetWorldPosition() - bullet->GetWorldPosition();
@@ -157,11 +162,11 @@ bool ProcessManagedEnemyBullet(Entity *bullet, Entity &bulletOwner,
 
     for (Entity *hitEntity : hitEntitys) {
       if (hitEntity == nullptr ||
-          hitEntity->GetEntityType() == EntityType::ENEMY_WEAPON) {
+          tags.EntityHasRole(*hitEntity, "enemyWeapon")) {
         continue;
       }
 
-      if (hitEntity->GetEntityType() != EntityType::ENEMY ||
+      if (!tags.EntityHasRole(*hitEntity, "enemy") ||
           !hitEntity->HasUpdCmp<CmpHealthHit>() || hitEntity == &bulletOwner) {
         continue;
       }
@@ -181,7 +186,9 @@ void ClearParryOverlapping() { s_parryOverlapping.clear(); }
 
 /// ボス子实体の ENEMY_WEAPON（オービター等）
 void ProcessAttachedEnemyWeapon(Entity *weapon) {
-  if (weapon == nullptr || weapon->GetEntityType() != EntityType::ENEMY_WEAPON) {
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+  if (weapon == nullptr || !tags.EntityHasRole(*weapon, "enemyWeapon")) {
     return;
   }
 
@@ -195,7 +202,7 @@ void ProcessAttachedEnemyWeapon(Entity *weapon) {
   // 重なっている間は毎フレーム発火すると、反射演出の描画枠を埋め尽くす
   Entity *parryTarget = nullptr;
   for (Entity *hitEntity : cmpHitSphere->GetHitEntitys()) {
-    if (hitEntity->GetEntityType() != EntityType::PLAYER_WEAPON) {
+    if (!hitEntity->HasTagHash(tags.DefaultParryReflectorTagHash())) {
       continue;
     }
     parryTarget = hitEntity;
@@ -233,6 +240,10 @@ void CmpReflectAbleBullet::ResetAttachedWeaponParryOverlapTracking() {
 }
 
 void CmpReflectAbleBullet::Initialize() {
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+  reflectorTagHash_ = tags.DefaultParryReflectorTagHash();
+
   for (auto &bullet : reflectAbleBullets_) {
     if (bullet) {
       bullet->Finalize();
@@ -263,7 +274,9 @@ void CmpReflectAbleBullet::Update() {
 
     bullet->Update();
 
-    if (bullet->GetEntityType() == EntityType::ENEMY_WEAPON) {
+    EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+  if (tags.EntityHasRole(*bullet, "enemyWeapon")) {
       bullet->RefTransform().translate.z = 0.0f;
       if (CmpLhRigidBody *body = bullet->GetUpdCmp<CmpLhRigidBody>()) {
         body->RefVelocity().z = 0.0f;
@@ -277,7 +290,7 @@ void CmpReflectAbleBullet::Update() {
       continue;
     }
 
-    if (bullet->GetEntityType() == EntityType::ENEMY_WEAPON &&
+    if (tags.EntityHasRole(*bullet, "enemyWeapon") &&
         IsOutsidePlayerParryReachAabb(bullet->GetWorldPosition())) {
       bullet->Finalize();
       reflectAbleBullets_.erase(reflectAbleBullets_.begin() +
@@ -310,7 +323,7 @@ void CmpReflectAbleBullet::LateResolveCombatHits() {
 
     RefreshBulletHitSphere(bullet);
 
-    if (ProcessManagedEnemyBullet(bullet, RefOwner(), reflectorType_)) {
+    if (ProcessManagedEnemyBullet(bullet, RefOwner(), reflectorTagHash_)) {
       bullet->Finalize();
       reflectAbleBullets_.erase(reflectAbleBullets_.begin() +
                                 static_cast<std::ptrdiff_t>(index));
@@ -338,7 +351,8 @@ void CmpReflectAbleBullet::Shot(Entity *bullet) {
   }
 
   std::unique_ptr<Entity> owned(bullet);
-  if (owned->GetEntityType() == EntityType::ENEMY_WEAPON &&
+  EntityTagRegistry::Instance().EnsureLoaded();
+  if (EntityTagRegistry::Instance().EntityHasRole(*owned, "enemyWeapon") &&
       IsOutsidePlayerParryReachAabb(owned->GetWorldPosition())) {
     owned->Finalize();
     return;

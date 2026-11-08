@@ -54,6 +54,8 @@ namespace Atrum {
 			if (sceneNow->IsStageViewCameraLocked()) {
 				// 戦闘シーンでは DebugCamera の毎フレーム操作や Draw 内での再配置を行わない
 				camera->UpdateMatrix();
+			} else if (!sceneNow->AllowDebugCameraControl()) {
+				camera->UpdateMatrix();
 			} else {
 				camera->Update();
 			}
@@ -66,8 +68,10 @@ namespace Atrum {
 
 			}
 
-			// シーン遷移の更新処理
+			// シーン遷移の更新処理（遷移先が非シングルトンの場合、直前の scene は破棄される）
 			commandChangeScene_->Update();
+
+			sceneNow = commandScene_->GetSceneNow();
 
 			Engine::Instance()->SetCamera(sceneNow->GetCamera());
 

@@ -2,13 +2,20 @@
 
 #include "System/Editor/Entity/EntityEditor.h"
 
+#include "System/Editor/EditorEntityWorkbench.h"
+#include "System/Editor/Prefab/PrefabAsset.h"
+#include "System/Editor/Entity/EntityEditorTagCatalog.h"
+#include "System/Editor/Scene/EditorSceneAsset.h"
+#include "System/Hash64.h"
 #include "ForDebug/ImGui.h"
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
-#include "System/Entity/EntityType.h"
+#include "System/Entity/EntityTagRegistry.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
+#include <string>
+#include <vector>
 
 namespace Atrum::EntityEditor {
 
@@ -26,46 +33,6 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpScroll", ComponentSlotKind::Upd},
     {"CmpHitSphere", ComponentSlotKind::Upd},
 };
-
-EntityType EntityTypeFromIndex(const int index) {
-  switch (index) {
-  case 1:
-    return EntityType::PLAYER;
-  case 2:
-    return EntityType::ENEMY;
-  case 3:
-    return EntityType::PLAYER_WEAPON;
-  case 4:
-    return EntityType::ENEMY_WEAPON;
-  case 5:
-    return EntityType::PLAYER_ITEM;
-  case 6:
-    return EntityType::ENEMY_ITEM;
-  case 0:
-  default:
-    return EntityType::NONE;
-  }
-}
-
-int EntityTypeToIndex(const EntityType type) {
-  switch (type) {
-  case EntityType::PLAYER:
-    return 1;
-  case EntityType::ENEMY:
-    return 2;
-  case EntityType::PLAYER_WEAPON:
-    return 3;
-  case EntityType::ENEMY_WEAPON:
-    return 4;
-  case EntityType::PLAYER_ITEM:
-    return 5;
-  case EntityType::ENEMY_ITEM:
-    return 6;
-  case EntityType::NONE:
-  default:
-    return 0;
-  }
-}
 
 bool DrawVector3Param(const char *label, nlohmann::json &params,
                       const char *key, const Math::Vector3 &fallback) {
@@ -85,6 +52,43 @@ bool DrawVector4ColorParam(const char *label, nlohmann::json &params,
     params[key] = color;
   }
   return changed;
+}
+
+constexpr const char *kDeleteScenePopupId = "シーン削除の確認";
+
+void QueueDeleteSceneConfirm(UiState &ui, const std::string &path) {
+  if (path.empty()) {
+    return;
+  }
+  ui.pendingDeleteScenePath = path;
+  ui.requestDeleteSceneConfirm = true;
+}
+
+void DrawDeleteSceneConfirmPopup(EntityEditor &editor) {
+  UiState &ui = editor.Ui();
+  if (ui.requestDeleteSceneConfirm) {
+    ImGui::OpenPopup(kDeleteScenePopupId);
+    ui.requestDeleteSceneConfirm = false;
+  }
+
+  if (ImGui::BeginPopupModal(kDeleteScenePopupId, nullptr,
+                             ImGuiWindowFlags_AlwaysAutoResize)) {
+    ImGui::TextUnformatted("次のシーン JSON を削除しますか？");
+    ImGui::Spacing();
+    ImGui::TextWrapped("%s", ui.pendingDeleteScenePath.c_str());
+    ImGui::Spacing();
+    if (ImGui::Button("削除", ImVec2(120.0f, 0.0f))) {
+      editor.DeleteSceneFile(ui.pendingDeleteScenePath);
+      ui.pendingDeleteScenePath.clear();
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("キャンセル", ImVec2(120.0f, 0.0f))) {
+      ui.pendingDeleteScenePath.clear();
+      ImGui::CloseCurrentPopup();
+    }
+    ImGui::EndPopup();
+  }
 }
 
 bool DrawComponentParams(ComponentSlot &slot) {
@@ -113,7 +117,7 @@ bool DrawComponentParams(ComponentSlot &slot) {
 
   if (slot.typeName == "CmpDrawHitSphere") {
     ImGui::TextDisabled(
-        "同一 Entity に CmpHitSphere (Upd) が必要です");
+        "描画には同一エンティティの CmpHitSphere (Upd) が必要です");
     changed |= DrawVector4ColorParam("color", p, "color",
                                      Math::Vector4{0.2f, 0.85f, 1.0f, 1.0f});
     bool lighting = p.value("isLightingEnabled", false);
@@ -162,23 +166,60 @@ bool DrawComponentParams(ComponentSlot &slot) {
     if (!p.contains("spheres") || !p.at("spheres").is_array()) {
       p["spheres"] = nlohmann::json::array();
     }
-    if (p.at("spheres").empty()) {
-      p["spheres"].push_back(
+    nlohmann::json &spheres = p.at("spheres");
+    if (spheres.empty()) {
+      spheres.push_back(
           {{"localOffset", Math::Vector3::Zero()}, {"radius", 0.5f}});
     }
-    nlohmann::json &sphere0 = p.at("spheres").at(0);
-    Math::Vector3 offset =
-        sphere0.value("localOffset", Math::Vector3::Zero());
-    if (ImGui::DragFloat3("spheres[0].localOffset", &offset.x, 0.02f)) {
-      sphere0["localOffset"] = offset;
+
+    static int selectedSphereIndex = 0;
+    const int sphereCount = static_cast<int>(spheres.size());
+    selectedSphereIndex =
+        std::clamp(selectedSphereIndex, 0, std::max(0, sphereCount - 1));
+
+    if (ImGui::Button("球を追加")) {
+      spheres.push_back(
+          {{"localOffset", Math::Vector3::Zero()}, {"radius", 0.5f}});
+      selectedSphereIndex = sphereCount;
       changed = true;
     }
-    float radius = sphere0.value("radius", 0.5f);
-    if (ImGui::DragFloat("spheres[0].radius", &radius, 0.02f, 0.01f, 64.0f)) {
-      sphere0["radius"] = radius;
+    ImGui::SameLine();
+    if (sphereCount > 1 &&
+        ImGui::Button("選択した球を削除")) {
+      spheres.erase(spheres.begin() + selectedSphereIndex);
+      selectedSphereIndex =
+          std::clamp(selectedSphereIndex, 0,
+                     std::max(0, static_cast<int>(spheres.size()) - 1));
       changed = true;
     }
-    ImGui::TextDisabled("現状 UI は当たり球 1 個分のみ編集します");
+
+    for (int i = 0; i < sphereCount; ++i) {
+      const std::string label = "spheres[" + std::to_string(i) + "]";
+      if (ImGui::Selectable(label.c_str(), selectedSphereIndex == i)) {
+        selectedSphereIndex = i;
+      }
+    }
+
+    if (!spheres.empty()) {
+      nlohmann::json &sphere = spheres.at(static_cast<size_t>(selectedSphereIndex));
+      const std::string indexSuffix =
+          "[" + std::to_string(selectedSphereIndex) + "]";
+
+      Math::Vector3 offset =
+          sphere.value("localOffset", Math::Vector3::Zero());
+      const std::string offsetLabel = "localOffset" + indexSuffix;
+      if (ImGui::DragFloat3(offsetLabel.c_str(), &offset.x, 0.02f)) {
+        sphere["localOffset"] = offset;
+        changed = true;
+      }
+      float radius = sphere.value("radius", 0.5f);
+      const std::string radiusLabel = "radius" + indexSuffix;
+      if (ImGui::DragFloat(radiusLabel.c_str(), &radius, 0.02f, 0.01f,
+                           64.0f)) {
+        sphere["radius"] = radius;
+        changed = true;
+      }
+    }
     return changed;
   }
 
@@ -186,60 +227,328 @@ bool DrawComponentParams(ComponentSlot &slot) {
   return false;
 }
 
-void ClampSelectedComponentIndex(UiState &ui, const EntityDefinition &document) {
-  if (document.components.empty()) {
-    ui.selectedComponentIndex = 0;
+int ComponentSlotKindToKindComboIndex(const ComponentSlotKind kind) {
+  switch (kind) {
+  case ComponentSlotKind::Draw:
+    return 1;
+  case ComponentSlotKind::Data:
+    return 2;
+  case ComponentSlotKind::Upd:
+  default:
+    return 0;
+  }
+}
+
+ComponentSlotKind ComponentSlotKindFromKindComboIndex(const int kindIndex) {
+  switch (kindIndex) {
+  case 1:
+    return ComponentSlotKind::Draw;
+  case 2:
+    return ComponentSlotKind::Data;
+  case 0:
+  default:
+    return ComponentSlotKind::Upd;
+  }
+}
+
+std::vector<int> CollectComponentIndicesForKind(
+    const EntityDefinition &document, const ComponentSlotKind kind) {
+  std::vector<int> indices;
+  for (int i = 0; i < static_cast<int>(document.components.size()); ++i) {
+    if (document.components[static_cast<size_t>(i)].kind == kind) {
+      indices.push_back(i);
+    }
+  }
+  return indices;
+}
+
+void CollectKnownPresetIndicesForKind(const ComponentSlotKind kind,
+                                      std::vector<int> &outPresetIndices) {
+  outPresetIndices.clear();
+  const int presetCount = static_cast<int>(std::size(kKnownComponents));
+  for (int i = 0; i < presetCount; ++i) {
+    if (kKnownComponents[i].kind == kind) {
+      outPresetIndices.push_back(i);
+    }
+  }
+}
+
+void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
+  EditorSceneDocument &scene = editor.SceneDocument();
+  UiState &ui = editor.Ui();
+  if (nodeIndex < 0 ||
+      nodeIndex >= static_cast<int>(scene.instances.size())) {
     return;
   }
-  ui.selectedComponentIndex = std::clamp(
-      ui.selectedComponentIndex, 0,
-      static_cast<int>(document.components.size()) - 1);
+  SceneEntityInstance &instance =
+      scene.instances[static_cast<size_t>(nodeIndex)];
+  const bool selected = ui.selectedInstanceIndex == nodeIndex;
+  ImGui::PushID(nodeIndex);
+  if (ImGui::Selectable(instance.instanceName.c_str(), selected)) {
+    ui.selectedInstanceIndex = nodeIndex;
+  }
+  ImGui::PopID();
+
+  for (int i = 0; i < static_cast<int>(scene.instances.size()); ++i) {
+    if (scene.instances[static_cast<size_t>(i)].parentIndex == nodeIndex) {
+      ImGui::Indent();
+      DrawHierarchyNode(editor, i);
+      ImGui::Unindent();
+    }
+  }
+}
+
+void SyncSelectedComponentToKind(UiState &ui, const EntityDefinition &document) {
+  const std::vector<int> kindIndices =
+      CollectComponentIndicesForKind(document, ui.selectedComponentKind);
+  if (kindIndices.empty()) {
+    return;
+  }
+  if (std::find(kindIndices.begin(), kindIndices.end(),
+                ui.selectedComponentIndex) == kindIndices.end()) {
+    ui.selectedComponentIndex = kindIndices.front();
+  }
 }
 
 } // namespace
 
-void EntityEditor::DrawEditorUi() {
-  if (!ImGui::Begin("Entity Editor")) {
-    ImGui::End();
+void EntityEditor::LayoutEditorWorkbench() {
+  Atrum::Editor::LayoutEntityEditorWorkbench(*this);
+}
+
+void EntityEditor::DrawHierarchyPanel() {
+  if (ui_.interactionMode == EditorInteractionMode::Play) {
+    ImGui::TextDisabled("モード: プレイ");
+  } else {
+    ImGui::TextDisabled("モード: エディット");
+  }
+
+  ImGui::Separator();
+  ImGui::InputString("シーン名", scene_.sceneName);
+
+  if (ImGui::Button("オブジェクトを追加")) {
+    AddEmptyInstance();
+  }
+  ImGui::SameLine();
+  if (scene_.instances.size() > 1 && ImGui::Button("削除")) {
+    RemoveSelectedInstance();
+  }
+
+  ImGui::Separator();
+  if (ImGui::TreeNodeEx(scene_.sceneName.c_str(),
+                        ImGuiTreeNodeFlags_DefaultOpen)) {
+    for (int i = 0; i < static_cast<int>(scene_.instances.size()); ++i) {
+      if (scene_.instances[static_cast<size_t>(i)].parentIndex < 0) {
+        DrawHierarchyNode(*this, i);
+      }
+    }
+    ImGui::TreePop();
+  }
+}
+
+void EntityEditor::DrawProjectPanel() {
+  Atrum::Editor::Scene::EnsureScenesDirectoryExists();
+
+  ImGui::TextUnformatted("シーン一覧");
+  if (ImGui::Button("新規シーン")) {
+    CreateNewSceneFile();
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("シーンを実行")) {
+    ui_.requestSaveToDisk = true;
+    ui_.requestPlayRuntimeScene = true;
+  }
+  ImGui::Separator();
+
+  const std::vector<std::string> scenePaths =
+      Atrum::Editor::Scene::ListSceneJsonFiles();
+  if (scenePaths.empty()) {
+    ImGui::TextDisabled("シーンがありません: %s",
+                        Atrum::Editor::Scene::kScenesDirectory);
+  } else {
+    for (const std::string &path : scenePaths) {
+      const bool isActive =
+          !ui_.selectedScenePath.empty()
+              ? ui_.selectedScenePath == path
+              : ui_.jsonFilePath == path;
+      const std::string label =
+          Atrum::Editor::Scene::SceneDisplayNameFromPath(path) + "  |  " +
+          path;
+      if (ImGui::Selectable(label.c_str(), isActive)) {
+        ui_.selectedScenePath = path;
+      }
+    }
+  }
+
+  ImGui::Separator();
+  if (!ui_.selectedScenePath.empty()) {
+    if (ImGui::Button("シーンを開く")) {
+      OpenSceneFromPath(ui_.selectedScenePath);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("シーンを削除")) {
+      QueueDeleteSceneConfirm(ui_, ui_.selectedScenePath);
+    }
+  }
+
+  DrawDeleteSceneConfirmPopup(*this);
+
+  ImGui::Spacing();
+  ImGui::TextUnformatted("プレハブ一覧 (Entity JSON)");
+  ImGui::Separator();
+
+  const std::vector<std::string> prefabPaths =
+      Atrum::Editor::Prefab::ListPrefabJsonFiles();
+  if (prefabPaths.empty()) {
+    ImGui::TextDisabled("プレハブが見つかりません: %s",
+                        Atrum::Editor::Prefab::kEntitiesPrefabDirectory);
     return;
   }
 
-  ImGui::TextUnformatted("F1: タイトルへ戻る");
-  ImGui::Separator();
-
-  ImGui::InputString("JSON path", ui_.jsonFilePath);
-  if (ImGui::Button("Reload")) {
-    ui_.requestReloadFromDisk = true;
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Save")) {
-    ui_.requestSaveToDisk = true;
-  }
-  ImGui::SameLine();
-  if (ImGui::Button("Apply preview")) {
-    ui_.requestApplyPreview = true;
+  for (const std::string &path : prefabPaths) {
+    const bool isActive = ui_.selectedPrefabPath == path;
+    if (ImGui::Selectable(path.c_str(), isActive)) {
+      ui_.selectedPrefabPath = path;
+    }
   }
 
   ImGui::Separator();
+  if (!ui_.selectedPrefabPath.empty() &&
+      ImGui::Button("シーンへ追加")) {
+    AddInstanceFromPrefabPath(ui_.selectedPrefabPath);
+  }
+}
+
+void EntityEditor::DrawInspectorPanel() {
+  if (scene_.instances.empty()) {
+    ImGui::TextUnformatted("シーンにオブジェクトがありません");
+    return;
+  }
 
   bool changed = false;
-  changed |= ImGui::InputString("entityName", document_.entityName);
+  SceneEntityInstance &instance = SelectedInstance();
+  EntityDefinition &document = SelectedDefinition();
 
-  const char *entityTypeNames[] = {
-      "NONE",         "PLAYER",        "ENEMY",   "PLAYER_WEAPON",
-      "ENEMY_WEAPON", "PLAYER_ITEM",   "ENEMY_ITEM"};
-  int typeIndex = EntityTypeToIndex(document_.entityType);
-  if (ImGui::Combo("entityType", &typeIndex, entityTypeNames,
-                   IM_ARRAYSIZE(entityTypeNames))) {
-    document_.entityType = EntityTypeFromIndex(typeIndex);
-    changed = true;
+  ImGui::InputString("シーン JSON パス", ui_.jsonFilePath);
+  changed |= ImGui::InputString("表示名", instance.instanceName);
+
+  int parentIndex = instance.parentIndex;
+  const int selfIndex = ui_.selectedInstanceIndex;
+  if (ImGui::BeginCombo("親オブジェクト",
+                         parentIndex < 0 ? "なし"
+                                         : scene_.instances[static_cast<size_t>(
+                                               parentIndex)]
+                                               .instanceName.c_str())) {
+    if (ImGui::Selectable("なし", parentIndex < 0)) {
+      instance.parentIndex = -1;
+      changed = true;
+    }
+    for (int i = 0; i < static_cast<int>(scene_.instances.size()); ++i) {
+      if (i == selfIndex) {
+        continue;
+      }
+      const bool picked = parentIndex == i;
+      if (ImGui::Selectable(scene_.instances[static_cast<size_t>(i)]
+                                .instanceName.c_str(),
+                            picked)) {
+        instance.parentIndex = i;
+        changed = true;
+      }
+    }
+    ImGui::EndCombo();
   }
 
-  if (ImGui::CollapsingHeader("initialTransform",
+  ImGui::Separator();
+  changed |= ImGui::InputString("エンティティ名", document.entityName);
+
+  if (ImGui::CollapsingHeader("タグ", ImGuiTreeNodeFlags_DefaultOpen)) {
+    ImGui::TextDisabled("JSON: tags + tagHashes / 実行時 std::set<uint64_t>");
+    ImGui::TextUnformatted("役割タグ（Assets/Tags/tagRegistry.json）");
+    EntityTagRegistry::Instance().EnsureLoaded();
+    for (const std::string &roleTagName :
+         EntityTagRegistry::Instance().RoleTagNames()) {
+      const bool hasRole = std::find(document.tags.begin(), document.tags.end(),
+                                     roleTagName) != document.tags.end();
+      bool roleEnabled = hasRole;
+      if (ImGui::Checkbox(roleTagName.c_str(), &roleEnabled)) {
+        if (roleEnabled) {
+          AddTagToCatalog(scene_, roleTagName);
+          AddTagToEntityDefinition(document, roleTagName);
+        } else {
+          RemoveTagFromEntityDefinition(document, roleTagName);
+        }
+        changed = true;
+      }
+    }
+    ImGui::Separator();
+
+    for (size_t tagIndex = 0; tagIndex < document.tags.size(); ++tagIndex) {
+      ImGui::PushID(static_cast<int>(tagIndex));
+      const std::string tagNameBefore = document.tags[tagIndex];
+      std::string &tagName = document.tags[tagIndex];
+      if (ImGui::InputString("名前", tagName)) {
+        if (tagName != tagNameBefore) {
+          EditEntityDefinitionTagAt(document, tagIndex, tagName);
+        }
+        changed = true;
+      }
+      ImGui::Text("hash: 0x%016llX",
+                  static_cast<unsigned long long>(
+                      TagHashForDefinitionName(tagName)));
+      if (ImGui::Button("削除")) {
+        RemoveTagFromEntityDefinition(document, tagName);
+        changed = true;
+        ImGui::PopID();
+        break;
+      }
+      ImGui::Separator();
+      ImGui::PopID();
+    }
+
+    ImGui::InputString("新規タグ名", ui_.newEntityTagName);
+    ImGui::SameLine();
+    if (ImGui::Button("タグを追加")) {
+      if (!ui_.newEntityTagName.empty()) {
+        AddTagToCatalog(scene_, ui_.newEntityTagName);
+        AddTagToEntityDefinition(document, ui_.newEntityTagName);
+        ui_.newEntityTagName.clear();
+        changed = true;
+      }
+    }
+
+    const std::vector<std::string> assignable = scene_.tagCatalog;
+    static int addExistingTagIndex = 0;
+    if (!assignable.empty()) {
+      addExistingTagIndex =
+          std::clamp(addExistingTagIndex, 0,
+                     static_cast<int>(assignable.size()) - 1);
+      std::vector<const char *> labels;
+      labels.reserve(assignable.size());
+      for (const std::string &name : assignable) {
+        labels.push_back(name.c_str());
+      }
+      ImGui::Combo("カタログから追加", &addExistingTagIndex, labels.data(),
+                   static_cast<int>(labels.size()));
+      if (ImGui::Button("カタログのタグを付与")) {
+        const std::string &picked = assignable[static_cast<size_t>(
+            addExistingTagIndex)];
+        AddTagToEntityDefinition(document, picked);
+        changed = true;
+      }
+    }
+
+    if (ImGui::Button("タグをすべて解除")) {
+      document.tags.clear();
+      document.tagHashes.clear();
+      changed = true;
+    }
+  }
+
+  if (ImGui::CollapsingHeader("初期トランスフォーム",
                               ImGuiTreeNodeFlags_DefaultOpen)) {
-    const Math::TransformLH transformBefore = document_.initialTransform;
-    document_.initialTransform.ImGui("initialTransform");
-    const Math::TransformLH &transformAfter = document_.initialTransform;
+    const Math::TransformLH transformBefore = document.initialTransform;
+    document.initialTransform.ImGui("初期トランスフォーム");
+    const Math::TransformLH &transformAfter = document.initialTransform;
     if (transformBefore.translate.x != transformAfter.translate.x ||
         transformBefore.translate.y != transformAfter.translate.y ||
         transformBefore.translate.z != transformAfter.translate.z ||
@@ -255,91 +564,194 @@ void EntityEditor::DrawEditorUi() {
   }
 
   ImGui::Separator();
-  ImGui::TextUnformatted("Components");
+  ImGui::TextUnformatted("コンポーネント");
 
-  static int addPresetIndex = 0;
-  const int presetCount = static_cast<int>(std::size(kKnownComponents));
-  const char *presetLabels[presetCount];
-  for (int i = 0; i < presetCount; ++i) {
-    presetLabels[i] = kKnownComponents[i].typeName;
-  }
-  ImGui::Combo("add preset", &addPresetIndex, presetLabels, presetCount);
-  if (ImGui::Button("Add component")) {
-    const KnownComponentEntry &entry = kKnownComponents[addPresetIndex];
-    ComponentSlot slot{};
-    slot.kind = entry.kind;
-    slot.typeName = entry.typeName;
-    slot.params = DefaultParamsForType(entry.typeName);
-    document_.components.push_back(std::move(slot));
-    ui_.selectedComponentIndex =
-        static_cast<int>(document_.components.size()) - 1;
-    ui_.requestApplyPreview = true;
-  }
-
-  ClampSelectedComponentIndex(ui_, document_);
-  if (!document_.components.empty() &&
-      ImGui::Button("Remove selected component")) {
-    document_.components.erase(
-        document_.components.begin() + ui_.selectedComponentIndex);
-    ClampSelectedComponentIndex(ui_, document_);
-    ui_.requestApplyPreview = true;
-  }
-
-  if (document_.components.empty()) {
-    ImGui::TextUnformatted(
-        "コンポーネントがありません。Add component で追加してください。");
-    if (changed) {
-      ui_.requestApplyPreview = true;
-    }
-    ImGui::End();
-    return;
-  }
-
-  for (int i = 0; i < static_cast<int>(document_.components.size()); ++i) {
-    const ComponentSlot &slot = document_.components[static_cast<size_t>(i)];
-    const std::string label = std::to_string(i) + ": " + slot.typeName;
-    if (ImGui::Selectable(label.c_str(), ui_.selectedComponentIndex == i)) {
-      ui_.selectedComponentIndex = i;
-    }
-  }
-
-  ImGui::Separator();
-  ComponentSlot &selected =
-      document_.components[static_cast<size_t>(ui_.selectedComponentIndex)];
+  static int addPresetListIndex = 0;
 
   const char *kindNames[] = {"Upd", "Draw", "Data"};
-  int kindIndex = 0;
-  if (selected.kind == ComponentSlotKind::Draw) {
-    kindIndex = 1;
-  } else if (selected.kind == ComponentSlotKind::Data) {
-    kindIndex = 2;
+  int kindComboIndex =
+      ComponentSlotKindToKindComboIndex(ui_.selectedComponentKind);
+  if (ImGui::Combo("種別 (Upd/Draw/Data)", &kindComboIndex, kindNames,
+                   IM_ARRAYSIZE(kindNames))) {
+    ui_.selectedComponentKind =
+        ComponentSlotKindFromKindComboIndex(kindComboIndex);
+    SyncSelectedComponentToKind(ui_, document);
+    addPresetListIndex = 0;
   }
-  ImGui::TextDisabled("kind: %s", kindNames[kindIndex]);
 
-  static int typeComboIndex = 0;
-  for (int i = 0; i < presetCount; ++i) {
-    if (selected.typeName == kKnownComponents[i].typeName) {
-      typeComboIndex = i;
-      break;
+  std::vector<int> presetIndicesForKind;
+  CollectKnownPresetIndicesForKind(ui_.selectedComponentKind,
+                                   presetIndicesForKind);
+  if (!presetIndicesForKind.empty()) {
+    addPresetListIndex = std::clamp(
+        addPresetListIndex, 0,
+        static_cast<int>(presetIndicesForKind.size()) - 1);
+
+    std::vector<std::string> presetLabelsStorage;
+    presetLabelsStorage.reserve(presetIndicesForKind.size());
+    std::vector<const char *> presetLabels;
+    presetLabels.reserve(presetIndicesForKind.size());
+    for (const int presetIndex : presetIndicesForKind) {
+      presetLabelsStorage.emplace_back(kKnownComponents[presetIndex].typeName);
+      presetLabels.push_back(presetLabelsStorage.back().c_str());
     }
-  }
-  if (ImGui::Combo("typeName", &typeComboIndex, presetLabels, presetCount)) {
-    const KnownComponentEntry &entry = kKnownComponents[typeComboIndex];
-    selected.kind = entry.kind;
-    selected.typeName = entry.typeName;
-    selected.params = DefaultParamsForType(entry.typeName);
-    changed = true;
+    ImGui::Combo("追加する型", &addPresetListIndex, presetLabels.data(),
+                 static_cast<int>(presetLabels.size()));
+    if (ImGui::Button("コンポーネントを追加")) {
+      const KnownComponentEntry &entry =
+          kKnownComponents[presetIndicesForKind[addPresetListIndex]];
+      ComponentSlot slot{};
+      slot.kind = entry.kind;
+      slot.typeName = entry.typeName;
+      slot.params = DefaultParamsForType(entry.typeName);
+      document.components.push_back(std::move(slot));
+      ui_.selectedComponentIndex =
+          static_cast<int>(document.components.size()) - 1;
+      ui_.requestApplyPreview = true;
+    }
+  } else {
+    ImGui::TextDisabled(
+        "この種別では追加できるプリセットがありません");
   }
 
-  if (DrawComponentParams(selected)) {
-    changed = true;
+  SyncSelectedComponentToKind(ui_, document);
+  const std::vector<int> kindComponentIndices =
+      CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
+
+  if (!kindComponentIndices.empty() &&
+      ImGui::Button("選択中のコンポーネントを削除")) {
+    document.components.erase(
+        document.components.begin() + ui_.selectedComponentIndex);
+    SyncSelectedComponentToKind(ui_, document);
+    ui_.requestApplyPreview = true;
+  }
+
+  if (kindComponentIndices.empty()) {
+    ImGui::TextUnformatted(
+        "選択中の種別にコンポーネントがありません。「コンポーネントを追加」で追加してください。");
+  } else {
+    for (int listIndex = 0;
+         listIndex < static_cast<int>(kindComponentIndices.size()); ++listIndex) {
+      const int docIndex = kindComponentIndices[static_cast<size_t>(listIndex)];
+      const ComponentSlot &slot =
+          document.components[static_cast<size_t>(docIndex)];
+      const std::string label =
+          std::to_string(listIndex) + ": " + slot.typeName;
+      if (ImGui::Selectable(label.c_str(),
+                            ui_.selectedComponentIndex == docIndex)) {
+        ui_.selectedComponentIndex = docIndex;
+      }
+    }
+
+    ImGui::Separator();
+    ComponentSlot &selected =
+        document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
+
+    if (!presetIndicesForKind.empty()) {
+      int typeComboListIndex = 0;
+      for (int i = 0; i < static_cast<int>(presetIndicesForKind.size()); ++i) {
+        if (selected.typeName ==
+            kKnownComponents[presetIndicesForKind[static_cast<size_t>(i)]]
+                .typeName) {
+          typeComboListIndex = i;
+          break;
+        }
+      }
+      std::vector<std::string> typeLabelStorage;
+      typeLabelStorage.reserve(presetIndicesForKind.size());
+      std::vector<const char *> typeLabels;
+      typeLabels.reserve(presetIndicesForKind.size());
+      for (const int presetIndex : presetIndicesForKind) {
+        typeLabelStorage.emplace_back(kKnownComponents[presetIndex].typeName);
+        typeLabels.push_back(typeLabelStorage.back().c_str());
+      }
+      if (ImGui::Combo("コンポーネント型", &typeComboListIndex, typeLabels.data(),
+                       static_cast<int>(typeLabels.size()))) {
+        const KnownComponentEntry &entry =
+            kKnownComponents[presetIndicesForKind[static_cast<size_t>(
+                typeComboListIndex)]];
+        selected.kind = ui_.selectedComponentKind;
+        selected.typeName = entry.typeName;
+        selected.params = DefaultParamsForType(entry.typeName);
+        changed = true;
+      }
+    } else {
+      ImGui::TextUnformatted(selected.typeName.c_str());
+    }
+
+    if (DrawComponentParams(selected)) {
+      changed = true;
+    }
   }
 
   if (changed) {
     ui_.requestApplyPreview = true;
   }
+}
 
-  ImGui::End();
+void EntityEditor::DrawTagsPanel() {
+  bool changedScene = false;
+
+  ImGui::InputString("検索", ui_.tagSearchFilter);
+  ImGui::Separator();
+
+  ImGui::InputString("新規タグ名", ui_.newCatalogTagName);
+  ImGui::SameLine();
+  if (ImGui::Button("タグを追加")) {
+    if (AddTagToCatalog(scene_, ui_.newCatalogTagName)) {
+      ui_.selectedCatalogTag = ui_.newCatalogTagName;
+      ui_.renameCatalogTagName = ui_.newCatalogTagName;
+      ui_.newCatalogTagName.clear();
+      changedScene = true;
+    }
+  }
+
+  const std::vector<std::string> visibleTags =
+      FilterTagCatalog(scene_, ui_.tagSearchFilter);
+
+  ImGui::Separator();
+  ImGui::TextDisabled("登録タグ (%zu)", visibleTags.size());
+
+  if (visibleTags.empty()) {
+    ImGui::TextUnformatted("タグがありません");
+  } else {
+    for (const std::string &tagName : visibleTags) {
+      const bool selected = ui_.selectedCatalogTag == tagName;
+      if (ImGui::Selectable(tagName.c_str(), selected)) {
+        ui_.selectedCatalogTag = tagName;
+        ui_.renameCatalogTagName = tagName;
+      }
+    }
+  }
+
+  if (!ui_.selectedCatalogTag.empty()) {
+    ImGui::Separator();
+    ImGui::Text("選択: %s", ui_.selectedCatalogTag.c_str());
+    ImGui::Text("Hash64: 0x%016llX",
+                static_cast<unsigned long long>(Hash64(ui_.selectedCatalogTag)));
+
+    ImGui::InputString("名前を変更", ui_.renameCatalogTagName);
+    ImGui::SameLine();
+    if (ImGui::Button("改名を適用")) {
+      const std::string fromName = ui_.selectedCatalogTag;
+      if (RenameTagInDocument(scene_, fromName, ui_.renameCatalogTagName)) {
+        ui_.selectedCatalogTag = ui_.renameCatalogTagName;
+        changedScene = true;
+      }
+    }
+
+    ImGui::SameLine();
+    if (ImGui::Button("タグを削除")) {
+      RemoveTagFromDocument(scene_, ui_.selectedCatalogTag);
+      ui_.selectedCatalogTag.clear();
+      ui_.renameCatalogTagName.clear();
+      changedScene = true;
+    }
+  }
+
+  if (changedScene) {
+    ui_.requestApplyPreview = true;
+  }
 }
 
 } // namespace Atrum::EntityEditor

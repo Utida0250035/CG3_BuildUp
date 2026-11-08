@@ -4,6 +4,7 @@
 #include <cassert>
 #include <concepts>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -12,7 +13,6 @@
 #include "System/Entity/ComponentData.h"
 #include "System/Entity/ComponentDraw.h"
 #include "System/Entity/ComponentUpd.h"
-#include "System/Entity/EntityType.h"
 
 namespace Atrum {
 
@@ -28,9 +28,10 @@ private:
 
   uint64_t nameHash_ = 0;
 
-  uint64_t id_ = 0;
+  /// タグ名の FNV-1a ハッシュ列（検知は find で行う）
+  std::set<uint64_t> tagHashes_{};
 
-  EntityType type_ = EntityType::NONE;
+  uint64_t id_ = 0;
 
   struct UpdCmpBox {
     uint64_t priority = 0;
@@ -270,12 +271,32 @@ public:
 
   void RequestDestroy() { state_ = State::Destroy; }
 
-  void SetEntityType(const EntityType &type) { type_ = type; }
-  EntityType GetEntityType() const { return type_; }
-
   void SetIsInheritParentPositionOnly(const bool isInheritPositionOnly) {
     isInheritParentPositionOnly_ = isInheritPositionOnly;
   }
+
+  /// タグ名を Hash64 で登録する
+  void AddTag(const std::string &tagName);
+  /// タグハッシュを登録する
+  void AddTagHash(const uint64_t tagHash) { tagHashes_.insert(tagHash); }
+  /// タグ名のハッシュで削除する
+  void RemoveTag(const std::string &tagName);
+  void RemoveTagHash(const uint64_t tagHash) { tagHashes_.erase(tagHash); }
+  void ClearTags() { tagHashes_.clear(); }
+
+  /// タグ名を Hash64 に変換して保持集合を find する
+  bool HasTag(const std::string &tagName) const;
+  bool HasTagHash(const uint64_t tagHash) const {
+    return tagHashes_.find(tagHash) != tagHashes_.end();
+  }
+
+  const std::set<uint64_t> &GetTagHashes() const { return tagHashes_; }
+
+  /// エディタ定義どおりタグ名列からタグ集合を再構築する
+  void SetTagsFromNames(const std::vector<std::string> &tagNames);
+
+  /// JSON の tagHashes 列をそのまま std::set に反映する
+  void SetTagHashes(const std::vector<uint64_t> &tagHashes);
 };
 
 } // namespace Atrum

@@ -2,7 +2,8 @@
 
 #include "Math/Lerp.h"
 #include "Math/Vector4.h"
-#include "System/Entity/EntityType.h"
+#include "System/Entity/Entity.h"
+#include "System/Entity/EntityTagRegistry.h"
 #include "System/StageBounds.h"
 
 #include <algorithm>
@@ -16,8 +17,10 @@ inline float PseudoDepthLane01FromWorldY(const float worldY) {
   return std::clamp(lane, 0.0f, 1.0f);
 }
 
-inline bool IsManagedBulletEntityType(const EntityType type) {
-  return type == EntityType::ENEMY_WEAPON || type == EntityType::PLAYER_ITEM;
+inline bool IsManagedBulletEntity(const Entity &entity) {
+  EntityTagRegistry &registry = EntityTagRegistry::Instance();
+  registry.EnsureLoaded();
+  return registry.EntityHasManagedBulletRole(entity);
 }
 
 /// 描画半径用（当たり判定・座標 Z は変えない）
@@ -27,8 +30,8 @@ inline float DrawScaleFromPseudoDepth(const float pseudoDepthLane01) {
 
 inline Math::Vector4 ModulateBulletColor(const Math::Vector4 &baseColor,
                                          const float pseudoDepthLane01,
-                                         const EntityType type) {
-  if (!IsManagedBulletEntityType(type)) {
+                                         const Entity &entity) {
+  if (!IsManagedBulletEntity(entity)) {
     return baseColor;
   }
 
@@ -56,9 +59,9 @@ inline float DrawScaleFromBulletWorldY(const float worldY) {
 
 inline Math::Vector4 ModulateBulletColorAtWorldY(const Math::Vector4 &baseColor,
                                                  const float worldY,
-                                                 const EntityType type) {
+                                                 const Entity &entity) {
   return ModulateBulletColor(baseColor, PseudoDepthLane01FromWorldY(worldY),
-                             type);
+                             entity);
 }
 
 /// 奥行きに応じた本体のアルファ（奥ほど薄くして距離感を出す）

@@ -21,6 +21,7 @@
 #include <array>
 #include <cmath>
 #include <cstring>
+#include <functional>
 #include <numbers>
 #include <vector>
 #ifdef DEVELOPMENT
@@ -1092,6 +1093,99 @@ namespace Atrum {
 		}
 
 		this->DrawCall(textureIndex, 6, 4, directionalLightAddress);
+	}
+
+	void Draw::DrawLine3DOnFloorPlane(
+		const uint32_t& textureIndex, const Math::Vector4& textureColor,
+		const Math::Transform& uvTransform, const Math::Vector3& worldStart,
+		const Math::Vector3& worldEnd, const float lineWidthPixels,
+		const int viewportWidth, const int viewportHeight, const float floorY,
+		const bool isLighting, D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (camera_ == nullptr) {
+			assert(false &&
+			       "DrawLine3DOnFloorPlane: SetCamera を呼んでから描画してください");
+			return;
+		}
+
+		const M::Matrix4x4 viewProjection =
+			camera_->GetViewMatrix() * camera_->GetPerspectiveFovMatrix();
+
+		const auto drawSegment = [&](const M::Vector3 &drawStart,
+		                             const M::Vector3 &drawEnd) {
+			std::array<M::Vector3, 4> worldPositions{};
+			M::Vector3 faceNormal{};
+			const bool builtScreenStable =
+			    Renderer::BuildScreenStableFloorLineQuad(
+			        drawStart, drawEnd, lineWidthPixels, viewportWidth,
+			        viewportHeight, camera_->GetTranslate(),
+			        camera_->GetViewMatrix(),
+			        camera_->GetPerspectiveFovMatrix(), floorY, worldPositions,
+			        faceNormal);
+			if (!builtScreenStable) {
+				const M::Vector3 midPoint = (drawStart + drawEnd) * 0.5f;
+				const float metersPerPixel =
+				    Renderer::EstimateMetersPerPixelAtWorldPoint(
+				        midPoint, camera_->GetTranslate(),
+				        camera_->GetPerspectiveFovMatrix(), viewportHeight);
+				const float fallbackWorldWidth =
+				    std::max(metersPerPixel * lineWidthPixels, 1.0e-3f);
+				if (!Renderer::BuildPlanarLineQuadOnFloor(
+				        drawStart, drawEnd, fallbackWorldWidth, worldPositions,
+				        faceNormal)) {
+					return;
+				}
+			}
+
+			const M::Matrix4x4 worldMatrix = M::Matrix4x4::Identity();
+
+			TransformationData transformationData{};
+			transformationData.wvp =
+			    worldMatrix * camera_->GetViewProjectionMatrix();
+			transformationData.world = worldMatrix;
+			transformationBuffer_->SetData(transformationData,
+			                               constantBufferCount_);
+
+			MaterialData materialData{};
+			materialData.color = textureColor;
+			M::Matrix4x4 uvTransformMatrix = M::Matrix4x4::Scale(uvTransform.scale);
+			uvTransformMatrix *= M::Matrix4x4::RotateZ(uvTransform.rotate.z);
+			uvTransformMatrix *= M::Matrix4x4::Translate(uvTransform.translate);
+			materialData.uvTransformMatrix = uvTransformMatrix;
+			materialData.isLightingEnable = isLighting;
+			materialData.isUseTexture = true;
+			materialBuffer_->SetData(materialData, constantBufferCount_);
+
+			const std::array<M::Vector2, 4> texCoords{
+			    M::Vector2{0.0f, 1.0f},
+			    M::Vector2{1.0f, 1.0f},
+			    M::Vector2{0.0f, 0.0f},
+			    M::Vector2{1.0f, 0.0f},
+			};
+
+			const uint32_t vertexStart = vertexBuffer_->GetDrewCount();
+			for (size_t i = 0; i < worldPositions.size(); ++i) {
+				const M::Vector3 &p = worldPositions[i];
+				VertexData vertex{};
+				vertex.position = M::Vector4{p.x, p.y, p.z, 1.0f};
+				vertex.texCoord = texCoords[i];
+				vertex.normal = faceNormal;
+				vertexBuffer_->SetVertexData(
+				    vertex, vertexStart + static_cast<uint32_t>(i));
+			}
+
+			const uint32_t indexStart = indexBuffer_->GetDrewCount();
+			const std::array<uint32_t, 6> indices{0, 2, 1, 2, 3, 1};
+			for (size_t i = 0; i < indices.size(); ++i) {
+				indexBuffer_->SetIndexData(
+				    indices[i], indexStart + static_cast<uint32_t>(i));
+			}
+
+			this->DrawCall(textureIndex, 6, 4, directionalLightAddress);
+		};
+
+		Renderer::ForEachVisibleLineSubsegment(worldStart, worldEnd,
+		                                       viewProjection, drawSegment);
 	}
 
 	void Draw::DrawDashedLine3D(const uint32_t& textureIndex,

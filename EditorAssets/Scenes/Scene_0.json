@@ -1,0 +1,57 @@
+{
+    "entities": [
+        {
+            "definition": {
+                "components": [
+                    {
+                        "kind": 1,
+                        "params": {
+                            "color": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "isLightingEnabled": true,
+                            "radius": 1.0,
+                            "subdivision": 12
+                        },
+                        "typeName": "CmpMeshSphere"
+                    }
+                ],
+                "entityName": "Entity_0",
+                "initialTransform": {
+                    "quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "translate": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                "tagHashes": [],
+                "tags": []
+            },
+            "instanceName": "Entity_0",
+            "parentIndex": -1
+        }
+    ],
+    "sceneName": "Scene_0",
+    "tagCatalog": [
+        "ENEMY",
+        "ENEMY_ITEM",
+        "ENEMY_WEAPON",
+        "PLAYER",
+        "PLAYER_ITEM",
+        "PLAYER_WEAPON"
+    ]
+}
