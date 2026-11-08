@@ -15,6 +15,7 @@ LOCKED_REQUIRED = (
     "SceneBuildUp.h",
     "SceneTitle.h",
     "SceneResult.h",
+    "SceneMovie.h",
 )
 
 UNLOCKED_EDITOR = (

@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick7: ムービー用カメラコントローラ
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick8: ムービー用シーン（SceneMovie）
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -713,5 +713,28 @@
 
 - **ランタイム:** カットシーン再生（シーン接続は次タスク）
 - **制作:** JSON トラック編集
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 15:15（/loop 15m Cloud・SceneMovie）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`SceneMovie` + `SceneMovieRegistry`** … JSON 再生・終了/ Esc で returnScene へフェード
+- **メモ** `scene_movie.md`、`verify_camera_policy` に SceneMovie 追加
+- **ビルド:** Cloud 未実施
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ムービー用シーン
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** イベントカットの差し込み（`Launch` + `CommandChangeScene`）
+- **デバッグ:** サンプルトラックでカメラのみ確認
 
 **状態:** ループ稼働中（subscription timer 15m）

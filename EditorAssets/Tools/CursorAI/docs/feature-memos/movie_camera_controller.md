@@ -25,6 +25,13 @@ movie.TryBeginFromJsonFile("../EditorAssets/Camera/sample_movie_track.json");
 | `eye` / `pivot` | `Vector3` 配列 |
 | `easeToNext` | 次キーフレームまでの補間（`PullBackReveal` / `FocusPush` / `LegacyInOutQuad`） |
 
-## 次
+## SceneMovie
 
-- `SceneMovie`（roadmap 次行）で `IsStageViewCameraLocked` + 本コントローラを駆動
+```cpp
+Scene *movie = SceneMovieRegistry::Instance().Launch(
+    "../EditorAssets/Camera/sample_movie_track.json", returnScene);
+CommandChangeScene::Instance()->Set(movie, std::make_unique<ChangeSceneFade>().release());
+```
+
+- `Escape` でスキップ（returnScene へフェード）
+- トラック終了で自動遷移

@@ -99,7 +99,7 @@
 - [x] 実装（`MovieCameraController`・JSON トラック・`sample_movie_track.json`）
 
 ### ムービー用シーン
-- [ ] 実装
+- [x] 実装（`SceneMovie`・Registry・sample トラック連携）
 
 ## Render
 
