@@ -15,9 +15,10 @@ namespace {
 
 /// Z ファイティング回避のわずかな持ち上げ
 constexpr float kFloorY = 0.05f;
-constexpr float kMinorLinePixels = 1.35f;
-constexpr float kMajorLinePixels = 2.0f;
-constexpr float kAxisLinePixels = 2.5f;
+/// ワールド単位の線幅（画面ピクセル換算は一旦使わない）
+constexpr float kMinorLineWidth = 0.012f;
+constexpr float kMajorLineWidth = 0.022f;
+constexpr float kAxisLineWidth = 0.045f;
 /// マイナー1本あたりの画面上の目安（Unity Scene View 相当）
 constexpr float kTargetPixelsPerMinorLine = 40.0f;
 constexpr int kMajorLinesPerMinorBlock = 10;
@@ -29,12 +30,10 @@ const Math::Vector4 kAxisColorX{0.95f, 0.32f, 0.32f, 0.98f};
 const Math::Vector4 kAxisColorZ{0.38f, 0.58f, 0.98f, 0.98f};
 
 void DrawGridLine(AtrumEngine *engine, const Math::Vector3 &start,
-                  const Math::Vector3 &end, const float lineWidthPixels,
-                  const Math::Vector4 &color, const int viewportWidth,
-                  const int viewportHeight) {
-  engine->DrawLine3DOnFloorPlane(
-      WhiteTextureIndex(), color, Math::Transform{}, start, end, lineWidthPixels,
-      viewportWidth, viewportHeight, kFloorY, false);
+                  const Math::Vector3 &end, const float lineWidth,
+                  const Math::Vector4 &color) {
+  engine->DrawLine3D(WhiteTextureIndex(), color, Math::Transform{}, start, end,
+                     lineWidth, false);
 }
 
 bool IsNearlyZero(const float value, const float epsilon) {
@@ -118,18 +117,18 @@ float ComputeMinorGridStep(const float visibleHalfExtent, const int viewportWidt
 }
 
 struct GridLineStyle {
-  float widthPixels = kMinorLinePixels;
+  float width = kMinorLineWidth;
   Math::Vector4 color = kMinorGridColor;
 };
 
 GridLineStyle StyleForParallelToZLine(const float x, const float minorStep,
                                       const float majorStep) {
   const float axisEpsilon = minorStep * 0.05f;
-  GridLineStyle style{kMinorLinePixels, kMinorGridColor};
+  GridLineStyle style{kMinorLineWidth, kMinorGridColor};
   if (IsNearlyZero(x, axisEpsilon)) {
-    style = {kAxisLinePixels, kAxisColorZ};
+    style = {kAxisLineWidth, kAxisColorZ};
   } else if (IsMajorWorldLine(x, majorStep)) {
-    style = {kMajorLinePixels, kMajorGridColor};
+    style = {kMajorLineWidth, kMajorGridColor};
   }
   return style;
 }
@@ -137,18 +136,17 @@ GridLineStyle StyleForParallelToZLine(const float x, const float minorStep,
 GridLineStyle StyleForParallelToXLine(const float z, const float minorStep,
                                       const float majorStep) {
   const float axisEpsilon = minorStep * 0.05f;
-  GridLineStyle style{kMinorLinePixels, kMinorGridColor};
+  GridLineStyle style{kMinorLineWidth, kMinorGridColor};
   if (IsNearlyZero(z, axisEpsilon)) {
-    style = {kAxisLinePixels, kAxisColorX};
+    style = {kAxisLineWidth, kAxisColorX};
   } else if (IsMajorWorldLine(z, majorStep)) {
-    style = {kMajorLinePixels, kMajorGridColor};
+    style = {kMajorLineWidth, kMajorGridColor};
   }
   return style;
 }
 
 void DrawUnityStyleFloorGrid(AtrumEngine *engine, const Math::Vector3 &camPos,
-                             const float drawExtent, const float minorStep,
-                             const int viewportWidth, const int viewportHeight) {
+                             const float drawExtent, const float minorStep) {
   const float majorStep = minorStep *
                           static_cast<float>(kMajorLinesPerMinorBlock);
 
@@ -162,14 +160,14 @@ void DrawUnityStyleFloorGrid(AtrumEngine *engine, const Math::Vector3 &camPos,
 
   for (float x = startX; x <= maxX + minorStep * 0.5f; x += minorStep) {
     const GridLineStyle style = StyleForParallelToZLine(x, minorStep, majorStep);
-    DrawGridLine(engine, {x, kFloorY, minZ}, {x, kFloorY, maxZ}, style.widthPixels,
-                 style.color, viewportWidth, viewportHeight);
+    DrawGridLine(engine, {x, kFloorY, minZ}, {x, kFloorY, maxZ}, style.width,
+                 style.color);
   }
 
   for (float z = startZ; z <= maxZ + minorStep * 0.5f; z += minorStep) {
     const GridLineStyle style = StyleForParallelToXLine(z, minorStep, majorStep);
-    DrawGridLine(engine, {minX, kFloorY, z}, {maxX, kFloorY, z},
-                 style.widthPixels, style.color, viewportWidth, viewportHeight);
+    DrawGridLine(engine, {minX, kFloorY, z}, {maxX, kFloorY, z}, style.width,
+                 style.color);
   }
 }
 
@@ -182,16 +180,13 @@ void DrawInfiniteEditorFloorGrid(AtrumEngine *engine, const Camera *camera,
     return;
   }
 
-  const int vpW = std::max(viewportWidth, 1);
-  const int vpH = std::max(viewportHeight, 1);
-
   const Math::Vector3 camPos = camera->GetTranslate();
   const float visibleHalfExtent = EstimateFloorVisibleHalfExtent(camera);
-  const float minorStep =
-      ComputeMinorGridStep(visibleHalfExtent, viewportWidth, viewportHeight);
+  const float minorStep = ComputeMinorGridStep(
+      visibleHalfExtent, std::max(viewportWidth, 1), std::max(viewportHeight, 1));
   const float drawExtent = visibleHalfExtent * kDrawExtentMargin;
 
-  DrawUnityStyleFloorGrid(engine, camPos, drawExtent, minorStep, vpW, vpH);
+  DrawUnityStyleFloorGrid(engine, camPos, drawExtent, minorStep);
 }
 
 } // namespace Atrum::Editor
