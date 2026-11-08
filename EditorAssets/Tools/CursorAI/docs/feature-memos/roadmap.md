@@ -96,7 +96,7 @@
 ## Scene
 
 ### ムービー用カメラコントローラ
-- [ ] 実装
+- [x] 実装（`MovieCameraController`・JSON トラック・`sample_movie_track.json`）
 
 ### ムービー用シーン
 - [ ] 実装

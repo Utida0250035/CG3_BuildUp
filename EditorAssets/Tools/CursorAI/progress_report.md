@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick6: カメラ操作丸投げ禁止ポリシー
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick7: ムービー用カメラコントローラ
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -685,5 +685,33 @@
 
 - **ランタイム:** 横 STG 本編で視点操作を求めず、演出カメラに集中させる UX
 - **制作:** 新シーン追加時の CI/手元チェック（verify スクリプト）
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 15:00（/loop 15m Cloud・ムービーカメラ）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`MovieCameraController`** キーフレーム再生・ ease 区間補間
+- **`LoadMovieCameraTrackFromJson`**、`sample_movie_track.json`
+- **vcxproj 登録**、メモ `movie_camera_controller.md`
+- **ビルド:** Cloud 未実施
+
+### 3. 次ステップ
+
+1. ムービー用シーン
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ムービー用カメラコントローラ
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** カットシーン再生（シーン接続は次タスク）
+- **制作:** JSON トラック編集
 
 **状態:** ループ稼働中（subscription timer 15m）

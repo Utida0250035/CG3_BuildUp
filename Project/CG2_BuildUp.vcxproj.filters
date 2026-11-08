@@ -28,8 +28,14 @@
     <ClCompile Include="Codes\Source\Camera\CameraController\CameraPoseBlendController.cpp">
       <Filter>Codes\Source\Camera\CameraController</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\CameraController\MovieCameraController.cpp">
+      <Filter>Codes\Source\Camera\CameraController</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp">
       <Filter>Codes\Source\Camera\CameraController</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\MovieCameraTrackLoader.cpp">
+      <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Camera\CameraFlipHorizontal.cpp">
       <Filter>Codes\Source\Camera</Filter>
@@ -467,6 +473,12 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraPoseBlendController.h">
       <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\CameraController\MovieCameraController.h">
+      <Filter>Codes\Include\Camera\CameraController</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\MovieCameraTrackLoader.h">
+      <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h">
       <Filter>Codes\Include\Camera\CameraController</Filter>

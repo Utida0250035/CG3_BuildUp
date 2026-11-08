@@ -207,7 +207,9 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Camera\CameraController\CameraFocusPushController.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraController\CameraGameIntroController.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraController\CameraPoseBlendController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\CameraController\MovieCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp" />
+    <ClCompile Include="Codes\Source\Camera\MovieCameraTrackLoader.cpp" />
     <ClCompile Include="Codes\Source\Camera\CombatCameraShake.cpp" />
     <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp" />
     <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp" />
@@ -438,7 +440,9 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraFocusPushController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraGameIntroController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraPoseBlendController.h" />
+    <ClInclude Include="Codes\Include\Camera\CameraController\MovieCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h" />
+    <ClInclude Include="Codes\Include\Camera\MovieCameraTrackLoader.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCamera.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCameraEasing.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "comment": "サンプル・ボス寄り → 戦闘全景（GameIntro に近いムービー用）",
+  "keyframes": [
+    {
+      "time": 0.0,
+      "eye": [0.0, 4.0, -8.0],
+      "pivot": [0.0, 2.0, 0.0],
+      "easeToNext": "FocusPush"
+    },
+    {
+      "time": 1.6,
+      "eye": [-2.25, 6.225, -37.78],
+      "pivot": [0.0, 2.625, 0.0],
+      "easeToNext": "PullBackReveal"
+    }
+  ]
+}
