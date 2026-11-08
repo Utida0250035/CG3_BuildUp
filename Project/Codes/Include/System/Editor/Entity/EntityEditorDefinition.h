@@ -15,6 +15,8 @@ enum class ComponentSlotKind { Upd, Draw, Data };
 struct ComponentSlot {
   ComponentSlotKind kind = ComponentSlotKind::Draw;
   std::string typeName = "CmpMeshSphere";
+  /// エディタ上の実行順（小さいほど先）。Entity の Upd／Draw priority に反映
+  int executionOrder = 0;
   nlohmann::json params = nlohmann::json::object();
 };
 

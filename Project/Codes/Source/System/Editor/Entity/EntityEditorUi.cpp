@@ -632,7 +632,7 @@ void EntityEditor::DrawInspectorPanel() {
   }
 
   SyncSelectedComponentToKind(ui_, document);
-  const std::vector<int> kindComponentIndices =
+  std::vector<int> kindComponentIndices =
       CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
 
   if (!kindComponentIndices.empty() &&
@@ -647,13 +647,22 @@ void EntityEditor::DrawInspectorPanel() {
     ImGui::TextUnformatted(
         "選択中の種別にコンポーネントがありません。「コンポーネントを追加」で追加してください。");
   } else {
+    std::sort(kindComponentIndices.begin(), kindComponentIndices.end(),
+              [&document](const int a, const int b) {
+                return document.components[static_cast<size_t>(a)]
+                           .executionOrder <
+                       document.components[static_cast<size_t>(b)]
+                           .executionOrder;
+              });
+
+    ImGui::TextUnformatted("実行順 | 型");
     for (int listIndex = 0;
          listIndex < static_cast<int>(kindComponentIndices.size()); ++listIndex) {
       const int docIndex = kindComponentIndices[static_cast<size_t>(listIndex)];
       const ComponentSlot &slot =
           document.components[static_cast<size_t>(docIndex)];
-      const std::string label =
-          std::to_string(listIndex) + ": " + slot.typeName;
+      const std::string label = std::to_string(slot.executionOrder) + " | " +
+                                slot.typeName;
       if (ImGui::Selectable(label.c_str(),
                             ui_.selectedComponentIndex == docIndex)) {
         ui_.selectedComponentIndex = docIndex;
@@ -663,6 +672,12 @@ void EntityEditor::DrawInspectorPanel() {
     ImGui::Separator();
     ComponentSlot &selected =
         document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
+
+    int execOrder = selected.executionOrder;
+    if (ImGui::InputInt("実行順 (priority)", &execOrder)) {
+      selected.executionOrder = std::max(0, execOrder);
+      changed = true;
+    }
 
     if (!presetIndicesForKind.empty()) {
       int typeComboListIndex = 0;

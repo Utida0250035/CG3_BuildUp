@@ -6,6 +6,7 @@
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
+#include <algorithm>
 #include <fstream>
 #include <filesystem>
 #include <nlohmann/json.hpp>
@@ -75,6 +76,34 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
     return true;
   }
   return false;
+}
+
+void ApplySlotExecutionOrder(Entity &entity, const ComponentSlot &slot) {
+  if (slot.executionOrder <= 0) {
+    return;
+  }
+  const uint64_t priority = static_cast<uint64_t>(slot.executionOrder);
+
+  if (slot.kind == ComponentSlotKind::Upd) {
+    if (slot.typeName == "CmpRotator" && entity.HasUpdCmp<CmpRotator>()) {
+      entity.SetUpdCmpPriority(entity.GetUpdCmp<CmpRotator>(), priority);
+    } else if (slot.typeName == "CmpScroll" && entity.HasUpdCmp<CmpScroll>()) {
+      entity.SetUpdCmpPriority(entity.GetUpdCmp<CmpScroll>(), priority);
+    } else if (slot.typeName == "CmpHitSphere" &&
+               entity.HasUpdCmp<CmpHitSphere>()) {
+      entity.SetUpdCmpPriority(entity.GetUpdCmp<CmpHitSphere>(), priority);
+    }
+    return;
+  }
+
+  if (slot.kind == ComponentSlotKind::Draw) {
+    if (slot.typeName == "CmpMeshSphere" && entity.HasDrawCmp<CmpMeshSphere>()) {
+      entity.SetDrawCmpPriority(entity.GetDrawCmp<CmpMeshSphere>(), priority);
+    } else if (slot.typeName == "CmpDrawHitSphere" &&
+               entity.HasDrawCmp<CmpDrawHitSphere>()) {
+      entity.SetDrawCmpPriority(entity.GetDrawCmp<CmpDrawHitSphere>(), priority);
+    }
+  }
 }
 
 void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
@@ -147,14 +176,23 @@ std::unique_ptr<Entity> BuildEntityFromDefinition(
   auto entity = std::make_unique<Entity>(definition.entityName);
   entity->SetInitialTransform(definition.initialTransform);
 
-  for (const ComponentSlot &slot : definition.components) {
+  std::vector<ComponentSlot> orderedSlots = definition.components;
+  std::stable_sort(orderedSlots.begin(), orderedSlots.end(),
+                   [](const ComponentSlot &a, const ComponentSlot &b) {
+                     return a.executionOrder < b.executionOrder;
+                   });
+
+  for (const ComponentSlot &slot : orderedSlots) {
     if (!EntityHasComponentForSlot(*entity, slot)) {
       if (!TryAddEmptyComponent(*entity, slot)) {
         continue;
       }
     }
     ApplyComponentParams(*entity, slot);
+    ApplySlotExecutionOrder(*entity, slot);
   }
+
+  entity->SortComponents();
 
   if (!definition.tagHashes.empty()) {
     entity->SetTagHashes(definition.tagHashes);

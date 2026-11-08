@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — tick: SortComponents／AddComponent 関数化、develop マージ
+**最新サマリー:** 2026-11-08 — tick2: executionOrder／実行順 UI、develop マージ
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -237,5 +237,31 @@
 
 1. roadmap 次: `AddComponent` 関数化 等
 2. 約 **20 分後** に次 `AGENT_LOOP_TICK_roadmap-dev`
+
+**状態:** ループ稼働中
+
+---
+
+## セッション 2026-11-08 19:45（/loop 20m tick・SortComponents）
+
+**トリガー:** `AGENT_LOOP_TICK_roadmap-dev`（1 回目の周期 tick）
+
+### 1. 完了したこと
+
+- **Entity:** `SortComponents` / `SetUpdCmpPriority` / `SetDrawCmpPriority`、`AttachUpdComponent`・`AttachDrawComponent`
+- **エディタ:** `AppendKnownComponentSlot`
+- **roadmap:** SortComponents 節 2 項を `[x]`
+- **Git:** `c149e9c` → develop マージ・push（`lastGoodCommit` 更新）
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| エディタ UI | 実行順の列表示は未実装（別項） |
+
+### 3. 次ステップ
+
+1. roadmap: Entity 配列化／実行順 UI
+2. 次 tick 約 20 分後
 
 **状態:** ループ稼働中

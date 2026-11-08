@@ -79,11 +79,13 @@ EntityDefinition MakeDefaultEntityDefinition(const std::string &entityName) {
 void to_json(nlohmann::json &j, const ComponentSlot &slot) {
   j = nlohmann::json{{"kind", slot.kind},
                      {"typeName", slot.typeName},
+                     {"executionOrder", slot.executionOrder},
                      {"params", slot.params}};
 }
 
 void from_json(const nlohmann::json &j, ComponentSlot &slot) {
   slot.typeName = j.value("typeName", slot.typeName);
+  slot.executionOrder = j.value("executionOrder", slot.executionOrder);
   if (j.contains("kind") && !j.at("kind").is_null()) {
     from_json(j.at("kind"), slot.kind);
   }
