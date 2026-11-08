@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — ループ停止・未マージ tick を `f6c92c2` へロールバック
+**最新サマリー:** 2026-11-08 — `/loop 15m`（Cloud）初回 tick: コンポーネント分割ガイド
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -486,3 +486,28 @@
 1. 再開時は roadmap 先頭 `- [ ]` から `startTaskBranchFromDevelop.ps1` でブランチ作成
 
 **状態:** 停止（指示待ち）
+
+---
+
+## セッション 2026-11-08 22:45（/loop 15m Cloud・コンポーネント分割ガイド）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`component_split_guidelines.md`**、roadmap 該当行を `[x]`
+- **ビルド:** Cloud Linux のため `buildDevelopment.cmd` は未実施（Win 専用）
+
+### 3. 次ステップ
+
+1. 次 `- [ ]`: BinaryConverter
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- 方針に沿ったコンポーネント分割（ガイド第1版）
+
+## 推測した用途（§6.4）
+
+- **コンポーネント分割ガイド:** 制作（エディタでコンポーネント追加・分割時の判断基準）
+
+**状態:** ループ稼働中（subscription timer 15m）

@@ -46,7 +46,7 @@
 - [-] Update 順に追随する全体判定（アーキテクチャ未確定）
 
 ### 「何にでも使える」1つより、「これにだけ使える」を大量に
-- [ ] 方針に沿ったコンポーネント分割（継続）
+- [x] 方針に沿ったコンポーネント分割（継続）（spec: `component_split_guidelines.md`・ガイド第1版）
 
 ### SortComponents()関数
 - [x] `AddComponent` 内処理の関数化（`AttachUpdComponent` / `AppendKnownComponentSlot`）
