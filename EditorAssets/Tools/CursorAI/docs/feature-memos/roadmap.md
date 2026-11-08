@@ -73,7 +73,7 @@
 - [-] 安定化後（並行読み込みは影響大）
 
 ### Binaryやddsへのファイル変換ツール
-- [ ] BinaryConverter
+- [x] BinaryConverter（`EditorAssets/Tools/BinaryConverter`・`.amesh` v1）
 - [ ] DdsConverter
 
 ## Math

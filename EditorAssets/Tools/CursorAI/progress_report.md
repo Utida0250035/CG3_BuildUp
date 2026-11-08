@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m`（Cloud）初回 tick: コンポーネント分割ガイド
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick2: BinaryConverter（`.amesh`）
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -509,5 +509,47 @@
 ## 推測した用途（§6.4）
 
 - **コンポーネント分割ガイド:** 制作（エディタでコンポーネント追加・分割時の判断基準）
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 13:45（/loop 15m Cloud・BinaryConverter）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`（着手行: Loader / BinaryConverter）
+
+### 1. 完了したこと
+
+- **`.amesh` v1 仕様** … `atr_mesh_binary_format.md`
+- **変換ツール** … `EditorAssets/Tools/BinaryConverter/obj_to_amesh.py`（OBJ 三角形 → バイナリ）
+- **スモークテスト** … Python で 3 頂点の `.amesh` 生成を確認
+- **ビルド:** 未実施（ツールは Python・ランタイムロードは未接続）
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| ランタイム | `ModelStorage` で `.amesh` 読み込みは別タスク |
+
+### 3. 次ステップ
+
+1. 次 `- [ ]`: DdsConverter
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- BinaryConverter（エンジン外 Python ツール + 形式仕様）
+
+## 保留・着手見送り（§6.3）
+
+- `ModelStorage` への `.amesh` ローダー … 本 tick は変換ツールのみ（依存: 形式 v1 確定済み）
+
+## 用途不明で確認待ち（§6.4）
+
+- なし
+
+## 推測した用途（§6.4）
+
+- **BinaryConverter:** ビルド・配布前に OBJ を固定レイアウトバイナリへ変換し、読み込みコストとフォーマットを安定化（制作パイプライン）
+- **`.amesh`:** 将来ランタイムの高速メッシュ読み込み用（現状はオフライン変換のみ）
 
 **状態:** ループ稼働中（subscription timer 15m）
