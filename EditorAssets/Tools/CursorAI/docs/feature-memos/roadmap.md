@@ -54,7 +54,7 @@
 
 ### 任意フォルダから開発用GUIへドラッグ&ドロップ…
 - [x] GUI 専用クラスで Assets へコピー（`EditorImportedAsset`・`EditorAssets/Imported`）
-- [x] リソースコンポーネントがパス記録・読み込み（`CmpEditorAssetPath`・obj プレビュー）
+- [x] リソースコンポーネントがパス記録・読み込み（`CmpEditorAssetPath`・obj／png プレビュー）
 
 ### Entityの配列化
 - [x] エディタで実行順を操作（`executionOrder`・プレビュー反映）
@@ -67,7 +67,7 @@
 ## Loader
 
 ### ImGuiウィンドウにファイルをドロップしてobjやpngなどの読み込み
-- [x] ドロップでパス保持・読み込み（SDL ドロップイベント→Imported コピー・プロジェクトパネル表示）
+- [x] ドロップでパス保持・読み込み（SDL ドロップ→Imported・png ビルボードプレビュー）
 
 ### 別スレッドでのリソース読み込み
 - [-] 安定化後（並行読み込みは影響大）

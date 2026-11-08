@@ -62,7 +62,11 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"isLightingEnabled", false}};
   }
   if (typeName == "CmpEditorAssetPath") {
-    return {{"assetPath", ""}, {"loadObjAsMesh", true}};
+    return {{"assetPath", ""},
+            {"loadObjAsMesh", true},
+            {"loadImageAsBillboard", true},
+            {"billboardWidth", 1.0f},
+            {"billboardHeight", 1.0f}};
   }
   return nlohmann::json::object();
 }

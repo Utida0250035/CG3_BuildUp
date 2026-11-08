@@ -117,6 +117,21 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["loadObjAsMesh"] = loadMesh;
       changed = true;
     }
+    bool loadImage = p.value("loadImageAsBillboard", true);
+    if (ImGui::Checkbox("loadImageAsBillboard", &loadImage)) {
+      p["loadImageAsBillboard"] = loadImage;
+      changed = true;
+    }
+    float width = p.value("billboardWidth", 1.0f);
+    if (ImGui::DragFloat("billboardWidth", &width, 0.02f, 0.01f, 32.0f)) {
+      p["billboardWidth"] = width;
+      changed = true;
+    }
+    float height = p.value("billboardHeight", 1.0f);
+    if (ImGui::DragFloat("billboardHeight", &height, 0.02f, 0.01f, 32.0f)) {
+      p["billboardHeight"] = height;
+      changed = true;
+    }
     if (!ui.lastImportedAssetPath.empty() &&
         ImGui::Button("直近ドロップを assetPath に適用")) {
       p["assetPath"] = ui.lastImportedAssetPath;

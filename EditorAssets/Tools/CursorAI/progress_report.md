@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — tick4: CmpEditorAssetPath・obj プレビュー、develop マージ
+**最新サマリー:** 2026-11-08 — tick5: png ビルボードプレビュー、develop マージ
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -362,5 +362,38 @@
 ## 保留・着手見送り（§6.3）
 
 - png 等テクスチャのプレビュー連携 — スコープ外
+
+**状態:** ループ稼働中
+
+---
+
+## セッション 2026-11-08 21:05（/loop 20m tick・png プレビュー）
+
+**トリガー:** `AGENT_LOOP_TICK_roadmap-dev`（5 回目の周期 tick）
+
+### 1. 完了したこと
+
+- **`CmpEditorTextureBillboard`:** png／jpg をビルボード表示
+- **`CmpEditorAssetPath`:** `loadImageAsBillboard`・板サイズを JSON 化
+- **ビルド:** Development | x64 成功
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| 手動確認 | エディタ上のドロップ→プレビューは未実施 |
+
+### 3. 次ステップ
+
+1. Unity 風方針メモまたは BinaryConverter 等
+2. 次 tick 約 20 分後
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- png 画像のエディタプレビュー読み込み（前 tick 保留分）
+
+## 保留・着手見送り（§6.3）
+
+- なし
 
 **状態:** ループ稼働中

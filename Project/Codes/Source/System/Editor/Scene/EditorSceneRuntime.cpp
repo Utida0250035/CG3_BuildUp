@@ -4,6 +4,7 @@
 #include "System/Entity/Components/CmpDrawHitSphere.h"
 #include "System/Entity/Components/CmpEditorAssetPath.h"
 #include "System/Entity/Components/CmpHitSphere.h" // HitSphere
+#include "System/Entity/Components/CmpEditorTextureBillboard.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpRotator.h"
@@ -12,6 +13,7 @@
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
+#include <cctype>
 #include <memory>
 #include <nlohmann/json.hpp>
 
@@ -192,10 +194,29 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     CmpEditorAssetPath *cmp = entity.GetDataCmp<CmpEditorAssetPath>();
     cmp->SetAssetPath(p.value("assetPath", std::string{}));
     cmp->SetLoadObjAsMesh(p.value("loadObjAsMesh", true));
+    cmp->SetLoadImageAsBillboard(p.value("loadImageAsBillboard", true));
+    cmp->SetBillboardSize(p.value("billboardWidth", 1.0f),
+                          p.value("billboardHeight", 1.0f));
   }
 }
 
-void TryLoadObjMeshFromEditorAssetPath(Entity &entity) {
+namespace {
+
+std::string ToLowerAscii(std::string value) {
+  for (char &ch : value) {
+    ch = static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+  }
+  return value;
+}
+
+bool IsImageAssetExtension(const std::string &extensionLower) {
+  return extensionLower == ".png" || extensionLower == ".jpg" ||
+         extensionLower == ".jpeg";
+}
+
+} // namespace
+
+void TryLoadEditorAssetPathPreview(Entity &entity) {
   if (!entity.HasDataCmp<CmpEditorAssetPath>()) {
     return;
   }
@@ -210,34 +231,48 @@ void TryLoadObjMeshFromEditorAssetPath(Entity &entity) {
 
   namespace fs = std::filesystem;
   const fs::path assetPath(path);
-  if (assetPath.extension() != ".obj" || !fs::exists(assetPath)) {
+  if (!fs::exists(assetPath)) {
     return;
   }
-
-  const std::string objDirectory = assetPath.parent_path().generic_string();
-  const std::string objFileName = assetPath.filename().string();
-  const std::string mtlFileName = assetPath.stem().string() + ".mtl";
 
   AtrumEngine *engine = AtrumEngine::Instance();
   if (engine == nullptr) {
     return;
   }
 
-  const std::shared_ptr<AssetModel> model =
-      engine->GetModel(objDirectory, objFileName, objDirectory, mtlFileName);
-  if (!model) {
-    return;
+  const std::string extLower = ToLowerAscii(assetPath.extension().string());
+
+  if (data->LoadObjAsMesh() && extLower == ".obj") {
+    const std::string objDirectory = assetPath.parent_path().generic_string();
+    const std::string objFileName = assetPath.filename().string();
+    const std::string mtlFileName = assetPath.stem().string() + ".mtl";
+
+    const std::shared_ptr<AssetModel> model =
+        engine->GetModel(objDirectory, objFileName, objDirectory, mtlFileName);
+    if (model) {
+      if (!entity.HasDrawCmp<CmpMesh>()) {
+        entity.AddDrawCmp<CmpMesh>();
+      }
+      CmpMesh *mesh = entity.GetDrawCmp<CmpMesh>();
+      if (mesh != nullptr) {
+        mesh->SetModel(model.get());
+        mesh->SetLightingEnabled(true);
+      }
+    }
   }
 
-  if (!entity.HasDrawCmp<CmpMesh>()) {
-    entity.AddDrawCmp<CmpMesh>();
+  if (data->LoadImageAsBillboard() && IsImageAssetExtension(extLower)) {
+    const uint32_t textureIndex = engine->GetTexture(path);
+    if (!entity.HasDrawCmp<CmpEditorTextureBillboard>()) {
+      entity.AddDrawCmp<CmpEditorTextureBillboard>();
+    }
+    CmpEditorTextureBillboard *billboard =
+        entity.GetDrawCmp<CmpEditorTextureBillboard>();
+    if (billboard != nullptr) {
+      billboard->SetTextureIndex(textureIndex);
+      billboard->SetSize(data->BillboardWidth(), data->BillboardHeight());
+    }
   }
-  CmpMesh *mesh = entity.GetDrawCmp<CmpMesh>();
-  if (mesh == nullptr) {
-    return;
-  }
-  mesh->SetModel(model.get());
-  mesh->SetLightingEnabled(true);
 }
 
 std::unique_ptr<Entity> BuildEntityFromDefinition(
@@ -263,7 +298,7 @@ std::unique_ptr<Entity> BuildEntityFromDefinition(
 
   entity->SortComponents();
 
-  TryLoadObjMeshFromEditorAssetPath(*entity);
+  TryLoadEditorAssetPathPreview(*entity);
 
   if (!definition.tagHashes.empty()) {
     entity->SetTagHashes(definition.tagHashes);
