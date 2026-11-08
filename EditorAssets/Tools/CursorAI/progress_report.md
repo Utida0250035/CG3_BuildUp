@@ -992,3 +992,27 @@
 - **将来:** `shadowMapIndex` 付きシャドウマップパスへ接続
 
 **状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 18:15（/loop 15m Cloud・vcxproj 穴チェック）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`verify_vcxproj_coverage.py`** — 未登録 `.cpp`、古い ClCompile、欠落 hlsl を検出
+- **`vcxproj_coverage_allowlist.txt`**（Lua 2 ファイル）
+- **GitHub Actions** — `BuildCoverageCheck.yml`、各ビルド workflow に前置ジョブ
+- **メモ** `cloud_build_vcxproj_check.md`
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- 除外パスによるビルド穴の自動確認
+
+## 推測した用途（§6.4）
+
+- **CI:** クラウドビルド前にリンク漏れを遮断
+- **半自律エージェント:** Windows ビルドなし環境での vcxproj 登録漏れ検知
+
+**状態:** ループ稼働中（subscription timer 15m）

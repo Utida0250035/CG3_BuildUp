@@ -1,0 +1,4 @@
+# Project/Codes/Source 配下の .cpp で vcxproj 未登録を許容するパス（1行1パス、# はコメント）
+# リンク未統合・将来登録予定
+Codes/Source/System/Scripting/LuaSystem.cpp
+Codes/Source/System/Scripting/LuaSystemPool.cpp

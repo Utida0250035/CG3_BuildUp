@@ -143,7 +143,7 @@
 ## Repository
 
 ### GitHubでのクラウドビルド
-- [ ] 除外パスによるビルド穴の自動確認
+- [x] 除外パスによるビルド穴の自動確認（`verify_vcxproj_coverage.py`・CI 前置ジョブ）
 
 ## Editor
 

@@ -11,7 +11,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  vcxproj-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Verify vcxproj and shader coverage
+        run: python3 EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py
+
   build:
+    needs: vcxproj-coverage
     runs-on: windows-2025-vs2026
 
     steps:
