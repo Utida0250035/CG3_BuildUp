@@ -74,7 +74,7 @@
 
 ### Binaryやddsへのファイル変換ツール
 - [x] BinaryConverter（`EditorAssets/Tools/BinaryConverter`・`.amesh` v1）
-- [ ] DdsConverter
+- [x] DdsConverter（`EditorAssets/Tools/DdsConverter`・RGBA8 DDS）
 
 ## Math
 
