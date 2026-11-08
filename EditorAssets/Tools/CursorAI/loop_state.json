@@ -1,6 +1,6 @@
-{
-  "lastGoodCommit": "",
-  "activeRoadmapTask": "",
-  "consecutiveBuildFailures": 0,
-  "lastFailureLogExcerpt": ""
+﻿{
+    "lastGoodCommit":  "52c2481dc4534658528da4eed78e04304ae09743",
+    "activeRoadmapTask":  "loop 20m baseline",
+    "consecutiveBuildFailures":  0,
+    "lastFailureLogExcerpt":  ""
 }

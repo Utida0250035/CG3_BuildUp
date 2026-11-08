@@ -180,4 +180,67 @@ void Entity::SetTagHashes(const std::vector<uint64_t> &tagHashes) {
   }
 }
 
+void Entity::AttachUpdComponent(std::unique_ptr<ComponentUpd> component) {
+  component->SetOwner(this);
+  updCmpBoxes_.emplace_back(static_cast<uint64_t>(component->UpdGroup()),
+                            component.get());
+  updComponents_.emplace_back(std::move(component));
+  SortUpdCmpBoxes();
+}
+
+void Entity::AttachDrawComponent(std::unique_ptr<ComponentDraw> component) {
+  component->SetOwner(this);
+  drawCmpBoxes_.emplace_back(static_cast<uint64_t>(component->DrawGroup()),
+                             component.get());
+  drawComponents_.emplace_back(std::move(component));
+  SortDrawCmpBoxes();
+}
+
+void Entity::SortUpdCmpBoxes() {
+  std::sort(updCmpBoxes_.begin(), updCmpBoxes_.end(),
+            [](const UpdCmpBox &a, const UpdCmpBox &b) {
+              return a.priority < b.priority;
+            });
+}
+
+void Entity::SortDrawCmpBoxes() {
+  std::sort(drawCmpBoxes_.begin(), drawCmpBoxes_.end(),
+            [](const DrawCmpBox &a, const DrawCmpBox &b) {
+              return a.priority < b.priority;
+            });
+}
+
+void Entity::SortComponents() {
+  SortUpdCmpBoxes();
+  SortDrawCmpBoxes();
+}
+
+void Entity::SetUpdCmpPriority(ComponentUpd *component,
+                               const uint64_t priority) {
+  if (component == nullptr) {
+    return;
+  }
+  for (UpdCmpBox &box : updCmpBoxes_) {
+    if (box.component == component) {
+      box.priority = priority;
+      SortUpdCmpBoxes();
+      return;
+    }
+  }
+}
+
+void Entity::SetDrawCmpPriority(ComponentDraw *component,
+                                const uint64_t priority) {
+  if (component == nullptr) {
+    return;
+  }
+  for (DrawCmpBox &box : drawCmpBoxes_) {
+    if (box.component == component) {
+      box.priority = priority;
+      SortDrawCmpBoxes();
+      return;
+    }
+  }
+}
+
 } // namespace Atrum

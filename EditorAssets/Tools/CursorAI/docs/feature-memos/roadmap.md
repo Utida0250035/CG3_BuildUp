@@ -49,8 +49,8 @@
 - [ ] 方針に沿ったコンポーネント分割（継続）
 
 ### SortComponents()関数
-- [ ] `AddComponent` 内処理の関数化
-- [ ] priority 操作後 `SortComponents()` で実行順変更
+- [x] `AddComponent` 内処理の関数化（`AttachUpdComponent` / `AppendKnownComponentSlot`）
+- [x] priority 操作後 `SortComponents()` で実行順変更（`SetUpdCmpPriority` / `SetDrawCmpPriority`）
 
 ### 任意フォルダから開発用GUIへドラッグ&ドロップ…
 - [ ] GUI 専用クラスで Assets へコピー

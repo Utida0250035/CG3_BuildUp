@@ -34,6 +34,15 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpHitSphere", ComponentSlotKind::Upd},
 };
 
+void AppendKnownComponentSlot(EntityDefinition &definition,
+                              const KnownComponentEntry &entry) {
+  ComponentSlot slot{};
+  slot.kind = entry.kind;
+  slot.typeName = entry.typeName;
+  slot.params = DefaultParamsForType(entry.typeName);
+  definition.components.push_back(std::move(slot));
+}
+
 bool DrawVector3Param(const char *label, nlohmann::json &params,
                       const char *key, const Math::Vector3 &fallback) {
   Math::Vector3 v = params.value(key, fallback);
@@ -612,11 +621,7 @@ void EntityEditor::DrawInspectorPanel() {
     if (ImGui::Button("コンポーネントを追加")) {
       const KnownComponentEntry &entry =
           kKnownComponents[presetIndicesForKind[addPresetListIndex]];
-      ComponentSlot slot{};
-      slot.kind = entry.kind;
-      slot.typeName = entry.typeName;
-      slot.params = DefaultParamsForType(entry.typeName);
-      document.components.push_back(std::move(slot));
+      AppendKnownComponentSlot(document, entry);
       ui_.selectedComponentIndex =
           static_cast<int>(document.components.size()) - 1;
       ui_.requestApplyPreview = true;

@@ -122,18 +122,7 @@ public:
 
     std::unique_ptr<ComponentUpd> component = std::make_unique<T>();
 
-    component->SetOwner(this);
-
-    updCmpBoxes_.emplace_back(static_cast<uint64_t>(component->UpdGroup()),
-                              component.get());
-
-    updComponents_.emplace_back(std::move(component));
-
-    // 追加するたびに優先度でソート（昇順）
-    std::sort(updCmpBoxes_.begin(), updCmpBoxes_.end(),
-              [](const UpdCmpBox &a, const UpdCmpBox &b) {
-                return a.priority < b.priority;
-              });
+    AttachUpdComponent(std::move(component));
   }
 
   template <typename T> DrawCmpBox &RefDrawCmpBox() {
@@ -179,18 +168,7 @@ public:
 
     std::unique_ptr<ComponentDraw> component = std::make_unique<T>();
 
-    component->SetOwner(this);
-
-    drawCmpBoxes_.emplace_back(static_cast<uint64_t>(component->DrawGroup()),
-                               component.get());
-
-    drawComponents_.emplace_back(std::move(component));
-
-    // 追加するたびに優先度でソート（昇順）
-    std::sort(drawCmpBoxes_.begin(), drawCmpBoxes_.end(),
-              [](const DrawCmpBox &a, const DrawCmpBox &b) {
-                return a.priority < b.priority;
-              });
+    AttachDrawComponent(std::move(component));
   }
 
   template <typename T> T *GetDataCmp() {
@@ -231,7 +209,21 @@ public:
 
   void ResolveDependencies();
 
+  /// Upd／Draw コンポーネントボックスを優先度昇順に並べ替える
+  void SortComponents();
+
+  void SetUpdCmpPriority(ComponentUpd *component, uint64_t priority);
+  void SetDrawCmpPriority(ComponentDraw *component, uint64_t priority);
+
   explicit Entity(const std::string &name) : nameHash_(Hash64(name)) {}
+
+private:
+  void AttachUpdComponent(std::unique_ptr<ComponentUpd> component);
+  void AttachDrawComponent(std::unique_ptr<ComponentDraw> component);
+  void SortUpdCmpBoxes();
+  void SortDrawCmpBoxes();
+
+public:
 
   Math::TransformLH &RefTransform() { return transform_; }
   const Math::TransformLH &GetTransform() { return transform_; }

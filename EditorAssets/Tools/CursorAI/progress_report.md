@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — ループ運用拡張（ビルド3回失敗ロールバック・develop自動マージ）
+**最新サマリー:** 2026-11-08 — tick: SortComponents／AddComponent 関数化、develop マージ
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -211,3 +211,31 @@
 2. `/loop` 再開時は新デフォルト `TickPrompt` を使用
 
 **状態:** 指示待ち
+
+---
+
+## セッション 2026-11-08 19:25（/loop 20m 開始）
+
+**ブランチ:** `feature/SemiAutoDevelopFlow`  
+**ループ:** `loopRoadmapDev.ps1 -IntervalMinutes 20`（PID 25492）
+
+### 1. 完了したこと
+
+- **初回 tick（即時）:** ビルド成功、§6.2 で「コンポーネント型を文字列／選択式で記録」を `[x]`（既存 `typeName`＋Combo）
+- **Git baseline:** コミット `52c2481` → **develop へ fast-forward マージ・push 済み**
+- **`loop_state.json`:** `lastGoodCommit=52c2481`
+- **`loopMergeTickToDevelop.ps1`:** PowerShell `$Args` 衝突を `GitArgs` に修正（次 tick からスクリプト経由マージ可）
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| 未コミット | 本セクション追記・roadmap `[x]` 1 行・ps1 修正（次 tick でマージ） |
+| リモート | CG3_BuildUp 移転通知（push は成功） |
+
+### 3. 次ステップ
+
+1. roadmap 次: `AddComponent` 関数化 等
+2. 約 **20 分後** に次 `AGENT_LOOP_TICK_roadmap-dev`
+
+**状態:** ループ稼働中
