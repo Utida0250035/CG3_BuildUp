@@ -1,0 +1,19 @@
+{
+  "hints": [
+    {
+      "id": "parry_reminder",
+      "actionId": "parry",
+      "message": "ジャンプ操作でパリィ／攻撃",
+      "idleBeforeShowSeconds": 14.0,
+      "displayDurationSeconds": 5.5,
+      "anchorX": 0.78,
+      "anchorY": 0.38,
+      "bodyScale": 0.38,
+      "bodyTexturePaths": [
+        "./Assets/Textures/howToPlay.png",
+        "./Resources/howToPlay.png",
+        "../Assets/Textures/howToPlay.png"
+      ]
+    }
+  ]
+}

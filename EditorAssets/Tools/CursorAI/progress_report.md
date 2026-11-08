@@ -1085,3 +1085,26 @@
 - **エディタ制作:** コンポーネント追加を GUI から完結（vcxproj は手動／次改善）
 
 **状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 19:15（/loop 15m Cloud・案内吹き出し）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`OperatorGuidance::System`** + `operator_guidance.json`
+- **SceneGame** / **CmpMoveByInput（parry）** 連携、吹き出しスプライト描画
+- **メモ** `operator_guidance_bubble.md`
+- **ビルド:** Cloud 未実施
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- 案内吹き出しシステム
+
+## 推測した用途（§6.4）
+
+- **ランタイム UX:** 操作忘れの再案内（howToPlay 画像を吹き出し内に再利用）
+
+**状態:** ループ稼働中（subscription timer 15m）

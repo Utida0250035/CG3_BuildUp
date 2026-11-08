@@ -18,6 +18,7 @@
 #include "System/BossCombatCleanup.h"
 #include "System/OrbiterChildUtils.h"
 #include "Visual/CmpSkyDome.h"
+#include "UX/OperatorGuidanceSystem.h"
 #include "System/Entity/Components/CmpParry.h"
 #include "System/Entity/Components/CmpReflectAbleBullet.h"
 #include "System/Entity/Components/CmpHealthHit.h"
@@ -107,6 +108,9 @@ namespace Atrum {
 		Atrum::CombatCameraShake::Instance().Reset();
 		Atrum::PlayerDamageScreenVignette::Instance().Reset();
 		Atrum::SceneScreenUi::PreloadGameSceneUiTextures();
+		Atrum::OperatorGuidance::System::Instance().LoadFromJsonFile(
+			"../EditorAssets/UX/operator_guidance.json");
+		Atrum::OperatorGuidance::System::Instance().ResetSession();
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmGame.mp3",
 											  "./Resources/bgmGame.mp3" });
 	}
@@ -177,6 +181,10 @@ namespace Atrum {
 
 		Atrum::Particle::Combat::SetEffectCamera(GetCamera());
 		Atrum::Particle::Combat::UpdateCombatParticleEffects();
+		if (Atrum::FrameDeltaTime *frameDeltaTime = Atrum::FrameDeltaTime::Instance()) {
+			Atrum::OperatorGuidance::System::Instance().Update(
+				frameDeltaTime->GetDeltaTime());
+		}
 		CheckRoundEnd();
 	}
 
@@ -187,6 +195,7 @@ namespace Atrum {
 		DrawBattleHud();
 		DrawIntroScreenUi();
 		DrawHowToPlayUi();
+		DrawOperatorGuidanceUi();
 	}
 
 	void SceneGame::DrawIntroScreenUi() {
@@ -225,6 +234,20 @@ namespace Atrum {
 		}
 
 		Atrum::SceneScreenUi::DrawGameHowToPlayUi(engine, GetCamera());
+	}
+
+	void SceneGame::DrawOperatorGuidanceUi() {
+		if (introCameraController_ != nullptr &&
+			!introCameraController_->IsFinished()) {
+			return;
+		}
+
+		Atrum::AtrumEngine* engine = Atrum::AtrumEngine::Instance();
+		if (engine == nullptr || GetCamera() == nullptr) {
+			return;
+		}
+
+		Atrum::OperatorGuidance::System::Instance().Draw(engine, GetCamera());
 	}
 
 	void SceneGame::DrawBattleHud() {

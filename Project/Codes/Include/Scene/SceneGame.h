@@ -64,6 +64,7 @@ private:
   void DrawBattleHud();
   void DrawIntroScreenUi();
   void DrawHowToPlayUi();
+  void DrawOperatorGuidanceUi();
   void MaintainSceneBgmIfNeeded();
 
   void CheckRoundEnd();

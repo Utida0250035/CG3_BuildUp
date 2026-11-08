@@ -171,7 +171,7 @@
 ## UX
 
 ### Operator
-- [ ] 案内吹き出しシステム
+- [x] 案内吹き出しシステム（`OperatorGuidance::System`・UX JSON・SceneGame）
 - [ ] チュートリアル置換・ナビキャラ
 
 ## メモ（旧プレースホルダ）

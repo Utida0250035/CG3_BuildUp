@@ -1,4 +1,5 @@
 #include "System/Playable/CmpMoveByInput.h"
+#include "UX/OperatorGuidanceSystem.h"
 #include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/BehWalkAndJump.h"
 #include "System/Entity/Components/CmpParry.h"
@@ -115,6 +116,7 @@ namespace Atrum::Player {
 
 		if (inputData_.isJumpTrigger) {
 			if (RefOwner().GetWorldPosition().y <= kGroundHeight) {
+				OperatorGuidance::System::Instance().NotifyAction("parry");
 				parryTimer_ = parryDuration_;
 				invincibleTimer_ = invincibleDuration_;
 				isAirJumpVariable_ = true;
@@ -122,6 +124,7 @@ namespace Atrum::Player {
 				cmpSwingWeapon_->StartSwing();
 				PlayPlayerJumpSe();
 			} else if (isAirJumpVariable_) {
+				OperatorGuidance::System::Instance().NotifyAction("parry");
 				PlayPlayerJumpSe();
 				cmpSwingWeapon_->StartSwing();
 				invincibleTimer_ = invincibleDuration_;

@@ -399,6 +399,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\System\Particle\ParticleParam.cpp" />
     <ClCompile Include="Codes\Source\Visual\SkyDome.cpp" />
     <ClCompile Include="Codes\Source\Visual\PlayerTerrainSilhouette.cpp" />
+    <ClCompile Include="Codes\Source\UX\OperatorGuidanceSystem.cpp" />
     <ClCompile Include="Codes\Source\System\Registry\RegistryCmp.cpp" />
     <ClCompile Include="Codes\Source\System\DeltaTime.cpp" />
     <ClCompile Include="Externals\imgui\imgui.cpp">
@@ -659,6 +660,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\System\Particle\ParticleParam.h" />
     <ClInclude Include="Codes\Include\Visual\SkyDome.h" />
     <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h" />
+    <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h" />
     <ClInclude Include="Codes\Include\System\Random.h" />
     <ClInclude Include="Codes\Include\System\Registry\RegistryCmp.h" />
     <ClInclude Include="Codes\Include\System\SimulationSpace.h" />
