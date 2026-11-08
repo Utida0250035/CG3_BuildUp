@@ -61,7 +61,7 @@ void DrawAudioStreamingMemoryDebugWindow() {
     return;
   }
 
-  if (!ImGui::Begin("ストリーミング音声メモリ", &showWindow)) {
+  if (!ImGui::Begin("ストリーミング音声デバッグ", &showWindow)) {
     ImGui::End();
     return;
   }
@@ -84,11 +84,14 @@ void DrawAudioStreamingMemoryDebugWindow() {
   ImGui::Text("稼働ボイス: %zu / %zu", snapshot.activeStreamingVoiceCount,
               snapshot.streamingVoicesCapacity);
 
-  if (ImGui::BeginTable("voices", 6,
+  if (ImGui::BeginTable("voices", 9,
                           ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
     ImGui::TableSetupColumn("Idx");
     ImGui::TableSetupColumn("State");
     ImGui::TableSetupColumn("Sound");
+    ImGui::TableSetupColumn("再生(s)");
+    ImGui::TableSetupColumn("Queue");
+    ImGui::TableSetupColumn("読込");
     ImGui::TableSetupColumn("Buffers");
     ImGui::TableSetupColumn("Remain");
     ImGui::TableSetupColumn("Loop");
@@ -103,12 +106,24 @@ void DrawAudioStreamingMemoryDebugWindow() {
       ImGui::TableSetColumnIndex(2);
       ImGui::Text("%zu", row.soundIndex);
       ImGui::TableSetColumnIndex(3);
+      if (row.hasPlaybackTime) {
+        ImGui::Text("%.2f", row.playbackSeconds);
+      } else {
+        ImGui::TextUnformatted("-");
+      }
+      ImGui::TableSetColumnIndex(4);
+      ImGui::ProgressBar(row.queueFill01, ImVec2(-1.0f, 0.0f),
+                         "%u buf", row.buffersQueued);
+      ImGui::TableSetColumnIndex(5);
+      ImGui::ProgressBar(row.decoderBacklog01, ImVec2(-1.0f, 0.0f),
+                         row.isStreamingFlag ? "stream" : "idle");
+      ImGui::TableSetColumnIndex(6);
       FormatBytes(row.streamingBufferBytes, buf, sizeof(buf));
       ImGui::TextUnformatted(buf);
-      ImGui::TableSetColumnIndex(4);
+      ImGui::TableSetColumnIndex(7);
       FormatBytes(row.remainingBytes, buf, sizeof(buf));
       ImGui::TextUnformatted(buf);
-      ImGui::TableSetColumnIndex(5);
+      ImGui::TableSetColumnIndex(8);
       ImGui::Text(row.isLoop ? "Y" : "-");
     }
 

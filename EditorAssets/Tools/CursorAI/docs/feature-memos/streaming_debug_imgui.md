@@ -8,9 +8,13 @@
 
 `GameOrder` 毎フレーム `DrawAudioStreamingMemoryDebugWindow()` を呼び、フラグ ON 時のみ描画。
 
-## 次
+## ストリーミング進捗表示（実装済み）
 
-- roadmap: ストリーミング進捗表示（再生位置・バッファ充填率）
+各ボイス行に以下を表示:
+
+- **再生(s):** `startTime100ns` + XAudio2 `SamplesPlayed`
+- **Queue:** `BuffersQueued / kBufferCount` プログレスバー
+- **読込:** `remainingData` バックログ近似 + `isStreaming` ラベル
 
 ## 用途
 

@@ -1294,6 +1294,41 @@ float ClampVolume(const float volume) {
 				row.streamingBufferBytes += voice.pBuffers[b].size();
 			}
 			row.remainingBytes = voice.remainingData.size();
+			row.isStreamingFlag = voice.isStreaming.load();
+
+			row.decoderBacklog01 = std::clamp(
+			    static_cast<float>(row.remainingBytes) /
+			        static_cast<float>(StreamingSourceVoice::kBufferSize),
+			    0.0f, 1.0f);
+
+			if (voice.pVoice != nullptr &&
+			    row.state != VoiceState::Stopped) {
+				XAUDIO2_VOICE_STATE xaState{};
+				voice.pVoice->GetState(&xaState);
+				row.buffersQueued = xaState.BuffersQueued;
+				row.samplesPlayed = xaState.SamplesPlayed;
+				row.queueFill01 = std::clamp(
+				    static_cast<float>(row.buffersQueued) /
+				        static_cast<float>(StreamingSourceVoice::kBufferCount),
+				    0.0f, 1.0f);
+
+				UINT sampleRate = 44100;
+				if (voice.soundIndex < soundDataStorage_.size() &&
+				    soundDataStorage_[voice.soundIndex] != nullptr) {
+					sampleRate = soundDataStorage_[voice.soundIndex]->wfEx.nSamplesPerSec;
+				}
+				if (sampleRate == 0) {
+					sampleRate = 44100;
+				}
+
+				const float sinceStart =
+				    static_cast<float>(row.samplesPlayed) /
+				    static_cast<float>(sampleRate);
+				row.playbackSeconds =
+				    static_cast<float>(voice.startTime100ns) / 10000000.0f +
+				    sinceStart;
+				row.hasPlaybackTime = true;
+			}
 
 			outSnapshot.streamingBufferBytesTotal += row.streamingBufferBytes;
 			outSnapshot.streamingRemainingBytesTotal += row.remainingBytes;

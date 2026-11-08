@@ -124,7 +124,7 @@
 
 ### ストリーミング再生のデバッグ(ImGui)
 - [x] メモリ使用量表示（`AudioStreamingDebugImGui`・`CollectStreamingMemoryDebug`）
-- [ ] ストリーミング進捗表示
+- [x] ストリーミング進捗表示（再生秒・キュー／デコーダ progress bar）
 
 ## Lighting
 

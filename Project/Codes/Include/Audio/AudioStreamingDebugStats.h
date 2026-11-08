@@ -19,6 +19,15 @@ struct StreamingVoiceMemoryRow {
   size_t streamingBufferBytes = 0;
   size_t remainingBytes = 0;
   bool isLoop = false;
+  bool isStreamingFlag = false;
+  float playbackSeconds = 0.0f;
+  bool hasPlaybackTime = false;
+  uint32_t buffersQueued = 0;
+  uint64_t samplesPlayed = 0;
+  /// キュー充填（0〜1、BuffersQueued / kBufferCount）
+  float queueFill01 = 0.0f;
+  /// デコーダ残りバイトの近似（remaining / chunkSize、上限1）
+  float decoderBacklog01 = 0.0f;
 };
 
 struct StreamingMemoryDebugSnapshot {
