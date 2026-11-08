@@ -5,7 +5,7 @@
 
 namespace Atrum::Motion {
 
-/// クリップ内キーフレームを時間サンプル（補間は次タスクと共有）
+/// クリップ内キーフレームを時間サンプル
 Math::TransformLH SampleMotionClip(const MotionClip &clip, float timeSeconds);
 
 /// 2 モーションを weight でブレンド（0 = from のみ, 1 = to のみ）

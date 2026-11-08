@@ -23,6 +23,6 @@ motion->SetClipPaths("../EditorAssets/Motion/sample_motion_a.json",
 motion->SetBlendWeight(0.35f);
 ```
 
-## 次
+## 関連
 
-- roadmap「モーション間の補間」… クリップ間遷移の easing / クロスフェード API 拡張
+- クリップ間遷移: `motion_interpolation.md`（`MotionCrossfade` / `CmpMotionCrossfade`）

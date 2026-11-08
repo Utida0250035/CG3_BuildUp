@@ -115,7 +115,7 @@
 - [x] 実装（`MotionBlender`・`CmpMotionBlend`・sample JSON）
 
 ### モーション間の補間
-- [ ] 実装
+- [x] 実装（`MotionCrossfade`・`CmpMotionCrossfade`）
 
 ## Debug
 

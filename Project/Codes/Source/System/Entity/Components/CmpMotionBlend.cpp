@@ -54,7 +54,7 @@ void CmpMotionBlend::Update() {
   const Math::TransformLH blended =
       Motion::BlendMotionTransforms(poseA, poseB, blendWeight_);
 
-  GetOwner()->RefTransform() = blended;
+  RefOwner().RefTransform() = blended;
 }
 
 } // namespace Atrum
