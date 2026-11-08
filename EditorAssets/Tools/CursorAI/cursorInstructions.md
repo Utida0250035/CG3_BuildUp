@@ -11,7 +11,57 @@
 - 既存のコアシステム（レンダリングループなど）を大幅に破壊する変更が必要なとき
 
 ## 3. 報告のフォーマット
-タスク完了時または中断時は、必ず .git/../EditorAssets/Tools/CursorAI/ に `progress_report.md` を生成（または更新）し、以下の内容を記載して待機してください。
+タスク完了時または中断時は、必ず `EditorAssets/Tools/CursorAI/progress_report.md` を生成（または更新）し、以下の内容を記載して待機してください。
 1. 現在の進捗状況と完了したこと
 2. 発生した課題または設計上の選択肢（メリット・デメリット）
 3. 次に実行すべきステップの提案（人間からの指示待ち状態にする）
+
+## 4. 完了の定義（このリポジトリ）
+
+- **ビルド:** `EditorAssets/Tools/CursorAI/buildDevelopment.cmd`（`Project/CG2_BuildUp.vcxproj`、Configuration=Development、Platform=x64）
+- **テスト:** 自動テストは未整備。ランタイム確認が必要な変更は `progress_report.md` に「未実施／実施済み」を明記する。
+- **サブタスクの粒度:** 原則 1 ビルド単位・少数ファイル。新 API やレンダパス全体の差し替えは分割する。
+
+## 5. Git とチェック
+
+- **通常:** コミット・プッシュは人間が明示したときのみ。
+- husky pre-commit で cspell が走る。未知語は `exclusion.dic` など既存の仕組みで解消する（シークレットをコミットしない）。
+- **master にはマージ・force push しない**（develop が統合先）。
+
+## 6. タスクの取り出し順
+
+1. `task_backlog.md` の未完了（上から）
+2. なければ会話文脈と `progress_report.md` の「次ステップ」から 1 件を提案し、**承認を得てから**着手する。
+
+## 7. モードの開始・終了
+
+- **開始:** ユーザーが「半自律」「半自律稼働」等と明示したとき。
+- **終了:** 「半自律終了」「通常モード」等。`progress_report.md` に終了を1行追記してよい。
+
+## 8. タスク完了時の Git 自動フロー（コミット許可後）
+
+ユーザーが **コミット・プッシュを許可**（例:「コミットして」「プッシュOK」「タスク完了でコミット可」）したとき、半自律モードでは次を **この順で** 実行する。
+
+### 前提
+
+- 変更はステージ済み、ビルド成功、`progress_report.md` 更新済み。
+- 作業ブランチ上にいる（`develop` / `master` 上では実行しない）。
+
+### 手順
+
+1. **次ブランチ名を決定** — `task_backlog.md` の次タスク + `branchNaming.md`。不明なら提案してユーザーに1行確認してから続行。
+2. **スクリプト実行**（リポジトリルートから）:
+   ```powershell
+   powershell -NoProfile -ExecutionPolicy Bypass -File EditorAssets/Tools/CursorAI/finishTaskGit.ps1 `
+     -CommitMessage "ここにメッセージ" `
+     -NextBranchName "feature/ExampleTopic"
+   ```
+   既にコミット済みのときは `-NoCommit` を付ける。
+3. スクリプトが行うこと: 現在ブランチへ commit（任意）→ push → `develop` を pull → 作業ブランチを **merge** → `develop` を push → ローカル・リモートの作業ブランチ削除 → `NextBranchName` を作成して push。
+4. `task_backlog.md` で完了タスクに `[x]`、`progress_report.md` にブランチ名・マージ結果を記載し、**次サブタスク**に入る前に停止（従来どおりレビュー可）。
+
+### 中断・エスカレーション
+
+- **merge コンフリクト** → マージを中止し（`git merge --abort`）、`progress_report.md` に報告。自動解決しない。
+- **3回連続**で Git/ビルドが失敗 → 停止条件 §2 どおり人間へ。
+- ユーザーが **コミットのみ** と指定した場合は、§8 は実行せず §5 のみ。

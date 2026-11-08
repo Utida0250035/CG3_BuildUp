@@ -1,0 +1,28 @@
+---
+description: 半自律モード（ゲームエンジン開発の停止条件・報告・ビルド）
+alwaysApply: true
+---
+
+# 半自律エージェント
+
+## いつ有効か
+
+ユーザーが **半自律** / **半自律稼働** / **cursorInstructions に従って** と明示したときのみ、以下を適用する。通常の質問や単発修正では過度に停止しない。
+
+## 参照ドキュメント（作業開始時に Read）
+
+- 行動指針: `EditorAssets/Tools/CursorAI/cursorInstructions.md`
+- 優先タスク: `EditorAssets/Tools/CursorAI/task_backlog.md`（あれば最優先）
+- 直前の報告: `EditorAssets/Tools/CursorAI/progress_report.md`
+
+## 必須動作
+
+1. サブタスクを小さく切り、完了したら **ビルド**（`EditorAssets/Tools/CursorAI/buildDevelopment.cmd`）を試す。
+2. マイルストーン完了または中断時は `progress_report.md` を更新し、**人間のレビュー・指示待ち**で止める。
+3. **コミット・プッシュはユーザーが明示したときのみ**（pre-commit の cspell あり）。  
+   **「コミット・プッシュ許可」「タスク完了でコミット可」** のときは `cursorInstructions.md` §8 に従い、`finishTaskGit.ps1` で develop へマージ → 作業ブランチ削除 → 次タスク用ブランチ作成（命名は `branchNaming.md`）。マージ衝突時は abort して報告。
+4. コード命名・名前空間は既存の Atrum 規約に合わせる。ユーザー向け説明は日本語。
+
+## 停止の目安
+
+`cursorInstructions.md` の停止条件（設計判断、同一ビルドエラー3回連続、コア破壊的変更）に該当したら即報告して待機。

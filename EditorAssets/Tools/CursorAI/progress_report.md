@@ -1,30 +1,24 @@
 # 半自律稼働 progress report
 
 **更新日時:** 2026-11-08  
-**ブランチ:** `fix/EditorScene`  
-**停止理由:** サブタスク完了（指針どおり人間レビュー待ち）
+**ブランチ:** `feature/SemiAutoDevelopByCursorAi`  
+**停止理由:** §8 Git フロー実践直前
 
 ## 1. 現在の進捗と完了したこと
 
-- **サブタスク:** `EditorInfiniteGrid` を `DrawLine3DOnFloorPlane`（画面ピクセル幅）から `DrawLine3D`（固定ワールド幅）へ切り戻し
-- **ビルド:** `Development | x64` で MSBuild 成功（初回は未使用変数 `vpW`/`vpH` で失敗 → 修正済み）
-- **手動ランタイム確認:** 未実施（エンティティエディタのシーンビューでグリッド見た目の確認が必要）
+- 半自律ルール一式（`cursorInstructions.md` §8、`finishTaskGit.ps1`、`branchNaming.md`、`.cursor/rules`）
+- `task_backlog.md` を `[chore]` 形式で整理
+- この後 `finishTaskGit.ps1` で develop マージ → `chore/SemiAutoFlowVerify` へ切替予定
 
 ## 2. 課題・選択肢
 
 | 項目 | 内容 |
 |------|------|
-| グリッド太さ | カメラ距離で画面上の太さが変わる（ピクセル安定は一旦オフ）。再開するなら `DrawLine3DOnFloorPlane` 側の調整が必要 |
-| `cursorInstructions.md` | リポジトリに未追跡。ルール／コミットに含めるかは人間判断 |
-| テスト | 自動テストなし。完了条件はビルド＋手動確認が現実的 |
+| 初回 §8 実行 | リモート `develop` との merge 結果は本実行で確定 |
 
-## 3. 次に実行すべきステップ（提案）
+## 3. 次に実行すべきステップ
 
-1. **レビュー:** 上記変更の diff 承認／却下
-2. **手動確認:** エンティティエディタ起動 → Edit ビューでグリッドの破線・消失・太さを確認
-3. **次サブタスク候補（優先は人間指定）**
-   - A: 問題なければコミット（メッセージ例: グリッドを固定ワールド幅描画に戻す）
-   - B: `cursorInstructions.md` を `.cursor/rules` から参照する運用を整備
-   - C: ピクセル安定描画を再挑戦（別マイルストーン）
+1. `finishTaskGit.ps1` 実行結果の確認
+2. `chore/SemiAutoFlowVerify` で progress_report にマージ・ブランチ名を追記して停止
 
-**状態:** 指示待ち
+**状態:** §8 実行中
