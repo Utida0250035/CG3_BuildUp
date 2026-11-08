@@ -5,6 +5,7 @@
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
+#include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Hash64.h"
 #include "ForDebug/ImGui.h"
@@ -366,6 +367,17 @@ void EntityEditor::DrawProjectPanel() {
   if (ImGui::Button("シーンを実行")) {
     ui_.requestSaveToDisk = true;
     ui_.requestPlayRuntimeScene = true;
+  }
+  ImGui::Separator();
+
+  ImGui::TextUnformatted("ファイルドロップ（obj / png 等）");
+  ImGui::TextDisabled("ウィンドウへドロップ → %s",
+                      Atrum::Editor::Import::kImportedAssetsDirectory);
+  if (!ui_.lastImportedAssetPath.empty()) {
+    ImGui::TextWrapped("直近: %s", ui_.lastImportedAssetPath.c_str());
+  }
+  if (!ui_.importStatusMessage.empty()) {
+    ImGui::TextWrapped("%s", ui_.importStatusMessage.c_str());
   }
   ImGui::Separator();
 

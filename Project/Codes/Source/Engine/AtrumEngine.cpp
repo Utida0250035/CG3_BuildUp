@@ -34,6 +34,10 @@
 #include "ForDebug/ImGuiJapaneseFont.h"
 #endif
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "System/Editor/EditorImportedAsset.h"
+#endif
+
 #ifdef DEVELOPMENT
 #include <format>
 #include <fstream>
@@ -509,6 +513,15 @@ bool AtrumEngine::Process() {
       playInput_->SetCursorPos(event.motion.x, event.motion.y);
 
       break;
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+    case SDL_DROPFILE:
+      if (event.drop.file != nullptr) {
+        Atrum::Editor::Import::FileDropQueue::Instance().Push(event.drop.file);
+      }
+      SDL_free(event.drop.file);
+      break;
+#endif
     }
   }
 

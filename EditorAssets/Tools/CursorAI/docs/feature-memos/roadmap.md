@@ -53,7 +53,7 @@
 - [x] priority 操作後 `SortComponents()` で実行順変更（`SetUpdCmpPriority` / `SetDrawCmpPriority`）
 
 ### 任意フォルダから開発用GUIへドラッグ&ドロップ…
-- [ ] GUI 専用クラスで Assets へコピー
+- [x] GUI 専用クラスで Assets へコピー（`EditorImportedAsset`・`EditorAssets/Imported`）
 - [ ] リソースコンポーネントがパス記録・読み込み
 
 ### Entityの配列化
@@ -67,7 +67,7 @@
 ## Loader
 
 ### ImGuiウィンドウにファイルをドロップしてobjやpngなどの読み込み
-- [ ] ドロップでパス保持・読み込み
+- [x] ドロップでパス保持・読み込み（SDL ドロップイベント→Imported コピー・プロジェクトパネル表示）
 
 ### 別スレッドでのリソース読み込み
 - [-] 安定化後（並行読み込みは影響大）

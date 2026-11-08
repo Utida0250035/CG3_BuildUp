@@ -43,6 +43,9 @@ struct UiState {
   std::string pendingDeleteScenePath{};
   /// 実行時ビューウィンドウへフォーカス（シーン実行後など）
   bool requestFocusRuntimeSceneView = false;
+  /// 直近に Imported へコピーしたアセット（obj / png 等）
+  std::string lastImportedAssetPath{};
+  std::string importStatusMessage{};
 
   std::string tagSearchFilter{};
   std::string selectedCatalogTag{};
@@ -86,6 +89,9 @@ public:
 
   /// Reload / Save / Apply フラグを処理。プレビュー再構築が必要なら true
   bool TickPendingRequests();
+
+  /// SDL ドロップキューを処理し EditorAssets/Imported へコピー
+  void ProcessDroppedFileImports();
 
   /// 現在のシーン定義からプレビュー用 Entity 列を生成（親子付け済み）
   std::vector<std::unique_ptr<Entity>> BuildPreviewScene() const;

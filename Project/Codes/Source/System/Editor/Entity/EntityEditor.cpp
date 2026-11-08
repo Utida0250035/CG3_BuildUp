@@ -1,5 +1,6 @@
 #include "System/Editor/Entity/EntityEditor.h"
 
+#include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
@@ -265,6 +266,28 @@ bool EntityEditor::DeleteSceneFile(const std::string &sceneJsonPath) {
 
   CreateNewSceneFile();
   return true;
+}
+
+void EntityEditor::ProcessDroppedFileImports() {
+  const std::vector<std::string> dropped =
+      Atrum::Editor::Import::FileDropQueue::Instance().Drain();
+  if (dropped.empty()) {
+    return;
+  }
+
+  Atrum::Editor::Import::EnsureImportedAssetsDirectoryExists();
+
+  for (const std::string &sourcePath : dropped) {
+    const std::string dest =
+        Atrum::Editor::Import::CopyFileIntoImportedAssets(sourcePath);
+    if (dest.empty()) {
+      ui_.importStatusMessage = "インポート失敗: " + sourcePath;
+      continue;
+    }
+
+    ui_.lastImportedAssetPath = dest;
+    ui_.importStatusMessage = "Imported へコピー: " + dest;
+  }
 }
 
 } // namespace Atrum::EntityEditor

@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — tick2: executionOrder／実行順 UI、develop マージ
+**最新サマリー:** 2026-11-08 — tick3: SDL ドロップ→Imported コピー、develop マージ
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -263,5 +263,69 @@
 
 1. roadmap: Entity 配列化／実行順 UI
 2. 次 tick 約 20 分後
+
+**状態:** ループ稼働中
+
+---
+
+## セッション 2026-11-08 20:05（/loop 20m tick・executionOrder）
+
+**トリガー:** `AGENT_LOOP_TICK_roadmap-dev`（2 回目の周期 tick）
+
+### 1. 完了したこと
+
+- **`ComponentSlot::executionOrder`**（JSON）とインスペクタ「実行順 | 型」、`InputInt` による priority 編集
+- **プレビュー:** `ApplySlotExecutionOrder` 後 `SortComponents`（`EditorSceneRuntime.cpp`）
+- **ビルド:** 初回は `SortComponents`／const 周りで失敗 → 修正後 **Development | x64 成功**
+- **roadmap:** Entity 配列化関連 3 項を `[x]`
+- **Git:** `10431b0` → **develop マージ・push 済み**（作業ブランチ維持）
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| `loop_state.json` | コミット内 `lastGoodCommit` が `c149e9c` のまま。作業ツリーは `10431b0` に更新済み（次マージで同期） |
+| D&D | priority のドラッグ＆ドロップは未 |
+
+### 3. 次ステップ
+
+1. roadmap 次: 「方針に沿ったコンポーネント分割」または Loader D&D 等
+2. 次 tick 約 20 分後
+
+**状態:** ループ稼働中
+
+---
+
+## セッション 2026-11-08 20:25（/loop 20m tick・ファイルドロップ）
+
+**トリガー:** `AGENT_LOOP_TICK_roadmap-dev`（3 回目の周期 tick）
+
+### 1. 完了したこと
+
+- **`EditorImportedAsset`:** SDL ドロップイベント用キュー、`EditorAssets/Imported` へコピー
+- **エディタ:** プロジェクトパネルにドロップ案内・直近パス表示
+- **roadmap:** Loader ドロップ 1 項、任意フォルダ D&D の Assets コピー 1 項を `[x]`
+- **ビルド:** Development | x64 成功
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| ランタイム | エディタ未起動でのドロップ動作は未手動確認 |
+| 続き | ModelStorage への即時ロード・リソースコンポーネント連携は別項 |
+
+### 3. 次ステップ
+
+1. リソースコンポーネントのパス記録・読み込み（roadmap 残）
+2. 次 tick 約 20 分後
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- Loader: ドロップでパス保持・Imported コピー（`AtrumEngine` + `EditorImportedAsset`）
+- System: GUI 専用で Assets（Imported）へコピー
+
+## 保留・着手見送り（§6.3）
+
+- リソースコンポーネントがパス記録・読み込み — 本 tick スコープ外
 
 **状態:** ループ稼働中

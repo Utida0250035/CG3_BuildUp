@@ -172,6 +172,8 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
 void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   EditorFrame::Instance().ResetPerFrame();
 
+  editor.ProcessDroppedFileImports();
+
   DrawMainMenuBar(editor);
 
   ImGuiViewport *mainViewport = ImGui::GetMainViewport();
