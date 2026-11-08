@@ -52,7 +52,7 @@ namespace Atrum {
 			Scene* sceneNow = commandScene_->GetSceneNow();
 			Atrum::Camera* camera = sceneNow->GetCamera();
 			if (sceneNow->IsStageViewCameraLocked()) {
-				// 戦闘シーンでは DebugCamera の毎フレーム操作や Draw 内での再配置を行わない
+				// プレイヤー操作で視点を変えさせない（player_friendly_camera_policy.md）
 				camera->UpdateMatrix();
 			} else if (!sceneNow->AllowDebugCameraControl()) {
 				camera->UpdateMatrix();

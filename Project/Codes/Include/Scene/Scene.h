@@ -58,11 +58,16 @@ public:
   const Atrum::Camera *GetCamera() const { return camera_.get(); }
 
   /// <summary>
-  /// true のとき DebugCamera の操作を行わず EnterScene で設定した戦闘カメラを維持する
+  /// true のとき DebugCamera の操作を行わず EnterScene で設定した戦闘カメラを維持する。
+  /// 本編・タイトル・リザルトなどプレイヤー向けシーンは override で true 必須
+  /// （方針: EditorAssets/Tools/CursorAI/docs/feature-memos/player_friendly_camera_policy.md）
   /// </summary>
   virtual bool IsStageViewCameraLocked() const { return false; }
 
-  /// false のとき DebugCamera は行列のみ更新（エディットビュー外など）
+  /// <summary>
+  /// false のとき DebugCamera は行列のみ更新（エディットビュー外など）。
+  /// true のときのみ DEVELOPMENT の DebugCamera 入力を許可（制作ツール用）。
+  /// </summary>
   virtual bool AllowDebugCameraControl() const { return true; }
 
   /// <summary>

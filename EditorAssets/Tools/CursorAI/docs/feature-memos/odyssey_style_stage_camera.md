@@ -34,3 +34,7 @@
 ## C++ 定数との同期
 
 `tuning.json` を変更したら、`StageViewCamera.h` の `kStageBattleView*` 等へ手動反映する（自動同期は別タスク）。プレビュー出力とゲーム内がずれたら JSON か定数のどちらが古いか確認する。
+
+## プレイヤー操作の禁止
+
+本編ではカメラ操作を要求しない。実装ガードは `player_friendly_camera_policy.md` と `IsStageViewCameraLocked`。

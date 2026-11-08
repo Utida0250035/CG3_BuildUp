@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick5: ステージカメラ用カスタムイージング
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick6: カメラ操作丸投げ禁止ポリシー
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -660,5 +660,30 @@
 
 - **PullBackReveal:** ボスイントロ後プレイヤーが状況を把握してから戦闘画へ戻す演出
 - **FocusPush:** 撃破・注目演出で素早く寄せつつ酔いにくい終端
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 14:45（/loop 15m Cloud・カメラ丸投げ禁止）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`player_friendly_camera_policy.md`** … 原則・ガード表・シーン一覧・チェックリスト
+- **`verify_camera_policy.py`** … Game/BuildUp/Title/Result=locked、Editor系=unlocked
+- **`Scene.h` / `GameOrder.h`** コメント追記
+- **roadmap** Camera 節 3 行目を `[x]`
+- **ビルド:** 未実施
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ユーザーに操作を丸投げしない（既存 `IsStageViewCameraLocked` 体系の文書化＋静的検証）
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** 横 STG 本編で視点操作を求めず、演出カメラに集中させる UX
+- **制作:** 新シーン追加時の CI/手元チェック（verify スクリプト）
 
 **状態:** ループ稼働中（subscription timer 15m）
