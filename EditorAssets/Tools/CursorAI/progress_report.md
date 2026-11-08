@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick13: テストプレイエリア生成
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick14: ストリーミングメモリ ImGui
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -851,5 +851,27 @@
 ## 推測した用途（§6.4）
 
 - **デバッグ:** 本編外サンドボックスで Entity 試験
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 16:45（/loop 15m Cloud・ストリーミングメモリ ImGui）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`CollectStreamingMemoryDebug`**、ImGui ウィンドウ、エディタメニュー
+- **メモ** `streaming_debug_imgui.md`
+- **ビルド:** Cloud 未実施（DEVELOPMENT + USE_IMGUI）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- メモリ使用量表示
+
+## 推測した用途（§6.4）
+
+- **デバッグ・プロファイリング:** ストリーム BGM のバッファ使用量監視
 
 **状態:** ループ稼働中（subscription timer 15m）

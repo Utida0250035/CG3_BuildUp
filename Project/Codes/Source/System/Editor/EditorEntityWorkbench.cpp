@@ -3,6 +3,7 @@
 #include "System/Editor/EditorEntityWorkbench.h"
 
 #include "ForDebug/ImGui.h"
+#include "ForDebug/AudioStreamingDebugImGui.h"
 #include <imgui/imgui_internal.h>
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorSceneViewPanel.h"
@@ -108,6 +109,14 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
   if (ImGui::BeginMenu("エディタ")) {
     if (ImGui::MenuItem("パーティクルエディタ")) {
       ui.requestOpenParticleEditor = true;
+    }
+    ImGui::EndMenu();
+  }
+
+  if (ImGui::BeginMenu("デバッグ")) {
+    bool showStreamingMemory = Atrum::Debug::IsStreamingMemoryDebugVisible();
+    if (ImGui::MenuItem("ストリーミングメモリ", nullptr, &showStreamingMemory)) {
+      Atrum::Debug::SetStreamingMemoryDebugVisible(showStreamingMemory);
     }
     ImGui::EndMenu();
   }

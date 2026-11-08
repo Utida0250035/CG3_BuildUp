@@ -3,6 +3,9 @@
 #include "Audio/AudioHandle.h"
 #include "Audio/SourceVoice.h"
 #include "Audio/StreamingSourceVoice.h"
+#if defined(DEVELOPMENT)
+#include "Audio/AudioStreamingDebugStats.h"
+#endif
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -178,6 +181,10 @@ namespace Atrum::Audio {
 		bool SetHandleVolume(const AudioHandle& handle, float volume);
 
 		bool GetHandleVolume(const AudioHandle& handle, float& outVolume) const;
+
+#if defined(DEVELOPMENT)
+		void CollectStreamingMemoryDebug(StreamingMemoryDebugSnapshot& outSnapshot) const;
+#endif
 
 		static AudioManager* Instance() {
 

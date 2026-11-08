@@ -277,6 +277,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
@@ -431,6 +432,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h" />
+    <ClInclude Include="Codes\Include\Audio\AudioStreamingDebugStats.h" />
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
     <ClInclude Include="Codes\Include\Audio\SourceVoice.h" />
@@ -504,6 +506,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\ForDebug\DebugLayer.h" />
     <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\Log.h" />
     <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h" />
     <ClInclude Include="Codes\Include\Geometry\Bezier.h" />

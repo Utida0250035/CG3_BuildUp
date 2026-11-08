@@ -5,6 +5,9 @@
 #include "Audio/Audio.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/DeltaTime.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "ForDebug/AudioStreamingDebugImGui.h"
+#endif
 #include <memory>
 #include <chrono>
 
@@ -46,6 +49,9 @@ namespace Atrum {
 			// デルタタイムは AtrumEngine::Process() で計算済み
 #ifdef USE_IMGUI
 			Engine::Instance()->ImGuiNewFrame();
+#if defined(DEVELOPMENT)
+			Atrum::Debug::DrawAudioStreamingMemoryDebugWindow();
+#endif
 #endif
 			AbstractInput::Instance()->Update();
 

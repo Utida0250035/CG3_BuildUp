@@ -123,7 +123,7 @@
 - [x] 生成ツール／テンプレート（`DebugPlayArea/`・`scaffold_play_area.py`）
 
 ### ストリーミング再生のデバッグ(ImGui)
-- [ ] メモリ使用量表示
+- [x] メモリ使用量表示（`AudioStreamingDebugImGui`・`CollectStreamingMemoryDebug`）
 - [ ] ストリーミング進捗表示
 
 ## Lighting

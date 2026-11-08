@@ -1258,4 +1258,55 @@ float ClampVolume(const float volume) {
 		       voice.state == VoiceState::Paused;
 	}
 
+#if defined(DEVELOPMENT)
+
+	void AudioManager::CollectStreamingMemoryDebug(
+	    StreamingMemoryDebugSnapshot& outSnapshot) const {
+		outSnapshot = {};
+
+		for (const auto& sound : soundDataStorage_) {
+			if (sound == nullptr) {
+				continue;
+			}
+			if (!sound->isSuitableStreaming) {
+				outSnapshot.loadedShortSoundBytes += sound->bufferSize;
+				++outSnapshot.loadedShortSoundCount;
+			}
+		}
+
+		outSnapshot.streamingVoicesCapacity = streamingSourceVoicePool_.size();
+
+		for (size_t i = 0; i < streamingSourceVoicePool_.size(); ++i) {
+			const auto& voicePtr = streamingSourceVoicePool_[i];
+			if (voicePtr == nullptr) {
+				continue;
+			}
+
+			const StreamingSourceVoice& voice = *voicePtr;
+			StreamingVoiceMemoryRow row{};
+			row.voiceIndex = i;
+			row.state = voice.state.load();
+			row.soundIndex = voice.soundIndex;
+			row.playId = voice.playId;
+			row.isLoop = voice.isLoop;
+
+			for (size_t b = 0; b < StreamingSourceVoice::kBufferCount; ++b) {
+				row.streamingBufferBytes += voice.pBuffers[b].size();
+			}
+			row.remainingBytes = voice.remainingData.size();
+
+			outSnapshot.streamingBufferBytesTotal += row.streamingBufferBytes;
+			outSnapshot.streamingRemainingBytesTotal += row.remainingBytes;
+
+			if (row.state == VoiceState::Playing ||
+			    row.state == VoiceState::Paused) {
+				++outSnapshot.activeStreamingVoiceCount;
+			}
+
+			outSnapshot.voices.push_back(row);
+		}
+	}
+
+#endif
+
 }
