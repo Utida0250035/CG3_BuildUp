@@ -1256,6 +1256,7 @@ void AtrumEngine::FlushDirectionalLightConstantBuffer() {
     directionalLightData_.cameraWorldPosition = pDraw_->camera_->GetTranslate();
   }
   volumetricFog_.ApplyTo(directionalLightData_);
+  godRays_.ApplyTo(directionalLightData_);
   if (directionalLightBuffer_ != nullptr) {
     directionalLightBuffer_->SetData(directionalLightData_);
   }

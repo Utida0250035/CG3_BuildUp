@@ -135,7 +135,7 @@
 - [x] 実装（`VolumetricFog`・`Object3d.PS`・`Lighting`／`AtrumEngine` 統合）
 
 ### ゴッドレイ
-- [ ] 実装
+- [x] 実装（`GodRays`・`Object3d.PS`・フォグ連動シャフト）
 
 ### シェード／シャドウ
 - [ ] 実装

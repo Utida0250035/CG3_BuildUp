@@ -34,10 +34,48 @@ struct DirectionalLight {
 	float fogInScatterIntensity;
 	uint fogEnabled;
 	float fogPadding0;
+
+	float3 godRayColor;
+	float godRayIntensity;
+	float godRayAngularPower;
+	float godRayFogCoupling;
+	uint godRayEnabled;
+	float godRayPadding0;
 	
-	// 7
-	float4 padding2[7];
+	// 4
+	float4 padding2[4];
 };
+
+float ComputeParticipatingMedia(float3 worldPos, float3 cameraPos, DirectionalLight light, out float fogBlend) {
+	fogBlend = 0.0f;
+	if (light.fogEnabled == 0u || light.fogDensity <= 0.0f) {
+		return 0.0f;
+	}
+	const float3 toPoint = worldPos - cameraPos;
+	const float dist = length(toPoint);
+	const float distRange = max(light.fogMaxDistance - light.fogStartDistance, 0.001f);
+	const float distT = saturate((dist - light.fogStartDistance) / distRange);
+	const float heightFactor = exp(-light.fogHeightFalloff * (worldPos.y - light.fogHeightOffset));
+	const float opticalDepth = light.fogDensity * dist * distT * heightFactor;
+	fogBlend = 1.0f - exp(-opticalDepth);
+	return fogBlend;
+}
+
+float3 ApplyGodRays(float3 shadedRgb, float3 worldPos, float3 cameraPos, float3 lightDir,
+	DirectionalLight light, float fogBlend) {
+	if (light.godRayEnabled == 0u || light.godRayIntensity <= 0.0f) {
+		return shadedRgb;
+	}
+	const float3 toPoint = worldPos - cameraPos;
+	const float dist = length(toPoint);
+	const float3 viewDir = toPoint / max(dist, 1.0e-4f);
+	const float mu = saturate(dot(viewDir, normalize(-lightDir)));
+	const float shaft = pow(mu, max(light.godRayAngularPower, 0.001f)) * light.godRayIntensity;
+	const float media = light.fogDensity > 0.0f
+		? lerp(1.0f, fogBlend, light.godRayFogCoupling)
+		: saturate(dist / max(light.fogMaxDistance, 0.001f));
+	return shadedRgb + light.godRayColor * (shaft * media);
+}
 
 float3 ApplyVolumetricFog(float3 shadedRgb, float3 worldPos, float3 cameraPos, float3 lightDir, DirectionalLight light) {
 	if (light.fogEnabled == 0u || light.fogDensity <= 0.0f) {
@@ -170,12 +208,25 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		
 	}
 
+	float fogBlendForRays = 0.0f;
+	ComputeParticipatingMedia(
+		input.worldPosition,
+		gDirectionalLight.cameraWorldPosition,
+		gDirectionalLight,
+		fogBlendForRays);
 	output.color.rgb = ApplyVolumetricFog(
 		output.color.rgb,
 		input.worldPosition,
 		gDirectionalLight.cameraWorldPosition,
 		gDirectionalLight.direction,
 		gDirectionalLight);
+	output.color.rgb = ApplyGodRays(
+		output.color.rgb,
+		input.worldPosition,
+		gDirectionalLight.cameraWorldPosition,
+		gDirectionalLight.direction,
+		gDirectionalLight,
+		fogBlendForRays);
 
 #ifdef USE_DITHER_CLIP
 	{

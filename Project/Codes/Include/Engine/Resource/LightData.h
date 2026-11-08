@@ -65,8 +65,15 @@ struct LightDataDirectional {
   uint32_t fogEnabled = 0;
   float fogPadding0 = 0.0f;
 
-  // アライメント用 256バイト（残り 112 バイト）
-  float padding2[28] = {0.0f};
+  Math::Vector3 godRayColor{1.0f, 0.92f, 0.78f};
+  float godRayIntensity = 0.0f;
+  float godRayAngularPower = 6.0f;
+  float godRayFogCoupling = 0.85f;
+  uint32_t godRayEnabled = 0;
+  float godRayPadding0 = 0.0f;
+
+  // アライメント用 256バイト（残り 64 バイト）
+  float padding2[16] = {0.0f};
 };
 
 struct LightDataPoint {
@@ -174,8 +181,15 @@ struct DirectionalLightData {
   uint32_t fogEnabled = 0;
   float fogPadding0 = 0.0f;
 
-  // 16*9 = 144、残り 112 バイト
-  float padding2[28];
+  Math::Vector3 godRayColor{1.0f, 0.92f, 0.78f};
+  float godRayIntensity = 0.0f;
+  float godRayAngularPower = 6.0f;
+  float godRayFogCoupling = 0.85f;
+  uint32_t godRayEnabled = 0;
+  float godRayPadding0 = 0.0f;
+
+  // 16*12 = 192、残り 64 バイト
+  float padding2[16];
 
 #ifdef USE_IMGUI
 

@@ -54,6 +54,13 @@ namespace {
 		gameFog.maxDistance = 90.0f;
 		gameFog.inScatterIntensity = 0.18f;
 		Engine::Instance()->RefVolumetricFog().SetSettings(gameFog);
+
+		Atrum::Visual::GodRaySettings gameGodRays{};
+		gameGodRays.enabled = 1u;
+		gameGodRays.intensity = 0.12f;
+		gameGodRays.angularPower = 8.0f;
+		gameGodRays.fogCoupling = 0.9f;
+		Engine::Instance()->RefGodRays().SetSettings(gameGodRays);
 	}
 
 } // namespace

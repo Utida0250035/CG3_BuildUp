@@ -2,6 +2,7 @@
 
 #include "Engine/EngineFwd.h"
 #include "Engine/Resource/ConstantBuffer.h"
+#include "Engine/Renderer/Lighting/GodRays.h"
 #include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "Engine/Resource/LightData.h"
 #include <memory>
@@ -15,6 +16,7 @@ private:
   SceneLightData sceneLightData_{};
 
   VolumetricFog volumetricFog_{};
+  GodRays godRays_{};
 
   // GPU転送用の定数バッファ
   std::unique_ptr<SingleConstantBuffer<SceneLightData>> lightingBuffer_ =
@@ -37,6 +39,9 @@ public:
 
   VolumetricFog &RefVolumetricFog() { return volumetricFog_; }
   const VolumetricFog &GetVolumetricFog() const { return volumetricFog_; }
+
+  GodRays &RefGodRays() { return godRays_; }
+  const GodRays &GetGodRays() const { return godRays_; }
 
 #ifdef USE_IMGUI
 

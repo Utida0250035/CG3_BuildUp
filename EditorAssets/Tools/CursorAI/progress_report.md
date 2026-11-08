@@ -944,3 +944,27 @@
 - **デバッグ:** DEVELOPMENT で ImGui から密度・色をチューニング
 
 **状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 17:45（/loop 15m Cloud・ゴッドレイ）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`GodRays` / `GodRaySettings`** — `Lighting`・`AtrumEngine` 統合
+- **`Object3d.PS`** — 太陽方向シャフト（`VolumetricFog` と `fogCoupling`）
+- **メモ** `god_rays.md`、`SceneGame` 既定
+- **ビルド:** Cloud 未実施
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ゴッドレイ
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** 屋外シーンの陽光・演出強調
+- **将来:** スクリーンスペースブラーへの差し替え用に設定 API を分離済み
+
+**状態:** ループ稼働中（subscription timer 15m）
