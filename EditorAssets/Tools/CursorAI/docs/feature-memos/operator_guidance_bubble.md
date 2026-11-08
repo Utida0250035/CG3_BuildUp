@@ -17,7 +17,10 @@
 
 `EditorAssets/UX/operator_guidance.json`
 
+## チュートリアル置換・ナビキャラ
+
+- `tutorialReplacement` / `navigator` — 上記 JSON 参照
+
 ## 今後
 
-- チュートリアル／ナビキャラ差し替え（次 roadmap）
 - ビットマップフォントでの `message` 描画

@@ -172,7 +172,7 @@
 
 ### Operator
 - [x] 案内吹き出しシステム（`OperatorGuidance::System`・UX JSON・SceneGame）
-- [ ] チュートリアル置換・ナビキャラ
+- [x] チュートリアル置換・ナビキャラ（`navigator`・`tutorialReplacement`・OnBattleReady）
 
 ## メモ（旧プレースホルダ）
 

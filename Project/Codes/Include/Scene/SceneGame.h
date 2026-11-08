@@ -52,6 +52,8 @@ private:
   std::unique_ptr<Atrum::BossDeathPresentation> bossDeathPresentation_;
   std::unique_ptr<Atrum::PlayerDeathPresentation> playerDeathPresentation_;
 
+  bool operatorBattleReadyNotified_ = false;
+
   void SpawnEntities();
   void ClearEntities();
   void UpdateBackgrounds();

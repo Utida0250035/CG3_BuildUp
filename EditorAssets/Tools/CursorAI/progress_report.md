@@ -1108,3 +1108,29 @@
 - **ランタイム UX:** 操作忘れの再案内（howToPlay 画像を吹き出し内に再利用）
 
 **状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 19:30（/loop 15m Cloud・ナビキャラ／チュートリアル置換）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`navigator` / `tutorialReplacement`** — JSON・ポートレート表示・welcome ヒント
+- **SceneGame** — イントロ howTo スキップ、`OnBattleReady` 連携
+- **roadmap** 全 `- [ ]` 消化 → **ループ停止**
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- チュートリアル置換・ナビキャラ
+
+## 推測した用途（§6.4）
+
+- **UX:** 固定チュートリアル UI の代わりにナビ付き吹き出しで操作案内
+
+## ループ自動停止
+
+- **理由:** `roadmap.md` に未完了 `- [ ]` がなくなったため `loop-roadmap-dev-15m` を unsubscribe
+
+**状態:** ループ停止（timer 解除済み）

@@ -1,5 +1,36 @@
 {
+  "navigator": {
+    "displayName": "戦術ナビ",
+    "portraitAnchorX": 0.11,
+    "portraitAnchorY": 0.76,
+    "portraitScale": 0.32,
+    "portraitTexturePaths": [
+      "./Assets/Textures/title.png",
+      "./Resources/title.png"
+    ]
+  },
+  "tutorialReplacement": {
+    "skipIntroHowToOverlay": true,
+    "replaceWithNavigatorHints": true,
+    "welcomeHintId": "welcome_battle"
+  },
   "hints": [
+    {
+      "id": "welcome_battle",
+      "actionId": "session",
+      "showOnBattleReady": true,
+      "message": "ボス戦開始。吹き出しで操作を確認しよう",
+      "idleBeforeShowSeconds": 0.0,
+      "displayDurationSeconds": 7.0,
+      "anchorX": 0.62,
+      "anchorY": 0.42,
+      "bodyScale": 0.4,
+      "bodyTexturePaths": [
+        "./Assets/Textures/howToNext.png",
+        "./Resources/howToNext.png",
+        "./Assets/Textures/howtoNext.png"
+      ]
+    },
     {
       "id": "parry_reminder",
       "actionId": "parry",

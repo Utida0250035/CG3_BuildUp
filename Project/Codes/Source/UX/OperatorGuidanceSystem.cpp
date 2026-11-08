@@ -53,6 +53,9 @@ System &System::Instance() {
 
 bool System::LoadFromJsonFile(const std::string &path) {
   hints_.clear();
+  navigator_ = {};
+  tutorialReplacement_ = {};
+  navigatorPortraitIndex_ = UINT32_MAX;
   std::ifstream stream(path);
   if (!stream) {
     return false;
@@ -65,6 +68,28 @@ bool System::LoadFromJsonFile(const std::string &path) {
     return false;
   }
 
+  if (json.contains("navigator")) {
+    const auto &nav = json.at("navigator");
+    navigator_.displayName = nav.value("displayName", "ナビ");
+    navigator_.portraitAnchorX = nav.value("portraitAnchorX", 0.1f);
+    navigator_.portraitAnchorY = nav.value("portraitAnchorY", 0.78f);
+    navigator_.portraitScale = nav.value("portraitScale", 0.28f);
+    if (nav.contains("portraitTexturePaths")) {
+      for (const auto &p : nav.at("portraitTexturePaths")) {
+        navigator_.portraitTexturePaths.push_back(p.get<std::string>());
+      }
+    }
+  }
+
+  if (json.contains("tutorialReplacement")) {
+    const auto &tr = json.at("tutorialReplacement");
+    tutorialReplacement_.skipIntroHowToOverlay =
+        tr.value("skipIntroHowToOverlay", false);
+    tutorialReplacement_.replaceWithNavigatorHints =
+        tr.value("replaceWithNavigatorHints", true);
+    tutorialReplacement_.welcomeHintId = tr.value("welcomeHintId", std::string{});
+  }
+
   for (const auto &item : json.at("hints")) {
     HintDefinition hint{};
     hint.id = item.at("id").get<std::string>();
@@ -75,13 +100,16 @@ bool System::LoadFromJsonFile(const std::string &path) {
     hint.anchorX = item.value("anchorX", 0.75f);
     hint.anchorY = item.value("anchorY", 0.32f);
     hint.bodyScale = item.value("bodyScale", 0.42f);
+    hint.showOnBattleReady = item.value("showOnBattleReady", false);
     if (item.contains("bodyTexturePaths")) {
       for (const auto &p : item.at("bodyTexturePaths")) {
         hint.bodyTexturePaths.push_back(p.get<std::string>());
       }
     }
     hints_.push_back(std::move(hint));
-    secondsSinceLastAction_[hint.actionId] = 0.0f;
+    if (!hint.showOnBattleReady) {
+      secondsSinceLastAction_[hint.actionId] = 0.0f;
+    }
   }
   return !hints_.empty();
 }
@@ -90,10 +118,33 @@ void System::ResetSession() {
   activeHintId_.clear();
   activeMessage_.clear();
   activeDisplayRemaining_ = 0.0f;
+  battleReadyHintShown_ = false;
   for (auto &entry : secondsSinceLastAction_) {
     entry.second = 0.0f;
   }
   textureCache_.clear();
+  navigatorPortraitIndex_ = UINT32_MAX;
+}
+
+void System::ShowHintById(const std::string &hintId) {
+  for (const HintDefinition &hint : hints_) {
+    if (hint.id == hintId) {
+      activeHintId_ = hint.id;
+      activeMessage_ = hint.message;
+      activeDisplayRemaining_ = hint.displayDurationSeconds;
+      return;
+    }
+  }
+}
+
+void System::OnBattleReady() {
+  if (battleReadyHintShown_ || !tutorialReplacement_.replaceWithNavigatorHints) {
+    return;
+  }
+  battleReadyHintShown_ = true;
+  if (!tutorialReplacement_.welcomeHintId.empty()) {
+    ShowHintById(tutorialReplacement_.welcomeHintId);
+  }
 }
 
 void System::NotifyAction(const std::string &actionId) {
@@ -125,6 +176,9 @@ void System::Update(const float deltaSeconds) {
   const HintDefinition *best = nullptr;
   float bestIdle = 0.0f;
   for (const HintDefinition &hint : hints_) {
+    if (hint.showOnBattleReady) {
+      continue;
+    }
     const auto it = secondsSinceLastAction_.find(hint.actionId);
     if (it == secondsSinceLastAction_.end()) {
       continue;
@@ -145,6 +199,33 @@ void System::Update(const float deltaSeconds) {
   }
 }
 
+void System::DrawNavigatorPortrait(AtrumEngine *engine, Camera *camera) const {
+  if (navigator_.portraitTexturePaths.empty()) {
+    return;
+  }
+
+  if (navigatorPortraitIndex_ == UINT32_MAX) {
+    navigatorPortraitIndex_ = LoadBodyTexture(engine, navigator_.portraitTexturePaths);
+  }
+  if (navigatorPortraitIndex_ == UINT32_MAX) {
+    return;
+  }
+
+  const float screenW = static_cast<float>(Window::kDefaultClientWidth);
+  const float screenH = static_cast<float>(Window::kDefaultClientHeight);
+  const float centerX = screenW * navigator_.portraitAnchorX;
+  const float centerY = screenH * navigator_.portraitAnchorY;
+  constexpr float kBaseSize = 160.0f;
+  const float size = kBaseSize * navigator_.portraitScale;
+
+  Math::Transform uv{};
+  Math::Transform xform{};
+  xform.translate = {centerX - size * 0.5f, centerY - size * 0.5f, 0.0f};
+  xform.scale = {size, size, 1.0f};
+  engine->DrawSpriteRect(navigatorPortraitIndex_, Math::Vector4::White(), uv, xform,
+                         Math::Vector2{1.0f, 1.0f}, Math::Vector2{0.0f, 0.0f});
+}
+
 void System::Draw(AtrumEngine *engine, Camera *camera) const {
   if (engine == nullptr || camera == nullptr || activeDisplayRemaining_ <= 0.0f) {
     return;
@@ -163,6 +244,8 @@ void System::Draw(AtrumEngine *engine, Camera *camera) const {
 
   SceneScreenUi::PrepareDraw(engine, camera);
   engine->SetBlendModeForFrame(BlendMode::NORMAL);
+
+  DrawNavigatorPortrait(engine, camera);
 
   const float screenW = static_cast<float>(Window::kDefaultClientWidth);
   const float screenH = static_cast<float>(Window::kDefaultClientHeight);

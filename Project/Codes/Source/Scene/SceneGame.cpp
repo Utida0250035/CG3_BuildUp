@@ -111,6 +111,7 @@ namespace Atrum {
 		Atrum::OperatorGuidance::System::Instance().LoadFromJsonFile(
 			"../EditorAssets/UX/operator_guidance.json");
 		Atrum::OperatorGuidance::System::Instance().ResetSession();
+		operatorBattleReadyNotified_ = false;
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmGame.mp3",
 											  "./Resources/bgmGame.mp3" });
 	}
@@ -168,6 +169,13 @@ namespace Atrum {
 			return;
 		}
 
+		if (!operatorBattleReadyNotified_ &&
+			(introCameraController_ == nullptr ||
+			 introCameraController_->IsFinished())) {
+			operatorBattleReadyNotified_ = true;
+			Atrum::OperatorGuidance::System::Instance().OnBattleReady();
+		}
+
 		UpdateEntities();
 
 		if (Atrum::FrameDeltaTime* frameDeltaTime = Atrum::FrameDeltaTime::Instance()) {
@@ -201,6 +209,10 @@ namespace Atrum {
 	void SceneGame::DrawIntroScreenUi() {
 		if (introCameraController_ == nullptr ||
 			introCameraController_->IsFinished()) {
+			return;
+		}
+
+		if (Atrum::OperatorGuidance::System::Instance().ShouldSkipIntroHowToOverlay()) {
 			return;
 		}
 
