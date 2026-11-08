@@ -13,25 +13,30 @@ $ErrorActionPreference = 'Stop'
 
 function Invoke-Git {
     param([string[]]$GitArgs)
-    & git @GitArgs
+    $result = & git @GitArgs
     if ($LASTEXITCODE -ne 0) {
         throw "git $($GitArgs -join ' ') failed ($LASTEXITCODE)"
     }
+    return $result
 }
 
-$repoRoot = (Invoke-Git @('rev-parse', '--show-toplevel')).Trim()
+$repoRoot = (Invoke-Git @('rev-parse', '--show-toplevel') | Out-String).Trim()
 Set-Location $repoRoot
 
 if ($BranchName -notmatch '^(feature|fix|chore)/[A-Za-z0-9][A-Za-z0-9._-]*$') {
     throw "BranchName は feature/ fix/ chore/ で始まる名前にしてください: $BranchName"
 }
 
-$status = (Invoke-Git @('status', '--porcelain')).Trim()
+$status = (Invoke-Git @('status', '--porcelain') | Out-String).Trim()
 if (-not [string]::IsNullOrWhiteSpace($status)) {
-    throw '未コミットの変更があります。先にコミット・stash・破棄してください。'
+    $currentPre = (Invoke-Git @('branch', '--show-current') | Out-String).Trim()
+    if ($currentPre -ne 'develop') {
+        throw '未コミットの変更があります。先にコミット・stash・破棄してください。'
+    }
+    Write-Host 'develop 上の未コミット変更あり。新規ブランチへ引き継ぎます。'
 }
 
-$current = (Invoke-Git @('branch', '--show-current')).Trim()
+$current = (Invoke-Git @('branch', '--show-current') | Out-String).Trim()
 if ($current -eq $BranchName) {
     Write-Host "既に $BranchName 上です。"
     exit 0

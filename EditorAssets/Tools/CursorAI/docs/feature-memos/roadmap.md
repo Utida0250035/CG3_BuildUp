@@ -22,7 +22,7 @@
 
 ### コンポーネント指向
 - [x] ImGui でエンティティへ Component 追加／削除（`EntityEditorUi.cpp`）
-- [ ] Unity っぽいオブジェクト指向の整理（方針メモ）
+- [x] Unity っぽいオブジェクト指向の整理（方針メモ）（spec: `unity_style_entity_guidelines.md`）
 - [-] 純粋 ECS（今はやらない・スコープ外）
 
 ### プレハブ機能

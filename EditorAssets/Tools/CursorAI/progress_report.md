@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 20m` ユーザー指示で停止（tick5 まで完了）
+**最新サマリー:** 2026-11-08 — `/loop 10m` 再開・Unity 方針メモ tick 完了
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -419,3 +419,47 @@
 1. 次回は通常モードまたは `/loop` 再開時に roadmap 上位の `- [ ]` から着手
 
 **状態:** 停止（指示待ち）
+
+---
+
+## セッション 2026-11-08 22:05（/loop 10m 開始・Unity 方針メモ）
+
+**ブランチ:** `chore/UnityStyleEntityGuidelines`（develop から新規）
+
+### 1. 完了したこと
+
+- **`unity_style_entity_guidelines.md`** 追加、roadmap 該当行を `[x]`
+- **`startTaskBranchFromDevelop.ps1`** 出力取得と develop 上の未コミット引き継ぎを修正
+- **ビルド:** Development | x64 成功（`buildDevelopment.cmd` は MSBuild 解決失敗のため MSBuild 直叩き）
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| buildDevelopment.cmd | 一部環境で MSBuild 自動解決失敗（要調査） |
+
+### 3. 次ステップ
+
+1. 次 `- [ ]`: 方針に沿ったコンポーネント分割 → `chore/ComponentSplitGuideline`
+2. `/loop 10m` 稼働中
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- Unity っぽいオブジェクト指向の整理（方針メモ）
+
+## 保留・着手見送り（§6.3）
+
+- なし
+
+## 用途不明で確認待ち（§6.4）
+
+- なし
+
+## 推測した用途（§6.4）
+
+- **Unity 風方針メモ**
+  - 用途: エディタ／ランタイムで共通の用語と責務を制作者向けに固定する
+  - 使用場面: 制作（エディタ）、将来のランタイムシーンロード設計
+  - 仕様: ドキュメントのみ。コード変更なし
+
+**状態:** ループ稼働中
