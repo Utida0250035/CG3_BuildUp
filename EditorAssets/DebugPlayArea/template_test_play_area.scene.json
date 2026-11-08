@@ -1,0 +1,67 @@
+{
+  "sceneName": "TEMPLATE_TestPlayArea",
+  "tagCatalog": ["PLAYER", "ENEMY", "PROP", "DEBUG"],
+  "entities": [
+    {
+      "instanceName": "DebugFloorMarker",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "DebugFloorMarker",
+        "tags": ["DEBUG"],
+        "tagHashes": [],
+        "initialTransform": {
+          "translate": { "x": 0.0, "y": -3.5, "z": 0.0 },
+          "scale": { "x": 8.0, "y": 0.35, "z": 4.0 },
+          "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 }
+        },
+        "components": [
+          {
+            "kind": 1,
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 1.0,
+              "subdivision": 10,
+              "isLightingEnabled": true,
+              "color": { "x": 0.35, "y": 0.38, "z": 0.42, "w": 0.85 }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "instanceName": "DebugProp",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "DebugProp",
+        "tags": ["PROP"],
+        "tagHashes": [],
+        "initialTransform": {
+          "translate": { "x": 2.0, "y": 0.0, "z": 0.0 },
+          "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
+          "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 }
+        },
+        "components": [
+          {
+            "kind": 1,
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 1.0,
+              "subdivision": 12,
+              "isLightingEnabled": true,
+              "color": { "x": 0.9, "y": 0.55, "z": 0.2, "w": 1.0 }
+            }
+          },
+          {
+            "kind": 0,
+            "typeName": "CmpRotator",
+            "params": {
+              "rotateAxis": { "x": 0.0, "y": 1.0, "z": 0.0 },
+              "rotateSpeed": 0.8,
+              "pivotIsOwner": true
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
