@@ -1,0 +1,11 @@
+#include "System/Entity/Components/%ClassName%.h"
+
+#include "System/DeltaTime.h"
+
+namespace Atrum {
+
+void %ClassName%::ResolveDependence() {}
+
+void %ClassName%::Update() {}
+
+} // namespace Atrum

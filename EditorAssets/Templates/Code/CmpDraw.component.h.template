@@ -1,0 +1,13 @@
+#pragma once
+
+#include "System/Entity/ComponentDraw.h"
+
+namespace Atrum {
+
+// %AuthorNote%
+class %ClassName% : public ComponentDraw {
+public:
+  void Draw() override;
+};
+
+} // namespace Atrum

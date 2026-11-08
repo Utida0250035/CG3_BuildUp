@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "tokenDelimiter": "%",
+  "description": "エディタ／ツールからのコード生成用テンプレート（置換は次タスクで実装）",
+  "templates": [
+    {
+      "id": "component_draw",
+      "label": "ComponentDraw（描画コンポーネント）",
+      "outputs": [
+        {
+          "relativePath": "Project/Codes/Include/System/Entity/Components/%ClassName%.h",
+          "templateFile": "CmpDraw.component.h.template"
+        },
+        {
+          "relativePath": "Project/Codes/Source/System/Entity/Components/%ClassName%.cpp",
+          "templateFile": "CmpDraw.component.cpp.template"
+        }
+      ],
+      "requiredTokens": ["ClassName"],
+      "optionalTokens": ["AuthorNote"]
+    },
+    {
+      "id": "component_upd",
+      "label": "ComponentUpd（更新コンポーネント）",
+      "outputs": [
+        {
+          "relativePath": "Project/Codes/Include/System/Entity/Components/%ClassName%.h",
+          "templateFile": "CmpUpd.component.h.template"
+        },
+        {
+          "relativePath": "Project/Codes/Source/System/Entity/Components/%ClassName%.cpp",
+          "templateFile": "CmpUpd.component.cpp.template"
+        }
+      ],
+      "requiredTokens": ["ClassName", "UpdCmpGroup"],
+      "optionalTokens": ["AuthorNote"]
+    },
+    {
+      "id": "behavior",
+      "label": "Beh 系行動スクリプト（ヘッダのみ雛形）",
+      "outputs": [
+        {
+          "relativePath": "Project/Codes/Include/System/%ClassName%.h",
+          "templateFile": "Beh.behavior.h.template"
+        },
+        {
+          "relativePath": "Project/Codes/Source/System/%ClassName%.cpp",
+          "templateFile": "Beh.behavior.cpp.template"
+        }
+      ],
+      "requiredTokens": ["ClassName"],
+      "optionalTokens": ["AuthorNote"]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+#pragma once
+
+#include "System/Entity/Entity.h"
+
+namespace Atrum {
+
+// %AuthorNote%
+class %ClassName% {
+public:
+  explicit %ClassName%(Entity &owner);
+  void Tick();
+
+private:
+  Entity &owner_;
+};
+
+} // namespace Atrum
