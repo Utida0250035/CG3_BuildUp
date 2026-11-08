@@ -27,6 +27,7 @@
 - `list` — manifest のテンプレ ID 一覧
 - `generate <id> <ClassName>` — 置換・書き出し（`--dry-run` / `--force`）
 
-## 次 roadmap
+## エディタ（DEVELOPMENT + USE_IMGUI）
 
-- ImGui からの生成 UI（エディタ組み込み）
+- メニュー **エディタ → コードテンプレ**、ドック **コードテンプレ**
+- `EditorCodeTemplateScaffold::DrawImGuiPanel()` — manifest 読み込みと生成

@@ -4,6 +4,7 @@
 
 #include "ForDebug/ImGui.h"
 #include "ForDebug/AudioStreamingDebugImGui.h"
+#include "System/Editor/EditorCodeTemplateScaffold.h"
 #include <imgui/imgui_internal.h>
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorSceneViewPanel.h"
@@ -109,6 +110,9 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
   if (ImGui::BeginMenu("エディタ")) {
     if (ImGui::MenuItem("パーティクルエディタ")) {
       ui.requestOpenParticleEditor = true;
+    }
+    if (ImGui::MenuItem("コードテンプレ")) {
+      ImGui::SetWindowFocus("コードテンプレ");
     }
     ImGui::EndMenu();
   }
@@ -232,6 +236,7 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
     ImGui::DockBuilderDockWindow("インスペクター", dockRight);
     ImGui::DockBuilderDockWindow("プロジェクト", dockBottom);
     ImGui::DockBuilderDockWindow("タグ", dockBottom);
+    ImGui::DockBuilderDockWindow("コードテンプレ", dockBottom);
     ImGui::DockBuilderFinish(dockSpaceId);
   }
 
@@ -263,6 +268,11 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
 
   if (ImGui::Begin("インスペクター")) {
     editor.DrawInspectorPanel();
+  }
+  ImGui::End();
+
+  if (ImGui::Begin("コードテンプレ")) {
+    EditorCodeTemplateScaffold::DrawImGuiPanel();
   }
   ImGui::End();
 
