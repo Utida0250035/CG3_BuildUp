@@ -20,8 +20,8 @@ alwaysApply: true
 
 1. サブタスクを小さく切り、完了したら **ビルド**（`EditorAssets/Tools/CursorAI/buildDevelopment.cmd`）を試す。
 2. マイルストーン完了または中断時は `EditorAssets/Tools/CursorAI/progress_report.md` を **追記更新**（上書き禁止。`cursorInstructions.md` §3・§7.1）。**人間のレビュー・指示待ち**で止める。§6.2 の即時 `[x]` も各セクションの「実装済みと判断した項目」に必ず記録する。`/loop` 中は 200kB 超過でループ自動停止し、末尾に停止理由を追記する。
-3. **コミットはユーザーが明示したときのみ**（pre-commit の cspell あり）。  
-   **「コミット・プッシュ許可」「タスク完了でコミット可」** のときは `cursorInstructions.md` §8 に従い、`finishTaskGit.ps1` で develop へマージ → develop を push → 作業ブランチ削除 → 次タスク用ブランチ作成（命名は `branchNaming.md`）。**`/loop` 中の tick 成功時は `loopMergeTickToDevelop.ps1` で develop 自動マージ・push 可（§7.1）。** **develop 統合まわりは §5 のリスク例外以外、都度確認しない。** マージ衝突時は abort して報告。  
+3. **タスク（roadmap 小見出し 1 行）ごとに** `startTaskBranchFromDevelop.ps1` で **develop から** 作業ブランチを切る（§6.5）。長期使い回しブランチで複数タスクを続けない。  
+   **コミットはユーザーが明示したときのみ**（pre-commit の cspell あり）。**「コミット・プッシュ許可」** 時は `finishTaskGit.ps1`（§8）。**`/loop` tick 成功時**は `loopMergeTickToDevelop.ps1 -NextBranchName …` でマージ・**作業ブランチ削除**・**次ブランチ作成**（§7.1）。develop 統合は §5 のリスク例外以外確認不要。マージ衝突時は abort して報告。  
    **ループ中ビルド 3 回失敗:** ロールバック → `progress_report` にファイル・行番号付き失敗ログ → 依存のない別 roadmap タスク（§7.1.2）。
 4. コード命名・名前空間は既存の Atrum 規約に合わせる。ユーザー向け説明は日本語。
 

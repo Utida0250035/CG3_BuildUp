@@ -15,9 +15,13 @@
 
 ## タスクから名前を作る
 
-1. `task_backlog.md` の先頭未完了行を読む
+**roadmap:** `- [ ]` の小見出し 1 行につき **1 ブランチ**（着手前に `startTaskBranchFromDevelop.ps1`）。  
+**backlog:** 未完了行 1 件につき 1 ブランチ。
+
+1. 今回着手する **小見出し 1 行** または `task_backlog.md` の先頭未完了行を読む
 2. 行頭の `[fix]` / `[feature]` / `[chore]` があればそれをプレフィックスに使う（なければ内容から推定）
 3. 内容を短い英語トピックに要約（既存ブランチ名と重ならないよう確認: `git branch -a`）
+4. **同一ブランチで次の小見出しに進まない** — マージ後は削除し、次行用に新しい名前で切る（`finishTaskGit.ps1` の `NextBranchName` / `loopMergeTickToDevelop.ps1` の `-NextBranchName`）
 
 ## 例
 

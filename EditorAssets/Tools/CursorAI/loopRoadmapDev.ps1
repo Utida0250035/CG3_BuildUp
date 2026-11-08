@@ -5,7 +5,7 @@
 #>
 param(
     [int]$IntervalMinutes = 90,
-    [string]$TickPrompt = 'roadmapに沿って1サブタスク実装。progress_reportは追記のみ。成功時はloopMergeTickToDevelop.ps1でdevelopへ自動マージ・push。同一タスクでビルド3回失敗ならloopRegisterBuildFailure.ps1でロールバックし依存のない別タスクへ。'
+    [string]$TickPrompt = 'roadmapの- [ ]小見出し1件ずつ。着手前にstartTaskBranchFromDevelop.ps1でdevelopから作業ブランチ作成。progress_reportは追記のみ。成功時はloopMergeTickToDevelop.ps1でdevelopマージ・作業ブランチ削除・-NextBranchNameで次ブランチ作成。ビルド3回失敗ならloopRegisterBuildFailure.ps1でロールバックし別- [ ]へ。'
 )
 
 Set-StrictMode -Version Latest

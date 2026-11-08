@@ -35,8 +35,8 @@
 ## 5. Git とチェック
 
 - **通常:** **コミット**は人間が明示したときのみ（例:「コミットして」「タスク完了でコミット可」）。
-- **例外（`/loop` 稼働中・§7.1）:** tick ごとにビルド成功したサブタスクは **`loopMergeTickToDevelop.ps1`** でコミット → develop マージ → develop push まで **追加確認なし** でよい（作業ブランチは削除しない）。
-- **develop 統合（§8）:** コミット許可後の **作業ブランチ → develop マージ、develop のリモート push、作業ブランチのローカル／リモート削除、次作業ブランチ作成** は、**追加確認なしで実行してよい**。履歴で戻せる前提とする。
+- **例外（`/loop` 稼働中・§7.1）:** tick ごとにビルド成功したサブタスクは **`loopMergeTickToDevelop.ps1`**（`-NextBranchName` 必須）でコミット → develop マージ → develop push → **当該作業ブランチのローカル／リモート削除** → **次タスク用ブランチを develop から作成** まで **追加確認なし** でよい。
+- **develop 統合（§8）:** コミット許可後も §7.1 と同じライフサイクル（**1 タスク＝1 作業ブランチ**）。統合後に作業ブランチを残さない。
 - **統合前に止める／確認する例外（リスクが読めるとき）:** merge コンフリクト、force push（とくに master）、シークレット混入の疑い、master へのマージ、次ブランチ名が backlog／命名規則から決められないとき（§8）。
 - husky pre-commit で cspell が走る。未知語は `exclusion.dic` など既存の仕組みで解消する（シークレットをコミットしない）。
 - **master にはマージ・force push しない**（develop が統合先）。
@@ -48,6 +48,30 @@
 3. `task_backlog` で行を指定されていなければ、手入れ後の **`- [ ]` のみ**を上から1件選ぶ（**`- [x]` は完了、`- [-]` は保留としてスキップ**。§6.3）。
 4. サブタスク完了時は **該当行を `- [x]` に更新**（`roadmap.md` および `task_backlog.md`）。
 5. それでも不明なら会話文脈と `progress_report.md` から 1 件を提案し、**承認を得てから**着手する。
+
+### 6.5 タスクごとの作業ブランチ（必須）
+
+**原則:** 長期間使い回す単一の作業ブランチ（例: 汎用 `feature/SemiAutoDevelopFlow`）で複数タスクを続けない。
+
+**1 タスクの定義**
+
+- **roadmap 使用時:** `- [ ]` の **小見出し 1 行** ＝ 1 タスク（1 ビルド単位のサブタスクでも、この行が完了単位ならその行に対応する）。
+- **`task_backlog.md` 使用時:** 未完了行 1 件 ＝ 1 タスク。
+
+**着手前（毎回）**
+
+1. 今回のタスクの文言から **`branchNaming.md`** でブランチ名を決める（`feature/` / `fix/` / `chore/`）。
+2. **`startTaskBranchFromDevelop.ps1 -BranchName "feature/…"`** を実行する（`develop` を pull したうえで新規ブランチ作成・push）。
+3. `progress_report.md` に **着手ブランチ名** と **対応する roadmap 行** を 1 行書く。
+
+**完了後（ビルド成功・§4）**
+
+- **通常:** `finishTaskGit.ps1`（§8）。
+- **`/loop`:** `loopMergeTickToDevelop.ps1 -CommitMessage "…" -NextBranchName "feature/…"` … マージ後は **完了したブランチを削除** し、**次タスク用に既に `-NextBranchName` を切っている** 状態で次 tick／次タスクへ進む。
+
+**次ブランチ名**
+
+- 次の `- [ ]` から先に名前を決め、マージスクリプトの `-NextBranchName` に渡す。次タスクが未決なら **ユーザーに確認してから** マージする。
 
 ### 6.0 `roadmap_rough.md` からの起こし
 
@@ -188,12 +212,18 @@
 - **上限:** `progress_report.md` のファイルサイズが **200kB（204800 バイト）を超えたらループを自動停止**。末尾に「ループ自動停止」セクションを追記し、理由に **自動記述ファイルの肥大化** を書く（文言は `loopReportGuard.ps1` のテンプレに合わせる）。
 - **手動停止:** ユーザーが「ループ停止」と言ったときは tick 用シェルを終了し、任意で `progress_report.md` に手動停止を 1 行追記してよい。
 
+#### 7.1.0 tick／タスク着手前
+
+1. roadmap から今回の **小見出し 1 件**（`- [ ]`）を選ぶ（§6.5）。
+2. **`startTaskBranchFromDevelop.ps1 -BranchName "…"`** で **develop から** 作業ブランチを切る（既にそのブランチ上で未コミット作業が無いこと）。
+
 #### 7.1.1 ビルド成功時（tick 1 件完了）
 
 1. `buildDevelopment.cmd` 成功
 2. `roadmap.md` の該当行を `[x]`、`progress_report.md` に **§3 形式のセクション追記**
-3. **`loopMergeTickToDevelop.ps1 -CommitMessage "…"`** … develop へマージ・push（§5 例外。作業ブランチは維持）
-4. `loopRecordLastGood.ps1 -RoadmapTask "…"`（マージスクリプト内でも呼ぶが、手動統合時は明示実行）
+3. 次の `- [ ]` から **`NextBranchName`** を決める（`branchNaming.md`）
+4. **`loopMergeTickToDevelop.ps1 -CommitMessage "…" -NextBranchName "feature/…"`** … develop マージ・push → **完了ブランチ削除** → **次ブランチ作成**（§5 例外）
+5. `loopRecordLastGood.ps1` は `loopMergeTickToDevelop.ps1` 内で呼ばれる
 
 #### 7.1.2 ビルド失敗時（同一サブタスク）
 
@@ -211,10 +241,12 @@
 
 ユーザーが **コミット・プッシュを許可**（例:「コミットして」「プッシュOK」「タスク完了でコミット可」）したとき、半自律モードでは次を **この順で** 実行する。
 
+**§6.5 と同じく、タスク開始時は必ず `startTaskBranchFromDevelop.ps1` で develop から切ったブランチ上で作業すること。**
+
 ### 前提
 
 - 変更はステージ済み、ビルド成功、`progress_report.md` 更新済み。
-- 作業ブランチ上にいる（`develop` / `master` 上では実行しない）。
+- **当該タスク専用の** 作業ブランチ上にいる（`develop` / `master` 上では実行しない）。
 
 ### 手順
 

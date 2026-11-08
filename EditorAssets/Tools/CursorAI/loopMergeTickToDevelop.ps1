@@ -1,11 +1,12 @@
 ﻿#Requires -Version 5.1
 <#
-  /loop 成功 tick 用: 作業ブランチにコミット → develop へマージ → develop を push（§7.1）。
-  finishTaskGit.ps1 と違い作業ブランチは削除しない（連続ループ向け）。
+  /loop 成功 tick 用: 作業ブランチにコミット → develop へマージ → push → 作業ブランチ削除 → 次タスク用ブランチ作成（§7.1.1）。
 #>
 param(
     [Parameter(Mandatory = $true)]
-    [string]$CommitMessage
+    [string]$CommitMessage,
+    [Parameter(Mandatory = $true)]
+    [string]$NextBranchName
 )
 
 Set-StrictMode -Version Latest
@@ -20,6 +21,10 @@ function Invoke-Git {
     if ($LASTEXITCODE -ne 0) {
         throw "git $($GitArgs -join ' ') failed ($LASTEXITCODE)"
     }
+}
+
+if ($NextBranchName -notmatch '^(feature|fix|chore)/[A-Za-z0-9][A-Za-z0-9._-]*$') {
+    throw "NextBranchName は feature/ fix/ chore/ で始まる名前にしてください: $NextBranchName"
 }
 
 $workBranch = (git branch --show-current).Trim()
@@ -41,8 +46,15 @@ Invoke-Git @('checkout', 'develop')
 Invoke-Git @('pull', '--ff-only', 'origin', 'develop')
 Invoke-Git @('merge', $workBranch, '--no-edit')
 Invoke-Git @('push', 'origin', 'develop')
-Invoke-Git @('checkout', $workBranch)
-Invoke-Git @('merge', 'develop', '--no-edit')
+
+Invoke-Git @('branch', '-d', $workBranch)
+$remoteExists = & git ls-remote --heads origin $workBranch 2>$null
+if ($remoteExists) {
+    Invoke-Git @('push', 'origin', '--delete', $workBranch)
+}
+
+Invoke-Git @('checkout', '-b', $NextBranchName)
+Invoke-Git @('push', '-u', 'origin', $NextBranchName)
 
 & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'loopRecordLastGood.ps1')
-Write-Host 'loop: merged to develop and pushed'
+Write-Host "loop: $workBranch → develop（削除済み）/ 現在 $NextBranchName"
