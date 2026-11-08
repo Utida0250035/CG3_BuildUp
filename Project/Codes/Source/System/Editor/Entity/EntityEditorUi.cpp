@@ -30,6 +30,7 @@ struct KnownComponentEntry {
 constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpMeshSphere", ComponentSlotKind::Draw},
     {"CmpDrawHitSphere", ComponentSlotKind::Draw},
+    {"CmpEditorAssetPath", ComponentSlotKind::Data},
     {"CmpRotator", ComponentSlotKind::Upd},
     {"CmpScroll", ComponentSlotKind::Upd},
     {"CmpHitSphere", ComponentSlotKind::Upd},
@@ -101,9 +102,28 @@ void DrawDeleteSceneConfirmPopup(EntityEditor &editor) {
   }
 }
 
-bool DrawComponentParams(ComponentSlot &slot) {
+bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
   nlohmann::json &p = slot.params;
   bool changed = false;
+
+  if (slot.typeName == "CmpEditorAssetPath") {
+    std::string path = p.value("assetPath", std::string{});
+    changed |= ImGui::InputString("assetPath", path);
+    if (changed) {
+      p["assetPath"] = path;
+    }
+    bool loadMesh = p.value("loadObjAsMesh", true);
+    if (ImGui::Checkbox("loadObjAsMesh", &loadMesh)) {
+      p["loadObjAsMesh"] = loadMesh;
+      changed = true;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを assetPath に適用")) {
+      p["assetPath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    return changed;
+  }
 
   if (slot.typeName == "CmpMeshSphere") {
     float radius = p.value("radius", 1.0f);
@@ -723,7 +743,7 @@ void EntityEditor::DrawInspectorPanel() {
       ImGui::TextUnformatted(selected.typeName.c_str());
     }
 
-    if (DrawComponentParams(selected)) {
+    if (DrawComponentParams(selected, ui_)) {
       changed = true;
     }
   }

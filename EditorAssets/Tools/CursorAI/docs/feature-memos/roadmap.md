@@ -54,7 +54,7 @@
 
 ### 任意フォルダから開発用GUIへドラッグ&ドロップ…
 - [x] GUI 専用クラスで Assets へコピー（`EditorImportedAsset`・`EditorAssets/Imported`）
-- [ ] リソースコンポーネントがパス記録・読み込み
+- [x] リソースコンポーネントがパス記録・読み込み（`CmpEditorAssetPath`・obj プレビュー）
 
 ### Entityの配列化
 - [x] エディタで実行順を操作（`executionOrder`・プレビュー反映）

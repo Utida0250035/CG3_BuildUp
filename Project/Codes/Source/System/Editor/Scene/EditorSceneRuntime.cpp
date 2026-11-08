@@ -1,7 +1,10 @@
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 
+#include "Engine/AtrumEngine.h"
 #include "System/Entity/Components/CmpDrawHitSphere.h"
+#include "System/Entity/Components/CmpEditorAssetPath.h"
 #include "System/Entity/Components/CmpHitSphere.h" // HitSphere
+#include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpScroll.h"
@@ -9,6 +12,7 @@
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
+#include <memory>
 #include <nlohmann/json.hpp>
 
 namespace Atrum::EntityEditor {
@@ -50,6 +54,11 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
       return entity.HasUpdCmp<CmpHitSphere>();
     }
   }
+  if (slot.kind == ComponentSlotKind::Data) {
+    if (slot.typeName == "CmpEditorAssetPath") {
+      return entity.HasDataCmp<CmpEditorAssetPath>();
+    }
+  }
   return false;
 }
 
@@ -73,6 +82,11 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   }
   if (slot.typeName == "CmpHitSphere" && slot.kind == ComponentSlotKind::Upd) {
     entity.AddUpdCmp<CmpHitSphere>();
+    return true;
+  }
+  if (slot.typeName == "CmpEditorAssetPath" &&
+      slot.kind == ComponentSlotKind::Data) {
+    entity.AddDataCmp<CmpEditorAssetPath>();
     return true;
   }
   return false;
@@ -168,7 +182,62 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     }
     cmp->SetSpheres(spheres);
     cmp->SetIsActive(p.value("isActive", true));
+    return;
   }
+
+  if (slot.typeName == "CmpEditorAssetPath") {
+    if (!entity.HasDataCmp<CmpEditorAssetPath>()) {
+      return;
+    }
+    CmpEditorAssetPath *cmp = entity.GetDataCmp<CmpEditorAssetPath>();
+    cmp->SetAssetPath(p.value("assetPath", std::string{}));
+    cmp->SetLoadObjAsMesh(p.value("loadObjAsMesh", true));
+  }
+}
+
+void TryLoadObjMeshFromEditorAssetPath(Entity &entity) {
+  if (!entity.HasDataCmp<CmpEditorAssetPath>()) {
+    return;
+  }
+  const CmpEditorAssetPath *data = entity.GetDataCmp<CmpEditorAssetPath>();
+  if (!data->LoadObjAsMesh()) {
+    return;
+  }
+  const std::string path = data->AssetPath();
+  if (path.empty()) {
+    return;
+  }
+
+  namespace fs = std::filesystem;
+  const fs::path assetPath(path);
+  if (assetPath.extension() != ".obj" || !fs::exists(assetPath)) {
+    return;
+  }
+
+  const std::string objDirectory = assetPath.parent_path().generic_string();
+  const std::string objFileName = assetPath.filename().string();
+  const std::string mtlFileName = assetPath.stem().string() + ".mtl";
+
+  AtrumEngine *engine = AtrumEngine::Instance();
+  if (engine == nullptr) {
+    return;
+  }
+
+  const std::shared_ptr<AssetModel> model =
+      engine->GetModel(objDirectory, objFileName, objDirectory, mtlFileName);
+  if (!model) {
+    return;
+  }
+
+  if (!entity.HasDrawCmp<CmpMesh>()) {
+    entity.AddDrawCmp<CmpMesh>();
+  }
+  CmpMesh *mesh = entity.GetDrawCmp<CmpMesh>();
+  if (mesh == nullptr) {
+    return;
+  }
+  mesh->SetModel(model.get());
+  mesh->SetLightingEnabled(true);
 }
 
 std::unique_ptr<Entity> BuildEntityFromDefinition(
@@ -193,6 +262,8 @@ std::unique_ptr<Entity> BuildEntityFromDefinition(
   }
 
   entity->SortComponents();
+
+  TryLoadObjMeshFromEditorAssetPath(*entity);
 
   if (!definition.tagHashes.empty()) {
     entity->SetTagHashes(definition.tagHashes);

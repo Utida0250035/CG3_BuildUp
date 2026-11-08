@@ -17,7 +17,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentSlotKind,
 bool IsKnownEntityEditorComponent(const std::string &typeName) {
   return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
-         typeName == "CmpHitSphere";
+         typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath";
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
@@ -27,6 +27,9 @@ ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
       typeName == "CmpHitSphere") {
     return ComponentSlotKind::Upd;
+  }
+  if (typeName == "CmpEditorAssetPath") {
+    return ComponentSlotKind::Data;
   }
   return ComponentSlotKind::Draw;
 }
@@ -57,6 +60,9 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
   if (typeName == "CmpDrawHitSphere") {
     return {{"color", Math::Vector4{0.2f, 0.85f, 1.0f, 1.0f}},
             {"isLightingEnabled", false}};
+  }
+  if (typeName == "CmpEditorAssetPath") {
+    return {{"assetPath", ""}, {"loadObjAsMesh", true}};
   }
   return nlohmann::json::object();
 }

@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — tick3: SDL ドロップ→Imported コピー、develop マージ
+**最新サマリー:** 2026-11-08 — tick4: CmpEditorAssetPath・obj プレビュー、develop マージ
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -327,5 +327,40 @@
 ## 保留・着手見送り（§6.3）
 
 - リソースコンポーネントがパス記録・読み込み — 本 tick スコープ外
+
+**状態:** ループ稼働中
+
+---
+
+## セッション 2026-11-08 20:45（/loop 20m tick・CmpEditorAssetPath）
+
+**トリガー:** `AGENT_LOOP_TICK_roadmap-dev`（4 回目の周期 tick）
+
+### 1. 完了したこと
+
+- **`CmpEditorAssetPath`（Data）:** JSON `assetPath`、インスペクタ編集、直近ドロップ適用ボタン
+- **プレビュー:** obj パスから `ModelStorage` 経由で `CmpMesh` 描画
+- **roadmap:** リソースコンポーネント項目を `[x]`
+- **ビルド:** Development | x64 成功
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| mtl | 同名 mtl が無い Imported obj はロード失敗しうる |
+| png | テクスチャ読み込みは未（別タスク） |
+
+### 3. 次ステップ
+
+1. コンポーネント分割継続または Loader 変換ツール
+2. 次 tick 約 20 分後
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- リソースコンポーネントのパス記録・obj プレビュー読み込み
+
+## 保留・着手見送り（§6.3）
+
+- png 等テクスチャのプレビュー連携 — スコープ外
 
 **状態:** ループ稼働中
