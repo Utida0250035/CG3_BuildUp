@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick3: DdsConverter（RGBA8 DDS）
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick4: オデッセイ的カメラ設計＋調整ツール
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -594,5 +594,42 @@
 
 - **DdsConverter:** ビルド前のアセット DDS 化・ミップ同梱（配布サイズとロード経路の整理）
 - **制作:** エンジン外 Python で Linux/CI でも実行可能
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 14:15（/loop 15m Cloud・カメラ設計＋調整ツール）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`（着手行: Camera / 設計＋調整ツール化）
+
+### 1. 完了したこと
+
+- **`odyssey_style_stage_camera.md`** … 方針・既存 API 対応表
+- **`EditorAssets/Camera/stage_view_camera_tuning.json`** … 現行 `StageViewCamera` 定数と同等の調整セット
+- **`StageViewCameraTuning/preview_poses.py`** … battle / focus の eye・pivot CLI プレビュー
+- **ビルド:** 未実施（ランタイム JSON ホットリードは未接続）
+
+### 3. 次ステップ
+
+1. roadmap 次行: イージング式のカスタム
+2. DEVELOPMENT ImGui スライダー（任意）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- オデッセイ的カメラ「設計＋調整ツール化」（ドキュメント + JSON + プレビュー CLI）
+
+## 保留・着手見送り（§6.3）
+
+- エンジン内 JSON 読み込み・ImGui 調整パネル
+
+## 用途不明で確認待ち（§6.4）
+
+- なし
+
+## 推測した用途（§6.4）
+
+- **調整ツール:** レベル／カメラ担当が数値を試す制作フロー（デバッグ用 DebugCamera と本番体験の分離）
+- **ランタイム:** 現状は既存 C++ 定数のまま（JSON は調整のたたき台）
 
 **状態:** ループ稼働中（subscription timer 15m）

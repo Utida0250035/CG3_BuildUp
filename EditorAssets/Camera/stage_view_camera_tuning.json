@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "comment": "StageViewCamera 調整。正本は実行時 StageViewCamera.h と同期すること。",
+  "perspectiveFovY": 0.5,
+  "clientWidth": 1280,
+  "clientHeight": 720,
+  "stageBattle": {
+    "distanceScale": 1.15,
+    "eyeHeightAbovePivotY": 3.6,
+    "eyeSideOffsetX": -2.25,
+    "elevationFitFactor": 0.12
+  },
+  "focus": {
+    "distanceScale": 1.12,
+    "eyeHeightScaleFromBattle": 0.85,
+    "eyeSideScaleFromBattle": 0.75
+  },
+  "bossIntroFocusSubject": { "halfHeight": 1.35, "halfWidth": 1.35 },
+  "bossDefeatFocusSubject": { "halfHeight": 1.05, "halfWidth": 1.05 },
+  "bossDefeatCameraPushSeconds": 2.2,
+  "stageBounds": {
+    "groundHeight": -4.0,
+    "barrageSpawnTopY": 9.25,
+    "leftEndX": -14.0,
+    "rightEndX": 14.0
+  }
+}
