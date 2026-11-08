@@ -13,7 +13,7 @@ alwaysApply: true
 
 - 行動指針: `EditorAssets/Tools/CursorAI/cursorInstructions.md`
 - 優先タスク: `EditorAssets/Tools/CursorAI/task_backlog.md`（あれば最優先）
-- 機能メモ: `EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap_rough.md` → 同フォルダの `roadmap.md`（§6.2 即 `[x]`、§6.3 保留 `[-]` は他のみ着手。`progress_report` 必須）
+- 機能メモ: `EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap_rough.md` → 同フォルダの `roadmap.md`（§6.2 即 `[x]`、§6.3 保留 `[-]` は他のみ着手、§6.4 用途不明は `[ ]` のまま放置して確認。`progress_report` 必須）
 - 直前の報告: `EditorAssets/Tools/CursorAI/progress_report.md`
 
 ## 必須動作
