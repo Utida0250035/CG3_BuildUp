@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick4: オデッセイ的カメラ設計＋調整ツール
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick5: ステージカメラ用カスタムイージング
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -631,5 +631,34 @@
 
 - **調整ツール:** レベル／カメラ担当が数値を試す制作フロー（デバッグ用 DebugCamera と本番体験の分離）
 - **ランタイム:** 現状は既存 C++ 定数のまま（JSON は調整のたたき台）
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 14:30（/loop 15m Cloud・カメライージング）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`StageViewCameraEasing.h`** … PullBackReveal / FocusPush / Legacy
+- **`CameraPoseBlendController`** … ease 種別引数（既定 PullBackReveal）
+- **`CameraFocusPushController`** … FocusPush 曲線
+- **メモ / `plot_easing.py`**、tuning.json `easing` 節
+- **ビルド:** Cloud 未実施（C++ 変更あり）
+
+### 3. 次ステップ
+
+1. roadmap: ユーザーに操作を丸投げしない
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- イージング式のカスタム
+
+## 推測した用途（§6.4）
+
+- **PullBackReveal:** ボスイントロ後プレイヤーが状況を把握してから戦闘画へ戻す演出
+- **FocusPush:** 撃破・注目演出で素早く寄せつつ酔いにくい終端
 
 **状態:** ループ稼働中（subscription timer 15m）

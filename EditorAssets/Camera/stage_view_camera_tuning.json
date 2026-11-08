@@ -18,6 +18,11 @@
   "bossIntroFocusSubject": { "halfHeight": 1.35, "halfWidth": 1.35 },
   "bossDefeatFocusSubject": { "halfHeight": 1.05, "halfWidth": 1.05 },
   "bossDefeatCameraPushSeconds": 2.2,
+  "easing": {
+    "poseBlendDefault": "PullBackReveal",
+    "focusPush": "FocusPush",
+    "legacyCompare": "LegacyInOutQuad"
+  },
   "stageBounds": {
     "groundHeight": -4.0,
     "barrageSpawnTopY": 9.25,

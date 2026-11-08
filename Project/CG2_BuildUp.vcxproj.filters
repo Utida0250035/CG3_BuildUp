@@ -486,6 +486,9 @@
     <ClInclude Include="Codes\Include\Camera\StageViewCamera.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\StageViewCameraEasing.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Cast\StaticCast.h">
       <Filter>Codes\Include\Cast</Filter>
     </ClInclude>

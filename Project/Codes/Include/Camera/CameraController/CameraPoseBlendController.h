@@ -2,6 +2,7 @@
 
 #include "Camera/CameraController/TimedStageViewCameraController.h"
 #include "Camera/StageViewCamera.h"
+#include "Camera/StageViewCameraEasing.h"
 
 namespace Atrum {
 
@@ -11,7 +12,9 @@ public:
   void Initialize() override {}
 
   void Begin(const StageViewCameraPose &fromPose,
-             const StageViewCameraPose &toPose, float durationSeconds);
+             const StageViewCameraPose &toPose, float durationSeconds,
+             StageViewCameraEaseKind easeKind =
+                 StageViewCameraEaseKind::PullBackReveal);
 
   void Update() override;
 
@@ -20,6 +23,7 @@ public:
 private:
   StageViewCameraPose fromPose_{};
   StageViewCameraPose toPose_{};
+  StageViewCameraEaseKind easeKind_{StageViewCameraEaseKind::PullBackReveal};
 
   void ApplyBlendedPose() const;
 };

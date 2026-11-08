@@ -1,14 +1,14 @@
 #include "Camera/CameraController/CameraPoseBlendController.h"
 
-#include "Math/Easing.h"
-
 namespace Atrum {
 
 void CameraPoseBlendController::Begin(const StageViewCameraPose &fromPose,
                                       const StageViewCameraPose &toPose,
-                                      const float durationSeconds) {
+                                      const float durationSeconds,
+                                      const StageViewCameraEaseKind easeKind) {
   fromPose_ = fromPose;
   toPose_ = toPose;
+  easeKind_ = easeKind;
   BeginTiming(durationSeconds);
   ApplyBlendedPose();
 }
@@ -32,7 +32,7 @@ void CameraPoseBlendController::ApplyBlendedPose() const {
   }
 
   const float blendProgress =
-      Math::Ease::InOutQuad(GetTimedProgress01());
+      EvaluateStageViewCameraEase(easeKind_, GetTimedProgress01());
   ApplyStageViewPose(
       LerpStageViewCameraPose(fromPose_, toPose_, blendProgress));
 }

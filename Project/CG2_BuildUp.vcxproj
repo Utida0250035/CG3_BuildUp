@@ -440,6 +440,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Camera\CameraController\CameraPoseBlendController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCamera.h" />
+    <ClInclude Include="Codes\Include\Camera\StageViewCameraEasing.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
     <ClInclude Include="Codes\Include\Collision2D\Collision2D.h" />
     <ClInclude Include="Codes\Include\Collision\CollisionManager.h" />

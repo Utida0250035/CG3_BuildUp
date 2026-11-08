@@ -1,6 +1,6 @@
 #include "Camera/CameraController/CameraFocusPushController.h"
 
-#include "Math/Easing.h"
+#include "Camera/StageViewCameraEasing.h"
 
 namespace Atrum {
 
@@ -58,7 +58,8 @@ void CameraFocusPushController::ApplyCurrentPose() const {
     return;
   }
 
-  const float pushProgress = Math::Ease::InOutQuad(GetTimedProgress01());
+  const float pushProgress =
+      StageViewCameraEaseFocusPush(GetTimedProgress01());
   const StageViewCameraPose focusPose =
       ComputeFocusViewPose(focusWorld_, subjectHalfHeight_, subjectHalfWidth_);
 

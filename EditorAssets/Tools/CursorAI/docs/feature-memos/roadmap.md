@@ -90,7 +90,7 @@
 
 ### オデッセイ的カメラ設計
 - [x] 設計＋調整ツール化（`odyssey_style_stage_camera.md`・`stage_view_camera_tuning.json`・`StageViewCameraTuning/`）
-- [ ] イージング式のカスタム
+- [x] イージング式のカスタム（`StageViewCameraEasing.h`・blend/focus 接続）
 - [ ] ユーザーに操作を丸投げしない
 
 ## Scene
