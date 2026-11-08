@@ -1257,6 +1257,7 @@ void AtrumEngine::FlushDirectionalLightConstantBuffer() {
   }
   volumetricFog_.ApplyTo(directionalLightData_);
   godRays_.ApplyTo(directionalLightData_);
+  directionalShadow_.ApplyTo(directionalLightData_);
   if (directionalLightBuffer_ != nullptr) {
     directionalLightBuffer_->SetData(directionalLightData_);
   }

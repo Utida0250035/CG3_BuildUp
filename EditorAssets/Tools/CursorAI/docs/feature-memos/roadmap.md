@@ -138,7 +138,7 @@
 - [x] 実装（`GodRays`・`Object3d.PS`・フォグ連動シャフト）
 
 ### シェード／シャドウ
-- [ ] 実装
+- [x] 実装（`DirectionalShadow`・PS 接触シェード・`CmpMesh` 平面影）
 
 ## Repository
 

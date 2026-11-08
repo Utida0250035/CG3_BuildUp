@@ -2,6 +2,7 @@
 
 #include "Engine/EngineFwd.h"
 #include "Engine/Resource/ConstantBuffer.h"
+#include "Engine/Renderer/Lighting/DirectionalShadow.h"
 #include "Engine/Renderer/Lighting/GodRays.h"
 #include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "Engine/Resource/LightData.h"
@@ -17,6 +18,7 @@ private:
 
   VolumetricFog volumetricFog_{};
   GodRays godRays_{};
+  DirectionalShadow directionalShadow_{};
 
   // GPU転送用の定数バッファ
   std::unique_ptr<SingleConstantBuffer<SceneLightData>> lightingBuffer_ =
@@ -42,6 +44,11 @@ public:
 
   GodRays &RefGodRays() { return godRays_; }
   const GodRays &GetGodRays() const { return godRays_; }
+
+  DirectionalShadow &RefDirectionalShadow() { return directionalShadow_; }
+  const DirectionalShadow &GetDirectionalShadow() const {
+    return directionalShadow_;
+  }
 
 #ifdef USE_IMGUI
 

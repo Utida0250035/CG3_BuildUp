@@ -41,10 +41,28 @@ struct DirectionalLight {
 	float godRayFogCoupling;
 	uint godRayEnabled;
 	float godRayPadding0;
+
+	uint shadowShadeEnabled;
+	float shadowShadeDarkness;
+	float shadowGroundPlaneY;
+	float shadowContactHeight;
 	
-	// 4
-	float4 padding2[4];
+	// 3
+	float4 padding2[3];
 };
+
+float3 ApplyDirectionalShade(float3 litRgb, float nDotL, float3 worldPos, DirectionalLight light) {
+	if (light.shadowShadeEnabled == 0u) {
+		return litRgb;
+	}
+	const float heightAbove =
+		max(worldPos.y - light.shadowGroundPlaneY, 0.0f);
+	const float groundProx =
+		1.0f - saturate(heightAbove / max(light.shadowContactHeight, 0.001f));
+	const float backFacing = saturate(-nDotL);
+	const float shade = lerp(1.0f, light.shadowShadeDarkness, backFacing * groundProx);
+	return litRgb * shade;
+}
 
 float ComputeParticipatingMedia(float3 worldPos, float3 cameraPos, DirectionalLight light, out float fogBlend) {
 	fogBlend = 0.0f;
@@ -192,6 +210,9 @@ PixelShaderOutput main(VertexShaderOutput input) {
 				break;
 		
 		}
+
+		output.color.rgb = ApplyDirectionalShade(
+			output.color.rgb, nDotL, input.worldPosition, gDirectionalLight);
 
 		if (gDirectionalLight.rimEnabled != 0u && gDirectionalLight.rimIntensity > 0.0f) {
 			const float3 normalW = normalize(input.normal);

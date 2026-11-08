@@ -11,6 +11,11 @@ void CmpMesh::Initialize() {}
 
 void CmpMesh::Draw() {
   AtrumEngine *engine = AtrumEngine::Instance();
+  const Math::Vector3 worldPos = GetOwner()->GetWorldPosition();
+  if (radius_ > 0.0f) {
+    engine->GetDirectionalShadow().DrawPlanarGroundShadow(engine, worldPos,
+                                                          radius_);
+  }
   const Math::Matrix4x4 worldMatrix = GetOwner()->GetWorldMatrix();
   const bool useAlphaBlend = color_.w < 0.999f;
   if (useAlphaBlend) {

@@ -72,8 +72,13 @@ struct LightDataDirectional {
   uint32_t godRayEnabled = 0;
   float godRayPadding0 = 0.0f;
 
-  // アライメント用 256バイト（残り 64 バイト）
-  float padding2[16] = {0.0f};
+  uint32_t shadowShadeEnabled = 0;
+  float shadowShadeDarkness = 0.45f;
+  float shadowGroundPlaneY = 0.0f;
+  float shadowContactHeight = 2.5f;
+
+  // アライメント用 256バイト（残り 48 バイト）
+  float padding2[12] = {0.0f};
 };
 
 struct LightDataPoint {
@@ -188,8 +193,13 @@ struct DirectionalLightData {
   uint32_t godRayEnabled = 0;
   float godRayPadding0 = 0.0f;
 
-  // 16*12 = 192、残り 64 バイト
-  float padding2[16];
+  uint32_t shadowShadeEnabled = 0;
+  float shadowShadeDarkness = 0.45f;
+  float shadowGroundPlaneY = 0.0f;
+  float shadowContactHeight = 2.5f;
+
+  // 16*13 = 208、残り 48 バイト
+  float padding2[12];
 
 #ifdef USE_IMGUI
 

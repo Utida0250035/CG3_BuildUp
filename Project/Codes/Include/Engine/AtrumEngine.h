@@ -10,6 +10,7 @@
 #include "Engine/Pipeline/PipelineState.h"
 #include "Engine/Pipeline/RootSignature.h"
 #include "Engine/Platform/Window/Window.h"
+#include "Engine/Renderer/Lighting/DirectionalShadow.h"
 #include "Engine/Renderer/Lighting/GodRays.h"
 #include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "Engine/Renderer/Shader/ShaderCompiler.h"
@@ -135,6 +136,7 @@ namespace Atrum {
 		DirectionalLightData directionalLightData_{};
 		Visual::VolumetricFog volumetricFog_{};
 		Visual::GodRays godRays_{};
+		Visual::DirectionalShadow directionalShadow_{};
 
 		/* depthStencil */
 
@@ -535,6 +537,11 @@ namespace Atrum {
 
 		Visual::GodRays& RefGodRays() { return godRays_; }
 		const Visual::GodRays& GetGodRays() const { return godRays_; }
+
+		Visual::DirectionalShadow& RefDirectionalShadow() { return directionalShadow_; }
+		const Visual::DirectionalShadow& GetDirectionalShadow() const {
+			return directionalShadow_;
+		}
 
 		void FlushDirectionalLightConstantBuffer();
 

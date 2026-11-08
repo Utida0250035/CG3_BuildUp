@@ -257,6 +257,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
@@ -487,6 +488,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h" />

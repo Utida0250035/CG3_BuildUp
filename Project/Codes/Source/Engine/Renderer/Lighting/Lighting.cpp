@@ -30,6 +30,7 @@ void Lighting::Update(CommandContext *commandContext, UINT rootParameterIndex) {
 
   volumetricFog_.ApplyTo(sceneLightData_.directionalLight);
   godRays_.ApplyTo(sceneLightData_.directionalLight);
+  directionalShadow_.ApplyTo(sceneLightData_.directionalLight);
   lightingBuffer_->SetData(sceneLightData_);
 
   auto commandList = commandContext->GetCommandList();
@@ -48,6 +49,9 @@ void Lighting::ImGui() {
   }
   if (ImGui::CollapsingHeader("GodRays", ImGuiTreeNodeFlags_DefaultOpen)) {
     godRays_.ImGui();
+  }
+  if (ImGui::CollapsingHeader("Shadow", ImGuiTreeNodeFlags_DefaultOpen)) {
+    directionalShadow_.ImGui();
   }
 }
 

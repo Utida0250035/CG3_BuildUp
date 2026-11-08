@@ -61,6 +61,15 @@ namespace {
 		gameGodRays.angularPower = 8.0f;
 		gameGodRays.fogCoupling = 0.9f;
 		Engine::Instance()->RefGodRays().SetSettings(gameGodRays);
+
+		Atrum::Visual::DirectionalShadowSettings gameShadow{};
+		gameShadow.shadeEnabled = 1u;
+		gameShadow.shadeDarkness = 0.42f;
+		gameShadow.groundPlaneY = 0.0f;
+		gameShadow.contactHeight = 3.0f;
+		gameShadow.planarEnabled = 1u;
+		gameShadow.planarAlpha = 0.32f;
+		Engine::Instance()->RefDirectionalShadow().SetSettings(gameShadow);
 	}
 
 } // namespace
