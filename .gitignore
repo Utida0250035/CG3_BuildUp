@@ -378,3 +378,6 @@ imgui.ini
 **/*/node_modules/
 .cspellcache
 /nul
+
+# Cursor /loop ローカル状態（コミットしない）
+EditorAssets/Tools/CursorAI/.loop-task-state.json

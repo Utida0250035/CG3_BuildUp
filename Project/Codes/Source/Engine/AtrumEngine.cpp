@@ -1115,6 +1115,18 @@ void AtrumEngine::DrawLine3D(const uint32_t &textureIndex,
                      directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+void AtrumEngine::DrawLine3DOnFloor(
+    const uint32_t &textureIndex, const M::Vector4 &textureColor,
+    const M::Transform &uvTransform, const M::Vector3 &worldStart,
+    const M::Vector3 &worldEnd, const float width, const bool isLighting) {
+
+  assert(isInitialized_ && "AtrumEngine is not initialized");
+
+  pDraw_->DrawLine3DOnFloor(textureIndex, textureColor, uvTransform, worldStart,
+                            worldEnd, width, isLighting,
+                            directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
 void AtrumEngine::DrawLine3DOnFloorPlane(
     const uint32_t &textureIndex, const M::Vector4 &textureColor,
     const M::Transform &uvTransform, const M::Vector3 &worldStart,

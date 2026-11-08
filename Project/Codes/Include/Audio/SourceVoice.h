@@ -23,6 +23,9 @@ namespace Atrum::Audio {
 		bool isLoopPlayback = false;
 		size_t loopSoundIndex = static_cast<size_t>(-1);
 
+		float frequencyRatio = 1.0f;
+		float volume = 1.0f;
+
 		~SourceVoice() {
 
 			if (state == VoiceState::Playing) {

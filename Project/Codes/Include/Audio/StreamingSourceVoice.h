@@ -52,6 +52,9 @@ namespace Atrum::Audio {
 
 		long long startTime100ns = 0;
 
+		float frequencyRatio = 1.0f;
+		float volume = 1.0f;
+
 		~StreamingSourceVoice() {
 
 			if (pVoice) {

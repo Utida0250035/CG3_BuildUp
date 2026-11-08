@@ -5,7 +5,9 @@
 #include "File/FileSize.h"
 #include "System/Hash64.h"
 #include "String/ConvertString.h"
+#include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 
@@ -19,6 +21,16 @@ namespace Atrum::Audio {
 namespace {
 
 inline constexpr size_t kBgmStreamingVoiceIndex = 0;
+
+float ClampFrequencyRatio(const float ratio) {
+
+	return std::clamp(ratio, XAUDIO2_MIN_FREQ_RATIO, XAUDIO2_MAX_FREQ_RATIO);
+}
+
+float ClampVolume(const float volume) {
+
+	return std::clamp(volume, 0.0f, 1.0f);
+}
 
 } // namespace
 
@@ -68,6 +80,10 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 		}
 
 		for (auto& streamingVoice : streamingSourceVoicePool_) {
+
+			if (streamingVoice->state == VoiceState::Paused) {
+				continue;
+			}
 
 			if (streamingVoice->state == VoiceState::Streaming) {
 
@@ -329,6 +345,10 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 						return {};
 					}
 
+					pSourceVoice->pVoice->SetFrequencyRatio(
+					    ClampFrequencyRatio(pSourceVoice->frequencyRatio));
+					pSourceVoice->pVoice->SetVolume(ClampVolume(pSourceVoice->volume));
+
 					pSourceVoice->state = VoiceState::Playing;
 					pSourceVoice->isLoopPlayback = isLoop;
 					pSourceVoice->loopSoundIndex =
@@ -379,6 +399,8 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 		voice.playId = 65536;
 		voice.isLoop = false;
 		voice.nextBufferIndex = 0;
+		voice.frequencyRatio = 1.0f;
+		voice.volume = 1.0f;
 
 	}
 
@@ -507,6 +529,9 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 		// 5. 再生開始
 		[[maybe_unused]] HRESULT hr = voice.pVoice->Start();
 		assert(SUCCEEDED(hr));
+
+		voice.pVoice->SetFrequencyRatio(ClampFrequencyRatio(voice.frequencyRatio));
+		voice.pVoice->SetVolume(ClampVolume(voice.volume));
 
 		voice.state = VoiceState::Playing;
 
@@ -770,7 +795,10 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 
 			if (sVoice && sVoice->playId == handle.playId) {
 
-				return sVoice->state == VoiceState::Playing;
+				const VoiceState state = sVoice->state;
+				return state == VoiceState::Playing ||
+				       state == VoiceState::Streaming ||
+				       state == VoiceState::Paused;
 
 			}
 
@@ -780,7 +808,9 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 
 			if (voice && voice->playId == handle.playId) {
 
-				return voice->state == VoiceState::Playing;
+				const VoiceState state = voice->state;
+				return state == VoiceState::Playing ||
+				       state == VoiceState::Paused;
 
 			}
 
@@ -788,6 +818,444 @@ inline constexpr size_t kBgmStreamingVoiceIndex = 0;
 
 		return false;
 
+	}
+
+	void AudioManager::PauseSceneBgm(const AudioHandle& handle) {
+
+		if (!handle.isSuccess) {
+			return;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return;
+			}
+
+			auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+				return;
+			}
+
+			const VoiceState state = voice.state;
+			if (state != VoiceState::Playing && state != VoiceState::Streaming) {
+				return;
+			}
+
+			voice.pVoice->Stop();
+			voice.state = VoiceState::Paused;
+			return;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return;
+		}
+
+		auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+			return;
+		}
+
+		if (voice.state != VoiceState::Playing) {
+			return;
+		}
+
+		voice.pVoice->Stop();
+		voice.state = VoiceState::Paused;
+	}
+
+	void AudioManager::ResumeSceneBgm(const AudioHandle& handle) {
+
+		if (!handle.isSuccess) {
+			return;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return;
+			}
+
+			auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+				return;
+			}
+
+			if (voice.state != VoiceState::Paused) {
+				return;
+			}
+
+			const HRESULT hr = voice.pVoice->Start();
+			if (FAILED(hr)) {
+				return;
+			}
+
+			voice.state = VoiceState::Playing;
+			return;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return;
+		}
+
+		auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+			return;
+		}
+
+		if (voice.state != VoiceState::Paused) {
+			return;
+		}
+
+		const HRESULT hr = voice.pVoice->Start();
+		if (FAILED(hr)) {
+			return;
+		}
+
+		voice.state = VoiceState::Playing;
+	}
+
+	bool AudioManager::SeekSceneBgmStreamingVoice(StreamingSourceVoice& voice, float seconds) {
+
+		if (voice.pReader == nullptr || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		const VoiceState previousState = voice.state;
+		const bool resumeAfterSeek = previousState == VoiceState::Playing ||
+		                             previousState == VoiceState::Streaming;
+
+		voice.pVoice->Stop();
+		voice.pVoice->FlushSourceBuffers();
+
+		const long long pos100ns = To100nsPositive(seconds);
+		if (!AudioDecoder::Seek(voice, pos100ns)) {
+			return false;
+		}
+
+		voice.startTime100ns = pos100ns;
+		voice.remainingData.clear();
+		voice.nextBufferIndex = 0;
+
+		if (!SubmitInitialBuffer(voice, voice.isLoop)) {
+			return false;
+		}
+
+		if (resumeAfterSeek) {
+			StartStreaming(voice);
+			RefillBuffer(voice);
+		} else if (previousState == VoiceState::Paused) {
+			voice.state = VoiceState::Paused;
+		}
+
+		return true;
+	}
+
+	bool AudioManager::GetSceneBgmPlaybackSeconds(const AudioHandle& handle,
+	                                              float& outSeconds) const {
+
+		outSeconds = 0.0f;
+
+		if (!handle.isSuccess) {
+			return false;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			const auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId || voice.pReader == nullptr) {
+				return false;
+			}
+
+			XAUDIO2_VOICE_STATE state{};
+			voice.pVoice->GetState(&state);
+
+			constexpr float kStreamSampleRate = 44100.0f;
+			const float sinceVoiceStart =
+			    static_cast<float>(state.SamplesPlayed) / kStreamSampleRate;
+			outSeconds = static_cast<float>(voice.startTime100ns) / 10000000.0f +
+			             sinceVoiceStart;
+			return true;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size() ||
+		    handle.soundIndex >= soundDataStorage_.size()) {
+			return false;
+		}
+
+		const auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		XAUDIO2_VOICE_STATE state{};
+		voice.pVoice->GetState(&state);
+
+		const SoundData& data = *soundDataStorage_[handle.soundIndex];
+		const float sampleRate = static_cast<float>(data.wfEx.nSamplesPerSec);
+		if (sampleRate <= 0.0f) {
+			return false;
+		}
+
+		float seconds = static_cast<float>(state.SamplesPlayed) / sampleRate;
+
+		if (voice.isLoopPlayback && data.wfEx.nAvgBytesPerSec > 0) {
+			const float duration = static_cast<float>(data.bufferSize) /
+			                       static_cast<float>(data.wfEx.nAvgBytesPerSec);
+			if (duration > 0.0f) {
+				seconds = std::fmod(seconds, duration);
+			}
+		}
+
+		outSeconds = seconds;
+		return true;
+	}
+
+	bool AudioManager::SetSceneBgmPlaybackSeconds(const AudioHandle& handle,
+	                                            float seconds) {
+
+		if (!handle.isSuccess || seconds < 0.0f) {
+			return false;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId) {
+				return false;
+			}
+
+			return SeekSceneBgmStreamingVoice(voice, seconds);
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size() ||
+		    handle.soundIndex >= soundDataStorage_.size()) {
+			return false;
+		}
+
+		auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		const SoundData& data = *soundDataStorage_[handle.soundIndex];
+		const WAVEFORMATEX& wf = data.wfEx;
+
+		const long long pos100ns = To100nsPositive(seconds);
+		size_t byteOffset = TimeToBytes(pos100ns, wf);
+		if (wf.nBlockAlign > 0) {
+			byteOffset -= byteOffset % wf.nBlockAlign;
+		}
+		if (byteOffset >= data.bufferSize) {
+			if (voice.isLoopPlayback && wf.nBlockAlign > 0) {
+				byteOffset = byteOffset % data.bufferSize;
+				byteOffset -= byteOffset % wf.nBlockAlign;
+			} else {
+				byteOffset = 0;
+			}
+		}
+
+		const bool wasPaused = voice.state == VoiceState::Paused;
+
+		voice.pVoice->Stop();
+		voice.pVoice->FlushSourceBuffers();
+
+		XAUDIO2_BUFFER buf{};
+		buf.pAudioData = data.pBuffer.data();
+		buf.AudioBytes = data.bufferSize;
+		buf.Flags = XAUDIO2_END_OF_STREAM;
+		buf.LoopCount = voice.isLoopPlayback ? XAUDIO2_LOOP_INFINITE : 0;
+		buf.PlayBegin = static_cast<UINT32>(byteOffset);
+		buf.PlayLength = data.bufferSize - buf.PlayBegin;
+
+		if (FAILED(voice.pVoice->SubmitSourceBuffer(&buf))) {
+			return false;
+		}
+
+		if (!wasPaused) {
+			if (FAILED(voice.pVoice->Start())) {
+				return false;
+			}
+			voice.state = VoiceState::Playing;
+		}
+
+		return true;
+	}
+
+	bool AudioManager::SetHandleFrequencyRatio(const AudioHandle& handle,
+	                                           float ratio) {
+
+		if (!handle.isSuccess) {
+			return false;
+		}
+
+		const float clamped = ClampFrequencyRatio(ratio);
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+				return false;
+			}
+
+			voice.frequencyRatio = clamped;
+			voice.pVoice->SetFrequencyRatio(clamped);
+			return true;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return false;
+		}
+
+		auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		voice.frequencyRatio = clamped;
+		voice.pVoice->SetFrequencyRatio(clamped);
+		return true;
+	}
+
+	bool AudioManager::GetHandleFrequencyRatio(const AudioHandle& handle,
+	                                           float& outRatio) const {
+
+		outRatio = 1.0f;
+
+		if (!handle.isSuccess) {
+			return false;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			const auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId) {
+				return false;
+			}
+
+			outRatio = voice.frequencyRatio;
+			return true;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return false;
+		}
+
+		const auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId) {
+			return false;
+		}
+
+		outRatio = voice.frequencyRatio;
+		return true;
+	}
+
+	bool AudioManager::SetHandleVolume(const AudioHandle& handle, float volume) {
+
+		if (!handle.isSuccess) {
+			return false;
+		}
+
+		const float clamped = ClampVolume(volume);
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+				return false;
+			}
+
+			voice.volume = clamped;
+			voice.pVoice->SetVolume(clamped);
+			return true;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return false;
+		}
+
+		auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		voice.volume = clamped;
+		voice.pVoice->SetVolume(clamped);
+		return true;
+	}
+
+	bool AudioManager::GetHandleVolume(const AudioHandle& handle,
+	                                   float& outVolume) const {
+
+		outVolume = 1.0f;
+
+		if (!handle.isSuccess) {
+			return false;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			const auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			if (voice.playId != handle.playId) {
+				return false;
+			}
+
+			outVolume = voice.volume;
+			return true;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return false;
+		}
+
+		const auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		if (voice.playId != handle.playId) {
+			return false;
+		}
+
+		outVolume = voice.volume;
+		return true;
+	}
+
+	bool AudioManager::IsSceneBgmPaused(const AudioHandle& handle) const {
+
+		if (!handle.isSuccess) {
+			return false;
+		}
+
+		if (handle.isStreaming) {
+			if (handle.voiceIndex >= streamingSourceVoicePool_.size()) {
+				return false;
+			}
+
+			const auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
+			return voice.playId == handle.playId &&
+			       voice.state == VoiceState::Paused;
+		}
+
+		if (handle.voiceIndex >= sourceVoicePool_.size()) {
+			return false;
+		}
+
+		const auto& voice = *sourceVoicePool_[handle.voiceIndex];
+		return voice.playId == handle.playId &&
+		       voice.state == VoiceState::Paused;
 	}
 
 }

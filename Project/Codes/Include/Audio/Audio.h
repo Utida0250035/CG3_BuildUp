@@ -112,6 +112,8 @@ namespace Atrum::Audio {
 
 		bool TryRecoverLoopingStreamingVoice(StreamingSourceVoice &voice);
 
+		bool SeekSceneBgmStreamingVoice(StreamingSourceVoice& voice, float seconds);
+
 		struct Token {
 			explicit Token() = default;
 		};
@@ -152,6 +154,30 @@ namespace Atrum::Audio {
 		void StopAllLoopingShortVoices();
 
 		bool IsPlaying(const AudioHandle& handle);
+
+		/// シーン BGM の一時停止（再生スロットは維持。IsPlaying は一時停止中も true）
+		void PauseSceneBgm(const AudioHandle& handle);
+
+		/// 一時停止したシーン BGM を再開
+		void ResumeSceneBgm(const AudioHandle& handle);
+
+		bool IsSceneBgmPaused(const AudioHandle& handle) const;
+
+		/// ループ BGM の再生位置（秒）。失敗時は false
+		bool GetSceneBgmPlaybackSeconds(const AudioHandle& handle, float& outSeconds) const;
+
+		/// ループ BGM の再生位置を指定（秒）。再生中・一時停止中どちらも可
+		bool SetSceneBgmPlaybackSeconds(const AudioHandle& handle, float seconds);
+
+		/// ピッチ（周波数比）。XAUDIO2 の許容範囲にクランプ
+		bool SetHandleFrequencyRatio(const AudioHandle& handle, float ratio);
+
+		bool GetHandleFrequencyRatio(const AudioHandle& handle, float& outRatio) const;
+
+		/// 音量 0〜1（XAUDIO2 に合わせてクランプ）
+		bool SetHandleVolume(const AudioHandle& handle, float volume);
+
+		bool GetHandleVolume(const AudioHandle& handle, float& outVolume) const;
 
 		static AudioManager* Instance() {
 

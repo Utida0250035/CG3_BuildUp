@@ -417,6 +417,13 @@ namespace Atrum {
 			const Math::Vector3& worldEnd, const float width,
 			const bool isLighting = false);
 
+/// XZ 床に沿ったワールド幅固定の線
+		void DrawLine3DOnFloor(const uint32_t& textureIndex,
+			const Math::Vector4& textureColor,
+			const Math::Transform& uvTransform,
+			const Math::Vector3& worldStart, const Math::Vector3& worldEnd,
+			const float width, const bool isLighting = false);
+
 /// XZ 床面上の線（画面上ピクセル幅固定）
 		void DrawLine3DOnFloorPlane(const uint32_t& textureIndex,
 			const Math::Vector4& textureColor,

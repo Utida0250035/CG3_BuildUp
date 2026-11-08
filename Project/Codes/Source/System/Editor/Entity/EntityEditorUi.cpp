@@ -397,6 +397,18 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::TextUnformatted("プレハブ一覧 (Entity JSON)");
   ImGui::Separator();
 
+  if (!scene_.instances.empty() &&
+      ImGui::Button("選択エンティティをプレハブ JSON へ出力")) {
+    Atrum::Editor::Prefab::EnsureEntitiesPrefabDirectoryExists();
+    const std::string path = Atrum::Editor::Prefab::MakeUniquePrefabFilePath(
+        SelectedDefinition().entityName);
+    if (!path.empty()) {
+      SaveSelectedInstanceToPrefabPath(path);
+      ui_.selectedPrefabPath = path;
+    }
+  }
+  ImGui::Spacing();
+
   const std::vector<std::string> prefabPaths =
       Atrum::Editor::Prefab::ListPrefabJsonFiles();
   if (prefabPaths.empty()) {

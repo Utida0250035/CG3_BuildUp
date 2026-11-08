@@ -109,6 +109,64 @@ inline void StopBgmLoop(const Audio::Handle &handle) {
   Audio::Manager::Instance()->StopAllLoopingShortVoices();
 }
 
+inline void PauseBgmLoop(const Audio::Handle &handle) {
+  if (!handle.isSuccess) {
+    return;
+  }
+  Audio::Manager::Instance()->PauseSceneBgm(handle);
+}
+
+inline void ResumeBgmLoop(const Audio::Handle &handle) {
+  if (!handle.isSuccess) {
+    return;
+  }
+  Audio::Manager::Instance()->ResumeSceneBgm(handle);
+}
+
+inline bool IsBgmLoopPaused(const Audio::Handle &handle) {
+  return Audio::Manager::Instance()->IsSceneBgmPaused(handle);
+}
+
+/// 失敗時は負値
+inline float GetBgmLoopPlaybackSeconds(const Audio::Handle &handle) {
+  float seconds = -1.0f;
+  if (Audio::Manager::Instance()->GetSceneBgmPlaybackSeconds(handle,
+                                                               seconds)) {
+    return seconds;
+  }
+  return -1.0f;
+}
+
+inline bool SetBgmLoopPlaybackSeconds(const Audio::Handle &handle,
+                                      float seconds) {
+  return Audio::Manager::Instance()->SetSceneBgmPlaybackSeconds(handle,
+                                                                seconds);
+}
+
+inline bool SetSeFrequencyRatio(const Audio::Handle &handle, float ratio) {
+  return Audio::Manager::Instance()->SetHandleFrequencyRatio(handle, ratio);
+}
+
+inline bool GetSeFrequencyRatio(const Audio::Handle &handle, float &outRatio) {
+  return Audio::Manager::Instance()->GetHandleFrequencyRatio(handle, outRatio);
+}
+
+inline bool SetSeVolume(const Audio::Handle &handle, float volume) {
+  return Audio::Manager::Instance()->SetHandleVolume(handle, volume);
+}
+
+inline bool GetSeVolume(const Audio::Handle &handle, float &outVolume) {
+  return Audio::Manager::Instance()->GetHandleVolume(handle, outVolume);
+}
+
+inline bool SetBgmLoopPitch(const Audio::Handle &handle, float pitchRatio) {
+  return SetSeFrequencyRatio(handle, pitchRatio);
+}
+
+inline bool SetBgmLoopVolume(const Audio::Handle &handle, float volume) {
+  return SetSeVolume(handle, volume);
+}
+
 /// BGM をループ再生（候補パスのうち存在するファイルを使用）
 inline Audio::Handle PlayBgmLoop(
     const std::initializer_list<const char *> candidatePaths) {

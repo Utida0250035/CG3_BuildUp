@@ -7,7 +7,7 @@ class Camera;
 
 namespace Atrum::Editor {
 
-/// Unity Scene View 風：世界原点基準 XZ グリッド（適応間隔・10 倍メジャー・X/Z 軸色）
+/// エディタ用 XZ 床グリッド（固定ワールド線幅・メジャー10本ごと・原点 X/Z 軸色）
 void DrawInfiniteEditorFloorGrid(AtrumEngine *engine, const Atrum::Camera *camera,
                                  int viewportWidth, int viewportHeight);
 

@@ -15,5 +15,5 @@ if not defined MSBUILD (
 )
 
 set "REPO_ROOT=%~dp0..\..\.."
-"%MSBUILD%" "%REPO_ROOT%Project\CG2_BuildUp.vcxproj" /p:Configuration=Development /p:Platform=x64 /m /v:minimal
+"%MSBUILD%" "%REPO_ROOT%\Project\CG2_BuildUp.vcxproj" /p:Configuration=Development /p:Platform=x64 /m /v:minimal
 exit /b %ERRORLEVEL%

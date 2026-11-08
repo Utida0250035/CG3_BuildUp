@@ -13,161 +13,92 @@ namespace Atrum::Editor {
 
 namespace {
 
-/// Z ファイティング回避のわずかな持ち上げ
 constexpr float kFloorY = 0.05f;
-/// ワールド単位の線幅（画面ピクセル換算は一旦使わない）
-constexpr float kMinorLineWidth = 0.012f;
-constexpr float kMajorLineWidth = 0.022f;
-constexpr float kAxisLineWidth = 0.045f;
-/// マイナー1本あたりの画面上の目安（Unity Scene View 相当）
-constexpr float kTargetPixelsPerMinorLine = 40.0f;
-constexpr int kMajorLinesPerMinorBlock = 10;
-constexpr float kDrawExtentMargin = 1.2f;
+constexpr float kGridStep = 1.0f;
+constexpr int kMajorLineEvery = 10;
+constexpr int kMaxLinesPerAxis = 48;
+constexpr float kDefaultHalfExtent = 40.0f;
 
-const Math::Vector4 kMinorGridColor{0.62f, 0.64f, 0.68f, 0.72f};
-const Math::Vector4 kMajorGridColor{0.78f, 0.8f, 0.84f, 0.92f};
+constexpr float kMinorLineWidth = 0.018f;
+constexpr float kMajorLineWidth = 0.032f;
+constexpr float kAxisLineWidth = 0.055f;
+
+const Math::Vector4 kMinorGridColor{0.58f, 0.6f, 0.64f, 0.85f};
+const Math::Vector4 kMajorGridColor{0.75f, 0.77f, 0.81f, 0.95f};
 const Math::Vector4 kAxisColorX{0.95f, 0.32f, 0.32f, 0.98f};
 const Math::Vector4 kAxisColorZ{0.38f, 0.58f, 0.98f, 0.98f};
 
-void DrawGridLine(AtrumEngine *engine, const Math::Vector3 &start,
-                  const Math::Vector3 &end, const float lineWidth,
-                  const Math::Vector4 &color) {
-  engine->DrawLine3D(WhiteTextureIndex(), color, Math::Transform{}, start, end,
-                     lineWidth, false);
+void DrawFloorLine(AtrumEngine *engine, const Math::Vector3 &start,
+                   const Math::Vector3 &end, const float width,
+                   const Math::Vector4 &color) {
+  engine->DrawLine3DOnFloor(WhiteTextureIndex(), color, Math::Transform{}, start,
+                            end, width, false);
 }
 
-bool IsNearlyZero(const float value, const float epsilon) {
-  return std::abs(value) < epsilon;
+float ComputeHalfExtent(const Math::Vector3 &camPos) {
+  const float fromHeight = std::max(std::abs(camPos.y), 4.0f) * 2.5f + 12.0f;
+  return std::clamp(fromHeight, kDefaultHalfExtent, 96.0f);
 }
 
-bool IsMajorWorldLine(const float worldCoord, const float majorStep) {
-  if (majorStep <= 0.0f) {
-    return false;
+float ComputeGridStep(const float halfExtent) {
+  float step = kGridStep;
+  while (halfExtent * 2.0f / step >
+         static_cast<float>(kMaxLinesPerAxis) + 0.5f) {
+    step *= 2.0f;
   }
-  const float ratio = worldCoord / majorStep;
-  const float nearest = std::round(ratio);
-  return std::abs(ratio - nearest) < 1.0e-3f;
+  return step;
 }
 
-float SnapUnityStyleGridSize(const float worldSize) {
-  if (worldSize <= 0.0f) {
-    return 1.0f;
-  }
-  const float exponent = std::floor(std::log10(worldSize));
-  const float magnitude = std::pow(10.0f, exponent);
-  const float normalized = worldSize / magnitude;
-  float mantissa = 1.0f;
-  if (normalized >= 5.0f) {
-    mantissa = 5.0f;
-  } else if (normalized >= 2.0f) {
-    mantissa = 2.0f;
-  }
-  return mantissa * magnitude;
+bool IsOnWorldOriginAxis(const float worldCoord, const float step) {
+  return std::abs(worldCoord) < step * 0.2f;
 }
 
-float EstimateFloorVisibleHalfExtent(const Camera *camera) {
-  const Math::Vector3 camPos = camera->GetTranslate();
-  const Math::Matrix4x4 &view = camera->GetViewMatrix();
-  const Math::Matrix4x4 &proj = camera->GetPerspectiveFovMatrix();
-
-  Math::Vector3 forward{view.m[2][0], view.m[2][1], view.m[2][2]};
-  if (forward.LengthSquare() < 1.0e-8f) {
-    return 48.0f;
-  }
-  forward.Normalize();
-
-  float viewDistance = std::max(2.0f, std::abs(camPos.y) + 2.0f);
-  if (std::abs(forward.y) > 1.0e-5f) {
-    const float t = (kFloorY - camPos.y) / forward.y;
-    if (t > 0.1f) {
-      viewDistance = t;
-    }
-  }
-
-  const float cot = proj.m[1][1];
-  const float tanHalfFovY = (cot > 1.0e-6f) ? (1.0f / cot) : std::tan(0.25f);
-  const float aspect =
-      (std::abs(proj.m[0][0]) > 1.0e-6f) ? (proj.m[1][1] / proj.m[0][0])
-                                         : (16.0f / 9.0f);
-
-  const float halfVert = viewDistance * tanHalfFovY;
-  const float halfHoriz = halfVert * aspect;
-
-  const Math::Vector3 focus = camPos + forward * viewDistance;
-  const float deltaX = focus.x - camPos.x;
-  const float deltaZ = focus.z - camPos.z;
-  const float horizOffset = std::sqrt(deltaX * deltaX + deltaZ * deltaZ);
-
-  float extent = std::max(halfHoriz, halfVert) + horizOffset * 0.35f;
-  extent = std::max(extent, viewDistance * 0.25f);
-  return std::clamp(extent, 4.0f, 5000.0f);
+bool IsMajorGridLine(const float worldCoord, const float step) {
+  const int index = static_cast<int>(std::lround(worldCoord / step));
+  return index % kMajorLineEvery == 0;
 }
 
-float ComputeMinorGridStep(const float visibleHalfExtent, const int viewportWidth,
-                           const int viewportHeight) {
-  if (viewportWidth > 0 && viewportHeight > 0) {
-    const float viewportSpan =
-        static_cast<float>(std::min(viewportWidth, viewportHeight));
-    const float worldSpan = visibleHalfExtent * 2.0f;
-    const float metersPerPixel = worldSpan / viewportSpan;
-    const float rawMinor = metersPerPixel * kTargetPixelsPerMinorLine;
-    return SnapUnityStyleGridSize(rawMinor);
+/// 平行方向: worldCoord は X なら Z 方向ライン、Z なら X 方向ライン
+void PickLineStyle(const float worldCoord, const float step,
+                   const bool lineRunsAlongZ, float &outWidth,
+                   Math::Vector4 &outColor) {
+  outWidth = kMinorLineWidth;
+  outColor = kMinorGridColor;
+
+  if (IsOnWorldOriginAxis(worldCoord, step)) {
+    outWidth = kAxisLineWidth;
+    outColor = lineRunsAlongZ ? kAxisColorZ : kAxisColorX;
+    return;
   }
-  return SnapUnityStyleGridSize(visibleHalfExtent / 16.0f);
+
+  if (IsMajorGridLine(worldCoord, step)) {
+    outWidth = kMajorLineWidth;
+    outColor = kMajorGridColor;
+  }
 }
 
-struct GridLineStyle {
-  float width = kMinorLineWidth;
-  Math::Vector4 color = kMinorGridColor;
-};
+void DrawXZGrid(AtrumEngine *engine, const Math::Vector3 &camPos,
+                const float halfExtent, const float step) {
+  const float minX = camPos.x - halfExtent;
+  const float maxX = camPos.x + halfExtent;
+  const float minZ = camPos.z - halfExtent;
+  const float maxZ = camPos.z + halfExtent;
 
-GridLineStyle StyleForParallelToZLine(const float x, const float minorStep,
-                                      const float majorStep) {
-  const float axisEpsilon = minorStep * 0.05f;
-  GridLineStyle style{kMinorLineWidth, kMinorGridColor};
-  if (IsNearlyZero(x, axisEpsilon)) {
-    style = {kAxisLineWidth, kAxisColorZ};
-  } else if (IsMajorWorldLine(x, majorStep)) {
-    style = {kMajorLineWidth, kMajorGridColor};
-  }
-  return style;
-}
+  const float startX = std::floor(minX / step) * step;
+  const float startZ = std::floor(minZ / step) * step;
 
-GridLineStyle StyleForParallelToXLine(const float z, const float minorStep,
-                                      const float majorStep) {
-  const float axisEpsilon = minorStep * 0.05f;
-  GridLineStyle style{kMinorLineWidth, kMinorGridColor};
-  if (IsNearlyZero(z, axisEpsilon)) {
-    style = {kAxisLineWidth, kAxisColorX};
-  } else if (IsMajorWorldLine(z, majorStep)) {
-    style = {kMajorLineWidth, kMajorGridColor};
-  }
-  return style;
-}
-
-void DrawUnityStyleFloorGrid(AtrumEngine *engine, const Math::Vector3 &camPos,
-                             const float drawExtent, const float minorStep) {
-  const float majorStep = minorStep *
-                          static_cast<float>(kMajorLinesPerMinorBlock);
-
-  const float minX = camPos.x - drawExtent;
-  const float maxX = camPos.x + drawExtent;
-  const float minZ = camPos.z - drawExtent;
-  const float maxZ = camPos.z + drawExtent;
-
-  const float startX = std::floor(minX / minorStep) * minorStep;
-  const float startZ = std::floor(minZ / minorStep) * minorStep;
-
-  for (float x = startX; x <= maxX + minorStep * 0.5f; x += minorStep) {
-    const GridLineStyle style = StyleForParallelToZLine(x, minorStep, majorStep);
-    DrawGridLine(engine, {x, kFloorY, minZ}, {x, kFloorY, maxZ}, style.width,
-                 style.color);
+  for (float x = startX; x <= maxX + step * 0.5f; x += step) {
+    float width = kMinorLineWidth;
+    Math::Vector4 color = kMinorGridColor;
+    PickLineStyle(x, step, true, width, color);
+    DrawFloorLine(engine, {x, kFloorY, minZ}, {x, kFloorY, maxZ}, width, color);
   }
 
-  for (float z = startZ; z <= maxZ + minorStep * 0.5f; z += minorStep) {
-    const GridLineStyle style = StyleForParallelToXLine(z, minorStep, majorStep);
-    DrawGridLine(engine, {minX, kFloorY, z}, {maxX, kFloorY, z}, style.width,
-                 style.color);
+  for (float z = startZ; z <= maxZ + step * 0.5f; z += step) {
+    float width = kMinorLineWidth;
+    Math::Vector4 color = kMinorGridColor;
+    PickLineStyle(z, step, false, width, color);
+    DrawFloorLine(engine, {minX, kFloorY, z}, {maxX, kFloorY, z}, width, color);
   }
 }
 
@@ -176,17 +107,17 @@ void DrawUnityStyleFloorGrid(AtrumEngine *engine, const Math::Vector3 &camPos,
 void DrawInfiniteEditorFloorGrid(AtrumEngine *engine, const Camera *camera,
                                  const int viewportWidth,
                                  const int viewportHeight) {
+  (void)viewportWidth;
+  (void)viewportHeight;
+
   if (engine == nullptr || camera == nullptr) {
     return;
   }
 
   const Math::Vector3 camPos = camera->GetTranslate();
-  const float visibleHalfExtent = EstimateFloorVisibleHalfExtent(camera);
-  const float minorStep = ComputeMinorGridStep(
-      visibleHalfExtent, std::max(viewportWidth, 1), std::max(viewportHeight, 1));
-  const float drawExtent = visibleHalfExtent * kDrawExtentMargin;
-
-  DrawUnityStyleFloorGrid(engine, camPos, drawExtent, minorStep);
+  const float halfExtent = ComputeHalfExtent(camPos);
+  const float step = ComputeGridStep(halfExtent);
+  DrawXZGrid(engine, camPos, halfExtent, step);
 }
 
 } // namespace Atrum::Editor

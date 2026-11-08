@@ -71,6 +71,23 @@ void EntityEditor::RemoveSelectedInstance() {
   ui_.requestApplyPreview = true;
 }
 
+bool EntityEditor::SaveSelectedInstanceToPrefabPath(
+    const std::string &prefabPath) {
+  if (scene_.instances.empty() || ui_.selectedInstanceIndex < 0 ||
+      prefabPath.empty()) {
+    return false;
+  }
+
+  EntityDefinition definition = SelectedDefinition();
+  RebuildEntityDefinitionTagHashes(definition);
+  try {
+    Json::JsonHandler::SaveToFile(prefabPath, definition);
+    return true;
+  } catch (...) {
+    return false;
+  }
+}
+
 bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
   namespace fs = std::filesystem;
   if (!fs::exists(prefabPath)) {

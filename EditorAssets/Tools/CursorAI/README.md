@@ -13,11 +13,26 @@
 | ファイル | 役割 |
 |----------|------|
 | `cursorInstructions.md` | 停止条件・報告形式の詳細 |
-| `progress_report.md` | 最新の進捗（エージェントが更新） |
+| `progress_report.md` | 最新の進捗（実装・起こし・**即時 [x] 判定**を記録。正本はここだけ） |
 | `task_backlog.md` | 人間用優先キュー |
 | `buildDevelopment.cmd` | `Development \| x64` ビルド |
 | `finishTaskGit.ps1` | コミット許可後の develop マージ・ブランチ切替 |
 | `branchNaming.md` | 次作業ブランチの命名規則 |
+| `docs/feature-memos/` | ロードマップ正本・下書き（`README.md` 参照） |
+| `loopRoadmapDev.ps1` | `/loop` 用 tick（報告 200kB 超過で自動停止） |
+| `loopReportGuard.ps1` | `progress_report.md` サイズ監視・停止記録追記 |
+| `loopMergeTickToDevelop.ps1` | ループ成功 tick の develop マージ・push |
+| `loopRegisterBuildFailure.ps1` | ビルド失敗記録（3 回でロールバック＋報告追記） |
+| `loopRollbackToLastGood.ps1` | `lastGoodCommit` へ復帰 |
+| `loop_state.json` | ループ用 Git 状態 |
+
+### `/loop` と報告の蓄積
+
+- ループ中は `progress_report.md` を **末尾追記のみ**（停止後に 1 ファイルで全セッション確認可能）。
+- 起動例（90 分）: `powershell -NoProfile -ExecutionPolicy Bypass -File EditorAssets/Tools/CursorAI/loopRoadmapDev.ps1 -IntervalMinutes 90`
+- `progress_report.md` が **200kB を超えるとループは自動停止**し、末尾に理由（肥大化）を記録する。
+- **ビルド 3 回失敗**したサブタスクはロールバックし、ログの **ファイル名・行番号付き** で `progress_report` に中断理由を追記してから、依存のない別タスクへ。
+- **tick 成功時**は `loopMergeTickToDevelop.ps1` で **develop へ自動マージ・push**（ユーザー確認不要）。
 
 ## Cursor 連携
 

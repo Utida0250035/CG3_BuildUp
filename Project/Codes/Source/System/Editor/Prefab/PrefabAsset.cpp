@@ -5,6 +5,43 @@
 
 namespace Atrum::Editor::Prefab {
 
+void EnsureEntitiesPrefabDirectoryExists() {
+  namespace fs = std::filesystem;
+  const fs::path root = kEntitiesPrefabDirectory;
+  if (!fs::exists(root)) {
+    fs::create_directories(root);
+  }
+}
+
+std::string MakeUniquePrefabFilePath(const std::string &baseName) {
+  namespace fs = std::filesystem;
+  EnsureEntitiesPrefabDirectoryExists();
+
+  std::string stem = baseName.empty() ? "Entity" : baseName;
+  for (char &ch : stem) {
+    if (ch == '/' || ch == '\\' || ch == ':' || ch == '"' ||
+        ch == '*' || ch == '?' || ch == '<' || ch == '>' || ch == '|') {
+      ch = '_';
+    }
+  }
+
+  fs::path candidate =
+      fs::path(kEntitiesPrefabDirectory) / (stem + ".json");
+  if (!fs::exists(candidate)) {
+    return candidate.generic_string();
+  }
+
+  for (int suffix = 1; suffix < 10000; ++suffix) {
+    candidate = fs::path(kEntitiesPrefabDirectory) /
+                (stem + "_" + std::to_string(suffix) + ".json");
+    if (!fs::exists(candidate)) {
+      return candidate.generic_string();
+    }
+  }
+
+  return {};
+}
+
 std::vector<std::string> ListPrefabJsonFiles(
     const std::string &directoryRelativePath) {
   namespace fs = std::filesystem;

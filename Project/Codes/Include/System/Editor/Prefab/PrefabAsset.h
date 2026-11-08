@@ -13,4 +13,9 @@ constexpr const char *kEntitiesPrefabDirectory =
 std::vector<std::string> ListPrefabJsonFiles(
     const std::string &directoryRelativePath = kEntitiesPrefabDirectory);
 
+void EnsureEntitiesPrefabDirectoryExists();
+
+/// 同名があれば番号付きで Entities 配下のパスを返す
+std::string MakeUniquePrefabFilePath(const std::string &baseName);
+
 } // namespace Atrum::Editor::Prefab

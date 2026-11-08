@@ -71,6 +71,9 @@ public:
   void RemoveSelectedInstance();
   bool AddInstanceFromPrefabPath(const std::string &prefabPath);
 
+  /// 選択中インスタンスの定義を EntityDefinition JSON として出力
+  bool SaveSelectedInstanceToPrefabPath(const std::string &prefabPath);
+
   void LoadFromJsonPath(const std::string &jsonFilePath);
   void SaveToJsonPath(const std::string &jsonFilePath);
 
