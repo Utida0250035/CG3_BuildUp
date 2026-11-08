@@ -14,7 +14,7 @@ void CmpMesh::Draw() {
   const Math::Matrix4x4 worldMatrix = GetOwner()->GetWorldMatrix();
   const bool useAlphaBlend = color_.w < 0.999f;
   if (useAlphaBlend) {
-    engine->SetBlendModeForFrame(BlendMode::NORMAL);
+    engine->SetBlendModeForFrame(BlendMode::DITHERED_ALPHA);
   }
 
   if (model_) {

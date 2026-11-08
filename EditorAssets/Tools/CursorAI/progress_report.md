@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick8: ムービー用シーン（SceneMovie）
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick9: 粒々透過（DITHERED_ALPHA）
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -736,5 +736,29 @@
 
 - **ランタイム:** イベントカットの差し込み（`Launch` + `CommandChangeScene`）
 - **デバッグ:** サンプルトラックでカメラのみ確認
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 15:30（/loop 15m Cloud・粒々透過）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`BlendMode::DITHERED_ALPHA`** + Bayer clip PS + PSO
+- **`CmpMesh`** 半透明時にディザ透過を使用
+- **メモ** `object_dithered_transparency.md`
+- **ビルド:** Cloud 未実施（シェーダ再コンパイル要）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- オブジェクトの粒々透過
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** 半透明メッシュを深度バッファ付きで描く（ソートコスト回避）
+- **制作:** エンティティの `CmpMesh` 色アルファで粒々表現
 
 **状態:** ループ稼働中（subscription timer 15m）

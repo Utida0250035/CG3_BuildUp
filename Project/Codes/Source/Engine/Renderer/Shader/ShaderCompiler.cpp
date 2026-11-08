@@ -45,6 +45,10 @@ void ShaderCompiler::CompileShaders() {
                                      L"ps_6_0", {L"USE_CLIP=1"});
   assert(psBinaryAlphaBlob_);
 
+  psDitheredAlphaBlob_ = this->Compile(L"Assets/Shaders/Object3d.PS.hlsl",
+                                       L"ps_6_0", {L"USE_DITHER_CLIP=1"});
+  assert(psDitheredAlphaBlob_);
+
   D::LogFile::Instance()->Log("Shaders Compiled");
 }
 

@@ -47,6 +47,22 @@ Texture2D<float32_t4> gTexture : register(t0);
 
 SamplerState gSampler : register(s0);
 
+#ifdef USE_DITHER_CLIP
+
+float GetBayer4x4Threshold(uint2 screenPosition) {
+	const uint x = screenPosition.x & 3u;
+	const uint y = screenPosition.y & 3u;
+	static const uint kMatrix[16] = {
+		0u, 8u, 2u, 10u,
+		12u, 4u, 14u, 6u,
+		3u, 11u, 1u, 9u,
+		15u, 7u, 13u, 5u,
+	};
+	return (float(kMatrix[y * 4u + x]) + 0.5f) / 16.0f;
+}
+
+#endif
+
 struct PixelShaderOutput {
 	float32_t4 color : SV_TARGET0;
 };
@@ -107,6 +123,14 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		output.color = float32_t4(materialRgb, materialAlpha) * textureColor;
 		
 	}
+
+#ifdef USE_DITHER_CLIP
+	{
+		const float coverage = output.color.a;
+		clip(coverage - GetBayer4x4Threshold(uint2(input.position.xy)));
+		output.color.a = 1.0f;
+	}
+#endif
 	
 	return output;
 

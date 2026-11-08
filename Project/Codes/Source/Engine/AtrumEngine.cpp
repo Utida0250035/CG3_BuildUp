@@ -390,6 +390,8 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   psBlobs[static_cast<uint32_t>(BlendMode::BINARY_ALPHA)] =
       shaderCompiler_->GetPsBinaryAlphaBlob();
+  psBlobs[static_cast<uint32_t>(BlendMode::DITHERED_ALPHA)] =
+      shaderCompiler_->GetPsDitheredAlphaBlob();
 
   for (uint32_t i = 0; i < static_cast<uint32_t>(BlendMode::MODE_COUNT); ++i) {
     graphicsPSObjects[i] = std::make_unique<PipelineState>();

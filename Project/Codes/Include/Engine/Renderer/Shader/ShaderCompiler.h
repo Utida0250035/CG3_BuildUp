@@ -30,6 +30,7 @@ namespace Atrum {
 
         // pixelShaderのコンパイル結果(2値抜き(BinaryAlpha)用)
         ComPtr<IDxcBlob> psBinaryAlphaBlob_ = nullptr;
+        ComPtr<IDxcBlob> psDitheredAlphaBlob_ = nullptr;
 
         // コンパイルを実行するインターフェース
         ComPtr<IDxcBlob> Compile(const std::wstring& filePath, const wchar_t* profile, const std::vector<std::wstring>& defines = {});
@@ -47,6 +48,7 @@ namespace Atrum {
         IDxcBlob* GetParticleVertexShaderBlob() const { return particleVertexShaderBlob_.Get(); }
         IDxcBlob* GetPixelShaderBlob() const { return pixelShaderBlob_.Get(); }
         IDxcBlob* GetPsBinaryAlphaBlob() const { return psBinaryAlphaBlob_.Get(); }
+        IDxcBlob* GetPsDitheredAlphaBlob() const { return psDitheredAlphaBlob_.Get(); }
 
     };
 

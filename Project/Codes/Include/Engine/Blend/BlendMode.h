@@ -9,6 +9,8 @@ enum class BlendMode : uint32_t {
   NONE,
   // 2値抜き(BinaryAlpha)
   BINARY_ALPHA,
+  // Bayer ディザ clip（粒々透過・深度書き込みあり）
+  DITHERED_ALPHA,
   // 通常αブレンド
   NORMAL,
   // 加算

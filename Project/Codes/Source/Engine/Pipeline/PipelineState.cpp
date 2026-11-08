@@ -40,6 +40,10 @@ namespace Atrum {
 		switch (mode_) {
 
 			case BlendMode::NONE:
+				[[fallthrough]];
+			case BlendMode::BINARY_ALPHA:
+				[[fallthrough]];
+			case BlendMode::DITHERED_ALPHA:
 
 				renderTarget.BlendEnable = FALSE;
 
@@ -124,6 +128,8 @@ namespace Atrum {
 			case BlendMode::NONE:
 				[[fallthrough]];
 			case BlendMode::BINARY_ALPHA:
+				[[fallthrough]];
+			case BlendMode::DITHERED_ALPHA:
 
 				// 書き込みする
 				depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
