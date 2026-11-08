@@ -297,6 +297,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Math\Transform.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector2.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector3.cpp" />
+    <ClCompile Include="Codes\Source\Motion\MotionBlender.cpp" />
+    <ClCompile Include="Codes\Source\Motion\MotionClipLoader.cpp" />
     <ClCompile Include="Codes\Source\Math\Vector4.cpp" />
     <ClCompile Include="Codes\Source\Scene\ChangeScene.cpp" />
     <ClCompile Include="Codes\Source\Scene\ChangeSceneFade.cpp" />
@@ -363,6 +365,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpOrbiter.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpReflectAbleBullet.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpSwing.cpp" />
     <ClCompile Include="Codes\Source\System\EntityFactory.cpp" />
     <ClCompile Include="Codes\Source\System\Playable\CmpInput.cpp" />
@@ -521,6 +524,9 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Math\Transform.h" />
     <ClInclude Include="Codes\Include\Math\Vector2.h" />
     <ClInclude Include="Codes\Include\Math\Vector3.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionBlender.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionClip.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionKeyframe.h" />
     <ClInclude Include="Codes\Include\Math\Vector4.h" />
     <ClInclude Include="Codes\Include\Scene\ChangeScene.h" />
     <ClInclude Include="Codes\Include\Scene\ChangeSceneFade.h" />
@@ -588,6 +594,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpParry.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpReflectAbleBullet.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpRotator.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpScroll.h" />
     <ClInclude Include="Codes\Include\Visual\CmpSkyDome.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpSwing.h" />
