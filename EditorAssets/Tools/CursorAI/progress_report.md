@@ -920,3 +920,27 @@
 - **レベル制作:** ImGui で rim 調整（`DirectionalLightData::ImGui`）
 
 **状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 17:30（/loop 15m Cloud・VolumetricFog）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`VolumetricFog` / `VolumetricFogSettings`** — `Lighting` と `AtrumEngine` で共有
+- **`Object3d.PS`** — 距離×高さフォグと太陽方向インスキャッター
+- **メモ** `volumetric_fog.md`、`SceneGame` で弱フォグ既定
+- **ビルド:** Cloud 未実施
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ボリュームフォグ／VolumetricFog（統合）
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** 屋外ステージの奥行きと視認性の調整
+- **デバッグ:** DEVELOPMENT で ImGui から密度・色をチューニング
+
+**状態:** ループ稼働中（subscription timer 15m）

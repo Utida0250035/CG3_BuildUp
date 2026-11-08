@@ -45,6 +45,15 @@ namespace {
 			.rimEnabled = 1u,
 		};
 		Engine::Instance()->SetDirectionalLightData(directionalLight);
+
+		Atrum::Visual::VolumetricFogSettings gameFog{};
+		gameFog.enabled = 1u;
+		gameFog.density = 0.022f;
+		gameFog.heightFalloff = 0.28f;
+		gameFog.heightOffset = 0.0f;
+		gameFog.maxDistance = 90.0f;
+		gameFog.inScatterIntensity = 0.18f;
+		Engine::Instance()->RefVolumetricFog().SetSettings(gameFog);
 	}
 
 } // namespace

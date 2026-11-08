@@ -20,6 +20,7 @@ void Lighting::Initialize(ID3D12Device *device) {
   sceneLightData_.directionalLight.intensity = 1.0f;
   sceneLightData_.directionalLight.direction = Math::Vector3::DownLh();
   sceneLightData_.directionalLight.lightModel = LightModel::HalfLambert;
+  volumetricFog_.RefSettings().enabled = 0u;
 }
 
 void Lighting::Update(CommandContext *commandContext, UINT rootParameterIndex) {
@@ -27,6 +28,7 @@ void Lighting::Update(CommandContext *commandContext, UINT rootParameterIndex) {
     return;
   }
 
+  volumetricFog_.ApplyTo(sceneLightData_.directionalLight);
   lightingBuffer_->SetData(sceneLightData_);
 
   auto commandList = commandContext->GetCommandList();
@@ -39,7 +41,11 @@ void Lighting::Update(CommandContext *commandContext, UINT rootParameterIndex) {
 
 #ifdef USE_IMGUI
 
-void Lighting::ImGui() {}
+void Lighting::ImGui() {
+  if (ImGui::CollapsingHeader("VolumetricFog", ImGuiTreeNodeFlags_DefaultOpen)) {
+    volumetricFog_.ImGui();
+  }
+}
 
 #endif
 

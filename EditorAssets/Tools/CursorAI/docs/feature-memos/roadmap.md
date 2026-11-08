@@ -132,7 +132,7 @@
 - [x] 実装（`DirectionalLightData`・`Object3d` シェーダ・`FlushDirectionalLightConstantBuffer`）
 
 ### ボリュームフォグ／VolumetricFog（統合）
-- [ ] 実装
+- [x] 実装（`VolumetricFog`・`Object3d.PS`・`Lighting`／`AtrumEngine` 統合）
 
 ### ゴッドレイ
 - [ ] 実装

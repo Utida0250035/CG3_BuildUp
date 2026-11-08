@@ -24,10 +24,39 @@ struct DirectionalLight {
 	float rimPadding0;
 	float3 cameraWorldPosition;
 	float cameraPadding0;
+
+	float3 fogColor;
+	float fogDensity;
+	float fogHeightFalloff;
+	float fogHeightOffset;
+	float fogStartDistance;
+	float fogMaxDistance;
+	float fogInScatterIntensity;
+	uint fogEnabled;
+	float fogPadding0;
 	
-	// 10
-	float4 padding2[10];
+	// 7
+	float4 padding2[7];
 };
+
+float3 ApplyVolumetricFog(float3 shadedRgb, float3 worldPos, float3 cameraPos, float3 lightDir, DirectionalLight light) {
+	if (light.fogEnabled == 0u || light.fogDensity <= 0.0f) {
+		return shadedRgb;
+	}
+
+	const float3 toPoint = worldPos - cameraPos;
+	const float dist = length(toPoint);
+	const float3 viewDir = toPoint / max(dist, 1.0e-4f);
+	const float distRange = max(light.fogMaxDistance - light.fogStartDistance, 0.001f);
+	const float distT = saturate((dist - light.fogStartDistance) / distRange);
+	const float heightFactor = exp(-light.fogHeightFalloff * (worldPos.y - light.fogHeightOffset));
+	const float opticalDepth = light.fogDensity * dist * distT * heightFactor;
+	const float fogBlend = 1.0f - exp(-opticalDepth);
+	const float scatter = light.fogInScatterIntensity *
+		saturate(dot(normalize(-lightDir), viewDir)) * fogBlend;
+	const float3 fogged = lerp(shadedRgb, light.fogColor, fogBlend);
+	return fogged + light.fogColor * scatter;
+}
 
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
 
@@ -140,6 +169,13 @@ PixelShaderOutput main(VertexShaderOutput input) {
 		output.color = float32_t4(materialRgb, materialAlpha) * textureColor;
 		
 	}
+
+	output.color.rgb = ApplyVolumetricFog(
+		output.color.rgb,
+		input.worldPosition,
+		gDirectionalLight.cameraWorldPosition,
+		gDirectionalLight.direction,
+		gDirectionalLight);
 
 #ifdef USE_DITHER_CLIP
 	{

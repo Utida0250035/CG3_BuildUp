@@ -10,6 +10,7 @@
 #include "Engine/Pipeline/PipelineState.h"
 #include "Engine/Pipeline/RootSignature.h"
 #include "Engine/Platform/Window/Window.h"
+#include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "Engine/Renderer/Shader/ShaderCompiler.h"
 #include "Engine/Resource/AssetModel.h"
 #include "Engine/Resource/ConstantBuffer.h"
@@ -131,6 +132,7 @@ namespace Atrum {
 		std::unique_ptr<SingleConstantBuffer<DirectionalLightData>>
 			directionalLightBuffer_ = nullptr;
 		DirectionalLightData directionalLightData_{};
+		Visual::VolumetricFog volumetricFog_{};
 
 		/* depthStencil */
 
@@ -525,6 +527,9 @@ namespace Atrum {
 /* セッター */
 
 		void SetDirectionalLightData(const DirectionalLightData& data);
+
+		Visual::VolumetricFog& RefVolumetricFog() { return volumetricFog_; }
+		const Visual::VolumetricFog& GetVolumetricFog() const { return volumetricFog_; }
 
 		void FlushDirectionalLightConstantBuffer();
 

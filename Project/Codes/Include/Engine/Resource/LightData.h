@@ -55,8 +55,18 @@ struct LightDataDirectional {
   Math::Vector3 cameraWorldPosition{};
   float cameraPadding0 = 0.0f;
 
-  // アライメント用 256バイトまで（リムライトで 12 float 使用）
-  float padding2[40] = {0.0f};
+  Math::Vector3 fogColor{0.65f, 0.72f, 0.82f};
+  float fogDensity = 0.0f;
+  float fogHeightFalloff = 0.35f;
+  float fogHeightOffset = 0.0f;
+  float fogStartDistance = 2.0f;
+  float fogMaxDistance = 120.0f;
+  float fogInScatterIntensity = 0.25f;
+  uint32_t fogEnabled = 0;
+  float fogPadding0 = 0.0f;
+
+  // アライメント用 256バイト（残り 112 バイト）
+  float padding2[28] = {0.0f};
 };
 
 struct LightDataPoint {
@@ -154,8 +164,18 @@ struct DirectionalLightData {
   Math::Vector3 cameraWorldPosition{};
   float cameraPadding0 = 0.0f;
 
-  // 16 + 16 + 16 + 48 = 96、残り160バイト
-  float padding2[40];
+  Math::Vector3 fogColor{0.65f, 0.72f, 0.82f};
+  float fogDensity = 0.0f;
+  float fogHeightFalloff = 0.35f;
+  float fogHeightOffset = 0.0f;
+  float fogStartDistance = 2.0f;
+  float fogMaxDistance = 120.0f;
+  float fogInScatterIntensity = 0.25f;
+  uint32_t fogEnabled = 0;
+  float fogPadding0 = 0.0f;
+
+  // 16*9 = 144、残り 112 バイト
+  float padding2[28];
 
 #ifdef USE_IMGUI
 
