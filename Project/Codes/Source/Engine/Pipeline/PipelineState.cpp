@@ -82,6 +82,15 @@ namespace Atrum {
 
 				break;
 
+			case BlendMode::OCCLUDED_SILHOUETTE:
+				renderTarget.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+				renderTarget.BlendOp = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+				renderTarget.SrcBlendAlpha = D3D12_BLEND_SRC_ALPHA;
+				renderTarget.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+				renderTarget.DestBlendAlpha = D3D12_BLEND_INV_SRC_ALPHA;
+				break;
+
 			case BlendMode::NORMAL:
 				[[fallthrough]];
 			default:
@@ -134,6 +143,11 @@ namespace Atrum {
 				// 書き込みする
 				depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 
+				break;
+
+			case BlendMode::OCCLUDED_SILHOUETTE:
+				depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
+				depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 				break;
 
 			default:

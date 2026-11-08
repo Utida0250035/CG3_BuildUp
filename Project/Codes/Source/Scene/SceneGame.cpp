@@ -8,6 +8,7 @@
 #include "Scene/PlayerDeathPresentation.h"
 #include "Input/AbstractInput.h"
 #include "Scene/SceneGameBattleHud.h"
+#include "Visual/PlayerTerrainSilhouette.h"
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Resource/LightData.h"
@@ -387,6 +388,12 @@ namespace Atrum {
 			if (cloud) {
 				cloud->Draw();
 			}
+		}
+
+		if (player_ && pendingDefeat_ == DefeatKind::None) {
+			Atrum::PlayerTerrainSilhouette::DrawOccludedSilhouette(
+			    Atrum::AtrumEngine::Instance(), player_->GetWorldMatrix(),
+			    Atrum::kParryColliderRadius);
 		}
 	}
 

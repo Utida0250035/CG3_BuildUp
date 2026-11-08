@@ -11,6 +11,8 @@ enum class BlendMode : uint32_t {
   BINARY_ALPHA,
   // Bayer ディザ clip（粒々透過・深度書き込みあり）
   DITHERED_ALPHA,
+  // 地形等に隠れた箇所だけ自機シルエット（Depth Greater）
+  OCCLUDED_SILHOUETTE,
   // 通常αブレンド
   NORMAL,
   // 加算

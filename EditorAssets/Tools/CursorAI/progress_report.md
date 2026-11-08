@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick9: 粒々透過（DITHERED_ALPHA）
+**最新サマリー:** 2026-11-08 — `/loop 15m` tick10: 地形越し自機シルエット
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -760,5 +760,28 @@
 
 - **ランタイム:** 半透明メッシュを深度バッファ付きで描く（ソートコスト回避）
 - **制作:** エンティティの `CmpMesh` 色アルファで粒々表現
+
+**状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 15:45（/loop 15m Cloud・地形越しシルエット）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`BlendMode::OCCLUDED_SILHOUETTE`**（Depth Greater）
+- **`PlayerTerrainSilhouette`** + `SceneGame` 描画順接続
+- **メモ** `player_terrain_silhouette.md`
+- **ビルド:** Cloud 未実施
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- 地形越しシルエット表示
+
+## 推測した用途（§6.4）
+
+- **ランタイム:** 横 STG で地形・手前雲に隠れても自機の位置把握を支援
 
 **状態:** ループ稼働中（subscription timer 15m）

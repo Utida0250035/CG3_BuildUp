@@ -107,7 +107,7 @@
 - [x] 実装（`DITHERED_ALPHA`・Bayer clip PS・`CmpMesh`）
 
 ### 自機のシルエット透視
-- [ ] 地形越しシルエット表示
+- [x] 地形越しシルエット表示（`OCCLUDED_SILHOUETTE`・`PlayerTerrainSilhouette`）
 
 ## Motion
 
