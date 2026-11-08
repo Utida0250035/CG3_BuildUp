@@ -20,7 +20,13 @@
 | `%UpdCmpGroup%` | `UpdCmpGroup` 列挙子名 |
 | `%AuthorNote%` | 任意コメント（空文字で置換可） |
 
+## スキャフォールド
+
+`EditorAssets/Tools/CodeTemplateGenerator/scaffold_from_template.py`
+
+- `list` — manifest のテンプレ ID 一覧
+- `generate <id> <ClassName>` — 置換・書き出し（`--dry-run` / `--force`）
+
 ## 次 roadmap
 
-- 作成・コピー・置換コード（Python または Editor C++）
-- ImGui からの生成 UI
+- ImGui からの生成 UI（エディタ組み込み）

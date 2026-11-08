@@ -1039,3 +1039,26 @@
 - **エディタ:** 次タスクで manifest から生成パイプラインへ接続
 
 **状態:** ループ稼働中（subscription timer 15m）
+
+---
+
+## セッション 2026-11-08 18:45（/loop 15m Cloud・テンプレ置換ツール）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- **`scaffold_from_template.py`** — list / generate、%Token% 置換、衝突時は非上書き
+- **README**、`text_code_templates.md` 更新
+- **ビルド:** 不要
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- 作成・コピー・置換コード
+
+## 推測した用途（§6.4）
+
+- **制作:** CLI からコンポーネント雛形を安全に追加
+- **CI／エージェント:** dry-run でパス確認後に実生成
+
+**状態:** ループ稼働中（subscription timer 15m）

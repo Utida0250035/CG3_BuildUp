@@ -157,7 +157,7 @@
 
 ### テキスト系（%変数名%テンプレ）
 - [x] テンプレファイル（`EditorAssets/Templates/Code/`・`manifest.json`）
-- [ ] 作成・コピー・置換コード
+- [x] 作成・コピー・置換コード（`CodeTemplateGenerator/scaffold_from_template.py`）
 - [ ] エディタ組み込み
 
 ## Script
