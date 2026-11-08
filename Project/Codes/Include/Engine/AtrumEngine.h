@@ -130,6 +130,7 @@ namespace Atrum {
 
 		std::unique_ptr<SingleConstantBuffer<DirectionalLightData>>
 			directionalLightBuffer_ = nullptr;
+		DirectionalLightData directionalLightData_{};
 
 		/* depthStencil */
 
@@ -523,9 +524,9 @@ namespace Atrum {
 
 /* セッター */
 
-		void SetDirectionalLightData(const DirectionalLightData& data) {
-			directionalLightBuffer_->SetData(data);
-		}
+		void SetDirectionalLightData(const DirectionalLightData& data);
+
+		void FlushDirectionalLightConstantBuffer();
 
 		void SetCamera(Camera* camera);
 

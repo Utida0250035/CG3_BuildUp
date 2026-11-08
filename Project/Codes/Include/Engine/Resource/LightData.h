@@ -46,8 +46,17 @@ struct LightDataDirectional {
   // アライメント用
   float padding1 = 0.0f;
 
-  // アライメント用 256バイトまで 208バイト分
-  float padding2[52] = {0.0f};
+  // リムライト（背後からの縁取りハイライト）
+  Math::Vector3 rimColor = Math::Vector3::One();
+  float rimIntensity = 0.0f;
+  float rimPower = 4.0f;
+  uint32_t rimEnabled = 0;
+  float rimPadding0 = 0.0f;
+  Math::Vector3 cameraWorldPosition{};
+  float cameraPadding0 = 0.0f;
+
+  // アライメント用 256バイトまで（リムライトで 12 float 使用）
+  float padding2[40] = {0.0f};
 };
 
 struct LightDataPoint {
@@ -137,9 +146,16 @@ struct DirectionalLightData {
   LightModel lightModel;
   float padding1[3];
 
-  // 16 + 16 + 16 = 48
-  // 残り208バイト分
-  float padding2[52];
+  Math::Vector3 rimColor = Math::Vector3::One();
+  float rimIntensity = 0.0f;
+  float rimPower = 4.0f;
+  uint32_t rimEnabled = 0;
+  float rimPadding0 = 0.0f;
+  Math::Vector3 cameraWorldPosition{};
+  float cameraPadding0 = 0.0f;
+
+  // 16 + 16 + 16 + 48 = 96、残り160バイト
+  float padding2[40];
 
 #ifdef USE_IMGUI
 

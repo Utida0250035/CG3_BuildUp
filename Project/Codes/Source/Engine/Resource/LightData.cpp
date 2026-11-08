@@ -42,6 +42,18 @@ void DirectionalLightData::ImGui() {
     }
 
     lightModel = static_cast<LightModel>(lightMode);
+
+    ImGui::Separator();
+    ImGui::TextUnformatted("Rim light");
+
+    bool rimOn = rimEnabled != 0;
+    if (ImGui::Checkbox("enabled", &rimOn)) {
+      rimEnabled = rimOn ? 1u : 0u;
+    }
+
+    ImGui::DragFloat3("rimColor", &rimColor.x, kThirtySecond, 0.0f, 4.0f);
+    ImGui::DragFloat("rimIntensity", &rimIntensity, kThirtySecond, 0.0f, 8.0f);
+    ImGui::DragFloat("rimPower", &rimPower, kThirtySecond, 0.1f, 16.0f);
   }
 
   ImGui::EndChild();

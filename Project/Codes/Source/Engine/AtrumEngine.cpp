@@ -157,7 +157,8 @@ void AtrumEngine::CreateDirectionalLightBuffer() {
   directionalLightData.direction = {0.0f, -1.0f, 0.0f};
   directionalLightData.intensity = 1.0f;
 
-  directionalLightBuffer_->SetData(directionalLightData);
+  directionalLightData_ = directionalLightData;
+  directionalLightBuffer_->SetData(directionalLightData_);
 }
 
 void AtrumEngine::SetFps(const int32_t &fps) {
@@ -681,6 +682,8 @@ void AtrumEngine::PreDraw() {
   // Transformation用のCBufferの場所を設定
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
       1, pDraw_->transformationBuffer_->GetGpuVirtualAddress());
+
+  FlushDirectionalLightConstantBuffer();
 
   // directionalLight用のCBufferの場所を設定
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
@@ -1241,6 +1244,20 @@ std::shared_ptr<AssetModel> AtrumEngine::GetModel(
 
   return pModelStorage_->GetModel(directoryPathObj, objFileName,
                                   directoryPathMtl, mtlFileName);
+}
+
+void AtrumEngine::SetDirectionalLightData(const DirectionalLightData &data) {
+  directionalLightData_ = data;
+  FlushDirectionalLightConstantBuffer();
+}
+
+void AtrumEngine::FlushDirectionalLightConstantBuffer() {
+  if (pDraw_ != nullptr && pDraw_->camera_ != nullptr) {
+    directionalLightData_.cameraWorldPosition = pDraw_->camera_->GetTranslate();
+  }
+  if (directionalLightBuffer_ != nullptr) {
+    directionalLightBuffer_->SetData(directionalLightData_);
+  }
 }
 
 void AtrumEngine::SetCamera(Camera *camera) {

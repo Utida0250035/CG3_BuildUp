@@ -39,6 +39,10 @@ namespace {
 			.direction = lightDirection,
 			.intensity = 8.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
+			.rimColor = Atrum::Math::Vector3{ 0.75f, 0.85f, 1.0f },
+			.rimIntensity = 0.35f,
+			.rimPower = 3.0f,
+			.rimEnabled = 1u,
 		};
 		Engine::Instance()->SetDirectionalLightData(directionalLight);
 	}

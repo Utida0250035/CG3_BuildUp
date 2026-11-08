@@ -129,7 +129,7 @@
 ## Lighting
 
 ### リムライト
-- [ ] 実装
+- [x] 実装（`DirectionalLightData`・`Object3d` シェーダ・`FlushDirectionalLightConstantBuffer`）
 
 ### ボリュームフォグ／VolumetricFog（統合）
 - [ ] 実装

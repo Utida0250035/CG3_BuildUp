@@ -16,9 +16,17 @@ struct DirectionalLight {
 	// 1
 	uint lightingMode;
 	float3 padding1;
+
+	float3 rimColor;
+	float rimIntensity;
+	float rimPower;
+	uint rimEnabled;
+	float rimPadding0;
+	float3 cameraWorldPosition;
+	float cameraPadding0;
 	
-	// 13
-	float4 padding2[13];
+	// 10
+	float4 padding2[10];
 };
 
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
@@ -116,6 +124,15 @@ PixelShaderOutput main(VertexShaderOutput input) {
 				output.color = float32_t4(0.0f, 0.0f, 0.0f, 1.0f);
 				break;
 		
+		}
+
+		if (gDirectionalLight.rimEnabled != 0u && gDirectionalLight.rimIntensity > 0.0f) {
+			const float3 normalW = normalize(input.normal);
+			const float3 viewDir = normalize(gDirectionalLight.cameraWorldPosition - input.worldPosition);
+			const float rimDot = 1.0f - saturate(dot(normalW, viewDir));
+			const float rim = pow(rimDot, max(gDirectionalLight.rimPower, 0.001f)) *
+				gDirectionalLight.rimIntensity;
+			output.color.rgb += gDirectionalLight.rimColor * rim;
 		}
 		
 	} else {

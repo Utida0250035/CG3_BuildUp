@@ -30,6 +30,9 @@ VertexShaderOutput main(VertexShaderInput input) {
 	
 	output.normal = normalize(mul(input.normal, (float32_t3x3) gTransformMatrix.world));
 
+	float32_t4 worldPos = mul(input.position, gTransformMatrix.world);
+	output.worldPosition = worldPos.xyz;
+
 	output.instanceColor = float32_t4(1.0f, 1.0f, 1.0f, 1.0f);
 	
 	return output;

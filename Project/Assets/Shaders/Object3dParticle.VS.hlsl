@@ -40,6 +40,8 @@ VertexShaderOutput main(VertexShaderInput input, uint instanceId : SV_InstanceID
 	float3x3 worldRot = (float3x3)inst.world;
 	output.normal = normalize(mul(input.normal, worldRot));
 
+	output.worldPosition = worldPos.xyz;
+
 	output.instanceColor = inst.color;
 
 	return output;
