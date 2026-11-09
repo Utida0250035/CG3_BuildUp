@@ -1214,6 +1214,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Camera-001
 - **newIds:** 3（BuildUp シルエットなし、verify_camera_policy 未 CI、Scene 基底 unlock 既定）
 
+## ギャップスキャン tick（SCAN-20261110-001015）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Component-001
+- **newIds:** 3（kind 不一致スキップ、登録表ドリフト、component verify 未整備）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

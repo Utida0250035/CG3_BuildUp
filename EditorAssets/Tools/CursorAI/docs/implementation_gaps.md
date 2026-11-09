@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-09T23:50:37.574616+09:00
+- **lastIncrementalScanAt:** 2026-11-10T00:00:39.746375+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -74,6 +74,27 @@
 
 #### UC-Authoring
 
+### GAP-Editor-EditorSceneRuntime-002
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: high
+- frequencyBasis: JSON 手編集や kind 誤り時にコンポーネントが黙って落ちる
+- scope: UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:291
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】スロット種別不一致のコンポーネントが無警告でスキップされる
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - TryAddEmptyComponent は typeName と ComponentSlotKind の組み合わせが一致しないと false（67-94 行）
+  - BuildEntityFromDefinition は失敗時 continue のみでログ・UI 警告なし（289-293 行）
+- suggestedUse: 制作: Draw/Upd/Data 分割違反をエディタで即気づける
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T00:11:00+09:00
+- lastSeenAt: 2026-11-10T00:11:00+09:00
+
 ### GAP-Editor-EntityEditor-001
 
 - status: open
@@ -116,6 +137,28 @@
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
 
+### GAP-Editor-EntityEditorDefinition-002
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: medium
+- frequencyBasis: 方針メモの CmpMesh 等が UI 登録表とプレビュー実装で不整合
+- scope: UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:17
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - IsKnownEntityEditorComponent は 6 型のみ（EntityEditorDefinition.cpp:17-20）
+  - 方針メモは CmpMesh を描画例に挙げるが kKnownComponents に無い
+  - EditorSceneRuntime はプレビュー時に CmpMesh/CmpEditorTextureBillboard を動的追加（253-274 行）がインスペクタから選べない
+- suggestedUse: 制作: 分割方針どおりのコンポーネントを UI から一貫して選べる
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T00:11:00+09:00
+- lastSeenAt: 2026-11-10T00:11:00+09:00
+
 ### GAP-Editor-EntityEditorDefinition-001
 
 - status: open
@@ -135,6 +178,28 @@
 - suggestedUse: 制作: 同型オブジェクトへコンポーネントパラメータを素早く展開
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
+
+### GAP-Infra-component_split_verify-001
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Ship
+- scenarioId: AUT-Component-001
+- frequency: low
+- frequencyBasis: 新規 Cmp 追加時の 3 ファイル手順は手動チェックのみ
+- scope: UC-Authoring|Infra|component_split_verify|MissingTest|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:19
+- primary: `component_split_verify`
+- summary: 【Authoring】コンポーネント登録の三箇所同期を検証する自動化が無い
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - ガイドラインは EntityEditorDefinition / EntityEditorUi / EditorSceneRuntime の 4 手順を規定（19-24 行）
+  - verify_camera_policy のような component 用 verify スクリプト／CI 呼び出しが無い
+- suggestedUse: 制作・配布: 登録漏れを PR 前に検出
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T00:11:00+09:00
+- lastSeenAt: 2026-11-10T00:11:00+09:00
 
 #### UC-Debug
 
@@ -344,6 +409,7 @@
 - scanId: SCAN-20261109-232947 | at: 2026-11-09T23:30:26.570595+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-234011 | at: 2026-11-09T23:40:39.226713+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 
 ---
 
