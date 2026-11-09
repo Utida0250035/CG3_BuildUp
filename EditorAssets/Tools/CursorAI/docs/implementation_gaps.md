@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T01:01:03.761970+09:00
+- **lastIncrementalScanAt:** 2026-11-10T01:10:32.331404+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -774,6 +774,72 @@
 - firstSeenAt: 2026-11-10T01:01:00+09:00
 - lastSeenAt: 2026-11-10T01:01:00+09:00
 
+#### UC-Ship
+
+### GAP-Ship-CG2_BuildUp-001
+
+- status: open
+- tier: P0
+- score: 900
+- primaryUseCase: UC-Ship
+- secondaryUseCases: UC-Play
+- scenarioId: SHP-AssetPack-001
+- frequency: high
+- frequencyBasis: Release PostBuild が Project/Assets のみ同梱しランタイムが EditorAssets も参照
+- scope: UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:109
+- primary: `CG2_BuildUp`
+- summary: 【Ship】PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない
+- scenarioText: 配布に必要なアセットがパイプラインから漏れず同梱される。
+- evidence:
+  - Development/Release とも PostBuild は xcopy ProjectDir Assets のみ（vcxproj:109-151）
+  - SceneGame は ../EditorAssets/UX/operator_guidance.json を本編で読む
+  - ImGui 日本語フォントは ../EditorAssets/Fonts/... フォールバックあり（Release でも Fonts が Assets に無いと失敗しうる）
+- suggestedUse: 配布: exe 単体配布でも本編 UX・フォントが欠けない
+- firstSeenAt: 2026-11-10T01:21:00+09:00
+- lastSeenAt: 2026-11-10T01:21:00+09:00
+
+### GAP-Infra-asset_pack_verify-001
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-AssetPack-001
+- frequency: high
+- frequencyBasis: コード内の相対パス参照と PostBuild 同梱範囲の突合が自動化されていない
+- scope: UC-Ship|Infra|asset_pack_verify|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1
+- primary: `asset_pack_verify`
+- summary: 【Ship】同梱アセットとランタイム参照パスの整合を検証する仕組みが無い
+- scenarioText: 配布に必要なアセットがパイプラインから漏れず同梱される。
+- evidence:
+  - CI は verify_vcxproj_coverage（ソース列挙）のみでアセットパス検証無し
+  - PlaySe 等は ./Assets と ./Resources の二重候補だが Project/Resources ディレクトリ自体が無い
+- suggestedUse: 配布: ビルド成果物ディレクトリに参照パスが全て存在することを PR 前に確認
+- firstSeenAt: 2026-11-10T01:21:00+09:00
+- lastSeenAt: 2026-11-10T01:21:00+09:00
+
+### GAP-Infra-BinaryConverter-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Ship
+- secondaryUseCases: UC-Authoring
+- scenarioId: SHP-AssetPack-001
+- frequency: medium
+- frequencyBasis: OBJ→amesh 変換が手動で同梱物に .amesh が無い
+- scope: UC-Ship|Infra|BinaryConverter|MissingTest|EditorAssets/Tools/BinaryConverter/README.md:21
+- primary: `BinaryConverter`
+- summary: 【Ship】メッシュ変換パイプラインのバッチ／CI フックが未整備
+- scenarioText: 配布に必要なアセットがパイプラインから漏れず同梱される。
+- evidence:
+  - BinaryConverter README「今後: バッチ変換用 cmd / CI フック」（21 行）
+  - リポジトリに .amesh 無し、vcxproj PreBuild に変換ステップ無し
+- suggestedUse: 配布: 制作 OBJ 変更がランタイム向けバイナリへ漏れなく反映される
+- roadmapLink: feature-memos/atr_mesh_binary_format.md
+- firstSeenAt: 2026-11-10T01:21:00+09:00
+- lastSeenAt: 2026-11-10T01:21:00+09:00
+
 
 ---
 
@@ -795,6 +861,7 @@
 - scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 
 ---
 

@@ -911,6 +911,92 @@
       "roadmapLink": "feature-memos/volumetric_fog.md",
       "firstSeenAt": "2026-11-10T01:11:00+09:00",
       "lastSeenAt": "2026-11-10T01:11:00+09:00"
+    },
+    "GAP-Ship-CG2_BuildUp-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "SHP-AssetPack-001",
+      "status": "open",
+      "tier": "P0",
+      "score": 900,
+      "frequency": "high",
+      "frequencyBasis": "Release PostBuild が Project/Assets のみ同梱しランタイムが EditorAssets も参照",
+      "scopeKey": "UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:109",
+      "primary": "CG2_BuildUp",
+      "related": [
+        "PostBuildEvent",
+        "SceneGame",
+        "ImGuiJapaneseFont"
+      ],
+      "summaryShort": "PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない",
+      "summary": "PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない",
+      "scenarioText": "配布に必要なアセットがパイプラインから漏れず同梱される。",
+      "evidence": [
+        "Development/Release とも PostBuild は xcopy ProjectDir Assets のみ（vcxproj:109-151）",
+        "SceneGame は ../EditorAssets/UX/operator_guidance.json を本編で読む",
+        "ImGui 日本語フォントは ../EditorAssets/Fonts/... フォールバックあり（Release でも Fonts が Assets に無いと失敗しうる）"
+      ],
+      "suggestedUse": "配布: exe 単体配布でも本編 UX・フォントが欠けない",
+      "firstSeenAt": "2026-11-10T01:21:00+09:00",
+      "lastSeenAt": "2026-11-10T01:21:00+09:00"
+    },
+    "GAP-Infra-BinaryConverter-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "SHP-AssetPack-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "medium",
+      "frequencyBasis": "OBJ→amesh 変換が手動で同梱物に .amesh が無い",
+      "scopeKey": "UC-Ship|Infra|BinaryConverter|MissingTest|EditorAssets/Tools/BinaryConverter/README.md:21",
+      "primary": "BinaryConverter",
+      "related": [
+        "ModelStorage",
+        "obj_to_amesh.py"
+      ],
+      "summaryShort": "メッシュ変換パイプラインのバッチ／CI フックが未整備",
+      "summary": "メッシュ変換パイプラインのバッチ／CI フックが未整備",
+      "scenarioText": "配布に必要なアセットがパイプラインから漏れず同梱される。",
+      "evidence": [
+        "BinaryConverter README「今後: バッチ変換用 cmd / CI フック」（21 行）",
+        "リポジトリに .amesh 無し、vcxproj PreBuild に変換ステップ無し"
+      ],
+      "suggestedUse": "配布: 制作 OBJ 変更がランタイム向けバイナリへ漏れなく反映される",
+      "roadmapLink": "feature-memos/atr_mesh_binary_format.md",
+      "firstSeenAt": "2026-11-10T01:21:00+09:00",
+      "lastSeenAt": "2026-11-10T01:21:00+09:00"
+    },
+    "GAP-Infra-asset_pack_verify-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-AssetPack-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 760,
+      "frequency": "high",
+      "frequencyBasis": "コード内の相対パス参照と PostBuild 同梱範囲の突合が自動化されていない",
+      "scopeKey": "UC-Ship|Infra|asset_pack_verify|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1",
+      "primary": "asset_pack_verify",
+      "related": [
+        "PlaySe.h",
+        "GameAssetsPaths.h",
+        "ReleaseBuild.yml"
+      ],
+      "summaryShort": "同梱アセットとランタイム参照パスの整合を検証する仕組みが無い",
+      "summary": "同梱アセットとランタイム参照パスの整合を検証する仕組みが無い",
+      "scenarioText": "配布に必要なアセットがパイプラインから漏れず同梱される。",
+      "evidence": [
+        "CI は verify_vcxproj_coverage（ソース列挙）のみでアセットパス検証無し",
+        "PlaySe 等は ./Assets と ./Resources の二重候補だが Project/Resources ディレクトリ自体が無い"
+      ],
+      "suggestedUse": "配布: ビルド成果物ディレクトリに参照パスが全て存在することを PR 前に確認",
+      "firstSeenAt": "2026-11-10T01:21:00+09:00",
+      "lastSeenAt": "2026-11-10T01:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -946,7 +1032,10 @@
     "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:43": "GAP-Scene-SceneMovie-003",
     "UC-Authoring|Editor|StageViewCameraTuning|MissingUI|EditorAssets/Tools/CursorAI/docs/feature-memos/odyssey_style_stage_camera.md:32": "GAP-Editor-StageViewCameraTuning-001",
     "UC-Authoring|Infra|stage_view_camera_tuning|Unwired|EditorAssets/Camera/stage_view_camera_tuning.json:1": "GAP-Infra-stage_view_camera_tuning-001",
-    "UC-Authoring|Editor|AtrumEngineVisual|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535": "GAP-Editor-AtrumEngineVisual-001"
+    "UC-Authoring|Editor|AtrumEngineVisual|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535": "GAP-Editor-AtrumEngineVisual-001",
+    "UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:109": "GAP-Ship-CG2_BuildUp-001",
+    "UC-Ship|Infra|BinaryConverter|MissingTest|EditorAssets/Tools/BinaryConverter/README.md:21": "GAP-Infra-BinaryConverter-001",
+    "UC-Ship|Infra|asset_pack_verify|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-asset_pack_verify-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -967,7 +1056,10 @@
     "Scene-SceneMovieRegistry": 2,
     "Runtime-MovieCameraTrackLoader": 2,
     "Render-SceneGame": 2,
-    "Render-SceneBuildUp": 2
+    "Render-SceneBuildUp": 2,
+    "Ship-CG2_BuildUp": 2,
+    "Infra-BinaryConverter": 2,
+    "Infra-asset_pack_verify": 2
   },
   "scans": [
     {
@@ -1142,6 +1234,22 @@
         "GAP-Editor-StageViewCameraTuning-001",
         "GAP-Infra-stage_view_camera_tuning-001",
         "GAP-Editor-AtrumEngineVisual-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-012008",
+      "at": "2026-11-10T01:20:33.060096+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Ship",
+      "scenarioId": "SHP-AssetPack-001",
+      "areaHint": "Resource",
+      "priorityScore": 1460,
+      "newIds": [
+        "GAP-Ship-CG2_BuildUp-001",
+        "GAP-Infra-BinaryConverter-001",
+        "GAP-Infra-asset_pack_verify-001"
       ],
       "updatedIds": [],
       "closedIds": []

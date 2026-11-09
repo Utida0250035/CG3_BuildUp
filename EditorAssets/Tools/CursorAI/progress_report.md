@@ -1249,6 +1249,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001
 - **newIds:** 3（カメラ tuning エディタ未実装、JSON 手動同期、ポスト UI なし）
 
+## ギャップスキャン tick（SCAN-20261110-012008）
+
+- **useCase:** UC-Ship / **scenario:** SHP-AssetPack-001
+- **newIds:** 3（PostBuild は Assets のみ、amesh CI 無し、アセットパス検証無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
