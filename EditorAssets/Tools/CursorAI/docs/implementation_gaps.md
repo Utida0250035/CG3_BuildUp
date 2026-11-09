@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T01:40:32.359685+09:00
+- **lastIncrementalScanAt:** 2026-11-10T01:50:42.672348+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -842,6 +842,26 @@
 - firstSeenAt: 2026-11-10T01:41:00+09:00
 - lastSeenAt: 2026-11-10T01:41:00+09:00
 
+### GAP-Infra-Release_smoke-001
+
+- status: open
+- tier: P1
+- score: 780
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Smoke-001
+- frequency: high
+- frequencyBasis: Release CI は MSBuild 成功のみで起動スモーク無し
+- scope: UC-Ship|Infra|Release_smoke|MissingTest|.github/workflows/ReleaseBuild.yml:100
+- primary: `Release_smoke`
+- summary: 【Ship】Release ビルド後の exe 起動スモークが CI に無い
+- scenarioText: 最小シーンのスモーク起動が配布ビルドで通る（自動化未整備でも手順が文書化されている）。
+- evidence:
+  - ReleaseBuild.yml は Build Release ステップで終了（100-111 行）
+  - 実行ファイル起動・数フレーム継続のワークフロー／スクリプト無し
+- suggestedUse: 配布: マージ前に Title シーンまでの最小起動を自動検知
+- firstSeenAt: 2026-11-10T02:01:00+09:00
+- lastSeenAt: 2026-11-10T02:01:00+09:00
+
 ### GAP-Ship-EditorSources-001
 
 - status: open
@@ -902,6 +922,27 @@
 - suggestedUse: 制作: 半自律手順の buildDevelopment がクリーン環境でも通る
 - firstSeenAt: 2026-11-10T01:41:00+09:00
 - lastSeenAt: 2026-11-10T01:41:00+09:00
+
+### GAP-Ship-smoke_runbook-001
+
+- status: open
+- tier: P1
+- score: 750
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Smoke-001
+- frequency: high
+- frequencyBasis: 配布ビルドの手動スモーク手順がリポジトリに無い
+- scope: UC-Ship|Ship|smoke_runbook|MissingData|README.md:1
+- primary: `smoke_runbook`
+- summary: 【Ship】Release 向け最小起動スモークの手順書が無い
+- scenarioText: 最小シーンのスモーク起動が配布ビルドで通る（自動化未整備でも手順が文書化されている）。
+- evidence:
+  - ルート README は CI バッジのみ（起動手順無し）
+  - use_case_scenarios SHP-Smoke-001 は「手順が文書化」とあるが該当 md 無し
+  - DebugPlayArea README は Development 向けのみ
+- suggestedUse: 配布: 人手でも Title 表示までの確認手順を共有
+- firstSeenAt: 2026-11-10T02:01:00+09:00
+- lastSeenAt: 2026-11-10T02:01:00+09:00
 
 ### GAP-Ship-ForDebugSources-001
 
@@ -1028,6 +1069,27 @@
 - firstSeenAt: 2026-11-10T01:41:00+09:00
 - lastSeenAt: 2026-11-10T01:41:00+09:00
 
+### GAP-Ship-main-001
+
+- status: open
+- tier: P2
+- score: 670
+- primaryUseCase: UC-Ship
+- secondaryUseCases: UC-Debug
+- scenarioId: SHP-Smoke-001
+- frequency: medium
+- frequencyBasis: 自動スモーク用のコマンドライン／フレーム上限モードが無い
+- scope: UC-Ship|Ship|main|MissingTest|Project/Codes/Source/Application/main.cpp:5
+- primary: `main`
+- summary: 【Ship】スモーク起動用 CLI（例: フレーム数上限）が main に無い
+- scenarioText: 最小シーンのスモーク起動が配布ビルドで通る（自動化未整備でも手順が文書化されている）。
+- evidence:
+  - WinMain は引数未使用で無限ループのみ（main.cpp:5-23）
+  - CI から非対話で数フレーム実行する公式フック無し
+- suggestedUse: 配布・CI: ウィンドウ表示後 N フレームで正常終了するスモークを自動化
+- firstSeenAt: 2026-11-10T02:01:00+09:00
+- lastSeenAt: 2026-11-10T02:01:00+09:00
+
 
 ---
 
@@ -1053,6 +1115,7 @@
 - scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
 
 ---
 

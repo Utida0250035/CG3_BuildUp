@@ -22,9 +22,10 @@
     "SHP-AssetPack-001": 1,
     "SHP-Config-001": 1,
     "SHP-DevBuild-001": 1,
-    "SHP-Release-001": 1
+    "SHP-Release-001": 1,
+    "SHP-Smoke-001": 1
   },
-  "lastCompletedScanId": "SCAN-20261110-015009",
+  "lastCompletedScanId": "SCAN-20261110-020007",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 15
+  "totalTicksCompleted": 16
 }

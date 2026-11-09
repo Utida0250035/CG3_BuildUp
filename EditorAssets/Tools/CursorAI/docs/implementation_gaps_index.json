@@ -1244,6 +1244,88 @@
       "suggestedUse": "配布: デバッグカメラ／ストリーミングデバッグ UI 用コードを出荷物から分離",
       "firstSeenAt": "2026-11-10T01:51:00+09:00",
       "lastSeenAt": "2026-11-10T01:51:00+09:00"
+    },
+    "GAP-Infra-Release_smoke-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Smoke-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 780,
+      "frequency": "high",
+      "frequencyBasis": "Release CI は MSBuild 成功のみで起動スモーク無し",
+      "scopeKey": "UC-Ship|Infra|Release_smoke|MissingTest|.github/workflows/ReleaseBuild.yml:100",
+      "primary": "Release_smoke",
+      "related": [
+        "ReleaseBuild.yml",
+        "SceneTitle"
+      ],
+      "summaryShort": "Release ビルド後の exe 起動スモークが CI に無い",
+      "summary": "Release ビルド後の exe 起動スモークが CI に無い",
+      "scenarioText": "最小シーンのスモーク起動が配布ビルドで通る（自動化未整備でも手順が文書化されている）。",
+      "evidence": [
+        "ReleaseBuild.yml は Build Release ステップで終了（100-111 行）",
+        "実行ファイル起動・数フレーム継続のワークフロー／スクリプト無し"
+      ],
+      "suggestedUse": "配布: マージ前に Title シーンまでの最小起動を自動検知",
+      "firstSeenAt": "2026-11-10T02:01:00+09:00",
+      "lastSeenAt": "2026-11-10T02:01:00+09:00"
+    },
+    "GAP-Ship-smoke_runbook-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Smoke-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 750,
+      "frequency": "high",
+      "frequencyBasis": "配布ビルドの手動スモーク手順がリポジトリに無い",
+      "scopeKey": "UC-Ship|Ship|smoke_runbook|MissingData|README.md:1",
+      "primary": "smoke_runbook",
+      "related": [
+        "SHP-Smoke-001",
+        "SceneTitle",
+        "SetWorkingDirectoryToExecutable"
+      ],
+      "summaryShort": "Release 向け最小起動スモークの手順書が無い",
+      "summary": "Release 向け最小起動スモークの手順書が無い",
+      "scenarioText": "最小シーンのスモーク起動が配布ビルドで通る（自動化未整備でも手順が文書化されている）。",
+      "evidence": [
+        "ルート README は CI バッジのみ（起動手順無し）",
+        "use_case_scenarios SHP-Smoke-001 は「手順が文書化」とあるが該当 md 無し",
+        "DebugPlayArea README は Development 向けのみ"
+      ],
+      "suggestedUse": "配布: 人手でも Title 表示までの確認手順を共有",
+      "firstSeenAt": "2026-11-10T02:01:00+09:00",
+      "lastSeenAt": "2026-11-10T02:01:00+09:00"
+    },
+    "GAP-Ship-main-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [
+        "UC-Debug"
+      ],
+      "scenarioId": "SHP-Smoke-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 670,
+      "frequency": "medium",
+      "frequencyBasis": "自動スモーク用のコマンドライン／フレーム上限モードが無い",
+      "scopeKey": "UC-Ship|Ship|main|MissingTest|Project/Codes/Source/Application/main.cpp:5",
+      "primary": "main",
+      "related": [
+        "WinMain",
+        "GameOrder::Run"
+      ],
+      "summaryShort": "スモーク起動用 CLI（例: フレーム数上限）が main に無い",
+      "summary": "スモーク起動用 CLI（例: フレーム数上限）が main に無い",
+      "scenarioText": "最小シーンのスモーク起動が配布ビルドで通る（自動化未整備でも手順が文書化されている）。",
+      "evidence": [
+        "WinMain は引数未使用で無限ループのみ（main.cpp:5-23）",
+        "CI から非対話で数フレーム実行する公式フック無し"
+      ],
+      "suggestedUse": "配布・CI: ウィンドウ表示後 N フレームで正常終了するスモークを自動化",
+      "firstSeenAt": "2026-11-10T02:01:00+09:00",
+      "lastSeenAt": "2026-11-10T02:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -1291,7 +1373,10 @@
     "UC-Ship|Infra|cloud_dev_build|MissingTest|EditorAssets/Tools/CursorAI/cursorInstructions.md:31": "GAP-Infra-cloud_dev_build-001",
     "UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:140": "GAP-Ship-CG2_BuildUp-003",
     "UC-Ship|Ship|JsonTest|Incomplete|Project/Codes/Source/System/Json/JsonTest.cpp:1": "GAP-Ship-JsonTest-001",
-    "UC-Ship|Ship|ForDebugSources|Incomplete|Project/CG2_BuildUp.vcxproj:283": "GAP-Ship-ForDebugSources-001"
+    "UC-Ship|Ship|ForDebugSources|Incomplete|Project/CG2_BuildUp.vcxproj:283": "GAP-Ship-ForDebugSources-001",
+    "UC-Ship|Infra|Release_smoke|MissingTest|.github/workflows/ReleaseBuild.yml:100": "GAP-Infra-Release_smoke-001",
+    "UC-Ship|Ship|smoke_runbook|MissingData|README.md:1": "GAP-Ship-smoke_runbook-001",
+    "UC-Ship|Ship|main|MissingTest|Project/Codes/Source/Application/main.cpp:5": "GAP-Ship-main-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1321,7 +1406,10 @@
     "Infra-buildDevelopment": 3,
     "Infra-cloud_dev_build": 2,
     "Ship-JsonTest": 2,
-    "Ship-ForDebugSources": 2
+    "Ship-ForDebugSources": 2,
+    "Infra-Release_smoke": 2,
+    "Ship-smoke_runbook": 2,
+    "Ship-main": 2
   },
   "scans": [
     {
@@ -1560,6 +1648,22 @@
         "GAP-Ship-CG2_BuildUp-003",
         "GAP-Ship-JsonTest-001",
         "GAP-Ship-ForDebugSources-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-020007",
+      "at": "2026-11-10T02:00:32.963377+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Ship",
+      "scenarioId": "SHP-Smoke-001",
+      "areaHint": "Scene",
+      "priorityScore": 1420,
+      "newIds": [
+        "GAP-Infra-Release_smoke-001",
+        "GAP-Ship-smoke_runbook-001",
+        "GAP-Ship-main-001"
       ],
       "updatedIds": [],
       "closedIds": []

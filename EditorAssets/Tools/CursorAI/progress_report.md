@@ -1269,6 +1269,11 @@
 - **useCase:** UC-Ship / **scenario:** SHP-Release-001
 - **newIds:** 3（Release PDB、JsonTest 同梱、ForDebug TU 未除外）
 
+## ギャップスキャン tick（SCAN-20261110-020007）
+
+- **useCase:** UC-Ship / **scenario:** SHP-Smoke-001
+- **newIds:** 3（Release CI スモーク無し、手順書無し、main にスモーク CLI 無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
