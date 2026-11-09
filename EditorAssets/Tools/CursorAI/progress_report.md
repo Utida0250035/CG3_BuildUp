@@ -1364,6 +1364,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（3回目）
 - **newIds:** 3（インポート適用 UI、ドロップがコピー止まり、タグでツリー絞込無し）
 
+## ギャップスキャン tick（SCAN-20261110-051012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Camera-001（3回目）
+- **newIds:** 3（AllowDebug 既定、verify が Allow 未検査、StageViewCamera アスペクト固定）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

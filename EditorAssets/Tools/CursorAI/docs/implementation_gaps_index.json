@@ -2776,6 +2776,92 @@
       "suggestedUse": "制作: 同一タグ群だけを選んで調整・複製の反復",
       "firstSeenAt": "2026-11-10T05:01:00+09:00",
       "lastSeenAt": "2026-11-10T05:01:00+09:00"
+    },
+    "GAP-Scene-Scene-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Camera-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 610,
+      "frequency": "medium",
+      "frequencyBasis": "新シーンでロック忘れ時に GameOrder が Debug カメラ入力を許す",
+      "scopeKey": "UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:71",
+      "primary": "Scene",
+      "related": [
+        "AllowDebugCameraControl",
+        "GameOrder.h"
+      ],
+      "summaryShort": "AllowDebugCameraControl が既定 true でガードが二重依存",
+      "summary": "AllowDebugCameraControl が既定 true でガードが二重依存",
+      "scenarioText": "プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。",
+      "evidence": [
+        "Scene::AllowDebugCameraControl 既定は true（Scene.h:71）",
+        "GameOrder はロック false かつ Allow true で camera->Update()（GameOrder.h:63-66）",
+        "policy の verify は IsStageViewCameraLocked のみ（Allow 未検査）"
+      ],
+      "suggestedUse": "プレイ: 新規シーン追加時のカメラ入力漏れを構造で防ぐ",
+      "roadmapLink": "feature-memos/player_friendly_camera_policy.md",
+      "firstSeenAt": "2026-11-10T05:11:00+09:00",
+      "lastSeenAt": "2026-11-10T05:11:00+09:00"
+    },
+    "GAP-Infra-verify_camera_policy-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "PLY-Camera-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "low",
+      "frequencyBasis": "静的検証がエディタシーンの AllowDebugCamera 限定を見ない",
+      "scopeKey": "UC-Play|Infra|verify_camera_policy|Incomplete|EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py:61",
+      "primary": "verify_camera_policy",
+      "related": [
+        "SceneParticleEditor",
+        "AllowDebugCameraControl",
+        "player_friendly_camera_policy.md"
+      ],
+      "summaryShort": "verify_camera_policy が AllowDebugCameraControl を検査しない",
+      "summary": "verify_camera_policy が AllowDebugCameraControl を検査しない",
+      "scenarioText": "プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。",
+      "evidence": [
+        "UNLOCKED_EDITOR は locked false のみ確認（61-67 行）",
+        "SceneParticleEditor は Allow オーバーライド無しで GameOrder 更新しうる",
+        "policy 表の AllowDebugCameraControl 行は自動検証対象外"
+      ],
+      "suggestedUse": "配布: エディタ外での意図しないフリーカメラ更新を CI で検出",
+      "firstSeenAt": "2026-11-10T05:11:00+09:00",
+      "lastSeenAt": "2026-11-10T05:11:00+09:00"
+    },
+    "GAP-Camera-StageViewCamera-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Camera-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "medium",
+      "frequencyBasis": "実ウィンドウサイズと無関係なアスペクトで視野がずれる",
+      "scopeKey": "UC-Play|Camera|StageViewCamera|Contract|Project/Codes/Source/Camera/StageViewCamera.cpp:19",
+      "primary": "StageViewCamera",
+      "related": [
+        "GetAspectRatio",
+        "ComputeStageBattleViewPose",
+        "CombatCameraShake"
+      ],
+      "summaryShort": "ステージカメラのアスペクトが既定解像度固定",
+      "summary": "ステージカメラのアスペクトが既定解像度固定",
+      "scenarioText": "プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。",
+      "evidence": [
+        "GetAspectRatio は kDefaultClientWidth/Height のみ（19-21 行）",
+        "SetupPerspectiveMatrix も同比率（50-52 行）でランタイムリサイズ未反映",
+        "CombatCameraShake::ApplyStageBattleView が毎フレーム同式を適用（61-73 行）"
+      ],
+      "suggestedUse": "プレイ: 画面比率変更でも戦闘域が切れない視野を維持",
+      "firstSeenAt": "2026-11-10T05:11:00+09:00",
+      "lastSeenAt": "2026-11-10T05:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -2880,7 +2966,10 @@
     "UC-Play|Audio|StopBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:106": "GAP-Audio-StopBgmLoop-001",
     "UC-Authoring|Editor|EditorImportedAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:411": "GAP-Editor-EditorImportedAsset-001",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:271": "GAP-Editor-EntityEditor-006",
-    "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:383": "GAP-Editor-EntityEditorHierarchy-001"
+    "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:383": "GAP-Editor-EntityEditorHierarchy-001",
+    "UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:71": "GAP-Scene-Scene-002",
+    "UC-Play|Infra|verify_camera_policy|Incomplete|EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py:61": "GAP-Infra-verify_camera_policy-002",
+    "UC-Play|Camera|StageViewCamera|Contract|Project/Codes/Source/Camera/StageViewCamera.cpp:19": "GAP-Camera-StageViewCamera-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -2909,8 +2998,9 @@
     "Scene-SceneParticleEditor": 2,
     "Scene-SceneTitle": 2,
     "Audio-PauseBgmLoop": 2,
-    "Infra-verify_camera_policy": 2,
-    "Scene-Scene": 2,
+    "Infra-verify_camera_policy": 3,
+    "Scene-Scene": 3,
+    "Camera-StageViewCamera": 2,
     "Editor-EditorSceneRuntime": 5,
     "Authoring-component_split_next": 2,
     "Infra-component_split_verify": 2,
@@ -3488,6 +3578,22 @@
         "GAP-Editor-EditorImportedAsset-001",
         "GAP-Editor-EntityEditor-006",
         "GAP-Editor-EntityEditorHierarchy-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-051012",
+      "at": "2026-11-10T05:11:23.847271+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Camera-001",
+      "areaHint": "UX",
+      "priorityScore": 1080,
+      "newIds": [
+        "GAP-Scene-Scene-002",
+        "GAP-Infra-verify_camera_policy-002",
+        "GAP-Camera-StageViewCamera-001"
       ],
       "updatedIds": [],
       "closedIds": []
