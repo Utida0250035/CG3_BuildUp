@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T00:50:37.082956+09:00
+- **lastIncrementalScanAt:** 2026-11-10T01:01:03.761970+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -74,6 +74,27 @@
 
 #### UC-Authoring
 
+### GAP-Editor-StageViewCameraTuning-001
+
+- status: open
+- tier: P1
+- score: 820
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: high
+- frequencyBasis: カメラ調整 JSON は CLI プレビューのみでエディタ即時確認不可
+- scope: UC-Authoring|Editor|StageViewCameraTuning|MissingUI|EditorAssets/Tools/CursorAI/docs/feature-memos/odyssey_style_stage_camera.md:32
+- primary: `StageViewCameraTuning`
+- summary: 【Authoring】カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - odyssey_style_stage_camera.md に「未実装（次）: JSON ホットリード or ImGui スライダー→即プレビュー」（32-33 行）
+  - 調整は preview_poses.py の外部 CLI のみ（StageViewCameraTuning/README）
+- suggestedUse: 制作: カメラパラメータを編集しながらエディタで結果を見る
+- roadmapLink: feature-memos/odyssey_style_stage_camera.md
+- firstSeenAt: 2026-11-10T01:11:00+09:00
+- lastSeenAt: 2026-11-10T01:11:00+09:00
+
 ### GAP-Editor-EntityEditor-002
 
 - status: open
@@ -114,6 +135,27 @@
 - roadmapLink: feature-memos/component_split_guidelines.md
 - firstSeenAt: 2026-11-10T00:11:00+09:00
 - lastSeenAt: 2026-11-10T00:11:00+09:00
+
+### GAP-Editor-AtrumEngineVisual-001
+
+- status: open
+- tier: P1
+- score: 780
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: high
+- frequencyBasis: フォグ／ゴッドレイ／シャドウは SceneGame 直書きでエディタから触れない
+- scope: UC-Authoring|Editor|AtrumEngineVisual|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535
+- primary: `AtrumEngineVisual`
+- summary: 【Authoring】ライト・ポスト系パラメータのエディタ用 UI が無い
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - RefVolumetricFog / RefGodRays / RefDirectionalShadow は SceneGame::SetupGameLighting のみで設定
+  - EntityEditor ImGui は Cmp パラメータのみ（isLightingEnabled 等）でエンジン post 無し
+- suggestedUse: 制作: ライト・ポストをプレビューしながら調整
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T01:11:00+09:00
+- lastSeenAt: 2026-11-10T01:11:00+09:00
 
 ### GAP-Editor-EntityEditor-001
 
@@ -178,6 +220,27 @@
 - suggestedUse: 制作: 同種オブジェクトのスケール・タグ等をまとめて調整
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
+
+### GAP-Infra-stage_view_camera_tuning-001
+
+- status: open
+- tier: P2
+- score: 710
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-VisualTune-001
+- frequency: medium
+- frequencyBasis: JSON 変更がランタイムに自動反映されず C++ 定数手コピー
+- scope: UC-Authoring|Infra|stage_view_camera_tuning|Unwired|EditorAssets/Camera/stage_view_camera_tuning.json:1
+- primary: `stage_view_camera_tuning`
+- summary: 【Authoring】tuning.json と StageViewCamera 定数の自動同期が無い
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - odyssey_style_stage_camera.md: tuning 変更後は kStageBattleView* へ手動反映（36 行）
+  - Codes から stage_view_camera_tuning.json のロード参照無し（rg）
+- suggestedUse: 制作: データ編集がプレイ中カメラにそのまま反映される
+- firstSeenAt: 2026-11-10T01:11:00+09:00
+- lastSeenAt: 2026-11-10T01:11:00+09:00
 
 ### GAP-Editor-EntityEditorDefinition-002
 
@@ -731,6 +794,7 @@
 - scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 
 ---
 

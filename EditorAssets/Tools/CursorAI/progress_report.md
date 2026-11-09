@@ -1244,6 +1244,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Visual-001
 - **newIds:** 3（ライト直書き、BuildUp フォグ等なし、SceneMovie リムなし）
 
+## ギャップスキャン tick（SCAN-20261110-011015）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001
+- **newIds:** 3（カメラ tuning エディタ未実装、JSON 手動同期、ポスト UI なし）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

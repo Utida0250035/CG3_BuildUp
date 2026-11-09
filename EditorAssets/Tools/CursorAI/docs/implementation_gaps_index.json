@@ -827,6 +827,90 @@
       "roadmapLink": "feature-memos/rim_light.md",
       "firstSeenAt": "2026-11-10T01:01:00+09:00",
       "lastSeenAt": "2026-11-10T01:01:00+09:00"
+    },
+    "GAP-Editor-StageViewCameraTuning-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-VisualTune-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 820,
+      "frequency": "high",
+      "frequencyBasis": "カメラ調整 JSON は CLI プレビューのみでエディタ即時確認不可",
+      "scopeKey": "UC-Authoring|Editor|StageViewCameraTuning|MissingUI|EditorAssets/Tools/CursorAI/docs/feature-memos/odyssey_style_stage_camera.md:32",
+      "primary": "StageViewCameraTuning",
+      "related": [
+        "stage_view_camera_tuning.json",
+        "preview_poses.py",
+        "SceneEntityEditor"
+      ],
+      "summaryShort": "カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装",
+      "summary": "カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装",
+      "scenarioText": "制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。",
+      "evidence": [
+        "odyssey_style_stage_camera.md に「未実装（次）: JSON ホットリード or ImGui スライダー→即プレビュー」（32-33 行）",
+        "調整は preview_poses.py の外部 CLI のみ（StageViewCameraTuning/README）"
+      ],
+      "suggestedUse": "制作: カメラパラメータを編集しながらエディタで結果を見る",
+      "roadmapLink": "feature-memos/odyssey_style_stage_camera.md",
+      "firstSeenAt": "2026-11-10T01:11:00+09:00",
+      "lastSeenAt": "2026-11-10T01:11:00+09:00"
+    },
+    "GAP-Infra-stage_view_camera_tuning-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "AUT-VisualTune-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 710,
+      "frequency": "medium",
+      "frequencyBasis": "JSON 変更がランタイムに自動反映されず C++ 定数手コピー",
+      "scopeKey": "UC-Authoring|Infra|stage_view_camera_tuning|Unwired|EditorAssets/Camera/stage_view_camera_tuning.json:1",
+      "primary": "stage_view_camera_tuning",
+      "related": [
+        "StageViewCamera.h",
+        "StageViewCamera.cpp"
+      ],
+      "summaryShort": "tuning.json と StageViewCamera 定数の自動同期が無い",
+      "summary": "tuning.json と StageViewCamera 定数の自動同期が無い",
+      "scenarioText": "制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。",
+      "evidence": [
+        "odyssey_style_stage_camera.md: tuning 変更後は kStageBattleView* へ手動反映（36 行）",
+        "Codes から stage_view_camera_tuning.json のロード参照無し（rg）"
+      ],
+      "suggestedUse": "制作: データ編集がプレイ中カメラにそのまま反映される",
+      "firstSeenAt": "2026-11-10T01:11:00+09:00",
+      "lastSeenAt": "2026-11-10T01:11:00+09:00"
+    },
+    "GAP-Editor-AtrumEngineVisual-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-VisualTune-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 780,
+      "frequency": "high",
+      "frequencyBasis": "フォグ／ゴッドレイ／シャドウは SceneGame 直書きでエディタから触れない",
+      "scopeKey": "UC-Authoring|Editor|AtrumEngineVisual|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535",
+      "primary": "AtrumEngineVisual",
+      "related": [
+        "RefVolumetricFog",
+        "RefGodRays",
+        "RefDirectionalShadow"
+      ],
+      "summaryShort": "ライト・ポスト系パラメータのエディタ用 UI が無い",
+      "summary": "ライト・ポスト系パラメータのエディタ用 UI が無い",
+      "scenarioText": "制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。",
+      "evidence": [
+        "RefVolumetricFog / RefGodRays / RefDirectionalShadow は SceneGame::SetupGameLighting のみで設定",
+        "EntityEditor ImGui は Cmp パラメータのみ（isLightingEnabled 等）でエンジン post 無し"
+      ],
+      "suggestedUse": "制作: ライト・ポストをプレビューしながら調整",
+      "roadmapLink": "feature-memos/volumetric_fog.md",
+      "firstSeenAt": "2026-11-10T01:11:00+09:00",
+      "lastSeenAt": "2026-11-10T01:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -859,7 +943,10 @@
     "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/System/Playable/CmpMoveByInput.cpp:119": "GAP-UX-OperatorGuidanceSystem-002",
     "UC-Play|Render|SceneGame|MissingData|Project/Codes/Source/Scene/SceneGame.cpp:35": "GAP-Render-SceneGame-001",
     "UC-Play|Render|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:64": "GAP-Render-SceneBuildUp-001",
-    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:43": "GAP-Scene-SceneMovie-003"
+    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:43": "GAP-Scene-SceneMovie-003",
+    "UC-Authoring|Editor|StageViewCameraTuning|MissingUI|EditorAssets/Tools/CursorAI/docs/feature-memos/odyssey_style_stage_camera.md:32": "GAP-Editor-StageViewCameraTuning-001",
+    "UC-Authoring|Infra|stage_view_camera_tuning|Unwired|EditorAssets/Camera/stage_view_camera_tuning.json:1": "GAP-Infra-stage_view_camera_tuning-001",
+    "UC-Authoring|Editor|AtrumEngineVisual|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535": "GAP-Editor-AtrumEngineVisual-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1039,6 +1126,22 @@
         "GAP-Render-SceneGame-001",
         "GAP-Render-SceneBuildUp-001",
         "GAP-Scene-SceneMovie-003"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-011015",
+      "at": "2026-11-10T01:10:32.331404+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-VisualTune-001",
+      "areaHint": "Render",
+      "priorityScore": 1530,
+      "newIds": [
+        "GAP-Editor-StageViewCameraTuning-001",
+        "GAP-Infra-stage_view_camera_tuning-001",
+        "GAP-Editor-AtrumEngineVisual-001"
       ],
       "updatedIds": [],
       "closedIds": []
