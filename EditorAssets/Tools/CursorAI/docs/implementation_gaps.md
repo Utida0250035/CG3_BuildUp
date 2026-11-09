@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T06:20:59.799180+09:00
+- **lastIncrementalScanAt:** 2026-11-10T06:31:21.084005+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1957,6 +1957,27 @@
 - firstSeenAt: 2026-11-10T03:41:00+09:00
 - lastSeenAt: 2026-11-10T03:41:00+09:00
 
+### GAP-Audio-PlaySceneBgm-001
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: BGM 再開のたびに全ストリーム／ループ SE を停止
+- scope: UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:687
+- primary: `PlaySceneBgm`
+- summary: 【Play】PlaySceneBgm 開始時に全ボイスを一括停止
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PlaySceneBgm 先頭で StopAllStreamingVoices / StopAllLoopingShortVoices（687-688 行）
+  - SceneGame::MaintainSceneBgmIfNeeded が切断検知で再 PlayBgmLoop（238 行）
+  - 再開のたびに弾幕・ヒット等の SE ストリームが巻き添え停止しうる
+- suggestedUse: プレイ: BGM 復帰と SE 再生の共存
+- firstSeenAt: 2026-11-10T06:41:00+09:00
+- lastSeenAt: 2026-11-10T06:41:00+09:00
+
 ### GAP-Render-SceneGame-004
 
 - status: open
@@ -2207,6 +2228,27 @@
 - roadmapLink: feature-memos/player_friendly_camera_policy.md
 - firstSeenAt: 2026-11-10T05:11:00+09:00
 - lastSeenAt: 2026-11-10T05:11:00+09:00
+
+### GAP-Scene-SceneGame-006
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 死亡演出中は BGM 維持ロジックが停止
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:228
+- primary: `SceneGame`
+- summary: 【Play】撃破演出中は MaintainSceneBgmIfNeeded が無効
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - pendingDefeat_!=None で即 return（228-230 行）
+  - Update 先頭で撃破演出分岐が BGM 維持より先（131-158 行）
+  - ボス撃破は OnBossDefeated で BGM 停止済み、自機撃墜は演出中も維持呼び出し無し
+- suggestedUse: プレイ: 演出フェーズでもストリーム切れを検知復帰
+- firstSeenAt: 2026-11-10T06:41:00+09:00
+- lastSeenAt: 2026-11-10T06:41:00+09:00
 
 ### GAP-Scene-SceneMovie-005
 
@@ -2467,6 +2509,27 @@
 - roadmapLink: feature-memos/rim_light.md
 - firstSeenAt: 2026-11-10T01:01:00+09:00
 - lastSeenAt: 2026-11-10T01:01:00+09:00
+
+### GAP-Audio-PlaySeLoop-001
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 環境ループ SE API がシーンから未使用
+- scope: UC-Play|Audio|PlaySeLoop|Unwired|Project/Codes/Include/System/PlaySe.h:87
+- primary: `PlaySeLoop`
+- summary: 【Play】PlaySeLoop がコードベースで未呼び出し
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PlaySeLoop は Manager::Play(index, true) を返すのみ（87-94 行）
+  - rg PlaySeLoop は PlaySe.h 定義のみ
+  - 本編環境音・警告ループ等の層が BGM 以外に無い
+- suggestedUse: プレイ: BGM と独立したループ SE 層
+- firstSeenAt: 2026-11-10T06:41:00+09:00
+- lastSeenAt: 2026-11-10T06:41:00+09:00
 
 #### UC-Ship
 
@@ -2795,7 +2858,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-043016 | at: 2026-11-10T04:30:49.405497+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
@@ -2810,6 +2872,7 @@
 - scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-063013 | at: 2026-11-10T06:31:21.084005+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

@@ -1409,6 +1409,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（4回目）
 - **newIds:** 3（PlayRequest Path 未使用、BuildUp が Runtime 未参照、起動が EntityEditor 固定）
 
+## ギャップスキャン tick（SCAN-20261110-064013）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（4回目）
+- **newIds:** 3（PlaySceneBgm 全停止、PlaySeLoop 未使用、撃破演出中 BGM 維持無効）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
