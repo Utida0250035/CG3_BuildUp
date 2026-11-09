@@ -21,6 +21,9 @@
 | `branchNaming.md` | 次作業ブランチの命名規則（roadmap 小見出し 1 行＝1 ブランチ） |
 | `docs/feature-memos/` | ロードマップ正本・下書き（`README.md` 参照） |
 | `loopRoadmapDev.ps1` | `/loop` 用 tick（報告 200kB 超過で自動停止） |
+| `loopGapScanDev.ps1` | `/loop` 用ギャップスキャン tick（キーワード「ギャップスキャンを実行して」） |
+| `planGapScanTick.py` / `recordGapScanTick.py` / `syncImplementationGapsMd.py` | 1 tick の範囲選定・完了記録・md 同期 |
+| `docs/implementation_gaps.md` 他 | 用途別実装不足の蓄積（§6.6） |
 | `loopReportGuard.ps1` | `progress_report.md` サイズ監視・停止記録追記 |
 | `loopMergeTickToDevelop.ps1` | ループ成功 tick: マージ・作業ブランチ削除・次ブランチ作成（`-NextBranchName` 必須） |
 | `loopRegisterBuildFailure.ps1` | ビルド失敗記録（3 回でロールバック＋報告追記） |

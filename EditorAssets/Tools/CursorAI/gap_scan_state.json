@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "useCaseRotation": ["UC-Play", "UC-Authoring", "UC-Debug", "UC-Ship"],
+  "rotationCursor": 0,
+  "scenarioScanCounts": {},
+  "lastCompletedScanId": "",
+  "currentPlannedScanId": "",
+  "totalTicksCompleted": 0
+}

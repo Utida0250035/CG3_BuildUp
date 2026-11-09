@@ -1,0 +1,26 @@
+---
+description: ギャップスキャン（用途別実装不足の 1 tick）。「ギャップスキャンを実行して」で起動
+alwaysApply: true
+---
+
+# ギャップスキャン
+
+ユーザーが **「ギャップスキャンを実行して」** と送ったとき（`/loop` の gap-scan tick を含む）、次を **この 1 メッセージで 1 tick 分** 実行する。
+
+## 必須参照
+
+- `EditorAssets/Tools/CursorAI/cursorInstructions.md` **§6.6**・**§7.1.4**
+- 計画: `python3 EditorAssets/Tools/CursorAI/planGapScanTick.py` → Read `gap_scan_tick.json`
+
+## tick 手順（要約）
+
+1. **plan** … 優先順位で **シナリオ 1 件** の範囲が決まる（自前で範囲を広げない）。
+2. **突合** … その用途で「できないこと」だけ GAP / PENDING 化（`scopeKey` 重複禁止）。
+3. **sync** … `syncImplementationGapsMd.py`（index 更新後）。
+4. **record** … `recordGapScanTick.py --new-ids … --updated-ids …`
+5. **報告** … `progress_report.md` に `scanId`・useCase・newIds 件数を追記。
+
+## 除外
+
+- 本 tick は **ビルド不要**・**startTaskBranchFromDevelop 不要**（ドキュメント／index のみ）。
+- ギャップ解消の **コード実装** は別タスク（§6.5・ビルド必須）。

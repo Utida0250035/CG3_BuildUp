@@ -13,8 +13,11 @@
 
 ## 運用（エージェント向け要約）
 
-1. スキャン前に **`implementation_gaps_index.json`** を Read する。
-2. **UseCase を先に指定**し、`use_case_scenarios.md` のシナリオ単位で「その用途でできないこと」だけを GAP 化する。
+**キーワード:** `ギャップスキャンを実行して`（1 回 = 1 tick）
+
+1. `planGapScanTick.py` で **`gap_scan_tick.json`** の範囲（シナリオ 1 件）を取得する。
+2. スキャン前に **`implementation_gaps_index.json`** を Read する。
+3. 計画されたシナリオについてのみ、「その用途でできないこと」だけを GAP 化する。
 3. **用途が推測できない候補は GAP にしない**（下記 §用途不明（確認待ち）へ `PENDING-UC-*` のみ）。
 4. マージは **`scopeKey`**（`primaryUseCase | Area | PrimarySymbol | Kind | Anchor`）で突合。一致時は **新規 ID を発行しない**（`summary` / `evidence` / `lastSeenAt` の更新のみ）。
 5. 一覧本文は **index から再生成してよい**（見出し `### GAP-...` は ID ごとに 1 つのみ）。
