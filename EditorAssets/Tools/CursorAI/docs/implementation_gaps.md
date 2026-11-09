@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T02:00:32.963377+09:00
+- **lastIncrementalScanAt:** 2026-11-10T02:10:43.537320+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -436,6 +436,26 @@
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
 
+### GAP-Infra-frame_profiler-001
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-Profiler-001
+- frequency: high
+- frequencyBasis: フレーム内 CPU／GPU 区間計測の仕組みが無い
+- scope: UC-Debug|Infra|frame_profiler|MissingData|Project/Codes/Source/Engine/Renderer/Draw.cpp:64
+- primary: `frame_profiler`
+- summary: 【Debug】サブシステム別フレームプロファイラが未実装
+- scenarioText: Development ビルドでフレームコストの当たりを付け、本番相当設定と切り分けられる。
+- evidence:
+  - Codes 配下に Profiler/Tracy/GPU timestamp クエリ参照無し
+  - Draw/GameOrder に区間計測 API 無し
+- suggestedUse: デバッグ: Update/Draw/オーディオのどこが重いか即座に特定
+- firstSeenAt: 2026-11-10T02:21:00+09:00
+- lastSeenAt: 2026-11-10T02:21:00+09:00
+
 ### GAP-Editor-EntityEditorUi-004
 
 - status: open
@@ -496,6 +516,26 @@
 - firstSeenAt: 2026-11-09T23:51:00+09:00
 - lastSeenAt: 2026-11-09T23:51:00+09:00
 
+### GAP-Debug-FrameDeltaTime-001
+
+- status: open
+- tier: P2
+- score: 720
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-Profiler-001
+- frequency: high
+- frequencyBasis: フレーム Δt はあるが可視化・スパイク検出 UI が無い
+- scope: UC-Debug|Debug|FrameDeltaTime|MissingUI|Project/Codes/Include/System/DeltaTime.h:35
+- primary: `FrameDeltaTime`
+- summary: 【Debug】フレーム時間のオーバーレイ／ヒストグラムが無い
+- scenarioText: Development ビルドでフレームコストの当たりを付け、本番相当設定と切り分けられる。
+- evidence:
+  - FrameDeltaTime はゲームロジック用のみ（ForDebug から参照無し）
+  - ImGui に FPS/ms 表示ウィンドウ無し（Audio ストリーミング専用窓のみ）
+- suggestedUse: デバッグ: ヒッチや平均フレーム時間を Development で監視
+- firstSeenAt: 2026-11-10T02:21:00+09:00
+- lastSeenAt: 2026-11-10T02:21:00+09:00
+
 ### GAP-Infra-scaffold_play_area-001
 
 - status: open
@@ -515,6 +555,28 @@
 - suggestedUse: デバッグ: エディタ内で名前入力→テスト JSON 生成まで一気通貫
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
+
+### GAP-Ship-Development_opt-001
+
+- status: open
+- tier: P2
+- score: 690
+- primaryUseCase: UC-Debug
+- secondaryUseCases: UC-Ship
+- scenarioId: DBG-Profiler-001
+- frequency: medium
+- frequencyBasis: Development は最適化無効＋ImGui で Release と性能特性が一致しない
+- scope: UC-Debug|Ship|Development_opt|Contract|Project/CG2_BuildUp.vcxproj:171
+- primary: `Development_opt`
+- summary: 【Debug】本番相当プロファイル計測用の構成／手順が未定義
+- scenarioText: Development ビルドでフレームコストの当たりを付け、本番相当設定と切り分けられる。
+- evidence:
+  - Development|x64: Optimization Disabled＋USE_IMGUI（171-164 行）
+  - Release|x64: NDEBUG＋MinSpace（125-132 行）
+  - プロファイル切り分けの feature-memo／vcxproj プロファイル無し
+- suggestedUse: デバッグ: 最適化とエディタ OFF で Release に近い計測を再現
+- firstSeenAt: 2026-11-10T02:21:00+09:00
+- lastSeenAt: 2026-11-10T02:21:00+09:00
 
 #### UC-Play
 
@@ -1163,7 +1225,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261109-234011 | at: 2026-11-09T23:40:39.226713+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
@@ -1178,6 +1239,7 @@
 - scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
 
 ---
 

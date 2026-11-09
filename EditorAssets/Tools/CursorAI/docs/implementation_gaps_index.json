@@ -1407,6 +1407,89 @@
       "suggestedUse": "デバッグ: エディタ内で名前入力→テスト JSON 生成まで一気通貫",
       "firstSeenAt": "2026-11-10T02:11:00+09:00",
       "lastSeenAt": "2026-11-10T02:11:00+09:00"
+    },
+    "GAP-Infra-frame_profiler-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-Profiler-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 800,
+      "frequency": "high",
+      "frequencyBasis": "フレーム内 CPU／GPU 区間計測の仕組みが無い",
+      "scopeKey": "UC-Debug|Infra|frame_profiler|MissingData|Project/Codes/Source/Engine/Renderer/Draw.cpp:64",
+      "primary": "frame_profiler",
+      "related": [
+        "AtrumEngine::Process",
+        "GameOrder::Run",
+        "D3D12"
+      ],
+      "summaryShort": "サブシステム別フレームプロファイラが未実装",
+      "summary": "サブシステム別フレームプロファイラが未実装",
+      "scenarioText": "Development ビルドでフレームコストの当たりを付け、本番相当設定と切り分けられる。",
+      "evidence": [
+        "Codes 配下に Profiler/Tracy/GPU timestamp クエリ参照無し",
+        "Draw/GameOrder に区間計測 API 無し"
+      ],
+      "suggestedUse": "デバッグ: Update/Draw/オーディオのどこが重いか即座に特定",
+      "firstSeenAt": "2026-11-10T02:21:00+09:00",
+      "lastSeenAt": "2026-11-10T02:21:00+09:00"
+    },
+    "GAP-Debug-FrameDeltaTime-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-Profiler-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 720,
+      "frequency": "high",
+      "frequencyBasis": "フレーム Δt はあるが可視化・スパイク検出 UI が無い",
+      "scopeKey": "UC-Debug|Debug|FrameDeltaTime|MissingUI|Project/Codes/Include/System/DeltaTime.h:35",
+      "primary": "FrameDeltaTime",
+      "related": [
+        "DeltaTime",
+        "ImGui"
+      ],
+      "summaryShort": "フレーム時間のオーバーレイ／ヒストグラムが無い",
+      "summary": "フレーム時間のオーバーレイ／ヒストグラムが無い",
+      "scenarioText": "Development ビルドでフレームコストの当たりを付け、本番相当設定と切り分けられる。",
+      "evidence": [
+        "FrameDeltaTime はゲームロジック用のみ（ForDebug から参照無し）",
+        "ImGui に FPS/ms 表示ウィンドウ無し（Audio ストリーミング専用窓のみ）"
+      ],
+      "suggestedUse": "デバッグ: ヒッチや平均フレーム時間を Development で監視",
+      "firstSeenAt": "2026-11-10T02:21:00+09:00",
+      "lastSeenAt": "2026-11-10T02:21:00+09:00"
+    },
+    "GAP-Ship-Development_opt-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "DBG-Profiler-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 690,
+      "frequency": "medium",
+      "frequencyBasis": "Development は最適化無効＋ImGui で Release と性能特性が一致しない",
+      "scopeKey": "UC-Debug|Ship|Development_opt|Contract|Project/CG2_BuildUp.vcxproj:171",
+      "primary": "Development_opt",
+      "related": [
+        "Release|x64",
+        "USE_IMGUI",
+        "Optimization"
+      ],
+      "summaryShort": "本番相当プロファイル計測用の構成／手順が未定義",
+      "summary": "本番相当プロファイル計測用の構成／手順が未定義",
+      "scenarioText": "Development ビルドでフレームコストの当たりを付け、本番相当設定と切り分けられる。",
+      "evidence": [
+        "Development|x64: Optimization Disabled＋USE_IMGUI（171-164 行）",
+        "Release|x64: NDEBUG＋MinSpace（125-132 行）",
+        "プロファイル切り分けの feature-memo／vcxproj プロファイル無し"
+      ],
+      "suggestedUse": "デバッグ: 最適化とエディタ OFF で Release に近い計測を再現",
+      "firstSeenAt": "2026-11-10T02:21:00+09:00",
+      "lastSeenAt": "2026-11-10T02:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -1460,7 +1543,10 @@
     "UC-Ship|Ship|main|MissingTest|Project/Codes/Source/Application/main.cpp:5": "GAP-Ship-main-001",
     "UC-Debug|Editor|EditorAssetsPaths|MissingData|Project/Codes/Include/System/Editor/EditorAssetsPaths.h:6": "GAP-Editor-EditorAssetsPaths-001",
     "UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:419": "GAP-Editor-EntityEditorUi-004",
-    "UC-Debug|Infra|scaffold_play_area|Unwired|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:1": "GAP-Infra-scaffold_play_area-001"
+    "UC-Debug|Infra|scaffold_play_area|Unwired|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:1": "GAP-Infra-scaffold_play_area-001",
+    "UC-Debug|Infra|frame_profiler|MissingData|Project/Codes/Source/Engine/Renderer/Draw.cpp:64": "GAP-Infra-frame_profiler-001",
+    "UC-Debug|Debug|FrameDeltaTime|MissingUI|Project/Codes/Include/System/DeltaTime.h:35": "GAP-Debug-FrameDeltaTime-001",
+    "UC-Debug|Ship|Development_opt|Contract|Project/CG2_BuildUp.vcxproj:171": "GAP-Ship-Development_opt-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1496,7 +1582,10 @@
     "Ship-main": 2,
     "Editor-EditorAssetsPaths": 2,
     "Editor-EntityEditorUi": 5,
-    "Infra-scaffold_play_area": 2
+    "Infra-scaffold_play_area": 2,
+    "Infra-frame_profiler": 2,
+    "Debug-FrameDeltaTime": 2,
+    "Ship-Development_opt": 2
   },
   "scans": [
     {
@@ -1767,6 +1856,22 @@
         "GAP-Editor-EditorAssetsPaths-001",
         "GAP-Editor-EntityEditorUi-004",
         "GAP-Infra-scaffold_play_area-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-022017",
+      "at": "2026-11-10T02:20:41.561155+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-Profiler-001",
+      "areaHint": "Runtime",
+      "priorityScore": 1370,
+      "newIds": [
+        "GAP-Infra-frame_profiler-001",
+        "GAP-Debug-FrameDeltaTime-001",
+        "GAP-Ship-Development_opt-001"
       ],
       "updatedIds": [],
       "closedIds": []

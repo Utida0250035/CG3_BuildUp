@@ -1279,6 +1279,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-PlayArea-001
 - **newIds:** 3（DebugPlayArea パス未定義、シーン一覧対象外、scaffold 未配線）
 
+## ギャップスキャン tick（SCAN-20261110-022017）
+
+- **useCase:** UC-Debug / **scenario:** DBG-Profiler-001
+- **newIds:** 3（区間プロファイラ無し、Δt UI 無し、Release 相当計測手順無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
