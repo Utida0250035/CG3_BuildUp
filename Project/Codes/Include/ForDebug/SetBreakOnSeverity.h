@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _DEBUG
+#if defined(ATRUM_D3D12_DEBUG_LAYER)
 
 #include <d3d12.h>
 #pragma comment(lib, "d3d12.lib")
@@ -11,9 +11,9 @@
 
 namespace Atrum::Debug {
 
-	void SetBreakOnSeverity([[maybe_unused]] ID3D12Device* pDevice) {
+	inline void SetBreakOnSeverity([[maybe_unused]] ID3D12Device* pDevice) {
 
-#ifdef _DEBUG
+#if defined(ATRUM_D3D12_DEBUG_LAYER)
 
 		Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
 		if (SUCCEEDED(pDevice->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
@@ -22,8 +22,6 @@ namespace Atrum::Debug {
 			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, TRUE);
 			// 通常のエラー時にブレーク
 			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, TRUE);
-			// 警告時にブレーク
-			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, TRUE);
 
 		}
 

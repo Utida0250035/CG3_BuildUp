@@ -634,12 +634,6 @@ void AtrumEngine::PreDraw() {
   commandContextDirect_->GetCommandList()->ClearRenderTargetView(
       swapChainManager_->GetRtvHandleCurrent(), clearColor, 0, nullptr);
 
-  // 描画用のDescriptorHeapの設定
-  ID3D12DescriptorHeap *descriptorHeaps[] = {
-      srvAllocator_->GetDescriptorHeap()};
-  commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1,
-                                                              descriptorHeaps);
-
   // Viewportを設定
   if (subViewportOverride_.has_value() && subScissorOverride_.has_value()) {
     commandContextDirect_->GetCommandList()->RSSetViewports(
@@ -653,39 +647,39 @@ void AtrumEngine::PreDraw() {
         1, &window_->GetScissorRect());
   }
 
-  // RootSignatureを設定 PSOに設定しているが別途の設定が必要
+  RebindObject3dDrawBindings();
+}
+
+void AtrumEngine::RebindObject3dDrawBindings() {
+  if (!isInitialized_) {
+    return;
+  }
+
+  ID3D12DescriptorHeap *descriptorHeaps[] = {
+      srvAllocator_->GetDescriptorHeap()};
+  commandContextDirect_->GetCommandList()->SetDescriptorHeaps(1,
+                                                              descriptorHeaps);
+
   commandContextDirect_->GetCommandList()->SetGraphicsRootSignature(
       rootSignature_->GetRootSignature());
 
-  // PSOを設定
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
-
   pDraw_->SetActiveBlendMode(blendMode_);
 
-  // VBVを設定
   commandContextDirect_->GetCommandList()->IASetVertexBuffers(
       0, 1, pDraw_->vertexBuffer_->PGetVertexBufferView());
-
-  // IBVを設定
   commandContextDirect_->GetCommandList()->IASetIndexBuffer(
       pDraw_->indexBuffer_->PGetBufferView());
-
-  // 形状を設定 PSOに設定しているものとは別で同じものを設定すると考える
   commandContextDirect_->GetCommandList()->IASetPrimitiveTopology(
       D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  // マテリアルCBufferの場所を設定
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
       0, pDraw_->materialBuffer_->GetGpuVirtualAddress());
-
-  // Transformation用のCBufferの場所を設定
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
       1, pDraw_->transformationBuffer_->GetGpuVirtualAddress());
 
   FlushDirectionalLightConstantBuffer();
-
-  // directionalLight用のCBufferの場所を設定
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
       3, directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -776,6 +770,7 @@ void AtrumEngine::EditorRenderSceneViewTarget(
       depthDsv, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
   ClearSubViewport();
+  RebindObject3dDrawBindings();
   drawSceneContent();
 
   D3D12_RESOURCE_BARRIER toSrv{};

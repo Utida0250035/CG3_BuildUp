@@ -41,18 +41,17 @@ namespace Atrum {
 	void SceneTitle::Update() {
 		UpdateBackgrounds();
 
-		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
-
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 		// エディタビルドの起動シーンは SceneEntityEditor（タイトル経由の遷移は無効）
 		return;
-#endif
-
+#else
+		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
 		if (input.isSubmitTrigger) {
 			Atrum::PlaySubmitSe();
 			Atrum::CommandChangeScene::Instance()->Set(SceneGame::Instance(),
 				std::make_unique<ChangeSceneFade>().release());
 		}
+#endif
 	}
 
 	void SceneTitle::DrawScene() {

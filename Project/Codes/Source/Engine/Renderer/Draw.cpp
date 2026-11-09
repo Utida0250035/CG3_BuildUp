@@ -664,6 +664,10 @@ namespace Atrum {
 		const uint32_t& vertexCountInInstance,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
+		if (indexDataCountInInstance == 0 || vertexCountInInstance == 0) {
+			return;
+		}
+
 		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
 			return;
 		}
@@ -715,6 +719,10 @@ namespace Atrum {
 	void Draw::DrawCall(const uint32_t& textureIndex,
 		const uint32_t& vertexCountInInstance,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (vertexCountInInstance == 0) {
+			return;
+		}
 
 		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
 			return;

@@ -7,6 +7,7 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/EntityFactory.h"
+#include "System/Entity/Entity.h"
 
 #include <algorithm>
 
@@ -98,7 +99,7 @@ void SceneMovie::Update() {
   }
 
   if (returnScene_ != nullptr &&
-      Input::PlayInput::Instance()->IsKeyTrigger(Input::Key::Escape)) {
+      Input::PlayInput::Instance()->IsKeyTrigger(Input::Key::ESCAPE)) {
     RequestReturnToCaller();
     return;
   }

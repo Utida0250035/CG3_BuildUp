@@ -7,9 +7,9 @@
 
 namespace Atrum::Debug {
 
-	void ErrorSuppressionDebug([[maybe_unused]] ID3D12Device* pDevice) {
+	inline void ErrorSuppressionDebug([[maybe_unused]] ID3D12Device* pDevice) {
 
-#ifdef _DEBUG
+#if defined(ATRUM_D3D12_DEBUG_LAYER)
 
 		ID3D12InfoQueue* infoQueue = nullptr;
 
@@ -20,9 +20,6 @@ namespace Atrum::Debug {
 
 			// エラー時に止まる
 			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
-
-			// 警告時に止まる
-			infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_WARNING, true);
 
 			D3D12_MESSAGE_ID denyIds[] = {
 				// Windows11でのDXGIデバッグレイヤーとDX12デバッグレイヤーの相互作用バグによるエラーメッセージ

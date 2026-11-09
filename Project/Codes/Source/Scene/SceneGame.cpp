@@ -25,6 +25,7 @@
 #include "System/Entity/Entity.h"
 #include "System/DeltaTime.h"
 #include "System/EntityFactory.h"
+#include "System/PlayerParryReach.h"
 #include "System/Particle/GameCombatParticleEffects.h"
 #include "System/PlaySe.h"
 

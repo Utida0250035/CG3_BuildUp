@@ -155,8 +155,7 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
 void SceneBuildUp::DrawScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   return;
-#endif
-
+#else
   Atrum::Engine *engine = Atrum::Engine::Instance();
   if (engine == nullptr) {
     return;
@@ -166,6 +165,7 @@ void SceneBuildUp::DrawScene() {
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
   engine->SetCamera(GetCamera());
   DrawRuntimeEntities();
+#endif
 }
 
 void SceneBuildUp::Draw() {

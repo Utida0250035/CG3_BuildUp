@@ -17,19 +17,19 @@ bool &StreamingMemoryDebugShowFlag() {
   return showWindow;
 }
 
-const char *VoiceStateLabel(const Audio::VoiceState state) {
+const char *VoiceStateLabel(const VoiceState state) {
   switch (state) {
-  case Audio::VoiceState::Playing:
+  case VoiceState::Playing:
     return "Playing";
-  case Audio::VoiceState::Paused:
+  case VoiceState::Paused:
     return "Paused";
-  case Audio::VoiceState::Waiting:
+  case VoiceState::Waiting:
     return "Waiting";
-  case Audio::VoiceState::Loading:
+  case VoiceState::Loading:
     return "Loading";
-  case Audio::VoiceState::Streaming:
+  case VoiceState::Streaming:
     return "Streaming";
-  case Audio::VoiceState::Stopped:
+  case VoiceState::Stopped:
   default:
     return "Stopped";
   }
@@ -112,8 +112,12 @@ void DrawAudioStreamingMemoryDebugWindow() {
         ImGui::TextUnformatted("-");
       }
       ImGui::TableSetColumnIndex(4);
-      ImGui::ProgressBar(row.queueFill01, ImVec2(-1.0f, 0.0f),
-                         "%u buf", row.buffersQueued);
+      {
+        char queueOverlay[32];
+        std::snprintf(queueOverlay, sizeof(queueOverlay), "%u buf",
+                      row.buffersQueued);
+        ImGui::ProgressBar(row.queueFill01, ImVec2(-1.0f, 0.0f), queueOverlay);
+      }
       ImGui::TableSetColumnIndex(5);
       ImGui::ProgressBar(row.decoderBacklog01, ImVec2(-1.0f, 0.0f),
                          row.isStreamingFlag ? "stream" : "idle");

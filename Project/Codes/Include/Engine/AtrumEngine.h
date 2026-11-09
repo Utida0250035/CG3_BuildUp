@@ -545,6 +545,9 @@ namespace Atrum {
 
 		void FlushDirectionalLightConstantBuffer();
 
+		/// Object3D 描画用のヒープ・PSO・VB/IB・ルート CBV（PreDraw 後半と同等）
+		void RebindObject3dDrawBindings();
+
 		void SetCamera(Camera* camera);
 
 		void SetBlendMode(const BlendMode& blendMode);
