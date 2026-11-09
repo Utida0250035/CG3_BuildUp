@@ -162,6 +162,86 @@
       "suggestedUse": "制作: 同型オブジェクトへコンポーネントパラメータを素早く展開",
       "firstSeenAt": "2026-11-09T23:41:00+09:00",
       "lastSeenAt": "2026-11-09T23:41:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUpRegistry-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 820,
+      "frequency": "medium",
+      "frequencyBasis": "DebugPlayArea 手順は README のみでエディタ UI から到達できない",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUpRegistry|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:35",
+      "primary": "SceneBuildUpRegistry",
+      "related": [
+        "SceneEntityEditor",
+        "DebugPlayArea"
+      ],
+      "summaryShort": "最小ランタイム検証シーン起動がエディタから未配線",
+      "summary": "最小ランタイム検証シーン起動がエディタから未配線",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "SceneBuildUpRegistry::Launch は実装あるが Editor コードから参照無し（rg Editor 配下 0 件）",
+        "DebugPlayAreaGenerator README の手順 2 のみ（C++ 直 Launch 想定）"
+      ],
+      "suggestedUse": "デバッグ: ストリーミング等を本編外の最小シーンで試す",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-09T23:51:00+09:00",
+      "lastSeenAt": "2026-11-09T23:51:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 740,
+      "frequency": "high",
+      "frequencyBasis": "Development 起動の既定シーンは EntityEditor で「シーンを実行」はプレビュータブ内シミュレーション",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:129",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "EntityEditor",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "シーン実行が本番相当 SceneBuildUp 経路にならない",
+      "summary": "シーン実行が本番相当 SceneBuildUp 経路にならない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "requestPlayRuntimeScene は Runtime タブ＋previewEntities_ の Update のみ（SceneEntityEditor.cpp:129-137）",
+        "CommandChangeScene による SceneBuildUp 遷移や既定 Feature シーン JSON パス無し"
+      ],
+      "suggestedUse": "デバッグ: エディタ UI と切り離したランタイムパスで機能を検証",
+      "firstSeenAt": "2026-11-09T23:51:00+09:00",
+      "lastSeenAt": "2026-11-09T23:51:00+09:00"
+    },
+    "GAP-Infra-FeatureTestScene-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 760,
+      "frequency": "medium",
+      "frequencyBasis": "ユーザー合意の SceneFeatureTest 相当の既定アセット／シーンクラスが未整備",
+      "scopeKey": "UC-Debug|Infra|FeatureTestScene|MissingData|EditorAssets/DebugPlayArea/template_test_play_area.scene.json:1",
+      "primary": "FeatureTestScene",
+      "related": [
+        "use_case_scenarios DBG-FeatureScene-001"
+      ],
+      "summaryShort": "エディタ既定の機能検証シーン（FeatureTest）が定義されていない",
+      "summary": "エディタ既定の機能検証シーン（FeatureTest）が定義されていない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "コードベースに SceneFeatureTest クラス／シンボル無し（rg FeatureTest 0 件、Codes 配下）",
+        "DebugPlayArea テンプレは手動 scaffold のみで既定起動シーンではない（CommandScene は SceneEntityEditor）"
+      ],
+      "suggestedUse": "デバッグ: 機能ごとミニシナリオを既定導線で開く",
+      "firstSeenAt": "2026-11-09T23:51:00+09:00",
+      "lastSeenAt": "2026-11-09T23:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -170,7 +250,10 @@
     "UC-Play|Scene|SceneMovie|MissingData|Project/Codes/Source/Scene/SceneMovie.cpp:77": "GAP-Scene-SceneMovie-001",
     "UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:374": "GAP-Editor-EntityEditor-001",
     "UC-Authoring|Editor|UiState|MissingUI|Project/Codes/Include/System/Editor/Entity/EntityEditor.h:25": "GAP-Editor-UiState-001",
-    "UC-Authoring|Editor|EntityEditorDefinition|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:530": "GAP-Editor-EntityEditorDefinition-001"
+    "UC-Authoring|Editor|EntityEditorDefinition|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:530": "GAP-Editor-EntityEditorDefinition-001",
+    "UC-Debug|Scene|SceneBuildUpRegistry|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:35": "GAP-Scene-SceneBuildUpRegistry-001",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:129": "GAP-Editor-SceneEntityEditor-001",
+    "UC-Debug|Infra|FeatureTestScene|MissingData|EditorAssets/DebugPlayArea/template_test_play_area.scene.json:1": "GAP-Infra-FeatureTestScene-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -179,7 +262,10 @@
     "Scene-SceneMovie": 2,
     "Editor-EntityEditor": 2,
     "Editor-UiState": 2,
-    "Editor-EntityEditorDefinition": 2
+    "Editor-EntityEditorDefinition": 2,
+    "Scene-SceneBuildUpRegistry": 2,
+    "Editor-SceneEntityEditor": 2,
+    "Infra-FeatureTestScene": 2
   },
   "scans": [
     {
@@ -210,6 +296,22 @@
         "GAP-Editor-EntityEditor-001",
         "GAP-Editor-UiState-001",
         "GAP-Editor-EntityEditorDefinition-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261109-235016",
+      "at": "2026-11-09T23:50:37.574616+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1550,
+      "newIds": [
+        "GAP-Scene-SceneBuildUpRegistry-001",
+        "GAP-Editor-SceneEntityEditor-001",
+        "GAP-Infra-FeatureTestScene-001"
       ],
       "updatedIds": [],
       "closedIds": []

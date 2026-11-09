@@ -1204,6 +1204,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001
 - **newIds:** 3（エンティティ複製 UI なし、複数選択なし、コンポーネント CP なし）
 
+## ギャップスキャン tick（SCAN-20261109-235016）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001
+- **newIds:** 3（SceneBuildUp 未配線、シーン実行がプレビュー限定、FeatureTest 既定シーンなし）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

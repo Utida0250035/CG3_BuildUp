@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-09T23:30:26.570595+09:00
+- **lastIncrementalScanAt:** 2026-11-09T23:40:39.226713+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -136,6 +136,70 @@
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
 
+#### UC-Debug
+
+### GAP-Scene-SceneBuildUpRegistry-001
+
+- status: open
+- tier: P1
+- score: 820
+- primaryUseCase: UC-Debug
+- secondaryUseCases: UC-Authoring
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: DebugPlayArea 手順は README のみでエディタ UI から到達できない
+- scope: UC-Debug|Scene|SceneBuildUpRegistry|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:35
+- primary: `SceneBuildUpRegistry`
+- summary: 【Debug】最小ランタイム検証シーン起動がエディタから未配線
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - SceneBuildUpRegistry::Launch は実装あるが Editor コードから参照無し（rg Editor 配下 0 件）
+  - DebugPlayAreaGenerator README の手順 2 のみ（C++ 直 Launch 想定）
+- suggestedUse: デバッグ: ストリーミング等を本編外の最小シーンで試す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-09T23:51:00+09:00
+- lastSeenAt: 2026-11-09T23:51:00+09:00
+
+### GAP-Infra-FeatureTestScene-001
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: ユーザー合意の SceneFeatureTest 相当の既定アセット／シーンクラスが未整備
+- scope: UC-Debug|Infra|FeatureTestScene|MissingData|EditorAssets/DebugPlayArea/template_test_play_area.scene.json:1
+- primary: `FeatureTestScene`
+- summary: 【Debug】エディタ既定の機能検証シーン（FeatureTest）が定義されていない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - コードベースに SceneFeatureTest クラス／シンボル無し（rg FeatureTest 0 件、Codes 配下）
+  - DebugPlayArea テンプレは手動 scaffold のみで既定起動シーンではない（CommandScene は SceneEntityEditor）
+- suggestedUse: デバッグ: 機能ごとミニシナリオを既定導線で開く
+- firstSeenAt: 2026-11-09T23:51:00+09:00
+- lastSeenAt: 2026-11-09T23:51:00+09:00
+
+### GAP-Editor-SceneEntityEditor-001
+
+- status: open
+- tier: P2
+- score: 740
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Development 起動の既定シーンは EntityEditor で「シーンを実行」はプレビュータブ内シミュレーション
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:129
+- primary: `SceneEntityEditor`
+- summary: 【Debug】シーン実行が本番相当 SceneBuildUp 経路にならない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - requestPlayRuntimeScene は Runtime タブ＋previewEntities_ の Update のみ（SceneEntityEditor.cpp:129-137）
+  - CommandChangeScene による SceneBuildUp 遷移や既定 Feature シーン JSON パス無し
+- suggestedUse: デバッグ: エディタ UI と切り離したランタイムパスで機能を検証
+- firstSeenAt: 2026-11-09T23:51:00+09:00
+- lastSeenAt: 2026-11-09T23:51:00+09:00
+
 #### UC-Play
 
 ### GAP-Scene-ChangeSceneFade-001
@@ -212,6 +276,7 @@
 ## スキャン履歴（直近）
 
 - scanId: SCAN-20261109-232947 | at: 2026-11-09T23:30:26.570595+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261109-234011 | at: 2026-11-09T23:40:39.226713+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 
