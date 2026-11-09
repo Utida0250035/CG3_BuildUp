@@ -72,6 +72,70 @@
 
 ## ギャップ一覧
 
+#### UC-Authoring
+
+### GAP-Editor-EntityEditor-001
+
+- status: open
+- tier: P1
+- score: 780
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: シーン編集の反復で同一配置を増やす際、毎回プレハブ経由か空追加が必要
+- scope: UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:374
+- primary: `EntityEditor`
+- summary: 【Authoring】選択エンティティの複製 UI が無く複製が多段手順
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ヒエラルキーは「オブジェクトを追加」「削除」のみ（EntityEditorUi.cpp:374-379）
+  - 複製 API（DuplicateSelectedInstance 等）が EntityEditor に存在しない
+  - 同等作業はプレハブ JSON 出力→シーンへ追加の 2 操作が必要（457-487 行付近）
+- suggestedUse: 制作: レベル内の複製配置を 1 クリックで回す
+- firstSeenAt: 2026-11-09T23:41:00+09:00
+- lastSeenAt: 2026-11-09T23:41:00+09:00
+
+### GAP-Editor-UiState-001
+
+- status: open
+- tier: P2
+- score: 710
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: インスペクタは常に 1 選択前提で一括パラメータ調整ができない
+- scope: UC-Authoring|Editor|UiState|MissingUI|Project/Codes/Include/System/Editor/Entity/EntityEditor.h:25
+- primary: `UiState`
+- summary: 【Authoring】複数選択が無く一括調整できない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - UiState::selectedInstanceIndex は単一 int（EntityEditor.h:25）
+  - DrawInspectorPanel は SelectedInstance() のみ編集（EntityEditorUi.cpp:490 以降）
+  - 複数ノード選択・共通プロパティ編集の UI/状態が無い
+- suggestedUse: 制作: 同種オブジェクトのスケール・タグ等をまとめて調整
+- firstSeenAt: 2026-11-09T23:41:00+09:00
+- lastSeenAt: 2026-11-09T23:41:00+09:00
+
+### GAP-Editor-EntityEditorDefinition-001
+
+- status: open
+- tier: P2
+- score: 650
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: コンポーネント構成の再利用は手作業コピー前提
+- scope: UC-Authoring|Editor|EntityEditorDefinition|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:530
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】コンポーネント設定のコピー／ペーストが無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Editor 配下に Copy/Paste/Duplicate コンポーネント処理の参照が無い（rg 確認）
+  - 類似エンティティへ Draw/Behavior スロットを揃える手段は JSON 手編集かプレハブ再投入のみ
+- suggestedUse: 制作: 同型オブジェクトへコンポーネントパラメータを素早く展開
+- firstSeenAt: 2026-11-09T23:41:00+09:00
+- lastSeenAt: 2026-11-09T23:41:00+09:00
+
 #### UC-Play
 
 ### GAP-Scene-ChangeSceneFade-001

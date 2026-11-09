@@ -1199,6 +1199,11 @@
 - **newIds:** 3（ChangeSceneFade 遷移 SE 未配線、CommandScene BGM 瞬断、SceneMovie オーディオ方針）
 - **loop:** `loop-gap-scan` 10m タイマー登録済み
 
+## ギャップスキャン tick（SCAN-20261109-234011）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001
+- **newIds:** 3（エンティティ複製 UI なし、複数選択なし、コンポーネント CP なし）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
