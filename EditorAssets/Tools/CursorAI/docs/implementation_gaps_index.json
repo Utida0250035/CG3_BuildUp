@@ -3955,6 +3955,90 @@
       "suggestedUse": "制作: プレハブ単位の複製配置ループを短縮",
       "firstSeenAt": "2026-11-10T07:21:00+09:00",
       "lastSeenAt": "2026-11-10T07:21:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUpRegistry-002": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "medium",
+      "frequencyBasis": "Launch が EnterScene／遷移を担わない",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:40",
+      "primary": "SceneBuildUpRegistry",
+      "related": [
+        "CommandChangeScene",
+        "EnterScene"
+      ],
+      "summaryShort": "Launch は生成してポインタ返却のみ",
+      "summary": "Launch は生成してポインタ返却のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Launch は unique_ptr 登録と raw 返却のみ（37-40 行）",
+        "EnterScene / CommandChangeScene::Set の呼び出し無し",
+        "README は手動 Launch 後に呼び手が ChangeScene 想定"
+      ],
+      "suggestedUse": "デバッグ: 検証シーン起動 API を 1 本化",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T07:31:00+09:00",
+      "lastSeenAt": "2026-11-10T07:31:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-007": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 610,
+      "frequency": "high",
+      "frequencyBasis": "シーン実行がタブフォーカス変更で終わる",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:136",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "requestPlayRuntimeScene",
+        "previewSimulationEnabled"
+      ],
+      "summaryShort": "シーン実行後は Runtime タブフォーカスのみ",
+      "summary": "シーン実行後は Runtime タブフォーカスのみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "requestPlayRuntimeScene 処理は preview 再構築＋タブ切替（129-136 行）",
+        "SceneBuildUpRegistry や DebugPlayArea パスへの遷移無し",
+        "requestFocusRuntimeSceneView フラグのみ立てる"
+      ],
+      "suggestedUse": "デバッグ: 実行＝BuildUp ランタイムシーンへ",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T07:31:00+09:00",
+      "lastSeenAt": "2026-11-10T07:31:00+09:00"
+    },
+    "GAP-Infra-DebugPlayAreaGenerator-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "medium",
+      "frequencyBasis": "実行手順が README 上の C++ 直書きのみ",
+      "scopeKey": "UC-Debug|Infra|DebugPlayAreaGenerator|MissingUI|EditorAssets/Tools/DebugPlayAreaGenerator/README.md:17",
+      "primary": "DebugPlayAreaGenerator",
+      "related": [
+        "SceneBuildUpRegistry",
+        "scaffold_play_area"
+      ],
+      "summaryShort": "ランタイムプレビュー手順がコード断片のみ",
+      "summary": "ランタイムプレビュー手順がコード断片のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "README 手順 2 は Launch 呼び出し例のみ（17 行）",
+        "メニュー／ボタン／既定 returnScene の記載無し",
+        "scaffold はファイル生成のみ（scaffold_play_area-001）"
+      ],
+      "suggestedUse": "デバッグ: ドキュメントではなくエディタから完結",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T07:31:00+09:00",
+      "lastSeenAt": "2026-11-10T07:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -4101,7 +4185,10 @@
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:516": "GAP-Scene-SceneGame-007",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:58": "GAP-Editor-EntityEditor-009",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:608": "GAP-Editor-EntityEditorUi-010",
-    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:85": "GAP-Editor-PrefabAsset-002"
+    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:85": "GAP-Editor-PrefabAsset-002",
+    "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:40": "GAP-Scene-SceneBuildUpRegistry-002",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:136": "GAP-Editor-SceneEntityEditor-007",
+    "UC-Debug|Infra|DebugPlayAreaGenerator|MissingUI|EditorAssets/Tools/DebugPlayAreaGenerator/README.md:17": "GAP-Infra-DebugPlayAreaGenerator-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -4115,14 +4202,15 @@
     "Editor-EntityEditorHierarchy": 2,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
-    "Scene-SceneBuildUpRegistry": 2,
+    "Scene-SceneBuildUpRegistry": 3,
+    "Editor-SceneEntityEditor": 8,
+    "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
     "Infra-stage_view_camera_tuning": 3,
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
     "Scene-SceneBuildUp": 9,
-    "Editor-SceneEntityEditor": 7,
     "Scene-CommandScene": 4,
     "Infra-EditorScenePlayRequest": 4,
     "Infra-combat_bounds_sandbox": 2,
@@ -4944,6 +5032,22 @@
         "GAP-Editor-EntityEditor-009",
         "GAP-Editor-EntityEditorUi-010",
         "GAP-Editor-PrefabAsset-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-073017",
+      "at": "2026-11-10T07:31:02.344487+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-SceneBuildUpRegistry-002",
+        "GAP-Editor-SceneEntityEditor-007",
+        "GAP-Infra-DebugPlayAreaGenerator-001"
       ],
       "updatedIds": [],
       "closedIds": []

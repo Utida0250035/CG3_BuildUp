@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T07:10:46.973414+09:00
+- **lastIncrementalScanAt:** 2026-11-10T07:20:51.586186+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1592,6 +1592,28 @@
 - firstSeenAt: 2026-11-10T03:11:00+09:00
 - lastSeenAt: 2026-11-10T03:11:00+09:00
 
+### GAP-Editor-SceneEntityEditor-007
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: シーン実行がタブフォーカス変更で終わる
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:136
+- primary: `SceneEntityEditor`
+- summary: 【Debug】シーン実行後は Runtime タブフォーカスのみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - requestPlayRuntimeScene 処理は preview 再構築＋タブ切替（129-136 行）
+  - SceneBuildUpRegistry や DebugPlayArea パスへの遷移無し
+  - requestFocusRuntimeSceneView フラグのみ立てる
+- suggestedUse: デバッグ: 実行＝BuildUp ランタイムシーンへ
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T07:31:00+09:00
+- lastSeenAt: 2026-11-10T07:31:00+09:00
+
 ### GAP-Infra-EditorScenePlayRequest-002
 
 - status: open
@@ -1656,6 +1678,50 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:01:00+09:00
 - lastSeenAt: 2026-11-10T07:01:00+09:00
+
+### GAP-Scene-SceneBuildUpRegistry-002
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Launch が EnterScene／遷移を担わない
+- scope: UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:40
+- primary: `SceneBuildUpRegistry`
+- summary: 【Debug】Launch は生成してポインタ返却のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Launch は unique_ptr 登録と raw 返却のみ（37-40 行）
+  - EnterScene / CommandChangeScene::Set の呼び出し無し
+  - README は手動 Launch 後に呼び手が ChangeScene 想定
+- suggestedUse: デバッグ: 検証シーン起動 API を 1 本化
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T07:31:00+09:00
+- lastSeenAt: 2026-11-10T07:31:00+09:00
+
+### GAP-Infra-DebugPlayAreaGenerator-001
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 実行手順が README 上の C++ 直書きのみ
+- scope: UC-Debug|Infra|DebugPlayAreaGenerator|MissingUI|EditorAssets/Tools/DebugPlayAreaGenerator/README.md:17
+- primary: `DebugPlayAreaGenerator`
+- summary: 【Debug】ランタイムプレビュー手順がコード断片のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - README 手順 2 は Launch 呼び出し例のみ（17 行）
+  - メニュー／ボタン／既定 returnScene の記載無し
+  - scaffold はファイル生成のみ（scaffold_play_area-001）
+- suggestedUse: デバッグ: ドキュメントではなくエディタから完結
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T07:31:00+09:00
+- lastSeenAt: 2026-11-10T07:31:00+09:00
 
 ### GAP-Scene-SceneBuildUp-007
 
@@ -3113,7 +3179,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-045017 | at: 2026-11-10T04:50:42.063624+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-050024 | at: 2026-11-10T05:01:03.395407+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
@@ -3128,6 +3193,7 @@
 - scanId: SCAN-20261110-065006 | at: 2026-11-10T06:51:08.763681+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-070015 | at: 2026-11-10T07:00:50.713598+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-072023 | at: 2026-11-10T07:20:51.586186+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

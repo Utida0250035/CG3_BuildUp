@@ -1434,6 +1434,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（5回目）
 - **newIds:** 3（単体削除のみ、タグ一括解除無し、プレハブが Definition のみ）
 
+## ギャップスキャン tick（SCAN-20261110-073017）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（6回目）
+- **newIds:** 3（Launch が Enter 無し、実行＝タブのみ、README 手順のみ）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
