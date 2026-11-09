@@ -1,9 +1,16 @@
 {
   "schemaVersion": 1,
-  "useCaseRotation": ["UC-Play", "UC-Authoring", "UC-Debug", "UC-Ship"],
-  "rotationCursor": 0,
-  "scenarioScanCounts": {},
-  "lastCompletedScanId": "",
+  "useCaseRotation": [
+    "UC-Play",
+    "UC-Authoring",
+    "UC-Debug",
+    "UC-Ship"
+  ],
+  "rotationCursor": 1,
+  "scenarioScanCounts": {
+    "PLY-Audio-001": 1
+  },
+  "lastCompletedScanId": "SCAN-20261109-232947",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 0
+  "totalTicksCompleted": 1
 }

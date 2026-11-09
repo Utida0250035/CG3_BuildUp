@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** （未実施）
+- **lastIncrementalScanAt:** 2026-11-09T23:30:26.570595+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -66,21 +66,80 @@
 
 ## 用途不明（確認待ち）
 
-（0 件のときは「なし」）
-
 なし
 
 ---
 
 ## ギャップ一覧
 
-（スキャン未実施。0 件）
+#### UC-Play
+
+### GAP-Scene-ChangeSceneFade-001
+
+- status: open
+- tier: P2
+- score: 720
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 全シーン遷移で ChangeSceneFade 経由のため、プレイ中の遷移 SE が鳴らないと体感が途切れる
+- scope: UC-Play|Scene|ChangeSceneFade|Unwired|Project/Codes/Source/Scene/ChangeSceneFade.cpp:35
+- primary: `ChangeSceneFade`
+- summary: 【Play】フェードイン開始時に遷移 SE が未再生（フラグのみ立つ）
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ChangeSceneFade::Update で isSeOpenTrigger_ を true にするが PlaySe 等の呼び出しが無い（ChangeSceneFade.cpp:35-37）
+  - isSeOpenTrigger_ はヘッダにのみ定義され他参照なし
+- suggestedUse: ランタイム: シーン遷移の手応えを SE で補い、無音フェードによる「音切れ」体感を減らす
+- firstSeenAt: 2026-11-09T23:32:00+09:00
+- lastSeenAt: 2026-11-09T23:32:00+09:00
+
+### GAP-Scene-CommandScene-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: high
+- frequencyBasis: Title/Game/Result 等すべて CommandScene::ChangeScene で BGM を ExitScene 時に停止
+- scope: UC-Play|Scene|CommandScene|Incomplete|Project/Codes/Include/Scene/CommandScene.h:64
+- primary: `CommandScene`
+- summary: 【Play】シーン切替で BGM が瞬断し、クロスフェード／継続再生ポリシーが無い
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ChangeScene で ExitScene→EnterScene。各 Scene*::ExitScene が StopBgmLoop（例: SceneGame.cpp:121）
+  - ChangeSceneFade は約0.5s暗転後に ChangeScene。暗転中も旧 BGM は停止まで再生されるが切替瞬間に無音ギャップが生じうる
+  - 遷移先 EnterScene で別 BGM を即 PlaySceneBgm。音量フェードや SE 同期の共通 API なし
+- suggestedUse: ランタイム: シーン遷移後に期待どおり次 BGM へ移る（必要ならクロスフェード方針を仕様化）
+- firstSeenAt: 2026-11-09T23:32:00+09:00
+- lastSeenAt: 2026-11-09T23:32:00+09:00
+
+### GAP-Scene-SceneMovie-001
+
+- status: investigating
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: scene_movie 利用シーンが限定的だが、ムービー中の BGM/SE 継続要件は未整理
+- scope: UC-Play|Scene|SceneMovie|MissingData|Project/Codes/Source/Scene/SceneMovie.cpp:77
+- primary: `SceneMovie`
+- summary: 【Play】ムービーシーンに BGM/トラック音声の再生・復帰ポリシーがコード上見えない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SceneMovie::EnterScene はカメラトラック開始のみ（SceneMovie.cpp:77-88）。BGM 制御なし
+  - 遷移元 ExitScene で BGM 停止後、ムービー終了→returnScene へフェード復帰。復帰先 BGM の再開手順はシーン個別実装依存
+- suggestedUse: ランタイム: カットシーン前後で音体験が破綻しないよう、ムービー用オーディオ方針を決める
+- roadmapLink: feature-memos/scene_movie.md
+- firstSeenAt: 2026-11-09T23:32:00+09:00
+- lastSeenAt: 2026-11-09T23:32:00+09:00
+
 
 ---
 
 ## Archive
-
-`addressed` / `wontfix` / `obsolete` / `merged_into` の要約をここへ（ID・1 行・日時）。
 
 なし
 
@@ -88,7 +147,7 @@
 
 ## スキャン履歴（直近）
 
-なし
+- scanId: SCAN-20261109-232947 | at: 2026-11-09T23:30:26.570595+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 
