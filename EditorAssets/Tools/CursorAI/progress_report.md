@@ -1234,6 +1234,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001
 - **newIds:** 3（Dev 起動がエディタ、UX JSON 未検知、BuildUp 読込失敗置換）
 
+## ギャップスキャン tick（SCAN-20261110-005019）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001
+- **newIds:** 3（message 未描画、UX JSON エディタなし、actionId parry のみ）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

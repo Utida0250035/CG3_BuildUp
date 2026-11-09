@@ -657,6 +657,91 @@
       "suggestedUse": "プレイ: 開いたシーンが意図どおりのオブジェクト構成である",
       "firstSeenAt": "2026-11-10T00:41:00+09:00",
       "lastSeenAt": "2026-11-10T00:41:00+09:00"
+    },
+    "GAP-UX-OperatorGuidanceSystem-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 760,
+      "frequency": "high",
+      "frequencyBasis": "JSON の message を差し替えても画面上に出ない",
+      "scopeKey": "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:229",
+      "primary": "OperatorGuidanceSystem",
+      "related": [
+        "operator_guidance.json",
+        "operator_guidance_bubble.md"
+      ],
+      "summaryShort": "hints.message が保持されるが描画されず文言編集が無効",
+      "summary": "hints.message が保持されるが描画されず文言編集が無効",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "activeMessage_ に message を代入（133, 197 行等）するが Draw は画像のみ（229-306 行）",
+        "feature-memo にビットマップフォント message 描画は「今後」（operator_guidance_bubble.md）"
+      ],
+      "suggestedUse": "制作: JSON の文言差し替えがプレイで確認できる",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T00:51:00+09:00",
+      "lastSeenAt": "2026-11-10T00:51:00+09:00"
+    },
+    "GAP-Editor-UXAuthoring-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 700,
+      "frequency": "high",
+      "frequencyBasis": "案内データは EditorAssets の手編集のみでエディタ UI が無い",
+      "scopeKey": "UC-Authoring|Editor|UXAuthoring|MissingUI|EditorAssets/UX/operator_guidance.json:1",
+      "primary": "UXAuthoring",
+      "related": [
+        "EntityEditor",
+        "SceneEntityEditor"
+      ],
+      "summaryShort": "operator_guidance.json をエディタから編集・プレビューできない",
+      "summary": "operator_guidance.json をエディタから編集・プレビューできない",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "System::LoadFromJsonFile は SceneGame::EnterScene のみ（SceneGame.cpp:111）",
+        "Editor 配下に operator_guidance／UX JSON 編集 UI の参照無し",
+        "初回利用者向け案内の制作フローは外部エディタで JSON 直編集のみ"
+      ],
+      "suggestedUse": "制作: 案内文言・画像パスをエディタ内で反復調整",
+      "firstSeenAt": "2026-11-10T00:51:00+09:00",
+      "lastSeenAt": "2026-11-10T00:51:00+09:00"
+    },
+    "GAP-UX-OperatorGuidanceSystem-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "medium",
+      "frequencyBasis": "JSON に actionId を足しても NotifyAction が parry のみ",
+      "scopeKey": "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/System/Playable/CmpMoveByInput.cpp:119",
+      "primary": "OperatorGuidanceSystem",
+      "related": [
+        "NotifyAction",
+        "CmpMoveByInput"
+      ],
+      "summaryShort": "案内トリガー actionId のコード配線が parry 固定",
+      "summary": "案内トリガー actionId のコード配線が parry 固定",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "NotifyAction 呼び出しは CmpMoveByInput の parry のみ（rg 全体）",
+        "operator_guidance.json の actionId 追加だけでは新操作案内は発火しない"
+      ],
+      "suggestedUse": "制作: 主要操作ごとに案内ヒントをデータ駆動で増やす",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T00:51:00+09:00",
+      "lastSeenAt": "2026-11-10T00:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -683,7 +768,10 @@
     "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:281": "GAP-Editor-EditorSceneRuntime-003",
     "UC-Play|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:16": "GAP-Scene-CommandScene-002",
     "UC-Play|Scene|SceneGame|Unwired|Project/Codes/Source/Scene/SceneGame.cpp:111": "GAP-Scene-SceneGame-002",
-    "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:92": "GAP-Scene-SceneBuildUp-002"
+    "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:92": "GAP-Scene-SceneBuildUp-002",
+    "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:229": "GAP-UX-OperatorGuidanceSystem-001",
+    "UC-Authoring|Editor|UXAuthoring|MissingUI|EditorAssets/UX/operator_guidance.json:1": "GAP-Editor-UXAuthoring-001",
+    "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/System/Playable/CmpMoveByInput.cpp:119": "GAP-UX-OperatorGuidanceSystem-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -829,6 +917,22 @@
         "GAP-Scene-CommandScene-002",
         "GAP-Scene-SceneGame-002",
         "GAP-Scene-SceneBuildUp-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-005019",
+      "at": "2026-11-10T00:50:37.082956+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-Guidance-001",
+      "areaHint": "UX",
+      "priorityScore": 1530,
+      "newIds": [
+        "GAP-UX-OperatorGuidanceSystem-001",
+        "GAP-Editor-UXAuthoring-001",
+        "GAP-UX-OperatorGuidanceSystem-002"
       ],
       "updatedIds": [],
       "closedIds": []

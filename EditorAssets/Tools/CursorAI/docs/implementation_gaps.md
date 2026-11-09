@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T00:30:41.073675+09:00
+- **lastIncrementalScanAt:** 2026-11-10T00:40:44.827867+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -136,6 +136,28 @@
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
 
+### GAP-UX-OperatorGuidanceSystem-001
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-Guidance-001
+- frequency: high
+- frequencyBasis: JSON の message を差し替えても画面上に出ない
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:229
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】hints.message が保持されるが描画されず文言編集が無効
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - activeMessage_ に message を代入（133, 197 行等）するが Draw は画像のみ（229-306 行）
+  - feature-memo にビットマップフォント message 描画は「今後」（operator_guidance_bubble.md）
+- suggestedUse: 制作: JSON の文言差し替えがプレイで確認できる
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T00:51:00+09:00
+- lastSeenAt: 2026-11-10T00:51:00+09:00
+
 ### GAP-Editor-UiState-001
 
 - status: open
@@ -179,6 +201,27 @@
 - firstSeenAt: 2026-11-10T00:11:00+09:00
 - lastSeenAt: 2026-11-10T00:11:00+09:00
 
+### GAP-Editor-UXAuthoring-001
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Guidance-001
+- frequency: high
+- frequencyBasis: 案内データは EditorAssets の手編集のみでエディタ UI が無い
+- scope: UC-Authoring|Editor|UXAuthoring|MissingUI|EditorAssets/UX/operator_guidance.json:1
+- primary: `UXAuthoring`
+- summary: 【Authoring】operator_guidance.json をエディタから編集・プレビューできない
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - System::LoadFromJsonFile は SceneGame::EnterScene のみ（SceneGame.cpp:111）
+  - Editor 配下に operator_guidance／UX JSON 編集 UI の参照無し
+  - 初回利用者向け案内の制作フローは外部エディタで JSON 直編集のみ
+- suggestedUse: 制作: 案内文言・画像パスをエディタ内で反復調整
+- firstSeenAt: 2026-11-10T00:51:00+09:00
+- lastSeenAt: 2026-11-10T00:51:00+09:00
+
 ### GAP-Editor-EntityEditor-003
 
 - status: open
@@ -198,6 +241,28 @@
 - suggestedUse: 制作: 「同じ状態を得られる」ための読込失敗を可視化
 - firstSeenAt: 2026-11-10T00:31:00+09:00
 - lastSeenAt: 2026-11-10T00:31:00+09:00
+
+### GAP-UX-OperatorGuidanceSystem-002
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-Guidance-001
+- frequency: medium
+- frequencyBasis: JSON に actionId を足しても NotifyAction が parry のみ
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/System/Playable/CmpMoveByInput.cpp:119
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】案内トリガー actionId のコード配線が parry 固定
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - NotifyAction 呼び出しは CmpMoveByInput の parry のみ（rg 全体）
+  - operator_guidance.json の actionId 追加だけでは新操作案内は発火しない
+- suggestedUse: 制作: 主要操作ごとに案内ヒントをデータ駆動で増やす
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T00:51:00+09:00
+- lastSeenAt: 2026-11-10T00:51:00+09:00
 
 ### GAP-Editor-EditorSceneRuntime-003
 
@@ -600,6 +665,7 @@
 - scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 
 ---
 
