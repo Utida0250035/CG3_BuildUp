@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T03:00:33.132938+09:00
+- **lastIncrementalScanAt:** 2026-11-10T03:10:29.006133+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -850,6 +850,28 @@
 - firstSeenAt: 2026-11-10T00:21:00+09:00
 - lastSeenAt: 2026-11-10T00:21:00+09:00
 
+### GAP-Camera-StageBounds-001
+
+- status: open
+- tier: P1
+- score: 750
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-Camera-001
+- frequency: high
+- frequencyBasis: ステージカメラのフレーミングが全シーンで同一の固定 AABB
+- scope: UC-Play|Camera|StageBounds|Contract|Project/Codes/Include/System/StageBounds.h:9
+- primary: `StageBounds`
+- summary: 【Play】StageView カメラが StageBounds 定数のみ参照しシーン毎の範囲に追従しない
+- scenarioText: プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。
+- evidence:
+  - ComputeStageBattleViewPose は kLeftEndX/kRightEndX 等のグローバル定数（StageViewCamera.cpp:57-69）
+  - DebugPlayArea の境界マーカー JSON はカメラ計算に未接続
+- suggestedUse: プレイ: ステージサイズに応じた視界を維持
+- roadmapLink: feature-memos/player_friendly_camera_policy.md
+- firstSeenAt: 2026-11-10T03:21:00+09:00
+- lastSeenAt: 2026-11-10T03:21:00+09:00
+
 ### GAP-Scene-ChangeSceneFade-001
 
 - status: open
@@ -1019,6 +1041,26 @@
 - firstSeenAt: 2026-11-10T00:41:00+09:00
 - lastSeenAt: 2026-11-10T00:41:00+09:00
 
+### GAP-Scene-SceneBuildUp-004
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Camera-001
+- frequency: medium
+- frequencyBasis: BuildUp プレビューも本編と同じ固定境界でフレーム
+- scope: UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:106
+- primary: `SceneBuildUp`
+- summary: 【Play】SceneBuildUp のカメラがシーン JSON の境界情報を読まない
+- scenarioText: プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。
+- evidence:
+  - EnterScene/DrawRuntimeViewContent で SetupStageViewCamera のみ（106,143 行）
+  - combat_bounds_sandbox 等のマーカーは可視化のみでカメラ未反映
+- suggestedUse: プレイ: JSON 検証シーンでも本編相当のカメラフレーム
+- firstSeenAt: 2026-11-10T03:21:00+09:00
+- lastSeenAt: 2026-11-10T03:21:00+09:00
+
 ### GAP-Scene-SceneMovie-002
 
 - status: open
@@ -1144,6 +1186,29 @@
 - suggestedUse: プレイ: 検証シーンでも戦闘 SE と BGM 文脈を再現
 - firstSeenAt: 2026-11-10T02:51:00+09:00
 - lastSeenAt: 2026-11-10T02:51:00+09:00
+
+### GAP-Scene-SceneParticleEditor-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-Camera-001
+- frequency: low
+- frequencyBasis: パーティクルエディタで GameOrder が常に DebugCamera 更新しうる
+- scope: UC-Play|Scene|SceneParticleEditor|Incomplete|Project/Codes/Include/Scene/SceneParticleEditor.h:29
+- primary: `SceneParticleEditor`
+- summary: 【Play】SceneParticleEditor が AllowDebugCameraControl を限定していない
+- scenarioText: プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。
+- evidence:
+  - IsStageViewCameraLocked false（29-30 行）かつ AllowDebugCameraControl オーバーライド無し
+  - GameOrder はロックでなければ camera->Update()（GameOrder.h:63-66）
+  - player_friendly_camera_policy: エディタはビューポート内のみ Debug 許可と記載
+- suggestedUse: 制作: 誤操作でプレイ相当のカメラポリシーを検証から外さない
+- roadmapLink: feature-memos/player_friendly_camera_policy.md
+- firstSeenAt: 2026-11-10T03:21:00+09:00
+- lastSeenAt: 2026-11-10T03:21:00+09:00
 
 ### GAP-Scene-SceneMovie-001
 
@@ -1536,7 +1601,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
@@ -1551,6 +1615,7 @@
 - scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-030010 | at: 2026-11-10T03:00:33.132938+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 
