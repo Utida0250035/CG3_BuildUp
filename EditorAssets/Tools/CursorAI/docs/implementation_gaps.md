@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T04:10:44.427042+09:00
+- **lastIncrementalScanAt:** 2026-11-10T04:21:03.907927+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -220,6 +220,27 @@
 - firstSeenAt: 2026-11-10T03:31:00+09:00
 - lastSeenAt: 2026-11-10T03:31:00+09:00
 
+### GAP-Editor-SceneEntityEditor-004
+
+- status: open
+- tier: P1
+- score: 770
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: high
+- frequencyBasis: 全シーンビューが簡易平行光のみでポスト無し
+- scope: UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:251
+- primary: `SceneEntityEditor`
+- summary: 【Authoring】エディタプレビューにフォグ／リム／ゴッドレイ／影が無い
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - DrawSceneViewContent は各タブで SetupEditorLighting のみ（251 行）
+  - Game タブは SetupStageViewCamera 後も平行光のみ（241-251 行）で RefVolumetricFog 未使用
+- suggestedUse: 制作: 本編に近い見た目をエディタ各ビューで確認
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T04:31:00+09:00
+- lastSeenAt: 2026-11-10T04:31:00+09:00
+
 ### GAP-Editor-EntityEditor-004
 
 - status: open
@@ -367,6 +388,26 @@
 - firstSeenAt: 2026-11-10T00:51:00+09:00
 - lastSeenAt: 2026-11-10T00:51:00+09:00
 
+### GAP-Editor-EditorEntityWorkbench-002
+
+- status: open
+- tier: P2
+- score: 690
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: high
+- frequencyBasis: ビジュアル調整用のメニュー／パネル入口が無い
+- scope: UC-Authoring|Editor|EditorEntityWorkbench|MissingUI|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:128
+- primary: `EditorEntityWorkbench`
+- summary: 【Authoring】メニューにライト・ポスト調整ウィンドウが無い
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - 「ビュー」はタブ切替のみ（128-147 行）
+  - 「デバッグ」はストリーミングメモリのみで VolumetricFog 等の調整 UI 無し
+- suggestedUse: 制作: 調整パネルをエディタから開きプレビューと連動
+- firstSeenAt: 2026-11-10T04:31:00+09:00
+- lastSeenAt: 2026-11-10T04:31:00+09:00
+
 ### GAP-Editor-EntityEditorDefinition-003
 
 - status: open
@@ -448,6 +489,28 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T00:51:00+09:00
 - lastSeenAt: 2026-11-10T00:51:00+09:00
+
+### GAP-Authoring-visual_lighting_profile-001
+
+- status: open
+- tier: P2
+- score: 670
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-VisualTune-001
+- frequency: medium
+- frequencyBasis: カメラ tuning 以外の見た目データ資産が無い
+- scope: UC-Authoring|Authoring|visual_lighting_profile|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/volumetric_fog.md:23
+- primary: `visual_lighting_profile`
+- summary: 【Authoring】ライト／フォグ用 EditorAssets プロファイル JSON が未定義
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - volumetric_fog.md は SceneGame 既定とエンジン統合のみ（23 行）
+  - Camera には stage_view_camera_tuning.json があるが fog／rim／shadow 相当の EditorAssets ファイル無し
+- suggestedUse: 制作: 見た目パラメータをカメラ JSON と同様に差し替え可能に
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T04:31:00+09:00
+- lastSeenAt: 2026-11-10T04:31:00+09:00
 
 ### GAP-Editor-SceneEntityEditor-003
 
@@ -1959,7 +2022,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
@@ -1974,6 +2036,7 @@
 - scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 
 ---
 

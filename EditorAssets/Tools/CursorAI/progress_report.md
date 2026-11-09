@@ -1344,6 +1344,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Visual-001（2回目）
 - **newIds:** 3（毎フレーム lighting 上書き、二重 VolumetricFog、Title にリム無し）
 
+## ギャップスキャン tick（SCAN-20261110-043016）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001（2回目）
+- **newIds:** 3（プレビューにポスト無し、調整メニュー無し、lighting 用 JSON 無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
