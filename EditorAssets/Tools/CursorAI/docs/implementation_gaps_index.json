@@ -552,29 +552,30 @@
     "GAP-Editor-EditorSceneRuntime-003": {
       "primaryUseCase": "UC-Authoring",
       "secondaryUseCases": [],
-      "scenarioId": "AUT-EditorPlace-001",
+      "scenarioId": "AUT-Component-001",
       "status": "open",
-      "tier": "P2",
-      "score": 660,
-      "frequency": "high",
-      "frequencyBasis": "配置はインスペクタ数値のみでビューポート操作が無い",
-      "scopeKey": "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:281",
+      "tier": "P1",
+      "score": 770,
+      "frequency": "medium",
+      "frequencyBasis": "方針メモの CmpMesh 等が UI から明示追加できない",
+      "scopeKey": "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:67",
       "primary": "EditorSceneRuntime",
       "related": [
-        "initialTransform",
-        "BuildPreviewScene"
+        "CmpMesh",
+        "CmpEditorTextureBillboard",
+        "CmpEditorAssetPath"
       ],
-      "summaryShort": "ビューポートから配置・移動して JSON に書き戻す経路が無い",
-      "summary": "ビューポートから配置・移動して JSON に書き戻す経路が無い",
-      "scenarioText": "制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。",
+      "summaryShort": "CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない",
+      "summary": "CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない",
+      "scenarioText": "エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。",
       "evidence": [
-        "initialTransform は ImGui インスペクタのみ（EntityEditorUi.cpp:617-618）",
-        "Editor 配下に gizmo／ドラッグ配置の実装参照無し（rg gizmo 0 件）",
-        "BuildEntityFromDefinition は JSON→Entity 一方向（EditorSceneRuntime.cpp:278-281）"
+        "component_split_guidelines は CmpMesh／CmpEditorTextureBillboard を分割例に記載（15-16 行）",
+        "TryAddEmptyComponent は 6 型のみ（67-94 行）、Mesh は AssetPath 副作用で付与（253-270 行）"
       ],
-      "suggestedUse": "制作: 視覚的に配置して保存→再オープンで同じ姿勢を得る",
-      "firstSeenAt": "2026-11-10T00:31:00+09:00",
-      "lastSeenAt": "2026-11-10T00:31:00+09:00"
+      "suggestedUse": "制作: 描画コンポーネントを方針どおり個別スロットで組む",
+      "roadmapLink": "feature-memos/component_split_guidelines.md",
+      "firstSeenAt": "2026-11-10T03:31:00+09:00",
+      "lastSeenAt": "2026-11-10T03:31:00+09:00"
     },
     "GAP-Scene-CommandScene-002": {
       "primaryUseCase": "UC-Play",
@@ -1979,6 +1980,59 @@
       "roadmapLink": "feature-memos/player_friendly_camera_policy.md",
       "firstSeenAt": "2026-11-10T03:21:00+09:00",
       "lastSeenAt": "2026-11-10T03:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorDefinition-003": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Component-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 690,
+      "frequency": "medium",
+      "frequencyBasis": "未知 typeName の kind が Draw 既定で Upd/Data 誤配置を隠す",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorDefinition|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:34",
+      "primary": "EntityEditorDefinition",
+      "related": [
+        "DefaultKindForTypeName",
+        "IsKnownEntityEditorComponent"
+      ],
+      "summaryShort": "未登録コンポーネント種別が Draw 扱いになる",
+      "summary": "未登録コンポーネント種別が Draw 扱いになる",
+      "scenarioText": "エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。",
+      "evidence": [
+        "DefaultKindForTypeName のフォールバックは ComponentSlotKind::Draw（34 行）",
+        "JSON 手編集の未知 typeName が Load 時に黙って Draw スロット化"
+      ],
+      "suggestedUse": "制作: Draw/Upd/Data 誤りをロード時に検出",
+      "firstSeenAt": "2026-11-10T03:31:00+09:00",
+      "lastSeenAt": "2026-11-10T03:31:00+09:00"
+    },
+    "GAP-Authoring-component_split_next-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Component-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "low",
+      "frequencyBasis": "次分割候補がガイドラインにのみあり登録手順が未整備",
+      "scopeKey": "UC-Authoring|Authoring|component_split_next|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:32",
+      "primary": "component_split_next",
+      "related": [
+        "CmpEditorAssetPath",
+        "EntityFactory"
+      ],
+      "summaryShort": "ランタイム用 Data／Collider 分割候補のエディタ登録が未着手",
+      "summary": "ランタイム用 Data／Collider 分割候補のエディタ登録が未着手",
+      "scenarioText": "エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。",
+      "evidence": [
+        "ガイドライン「次の分割候補」にランタイム Data・Collider AABB（32-35 行）",
+        "EntityFactory 接続は「別タスク」記載のみで kKnownComponents 未反映"
+      ],
+      "suggestedUse": "制作: 方針どおり新 Cmp を追加するロードマップを追える",
+      "roadmapLink": "feature-memos/component_split_guidelines.md",
+      "firstSeenAt": "2026-11-10T03:31:00+09:00",
+      "lastSeenAt": "2026-11-10T03:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -2053,7 +2107,10 @@
     "UC-Debug|Infra|LoopTick13Demo|MissingData|EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json:1": "GAP-Infra-LoopTick13Demo-001",
     "UC-Play|Camera|StageBounds|Contract|Project/Codes/Include/System/StageBounds.h:9": "GAP-Camera-StageBounds-001",
     "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:106": "GAP-Scene-SceneBuildUp-004",
-    "UC-Play|Scene|SceneParticleEditor|Incomplete|Project/Codes/Include/Scene/SceneParticleEditor.h:29": "GAP-Scene-SceneParticleEditor-001"
+    "UC-Play|Scene|SceneParticleEditor|Incomplete|Project/Codes/Include/Scene/SceneParticleEditor.h:29": "GAP-Scene-SceneParticleEditor-001",
+    "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:67": "GAP-Editor-EditorSceneRuntime-003",
+    "UC-Authoring|Editor|EntityEditorDefinition|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:34": "GAP-Editor-EntityEditorDefinition-003",
+    "UC-Authoring|Authoring|component_split_next|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:32": "GAP-Authoring-component_split_next-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -2062,7 +2119,7 @@
     "Scene-SceneMovie": 4,
     "Editor-EntityEditor": 4,
     "Editor-UiState": 2,
-    "Editor-EntityEditorDefinition": 3,
+    "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 2,
     "Editor-SceneEntityEditor": 2,
     "Infra-FeatureTestScene": 2,
@@ -2073,7 +2130,8 @@
     "Audio-PauseBgmLoop": 2,
     "Infra-verify_camera_policy": 2,
     "Scene-Scene": 2,
-    "Editor-EditorSceneRuntime": 4,
+    "Editor-EditorSceneRuntime": 5,
+    "Authoring-component_split_next": 2,
     "Infra-component_split_verify": 2,
     "Scene-SceneMovieRegistry": 2,
     "Runtime-MovieCameraTrackLoader": 2,
@@ -2489,6 +2547,22 @@
         "GAP-Camera-StageBounds-001",
         "GAP-Scene-SceneBuildUp-004",
         "GAP-Scene-SceneParticleEditor-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-033008",
+      "at": "2026-11-10T03:30:33.093958+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-Component-001",
+      "areaHint": "Editor",
+      "priorityScore": 1110,
+      "newIds": [
+        "GAP-Editor-EditorSceneRuntime-003",
+        "GAP-Editor-EntityEditorDefinition-003",
+        "GAP-Authoring-component_split_next-001"
       ],
       "updatedIds": [],
       "closedIds": []

@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T03:10:29.006133+09:00
+- **lastIncrementalScanAt:** 2026-11-10T03:20:51.711983+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -178,6 +178,27 @@
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-003
+
+- status: open
+- tier: P1
+- score: 770
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: medium
+- frequencyBasis: 方針メモの CmpMesh 等が UI から明示追加できない
+- scope: UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:67
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - component_split_guidelines は CmpMesh／CmpEditorTextureBillboard を分割例に記載（15-16 行）
+  - TryAddEmptyComponent は 6 型のみ（67-94 行）、Mesh は AssetPath 副作用で付与（253-270 行）
+- suggestedUse: 制作: 描画コンポーネントを方針どおり個別スロットで組む
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T03:31:00+09:00
+- lastSeenAt: 2026-11-10T03:31:00+09:00
+
 ### GAP-UX-OperatorGuidanceSystem-001
 
 - status: open
@@ -305,6 +326,26 @@
 - firstSeenAt: 2026-11-10T00:51:00+09:00
 - lastSeenAt: 2026-11-10T00:51:00+09:00
 
+### GAP-Editor-EntityEditorDefinition-003
+
+- status: open
+- tier: P2
+- score: 690
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: medium
+- frequencyBasis: 未知 typeName の kind が Draw 既定で Upd/Data 誤配置を隠す
+- scope: UC-Authoring|Editor|EntityEditorDefinition|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:34
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】未登録コンポーネント種別が Draw 扱いになる
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - DefaultKindForTypeName のフォールバックは ComponentSlotKind::Draw（34 行）
+  - JSON 手編集の未知 typeName が Load 時に黙って Draw スロット化
+- suggestedUse: 制作: Draw/Upd/Data 誤りをロード時に検出
+- firstSeenAt: 2026-11-10T03:31:00+09:00
+- lastSeenAt: 2026-11-10T03:31:00+09:00
+
 ### GAP-Editor-EntityEditor-003
 
 - status: open
@@ -367,27 +408,6 @@
 - firstSeenAt: 2026-11-10T00:51:00+09:00
 - lastSeenAt: 2026-11-10T00:51:00+09:00
 
-### GAP-Editor-EditorSceneRuntime-003
-
-- status: open
-- tier: P2
-- score: 660
-- primaryUseCase: UC-Authoring
-- scenarioId: AUT-EditorPlace-001
-- frequency: high
-- frequencyBasis: 配置はインスペクタ数値のみでビューポート操作が無い
-- scope: UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:281
-- primary: `EditorSceneRuntime`
-- summary: 【Authoring】ビューポートから配置・移動して JSON に書き戻す経路が無い
-- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
-- evidence:
-  - initialTransform は ImGui インスペクタのみ（EntityEditorUi.cpp:617-618）
-  - Editor 配下に gizmo／ドラッグ配置の実装参照無し（rg gizmo 0 件）
-  - BuildEntityFromDefinition は JSON→Entity 一方向（EditorSceneRuntime.cpp:278-281）
-- suggestedUse: 制作: 視覚的に配置して保存→再オープンで同じ姿勢を得る
-- firstSeenAt: 2026-11-10T00:31:00+09:00
-- lastSeenAt: 2026-11-10T00:31:00+09:00
-
 ### GAP-Editor-EntityEditorUi-005
 
 - status: open
@@ -428,6 +448,27 @@
 - suggestedUse: 制作: 同型オブジェクトへコンポーネントパラメータを素早く展開
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
+
+### GAP-Authoring-component_split_next-001
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: low
+- frequencyBasis: 次分割候補がガイドラインにのみあり登録手順が未整備
+- scope: UC-Authoring|Authoring|component_split_next|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:32
+- primary: `component_split_next`
+- summary: 【Authoring】ランタイム用 Data／Collider 分割候補のエディタ登録が未着手
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - ガイドライン「次の分割候補」にランタイム Data・Collider AABB（32-35 行）
+  - EntityFactory 接続は「別タスク」記載のみで kKnownComponents 未反映
+- suggestedUse: 制作: 方針どおり新 Cmp を追加するロードマップを追える
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T03:31:00+09:00
+- lastSeenAt: 2026-11-10T03:31:00+09:00
 
 ### GAP-Infra-component_split_verify-001
 
@@ -1601,7 +1642,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
@@ -1616,6 +1656,7 @@
 - scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-030010 | at: 2026-11-10T03:00:33.132938+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 
 ---
 

@@ -1314,6 +1314,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Camera-001（2回目）
 - **newIds:** 3（StageBounds 固定、BuildUp が境界未反映、ParticleEditor の Debug カメラ制限）
 
+## ギャップスキャン tick（SCAN-20261110-033008）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Component-001（2回目）
+- **newIds:** 3（CmpMesh 未登録、未知 type が Draw 既定、次分割候補未整備）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
