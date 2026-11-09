@@ -2033,6 +2033,89 @@
       "roadmapLink": "feature-memos/component_split_guidelines.md",
       "firstSeenAt": "2026-11-10T03:31:00+09:00",
       "lastSeenAt": "2026-11-10T03:31:00+09:00"
+    },
+    "GAP-Scene-SceneMovie-004": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Movie-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 780,
+      "frequency": "medium",
+      "frequencyBasis": "returnScene 未設定時に終了遷移が成立せず Update が空回り",
+      "scopeKey": "UC-Play|Scene|SceneMovie|Contract|Project/Codes/Source/Scene/SceneMovie.cpp:67",
+      "primary": "SceneMovie",
+      "related": [
+        "RequestReturnToCaller",
+        "SceneMovieRegistry"
+      ],
+      "summaryShort": "returnScene が null だとムービー終了／失敗後もシーンが抜けられない",
+      "summary": "returnScene が null だとムービー終了／失敗後もシーンが抜けられない",
+      "scenarioText": "シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。",
+      "evidence": [
+        "RequestReturnToCaller は returnScene_==nullptr で早期 return（67-70 行）",
+        "トラック終了／失敗時も Update が毎フレーム RequestReturnToCaller を呼ぶが遷移しない（106-118 行）"
+      ],
+      "suggestedUse": "プレイ: Launch 誤用時でもハングせず復帰または明示エラー",
+      "roadmapLink": "feature-memos/scene_movie.md",
+      "firstSeenAt": "2026-11-10T03:41:00+09:00",
+      "lastSeenAt": "2026-11-10T03:41:00+09:00"
+    },
+    "GAP-Scene-SceneMovie-005": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Movie-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 610,
+      "frequency": "medium",
+      "frequencyBasis": "EnterScene でスカイドーム生成がカメラトラック開始より先",
+      "scopeKey": "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:62",
+      "primary": "SceneMovie",
+      "related": [
+        "EntityFactory",
+        "MovieCameraController"
+      ],
+      "summaryShort": "SkyDome がトラック先頭姿勢前のカメラに紐づく",
+      "summary": "SkyDome がトラック先頭姿勢前のカメラに紐づく",
+      "scenarioText": "シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。",
+      "evidence": [
+        "SpawnVisuals が EnterScene で TryBeginFromJsonFile より前（82-88 行）",
+        "SkyDome は GetCamera() を渡すのみ（62-64 行）で姿勢更新はトラック開始後"
+      ],
+      "suggestedUse": "プレイ: カットシーン冒頭の背景・パララックスのちらつき防止",
+      "roadmapLink": "feature-memos/scene_movie.md",
+      "firstSeenAt": "2026-11-10T03:41:00+09:00",
+      "lastSeenAt": "2026-11-10T03:41:00+09:00"
+    },
+    "GAP-Scene-SceneMovie-006": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "PLY-Movie-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 650,
+      "frequency": "medium",
+      "frequencyBasis": "トラック JSON パスが cwd 依存の生文字列のまま",
+      "scopeKey": "UC-Play|Scene|SceneMovie|MissingData|Project/Codes/Source/Scene/SceneMovie.cpp:88",
+      "primary": "SceneMovie",
+      "related": [
+        "MovieCameraTrackLoader",
+        "EditorAssetsPaths"
+      ],
+      "summaryShort": "movie トラックパスを EditorAssets 基準に解決していない",
+      "summary": "movie トラックパスを EditorAssets 基準に解決していない",
+      "scenarioText": "シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。",
+      "evidence": [
+        "trackJsonPath_ をそのまま TryBeginFromJsonFile へ渡す（88 行）",
+        "起動例は ../EditorAssets/Camera/... の相対パス（movie_camera_controller.md）で Ship と cwd 不一致リスク"
+      ],
+      "suggestedUse": "配布: 作業ディレクトリに依存せず同梱トラックを再生",
+      "roadmapLink": "feature-memos/movie_camera_controller.md",
+      "firstSeenAt": "2026-11-10T03:41:00+09:00",
+      "lastSeenAt": "2026-11-10T03:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -2110,13 +2193,16 @@
     "UC-Play|Scene|SceneParticleEditor|Incomplete|Project/Codes/Include/Scene/SceneParticleEditor.h:29": "GAP-Scene-SceneParticleEditor-001",
     "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:67": "GAP-Editor-EditorSceneRuntime-003",
     "UC-Authoring|Editor|EntityEditorDefinition|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:34": "GAP-Editor-EntityEditorDefinition-003",
-    "UC-Authoring|Authoring|component_split_next|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:32": "GAP-Authoring-component_split_next-001"
+    "UC-Authoring|Authoring|component_split_next|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:32": "GAP-Authoring-component_split_next-001",
+    "UC-Play|Scene|SceneMovie|Contract|Project/Codes/Source/Scene/SceneMovie.cpp:67": "GAP-Scene-SceneMovie-004",
+    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:62": "GAP-Scene-SceneMovie-005",
+    "UC-Play|Scene|SceneMovie|MissingData|Project/Codes/Source/Scene/SceneMovie.cpp:88": "GAP-Scene-SceneMovie-006"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 2,
     "Scene-CommandScene": 2,
-    "Scene-SceneMovie": 4,
+    "Scene-SceneMovie": 7,
     "Editor-EntityEditor": 4,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
@@ -2563,6 +2649,22 @@
         "GAP-Editor-EditorSceneRuntime-003",
         "GAP-Editor-EntityEditorDefinition-003",
         "GAP-Authoring-component_split_next-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-034006",
+      "at": "2026-11-10T03:40:52.914629+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Movie-001",
+      "areaHint": "Runtime",
+      "priorityScore": 1120,
+      "newIds": [
+        "GAP-Scene-SceneMovie-004",
+        "GAP-Scene-SceneMovie-005",
+        "GAP-Scene-SceneMovie-006"
       ],
       "updatedIds": [],
       "closedIds": []

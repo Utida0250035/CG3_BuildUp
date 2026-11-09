@@ -1319,6 +1319,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-Component-001（2回目）
 - **newIds:** 3（CmpMesh 未登録、未知 type が Draw 既定、次分割候補未整備）
 
+## ギャップスキャン tick（SCAN-20261110-034006）
+
+- **useCase:** UC-Play / **scenario:** PLY-Movie-001（2回目）
+- **newIds:** 3（returnScene null ハング、SkyDome／カメラ順序、トラックパス未解決）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
