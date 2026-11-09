@@ -1224,6 +1224,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Movie-001
 - **newIds:** 3（Movie 未配線、トラック失敗即復帰、sample JSON 未 CI）
 
+## ギャップスキャン tick（SCAN-20261110-003022）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001
+- **newIds:** 3（未保存でシーン切替、読込失敗が空シーン化、ビューポート配置なし）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T00:10:39.912798+09:00
+- **lastIncrementalScanAt:** 2026-11-10T00:20:31.379655+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -73,6 +73,26 @@
 ## ギャップ一覧
 
 #### UC-Authoring
+
+### GAP-Editor-EntityEditor-002
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: high
+- frequencyBasis: 別シーンを開くたびに未保存配置が消えうる
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233
+- primary: `EntityEditor`
+- summary: 【Authoring】シーン切替時に未保存確認・自動保存が無い
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - OpenSceneFromPath は LoadFromJsonPath のみで Save 確認なし（233-241 行）
+  - 未保存フラグ／ダーティ追跡の参照が Editor 配下に無い（rg unsaved 0 件）
+- suggestedUse: 制作: 配置後に別シーンを開いてもデータを失わない
+- firstSeenAt: 2026-11-10T00:31:00+09:00
+- lastSeenAt: 2026-11-10T00:31:00+09:00
 
 ### GAP-Editor-EditorSceneRuntime-002
 
@@ -158,6 +178,47 @@
 - roadmapLink: feature-memos/component_split_guidelines.md
 - firstSeenAt: 2026-11-10T00:11:00+09:00
 - lastSeenAt: 2026-11-10T00:11:00+09:00
+
+### GAP-Editor-EntityEditor-003
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: medium
+- frequencyBasis: 再オープン時にパス誤りだと空シーンが黙って作られる
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:129
+- primary: `EntityEditor`
+- summary: 【Authoring】シーン JSON が無い／開けないとき空シーンへ置換し通知しない
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - exists しないパスでデフォルト 1 エンティティシーンを生成（129-139 行）
+  - ifstream 失敗時は return のみ（143-145 行）で importStatusMessage 等に載せない
+- suggestedUse: 制作: 「同じ状態を得られる」ための読込失敗を可視化
+- firstSeenAt: 2026-11-10T00:31:00+09:00
+- lastSeenAt: 2026-11-10T00:31:00+09:00
+
+### GAP-Editor-EditorSceneRuntime-003
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: high
+- frequencyBasis: 配置はインスペクタ数値のみでビューポート操作が無い
+- scope: UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:281
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】ビューポートから配置・移動して JSON に書き戻す経路が無い
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - initialTransform は ImGui インスペクタのみ（EntityEditorUi.cpp:617-618）
+  - Editor 配下に gizmo／ドラッグ配置の実装参照無し（rg gizmo 0 件）
+  - BuildEntityFromDefinition は JSON→Entity 一方向（EditorSceneRuntime.cpp:278-281）
+- suggestedUse: 制作: 視覚的に配置して保存→再オープンで同じ姿勢を得る
+- firstSeenAt: 2026-11-10T00:31:00+09:00
+- lastSeenAt: 2026-11-10T00:31:00+09:00
 
 ### GAP-Editor-EntityEditorDefinition-001
 
@@ -475,6 +536,7 @@
 - scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 
 ---
 
