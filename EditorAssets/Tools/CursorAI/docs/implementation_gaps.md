@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T05:50:50.662782+09:00
+- **lastIncrementalScanAt:** 2026-11-10T06:00:51.363018+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1531,6 +1531,28 @@
 - firstSeenAt: 2026-11-10T04:21:00+09:00
 - lastSeenAt: 2026-11-10T04:21:00+09:00
 
+### GAP-Render-SceneGame-003
+
+- status: open
+- tier: P1
+- score: 720
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Visual-001
+- frequency: high
+- frequencyBasis: フォグ等の SetSettings が CB 反映されないフレームが生じうる
+- scope: UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:57
+- primary: `SceneGame`
+- summary: 【Play】SetupGameLighting が Fog 設定後に Flush しない
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - SetDirectionalLightData のみ Flush（48 行）
+  - RefVolumetricFog/GodRays/Shadow の SetSettings は settings_ 更新のみ（VolumetricFog.h:35）
+  - 同一フレーム CB は Fog 適用前の状態を反映しうる（AtrumEngine.cpp:1254-1263）
+- suggestedUse: プレイ: フォグ密度変更が即 Object3d に届く
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T06:11:00+09:00
+- lastSeenAt: 2026-11-10T06:11:00+09:00
+
 ### GAP-Scene-ChangeSceneFade-001
 
 - status: open
@@ -1802,6 +1824,28 @@
 - roadmapLink: feature-memos/movie_camera_controller.md
 - firstSeenAt: 2026-11-10T03:41:00+09:00
 - lastSeenAt: 2026-11-10T03:41:00+09:00
+
+### GAP-Render-SceneGame-004
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Visual-001
+- frequency: medium
+- frequencyBasis: 遷移直後〜初回 Draw まで前シーンのライティング残存
+- scope: UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:87
+- primary: `SceneGame`
+- summary: 【Play】EnterScene が本編見た目プリセットを適用しない
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - SetupGameLighting は DrawScene のみ（200 行）
+  - EnterScene は Spawn/カメラ/BGM のみ（87-117 行）
+  - タイトル等からのフェードイン中 Update は動くが CB は前シーン設定のまま
+- suggestedUse: プレイ: シーン開始直後からリム／フォグが安定
+- roadmapLink: feature-memos/rim_light.md
+- firstSeenAt: 2026-11-10T06:11:00+09:00
+- lastSeenAt: 2026-11-10T06:11:00+09:00
 
 ### GAP-Scene-SceneBuildUp-004
 
@@ -2183,6 +2227,28 @@
 - roadmapLink: feature-memos/movie_camera_controller.md
 - firstSeenAt: 2026-11-10T05:31:00+09:00
 - lastSeenAt: 2026-11-10T05:31:00+09:00
+
+### GAP-Render-SceneResult-001
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Visual-001
+- frequency: medium
+- frequencyBasis: 本編→リザルトでリム／フォグが消える
+- scope: UC-Play|Render|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:52
+- primary: `SceneResult`
+- summary: 【Play】SceneResult が毎フレーム簡易平行光のみ適用
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - DrawScene で SetupStageLighting のみ（52 行）
+  - rimEnabled や RefVolumetricFog 未設定（16-25 行）
+  - 本編終了後に UI 背景の見え方が急変
+- suggestedUse: プレイ: クリア画面でも本編と同系のシルエット可読性
+- roadmapLink: feature-memos/rim_light.md
+- firstSeenAt: 2026-11-10T06:11:00+09:00
+- lastSeenAt: 2026-11-10T06:11:00+09:00
 
 ### GAP-Scene-SceneMovie-001
 
@@ -2597,7 +2663,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
@@ -2612,6 +2677,7 @@
 - scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 
 ---
 

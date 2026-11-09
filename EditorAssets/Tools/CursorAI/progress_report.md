@@ -1394,6 +1394,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001（3回目）
 - **newIds:** 3（session 未配線、テクスチャ失敗時空枠、JSON 参照 verify 無し）
 
+## ギャップスキャン tick（SCAN-20261110-061024）
+
+- **useCase:** UC-Play / **scenario:** PLY-Visual-001（3回目）
+- **newIds:** 3（Fog Flush 順、EnterScene 未ライティング、Result 簡易光のみ）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
