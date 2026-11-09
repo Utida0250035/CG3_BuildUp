@@ -199,6 +199,33 @@
 
 - ユーザーから回答を得た用途は「推測」ではなく **「確認済み」** と明記する。
 
+### 6.6 用途別・実装ギャップスキャン（蓄積・`/loop` との併用可）
+
+**正本（ギャップ在庫）**
+
+| ファイル | 役割 |
+|----------|------|
+| `EditorAssets/Tools/CursorAI/docs/implementation_gaps.md` | 人間が読む一覧（用途別不足） |
+| `EditorAssets/Tools/CursorAI/docs/implementation_gaps_index.json` | ID・`scopeKey`・重複禁止の機械正本 |
+| `EditorAssets/Tools/CursorAI/docs/use_case_scenarios.md` | UseCase ごとの「できるべきこと」シナリオ |
+
+`progress_report.md` はセッション報告のみ（ギャップ本文を正本にしない）。
+
+**1 tick の手順**
+
+1. `implementation_gaps_index.json` を Read。
+2. **UseCase を 1 つ指定**（推奨ローテーション: Play → Authoring → Debug → Ship）。任意で `Area` を限定。
+3. `use_case_scenarios.md` から該当シナリオを選び、**「その用途でできないこと」** のみ候補化。
+4. 各候補に `scopeKey` = `primaryUseCase | Area | PrimarySymbol | Kind | Anchor` を付与。`scopeToId` にあれば **同一 ID を更新**（新規 ID 禁止）。
+5. 新規のみ `GAP-<Area>-<Subject>-<NNN>` を採番。`summary` は `【Play|Authoring|Debug|Ship】…` 型を守る。
+6. **用途が推測できない** 候補は GAP 化せず、`implementation_gaps.md` の **§用途不明** に `PENDING-UC-*` のみ（`pendings` に記録）。
+7. `implementation_gaps.md` を index から整列・更新。`progress_report.md` には **`scanId`・`useCase`・`newIds` 件数** のみ追記。
+
+**コード変更**
+
+- ギャップスキャン **のみ** の tick ではビルド必須ではない（ドキュメント／index 更新のみ）。
+- ギャップ解消の実装 tick は従来どおり §4 ビルド・§6.5 ブランチ運用に従う。
+
 ## 7. モードの開始・終了
 
 - **開始:** ユーザーが「半自律」「半自律稼働」等と明示したとき。
