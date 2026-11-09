@@ -1165,6 +1165,85 @@
       "roadmapLink": "feature-memos/cloud_build_vcxproj_check.md",
       "firstSeenAt": "2026-11-10T01:41:00+09:00",
       "lastSeenAt": "2026-11-10T01:41:00+09:00"
+    },
+    "GAP-Ship-CG2_BuildUp-003": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Release-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 720,
+      "frequency": "medium",
+      "frequencyBasis": "Release でも PDB 生成が有効で出荷物にデバッグ情報が残る",
+      "scopeKey": "UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:140",
+      "primary": "CG2_BuildUp",
+      "related": [
+        "Release|x64",
+        "GenerateDebugInformation"
+      ],
+      "summaryShort": "Release リンク設定で GenerateDebugInformation が true",
+      "summary": "Release リンク設定で GenerateDebugInformation が true",
+      "scenarioText": "Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。",
+      "evidence": [
+        "Release|x64 Link: GenerateDebugInformation=true（vcxproj:140）",
+        "Development も同設定で意図差分の文書化無し"
+      ],
+      "suggestedUse": "配布: 出荷 exe に意図したデバッグシンボル方針を適用",
+      "firstSeenAt": "2026-11-10T01:51:00+09:00",
+      "lastSeenAt": "2026-11-10T01:51:00+09:00"
+    },
+    "GAP-Ship-JsonTest-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Release-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 690,
+      "frequency": "low",
+      "frequencyBasis": "Json デバッグ用 TU が Release にも含まれる",
+      "scopeKey": "UC-Ship|Ship|JsonTest|Incomplete|Project/Codes/Source/System/Json/JsonTest.cpp:1",
+      "primary": "JsonTest",
+      "related": [
+        "JsonHandler",
+        "USE_IMGUI"
+      ],
+      "summaryShort": "JsonTest デバッグパネル用 TU が Release ビルドから除外されていない",
+      "summary": "JsonTest デバッグパネル用 TU が Release ビルドから除外されていない",
+      "scenarioText": "Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。",
+      "evidence": [
+        "JsonTest.cpp は DEVELOPMENT/USE_IMGUI ガードだが vcxproj に Release ExcludedFromBuild 無し（394 行）",
+        "ImGui 用 jsonTest ウィンドウ実装が同一 TU に存在"
+      ],
+      "suggestedUse": "配布: 本番バイナリから Json 実験用デバッグ UI コードを除去",
+      "firstSeenAt": "2026-11-10T01:51:00+09:00",
+      "lastSeenAt": "2026-11-10T01:51:00+09:00"
+    },
+    "GAP-Ship-ForDebugSources-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Release-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 740,
+      "frequency": "high",
+      "frequencyBasis": "ForDebug 系ソースが imgui と同様に Release 除外されていない",
+      "scopeKey": "UC-Ship|Ship|ForDebugSources|Incomplete|Project/CG2_BuildUp.vcxproj:283",
+      "primary": "ForDebugSources",
+      "related": [
+        "DebugCamera.cpp",
+        "ImGuiJapaneseFont.cpp",
+        "AudioStreamingDebugImGui.cpp"
+      ],
+      "summaryShort": "ForDebug 系 cpp が Release でコンパイル・リンクされる",
+      "summary": "ForDebug 系 cpp が Release でコンパイル・リンクされる",
+      "scenarioText": "Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。",
+      "evidence": [
+        "ForDebug 配下 ClCompile は ExcludedFromBuild 設定無し（283-286 行付近）",
+        "imgui 系のみ Release|x64 で除外されている"
+      ],
+      "suggestedUse": "配布: デバッグカメラ／ストリーミングデバッグ UI 用コードを出荷物から分離",
+      "firstSeenAt": "2026-11-10T01:51:00+09:00",
+      "lastSeenAt": "2026-11-10T01:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -1209,7 +1288,10 @@
     "UC-Ship|Infra|verify_config_matrix|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-verify_config_matrix-001",
     "UC-Ship|Infra|buildDevelopment|Incomplete|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:18": "GAP-Infra-buildDevelopment-001",
     "UC-Ship|Infra|buildDevelopment|Unwired|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:1": "GAP-Infra-buildDevelopment-002",
-    "UC-Ship|Infra|cloud_dev_build|MissingTest|EditorAssets/Tools/CursorAI/cursorInstructions.md:31": "GAP-Infra-cloud_dev_build-001"
+    "UC-Ship|Infra|cloud_dev_build|MissingTest|EditorAssets/Tools/CursorAI/cursorInstructions.md:31": "GAP-Infra-cloud_dev_build-001",
+    "UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:140": "GAP-Ship-CG2_BuildUp-003",
+    "UC-Ship|Ship|JsonTest|Incomplete|Project/Codes/Source/System/Json/JsonTest.cpp:1": "GAP-Ship-JsonTest-001",
+    "UC-Ship|Ship|ForDebugSources|Incomplete|Project/CG2_BuildUp.vcxproj:283": "GAP-Ship-ForDebugSources-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1231,13 +1313,15 @@
     "Runtime-MovieCameraTrackLoader": 2,
     "Render-SceneGame": 2,
     "Render-SceneBuildUp": 2,
-    "Ship-CG2_BuildUp": 3,
+    "Ship-CG2_BuildUp": 4,
     "Infra-BinaryConverter": 2,
     "Infra-asset_pack_verify": 2,
     "Ship-EditorSources": 2,
     "Infra-verify_config_matrix": 2,
     "Infra-buildDevelopment": 3,
-    "Infra-cloud_dev_build": 2
+    "Infra-cloud_dev_build": 2,
+    "Ship-JsonTest": 2,
+    "Ship-ForDebugSources": 2
   },
   "scans": [
     {
@@ -1460,6 +1544,22 @@
         "GAP-Infra-buildDevelopment-001",
         "GAP-Infra-buildDevelopment-002",
         "GAP-Infra-cloud_dev_build-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-015009",
+      "at": "2026-11-10T01:50:42.672348+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Ship",
+      "scenarioId": "SHP-Release-001",
+      "areaHint": "Infra",
+      "priorityScore": 1420,
+      "newIds": [
+        "GAP-Ship-CG2_BuildUp-003",
+        "GAP-Ship-JsonTest-001",
+        "GAP-Ship-ForDebugSources-001"
       ],
       "updatedIds": [],
       "closedIds": []

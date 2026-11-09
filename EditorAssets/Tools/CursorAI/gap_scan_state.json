@@ -21,9 +21,10 @@
     "AUT-VisualTune-001": 1,
     "SHP-AssetPack-001": 1,
     "SHP-Config-001": 1,
-    "SHP-DevBuild-001": 1
+    "SHP-DevBuild-001": 1,
+    "SHP-Release-001": 1
   },
-  "lastCompletedScanId": "SCAN-20261110-014010",
+  "lastCompletedScanId": "SCAN-20261110-015009",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 14
+  "totalTicksCompleted": 15
 }

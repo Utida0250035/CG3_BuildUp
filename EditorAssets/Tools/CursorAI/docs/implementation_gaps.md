@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T01:30:31.017847+09:00
+- **lastIncrementalScanAt:** 2026-11-10T01:40:32.359685+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -903,6 +903,46 @@
 - firstSeenAt: 2026-11-10T01:41:00+09:00
 - lastSeenAt: 2026-11-10T01:41:00+09:00
 
+### GAP-Ship-ForDebugSources-001
+
+- status: open
+- tier: P1
+- score: 740
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Release-001
+- frequency: high
+- frequencyBasis: ForDebug 系ソースが imgui と同様に Release 除外されていない
+- scope: UC-Ship|Ship|ForDebugSources|Incomplete|Project/CG2_BuildUp.vcxproj:283
+- primary: `ForDebugSources`
+- summary: 【Ship】ForDebug 系 cpp が Release でコンパイル・リンクされる
+- scenarioText: Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。
+- evidence:
+  - ForDebug 配下 ClCompile は ExcludedFromBuild 設定無し（283-286 行付近）
+  - imgui 系のみ Release|x64 で除外されている
+- suggestedUse: 配布: デバッグカメラ／ストリーミングデバッグ UI 用コードを出荷物から分離
+- firstSeenAt: 2026-11-10T01:51:00+09:00
+- lastSeenAt: 2026-11-10T01:51:00+09:00
+
+### GAP-Ship-CG2_BuildUp-003
+
+- status: open
+- tier: P2
+- score: 720
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Release-001
+- frequency: medium
+- frequencyBasis: Release でも PDB 生成が有効で出荷物にデバッグ情報が残る
+- scope: UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:140
+- primary: `CG2_BuildUp`
+- summary: 【Ship】Release リンク設定で GenerateDebugInformation が true
+- scenarioText: Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。
+- evidence:
+  - Release|x64 Link: GenerateDebugInformation=true（vcxproj:140）
+  - Development も同設定で意図差分の文書化無し
+- suggestedUse: 配布: 出荷 exe に意図したデバッグシンボル方針を適用
+- firstSeenAt: 2026-11-10T01:51:00+09:00
+- lastSeenAt: 2026-11-10T01:51:00+09:00
+
 ### GAP-Infra-verify_config_matrix-001
 
 - status: open
@@ -923,6 +963,26 @@
 - roadmapLink: feature-memos/cloud_build_vcxproj_check.md
 - firstSeenAt: 2026-11-10T01:31:00+09:00
 - lastSeenAt: 2026-11-10T01:31:00+09:00
+
+### GAP-Ship-JsonTest-001
+
+- status: open
+- tier: P2
+- score: 690
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Release-001
+- frequency: low
+- frequencyBasis: Json デバッグ用 TU が Release にも含まれる
+- scope: UC-Ship|Ship|JsonTest|Incomplete|Project/Codes/Source/System/Json/JsonTest.cpp:1
+- primary: `JsonTest`
+- summary: 【Ship】JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
+- scenarioText: Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。
+- evidence:
+  - JsonTest.cpp は DEVELOPMENT/USE_IMGUI ガードだが vcxproj に Release ExcludedFromBuild 無し（394 行）
+  - ImGui 用 jsonTest ウィンドウ実装が同一 TU に存在
+- suggestedUse: 配布: 本番バイナリから Json 実験用デバッグ UI コードを除去
+- firstSeenAt: 2026-11-10T01:51:00+09:00
+- lastSeenAt: 2026-11-10T01:51:00+09:00
 
 ### GAP-Infra-BinaryConverter-001
 
@@ -992,6 +1052,7 @@
 - scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
 
 ---
 
