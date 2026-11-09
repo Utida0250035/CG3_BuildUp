@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T04:30:49.405497+09:00
+- **lastIncrementalScanAt:** 2026-11-10T04:40:56.930223+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1358,6 +1358,26 @@
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
 
+### GAP-Scene-SceneGame-005
+
+- status: open
+- tier: P2
+- score: 670
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ボス撃破時に BGM が即停止し演出中は無音
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:498
+- primary: `SceneGame`
+- summary: 【Play】OnBossDefeated で BGM を演出完了前に停止
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - OnBossDefeated 先頭で StopBgmLoop（498-500 行）
+  - ボス死亡演出・リザルト遷移までは BGM 再生ポリシー未記載
+- suggestedUse: プレイ: 撃破演出からリザルト BGM への自然な切替
+- firstSeenAt: 2026-11-10T04:51:00+09:00
+- lastSeenAt: 2026-11-10T04:51:00+09:00
+
 ### GAP-Audio-PauseBgmLoop-001
 
 - status: open
@@ -1420,6 +1440,26 @@
 - suggestedUse: 配布: どの作業ディレクトリからも同じシーン JSON を開ける
 - firstSeenAt: 2026-11-10T04:01:00+09:00
 - lastSeenAt: 2026-11-10T04:01:00+09:00
+
+### GAP-Audio-StopBgmLoop-001
+
+- status: open
+- tier: P2
+- score: 650
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: シーン BGM 停止が全ストリーミングボイスを巻き添え停止
+- scope: UC-Play|Audio|StopBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:106
+- primary: `StopBgmLoop`
+- summary: 【Play】StopBgmLoop がシーン BGM 以外のストリーミングも停止
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - StopBgmLoop は StopSe 後に StopAllStreamingVoices を呼ぶ（106-109 行）
+  - シーン遷移の ExitScene 毎に呼ばれ共有 SE ストリームも切断しうる
+- suggestedUse: プレイ: 遷移時に意図しない SE 切れを防ぐ
+- firstSeenAt: 2026-11-10T04:51:00+09:00
+- lastSeenAt: 2026-11-10T04:51:00+09:00
 
 ### GAP-Scene-SceneGame-002
 
@@ -1585,6 +1625,26 @@
 - suggestedUse: プレイ: シーン開始直後の背景・主要オブジェクト表示を安定
 - firstSeenAt: 2026-11-10T04:01:00+09:00
 - lastSeenAt: 2026-11-10T04:01:00+09:00
+
+### GAP-Scene-SceneResult-001
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: リザルト BGM の途切れ復帰が SceneGame と非対称
+- scope: UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:41
+- primary: `SceneResult`
+- summary: 【Play】SceneResult に BGM 維持・再開処理が無い
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - EnterScene で PlayBgmLoop のみ（37-38 行）
+  - Update に MaintainSceneBgmIfNeeded 相当無し（41-48 行）
+- suggestedUse: プレイ: クリア後リザルトで BGM が止まっても自動復帰
+- firstSeenAt: 2026-11-10T04:51:00+09:00
+- lastSeenAt: 2026-11-10T04:51:00+09:00
 
 ### GAP-Scene-SceneMovie-005
 
@@ -2085,7 +2145,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
@@ -2100,6 +2159,7 @@
 - scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-043016 | at: 2026-11-10T04:30:49.405497+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-044018 | at: 2026-11-10T04:40:56.930223+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

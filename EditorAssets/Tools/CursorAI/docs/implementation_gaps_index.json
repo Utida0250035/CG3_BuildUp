@@ -2617,6 +2617,86 @@
       "roadmapLink": "feature-memos/debug_test_play_area.md",
       "firstSeenAt": "2026-11-10T04:41:00+09:00",
       "lastSeenAt": "2026-11-10T04:41:00+09:00"
+    },
+    "GAP-Scene-SceneResult-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "medium",
+      "frequencyBasis": "リザルト BGM の途切れ復帰が SceneGame と非対称",
+      "scopeKey": "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:41",
+      "primary": "SceneResult",
+      "related": [
+        "MaintainSceneBgmIfNeeded",
+        "PlayBgmLoop",
+        "SceneTitle"
+      ],
+      "summaryShort": "SceneResult に BGM 維持・再開処理が無い",
+      "summary": "SceneResult に BGM 維持・再開処理が無い",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "EnterScene で PlayBgmLoop のみ（37-38 行）",
+        "Update に MaintainSceneBgmIfNeeded 相当無し（41-48 行）"
+      ],
+      "suggestedUse": "プレイ: クリア後リザルトで BGM が止まっても自動復帰",
+      "firstSeenAt": "2026-11-10T04:51:00+09:00",
+      "lastSeenAt": "2026-11-10T04:51:00+09:00"
+    },
+    "GAP-Scene-SceneGame-005": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 670,
+      "frequency": "medium",
+      "frequencyBasis": "ボス撃破時に BGM が即停止し演出中は無音",
+      "scopeKey": "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:498",
+      "primary": "SceneGame",
+      "related": [
+        "BossDeathPresentation",
+        "StopBgmLoop",
+        "ChangeSceneFade"
+      ],
+      "summaryShort": "OnBossDefeated で BGM を演出完了前に停止",
+      "summary": "OnBossDefeated で BGM を演出完了前に停止",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "OnBossDefeated 先頭で StopBgmLoop（498-500 行）",
+        "ボス死亡演出・リザルト遷移までは BGM 再生ポリシー未記載"
+      ],
+      "suggestedUse": "プレイ: 撃破演出からリザルト BGM への自然な切替",
+      "firstSeenAt": "2026-11-10T04:51:00+09:00",
+      "lastSeenAt": "2026-11-10T04:51:00+09:00"
+    },
+    "GAP-Audio-StopBgmLoop-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 650,
+      "frequency": "medium",
+      "frequencyBasis": "シーン BGM 停止が全ストリーミングボイスを巻き添え停止",
+      "scopeKey": "UC-Play|Audio|StopBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:106",
+      "primary": "StopBgmLoop",
+      "related": [
+        "StopAllStreamingVoices",
+        "CommandScene"
+      ],
+      "summaryShort": "StopBgmLoop がシーン BGM 以外のストリーミングも停止",
+      "summary": "StopBgmLoop がシーン BGM 以外のストリーミングも停止",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "StopBgmLoop は StopSe 後に StopAllStreamingVoices を呼ぶ（106-109 行）",
+        "シーン遷移の ExitScene 毎に呼ばれ共有 SE ストリームも切断しうる"
+      ],
+      "suggestedUse": "プレイ: 遷移時に意図しない SE 切れを防ぐ",
+      "firstSeenAt": "2026-11-10T04:51:00+09:00",
+      "lastSeenAt": "2026-11-10T04:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -2715,7 +2795,10 @@
     "UC-Authoring|Authoring|visual_lighting_profile|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/volumetric_fog.md:23": "GAP-Authoring-visual_lighting_profile-001",
     "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:28": "GAP-Infra-EditorScenePlayRequest-001",
     "UC-Debug|Infra|combat_bounds_sandbox|MissingData|EditorAssets/DebugPlayArea/combat_bounds_sandbox.scene.json:1": "GAP-Infra-combat_bounds_sandbox-001",
-    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:114": "GAP-Scene-SceneBuildUp-006"
+    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:114": "GAP-Scene-SceneBuildUp-006",
+    "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:41": "GAP-Scene-SceneResult-001",
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:498": "GAP-Scene-SceneGame-005",
+    "UC-Play|Audio|StopBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:106": "GAP-Audio-StopBgmLoop-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -2734,7 +2817,9 @@
     "Infra-EditorScenePlayRequest": 2,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
-    "Scene-SceneGame": 5,
+    "Scene-SceneGame": 6,
+    "Scene-SceneResult": 2,
+    "Audio-StopBgmLoop": 2,
     "UX-OperatorGuidanceSystem": 5,
     "Camera-StageBounds": 2,
     "Scene-SceneParticleEditor": 2,
@@ -3287,6 +3372,22 @@
         "GAP-Infra-EditorScenePlayRequest-001",
         "GAP-Infra-combat_bounds_sandbox-001",
         "GAP-Scene-SceneBuildUp-006"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-045017",
+      "at": "2026-11-10T04:50:42.063624+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1100,
+      "newIds": [
+        "GAP-Scene-SceneResult-001",
+        "GAP-Scene-SceneGame-005",
+        "GAP-Audio-StopBgmLoop-001"
       ],
       "updatedIds": [],
       "closedIds": []
