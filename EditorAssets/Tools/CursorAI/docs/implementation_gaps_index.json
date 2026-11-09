@@ -2536,6 +2536,87 @@
       "roadmapLink": "feature-memos/volumetric_fog.md",
       "firstSeenAt": "2026-11-10T04:31:00+09:00",
       "lastSeenAt": "2026-11-10T04:31:00+09:00"
+    },
+    "GAP-Infra-EditorScenePlayRequest-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 740,
+      "frequency": "medium",
+      "frequencyBasis": "EntityEditor→Runtime の遷移キューが未接続",
+      "scopeKey": "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:28",
+      "primary": "EditorScenePlayRequest",
+      "related": [
+        "SceneBuildUpRegistry",
+        "requestPlayRuntimeScene"
+      ],
+      "summaryShort": "EditorScenePlayRequest がどこからも Set されない",
+      "summary": "EditorScenePlayRequest がどこからも Set されない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "EditorScenePlayRequest は JSON パス保持のみ（EditorSceneAsset.h:27-38）",
+        "rg Set(.*EditorScenePlayRequest 0 件、Instance() は .cpp 内のみ"
+      ],
+      "suggestedUse": "デバッグ: シーン実行で本番相当 BuildUp へ JSON を渡す",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T04:41:00+09:00",
+      "lastSeenAt": "2026-11-10T04:41:00+09:00"
+    },
+    "GAP-Infra-combat_bounds_sandbox-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "low",
+      "frequencyBasis": "StageBounds 可視化サンドボックスが Docs のみ",
+      "scopeKey": "UC-Debug|Infra|combat_bounds_sandbox|MissingData|EditorAssets/DebugPlayArea/combat_bounds_sandbox.scene.json:1",
+      "primary": "combat_bounds_sandbox",
+      "related": [
+        "StageBounds",
+        "debug_test_play_area.md"
+      ],
+      "summaryShort": "combat_bounds_sandbox がコード／既定導線から参照されない",
+      "summary": "combat_bounds_sandbox がコード／既定導線から参照されない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "debug_test_play_area.md と Generator README で例示（combat_bounds_sandbox）",
+        "Project/Codes からファイル名参照無し（rg combat_bounds 0 件）"
+      ],
+      "suggestedUse": "デバッグ: 境界マーカー検証をワンクリックで開く",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T04:41:00+09:00",
+      "lastSeenAt": "2026-11-10T04:41:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-006": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "medium",
+      "frequencyBasis": "単体 Launch で戻り先無しのとき F1 復帰が効かない",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:114",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SceneBuildUpRegistry",
+        "returnScene"
+      ],
+      "summaryShort": "returnScene が null だと機能検証シーンから抜けられない",
+      "summary": "returnScene が null だと機能検証シーンから抜けられない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "F1 復帰は returnScene_ != nullptr のときのみ（114-118 行）",
+        "README の Launch 例は returnScene 必須だが UI 導線未整備時に単体起動しうる"
+      ],
+      "suggestedUse": "デバッグ: 検証シーンのみ起動した後もエディタへ戻れる",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T04:41:00+09:00",
+      "lastSeenAt": "2026-11-10T04:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -2631,7 +2712,10 @@
     "UC-Play|Render|SceneTitle|MissingData|Project/Codes/Source/Scene/SceneTitle.cpp:16": "GAP-Render-SceneTitle-001",
     "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:251": "GAP-Editor-SceneEntityEditor-004",
     "UC-Authoring|Editor|EditorEntityWorkbench|MissingUI|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:128": "GAP-Editor-EditorEntityWorkbench-002",
-    "UC-Authoring|Authoring|visual_lighting_profile|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/volumetric_fog.md:23": "GAP-Authoring-visual_lighting_profile-001"
+    "UC-Authoring|Authoring|visual_lighting_profile|MissingData|EditorAssets/Tools/CursorAI/docs/feature-memos/volumetric_fog.md:23": "GAP-Authoring-visual_lighting_profile-001",
+    "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:28": "GAP-Infra-EditorScenePlayRequest-001",
+    "UC-Debug|Infra|combat_bounds_sandbox|MissingData|EditorAssets/DebugPlayArea/combat_bounds_sandbox.scene.json:1": "GAP-Infra-combat_bounds_sandbox-001",
+    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:114": "GAP-Scene-SceneBuildUp-006"
   },
   "pendings": {},
   "nextSequence": {
@@ -2646,7 +2730,9 @@
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 6,
+    "Scene-SceneBuildUp": 7,
+    "Infra-EditorScenePlayRequest": 2,
+    "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
     "Scene-SceneGame": 5,
     "UX-OperatorGuidanceSystem": 5,
@@ -3185,6 +3271,22 @@
         "GAP-Editor-SceneEntityEditor-004",
         "GAP-Editor-EditorEntityWorkbench-002",
         "GAP-Authoring-visual_lighting_profile-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-044018",
+      "at": "2026-11-10T04:40:56.930223+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1090,
+      "newIds": [
+        "GAP-Infra-EditorScenePlayRequest-001",
+        "GAP-Infra-combat_bounds_sandbox-001",
+        "GAP-Scene-SceneBuildUp-006"
       ],
       "updatedIds": [],
       "closedIds": []

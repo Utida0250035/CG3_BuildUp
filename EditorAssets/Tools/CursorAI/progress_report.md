@@ -1349,6 +1349,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001（2回目）
 - **newIds:** 3（プレビューにポスト無し、調整メニュー無し、lighting 用 JSON 無し）
 
+## ギャップスキャン tick（SCAN-20261110-044018）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（3回目）
+- **newIds:** 3（PlayRequest 未配線、sandbox JSON 未参照、BuildUp 復帰不可）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

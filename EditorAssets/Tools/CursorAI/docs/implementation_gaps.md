@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T04:21:03.907927+09:00
+- **lastIncrementalScanAt:** 2026-11-10T04:30:49.405497+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -911,6 +911,27 @@
 - firstSeenAt: 2026-11-09T23:51:00+09:00
 - lastSeenAt: 2026-11-09T23:51:00+09:00
 
+### GAP-Infra-EditorScenePlayRequest-001
+
+- status: open
+- tier: P1
+- score: 740
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: EntityEditor→Runtime の遷移キューが未接続
+- scope: UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:28
+- primary: `EditorScenePlayRequest`
+- summary: 【Debug】EditorScenePlayRequest がどこからも Set されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EditorScenePlayRequest は JSON パス保持のみ（EditorSceneAsset.h:27-38）
+  - rg Set(.*EditorScenePlayRequest 0 件、Instance() は .cpp 内のみ
+- suggestedUse: デバッグ: シーン実行で本番相当 BuildUp へ JSON を渡す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T04:41:00+09:00
+- lastSeenAt: 2026-11-10T04:41:00+09:00
+
 ### GAP-Debug-FrameDeltaTime-001
 
 - status: open
@@ -1037,6 +1058,27 @@
 - firstSeenAt: 2026-11-10T02:31:00+09:00
 - lastSeenAt: 2026-11-10T02:31:00+09:00
 
+### GAP-Scene-SceneBuildUp-006
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 単体 Launch で戻り先無しのとき F1 復帰が効かない
+- scope: UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:114
+- primary: `SceneBuildUp`
+- summary: 【Debug】returnScene が null だと機能検証シーンから抜けられない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - F1 復帰は returnScene_ != nullptr のときのみ（114-118 行）
+  - README の Launch 例は returnScene 必須だが UI 導線未整備時に単体起動しうる
+- suggestedUse: デバッグ: 検証シーンのみ起動した後もエディタへ戻れる
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T04:41:00+09:00
+- lastSeenAt: 2026-11-10T04:41:00+09:00
+
 ### GAP-Infra-LoopTick13Demo-001
 
 - status: open
@@ -1056,6 +1098,27 @@
 - suggestedUse: デバッグ: ループ検証用の既定 JSON を機能検証の種にする
 - firstSeenAt: 2026-11-10T03:11:00+09:00
 - lastSeenAt: 2026-11-10T03:11:00+09:00
+
+### GAP-Infra-combat_bounds_sandbox-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: StageBounds 可視化サンドボックスが Docs のみ
+- scope: UC-Debug|Infra|combat_bounds_sandbox|MissingData|EditorAssets/DebugPlayArea/combat_bounds_sandbox.scene.json:1
+- primary: `combat_bounds_sandbox`
+- summary: 【Debug】combat_bounds_sandbox がコード／既定導線から参照されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - debug_test_play_area.md と Generator README で例示（combat_bounds_sandbox）
+  - Project/Codes からファイル名参照無し（rg combat_bounds 0 件）
+- suggestedUse: デバッグ: 境界マーカー検証をワンクリックで開く
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T04:41:00+09:00
+- lastSeenAt: 2026-11-10T04:41:00+09:00
 
 #### UC-Play
 
@@ -2022,7 +2085,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
@@ -2037,6 +2099,7 @@
 - scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-043016 | at: 2026-11-10T04:30:49.405497+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 
 ---
 
