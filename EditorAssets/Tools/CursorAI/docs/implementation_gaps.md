@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T04:01:02.891193+09:00
+- **lastIncrementalScanAt:** 2026-11-10T04:10:44.427042+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1060,6 +1060,51 @@
 - firstSeenAt: 2026-11-10T03:21:00+09:00
 - lastSeenAt: 2026-11-10T03:21:00+09:00
 
+### GAP-Render-SceneGame-002
+
+- status: open
+- tier: P1
+- score: 750
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Authoring
+- scenarioId: PLY-Visual-001
+- frequency: high
+- frequencyBasis: 毎フレーム SetupGameLighting でエンジン側設定がリセット
+- scope: UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:200
+- primary: `SceneGame`
+- summary: 【Play】DrawScene 毎に見た目リテラルを再適用しデータ反映が上書きされる
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - DrawScene 先頭で SetupGameLighting を毎回呼ぶ（200 行）
+  - EnterScene 以外の経路で RefVolumetricFog 等を変えても次フレームで C++ 既定に戻る
+- suggestedUse: プレイ・制作: ロードした見た目データがランタイム中も保持される
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T04:21:00+09:00
+- lastSeenAt: 2026-11-10T04:21:00+09:00
+
+### GAP-Render-Lighting-002
+
+- status: open
+- tier: P1
+- score: 730
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-Visual-001
+- frequency: high
+- frequencyBasis: フォグ／ゴッドレイ設定が Engine と Lighting で二重管理
+- scope: UC-Play|Render|Lighting|Contract|Project/Codes/Include/Engine/Renderer/Lighting/Lighting.h:42
+- primary: `Lighting`
+- summary: 【Play】Visual::Lighting と AtrumEngine の VolumetricFog が非共有
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - Lighting は独自 volumetricFog_（Lighting.h:19-42）を SceneLightData CB に適用
+  - SceneGame は Engine::RefVolumetricFog().SetSettings のみ（SceneGame.cpp:57）
+  - volumetric_fog.md の「同一 VolumetricFogSettings を共有」と不一致
+- suggestedUse: プレイ: 一元的なデータ変更が Object3d CB に確実に届く
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T04:21:00+09:00
+- lastSeenAt: 2026-11-10T04:21:00+09:00
+
 ### GAP-Scene-ChangeSceneFade-001
 
 - status: open
@@ -1502,6 +1547,27 @@
 - firstSeenAt: 2026-11-10T03:21:00+09:00
 - lastSeenAt: 2026-11-10T03:21:00+09:00
 
+### GAP-Render-SceneTitle-001
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Visual-001
+- frequency: medium
+- frequencyBasis: タイトル→本編遷移でリム／フォグパイプラインが切り替わる
+- scope: UC-Play|Render|SceneTitle|MissingData|Project/Codes/Source/Scene/SceneTitle.cpp:16
+- primary: `SceneTitle`
+- summary: 【Play】SceneTitle のライティングにリム・フォグ・ゴッドレイが無い
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - SetupStageLighting は DirectionalLightData のみ（SceneTitle.cpp:16-25）
+  - rimEnabled や RefVolumetricFog 未設定で本編 SceneGame と見た目ポリシー不一致
+- suggestedUse: プレイ: シーン遷移時に見た目が急変しない
+- roadmapLink: feature-memos/rim_light.md
+- firstSeenAt: 2026-11-10T04:21:00+09:00
+- lastSeenAt: 2026-11-10T04:21:00+09:00
+
 ### GAP-Scene-SceneMovie-001
 
 - status: investigating
@@ -1893,7 +1959,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
@@ -1908,6 +1973,7 @@
 - scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 
 ---
 

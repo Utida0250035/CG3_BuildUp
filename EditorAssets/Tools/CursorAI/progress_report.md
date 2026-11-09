@@ -1339,6 +1339,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001（2回目）
 - **newIds:** 3（hints 必須ロード、howTo 二重表示、displayName 未描画）
 
+## ギャップスキャン tick（SCAN-20261110-042012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Visual-001（2回目）
+- **newIds:** 3（毎フレーム lighting 上書き、二重 VolumetricFog、Title にリム無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

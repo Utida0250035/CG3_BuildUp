@@ -2364,6 +2364,94 @@
       "roadmapLink": "feature-memos/operator_guidance_bubble.md",
       "firstSeenAt": "2026-11-10T04:11:00+09:00",
       "lastSeenAt": "2026-11-10T04:11:00+09:00"
+    },
+    "GAP-Render-SceneGame-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "PLY-Visual-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 750,
+      "frequency": "high",
+      "frequencyBasis": "毎フレーム SetupGameLighting でエンジン側設定がリセット",
+      "scopeKey": "UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:200",
+      "primary": "SceneGame",
+      "related": [
+        "SetupGameLighting",
+        "RefVolumetricFog",
+        "SetDirectionalLightData"
+      ],
+      "summaryShort": "DrawScene 毎に見た目リテラルを再適用しデータ反映が上書きされる",
+      "summary": "DrawScene 毎に見た目リテラルを再適用しデータ反映が上書きされる",
+      "scenarioText": "ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。",
+      "evidence": [
+        "DrawScene 先頭で SetupGameLighting を毎回呼ぶ（200 行）",
+        "EnterScene 以外の経路で RefVolumetricFog 等を変えても次フレームで C++ 既定に戻る"
+      ],
+      "suggestedUse": "プレイ・制作: ロードした見た目データがランタイム中も保持される",
+      "roadmapLink": "feature-memos/volumetric_fog.md",
+      "firstSeenAt": "2026-11-10T04:21:00+09:00",
+      "lastSeenAt": "2026-11-10T04:21:00+09:00"
+    },
+    "GAP-Render-Lighting-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Debug"
+      ],
+      "scenarioId": "PLY-Visual-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 730,
+      "frequency": "high",
+      "frequencyBasis": "フォグ／ゴッドレイ設定が Engine と Lighting で二重管理",
+      "scopeKey": "UC-Play|Render|Lighting|Contract|Project/Codes/Include/Engine/Renderer/Lighting/Lighting.h:42",
+      "primary": "Lighting",
+      "related": [
+        "AtrumEngine",
+        "FlushDirectionalLightConstantBuffer",
+        "volumetric_fog.md"
+      ],
+      "summaryShort": "Visual::Lighting と AtrumEngine の VolumetricFog が非共有",
+      "summary": "Visual::Lighting と AtrumEngine の VolumetricFog が非共有",
+      "scenarioText": "ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。",
+      "evidence": [
+        "Lighting は独自 volumetricFog_（Lighting.h:19-42）を SceneLightData CB に適用",
+        "SceneGame は Engine::RefVolumetricFog().SetSettings のみ（SceneGame.cpp:57）",
+        "volumetric_fog.md の「同一 VolumetricFogSettings を共有」と不一致"
+      ],
+      "suggestedUse": "プレイ: 一元的なデータ変更が Object3d CB に確実に届く",
+      "roadmapLink": "feature-memos/volumetric_fog.md",
+      "firstSeenAt": "2026-11-10T04:21:00+09:00",
+      "lastSeenAt": "2026-11-10T04:21:00+09:00"
+    },
+    "GAP-Render-SceneTitle-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Visual-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "medium",
+      "frequencyBasis": "タイトル→本編遷移でリム／フォグパイプラインが切り替わる",
+      "scopeKey": "UC-Play|Render|SceneTitle|MissingData|Project/Codes/Source/Scene/SceneTitle.cpp:16",
+      "primary": "SceneTitle",
+      "related": [
+        "SetupGameLighting",
+        "rim_light.md"
+      ],
+      "summaryShort": "SceneTitle のライティングにリム・フォグ・ゴッドレイが無い",
+      "summary": "SceneTitle のライティングにリム・フォグ・ゴッドレイが無い",
+      "scenarioText": "ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。",
+      "evidence": [
+        "SetupStageLighting は DirectionalLightData のみ（SceneTitle.cpp:16-25）",
+        "rimEnabled や RefVolumetricFog 未設定で本編 SceneGame と見た目ポリシー不一致"
+      ],
+      "suggestedUse": "プレイ: シーン遷移時に見た目が急変しない",
+      "roadmapLink": "feature-memos/rim_light.md",
+      "firstSeenAt": "2026-11-10T04:21:00+09:00",
+      "lastSeenAt": "2026-11-10T04:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -2453,7 +2541,10 @@
     "UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:24": "GAP-Scene-SceneBuildUp-005",
     "UC-Authoring|UX|OperatorGuidanceSystem|Contract|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:93": "GAP-UX-OperatorGuidanceSystem-003",
     "UC-Authoring|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:205": "GAP-Scene-SceneGame-004",
-    "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:73": "GAP-UX-OperatorGuidanceSystem-004"
+    "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:73": "GAP-UX-OperatorGuidanceSystem-004",
+    "UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:200": "GAP-Render-SceneGame-002",
+    "UC-Play|Render|Lighting|Contract|Project/Codes/Include/Engine/Renderer/Lighting/Lighting.h:42": "GAP-Render-Lighting-002",
+    "UC-Play|Render|SceneTitle|MissingData|Project/Codes/Source/Scene/SceneTitle.cpp:16": "GAP-Render-SceneTitle-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -2481,7 +2572,9 @@
     "Infra-component_split_verify": 2,
     "Scene-SceneMovieRegistry": 2,
     "Runtime-MovieCameraTrackLoader": 2,
-    "Render-SceneGame": 2,
+    "Render-SceneGame": 3,
+    "Render-Lighting": 2,
+    "Render-SceneTitle": 2,
     "Render-SceneBuildUp": 2,
     "Ship-CG2_BuildUp": 4,
     "Infra-BinaryConverter": 2,
@@ -2506,7 +2599,6 @@
     "Infra-frame_profiler": 2,
     "Debug-FrameDeltaTime": 2,
     "Ship-Development_opt": 2,
-    "Render-Lighting": 2,
     "Engine-AtrumEngineLighting": 2,
     "Render-DirectionalShadow": 2,
     "Audio-StreamingDebug": 3,
@@ -2973,6 +3065,22 @@
         "GAP-UX-OperatorGuidanceSystem-003",
         "GAP-Scene-SceneGame-004",
         "GAP-UX-OperatorGuidanceSystem-004"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-042012",
+      "at": "2026-11-10T04:21:03.907927+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Visual-001",
+      "areaHint": "Render",
+      "priorityScore": 1120,
+      "newIds": [
+        "GAP-Render-SceneGame-002",
+        "GAP-Render-Lighting-002",
+        "GAP-Render-SceneTitle-001"
       ],
       "updatedIds": [],
       "closedIds": []
