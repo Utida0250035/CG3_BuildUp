@@ -742,6 +742,91 @@
       "roadmapLink": "feature-memos/operator_guidance_bubble.md",
       "firstSeenAt": "2026-11-10T00:51:00+09:00",
       "lastSeenAt": "2026-11-10T00:51:00+09:00"
+    },
+    "GAP-Render-SceneGame-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "PLY-Visual-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 700,
+      "frequency": "high",
+      "frequencyBasis": "フォグ／リム／シャドウが C++ 直書きでデータ資産化されていない",
+      "scopeKey": "UC-Play|Render|SceneGame|MissingData|Project/Codes/Source/Scene/SceneGame.cpp:35",
+      "primary": "SceneGame",
+      "related": [
+        "VolumetricFogSettings",
+        "DirectionalShadowSettings",
+        "rim_light.md"
+      ],
+      "summaryShort": "見た目パラメータがデータではなく SetupGameLighting 直書き",
+      "summary": "見た目パラメータがデータではなく SetupGameLighting 直書き",
+      "scenarioText": "ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。",
+      "evidence": [
+        "gameFog / gameGodRays / gameShadow / rim は anonymous namespace 内リテラル（SceneGame.cpp:35-73）",
+        "EditorAssets 配下に VolumetricFog 用 JSON プロファイル無し（volumetric_fog.md のレベル制作共有未実装）"
+      ],
+      "suggestedUse": "プレイ・制作: 調整した見た目をデータとしてシーン間で再現",
+      "roadmapLink": "feature-memos/volumetric_fog.md",
+      "firstSeenAt": "2026-11-10T01:01:00+09:00",
+      "lastSeenAt": "2026-11-10T01:01:00+09:00"
+    },
+    "GAP-Render-SceneBuildUp-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Debug"
+      ],
+      "scenarioId": "PLY-Visual-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 660,
+      "frequency": "medium",
+      "frequencyBasis": "JSON シーンプレビューが本編と同じ描画パイプラインを使わない",
+      "scopeKey": "UC-Play|Render|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:64",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SetupGameLighting",
+        "SetupRuntimeLighting"
+      ],
+      "summaryShort": "BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い",
+      "summary": "BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い",
+      "scenarioText": "ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。",
+      "evidence": [
+        "SetupRuntimeLighting は DirectionalLightData のみ（SceneBuildUp.cpp:64-73）",
+        "RefVolumetricFog / RefGodRays / RefDirectionalShadow 未使用（SceneGame と対照）"
+      ],
+      "suggestedUse": "プレイ: 制作プレビューで本編に近い見た目を確認",
+      "firstSeenAt": "2026-11-10T01:01:00+09:00",
+      "lastSeenAt": "2026-11-10T01:01:00+09:00"
+    },
+    "GAP-Scene-SceneMovie-003": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Visual-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "low",
+      "frequencyBasis": "カットシーンでもリム／フォグ拡張を使う方針だが未適用",
+      "scopeKey": "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:43",
+      "primary": "SceneMovie",
+      "related": [
+        "rim_light.md",
+        "SetupStageLighting"
+      ],
+      "summaryShort": "SceneMovie のライティングにリム・ボリュームフォグが無い",
+      "summary": "SceneMovie のライティングにリム・ボリュームフォグが無い",
+      "scenarioText": "ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。",
+      "evidence": [
+        "SetupStageLighting は平行光のみ（SceneMovie.cpp:43-52）",
+        "rim_light.md は SceneMovie 等でも DirectionalLightData 拡張利用可と記載"
+      ],
+      "suggestedUse": "プレイ: カットシーンのシルエット可読性を本編と揃える",
+      "roadmapLink": "feature-memos/rim_light.md",
+      "firstSeenAt": "2026-11-10T01:01:00+09:00",
+      "lastSeenAt": "2026-11-10T01:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -771,13 +856,16 @@
     "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:92": "GAP-Scene-SceneBuildUp-002",
     "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:229": "GAP-UX-OperatorGuidanceSystem-001",
     "UC-Authoring|Editor|UXAuthoring|MissingUI|EditorAssets/UX/operator_guidance.json:1": "GAP-Editor-UXAuthoring-001",
-    "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/System/Playable/CmpMoveByInput.cpp:119": "GAP-UX-OperatorGuidanceSystem-002"
+    "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/System/Playable/CmpMoveByInput.cpp:119": "GAP-UX-OperatorGuidanceSystem-002",
+    "UC-Play|Render|SceneGame|MissingData|Project/Codes/Source/Scene/SceneGame.cpp:35": "GAP-Render-SceneGame-001",
+    "UC-Play|Render|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:64": "GAP-Render-SceneBuildUp-001",
+    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:43": "GAP-Scene-SceneMovie-003"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 2,
     "Scene-CommandScene": 2,
-    "Scene-SceneMovie": 3,
+    "Scene-SceneMovie": 4,
     "Editor-EntityEditor": 4,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 3,
@@ -790,7 +878,9 @@
     "Editor-EditorSceneRuntime": 4,
     "Infra-component_split_verify": 2,
     "Scene-SceneMovieRegistry": 2,
-    "Runtime-MovieCameraTrackLoader": 2
+    "Runtime-MovieCameraTrackLoader": 2,
+    "Render-SceneGame": 2,
+    "Render-SceneBuildUp": 2
   },
   "scans": [
     {
@@ -933,6 +1023,22 @@
         "GAP-UX-OperatorGuidanceSystem-001",
         "GAP-Editor-UXAuthoring-001",
         "GAP-UX-OperatorGuidanceSystem-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-010019",
+      "at": "2026-11-10T01:01:03.761970+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Visual-001",
+      "areaHint": "Render",
+      "priorityScore": 1540,
+      "newIds": [
+        "GAP-Render-SceneGame-001",
+        "GAP-Render-SceneBuildUp-001",
+        "GAP-Scene-SceneMovie-003"
       ],
       "updatedIds": [],
       "closedIds": []

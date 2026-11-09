@@ -1239,6 +1239,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001
 - **newIds:** 3（message 未描画、UX JSON エディタなし、actionId parry のみ）
 
+## ギャップスキャン tick（SCAN-20261110-010019）
+
+- **useCase:** UC-Play / **scenario:** PLY-Visual-001
+- **newIds:** 3（ライト直書き、BuildUp フォグ等なし、SceneMovie リムなし）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T00:40:44.827867+09:00
+- **lastIncrementalScanAt:** 2026-11-10T00:50:37.082956+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -455,6 +455,28 @@
 - firstSeenAt: 2026-11-10T00:41:00+09:00
 - lastSeenAt: 2026-11-10T00:41:00+09:00
 
+### GAP-Render-SceneGame-001
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Authoring
+- scenarioId: PLY-Visual-001
+- frequency: high
+- frequencyBasis: フォグ／リム／シャドウが C++ 直書きでデータ資産化されていない
+- scope: UC-Play|Render|SceneGame|MissingData|Project/Codes/Source/Scene/SceneGame.cpp:35
+- primary: `SceneGame`
+- summary: 【Play】見た目パラメータがデータではなく SetupGameLighting 直書き
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - gameFog / gameGodRays / gameShadow / rim は anonymous namespace 内リテラル（SceneGame.cpp:35-73）
+  - EditorAssets 配下に VolumetricFog 用 JSON プロファイル無し（volumetric_fog.md のレベル制作共有未実装）
+- suggestedUse: プレイ・制作: 調整した見た目をデータとしてシーン間で再現
+- roadmapLink: feature-memos/volumetric_fog.md
+- firstSeenAt: 2026-11-10T01:01:00+09:00
+- lastSeenAt: 2026-11-10T01:01:00+09:00
+
 ### GAP-Scene-CommandScene-001
 
 - status: open
@@ -498,6 +520,27 @@
 - roadmapLink: feature-memos/player_terrain_silhouette.md
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Render-SceneBuildUp-001
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-Visual-001
+- frequency: medium
+- frequencyBasis: JSON シーンプレビューが本編と同じ描画パイプラインを使わない
+- scope: UC-Play|Render|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:64
+- primary: `SceneBuildUp`
+- summary: 【Play】BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - SetupRuntimeLighting は DirectionalLightData のみ（SceneBuildUp.cpp:64-73）
+  - RefVolumetricFog / RefGodRays / RefDirectionalShadow 未使用（SceneGame と対照）
+- suggestedUse: プレイ: 制作プレビューで本編に近い見た目を確認
+- firstSeenAt: 2026-11-10T01:01:00+09:00
+- lastSeenAt: 2026-11-10T01:01:00+09:00
 
 ### GAP-Scene-SceneGame-002
 
@@ -647,6 +690,27 @@
 - firstSeenAt: 2026-11-10T00:21:00+09:00
 - lastSeenAt: 2026-11-10T00:21:00+09:00
 
+### GAP-Scene-SceneMovie-003
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Visual-001
+- frequency: low
+- frequencyBasis: カットシーンでもリム／フォグ拡張を使う方針だが未適用
+- scope: UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:43
+- primary: `SceneMovie`
+- summary: 【Play】SceneMovie のライティングにリム・ボリュームフォグが無い
+- scenarioText: ランタイムでライト・フォグ等の見た目がデータどおり反映される（spec: rim_light / volumetric_fog）。
+- evidence:
+  - SetupStageLighting は平行光のみ（SceneMovie.cpp:43-52）
+  - rim_light.md は SceneMovie 等でも DirectionalLightData 拡張利用可と記載
+- suggestedUse: プレイ: カットシーンのシルエット可読性を本編と揃える
+- roadmapLink: feature-memos/rim_light.md
+- firstSeenAt: 2026-11-10T01:01:00+09:00
+- lastSeenAt: 2026-11-10T01:01:00+09:00
+
 
 ---
 
@@ -666,6 +730,7 @@
 - scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 
 ---
 
