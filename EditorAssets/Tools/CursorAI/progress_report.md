@@ -1419,6 +1419,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（4回目）
 - **newIds:** 3（空追加のみ、Imported 一覧無し、トランスフォーム一括無し）
 
+## ギャップスキャン tick（SCAN-20261110-070015）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（5回目）
+- **newIds:** 3（BuildUp が EditorFrame 依存、F2 検証無し、PlayRequest Clear 未使用）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

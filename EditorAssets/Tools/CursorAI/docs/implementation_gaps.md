@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T06:41:03.845539+09:00
+- **lastIncrementalScanAt:** 2026-11-10T06:51:08.763681+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1487,6 +1487,28 @@
 - firstSeenAt: 2026-11-10T04:41:00+09:00
 - lastSeenAt: 2026-11-10T04:41:00+09:00
 
+### GAP-Editor-SceneEntityEditor-006
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: パーティクル用ショートカットのみで BuildUp 起動無し
+- scope: UC-Debug|Editor|SceneEntityEditor|MissingUI|Project/Codes/Source/Scene/SceneEntityEditor.cpp:147
+- primary: `SceneEntityEditor`
+- summary: 【Debug】F2 はパーティクル遷移のみで機能検証シーン未割当
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - F2 で SceneParticleEditor へ ChangeScene（147-150 行）
+  - SceneBuildUpRegistry::Launch や DebugPlayArea 既定パスへのホットキー無し
+  - 「シーンを実行」はプレビュータブ内のみ（129-136 行）
+- suggestedUse: デバッグ: ワンキーで最小ランタイム検証へ入る
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T07:01:00+09:00
+- lastSeenAt: 2026-11-10T07:01:00+09:00
+
 ### GAP-Infra-LoopTick13Demo-001
 
 - status: open
@@ -1550,6 +1572,28 @@
 - firstSeenAt: 2026-11-10T04:41:00+09:00
 - lastSeenAt: 2026-11-10T04:41:00+09:00
 
+### GAP-Scene-SceneBuildUp-008
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: BuildUp でも ImGui エディタフレーム必須
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:171
+- primary: `SceneBuildUp`
+- summary: 【Debug】SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DEVELOPMENT で LayoutDedicatedSceneViewWindow を毎フレーム呼ぶ（174-179 行）
+  - DrawScene は早期 return し RT パス依存（155-157, 194 行）
+  - GameOrder 単体ループ相当の最小ランタイム構成にならない
+- suggestedUse: デバッグ: UI 薄いランタイムのみで Cmp を試す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T07:01:00+09:00
+- lastSeenAt: 2026-11-10T07:01:00+09:00
+
 ### GAP-Scene-SceneBuildUp-007
 
 - status: open
@@ -1571,6 +1615,28 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T06:31:00+09:00
 - lastSeenAt: 2026-11-10T06:31:00+09:00
+
+### GAP-Infra-EditorScenePlayRequest-003
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: PlayRequest クリアが未配線でパスが残りうる
+- scope: UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:105
+- primary: `EditorScenePlayRequest`
+- summary: 【Debug】EditorScenePlayRequest::Clear が呼ばれない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Clear は jsonFilePath_.clear() のみ（EditorSceneAsset.cpp:105）
+  - Set 呼び出しも未配線のため二重未使用（001/002）
+  - 将来配線時に終了シーンでクリアされず古い JSON が残る
+- suggestedUse: デバッグ: 検証シーン入退場で再生パスを確実にリセット
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T07:01:00+09:00
+- lastSeenAt: 2026-11-10T07:01:00+09:00
 
 #### UC-Play
 
@@ -2921,7 +2987,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-043016 | at: 2026-11-10T04:30:49.405497+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-044018 | at: 2026-11-10T04:40:56.930223+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-045017 | at: 2026-11-10T04:50:42.063624+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -2936,6 +3001,7 @@
 - scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-063013 | at: 2026-11-10T06:31:21.084005+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-064013 | at: 2026-11-10T06:41:03.845539+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-065006 | at: 2026-11-10T06:51:08.763681+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 
