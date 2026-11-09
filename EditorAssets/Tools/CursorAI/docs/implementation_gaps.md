@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T03:40:52.914629+09:00
+- **lastIncrementalScanAt:** 2026-11-10T03:50:48.091396+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1058,6 +1058,26 @@
 - firstSeenAt: 2026-11-10T01:01:00+09:00
 - lastSeenAt: 2026-11-10T01:01:00+09:00
 
+### GAP-Scene-CommandChangeScene-001
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Play
+- scenarioId: PLY-SceneLoad-001
+- frequency: medium
+- frequencyBasis: フェード遷移中の二重 Set が黙って捨てられる
+- scope: UC-Play|Scene|CommandChangeScene|Contract|Project/Codes/Include/Scene/CommandChangeScene.h:178
+- primary: `CommandChangeScene`
+- summary: 【Play】遷移実行中の Set は無視され次シーン要求が失われる
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - Set は isExecute_ が false のときのみ受理（178-196 行）
+  - フェード中の連続遷移や入力連打で 2 件目以降が警告なく破棄
+- suggestedUse: プレイ: ロード／戻り遷移が意図どおり最後の要求を反映
+- firstSeenAt: 2026-11-10T04:01:00+09:00
+- lastSeenAt: 2026-11-10T04:01:00+09:00
+
 ### GAP-Scene-CommandScene-001
 
 - status: open
@@ -1143,6 +1163,27 @@
 - suggestedUse: プレイ: 制作プレビューで本編に近い見た目を確認
 - firstSeenAt: 2026-11-10T01:01:00+09:00
 - lastSeenAt: 2026-11-10T01:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-005
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Ship
+- scenarioId: PLY-SceneLoad-001
+- frequency: medium
+- frequencyBasis: JSON シーンパスが cwd 依存の生文字列
+- scope: UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:24
+- primary: `SceneBuildUp`
+- summary: 【Play】BuildUp の sceneJsonPath_ を基準パス解決しない
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - コンストラクタで渡されたパスをそのまま保持（24-27 行）
+  - EnterScene が TryLoadSceneDocument(sceneJsonPath_) に直渡し（92 行）で Ship 起動 cwd と不一致時に意図しない代替 1 体
+- suggestedUse: 配布: どの作業ディレクトリからも同じシーン JSON を開ける
+- firstSeenAt: 2026-11-10T04:01:00+09:00
+- lastSeenAt: 2026-11-10T04:01:00+09:00
 
 ### GAP-Scene-SceneGame-002
 
@@ -1288,6 +1329,26 @@
 - suggestedUse: プレイ: 開いたシーンが意図どおりのオブジェクト構成である
 - firstSeenAt: 2026-11-10T00:41:00+09:00
 - lastSeenAt: 2026-11-10T00:41:00+09:00
+
+### GAP-Scene-SceneGame-003
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Play
+- scenarioId: PLY-SceneLoad-001
+- frequency: high
+- frequencyBasis: 本編シーン入場フレームで背景カメラ参照が未確定
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:95
+- primary: `SceneGame`
+- summary: 【Play】SpawnEntities がイントロカメラ設定より先に実行される
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - EnterScene で SpawnEntities 後に introCameraController 開始（95-105 行）
+  - SkyDome は SpawnEntities 内で GetCamera() を渡す（301 行）がその時点は初期姿勢
+- suggestedUse: プレイ: シーン開始直後の背景・主要オブジェクト表示を安定
+- firstSeenAt: 2026-11-10T04:01:00+09:00
+- lastSeenAt: 2026-11-10T04:01:00+09:00
 
 ### GAP-Scene-SceneMovie-005
 
@@ -1767,7 +1828,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
@@ -1782,6 +1842,7 @@
 - scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 
 ---
 

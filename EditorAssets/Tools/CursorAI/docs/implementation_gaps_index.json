@@ -2197,6 +2197,87 @@
       "suggestedUse": "制作: パーティクルエディタ往復後も配置を保持",
       "firstSeenAt": "2026-11-10T03:51:00+09:00",
       "lastSeenAt": "2026-11-10T03:51:00+09:00"
+    },
+    "GAP-Scene-CommandChangeScene-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 700,
+      "frequency": "medium",
+      "frequencyBasis": "フェード遷移中の二重 Set が黙って捨てられる",
+      "scopeKey": "UC-Play|Scene|CommandChangeScene|Contract|Project/Codes/Include/Scene/CommandChangeScene.h:178",
+      "primary": "CommandChangeScene",
+      "related": [
+        "ChangeSceneFade",
+        "CommandScene"
+      ],
+      "summaryShort": "遷移実行中の Set は無視され次シーン要求が失われる",
+      "summary": "遷移実行中の Set は無視され次シーン要求が失われる",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "Set は isExecute_ が false のときのみ受理（178-196 行）",
+        "フェード中の連続遷移や入力連打で 2 件目以降が警告なく破棄"
+      ],
+      "suggestedUse": "プレイ: ロード／戻り遷移が意図どおり最後の要求を反映",
+      "firstSeenAt": "2026-11-10T04:01:00+09:00",
+      "lastSeenAt": "2026-11-10T04:01:00+09:00"
+    },
+    "GAP-Scene-SceneGame-003": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "high",
+      "frequencyBasis": "本編シーン入場フレームで背景カメラ参照が未確定",
+      "scopeKey": "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:95",
+      "primary": "SceneGame",
+      "related": [
+        "SpawnEntities",
+        "CameraGameIntroController",
+        "SkyDome"
+      ],
+      "summaryShort": "SpawnEntities がイントロカメラ設定より先に実行される",
+      "summary": "SpawnEntities がイントロカメラ設定より先に実行される",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "EnterScene で SpawnEntities 後に introCameraController 開始（95-105 行）",
+        "SkyDome は SpawnEntities 内で GetCamera() を渡す（301 行）がその時点は初期姿勢"
+      ],
+      "suggestedUse": "プレイ: シーン開始直後の背景・主要オブジェクト表示を安定",
+      "firstSeenAt": "2026-11-10T04:01:00+09:00",
+      "lastSeenAt": "2026-11-10T04:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-005": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 660,
+      "frequency": "medium",
+      "frequencyBasis": "JSON シーンパスが cwd 依存の生文字列",
+      "scopeKey": "UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:24",
+      "primary": "SceneBuildUp",
+      "related": [
+        "TryLoadSceneDocument",
+        "SceneBuildUpRegistry"
+      ],
+      "summaryShort": "BuildUp の sceneJsonPath_ を基準パス解決しない",
+      "summary": "BuildUp の sceneJsonPath_ を基準パス解決しない",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "コンストラクタで渡されたパスをそのまま保持（24-27 行）",
+        "EnterScene が TryLoadSceneDocument(sceneJsonPath_) に直渡し（92 行）で Ship 起動 cwd と不一致時に意図しない代替 1 体"
+      ],
+      "suggestedUse": "配布: どの作業ディレクトリからも同じシーン JSON を開ける",
+      "firstSeenAt": "2026-11-10T04:01:00+09:00",
+      "lastSeenAt": "2026-11-10T04:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -2280,7 +2361,10 @@
     "UC-Play|Scene|SceneMovie|MissingData|Project/Codes/Source/Scene/SceneMovie.cpp:88": "GAP-Scene-SceneMovie-006",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:766": "GAP-Editor-EntityEditor-004",
     "UC-Authoring|Editor|SceneEntityEditor|MissingUI|Project/Codes/Source/Scene/SceneEntityEditor.cpp:256": "GAP-Editor-SceneEntityEditor-002",
-    "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:115": "GAP-Editor-SceneEntityEditor-003"
+    "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:115": "GAP-Editor-SceneEntityEditor-003",
+    "UC-Play|Scene|CommandChangeScene|Contract|Project/Codes/Include/Scene/CommandChangeScene.h:178": "GAP-Scene-CommandChangeScene-001",
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:95": "GAP-Scene-SceneGame-003",
+    "UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:24": "GAP-Scene-SceneBuildUp-005"
   },
   "pendings": {},
   "nextSequence": {
@@ -2293,7 +2377,9 @@
     "Scene-SceneBuildUpRegistry": 2,
     "Editor-SceneEntityEditor": 4,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 5,
+    "Scene-SceneBuildUp": 6,
+    "Scene-CommandChangeScene": 2,
+    "Scene-SceneGame": 4,
     "Camera-StageBounds": 2,
     "Scene-SceneParticleEditor": 2,
     "Scene-SceneTitle": 2,
@@ -2765,6 +2851,22 @@
         "GAP-Editor-EntityEditor-004",
         "GAP-Editor-SceneEntityEditor-002",
         "GAP-Editor-SceneEntityEditor-003"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-040022",
+      "at": "2026-11-10T04:01:02.891193+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-SceneLoad-001",
+      "areaHint": "Scene",
+      "priorityScore": 1120,
+      "newIds": [
+        "GAP-Scene-CommandChangeScene-001",
+        "GAP-Scene-SceneGame-003",
+        "GAP-Scene-SceneBuildUp-005"
       ],
       "updatedIds": [],
       "closedIds": []

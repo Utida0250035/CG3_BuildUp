@@ -1329,6 +1329,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001（2回目）
 - **newIds:** 3（配置変更は手動保存、ビューポート配置 UI 無し、再入場でディスク再読込）
 
+## ギャップスキャン tick（SCAN-20261110-040022）
+
+- **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001（2回目）
+- **newIds:** 3（遷移中 Set 無視、Game 入場カメラ順序、BuildUp パス未解決）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
