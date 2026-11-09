@@ -1369,6 +1369,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Camera-001（3回目）
 - **newIds:** 3（AllowDebug 既定、verify が Allow 未検査、StageViewCamera アスペクト固定）
 
+## ギャップスキャン tick（SCAN-20261110-052013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Component-001（3回目）
+- **newIds:** 3（Mesh 存在検出、AssetPath が Draw 内包、未対応 params UI）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

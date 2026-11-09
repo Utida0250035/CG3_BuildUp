@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T05:01:03.395407+09:00
+- **lastIncrementalScanAt:** 2026-11-10T05:11:23.847271+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -283,6 +283,28 @@
 - firstSeenAt: 2026-11-10T00:51:00+09:00
 - lastSeenAt: 2026-11-10T00:51:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-005
+
+- status: open
+- tier: P1
+- score: 710
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: high
+- frequencyBasis: 1 つの Data スロットが複数 Draw を暗黙生成
+- scope: UC-Authoring|Editor|EditorSceneRuntime|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:219
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】AssetPath プレビューが Draw 分割を Data に内包
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - TryLoadEditorAssetPathPreview が obj と画像を同一 Data から付与（219-275 行）
+  - ガイドラインは obj／png 用途別 Data 分割を推奨（9-11 行）
+  - JSON components に CmpMesh スロットが残らない
+- suggestedUse: 制作: Data と Draw を独立スロットで保存・再利用
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T05:21:00+09:00
+- lastSeenAt: 2026-11-10T05:21:00+09:00
+
 ### GAP-Editor-UiState-001
 
 - status: open
@@ -448,6 +470,28 @@
 - firstSeenAt: 2026-11-10T05:01:00+09:00
 - lastSeenAt: 2026-11-10T05:01:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-004
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: medium
+- frequencyBasis: 手編集 JSON の CmpMesh スロットが存在検出不能
+- scope: UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:39
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】EntityHasComponentForSlot が Mesh／Billboard を認識しない
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - EntityHasComponentForSlot は登録 6 型のみ（39-64 行）
+  - CmpMesh は AssetPath 副作用でのみ生成されスロット直指定と乖離
+  - 存在不明時に TryAddEmptyComponent を再呼びしうる（289-293 行）
+- suggestedUse: 制作: 分割例どおり Draw スロットを JSON で明示管理
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T05:21:00+09:00
+- lastSeenAt: 2026-11-10T05:21:00+09:00
+
 ### GAP-Editor-EntityEditor-003
 
 - status: open
@@ -592,6 +636,28 @@
 - suggestedUse: 制作: ツリー操作だけで複製・親付け替えを反復
 - firstSeenAt: 2026-11-10T03:01:00+09:00
 - lastSeenAt: 2026-11-10T03:01:00+09:00
+
+### GAP-Editor-EntityEditorUi-006
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Component-001
+- frequency: medium
+- frequencyBasis: 将来登録した Draw 型のパラメータ編集 UI が無い
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:271
+- primary: `EntityEditorUi`
+- summary: 【Authoring】DrawComponentParams が未知 typeName を未対応表示のみ
+- scenarioText: エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。
+- evidence:
+  - 分岐は既知 6 型のみ（109-268 行）
+  - フォールバックは「未対応コンポーネント」TextDisabled（271 行）
+  - CmpMesh 等は JSON 手編集時にインスペクタ編集不可
+- suggestedUse: 制作: 新 Cmp 追加手順の UI 反映漏れを可視化
+- roadmapLink: feature-memos/component_split_guidelines.md
+- firstSeenAt: 2026-11-10T05:21:00+09:00
+- lastSeenAt: 2026-11-10T05:21:00+09:00
 
 ### GAP-Editor-EntityEditorDefinition-001
 
@@ -2270,7 +2336,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-030010 | at: 2026-11-10T03:00:33.132938+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -2285,6 +2350,7 @@
 - scanId: SCAN-20261110-044018 | at: 2026-11-10T04:40:56.930223+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-045017 | at: 2026-11-10T04:50:42.063624+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-050024 | at: 2026-11-10T05:01:03.395407+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 
 ---
 

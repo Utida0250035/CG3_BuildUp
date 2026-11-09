@@ -2862,6 +2862,93 @@
       "suggestedUse": "プレイ: 画面比率変更でも戦闘域が切れない視野を維持",
       "firstSeenAt": "2026-11-10T05:11:00+09:00",
       "lastSeenAt": "2026-11-10T05:11:00+09:00"
+    },
+    "GAP-Editor-EditorSceneRuntime-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Component-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "medium",
+      "frequencyBasis": "手編集 JSON の CmpMesh スロットが存在検出不能",
+      "scopeKey": "UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:39",
+      "primary": "EditorSceneRuntime",
+      "related": [
+        "EntityHasComponentForSlot",
+        "CmpMesh",
+        "CmpEditorTextureBillboard"
+      ],
+      "summaryShort": "EntityHasComponentForSlot が Mesh／Billboard を認識しない",
+      "summary": "EntityHasComponentForSlot が Mesh／Billboard を認識しない",
+      "scenarioText": "エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。",
+      "evidence": [
+        "EntityHasComponentForSlot は登録 6 型のみ（39-64 行）",
+        "CmpMesh は AssetPath 副作用でのみ生成されスロット直指定と乖離",
+        "存在不明時に TryAddEmptyComponent を再呼びしうる（289-293 行）"
+      ],
+      "suggestedUse": "制作: 分割例どおり Draw スロットを JSON で明示管理",
+      "roadmapLink": "feature-memos/component_split_guidelines.md",
+      "firstSeenAt": "2026-11-10T05:21:00+09:00",
+      "lastSeenAt": "2026-11-10T05:21:00+09:00"
+    },
+    "GAP-Editor-EditorSceneRuntime-005": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Component-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 710,
+      "frequency": "high",
+      "frequencyBasis": "1 つの Data スロットが複数 Draw を暗黙生成",
+      "scopeKey": "UC-Authoring|Editor|EditorSceneRuntime|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:219",
+      "primary": "EditorSceneRuntime",
+      "related": [
+        "TryLoadEditorAssetPathPreview",
+        "CmpEditorAssetPath",
+        "component_split_guidelines"
+      ],
+      "summaryShort": "AssetPath プレビューが Draw 分割を Data に内包",
+      "summary": "AssetPath プレビューが Draw 分割を Data に内包",
+      "scenarioText": "エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。",
+      "evidence": [
+        "TryLoadEditorAssetPathPreview が obj と画像を同一 Data から付与（219-275 行）",
+        "ガイドラインは obj／png 用途別 Data 分割を推奨（9-11 行）",
+        "JSON components に CmpMesh スロットが残らない"
+      ],
+      "suggestedUse": "制作: Data と Draw を独立スロットで保存・再利用",
+      "roadmapLink": "feature-memos/component_split_guidelines.md",
+      "firstSeenAt": "2026-11-10T05:21:00+09:00",
+      "lastSeenAt": "2026-11-10T05:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-006": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Component-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 660,
+      "frequency": "medium",
+      "frequencyBasis": "将来登録した Draw 型のパラメータ編集 UI が無い",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:271",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DrawComponentParams",
+        "CmpMesh",
+        "kKnownComponents"
+      ],
+      "summaryShort": "DrawComponentParams が未知 typeName を未対応表示のみ",
+      "summary": "DrawComponentParams が未知 typeName を未対応表示のみ",
+      "scenarioText": "エンティティ／コンポント分割方針に沿ってアセットを組み立てられる（spec: component_split_guidelines.md）。",
+      "evidence": [
+        "分岐は既知 6 型のみ（109-268 行）",
+        "フォールバックは「未対応コンポーネント」TextDisabled（271 行）",
+        "CmpMesh 等は JSON 手編集時にインスペクタ編集不可"
+      ],
+      "suggestedUse": "制作: 新 Cmp 追加手順の UI 反映漏れを可視化",
+      "roadmapLink": "feature-memos/component_split_guidelines.md",
+      "firstSeenAt": "2026-11-10T05:21:00+09:00",
+      "lastSeenAt": "2026-11-10T05:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -2969,7 +3056,10 @@
     "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:383": "GAP-Editor-EntityEditorHierarchy-001",
     "UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:71": "GAP-Scene-Scene-002",
     "UC-Play|Infra|verify_camera_policy|Incomplete|EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py:61": "GAP-Infra-verify_camera_policy-002",
-    "UC-Play|Camera|StageViewCamera|Contract|Project/Codes/Source/Camera/StageViewCamera.cpp:19": "GAP-Camera-StageViewCamera-001"
+    "UC-Play|Camera|StageViewCamera|Contract|Project/Codes/Source/Camera/StageViewCamera.cpp:19": "GAP-Camera-StageViewCamera-001",
+    "UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:39": "GAP-Editor-EditorSceneRuntime-004",
+    "UC-Authoring|Editor|EditorSceneRuntime|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:219": "GAP-Editor-EditorSceneRuntime-005",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:271": "GAP-Editor-EntityEditorUi-006"
   },
   "pendings": {},
   "nextSequence": {
@@ -3001,7 +3091,7 @@
     "Infra-verify_camera_policy": 3,
     "Scene-Scene": 3,
     "Camera-StageViewCamera": 2,
-    "Editor-EditorSceneRuntime": 5,
+    "Editor-EditorSceneRuntime": 6,
     "Authoring-component_split_next": 2,
     "Infra-component_split_verify": 2,
     "Scene-SceneMovieRegistry": 2,
@@ -3594,6 +3684,22 @@
         "GAP-Scene-Scene-002",
         "GAP-Infra-verify_camera_policy-002",
         "GAP-Camera-StageViewCamera-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-052013",
+      "at": "2026-11-10T05:20:54.212485+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-Component-001",
+      "areaHint": "Editor",
+      "priorityScore": 1070,
+      "newIds": [
+        "GAP-Editor-EditorSceneRuntime-004",
+        "GAP-Editor-EditorSceneRuntime-005",
+        "GAP-Editor-EntityEditorUi-006"
       ],
       "updatedIds": [],
       "closedIds": []
