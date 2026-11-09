@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T04:40:56.930223+09:00
+- **lastIncrementalScanAt:** 2026-11-10T04:50:42.063624+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -428,6 +428,26 @@
 - firstSeenAt: 2026-11-10T03:31:00+09:00
 - lastSeenAt: 2026-11-10T03:31:00+09:00
 
+### GAP-Editor-EditorImportedAsset-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: ドロップ後にアセットをエンティティへ載せる手順が別作業
+- scope: UC-Authoring|Editor|EditorImportedAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:411
+- primary: `EditorImportedAsset`
+- summary: 【Authoring】インポート直後パス表示のみで一括適用 UI が無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 直近 Imported パスは TextWrapped 表示のみ（411-412 行）
+  - 選択中へ CmpEditorAssetPath を付与するボタン／ショートカット無し
+- suggestedUse: 制作: 連続ドロップ→配置の反復を 1 操作に短縮
+- firstSeenAt: 2026-11-10T05:01:00+09:00
+- lastSeenAt: 2026-11-10T05:01:00+09:00
+
 ### GAP-Editor-EntityEditor-003
 
 - status: open
@@ -532,6 +552,26 @@
 - firstSeenAt: 2026-11-10T03:51:00+09:00
 - lastSeenAt: 2026-11-10T03:51:00+09:00
 
+### GAP-Editor-EntityEditor-006
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 複数ファイルドロップがコピー止まり
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:271
+- primary: `EntityEditor`
+- summary: 【Authoring】ProcessDroppedFileImports が Entities 生成まで繋がない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ドロップ処理は Imported へコピーとステータス更新のみ（280-290 行）
+  - 複数 obj/png を落としてもインスタンス追加ループ無し
+- suggestedUse: 制作: バルクインポートをシーン配置まで一気通貫
+- firstSeenAt: 2026-11-10T05:01:00+09:00
+- lastSeenAt: 2026-11-10T05:01:00+09:00
+
 ### GAP-Editor-EntityEditorUi-005
 
 - status: open
@@ -594,6 +634,26 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
+
+### GAP-Editor-EntityEditorHierarchy-001
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: タグ検索がカタログ限定で一括対象を絞れない
+- scope: UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:383
+- primary: `EntityEditorHierarchy`
+- summary: 【Authoring】ヒエラルキーがタグでフィルタ／一括選択できない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawHierarchyPanel は全 instance を常時列挙（383-390 行）
+  - tagSearchFilter は DrawTagsPanel のカタログ検索のみ（774 行）でツリー未連動
+- suggestedUse: 制作: 同一タグ群だけを選んで調整・複製の反復
+- firstSeenAt: 2026-11-10T05:01:00+09:00
+- lastSeenAt: 2026-11-10T05:01:00+09:00
 
 ### GAP-Authoring-component_split_next-001
 
@@ -2145,7 +2205,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -2160,6 +2219,7 @@
 - scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-043016 | at: 2026-11-10T04:30:49.405497+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-044018 | at: 2026-11-10T04:40:56.930223+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-045017 | at: 2026-11-10T04:50:42.063624+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

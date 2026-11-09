@@ -2697,6 +2697,85 @@
       "suggestedUse": "プレイ: 遷移時に意図しない SE 切れを防ぐ",
       "firstSeenAt": "2026-11-10T04:51:00+09:00",
       "lastSeenAt": "2026-11-10T04:51:00+09:00"
+    },
+    "GAP-Editor-EditorImportedAsset-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "high",
+      "frequencyBasis": "ドロップ後にアセットをエンティティへ載せる手順が別作業",
+      "scopeKey": "UC-Authoring|Editor|EditorImportedAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:411",
+      "primary": "EditorImportedAsset",
+      "related": [
+        "ProcessDroppedFileImports",
+        "CmpEditorAssetPath",
+        "lastImportedAssetPath"
+      ],
+      "summaryShort": "インポート直後パス表示のみで一括適用 UI が無い",
+      "summary": "インポート直後パス表示のみで一括適用 UI が無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "直近 Imported パスは TextWrapped 表示のみ（411-412 行）",
+        "選択中へ CmpEditorAssetPath を付与するボタン／ショートカット無し"
+      ],
+      "suggestedUse": "制作: 連続ドロップ→配置の反復を 1 操作に短縮",
+      "firstSeenAt": "2026-11-10T05:01:00+09:00",
+      "lastSeenAt": "2026-11-10T05:01:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-006": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 660,
+      "frequency": "medium",
+      "frequencyBasis": "複数ファイルドロップがコピー止まり",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:271",
+      "primary": "EntityEditor",
+      "related": [
+        "FileDropQueue",
+        "AddEmptyInstance"
+      ],
+      "summaryShort": "ProcessDroppedFileImports が Entities 生成まで繋がない",
+      "summary": "ProcessDroppedFileImports が Entities 生成まで繋がない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "ドロップ処理は Imported へコピーとステータス更新のみ（280-290 行）",
+        "複数 obj/png を落としてもインスタンス追加ループ無し"
+      ],
+      "suggestedUse": "制作: バルクインポートをシーン配置まで一気通貫",
+      "firstSeenAt": "2026-11-10T05:01:00+09:00",
+      "lastSeenAt": "2026-11-10T05:01:00+09:00"
+    },
+    "GAP-Editor-EntityEditorHierarchy-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 640,
+      "frequency": "medium",
+      "frequencyBasis": "タグ検索がカタログ限定で一括対象を絞れない",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:383",
+      "primary": "EntityEditorHierarchy",
+      "related": [
+        "tagSearchFilter",
+        "DrawHierarchyNode"
+      ],
+      "summaryShort": "ヒエラルキーがタグでフィルタ／一括選択できない",
+      "summary": "ヒエラルキーがタグでフィルタ／一括選択できない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "DrawHierarchyPanel は全 instance を常時列挙（383-390 行）",
+        "tagSearchFilter は DrawTagsPanel のカタログ検索のみ（774 行）でツリー未連動"
+      ],
+      "suggestedUse": "制作: 同一タグ群だけを選んで調整・複製の反復",
+      "firstSeenAt": "2026-11-10T05:01:00+09:00",
+      "lastSeenAt": "2026-11-10T05:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -2798,14 +2877,19 @@
     "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:114": "GAP-Scene-SceneBuildUp-006",
     "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:41": "GAP-Scene-SceneResult-001",
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:498": "GAP-Scene-SceneGame-005",
-    "UC-Play|Audio|StopBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:106": "GAP-Audio-StopBgmLoop-001"
+    "UC-Play|Audio|StopBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:106": "GAP-Audio-StopBgmLoop-001",
+    "UC-Authoring|Editor|EditorImportedAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:411": "GAP-Editor-EditorImportedAsset-001",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:271": "GAP-Editor-EntityEditor-006",
+    "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:383": "GAP-Editor-EntityEditorHierarchy-001"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 2,
     "Scene-CommandScene": 2,
     "Scene-SceneMovie": 7,
-    "Editor-EntityEditor": 5,
+    "Editor-EntityEditor": 7,
+    "Editor-EditorImportedAsset": 2,
+    "Editor-EntityEditorHierarchy": 2,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 2,
@@ -3388,6 +3472,22 @@
         "GAP-Scene-SceneResult-001",
         "GAP-Scene-SceneGame-005",
         "GAP-Audio-StopBgmLoop-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-050024",
+      "at": "2026-11-10T05:01:03.395407+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1070,
+      "newIds": [
+        "GAP-Editor-EditorImportedAsset-001",
+        "GAP-Editor-EntityEditor-006",
+        "GAP-Editor-EntityEditorHierarchy-001"
       ],
       "updatedIds": [],
       "closedIds": []

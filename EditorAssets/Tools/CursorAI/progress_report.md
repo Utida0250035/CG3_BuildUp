@@ -1359,6 +1359,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（3回目）
 - **newIds:** 3（Result BGM 未維持、撃破即 BGM 停止、StopBgm 全停止）
 
+## ギャップスキャン tick（SCAN-20261110-050024）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（3回目）
+- **newIds:** 3（インポート適用 UI、ドロップがコピー止まり、タグでツリー絞込無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
