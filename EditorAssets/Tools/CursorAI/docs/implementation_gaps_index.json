@@ -1326,6 +1326,87 @@
       "suggestedUse": "配布・CI: ウィンドウ表示後 N フレームで正常終了するスモークを自動化",
       "firstSeenAt": "2026-11-10T02:01:00+09:00",
       "lastSeenAt": "2026-11-10T02:01:00+09:00"
+    },
+    "GAP-Editor-EditorAssetsPaths-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "DBG-PlayArea-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 810,
+      "frequency": "high",
+      "frequencyBasis": "テスト再生エリアの既定パスがエディタ定数に無い",
+      "scopeKey": "UC-Debug|Editor|EditorAssetsPaths|MissingData|Project/Codes/Include/System/Editor/EditorAssetsPaths.h:6",
+      "primary": "EditorAssetsPaths",
+      "related": [
+        "DebugPlayArea",
+        "kScenesDirectory"
+      ],
+      "summaryShort": "DebugPlayArea 用の EditorAssets パス定数が無い",
+      "summary": "DebugPlayArea 用の EditorAssets パス定数が無い",
+      "scenarioText": "開発者がエディタ内のテスト再生エリアでランタイム挙動を素早く再現できる（spec: `feature-memos/debug_test_play_area.md`）。",
+      "evidence": [
+        "EditorAssetsPaths は Scenes/Entities/Particles のみ（6-8 行）",
+        "debug_test_play_area.md の成果物は EditorAssets/DebugPlayArea/ 配下"
+      ],
+      "suggestedUse": "デバッグ: テスト用 JSON の場所をエディタコードで一意に参照",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T02:11:00+09:00",
+      "lastSeenAt": "2026-11-10T02:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-004": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-PlayArea-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 790,
+      "frequency": "high",
+      "frequencyBasis": "シーン一覧 UI が Scenes ディレクトリ限定",
+      "scopeKey": "UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:419",
+      "primary": "EntityEditorUi",
+      "related": [
+        "ListSceneJsonFiles",
+        "combat_bounds_sandbox.scene.json"
+      ],
+      "summaryShort": "テスト再生エリア JSON がエディタのシーン一覧に出ない",
+      "summary": "テスト再生エリア JSON がエディタのシーン一覧に出ない",
+      "scenarioText": "開発者がエディタ内のテスト再生エリアでランタイム挙動を素早く再現できる（spec: `feature-memos/debug_test_play_area.md`）。",
+      "evidence": [
+        "ListSceneJsonFiles(kScenesDirectory) のみ表示（EntityEditorUi.cpp:419-420）",
+        "DebugPlayArea/*.scene.json は一覧対象外"
+      ],
+      "suggestedUse": "デバッグ: ワンクリックでサンドボックスシーンを開く",
+      "firstSeenAt": "2026-11-10T02:11:00+09:00",
+      "lastSeenAt": "2026-11-10T02:11:00+09:00"
+    },
+    "GAP-Infra-scaffold_play_area-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-PlayArea-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 700,
+      "frequency": "medium",
+      "frequencyBasis": "テンプレ複製は外部 Python のみでエディタから新規作成できない",
+      "scopeKey": "UC-Debug|Infra|scaffold_play_area|Unwired|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:1",
+      "primary": "scaffold_play_area",
+      "related": [
+        "template_test_play_area.scene.json",
+        "EntityEditor"
+      ],
+      "summaryShort": "テストエリア新規作成が scaffold スクリプト手動実行のみ",
+      "summary": "テストエリア新規作成が scaffold スクリプト手動実行のみ",
+      "scenarioText": "開発者がエディタ内のテスト再生エリアでランタイム挙動を素早く再現できる（spec: `feature-memos/debug_test_play_area.md`）。",
+      "evidence": [
+        "debug_test_play_area.md フロー 1 は scaffold_play_area.py のみ（18 行）",
+        "Editor コードから scaffold 呼び出し／同等 UI 無し"
+      ],
+      "suggestedUse": "デバッグ: エディタ内で名前入力→テスト JSON 生成まで一気通貫",
+      "firstSeenAt": "2026-11-10T02:11:00+09:00",
+      "lastSeenAt": "2026-11-10T02:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -1376,7 +1457,10 @@
     "UC-Ship|Ship|ForDebugSources|Incomplete|Project/CG2_BuildUp.vcxproj:283": "GAP-Ship-ForDebugSources-001",
     "UC-Ship|Infra|Release_smoke|MissingTest|.github/workflows/ReleaseBuild.yml:100": "GAP-Infra-Release_smoke-001",
     "UC-Ship|Ship|smoke_runbook|MissingData|README.md:1": "GAP-Ship-smoke_runbook-001",
-    "UC-Ship|Ship|main|MissingTest|Project/Codes/Source/Application/main.cpp:5": "GAP-Ship-main-001"
+    "UC-Ship|Ship|main|MissingTest|Project/Codes/Source/Application/main.cpp:5": "GAP-Ship-main-001",
+    "UC-Debug|Editor|EditorAssetsPaths|MissingData|Project/Codes/Include/System/Editor/EditorAssetsPaths.h:6": "GAP-Editor-EditorAssetsPaths-001",
+    "UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:419": "GAP-Editor-EntityEditorUi-004",
+    "UC-Debug|Infra|scaffold_play_area|Unwired|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:1": "GAP-Infra-scaffold_play_area-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1409,7 +1493,10 @@
     "Ship-ForDebugSources": 2,
     "Infra-Release_smoke": 2,
     "Ship-smoke_runbook": 2,
-    "Ship-main": 2
+    "Ship-main": 2,
+    "Editor-EditorAssetsPaths": 2,
+    "Editor-EntityEditorUi": 5,
+    "Infra-scaffold_play_area": 2
   },
   "scans": [
     {
@@ -1664,6 +1751,22 @@
         "GAP-Infra-Release_smoke-001",
         "GAP-Ship-smoke_runbook-001",
         "GAP-Ship-main-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-021019",
+      "at": "2026-11-10T02:10:43.537320+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-PlayArea-001",
+      "areaHint": "Editor",
+      "priorityScore": 1390,
+      "newIds": [
+        "GAP-Editor-EditorAssetsPaths-001",
+        "GAP-Editor-EntityEditorUi-004",
+        "GAP-Infra-scaffold_play_area-001"
       ],
       "updatedIds": [],
       "closedIds": []

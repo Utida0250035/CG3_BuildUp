@@ -6,7 +6,7 @@
     "UC-Debug",
     "UC-Ship"
   ],
-  "rotationCursor": 0,
+  "rotationCursor": 3,
   "scenarioScanCounts": {
     "PLY-Audio-001": 1,
     "AUT-AssetLoop-001": 1,
@@ -23,9 +23,10 @@
     "SHP-Config-001": 1,
     "SHP-DevBuild-001": 1,
     "SHP-Release-001": 1,
-    "SHP-Smoke-001": 1
+    "SHP-Smoke-001": 1,
+    "DBG-PlayArea-001": 1
   },
-  "lastCompletedScanId": "SCAN-20261110-020007",
+  "lastCompletedScanId": "SCAN-20261110-021019",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 16
+  "totalTicksCompleted": 17
 }

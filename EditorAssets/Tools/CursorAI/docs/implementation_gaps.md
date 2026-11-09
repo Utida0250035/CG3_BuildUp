@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T01:50:42.672348+09:00
+- **lastIncrementalScanAt:** 2026-11-10T02:00:32.963377+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -414,6 +414,48 @@
 - firstSeenAt: 2026-11-09T23:51:00+09:00
 - lastSeenAt: 2026-11-09T23:51:00+09:00
 
+### GAP-Editor-EditorAssetsPaths-001
+
+- status: open
+- tier: P1
+- score: 810
+- primaryUseCase: UC-Debug
+- secondaryUseCases: UC-Authoring
+- scenarioId: DBG-PlayArea-001
+- frequency: high
+- frequencyBasis: テスト再生エリアの既定パスがエディタ定数に無い
+- scope: UC-Debug|Editor|EditorAssetsPaths|MissingData|Project/Codes/Include/System/Editor/EditorAssetsPaths.h:6
+- primary: `EditorAssetsPaths`
+- summary: 【Debug】DebugPlayArea 用の EditorAssets パス定数が無い
+- scenarioText: 開発者がエディタ内のテスト再生エリアでランタイム挙動を素早く再現できる（spec: `feature-memos/debug_test_play_area.md`）。
+- evidence:
+  - EditorAssetsPaths は Scenes/Entities/Particles のみ（6-8 行）
+  - debug_test_play_area.md の成果物は EditorAssets/DebugPlayArea/ 配下
+- suggestedUse: デバッグ: テスト用 JSON の場所をエディタコードで一意に参照
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T02:11:00+09:00
+- lastSeenAt: 2026-11-10T02:11:00+09:00
+
+### GAP-Editor-EntityEditorUi-004
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-PlayArea-001
+- frequency: high
+- frequencyBasis: シーン一覧 UI が Scenes ディレクトリ限定
+- scope: UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:419
+- primary: `EntityEditorUi`
+- summary: 【Debug】テスト再生エリア JSON がエディタのシーン一覧に出ない
+- scenarioText: 開発者がエディタ内のテスト再生エリアでランタイム挙動を素早く再現できる（spec: `feature-memos/debug_test_play_area.md`）。
+- evidence:
+  - ListSceneJsonFiles(kScenesDirectory) のみ表示（EntityEditorUi.cpp:419-420）
+  - DebugPlayArea/*.scene.json は一覧対象外
+- suggestedUse: デバッグ: ワンクリックでサンドボックスシーンを開く
+- firstSeenAt: 2026-11-10T02:11:00+09:00
+- lastSeenAt: 2026-11-10T02:11:00+09:00
+
 ### GAP-Infra-FeatureTestScene-001
 
 - status: open
@@ -453,6 +495,26 @@
 - suggestedUse: デバッグ: エディタ UI と切り離したランタイムパスで機能を検証
 - firstSeenAt: 2026-11-09T23:51:00+09:00
 - lastSeenAt: 2026-11-09T23:51:00+09:00
+
+### GAP-Infra-scaffold_play_area-001
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-PlayArea-001
+- frequency: medium
+- frequencyBasis: テンプレ複製は外部 Python のみでエディタから新規作成できない
+- scope: UC-Debug|Infra|scaffold_play_area|Unwired|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:1
+- primary: `scaffold_play_area`
+- summary: 【Debug】テストエリア新規作成が scaffold スクリプト手動実行のみ
+- scenarioText: 開発者がエディタ内のテスト再生エリアでランタイム挙動を素早く再現できる（spec: `feature-memos/debug_test_play_area.md`）。
+- evidence:
+  - debug_test_play_area.md フロー 1 は scaffold_play_area.py のみ（18 行）
+  - Editor コードから scaffold 呼び出し／同等 UI 無し
+- suggestedUse: デバッグ: エディタ内で名前入力→テスト JSON 生成まで一気通貫
+- firstSeenAt: 2026-11-10T02:11:00+09:00
+- lastSeenAt: 2026-11-10T02:11:00+09:00
 
 #### UC-Play
 
@@ -1101,7 +1163,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261109-232947 | at: 2026-11-09T23:30:26.570595+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-234011 | at: 2026-11-09T23:40:39.226713+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
@@ -1116,6 +1177,7 @@
 - scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
 
 ---
 

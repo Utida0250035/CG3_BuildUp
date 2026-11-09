@@ -1274,6 +1274,11 @@
 - **useCase:** UC-Ship / **scenario:** SHP-Smoke-001
 - **newIds:** 3（Release CI スモーク無し、手順書無し、main にスモーク CLI 無し）
 
+## ギャップスキャン tick（SCAN-20261110-021019）
+
+- **useCase:** UC-Debug / **scenario:** DBG-PlayArea-001
+- **newIds:** 3（DebugPlayArea パス未定義、シーン一覧対象外、scaffold 未配線）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
