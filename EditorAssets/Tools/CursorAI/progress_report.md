@@ -1429,6 +1429,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（5回目）
 - **newIds:** 3（Resume 未使用、音量フェード未使用、撃墜／撃破 BGM 非対称）
 
+## ギャップスキャン tick（SCAN-20261110-072023）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（5回目）
+- **newIds:** 3（単体削除のみ、タグ一括解除無し、プレハブが Definition のみ）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

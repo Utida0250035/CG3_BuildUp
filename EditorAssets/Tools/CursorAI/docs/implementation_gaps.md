@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T07:00:50.713598+09:00
+- **lastIncrementalScanAt:** 2026-11-10T07:10:46.973414+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -934,6 +934,27 @@
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
 
+### GAP-Editor-EntityEditor-009
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 削除は 1 選択前提で一括整理できない
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:58
+- primary: `EntityEditor`
+- summary: 【Authoring】RemoveSelectedInstance が単一 index のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - removeIndex は selectedInstanceIndex 1 件（62-63 行）
+  - 子 parentIndex の補正のみで多体削除ループ無し
+  - ヒエラルキー「削除」も同 API（EntityEditorUi.cpp:378）
+- suggestedUse: 制作: 試配置の一括削除
+- firstSeenAt: 2026-11-10T07:21:00+09:00
+- lastSeenAt: 2026-11-10T07:21:00+09:00
+
 ### GAP-Editor-EditorImportedAsset-002
 
 - status: open
@@ -954,6 +975,27 @@
 - suggestedUse: 制作: インポート済みアセットを一覧から連続配置
 - firstSeenAt: 2026-11-10T06:51:00+09:00
 - lastSeenAt: 2026-11-10T06:51:00+09:00
+
+### GAP-Editor-PrefabAsset-002
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ出力が Definition のみで反復配置に不向き
+- scope: UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:85
+- primary: `PrefabAsset`
+- summary: 【Authoring】プレハブ保存が EntityDefinition 単体 JSON
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - SaveToFile(prefabPath, definition) のみ（85 行）
+  - instanceName／parentIndex は保存されない
+  - ツリー複製の再利用はシーン JSON 手切り出しが必要
+- suggestedUse: 制作: プレハブ単位の複製配置ループを短縮
+- firstSeenAt: 2026-11-10T07:21:00+09:00
+- lastSeenAt: 2026-11-10T07:21:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-005
 
@@ -977,6 +1019,27 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T06:01:00+09:00
 - lastSeenAt: 2026-11-10T06:01:00+09:00
+
+### GAP-Editor-EntityEditorUi-010
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: タグ解除・コンポ削除が 1 エンティティ単位
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:608
+- primary: `EntityEditorUi`
+- summary: 【Authoring】タグをすべて解除が選択 1 体のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - document.tags.clear() は SelectedDefinition のみ（608-611 行）
+  - RemoveTagFromDocument はタグパネル用でインスペクタから一括無し
+  - 同一タグ群の一括解除は手作業繰り返し
+- suggestedUse: 制作: 試験タグ付けの一括リセット
+- firstSeenAt: 2026-11-10T07:21:00+09:00
+- lastSeenAt: 2026-11-10T07:21:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-006
 
@@ -3050,7 +3113,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-044018 | at: 2026-11-10T04:40:56.930223+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-045017 | at: 2026-11-10T04:50:42.063624+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-050024 | at: 2026-11-10T05:01:03.395407+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
@@ -3065,6 +3127,7 @@
 - scanId: SCAN-20261110-064013 | at: 2026-11-10T06:41:03.845539+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-065006 | at: 2026-11-10T06:51:08.763681+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-070015 | at: 2026-11-10T07:00:50.713598+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

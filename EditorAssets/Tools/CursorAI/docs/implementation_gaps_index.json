@@ -3874,6 +3874,87 @@
       "suggestedUse": "プレイ: 撃破／撃墜で一貫した BGM 遷移",
       "firstSeenAt": "2026-11-10T07:11:00+09:00",
       "lastSeenAt": "2026-11-10T07:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-009": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 610,
+      "frequency": "medium",
+      "frequencyBasis": "削除は 1 選択前提で一括整理できない",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:58",
+      "primary": "EntityEditor",
+      "related": [
+        "RemoveSelectedInstance",
+        "UiState"
+      ],
+      "summaryShort": "RemoveSelectedInstance が単一 index のみ",
+      "summary": "RemoveSelectedInstance が単一 index のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "removeIndex は selectedInstanceIndex 1 件（62-63 行）",
+        "子 parentIndex の補正のみで多体削除ループ無し",
+        "ヒエラルキー「削除」も同 API（EntityEditorUi.cpp:378）"
+      ],
+      "suggestedUse": "制作: 試配置の一括削除",
+      "firstSeenAt": "2026-11-10T07:21:00+09:00",
+      "lastSeenAt": "2026-11-10T07:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-010": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 590,
+      "frequency": "medium",
+      "frequencyBasis": "タグ解除・コンポ削除が 1 エンティティ単位",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:608",
+      "primary": "EntityEditorUi",
+      "related": [
+        "RemoveTagFromEntityDefinition",
+        "DrawInspectorPanel"
+      ],
+      "summaryShort": "タグをすべて解除が選択 1 体のみ",
+      "summary": "タグをすべて解除が選択 1 体のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "document.tags.clear() は SelectedDefinition のみ（608-611 行）",
+        "RemoveTagFromDocument はタグパネル用でインスペクタから一括無し",
+        "同一タグ群の一括解除は手作業繰り返し"
+      ],
+      "suggestedUse": "制作: 試験タグ付けの一括リセット",
+      "firstSeenAt": "2026-11-10T07:21:00+09:00",
+      "lastSeenAt": "2026-11-10T07:21:00+09:00"
+    },
+    "GAP-Editor-PrefabAsset-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "プレハブ出力が Definition のみで反復配置に不向き",
+      "scopeKey": "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:85",
+      "primary": "PrefabAsset",
+      "related": [
+        "SaveSelectedInstanceToPrefabPath",
+        "AddInstanceFromPrefabPath"
+      ],
+      "summaryShort": "プレハブ保存が EntityDefinition 単体 JSON",
+      "summary": "プレハブ保存が EntityDefinition 単体 JSON",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "SaveToFile(prefabPath, definition) のみ（85 行）",
+        "instanceName／parentIndex は保存されない",
+        "ツリー複製の再利用はシーン JSON 手切り出しが必要"
+      ],
+      "suggestedUse": "制作: プレハブ単位の複製配置ループを短縮",
+      "firstSeenAt": "2026-11-10T07:21:00+09:00",
+      "lastSeenAt": "2026-11-10T07:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -4017,7 +4098,10 @@
     "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:105": "GAP-Infra-EditorScenePlayRequest-003",
     "UC-Play|Audio|ResumeBgmLoop|Unwired|Project/Codes/Include/System/PlaySe.h:119": "GAP-Audio-ResumeBgmLoop-001",
     "UC-Play|Audio|SetBgmLoopVolume|Unwired|Project/Codes/Include/System/PlaySe.h:166": "GAP-Audio-SetBgmLoopVolume-001",
-    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:516": "GAP-Scene-SceneGame-007"
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:516": "GAP-Scene-SceneGame-007",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:58": "GAP-Editor-EntityEditor-009",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:608": "GAP-Editor-EntityEditorUi-010",
+    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:85": "GAP-Editor-PrefabAsset-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -4025,8 +4109,8 @@
     "Scene-GameOrder": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 9,
-    "Editor-EntityEditorUi": 10,
+    "Editor-EntityEditor": 10,
+    "Editor-EntityEditorUi": 11,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 2,
     "Editor-UiState": 2,
@@ -4083,7 +4167,7 @@
     "Ship-main": 2,
     "Editor-EditorAssetsPaths": 2,
     "Editor-EntityEditorShortcuts": 2,
-    "Editor-PrefabAsset": 2,
+    "Editor-PrefabAsset": 3,
     "Debug-SceneViewTab": 2,
     "Infra-LoopTick13Demo": 2,
     "Infra-scaffold_play_area": 2,
@@ -4844,6 +4928,22 @@
         "GAP-Audio-ResumeBgmLoop-001",
         "GAP-Audio-SetBgmLoopVolume-001",
         "GAP-Scene-SceneGame-007"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-072023",
+      "at": "2026-11-10T07:20:51.586186+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-009",
+        "GAP-Editor-EntityEditorUi-010",
+        "GAP-Editor-PrefabAsset-002"
       ],
       "updatedIds": [],
       "closedIds": []
