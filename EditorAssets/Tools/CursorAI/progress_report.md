@@ -1209,6 +1209,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001
 - **newIds:** 3（SceneBuildUp 未配線、シーン実行がプレビュー限定、FeatureTest 既定シーンなし）
 
+## ギャップスキャン tick（SCAN-20261110-000016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Camera-001
+- **newIds:** 3（BuildUp シルエットなし、verify_camera_policy 未 CI、Scene 基底 unlock 既定）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

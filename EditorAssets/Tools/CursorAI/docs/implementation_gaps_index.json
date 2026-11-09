@@ -242,6 +242,92 @@
       "suggestedUse": "デバッグ: 機能ごとミニシナリオを既定導線で開く",
       "firstSeenAt": "2026-11-09T23:51:00+09:00",
       "lastSeenAt": "2026-11-09T23:51:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Debug"
+      ],
+      "scenarioId": "PLY-Camera-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 670,
+      "frequency": "medium",
+      "frequencyBasis": "BuildUp プレイでも stage カメラはロックされるが地形シルエットが本編と不一致",
+      "scopeKey": "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:155",
+      "primary": "SceneBuildUp",
+      "related": [
+        "PlayerTerrainSilhouette",
+        "SceneGame"
+      ],
+      "summaryShort": "BuildUp 描画に地形越し自機シルエットが無い",
+      "summary": "BuildUp 描画に地形越し自機シルエットが無い",
+      "scenarioText": "プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。",
+      "evidence": [
+        "SceneGame::DrawEntities は PlayerTerrainSilhouette を呼ぶ（SceneGame.cpp:457-460）",
+        "SceneBuildUp::DrawRuntimeEntities / DrawScene は Entity::Draw のみ（SceneBuildUp.cpp:76-84, 155-168）",
+        "policy doc は SceneBuildUp も locked 本番相当だがシルエット補助が未共有"
+      ],
+      "suggestedUse": "プレイ: 検証シーンでも本編同様に自機位置を視認できる",
+      "roadmapLink": "feature-memos/player_terrain_silhouette.md",
+      "firstSeenAt": "2026-11-10T00:01:00+09:00",
+      "lastSeenAt": "2026-11-10T00:01:00+09:00"
+    },
+    "GAP-Infra-verify_camera_policy-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "PLY-Camera-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "low",
+      "frequencyBasis": "新シーン追加時のカメラ方針逸脱を CI で検知できない",
+      "scopeKey": "UC-Play|Infra|verify_camera_policy|MissingTest|EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py:1",
+      "primary": "verify_camera_policy",
+      "related": [
+        "player_friendly_camera_policy.md",
+        "IsStageViewCameraLocked"
+      ],
+      "summaryShort": "カメラ方針静的検証が CI／ビルド手順に未組み込み",
+      "summary": "カメラ方針静的検証が CI／ビルド手順に未組み込み",
+      "scenarioText": "プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。",
+      "evidence": [
+        "verify_camera_policy.py は README と policy doc にのみ言及",
+        ".github ワークフローおよび buildDevelopment.cmd から未呼び出し（rg 確認）"
+      ],
+      "suggestedUse": "ビルド・配布: 本番シーンのカメラロック漏れを自動検出",
+      "firstSeenAt": "2026-11-10T00:01:00+09:00",
+      "lastSeenAt": "2026-11-10T00:01:00+09:00"
+    },
+    "GAP-Scene-Scene-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Camera-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "Scene 基底が unlocked 既定のため新規プレイシーンでユーザー操作カメラが有効化されうる",
+      "scopeKey": "UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:65",
+      "primary": "Scene",
+      "related": [
+        "GameOrder",
+        "AllowDebugCameraControl"
+      ],
+      "summaryShort": "新規シーンのステージカメラロックはドキュメント依存",
+      "summary": "新規シーンのステージカメラロックはドキュメント依存",
+      "scenarioText": "プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。",
+      "evidence": [
+        "Scene::IsStageViewCameraLocked 既定は false（Scene.h:65）",
+        "GameOrder は false のとき Camera::Update でユーザー操作を許す（GameOrder.h:66-67）",
+        "policy のチェックリストは手動で override を要求するのみ"
+      ],
+      "suggestedUse": "プレイ: 意図しないフリーカメラを防ぐ",
+      "roadmapLink": "feature-memos/player_friendly_camera_policy.md",
+      "firstSeenAt": "2026-11-10T00:01:00+09:00",
+      "lastSeenAt": "2026-11-10T00:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -253,7 +339,10 @@
     "UC-Authoring|Editor|EntityEditorDefinition|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:530": "GAP-Editor-EntityEditorDefinition-001",
     "UC-Debug|Scene|SceneBuildUpRegistry|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:35": "GAP-Scene-SceneBuildUpRegistry-001",
     "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:129": "GAP-Editor-SceneEntityEditor-001",
-    "UC-Debug|Infra|FeatureTestScene|MissingData|EditorAssets/DebugPlayArea/template_test_play_area.scene.json:1": "GAP-Infra-FeatureTestScene-001"
+    "UC-Debug|Infra|FeatureTestScene|MissingData|EditorAssets/DebugPlayArea/template_test_play_area.scene.json:1": "GAP-Infra-FeatureTestScene-001",
+    "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:155": "GAP-Scene-SceneBuildUp-001",
+    "UC-Play|Infra|verify_camera_policy|MissingTest|EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py:1": "GAP-Infra-verify_camera_policy-001",
+    "UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:65": "GAP-Scene-Scene-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -265,7 +354,10 @@
     "Editor-EntityEditorDefinition": 2,
     "Scene-SceneBuildUpRegistry": 2,
     "Editor-SceneEntityEditor": 2,
-    "Infra-FeatureTestScene": 2
+    "Infra-FeatureTestScene": 2,
+    "Scene-SceneBuildUp": 2,
+    "Infra-verify_camera_policy": 2,
+    "Scene-Scene": 2
   },
   "scans": [
     {
@@ -312,6 +404,22 @@
         "GAP-Scene-SceneBuildUpRegistry-001",
         "GAP-Editor-SceneEntityEditor-001",
         "GAP-Infra-FeatureTestScene-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-000016",
+      "at": "2026-11-10T00:00:39.746375+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Camera-001",
+      "areaHint": "UX",
+      "priorityScore": 1560,
+      "newIds": [
+        "GAP-Scene-SceneBuildUp-001",
+        "GAP-Infra-verify_camera_policy-001",
+        "GAP-Scene-Scene-001"
       ],
       "updatedIds": [],
       "closedIds": []

@@ -6,13 +6,14 @@
     "UC-Debug",
     "UC-Ship"
   ],
-  "rotationCursor": 3,
+  "rotationCursor": 1,
   "scenarioScanCounts": {
     "PLY-Audio-001": 1,
     "AUT-AssetLoop-001": 1,
-    "DBG-FeatureScene-001": 1
+    "DBG-FeatureScene-001": 1,
+    "PLY-Camera-001": 1
   },
-  "lastCompletedScanId": "SCAN-20261109-235016",
+  "lastCompletedScanId": "SCAN-20261110-000016",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 3
+  "totalTicksCompleted": 4
 }

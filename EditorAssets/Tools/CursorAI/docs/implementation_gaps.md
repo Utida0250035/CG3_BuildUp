@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-09T23:40:39.226713+09:00
+- **lastIncrementalScanAt:** 2026-11-09T23:50:37.574616+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -243,6 +243,72 @@
 - firstSeenAt: 2026-11-09T23:32:00+09:00
 - lastSeenAt: 2026-11-09T23:32:00+09:00
 
+### GAP-Scene-SceneBuildUp-001
+
+- status: open
+- tier: P2
+- score: 670
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-Camera-001
+- frequency: medium
+- frequencyBasis: BuildUp プレイでも stage カメラはロックされるが地形シルエットが本編と不一致
+- scope: UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:155
+- primary: `SceneBuildUp`
+- summary: 【Play】BuildUp 描画に地形越し自機シルエットが無い
+- scenarioText: プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。
+- evidence:
+  - SceneGame::DrawEntities は PlayerTerrainSilhouette を呼ぶ（SceneGame.cpp:457-460）
+  - SceneBuildUp::DrawRuntimeEntities / DrawScene は Entity::Draw のみ（SceneBuildUp.cpp:76-84, 155-168）
+  - policy doc は SceneBuildUp も locked 本番相当だがシルエット補助が未共有
+- suggestedUse: プレイ: 検証シーンでも本編同様に自機位置を視認できる
+- roadmapLink: feature-memos/player_terrain_silhouette.md
+- firstSeenAt: 2026-11-10T00:01:00+09:00
+- lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Infra-verify_camera_policy-001
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Ship
+- scenarioId: PLY-Camera-001
+- frequency: low
+- frequencyBasis: 新シーン追加時のカメラ方針逸脱を CI で検知できない
+- scope: UC-Play|Infra|verify_camera_policy|MissingTest|EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py:1
+- primary: `verify_camera_policy`
+- summary: 【Play】カメラ方針静的検証が CI／ビルド手順に未組み込み
+- scenarioText: プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。
+- evidence:
+  - verify_camera_policy.py は README と policy doc にのみ言及
+  - .github ワークフローおよび buildDevelopment.cmd から未呼び出し（rg 確認）
+- suggestedUse: ビルド・配布: 本番シーンのカメラロック漏れを自動検出
+- firstSeenAt: 2026-11-10T00:01:00+09:00
+- lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Scene-Scene-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Camera-001
+- frequency: medium
+- frequencyBasis: Scene 基底が unlocked 既定のため新規プレイシーンでユーザー操作カメラが有効化されうる
+- scope: UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:65
+- primary: `Scene`
+- summary: 【Play】新規シーンのステージカメラロックはドキュメント依存
+- scenarioText: プレイ中カメラが地形・オブジェクトを見失わず、操作に追従する（spec: feature-memos/player_friendly_camera_policy.md）。
+- evidence:
+  - Scene::IsStageViewCameraLocked 既定は false（Scene.h:65）
+  - GameOrder は false のとき Camera::Update でユーザー操作を許す（GameOrder.h:66-67）
+  - policy のチェックリストは手動で override を要求するのみ
+- suggestedUse: プレイ: 意図しないフリーカメラを防ぐ
+- roadmapLink: feature-memos/player_friendly_camera_policy.md
+- firstSeenAt: 2026-11-10T00:01:00+09:00
+- lastSeenAt: 2026-11-10T00:01:00+09:00
+
 ### GAP-Scene-SceneMovie-001
 
 - status: investigating
@@ -277,6 +343,7 @@
 
 - scanId: SCAN-20261109-232947 | at: 2026-11-09T23:30:26.570595+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-234011 | at: 2026-11-09T23:40:39.226713+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 
