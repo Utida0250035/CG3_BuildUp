@@ -1299,6 +1299,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（2回目）
 - **newIds:** 3（Title BGM 維持無し、BuildUp 無音、PauseBgm 未使用）
 
+## ギャップスキャン tick（SCAN-20261110-030010）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（2回目）
+- **newIds:** 3（複製ショートカット無し、プレハブ一括配置無し、ヒエラルキー DnD 無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

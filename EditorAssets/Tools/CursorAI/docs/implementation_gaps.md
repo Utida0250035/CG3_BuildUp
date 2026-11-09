@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T02:40:31.119512+09:00
+- **lastIncrementalScanAt:** 2026-11-10T02:50:44.964144+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -264,6 +264,26 @@
 - firstSeenAt: 2026-11-10T00:11:00+09:00
 - lastSeenAt: 2026-11-10T00:11:00+09:00
 
+### GAP-Editor-EntityEditorShortcuts-001
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: 複製・貼り付けの反復にマウス操作のみ
+- scope: UC-Authoring|Editor|EntityEditorShortcuts|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:364
+- primary: `EntityEditorShortcuts`
+- summary: 【Authoring】エンティティ複製用キーボードショートカットが無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Editor Entity 配下に Ctrl+D / 複製 / Paste 処理無し（rg Duplicate|Ctrl 0 件）
+  - ヒエラルキーはボタン追加・削除のみ（EntityEditorUi.cpp:374-379）
+- suggestedUse: 制作: 配置の反復をキーボード中心で高速化
+- firstSeenAt: 2026-11-10T03:01:00+09:00
+- lastSeenAt: 2026-11-10T03:01:00+09:00
+
 ### GAP-Editor-UXAuthoring-001
 
 - status: open
@@ -304,6 +324,26 @@
 - suggestedUse: 制作: 「同じ状態を得られる」ための読込失敗を可視化
 - firstSeenAt: 2026-11-10T00:31:00+09:00
 - lastSeenAt: 2026-11-10T00:31:00+09:00
+
+### GAP-Editor-PrefabAsset-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブは 1 回 1 体追加のみ
+- scope: UC-Authoring|Editor|PrefabAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:484
+- primary: `PrefabAsset`
+- summary: 【Authoring】プレハブの複数一括配置 UI が無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「シーンへ追加」は AddInstanceFromPrefabPath 1 回呼び出し（484-486 行）
+  - グリッド複製・件数指定・オフセット配置の API/UI 無し
+- suggestedUse: 制作: 同プレハブを多数並べる反復作業を短縮
+- firstSeenAt: 2026-11-10T03:01:00+09:00
+- lastSeenAt: 2026-11-10T03:01:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-002
 
@@ -347,6 +387,27 @@
 - suggestedUse: 制作: 視覚的に配置して保存→再オープンで同じ姿勢を得る
 - firstSeenAt: 2026-11-10T00:31:00+09:00
 - lastSeenAt: 2026-11-10T00:31:00+09:00
+
+### GAP-Editor-EntityEditorUi-005
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: ヒエラルキーが選択のみで DnD 複製・並べ替え不可
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:332
+- primary: `EntityEditorUi`
+- summary: 【Authoring】ヒエラルキーのドラッグ複製・並べ替えが無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawHierarchyNode は ImGui::Selectable のみ（332-334 行）
+  - BeginDragDropTarget 等の DnD API 使用無し（Editor 配下 rg 0 件）
+  - parentIndex はインスペクタのコンボのみ（503 行付近）
+- suggestedUse: 制作: ツリー操作だけで複製・親付け替えを反復
+- firstSeenAt: 2026-11-10T03:01:00+09:00
+- lastSeenAt: 2026-11-10T03:01:00+09:00
 
 ### GAP-Editor-EntityEditorDefinition-001
 
@@ -1414,7 +1475,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
@@ -1429,6 +1489,7 @@
 - scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

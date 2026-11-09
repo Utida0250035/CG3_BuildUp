@@ -1735,6 +1735,85 @@
       "suggestedUse": "プレイ: フェード中の BGM ダックやクロスフェードを実装可能にする",
       "firstSeenAt": "2026-11-10T02:51:00+09:00",
       "lastSeenAt": "2026-11-10T02:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorShortcuts-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 700,
+      "frequency": "high",
+      "frequencyBasis": "複製・貼り付けの反復にマウス操作のみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorShortcuts|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:364",
+      "primary": "EntityEditorShortcuts",
+      "related": [
+        "EntityEditor",
+        "PlayInput"
+      ],
+      "summaryShort": "エンティティ複製用キーボードショートカットが無い",
+      "summary": "エンティティ複製用キーボードショートカットが無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Editor Entity 配下に Ctrl+D / 複製 / Paste 処理無し（rg Duplicate|Ctrl 0 件）",
+        "ヒエラルキーはボタン追加・削除のみ（EntityEditorUi.cpp:374-379）"
+      ],
+      "suggestedUse": "制作: 配置の反復をキーボード中心で高速化",
+      "firstSeenAt": "2026-11-10T03:01:00+09:00",
+      "lastSeenAt": "2026-11-10T03:01:00+09:00"
+    },
+    "GAP-Editor-PrefabAsset-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "medium",
+      "frequencyBasis": "プレハブは 1 回 1 体追加のみ",
+      "scopeKey": "UC-Authoring|Editor|PrefabAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:484",
+      "primary": "PrefabAsset",
+      "related": [
+        "AddInstanceFromPrefabPath",
+        "ListPrefabJsonFiles"
+      ],
+      "summaryShort": "プレハブの複数一括配置 UI が無い",
+      "summary": "プレハブの複数一括配置 UI が無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "「シーンへ追加」は AddInstanceFromPrefabPath 1 回呼び出し（484-486 行）",
+        "グリッド複製・件数指定・オフセット配置の API/UI 無し"
+      ],
+      "suggestedUse": "制作: 同プレハブを多数並べる反復作業を短縮",
+      "firstSeenAt": "2026-11-10T03:01:00+09:00",
+      "lastSeenAt": "2026-11-10T03:01:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-005": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 660,
+      "frequency": "medium",
+      "frequencyBasis": "ヒエラルキーが選択のみで DnD 複製・並べ替え不可",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:332",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DrawHierarchyNode",
+        "parentIndex"
+      ],
+      "summaryShort": "ヒエラルキーのドラッグ複製・並べ替えが無い",
+      "summary": "ヒエラルキーのドラッグ複製・並べ替えが無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "DrawHierarchyNode は ImGui::Selectable のみ（332-334 行）",
+        "BeginDragDropTarget 等の DnD API 使用無し（Editor 配下 rg 0 件）",
+        "parentIndex はインスペクタのコンボのみ（503 行付近）"
+      ],
+      "suggestedUse": "制作: ツリー操作だけで複製・親付け替えを反復",
+      "firstSeenAt": "2026-11-10T03:01:00+09:00",
+      "lastSeenAt": "2026-11-10T03:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -1800,7 +1879,10 @@
     "UC-Debug|Debug|StreamingMenu|Unwired|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:120": "GAP-Debug-StreamingMenu-001",
     "UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:32": "GAP-Scene-SceneTitle-001",
     "UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:87": "GAP-Scene-SceneBuildUp-003",
-    "UC-Play|Audio|PauseBgmLoop|Unwired|Project/Codes/Include/System/PlaySe.h:112": "GAP-Audio-PauseBgmLoop-001"
+    "UC-Play|Audio|PauseBgmLoop|Unwired|Project/Codes/Include/System/PlaySe.h:112": "GAP-Audio-PauseBgmLoop-001",
+    "UC-Authoring|Editor|EntityEditorShortcuts|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:364": "GAP-Editor-EntityEditorShortcuts-001",
+    "UC-Authoring|Editor|PrefabAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:484": "GAP-Editor-PrefabAsset-001",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:332": "GAP-Editor-EntityEditorUi-005"
   },
   "pendings": {},
   "nextSequence": {
@@ -1837,7 +1919,9 @@
     "Ship-smoke_runbook": 2,
     "Ship-main": 2,
     "Editor-EditorAssetsPaths": 2,
-    "Editor-EntityEditorUi": 5,
+    "Editor-EntityEditorUi": 6,
+    "Editor-EntityEditorShortcuts": 2,
+    "Editor-PrefabAsset": 2,
     "Infra-scaffold_play_area": 2,
     "Infra-frame_profiler": 2,
     "Debug-FrameDeltaTime": 2,
@@ -2181,6 +2265,22 @@
         "GAP-Scene-SceneTitle-001",
         "GAP-Scene-SceneBuildUp-003",
         "GAP-Audio-PauseBgmLoop-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-030010",
+      "at": "2026-11-10T03:00:33.132938+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1110,
+      "newIds": [
+        "GAP-Editor-EntityEditorShortcuts-001",
+        "GAP-Editor-PrefabAsset-001",
+        "GAP-Editor-EntityEditorUi-005"
       ],
       "updatedIds": [],
       "closedIds": []
