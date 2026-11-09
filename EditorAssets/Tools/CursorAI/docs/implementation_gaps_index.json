@@ -1814,6 +1814,86 @@
       "suggestedUse": "制作: ツリー操作だけで複製・親付け替えを反復",
       "firstSeenAt": "2026-11-10T03:01:00+09:00",
       "lastSeenAt": "2026-11-10T03:01:00+09:00"
+    },
+    "GAP-Editor-EditorEntityWorkbench-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 800,
+      "frequency": "high",
+      "frequencyBasis": "機能検証シーンへの導線がパーティクルエディタのみ",
+      "scopeKey": "UC-Debug|Editor|EditorEntityWorkbench|MissingUI|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:110",
+      "primary": "EditorEntityWorkbench",
+      "related": [
+        "SceneParticleEditor",
+        "SceneBuildUpRegistry"
+      ],
+      "summaryShort": "エディタメニューに機能検証シーン起動が無い",
+      "summary": "エディタメニューに機能検証シーン起動が無い",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "「エディタ」メニューはパーティクル／コードテンプレのみ（110-117 行）",
+        "F2 で SceneParticleEditor 遷移はあるが機能検証用 SceneBuildUp 起動無し"
+      ],
+      "suggestedUse": "デバッグ: 既定のミニ検証シーンをメニューから開く",
+      "firstSeenAt": "2026-11-10T03:11:00+09:00",
+      "lastSeenAt": "2026-11-10T03:11:00+09:00"
+    },
+    "GAP-Debug-SceneViewTab-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 760,
+      "frequency": "high",
+      "frequencyBasis": "Game/Runtime タブはエディタプレビューのみで本番ランタイム経路と異なる",
+      "scopeKey": "UC-Debug|Debug|SceneViewTab|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:260",
+      "primary": "SceneViewTab",
+      "related": [
+        "DrawPreviewEntities",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "実行ビューがプレビュー Entity のみで機能単体試験にならない",
+      "summary": "実行ビューがプレビュー Entity のみで機能単体試験にならない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "DrawSceneViewContent は Game/Runtime も DrawPreviewEntities のみ（260 行）",
+        "本番相当の SceneBuildUp::Update/DrawScene 経路に切替える UI 無し"
+      ],
+      "suggestedUse": "デバッグ: エディタ外ランタイムだけをタブから切り出して試す",
+      "firstSeenAt": "2026-11-10T03:11:00+09:00",
+      "lastSeenAt": "2026-11-10T03:11:00+09:00"
+    },
+    "GAP-Infra-LoopTick13Demo-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "low",
+      "frequencyBasis": "デモ用 scene JSON が既定検証シーンに未登録",
+      "scopeKey": "UC-Debug|Infra|LoopTick13Demo|MissingData|EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json:1",
+      "primary": "LoopTick13Demo",
+      "related": [
+        "FeatureTestScene",
+        "CommandScene"
+      ],
+      "summaryShort": "LoopTick13Demo が機能検証シーンの正本として未整備",
+      "summary": "LoopTick13Demo が機能検証シーンの正本として未整備",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json は存在するが Codes から参照無し",
+        "CommandScene 初期シーンは EntityEditor のみ（FeatureTest 既定パス無し）"
+      ],
+      "suggestedUse": "デバッグ: ループ検証用の既定 JSON を機能検証の種にする",
+      "firstSeenAt": "2026-11-10T03:11:00+09:00",
+      "lastSeenAt": "2026-11-10T03:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -1882,7 +1962,10 @@
     "UC-Play|Audio|PauseBgmLoop|Unwired|Project/Codes/Include/System/PlaySe.h:112": "GAP-Audio-PauseBgmLoop-001",
     "UC-Authoring|Editor|EntityEditorShortcuts|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:364": "GAP-Editor-EntityEditorShortcuts-001",
     "UC-Authoring|Editor|PrefabAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:484": "GAP-Editor-PrefabAsset-001",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:332": "GAP-Editor-EntityEditorUi-005"
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:332": "GAP-Editor-EntityEditorUi-005",
+    "UC-Debug|Editor|EditorEntityWorkbench|MissingUI|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:110": "GAP-Editor-EditorEntityWorkbench-001",
+    "UC-Debug|Debug|SceneViewTab|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:260": "GAP-Debug-SceneViewTab-001",
+    "UC-Debug|Infra|LoopTick13Demo|MissingData|EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json:1": "GAP-Infra-LoopTick13Demo-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1922,6 +2005,9 @@
     "Editor-EntityEditorUi": 6,
     "Editor-EntityEditorShortcuts": 2,
     "Editor-PrefabAsset": 2,
+    "Editor-EditorEntityWorkbench": 2,
+    "Debug-SceneViewTab": 2,
+    "Infra-LoopTick13Demo": 2,
     "Infra-scaffold_play_area": 2,
     "Infra-frame_profiler": 2,
     "Debug-FrameDeltaTime": 2,
@@ -2281,6 +2367,22 @@
         "GAP-Editor-EntityEditorShortcuts-001",
         "GAP-Editor-PrefabAsset-001",
         "GAP-Editor-EntityEditorUi-005"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-031009",
+      "at": "2026-11-10T03:10:29.006133+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1130,
+      "newIds": [
+        "GAP-Editor-EditorEntityWorkbench-001",
+        "GAP-Debug-SceneViewTab-001",
+        "GAP-Infra-LoopTick13Demo-001"
       ],
       "updatedIds": [],
       "closedIds": []

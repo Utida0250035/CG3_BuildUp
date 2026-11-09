@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T02:50:44.964144+09:00
+- **lastIncrementalScanAt:** 2026-11-10T03:00:33.132938+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -539,6 +539,27 @@
 - firstSeenAt: 2026-11-10T02:41:00+09:00
 - lastSeenAt: 2026-11-10T02:41:00+09:00
 
+### GAP-Editor-EditorEntityWorkbench-001
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Debug
+- secondaryUseCases: UC-Authoring
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: 機能検証シーンへの導線がパーティクルエディタのみ
+- scope: UC-Debug|Editor|EditorEntityWorkbench|MissingUI|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:110
+- primary: `EditorEntityWorkbench`
+- summary: 【Debug】エディタメニューに機能検証シーン起動が無い
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - 「エディタ」メニューはパーティクル／コードテンプレのみ（110-117 行）
+  - F2 で SceneParticleEditor 遷移はあるが機能検証用 SceneBuildUp 起動無し
+- suggestedUse: デバッグ: 既定のミニ検証シーンをメニューから開く
+- firstSeenAt: 2026-11-10T03:11:00+09:00
+- lastSeenAt: 2026-11-10T03:11:00+09:00
+
 ### GAP-Infra-frame_profiler-001
 
 - status: open
@@ -599,6 +620,26 @@
 - suggestedUse: デバッグ: シーン実行中にライティング結果をオーバーレイ確認
 - firstSeenAt: 2026-11-10T02:31:00+09:00
 - lastSeenAt: 2026-11-10T02:31:00+09:00
+
+### GAP-Debug-SceneViewTab-001
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Game/Runtime タブはエディタプレビューのみで本番ランタイム経路と異なる
+- scope: UC-Debug|Debug|SceneViewTab|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:260
+- primary: `SceneViewTab`
+- summary: 【Debug】実行ビューがプレビュー Entity のみで機能単体試験にならない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawSceneViewContent は Game/Runtime も DrawPreviewEntities のみ（260 行）
+  - 本番相当の SceneBuildUp::Update/DrawScene 経路に切替える UI 無し
+- suggestedUse: デバッグ: エディタ外ランタイムだけをタブから切り出して試す
+- firstSeenAt: 2026-11-10T03:11:00+09:00
+- lastSeenAt: 2026-11-10T03:11:00+09:00
 
 ### GAP-Infra-FeatureTestScene-001
 
@@ -765,6 +806,26 @@
 - roadmapLink: feature-memos/directional_shadow.md
 - firstSeenAt: 2026-11-10T02:31:00+09:00
 - lastSeenAt: 2026-11-10T02:31:00+09:00
+
+### GAP-Infra-LoopTick13Demo-001
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: デモ用 scene JSON が既定検証シーンに未登録
+- scope: UC-Debug|Infra|LoopTick13Demo|MissingData|EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json:1
+- primary: `LoopTick13Demo`
+- summary: 【Debug】LoopTick13Demo が機能検証シーンの正本として未整備
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json は存在するが Codes から参照無し
+  - CommandScene 初期シーンは EntityEditor のみ（FeatureTest 既定パス無し）
+- suggestedUse: デバッグ: ループ検証用の既定 JSON を機能検証の種にする
+- firstSeenAt: 2026-11-10T03:11:00+09:00
+- lastSeenAt: 2026-11-10T03:11:00+09:00
 
 #### UC-Play
 
@@ -1475,7 +1536,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
@@ -1490,6 +1550,7 @@
 - scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-030010 | at: 2026-11-10T03:00:33.132938+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

@@ -1304,6 +1304,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（2回目）
 - **newIds:** 3（複製ショートカット無し、プレハブ一括配置無し、ヒエラルキー DnD 無し）
 
+## ギャップスキャン tick（SCAN-20261110-031009）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（2回目）
+- **newIds:** 3（機能検証メニュー無し、実行ビューはプレビューのみ、LoopTick13Demo 未登録）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
