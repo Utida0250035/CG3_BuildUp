@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T03:30:33.093958+09:00
+- **lastIncrementalScanAt:** 2026-11-10T03:40:52.914629+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -136,6 +136,27 @@
 - firstSeenAt: 2026-11-10T00:11:00+09:00
 - lastSeenAt: 2026-11-10T00:11:00+09:00
 
+### GAP-Editor-SceneEntityEditor-002
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: high
+- frequencyBasis: 3D ビューで配置操作ができず数値入力のみ
+- scope: UC-Authoring|Editor|SceneEntityEditor|MissingUI|Project/Codes/Source/Scene/SceneEntityEditor.cpp:256
+- primary: `SceneEntityEditor`
+- summary: 【Authoring】エディットビューに配置用ギズモ／ドラッグ操作が無い
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - エディットパスは床グリッド＋プレビュー描画のみ（256-260 行）
+  - 配置はインスペクタの初期トランスフォーム ImGui のみ（EntityEditorUi.cpp:615-631）
+  - Editor 配下に Gizmo／TransformManip 等の参照なし
+- suggestedUse: 制作: ビューポートで直感的にオブジェクトを置く
+- firstSeenAt: 2026-11-10T03:51:00+09:00
+- lastSeenAt: 2026-11-10T03:51:00+09:00
+
 ### GAP-Editor-AtrumEngineVisual-001
 
 - status: open
@@ -198,6 +219,26 @@
 - roadmapLink: feature-memos/component_split_guidelines.md
 - firstSeenAt: 2026-11-10T03:31:00+09:00
 - lastSeenAt: 2026-11-10T03:31:00+09:00
+
+### GAP-Editor-EntityEditor-004
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: high
+- frequencyBasis: 配置・トランスフォーム編集のたびに手動保存が必要
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:766
+- primary: `EntityEditor`
+- summary: 【Authoring】インスペクタ変更はプレビューのみ更新し自動保存しない
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - DrawInspectorPanel の changed は requestApplyPreview のみ（766-768 行）
+  - ディスク保存はメニュー「保存」等の requestSaveToDisk 経由のみ（EditorEntityWorkbench.cpp:64-65）
+- suggestedUse: 制作: 配置後に保存忘れで再オープン時に座標が戻るのを防ぐ
+- firstSeenAt: 2026-11-10T03:51:00+09:00
+- lastSeenAt: 2026-11-10T03:51:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-001
 
@@ -407,6 +448,26 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T00:51:00+09:00
 - lastSeenAt: 2026-11-10T00:51:00+09:00
+
+### GAP-Editor-SceneEntityEditor-003
+
+- status: open
+- tier: P2
+- score: 670
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: medium
+- frequencyBasis: シーンエディタ再入場で未保存のメモリ上配置が消える
+- scope: UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:115
+- primary: `SceneEntityEditor`
+- summary: 【Authoring】EnterScene が毎回ディスクから Load し編集中ドキュメントを上書き
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - EnterScene は EnsureCommonResources 後に LoadFromJsonPath を必ず呼ぶ（115 行）
+  - 他シーンから戻った際、未保存の initialTransform 等は JSON 最終保存状態に戻る
+- suggestedUse: 制作: パーティクルエディタ往復後も配置を保持
+- firstSeenAt: 2026-11-10T03:51:00+09:00
+- lastSeenAt: 2026-11-10T03:51:00+09:00
 
 ### GAP-Editor-EntityEditorUi-005
 
@@ -1706,7 +1767,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
@@ -1721,6 +1781,7 @@
 - scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 
 ---
 

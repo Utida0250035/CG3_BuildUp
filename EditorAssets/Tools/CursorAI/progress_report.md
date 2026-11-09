@@ -1324,6 +1324,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Movie-001（2回目）
 - **newIds:** 3（returnScene null ハング、SkyDome／カメラ順序、トラックパス未解決）
 
+## ギャップスキャン tick（SCAN-20261110-035010）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001（2回目）
+- **newIds:** 3（配置変更は手動保存、ビューポート配置 UI 無し、再入場でディスク再読込）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
