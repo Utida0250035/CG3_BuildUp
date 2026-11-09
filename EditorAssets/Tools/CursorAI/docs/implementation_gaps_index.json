@@ -1080,6 +1080,91 @@
       "roadmapLink": "feature-memos/cloud_build_vcxproj_check.md",
       "firstSeenAt": "2026-11-10T01:31:00+09:00",
       "lastSeenAt": "2026-11-10T01:31:00+09:00"
+    },
+    "GAP-Infra-buildDevelopment-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [
+        "UC-Debug"
+      ],
+      "scenarioId": "SHP-DevBuild-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 790,
+      "frequency": "high",
+      "frequencyBasis": "ローカル既定ビルドが CI と前段検証・ソリューション入口が一致しない",
+      "scopeKey": "UC-Ship|Infra|buildDevelopment|Incomplete|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:18",
+      "primary": "buildDevelopment",
+      "related": [
+        "DevelopmentBuild.yml",
+        "verify_vcxproj_coverage.py",
+        "CG2_BuildUp.slnx"
+      ],
+      "summaryShort": "buildDevelopment.cmd が CI と異なる入口で前検証も無い",
+      "summary": "buildDevelopment.cmd が CI と異なる入口で前検証も無い",
+      "scenarioText": "`Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。",
+      "evidence": [
+        "ローカル: CG2_BuildUp.vcxproj を直接 MSBuild（buildDevelopment.cmd:18）",
+        "CI: verify_vcxproj_coverage の後に CG2_BuildUp.slnx を Development ビルド（DevelopmentBuild.yml:19,103-106）",
+        "buildDevelopment.cmd は verify 呼び出し無し"
+      ],
+      "suggestedUse": "制作: ローカル成功が CI Development ビルドと同等の手順になる",
+      "roadmapLink": "feature-memos/cloud_build_vcxproj_check.md",
+      "firstSeenAt": "2026-11-10T01:41:00+09:00",
+      "lastSeenAt": "2026-11-10T01:41:00+09:00"
+    },
+    "GAP-Infra-buildDevelopment-002": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-DevBuild-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 760,
+      "frequency": "high",
+      "frequencyBasis": "初回クローンで NuGet 未復元だとローカル Development ビルドが失敗しうる",
+      "scopeKey": "UC-Ship|Infra|buildDevelopment|Unwired|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:1",
+      "primary": "buildDevelopment",
+      "related": [
+        "packages.config",
+        "sdl2.redist.targets"
+      ],
+      "summaryShort": "buildDevelopment.cmd に NuGet 復元ステップが無い",
+      "summary": "buildDevelopment.cmd に NuGet 復元ステップが無い",
+      "scenarioText": "`Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。",
+      "evidence": [
+        "DevelopmentBuild.yml は nuget restore と SDL2 targets 存在確認を実施（44-98 行）",
+        "buildDevelopment.cmd は MSBuild 起動のみ"
+      ],
+      "suggestedUse": "制作: 半自律手順の buildDevelopment がクリーン環境でも通る",
+      "firstSeenAt": "2026-11-10T01:41:00+09:00",
+      "lastSeenAt": "2026-11-10T01:41:00+09:00"
+    },
+    "GAP-Infra-cloud_dev_build-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-DevBuild-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "medium",
+      "frequencyBasis": "Cloud Agent 環境は Linux で Win32 MSBuild が使えない",
+      "scopeKey": "UC-Ship|Infra|cloud_dev_build|MissingTest|EditorAssets/Tools/CursorAI/cursorInstructions.md:31",
+      "primary": "cloud_dev_build",
+      "related": [
+        "buildDevelopment.cmd",
+        "cloud_build_vcxproj_check.md"
+      ],
+      "summaryShort": "Cloud Linux 上で Development ビルド再現手段が未定義",
+      "summary": "Cloud Linux 上で Development ビルド再現手段が未定義",
+      "scenarioText": "`Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。",
+      "evidence": [
+        "半自律手順は buildDevelopment.cmd 成功を必須（cursorInstructions.md:265）",
+        "verify_vcxproj_coverage のみ Linux 実行可（cloud_build_vcxproj_check.md）",
+        "progress_report に Cloud Linux で buildDevelopment 未実施の記録あり"
+      ],
+      "suggestedUse": "エージェント開発: Linux Cloud でも CI 同等の妥当性チェックを完了とみなせる",
+      "roadmapLink": "feature-memos/cloud_build_vcxproj_check.md",
+      "firstSeenAt": "2026-11-10T01:41:00+09:00",
+      "lastSeenAt": "2026-11-10T01:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -1121,7 +1206,10 @@
     "UC-Ship|Infra|asset_pack_verify|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-asset_pack_verify-001",
     "UC-Ship|Ship|CG2_BuildUp|Contract|Project/CG2_BuildUp.vcxproj:85": "GAP-Ship-CG2_BuildUp-002",
     "UC-Ship|Ship|EditorSources|Incomplete|Project/CG2_BuildUp.vcxproj:325": "GAP-Ship-EditorSources-001",
-    "UC-Ship|Infra|verify_config_matrix|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-verify_config_matrix-001"
+    "UC-Ship|Infra|verify_config_matrix|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-verify_config_matrix-001",
+    "UC-Ship|Infra|buildDevelopment|Incomplete|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:18": "GAP-Infra-buildDevelopment-001",
+    "UC-Ship|Infra|buildDevelopment|Unwired|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:1": "GAP-Infra-buildDevelopment-002",
+    "UC-Ship|Infra|cloud_dev_build|MissingTest|EditorAssets/Tools/CursorAI/cursorInstructions.md:31": "GAP-Infra-cloud_dev_build-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1147,7 +1235,9 @@
     "Infra-BinaryConverter": 2,
     "Infra-asset_pack_verify": 2,
     "Ship-EditorSources": 2,
-    "Infra-verify_config_matrix": 2
+    "Infra-verify_config_matrix": 2,
+    "Infra-buildDevelopment": 3,
+    "Infra-cloud_dev_build": 2
   },
   "scans": [
     {
@@ -1354,6 +1444,22 @@
         "GAP-Ship-CG2_BuildUp-002",
         "GAP-Ship-EditorSources-001",
         "GAP-Infra-verify_config_matrix-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-014010",
+      "at": "2026-11-10T01:40:32.359685+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Ship",
+      "scenarioId": "SHP-DevBuild-001",
+      "areaHint": "Infra",
+      "priorityScore": 1420,
+      "newIds": [
+        "GAP-Infra-buildDevelopment-001",
+        "GAP-Infra-buildDevelopment-002",
+        "GAP-Infra-cloud_dev_build-001"
       ],
       "updatedIds": [],
       "closedIds": []

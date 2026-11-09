@@ -1259,6 +1259,11 @@
 - **useCase:** UC-Ship / **scenario:** SHP-Config-001
 - **newIds:** 3（Debug も DEVELOPMENT、Editor TU が Release に残る、構成マトリクス CI 無し）
 
+## ギャップスキャン tick（SCAN-20261110-014010）
+
+- **useCase:** UC-Ship / **scenario:** SHP-DevBuild-001
+- **newIds:** 3（buildDevelopment と CI 差分、NuGet 無し、Cloud Linux 未定義）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

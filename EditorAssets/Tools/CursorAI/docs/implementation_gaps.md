@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T01:20:33.060096+09:00
+- **lastIncrementalScanAt:** 2026-11-10T01:30:31.017847+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -819,13 +819,35 @@
 - firstSeenAt: 2026-11-10T01:31:00+09:00
 - lastSeenAt: 2026-11-10T01:31:00+09:00
 
+### GAP-Infra-buildDevelopment-001
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Ship
+- secondaryUseCases: UC-Debug
+- scenarioId: SHP-DevBuild-001
+- frequency: high
+- frequencyBasis: ローカル既定ビルドが CI と前段検証・ソリューション入口が一致しない
+- scope: UC-Ship|Infra|buildDevelopment|Incomplete|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:18
+- primary: `buildDevelopment`
+- summary: 【Ship】buildDevelopment.cmd が CI と異なる入口で前検証も無い
+- scenarioText: `Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。
+- evidence:
+  - ローカル: CG2_BuildUp.vcxproj を直接 MSBuild（buildDevelopment.cmd:18）
+  - CI: verify_vcxproj_coverage の後に CG2_BuildUp.slnx を Development ビルド（DevelopmentBuild.yml:19,103-106）
+  - buildDevelopment.cmd は verify 呼び出し無し
+- suggestedUse: 制作: ローカル成功が CI Development ビルドと同等の手順になる
+- roadmapLink: feature-memos/cloud_build_vcxproj_check.md
+- firstSeenAt: 2026-11-10T01:41:00+09:00
+- lastSeenAt: 2026-11-10T01:41:00+09:00
+
 ### GAP-Ship-EditorSources-001
 
 - status: open
 - tier: P1
 - score: 770
 - primaryUseCase: UC-Ship
-- secondaryUseCases: UC-Ship
 - scenarioId: SHP-Config-001
 - frequency: high
 - frequencyBasis: Release でも Editor 系 TU がリンク対象のまま
@@ -860,6 +882,26 @@
 - suggestedUse: 配布: ビルド成果物ディレクトリに参照パスが全て存在することを PR 前に確認
 - firstSeenAt: 2026-11-10T01:21:00+09:00
 - lastSeenAt: 2026-11-10T01:21:00+09:00
+
+### GAP-Infra-buildDevelopment-002
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-DevBuild-001
+- frequency: high
+- frequencyBasis: 初回クローンで NuGet 未復元だとローカル Development ビルドが失敗しうる
+- scope: UC-Ship|Infra|buildDevelopment|Unwired|EditorAssets/Tools/CursorAI/buildDevelopment.cmd:1
+- primary: `buildDevelopment`
+- summary: 【Ship】buildDevelopment.cmd に NuGet 復元ステップが無い
+- scenarioText: `Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。
+- evidence:
+  - DevelopmentBuild.yml は nuget restore と SDL2 targets 存在確認を実施（44-98 行）
+  - buildDevelopment.cmd は MSBuild 起動のみ
+- suggestedUse: 制作: 半自律手順の buildDevelopment がクリーン環境でも通る
+- firstSeenAt: 2026-11-10T01:41:00+09:00
+- lastSeenAt: 2026-11-10T01:41:00+09:00
 
 ### GAP-Infra-verify_config_matrix-001
 
@@ -904,6 +946,28 @@
 - firstSeenAt: 2026-11-10T01:21:00+09:00
 - lastSeenAt: 2026-11-10T01:21:00+09:00
 
+### GAP-Infra-cloud_dev_build-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-DevBuild-001
+- frequency: medium
+- frequencyBasis: Cloud Agent 環境は Linux で Win32 MSBuild が使えない
+- scope: UC-Ship|Infra|cloud_dev_build|MissingTest|EditorAssets/Tools/CursorAI/cursorInstructions.md:31
+- primary: `cloud_dev_build`
+- summary: 【Ship】Cloud Linux 上で Development ビルド再現手段が未定義
+- scenarioText: `Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。
+- evidence:
+  - 半自律手順は buildDevelopment.cmd 成功を必須（cursorInstructions.md:265）
+  - verify_vcxproj_coverage のみ Linux 実行可（cloud_build_vcxproj_check.md）
+  - progress_report に Cloud Linux で buildDevelopment 未実施の記録あり
+- suggestedUse: エージェント開発: Linux Cloud でも CI 同等の妥当性チェックを完了とみなせる
+- roadmapLink: feature-memos/cloud_build_vcxproj_check.md
+- firstSeenAt: 2026-11-10T01:41:00+09:00
+- lastSeenAt: 2026-11-10T01:41:00+09:00
+
 
 ---
 
@@ -927,6 +991,7 @@
 - scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
 
 ---
 
