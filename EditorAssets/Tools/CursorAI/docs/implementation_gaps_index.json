@@ -1573,6 +1573,87 @@
       "roadmapLink": "feature-memos/directional_shadow.md",
       "firstSeenAt": "2026-11-10T02:31:00+09:00",
       "lastSeenAt": "2026-11-10T02:31:00+09:00"
+    },
+    "GAP-Audio-StreamingDebug-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-Streaming-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 800,
+      "frequency": "high",
+      "frequencyBasis": "remaining 肥大が progress バーで 1.0 に潰され切り分けできない",
+      "scopeKey": "UC-Debug|Audio|StreamingDebug|Incomplete|Project/Codes/Source/Audio/Audio.cpp:1299",
+      "primary": "StreamingDebug",
+      "related": [
+        "decoderBacklog01",
+        "remainingData"
+      ],
+      "summaryShort": "decoderBacklog01 のクランプで remaining 肥大が見えない",
+      "summary": "decoderBacklog01 のクランプで remaining 肥大が見えない",
+      "scenarioText": "開発者がストリーミング再生中のメモリ・進捗を確認し、枯渇や remaining 肥大を切り分けられる（spec: `feature-memos/streaming_debug_imgui.md`）。",
+      "evidence": [
+        "decoderBacklog01 = clamp(remaining/kBufferSize, 0, 1)（Audio.cpp:1299-1302）",
+        "ImGui は ProgressBar(decoderBacklog01) のみ（AudioStreamingDebugImGui.cpp:119）"
+      ],
+      "suggestedUse": "デバッグ: remaining がバッファ複数分に膨らんだ異常を即判別",
+      "roadmapLink": "feature-memos/streaming_debug_imgui.md",
+      "firstSeenAt": "2026-11-10T02:41:00+09:00",
+      "lastSeenAt": "2026-11-10T02:41:00+09:00"
+    },
+    "GAP-Audio-StreamingDebug-002": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-Streaming-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 690,
+      "frequency": "medium",
+      "frequencyBasis": "スナップショットのファイルログ出力が無い",
+      "scopeKey": "UC-Debug|Audio|StreamingDebug|MissingData|Project/Codes/Source/ForDebug/AudioStreamingDebugImGui.cpp:69",
+      "primary": "StreamingDebug",
+      "related": [
+        "CollectStreamingMemoryDebug",
+        "LogFile"
+      ],
+      "summaryShort": "ストリーミング診断が ImGui 表示のみでログに残らない",
+      "summary": "ストリーミング診断が ImGui 表示のみでログに残らない",
+      "scenarioText": "開発者がストリーミング再生中のメモリ・進捗を確認し、枯渇や remaining 肥大を切り分けられる（spec: `feature-memos/streaming_debug_imgui.md`）。",
+      "evidence": [
+        "CollectStreamingMemoryDebug 後 ImGui テーブル描画のみ（69-133 行）",
+        "scenario が想定する「ログ」経路（LogFile 等）無し"
+      ],
+      "suggestedUse": "デバッグ: 再生異常をログで再現・共有",
+      "roadmapLink": "feature-memos/streaming_debug_imgui.md",
+      "firstSeenAt": "2026-11-10T02:41:00+09:00",
+      "lastSeenAt": "2026-11-10T02:41:00+09:00"
+    },
+    "GAP-Debug-StreamingMenu-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-Streaming-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 710,
+      "frequency": "medium",
+      "frequencyBasis": "ストリーミング窓トグルが EntityEditor メニュー限定",
+      "scopeKey": "UC-Debug|Debug|StreamingMenu|Unwired|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:120",
+      "primary": "StreamingMenu",
+      "related": [
+        "SceneBuildUp",
+        "DrawAudioStreamingMemoryDebugWindow"
+      ],
+      "summaryShort": "ストリーミングデバッグ ON が SceneBuildUp 経路で開けない",
+      "summary": "ストリーミングデバッグ ON が SceneBuildUp 経路で開けない",
+      "scenarioText": "開発者がストリーミング再生中のメモリ・進捗を確認し、枯渇や remaining 肥大を切り分けられる（spec: `feature-memos/streaming_debug_imgui.md`）。",
+      "evidence": [
+        "メニュー「デバッグ→ストリーミングメモリ」は DrawMainMenuBar のみ（120-125 行）",
+        "SceneBuildUp は LayoutEditorWorkbench を呼ばない（SceneBuildUp.cpp Draw）"
+      ],
+      "suggestedUse": "デバッグ: BuildUp ランタイムプレビューでもストリーミング計測を有効化",
+      "roadmapLink": "feature-memos/streaming_debug_imgui.md",
+      "firstSeenAt": "2026-11-10T02:41:00+09:00",
+      "lastSeenAt": "2026-11-10T02:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -1632,7 +1713,10 @@
     "UC-Debug|Ship|Development_opt|Contract|Project/CG2_BuildUp.vcxproj:171": "GAP-Ship-Development_opt-001",
     "UC-Debug|Render|Lighting|Unwired|Project/Codes/Source/Engine/Renderer/Lighting/Lighting.cpp:46": "GAP-Render-Lighting-001",
     "UC-Debug|Engine|AtrumEngineLighting|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535": "GAP-Engine-AtrumEngineLighting-001",
-    "UC-Debug|Render|DirectionalShadow|Incomplete|Project/Codes/Source/Engine/Renderer/Lighting/DirectionalShadow.cpp:34": "GAP-Render-DirectionalShadow-001"
+    "UC-Debug|Render|DirectionalShadow|Incomplete|Project/Codes/Source/Engine/Renderer/Lighting/DirectionalShadow.cpp:34": "GAP-Render-DirectionalShadow-001",
+    "UC-Debug|Audio|StreamingDebug|Incomplete|Project/Codes/Source/Audio/Audio.cpp:1299": "GAP-Audio-StreamingDebug-001",
+    "UC-Debug|Audio|StreamingDebug|MissingData|Project/Codes/Source/ForDebug/AudioStreamingDebugImGui.cpp:69": "GAP-Audio-StreamingDebug-002",
+    "UC-Debug|Debug|StreamingMenu|Unwired|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:120": "GAP-Debug-StreamingMenu-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1674,7 +1758,9 @@
     "Ship-Development_opt": 2,
     "Render-Lighting": 2,
     "Engine-AtrumEngineLighting": 2,
-    "Render-DirectionalShadow": 2
+    "Render-DirectionalShadow": 2,
+    "Audio-StreamingDebug": 3,
+    "Debug-StreamingMenu": 2
   },
   "scans": [
     {
@@ -1977,6 +2063,22 @@
         "GAP-Render-Lighting-001",
         "GAP-Engine-AtrumEngineLighting-001",
         "GAP-Render-DirectionalShadow-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-024011",
+      "at": "2026-11-10T02:40:31.119512+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-Streaming-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1370,
+      "newIds": [
+        "GAP-Audio-StreamingDebug-001",
+        "GAP-Audio-StreamingDebug-002",
+        "GAP-Debug-StreamingMenu-001"
       ],
       "updatedIds": [],
       "closedIds": []

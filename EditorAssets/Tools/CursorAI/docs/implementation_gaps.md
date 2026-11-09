@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T02:20:41.561155+09:00
+- **lastIncrementalScanAt:** 2026-11-10T02:30:58.381544+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -457,6 +457,27 @@
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
 
+### GAP-Audio-StreamingDebug-001
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-Streaming-001
+- frequency: high
+- frequencyBasis: remaining 肥大が progress バーで 1.0 に潰され切り分けできない
+- scope: UC-Debug|Audio|StreamingDebug|Incomplete|Project/Codes/Source/Audio/Audio.cpp:1299
+- primary: `StreamingDebug`
+- summary: 【Debug】decoderBacklog01 のクランプで remaining 肥大が見えない
+- scenarioText: 開発者がストリーミング再生中のメモリ・進捗を確認し、枯渇や remaining 肥大を切り分けられる（spec: `feature-memos/streaming_debug_imgui.md`）。
+- evidence:
+  - decoderBacklog01 = clamp(remaining/kBufferSize, 0, 1)（Audio.cpp:1299-1302）
+  - ImGui は ProgressBar(decoderBacklog01) のみ（AudioStreamingDebugImGui.cpp:119）
+- suggestedUse: デバッグ: remaining がバッファ複数分に膨らんだ異常を即判別
+- roadmapLink: feature-memos/streaming_debug_imgui.md
+- firstSeenAt: 2026-11-10T02:41:00+09:00
+- lastSeenAt: 2026-11-10T02:41:00+09:00
+
 ### GAP-Infra-frame_profiler-001
 
 - status: open
@@ -578,6 +599,27 @@
 - firstSeenAt: 2026-11-10T02:21:00+09:00
 - lastSeenAt: 2026-11-10T02:21:00+09:00
 
+### GAP-Debug-StreamingMenu-001
+
+- status: open
+- tier: P2
+- score: 710
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-Streaming-001
+- frequency: medium
+- frequencyBasis: ストリーミング窓トグルが EntityEditor メニュー限定
+- scope: UC-Debug|Debug|StreamingMenu|Unwired|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:120
+- primary: `StreamingMenu`
+- summary: 【Debug】ストリーミングデバッグ ON が SceneBuildUp 経路で開けない
+- scenarioText: 開発者がストリーミング再生中のメモリ・進捗を確認し、枯渇や remaining 肥大を切り分けられる（spec: `feature-memos/streaming_debug_imgui.md`）。
+- evidence:
+  - メニュー「デバッグ→ストリーミングメモリ」は DrawMainMenuBar のみ（120-125 行）
+  - SceneBuildUp は LayoutEditorWorkbench を呼ばない（SceneBuildUp.cpp Draw）
+- suggestedUse: デバッグ: BuildUp ランタイムプレビューでもストリーミング計測を有効化
+- roadmapLink: feature-memos/streaming_debug_imgui.md
+- firstSeenAt: 2026-11-10T02:41:00+09:00
+- lastSeenAt: 2026-11-10T02:41:00+09:00
+
 ### GAP-Infra-scaffold_play_area-001
 
 - status: open
@@ -597,6 +639,27 @@
 - suggestedUse: デバッグ: エディタ内で名前入力→テスト JSON 生成まで一気通貫
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
+
+### GAP-Audio-StreamingDebug-002
+
+- status: open
+- tier: P2
+- score: 690
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-Streaming-001
+- frequency: medium
+- frequencyBasis: スナップショットのファイルログ出力が無い
+- scope: UC-Debug|Audio|StreamingDebug|MissingData|Project/Codes/Source/ForDebug/AudioStreamingDebugImGui.cpp:69
+- primary: `StreamingDebug`
+- summary: 【Debug】ストリーミング診断が ImGui 表示のみでログに残らない
+- scenarioText: 開発者がストリーミング再生中のメモリ・進捗を確認し、枯渇や remaining 肥大を切り分けられる（spec: `feature-memos/streaming_debug_imgui.md`）。
+- evidence:
+  - CollectStreamingMemoryDebug 後 ImGui テーブル描画のみ（69-133 行）
+  - scenario が想定する「ログ」経路（LogFile 等）無し
+- suggestedUse: デバッグ: 再生異常をログで再現・共有
+- roadmapLink: feature-memos/streaming_debug_imgui.md
+- firstSeenAt: 2026-11-10T02:41:00+09:00
+- lastSeenAt: 2026-11-10T02:41:00+09:00
 
 ### GAP-Ship-Development_opt-001
 
@@ -1289,7 +1352,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
@@ -1304,6 +1366,7 @@
 - scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
 
 ---
 

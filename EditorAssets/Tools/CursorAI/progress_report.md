@@ -1289,6 +1289,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-RenderDiag-001
 - **newIds:** 3（Lighting ImGui 未配線、Editor 診断パネル無し、影の可視化無し）
 
+## ギャップスキャン tick（SCAN-20261110-024011）
+
+- **useCase:** UC-Debug / **scenario:** DBG-Streaming-001
+- **newIds:** 3（remaining クランプ、ログ無し、BuildUp でメニュー無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
