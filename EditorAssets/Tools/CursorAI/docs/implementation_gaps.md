@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T06:00:51.363018+09:00
+- **lastIncrementalScanAt:** 2026-11-10T06:11:00.391287+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -450,6 +450,28 @@
 - firstSeenAt: 2026-11-10T03:31:00+09:00
 - lastSeenAt: 2026-11-10T03:31:00+09:00
 
+### GAP-Editor-EditorFrame-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: high
+- frequencyBasis: シーンビュー FOV が tuning JSON と無関係な定数
+- scope: UC-Authoring|Editor|EditorFrame|Contract|Project/Codes/Source/System/Editor/EditorFrame.cpp:129
+- primary: `EditorFrame`
+- summary: 【Authoring】FitCameraPerspectiveToViewport が FOV 0.5 固定
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - PerspectiveFov(0.5f, aspect, ...)（129 行）
+  - tuning JSON の perspectiveFovY（stage_view_camera_tuning.json:4）未参照
+  - SceneEntityEditor / SceneBuildUp プレビューが共通利用（249, 148 行）
+- suggestedUse: 制作: カメラデータを変えてプレビューに反映
+- roadmapLink: feature-memos/odyssey_style_stage_camera.md
+- firstSeenAt: 2026-11-10T06:21:00+09:00
+- lastSeenAt: 2026-11-10T06:21:00+09:00
+
 ### GAP-Editor-EditorImportedAsset-001
 
 - status: open
@@ -699,6 +721,28 @@
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
 
+### GAP-Editor-SceneEntityEditor-005
+
+- status: open
+- tier: P2
+- score: 650
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: medium
+- frequencyBasis: エディタ起動カメラが戦闘ステージ視点と乖離
+- scope: UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:91
+- primary: `SceneEntityEditor`
+- summary: 【Authoring】SetupPreviewCamera が自由位置のみで StageView 未使用
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - EnterScene で SetTranslate(0,1.6,-6) のみ（91-95 行）
+  - Runtime タブ描画時のみ SetupStageViewCamera（241-246 行）
+  - Edit タブは DebugCamera 自由視点のまま
+- suggestedUse: 制作: 本編に近い初期カメラで配置プレビュー
+- roadmapLink: feature-memos/player_friendly_camera_policy.md
+- firstSeenAt: 2026-11-10T06:21:00+09:00
+- lastSeenAt: 2026-11-10T06:21:00+09:00
+
 ### GAP-UX-OperatorGuidanceSystem-003
 
 - status: open
@@ -916,6 +960,28 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T06:01:00+09:00
 - lastSeenAt: 2026-11-10T06:01:00+09:00
+
+### GAP-Infra-stage_view_camera_tuning-002
+
+- status: open
+- tier: P3
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-VisualTune-001
+- frequency: medium
+- frequencyBasis: 解像度フィールドがプレビューアスペクトと非連動
+- scope: UC-Authoring|Infra|stage_view_camera_tuning|Contract|EditorAssets/Camera/stage_view_camera_tuning.json:5
+- primary: `stage_view_camera_tuning`
+- summary: 【Authoring】tuning JSON の client 解像度が参照されない
+- scenarioText: 制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。
+- evidence:
+  - clientWidth/Height 記載（5-6 行）だが StageViewCamera.cpp は Window 既定のみ
+  - ImGui シーンビューは可変サイズで FitCameraPerspectiveToViewport（EditorFrame.cpp:121）
+  - 本編とエディタでアスペクト前提がズレうる
+- suggestedUse: 制作: JSON 調整が ImGui プレビューと本番で一致
+- roadmapLink: feature-memos/odyssey_style_stage_camera.md
+- firstSeenAt: 2026-11-10T06:21:00+09:00
+- lastSeenAt: 2026-11-10T06:21:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-004
 
@@ -2663,7 +2729,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
@@ -2678,6 +2743,7 @@
 - scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 
 ---
 

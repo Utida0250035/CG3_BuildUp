@@ -3378,6 +3378,90 @@
       "roadmapLink": "feature-memos/rim_light.md",
       "firstSeenAt": "2026-11-10T06:11:00+09:00",
       "lastSeenAt": "2026-11-10T06:11:00+09:00"
+    },
+    "GAP-Editor-EditorFrame-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-VisualTune-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "high",
+      "frequencyBasis": "シーンビュー FOV が tuning JSON と無関係な定数",
+      "scopeKey": "UC-Authoring|Editor|EditorFrame|Contract|Project/Codes/Source/System/Editor/EditorFrame.cpp:129",
+      "primary": "EditorFrame",
+      "related": [
+        "FitCameraPerspectiveToViewport",
+        "stage_view_camera_tuning.json"
+      ],
+      "summaryShort": "FitCameraPerspectiveToViewport が FOV 0.5 固定",
+      "summary": "FitCameraPerspectiveToViewport が FOV 0.5 固定",
+      "scenarioText": "制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。",
+      "evidence": [
+        "PerspectiveFov(0.5f, aspect, ...)（129 行）",
+        "tuning JSON の perspectiveFovY（stage_view_camera_tuning.json:4）未参照",
+        "SceneEntityEditor / SceneBuildUp プレビューが共通利用（249, 148 行）"
+      ],
+      "suggestedUse": "制作: カメラデータを変えてプレビューに反映",
+      "roadmapLink": "feature-memos/odyssey_style_stage_camera.md",
+      "firstSeenAt": "2026-11-10T06:21:00+09:00",
+      "lastSeenAt": "2026-11-10T06:21:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-005": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-VisualTune-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 650,
+      "frequency": "medium",
+      "frequencyBasis": "エディタ起動カメラが戦闘ステージ視点と乖離",
+      "scopeKey": "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:91",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "SetupStageViewCamera",
+        "SetupPreviewCamera"
+      ],
+      "summaryShort": "SetupPreviewCamera が自由位置のみで StageView 未使用",
+      "summary": "SetupPreviewCamera が自由位置のみで StageView 未使用",
+      "scenarioText": "制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。",
+      "evidence": [
+        "EnterScene で SetTranslate(0,1.6,-6) のみ（91-95 行）",
+        "Runtime タブ描画時のみ SetupStageViewCamera（241-246 行）",
+        "Edit タブは DebugCamera 自由視点のまま"
+      ],
+      "suggestedUse": "制作: 本編に近い初期カメラで配置プレビュー",
+      "roadmapLink": "feature-memos/player_friendly_camera_policy.md",
+      "firstSeenAt": "2026-11-10T06:21:00+09:00",
+      "lastSeenAt": "2026-11-10T06:21:00+09:00"
+    },
+    "GAP-Infra-stage_view_camera_tuning-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-VisualTune-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 560,
+      "frequency": "medium",
+      "frequencyBasis": "解像度フィールドがプレビューアスペクトと非連動",
+      "scopeKey": "UC-Authoring|Infra|stage_view_camera_tuning|Contract|EditorAssets/Camera/stage_view_camera_tuning.json:5",
+      "primary": "stage_view_camera_tuning",
+      "related": [
+        "clientWidth",
+        "FitCameraPerspectiveToViewport"
+      ],
+      "summaryShort": "tuning JSON の client 解像度が参照されない",
+      "summary": "tuning JSON の client 解像度が参照されない",
+      "scenarioText": "制作者がライト・カメラ・ポストのパラメータを編集し、プレビューで結果を確認できる。",
+      "evidence": [
+        "clientWidth/Height 記載（5-6 行）だが StageViewCamera.cpp は Window 既定のみ",
+        "ImGui シーンビューは可変サイズで FitCameraPerspectiveToViewport（EditorFrame.cpp:121）",
+        "本編とエディタでアスペクト前提がズレうる"
+      ],
+      "suggestedUse": "制作: JSON 調整が ImGui プレビューと本番で一致",
+      "roadmapLink": "feature-memos/odyssey_style_stage_camera.md",
+      "firstSeenAt": "2026-11-10T06:21:00+09:00",
+      "lastSeenAt": "2026-11-10T06:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -3503,7 +3587,10 @@
     "UC-Authoring|Infra|operator_guidance_verify|MissingTest|EditorAssets/UX/operator_guidance.json:12": "GAP-Editor-UXAuthoring-002",
     "UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:57": "GAP-Render-SceneGame-003",
     "UC-Play|Render|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:87": "GAP-Render-SceneGame-004",
-    "UC-Play|Render|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:52": "GAP-Render-SceneResult-001"
+    "UC-Play|Render|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:52": "GAP-Render-SceneResult-001",
+    "UC-Authoring|Editor|EditorFrame|Contract|Project/Codes/Source/System/Editor/EditorFrame.cpp:129": "GAP-Editor-EditorFrame-001",
+    "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:91": "GAP-Editor-SceneEntityEditor-005",
+    "UC-Authoring|Infra|stage_view_camera_tuning|Contract|EditorAssets/Camera/stage_view_camera_tuning.json:5": "GAP-Infra-stage_view_camera_tuning-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -3519,7 +3606,9 @@
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 2,
-    "Editor-SceneEntityEditor": 5,
+    "Editor-SceneEntityEditor": 6,
+    "Editor-EditorFrame": 2,
+    "Infra-stage_view_camera_tuning": 3,
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
@@ -4228,6 +4317,22 @@
         "GAP-Render-SceneGame-003",
         "GAP-Render-SceneGame-004",
         "GAP-Render-SceneResult-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-062012",
+      "at": "2026-11-10T06:20:59.799180+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-VisualTune-001",
+      "areaHint": "Render",
+      "priorityScore": 1070,
+      "newIds": [
+        "GAP-Editor-EditorFrame-001",
+        "GAP-Editor-SceneEntityEditor-005",
+        "GAP-Infra-stage_view_camera_tuning-002"
       ],
       "updatedIds": [],
       "closedIds": []

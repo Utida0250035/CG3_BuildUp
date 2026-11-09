@@ -1399,6 +1399,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Visual-001（3回目）
 - **newIds:** 3（Fog Flush 順、EnterScene 未ライティング、Result 簡易光のみ）
 
+## ギャップスキャン tick（SCAN-20261110-062012）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001（3回目）
+- **newIds:** 3（FOV 固定、プレビューカメラ、tuning 解像度未参照）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
