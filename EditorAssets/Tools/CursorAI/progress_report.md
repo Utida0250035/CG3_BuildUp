@@ -1254,6 +1254,11 @@
 - **useCase:** UC-Ship / **scenario:** SHP-AssetPack-001
 - **newIds:** 3（PostBuild は Assets のみ、amesh CI 無し、アセットパス検証無し）
 
+## ギャップスキャン tick（SCAN-20261110-013008）
+
+- **useCase:** UC-Ship / **scenario:** SHP-Config-001
+- **newIds:** 3（Debug も DEVELOPMENT、Editor TU が Release に残る、構成マトリクス CI 無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

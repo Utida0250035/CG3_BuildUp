@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T01:10:32.331404+09:00
+- **lastIncrementalScanAt:** 2026-11-10T01:20:33.060096+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -798,6 +798,49 @@
 - firstSeenAt: 2026-11-10T01:21:00+09:00
 - lastSeenAt: 2026-11-10T01:21:00+09:00
 
+### GAP-Ship-CG2_BuildUp-002
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Config-001
+- frequency: high
+- frequencyBasis: Debug 構成が DEVELOPMENT+USE_IMGUI を本番相当 Release と同列に混在
+- scope: UC-Ship|Ship|CG2_BuildUp|Contract|Project/CG2_BuildUp.vcxproj:85
+- primary: `CG2_BuildUp`
+- summary: 【Ship】Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭
+- scenarioText: 本番と開発で意図したコンパイル／リンク差分のみが有効になる。
+- evidence:
+  - Debug|x64: _DEBUG+DEVELOPMENT+USE_IMGUI（85 行）
+  - Release|x64: NDEBUG のみ（DEVELOPMENT/USE_IMGUI 無し）
+  - Development|x64: DEVELOPMENT+USE_IMGUI だが NDEBUG/_DEBUG どちらも未定義
+- suggestedUse: 配布: CI／手順で検証する「出荷候補」構成が一意に定義される
+- firstSeenAt: 2026-11-10T01:31:00+09:00
+- lastSeenAt: 2026-11-10T01:31:00+09:00
+
+### GAP-Ship-EditorSources-001
+
+- status: open
+- tier: P1
+- score: 770
+- primaryUseCase: UC-Ship
+- secondaryUseCases: UC-Ship
+- scenarioId: SHP-Config-001
+- frequency: high
+- frequencyBasis: Release でも Editor 系 TU がリンク対象のまま
+- scope: UC-Ship|Ship|EditorSources|Incomplete|Project/CG2_BuildUp.vcxproj:325
+- primary: `EditorSources`
+- summary: 【Ship】Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる
+- scenarioText: 本番と開発で意図したコンパイル／リンク差分のみが有効になる。
+- evidence:
+  - imgui 系は Release|x64 で ExcludedFromBuild=true（406 行付近）
+  - EntityEditor / SceneEntityEditor 等 Editor 配下は Release 除外設定無し（325 行付近）
+  - #if DEVELOPMENT ガードで実体は空でもオブジェクトファイルは Release に含まれる
+- suggestedUse: 配布: 本番バイナリからエディタ用コードパスをリンク単位で除去
+- firstSeenAt: 2026-11-10T01:31:00+09:00
+- lastSeenAt: 2026-11-10T01:31:00+09:00
+
 ### GAP-Infra-asset_pack_verify-001
 
 - status: open
@@ -817,6 +860,27 @@
 - suggestedUse: 配布: ビルド成果物ディレクトリに参照パスが全て存在することを PR 前に確認
 - firstSeenAt: 2026-11-10T01:21:00+09:00
 - lastSeenAt: 2026-11-10T01:21:00+09:00
+
+### GAP-Infra-verify_config_matrix-001
+
+- status: open
+- tier: P2
+- score: 700
+- primaryUseCase: UC-Ship
+- scenarioId: SHP-Config-001
+- frequency: medium
+- frequencyBasis: 構成マクロと ExcludedFromBuild の期待値が CI で検証されない
+- scope: UC-Ship|Infra|verify_config_matrix|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1
+- primary: `verify_config_matrix`
+- summary: 【Ship】コンパイル定義と Release 除外の期待マトリクス検証が無い
+- scenarioText: 本番と開発で意図したコンパイル／リンク差分のみが有効になる。
+- evidence:
+  - verify_vcxproj_coverage.py は .cpp 列挙のみ（cloud_build_vcxproj_check.md）
+  - PreprocessorDefinitions / ExcludedFromBuild の正本ドキュメント・自動突合無し
+- suggestedUse: 配布: Release ビルドが意図外マクロや Editor TU を含んだら CI で失敗
+- roadmapLink: feature-memos/cloud_build_vcxproj_check.md
+- firstSeenAt: 2026-11-10T01:31:00+09:00
+- lastSeenAt: 2026-11-10T01:31:00+09:00
 
 ### GAP-Infra-BinaryConverter-001
 
@@ -862,6 +926,7 @@
 - scanId: SCAN-20261110-005019 | at: 2026-11-10T00:50:37.082956+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-010019 | at: 2026-11-10T01:01:03.761970+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-011015 | at: 2026-11-10T01:10:32.331404+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-012008 | at: 2026-11-10T01:20:33.060096+09:00 | scenario: SHP-AssetPack-001 | new: 3 | updated: 0
 
 ---
 

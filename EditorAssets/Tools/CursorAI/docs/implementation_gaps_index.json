@@ -997,6 +997,89 @@
       "suggestedUse": "配布: ビルド成果物ディレクトリに参照パスが全て存在することを PR 前に確認",
       "firstSeenAt": "2026-11-10T01:21:00+09:00",
       "lastSeenAt": "2026-11-10T01:21:00+09:00"
+    },
+    "GAP-Ship-CG2_BuildUp-002": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Config-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 800,
+      "frequency": "high",
+      "frequencyBasis": "Debug 構成が DEVELOPMENT+USE_IMGUI を本番相当 Release と同列に混在",
+      "scopeKey": "UC-Ship|Ship|CG2_BuildUp|Contract|Project/CG2_BuildUp.vcxproj:85",
+      "primary": "CG2_BuildUp",
+      "related": [
+        "Debug|x64",
+        "Development|x64",
+        "Release|x64"
+      ],
+      "summaryShort": "Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭",
+      "summary": "Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭",
+      "scenarioText": "本番と開発で意図したコンパイル／リンク差分のみが有効になる。",
+      "evidence": [
+        "Debug|x64: _DEBUG+DEVELOPMENT+USE_IMGUI（85 行）",
+        "Release|x64: NDEBUG のみ（DEVELOPMENT/USE_IMGUI 無し）",
+        "Development|x64: DEVELOPMENT+USE_IMGUI だが NDEBUG/_DEBUG どちらも未定義"
+      ],
+      "suggestedUse": "配布: CI／手順で検証する「出荷候補」構成が一意に定義される",
+      "firstSeenAt": "2026-11-10T01:31:00+09:00",
+      "lastSeenAt": "2026-11-10T01:31:00+09:00"
+    },
+    "GAP-Ship-EditorSources-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Config-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 770,
+      "frequency": "high",
+      "frequencyBasis": "Release でも Editor 系 TU がリンク対象のまま",
+      "scopeKey": "UC-Ship|Ship|EditorSources|Incomplete|Project/CG2_BuildUp.vcxproj:325",
+      "primary": "EditorSources",
+      "related": [
+        "EntityEditor.cpp",
+        "SceneEntityEditor.cpp",
+        "ExcludedFromBuild"
+      ],
+      "summaryShort": "Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる",
+      "summary": "Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる",
+      "scenarioText": "本番と開発で意図したコンパイル／リンク差分のみが有効になる。",
+      "evidence": [
+        "imgui 系は Release|x64 で ExcludedFromBuild=true（406 行付近）",
+        "EntityEditor / SceneEntityEditor 等 Editor 配下は Release 除外設定無し（325 行付近）",
+        "#if DEVELOPMENT ガードで実体は空でもオブジェクトファイルは Release に含まれる"
+      ],
+      "suggestedUse": "配布: 本番バイナリからエディタ用コードパスをリンク単位で除去",
+      "firstSeenAt": "2026-11-10T01:31:00+09:00",
+      "lastSeenAt": "2026-11-10T01:31:00+09:00"
+    },
+    "GAP-Infra-verify_config_matrix-001": {
+      "primaryUseCase": "UC-Ship",
+      "secondaryUseCases": [],
+      "scenarioId": "SHP-Config-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 700,
+      "frequency": "medium",
+      "frequencyBasis": "構成マクロと ExcludedFromBuild の期待値が CI で検証されない",
+      "scopeKey": "UC-Ship|Infra|verify_config_matrix|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1",
+      "primary": "verify_config_matrix",
+      "related": [
+        "BuildCoverageCheck.yml",
+        "cloud_build_vcxproj_check.md"
+      ],
+      "summaryShort": "コンパイル定義と Release 除外の期待マトリクス検証が無い",
+      "summary": "コンパイル定義と Release 除外の期待マトリクス検証が無い",
+      "scenarioText": "本番と開発で意図したコンパイル／リンク差分のみが有効になる。",
+      "evidence": [
+        "verify_vcxproj_coverage.py は .cpp 列挙のみ（cloud_build_vcxproj_check.md）",
+        "PreprocessorDefinitions / ExcludedFromBuild の正本ドキュメント・自動突合無し"
+      ],
+      "suggestedUse": "配布: Release ビルドが意図外マクロや Editor TU を含んだら CI で失敗",
+      "roadmapLink": "feature-memos/cloud_build_vcxproj_check.md",
+      "firstSeenAt": "2026-11-10T01:31:00+09:00",
+      "lastSeenAt": "2026-11-10T01:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -1035,7 +1118,10 @@
     "UC-Authoring|Editor|AtrumEngineVisual|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535": "GAP-Editor-AtrumEngineVisual-001",
     "UC-Ship|Ship|CG2_BuildUp|Incomplete|Project/CG2_BuildUp.vcxproj:109": "GAP-Ship-CG2_BuildUp-001",
     "UC-Ship|Infra|BinaryConverter|MissingTest|EditorAssets/Tools/BinaryConverter/README.md:21": "GAP-Infra-BinaryConverter-001",
-    "UC-Ship|Infra|asset_pack_verify|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-asset_pack_verify-001"
+    "UC-Ship|Infra|asset_pack_verify|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-asset_pack_verify-001",
+    "UC-Ship|Ship|CG2_BuildUp|Contract|Project/CG2_BuildUp.vcxproj:85": "GAP-Ship-CG2_BuildUp-002",
+    "UC-Ship|Ship|EditorSources|Incomplete|Project/CG2_BuildUp.vcxproj:325": "GAP-Ship-EditorSources-001",
+    "UC-Ship|Infra|verify_config_matrix|MissingTest|EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py:1": "GAP-Infra-verify_config_matrix-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1057,9 +1143,11 @@
     "Runtime-MovieCameraTrackLoader": 2,
     "Render-SceneGame": 2,
     "Render-SceneBuildUp": 2,
-    "Ship-CG2_BuildUp": 2,
+    "Ship-CG2_BuildUp": 3,
     "Infra-BinaryConverter": 2,
-    "Infra-asset_pack_verify": 2
+    "Infra-asset_pack_verify": 2,
+    "Ship-EditorSources": 2,
+    "Infra-verify_config_matrix": 2
   },
   "scans": [
     {
@@ -1250,6 +1338,22 @@
         "GAP-Ship-CG2_BuildUp-001",
         "GAP-Infra-BinaryConverter-001",
         "GAP-Infra-asset_pack_verify-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-013008",
+      "at": "2026-11-10T01:30:31.017847+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Ship",
+      "scenarioId": "SHP-Config-001",
+      "areaHint": "Infra",
+      "priorityScore": 1420,
+      "newIds": [
+        "GAP-Ship-CG2_BuildUp-002",
+        "GAP-Ship-EditorSources-001",
+        "GAP-Infra-verify_config_matrix-001"
       ],
       "updatedIds": [],
       "closedIds": []
