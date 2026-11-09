@@ -25,9 +25,10 @@
     "SHP-Release-001": 1,
     "SHP-Smoke-001": 1,
     "DBG-PlayArea-001": 1,
-    "DBG-Profiler-001": 1
+    "DBG-Profiler-001": 1,
+    "DBG-RenderDiag-001": 1
   },
-  "lastCompletedScanId": "SCAN-20261110-022017",
+  "lastCompletedScanId": "SCAN-20261110-023023",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 18
+  "totalTicksCompleted": 19
 }

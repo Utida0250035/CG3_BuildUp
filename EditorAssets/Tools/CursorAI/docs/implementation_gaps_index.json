@@ -1490,6 +1490,89 @@
       "suggestedUse": "デバッグ: 最適化とエディタ OFF で Release に近い計測を再現",
       "firstSeenAt": "2026-11-10T02:21:00+09:00",
       "lastSeenAt": "2026-11-10T02:21:00+09:00"
+    },
+    "GAP-Render-Lighting-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-RenderDiag-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 820,
+      "frequency": "high",
+      "frequencyBasis": "ライティング診断 ImGui がエンジン UI から呼ばれない",
+      "scopeKey": "UC-Debug|Render|Lighting|Unwired|Project/Codes/Source/Engine/Renderer/Lighting/Lighting.cpp:46",
+      "primary": "Lighting",
+      "related": [
+        "VolumetricFog",
+        "GodRays",
+        "DirectionalShadow"
+      ],
+      "summaryShort": "Lighting::ImGui（フォグ／ゴッドレイ／影）が未配線",
+      "summary": "Lighting::ImGui（フォグ／ゴッドレイ／影）が未配線",
+      "scenarioText": "開発者がシャドウ・ゴッドレイ等の描画結果をログ／オーバーレイで確認できる（spec: `feature-memos/directional_shadow.md`, `feature-memos/god_rays.md`）。",
+      "evidence": [
+        "Lighting::ImGui は VolumetricFog/GodRays/Shadow ヘッダーを描画（46-56 行）",
+        "Codes 全体で Lighting::ImGui 呼び出し無し（rg）"
+      ],
+      "suggestedUse": "デバッグ: Development で CB 反映後のライトパラメータを即確認",
+      "roadmapLink": "feature-memos/god_rays.md",
+      "firstSeenAt": "2026-11-10T02:31:00+09:00",
+      "lastSeenAt": "2026-11-10T02:31:00+09:00"
+    },
+    "GAP-Engine-AtrumEngineLighting-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-RenderDiag-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 790,
+      "frequency": "high",
+      "frequencyBasis": "Engine 側 VolumetricFog/GodRays/Shadow の ImGui 入口が Editor に無い",
+      "scopeKey": "UC-Debug|Engine|AtrumEngineLighting|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535",
+      "primary": "AtrumEngineLighting",
+      "related": [
+        "EditorFrame",
+        "SetDirectionalLightData"
+      ],
+      "summaryShort": "描画診断用ライティングパネルが EditorFrame に無い",
+      "summary": "描画診断用ライティングパネルが EditorFrame に無い",
+      "scenarioText": "開発者がシャドウ・ゴッドレイ等の描画結果をログ／オーバーレイで確認できる（spec: `feature-memos/directional_shadow.md`, `feature-memos/god_rays.md`）。",
+      "evidence": [
+        "AtrumEngine::RefVolumetricFog 等は ImGui() を公開（各 Visual ヘッダ）",
+        "EditorFrame に Light/Fog/Shadow メニュー参照無し",
+        "SceneGame で設定した値をランタイムで見る UI が無い"
+      ],
+      "suggestedUse": "デバッグ: シーン実行中にライティング結果をオーバーレイ確認",
+      "firstSeenAt": "2026-11-10T02:31:00+09:00",
+      "lastSeenAt": "2026-11-10T02:31:00+09:00"
+    },
+    "GAP-Render-DirectionalShadow-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-RenderDiag-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 680,
+      "frequency": "medium",
+      "frequencyBasis": "平面影描画の成否や shadowMap 診断が無い",
+      "scopeKey": "UC-Debug|Render|DirectionalShadow|Incomplete|Project/Codes/Source/Engine/Renderer/Lighting/DirectionalShadow.cpp:34",
+      "primary": "DirectionalShadow",
+      "related": [
+        "DrawPlanarGroundShadow",
+        "LightFlags::CAST_SHADOW"
+      ],
+      "summaryShort": "シャドウ／シェード適用状態のログ・可視化が無い",
+      "summary": "シャドウ／シェード適用状態のログ・可視化が無い",
+      "scenarioText": "開発者がシャドウ・ゴッドレイ等の描画結果をログ／オーバーレイで確認できる（spec: `feature-memos/directional_shadow.md`, `feature-memos/god_rays.md`）。",
+      "evidence": [
+        "DrawPlanarGroundShadow は無言 return のみ（37-38 行）",
+        "directional_shadow.md の shadowMap SRV 診断は「今後」（21-23 行）",
+        "CAST_SHADOW フラグのオーバーレイ表示無し"
+      ],
+      "suggestedUse": "デバッグ: 影が出ない原因をフラグ／描画回数で切り分け",
+      "roadmapLink": "feature-memos/directional_shadow.md",
+      "firstSeenAt": "2026-11-10T02:31:00+09:00",
+      "lastSeenAt": "2026-11-10T02:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -1546,7 +1629,10 @@
     "UC-Debug|Infra|scaffold_play_area|Unwired|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:1": "GAP-Infra-scaffold_play_area-001",
     "UC-Debug|Infra|frame_profiler|MissingData|Project/Codes/Source/Engine/Renderer/Draw.cpp:64": "GAP-Infra-frame_profiler-001",
     "UC-Debug|Debug|FrameDeltaTime|MissingUI|Project/Codes/Include/System/DeltaTime.h:35": "GAP-Debug-FrameDeltaTime-001",
-    "UC-Debug|Ship|Development_opt|Contract|Project/CG2_BuildUp.vcxproj:171": "GAP-Ship-Development_opt-001"
+    "UC-Debug|Ship|Development_opt|Contract|Project/CG2_BuildUp.vcxproj:171": "GAP-Ship-Development_opt-001",
+    "UC-Debug|Render|Lighting|Unwired|Project/Codes/Source/Engine/Renderer/Lighting/Lighting.cpp:46": "GAP-Render-Lighting-001",
+    "UC-Debug|Engine|AtrumEngineLighting|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535": "GAP-Engine-AtrumEngineLighting-001",
+    "UC-Debug|Render|DirectionalShadow|Incomplete|Project/Codes/Source/Engine/Renderer/Lighting/DirectionalShadow.cpp:34": "GAP-Render-DirectionalShadow-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -1585,7 +1671,10 @@
     "Infra-scaffold_play_area": 2,
     "Infra-frame_profiler": 2,
     "Debug-FrameDeltaTime": 2,
-    "Ship-Development_opt": 2
+    "Ship-Development_opt": 2,
+    "Render-Lighting": 2,
+    "Engine-AtrumEngineLighting": 2,
+    "Render-DirectionalShadow": 2
   },
   "scans": [
     {
@@ -1872,6 +1961,22 @@
         "GAP-Infra-frame_profiler-001",
         "GAP-Debug-FrameDeltaTime-001",
         "GAP-Ship-Development_opt-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-023023",
+      "at": "2026-11-10T02:30:58.381544+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-RenderDiag-001",
+      "areaHint": "Render",
+      "priorityScore": 1370,
+      "newIds": [
+        "GAP-Render-Lighting-001",
+        "GAP-Engine-AtrumEngineLighting-001",
+        "GAP-Render-DirectionalShadow-001"
       ],
       "updatedIds": [],
       "closedIds": []

@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T02:10:43.537320+09:00
+- **lastIncrementalScanAt:** 2026-11-10T02:20:41.561155+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -392,6 +392,27 @@
 
 #### UC-Debug
 
+### GAP-Render-Lighting-001
+
+- status: open
+- tier: P1
+- score: 820
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-RenderDiag-001
+- frequency: high
+- frequencyBasis: ライティング診断 ImGui がエンジン UI から呼ばれない
+- scope: UC-Debug|Render|Lighting|Unwired|Project/Codes/Source/Engine/Renderer/Lighting/Lighting.cpp:46
+- primary: `Lighting`
+- summary: 【Debug】Lighting::ImGui（フォグ／ゴッドレイ／影）が未配線
+- scenarioText: 開発者がシャドウ・ゴッドレイ等の描画結果をログ／オーバーレイで確認できる（spec: `feature-memos/directional_shadow.md`, `feature-memos/god_rays.md`）。
+- evidence:
+  - Lighting::ImGui は VolumetricFog/GodRays/Shadow ヘッダーを描画（46-56 行）
+  - Codes 全体で Lighting::ImGui 呼び出し無し（rg）
+- suggestedUse: デバッグ: Development で CB 反映後のライトパラメータを即確認
+- roadmapLink: feature-memos/god_rays.md
+- firstSeenAt: 2026-11-10T02:31:00+09:00
+- lastSeenAt: 2026-11-10T02:31:00+09:00
+
 ### GAP-Scene-SceneBuildUpRegistry-001
 
 - status: open
@@ -475,6 +496,27 @@
 - suggestedUse: デバッグ: ワンクリックでサンドボックスシーンを開く
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
+
+### GAP-Engine-AtrumEngineLighting-001
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-RenderDiag-001
+- frequency: high
+- frequencyBasis: Engine 側 VolumetricFog/GodRays/Shadow の ImGui 入口が Editor に無い
+- scope: UC-Debug|Engine|AtrumEngineLighting|MissingUI|Project/Codes/Include/Engine/AtrumEngine.h:535
+- primary: `AtrumEngineLighting`
+- summary: 【Debug】描画診断用ライティングパネルが EditorFrame に無い
+- scenarioText: 開発者がシャドウ・ゴッドレイ等の描画結果をログ／オーバーレイで確認できる（spec: `feature-memos/directional_shadow.md`, `feature-memos/god_rays.md`）。
+- evidence:
+  - AtrumEngine::RefVolumetricFog 等は ImGui() を公開（各 Visual ヘッダ）
+  - EditorFrame に Light/Fog/Shadow メニュー参照無し
+  - SceneGame で設定した値をランタイムで見る UI が無い
+- suggestedUse: デバッグ: シーン実行中にライティング結果をオーバーレイ確認
+- firstSeenAt: 2026-11-10T02:31:00+09:00
+- lastSeenAt: 2026-11-10T02:31:00+09:00
 
 ### GAP-Infra-FeatureTestScene-001
 
@@ -577,6 +619,28 @@
 - suggestedUse: デバッグ: 最適化とエディタ OFF で Release に近い計測を再現
 - firstSeenAt: 2026-11-10T02:21:00+09:00
 - lastSeenAt: 2026-11-10T02:21:00+09:00
+
+### GAP-Render-DirectionalShadow-001
+
+- status: open
+- tier: P2
+- score: 680
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-RenderDiag-001
+- frequency: medium
+- frequencyBasis: 平面影描画の成否や shadowMap 診断が無い
+- scope: UC-Debug|Render|DirectionalShadow|Incomplete|Project/Codes/Source/Engine/Renderer/Lighting/DirectionalShadow.cpp:34
+- primary: `DirectionalShadow`
+- summary: 【Debug】シャドウ／シェード適用状態のログ・可視化が無い
+- scenarioText: 開発者がシャドウ・ゴッドレイ等の描画結果をログ／オーバーレイで確認できる（spec: `feature-memos/directional_shadow.md`, `feature-memos/god_rays.md`）。
+- evidence:
+  - DrawPlanarGroundShadow は無言 return のみ（37-38 行）
+  - directional_shadow.md の shadowMap SRV 診断は「今後」（21-23 行）
+  - CAST_SHADOW フラグのオーバーレイ表示無し
+- suggestedUse: デバッグ: 影が出ない原因をフラグ／描画回数で切り分け
+- roadmapLink: feature-memos/directional_shadow.md
+- firstSeenAt: 2026-11-10T02:31:00+09:00
+- lastSeenAt: 2026-11-10T02:31:00+09:00
 
 #### UC-Play
 
@@ -1225,7 +1289,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
@@ -1240,6 +1303,7 @@
 - scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
 
 ---
 

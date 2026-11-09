@@ -1284,6 +1284,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-Profiler-001
 - **newIds:** 3（区間プロファイラ無し、Δt UI 無し、Release 相当計測手順無し）
 
+## ギャップスキャン tick（SCAN-20261110-023023）
+
+- **useCase:** UC-Debug / **scenario:** DBG-RenderDiag-001
+- **newIds:** 3（Lighting ImGui 未配線、Editor 診断パネル無し、影の可視化無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
