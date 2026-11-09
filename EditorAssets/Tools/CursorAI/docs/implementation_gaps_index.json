@@ -2278,6 +2278,92 @@
       "suggestedUse": "配布: どの作業ディレクトリからも同じシーン JSON を開ける",
       "firstSeenAt": "2026-11-10T04:01:00+09:00",
       "lastSeenAt": "2026-11-10T04:01:00+09:00"
+    },
+    "GAP-UX-OperatorGuidanceSystem-003": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 650,
+      "frequency": "medium",
+      "frequencyBasis": "hints 欠落やスキーマ誤りでロードが例外終了しうる",
+      "scopeKey": "UC-Authoring|UX|OperatorGuidanceSystem|Contract|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:93",
+      "primary": "OperatorGuidanceSystem",
+      "related": [
+        "operator_guidance.json",
+        "LoadFromJsonFile"
+      ],
+      "summaryShort": "LoadFromJsonFile が hints 必須で検証・代替が無い",
+      "summary": "LoadFromJsonFile が hints 必須で検証・代替が無い",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "json.at(\"hints\") で配列必須（93 行）、try は JSON パースのみ（65-69 行）",
+        "必須フィールド id/actionId も at で未取得時は例外"
+      ],
+      "suggestedUse": "制作: JSON 編集ミス時に案内ゼロで黙って本編に入らない",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T04:11:00+09:00",
+      "lastSeenAt": "2026-11-10T04:11:00+09:00"
+    },
+    "GAP-Scene-SceneGame-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "high",
+      "frequencyBasis": "ナビ吹き出しと旧 howTo オーバーレイが同時表示",
+      "scopeKey": "UC-Authoring|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:205",
+      "primary": "SceneGame",
+      "related": [
+        "DrawHowToPlayUi",
+        "DrawOperatorGuidanceUi",
+        "tutorialReplacement"
+      ],
+      "summaryShort": "案内システム有効でも常時 howTo オーバーレイを描画",
+      "summary": "案内システム有効でも常時 howTo オーバーレイを描画",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "DrawScene は DrawHowToPlayUi と DrawOperatorGuidanceUi を連続呼び出し（205-206 行）",
+        "tutorialReplacement はイントロ howTo スキップのみで戦闘中の DrawGameHowToPlayUi は無条件（242-248 行）"
+      ],
+      "suggestedUse": "プレイ: 初回利用者が案内どおり 1 系統の UI で操作を学べる",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T04:11:00+09:00",
+      "lastSeenAt": "2026-11-10T04:11:00+09:00"
+    },
+    "GAP-UX-OperatorGuidanceSystem-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "JSON の displayName が画面に出ずナビ設定の確認ができない",
+      "scopeKey": "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:73",
+      "primary": "OperatorGuidanceSystem",
+      "related": [
+        "NavigatorProfile",
+        "DrawNavigatorPortrait"
+      ],
+      "summaryShort": "navigator.displayName を読むが描画しない",
+      "summary": "navigator.displayName を読むが描画しない",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "LoadFromJsonFile で displayName を navigator_ に格納（73 行）",
+        "DrawNavigatorPortrait は肖像テクスチャのみ（202-227 行）で名前ラベル無し"
+      ],
+      "suggestedUse": "制作: ナビキャラ名の差し替えをプレイで確認",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T04:11:00+09:00",
+      "lastSeenAt": "2026-11-10T04:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -2364,7 +2450,10 @@
     "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:115": "GAP-Editor-SceneEntityEditor-003",
     "UC-Play|Scene|CommandChangeScene|Contract|Project/Codes/Include/Scene/CommandChangeScene.h:178": "GAP-Scene-CommandChangeScene-001",
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:95": "GAP-Scene-SceneGame-003",
-    "UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:24": "GAP-Scene-SceneBuildUp-005"
+    "UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:24": "GAP-Scene-SceneBuildUp-005",
+    "UC-Authoring|UX|OperatorGuidanceSystem|Contract|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:93": "GAP-UX-OperatorGuidanceSystem-003",
+    "UC-Authoring|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:205": "GAP-Scene-SceneGame-004",
+    "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:73": "GAP-UX-OperatorGuidanceSystem-004"
   },
   "pendings": {},
   "nextSequence": {
@@ -2379,7 +2468,8 @@
     "Infra-FeatureTestScene": 2,
     "Scene-SceneBuildUp": 6,
     "Scene-CommandChangeScene": 2,
-    "Scene-SceneGame": 4,
+    "Scene-SceneGame": 5,
+    "UX-OperatorGuidanceSystem": 5,
     "Camera-StageBounds": 2,
     "Scene-SceneParticleEditor": 2,
     "Scene-SceneTitle": 2,
@@ -2867,6 +2957,22 @@
         "GAP-Scene-CommandChangeScene-001",
         "GAP-Scene-SceneGame-003",
         "GAP-Scene-SceneBuildUp-005"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-041018",
+      "at": "2026-11-10T04:10:44.427042+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-Guidance-001",
+      "areaHint": "UX",
+      "priorityScore": 1110,
+      "newIds": [
+        "GAP-UX-OperatorGuidanceSystem-003",
+        "GAP-Scene-SceneGame-004",
+        "GAP-UX-OperatorGuidanceSystem-004"
       ],
       "updatedIds": [],
       "closedIds": []

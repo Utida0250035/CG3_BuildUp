@@ -1334,6 +1334,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001（2回目）
 - **newIds:** 3（遷移中 Set 無視、Game 入場カメラ順序、BuildUp パス未解決）
 
+## ギャップスキャン tick（SCAN-20261110-041018）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001（2回目）
+- **newIds:** 3（hints 必須ロード、howTo 二重表示、displayName 未描画）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

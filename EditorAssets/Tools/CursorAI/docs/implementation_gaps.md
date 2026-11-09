@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T03:50:48.091396+09:00
+- **lastIncrementalScanAt:** 2026-11-10T04:01:02.891193+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -510,6 +510,28 @@
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
 
+### GAP-UX-OperatorGuidanceSystem-003
+
+- status: open
+- tier: P2
+- score: 650
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Ship
+- scenarioId: AUT-Guidance-001
+- frequency: medium
+- frequencyBasis: hints 欠落やスキーマ誤りでロードが例外終了しうる
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|Contract|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:93
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】LoadFromJsonFile が hints 必須で検証・代替が無い
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - json.at("hints") で配列必須（93 行）、try は JSON パースのみ（65-69 行）
+  - 必須フィールド id/actionId も at で未取得時は例外
+- suggestedUse: 制作: JSON 編集ミス時に案内ゼロで黙って本編に入らない
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T04:11:00+09:00
+- lastSeenAt: 2026-11-10T04:11:00+09:00
+
 ### GAP-Authoring-component_split_next-001
 
 - status: open
@@ -552,6 +574,49 @@
 - roadmapLink: feature-memos/component_split_guidelines.md
 - firstSeenAt: 2026-11-10T00:11:00+09:00
 - lastSeenAt: 2026-11-10T00:11:00+09:00
+
+### GAP-Scene-SceneGame-004
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-Guidance-001
+- frequency: high
+- frequencyBasis: ナビ吹き出しと旧 howTo オーバーレイが同時表示
+- scope: UC-Authoring|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:205
+- primary: `SceneGame`
+- summary: 【Authoring】案内システム有効でも常時 howTo オーバーレイを描画
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - DrawScene は DrawHowToPlayUi と DrawOperatorGuidanceUi を連続呼び出し（205-206 行）
+  - tutorialReplacement はイントロ howTo スキップのみで戦闘中の DrawGameHowToPlayUi は無条件（242-248 行）
+- suggestedUse: プレイ: 初回利用者が案内どおり 1 系統の UI で操作を学べる
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T04:11:00+09:00
+- lastSeenAt: 2026-11-10T04:11:00+09:00
+
+### GAP-UX-OperatorGuidanceSystem-004
+
+- status: open
+- tier: P3
+- score: 540
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-Guidance-001
+- frequency: medium
+- frequencyBasis: JSON の displayName が画面に出ずナビ設定の確認ができない
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:73
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】navigator.displayName を読むが描画しない
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - LoadFromJsonFile で displayName を navigator_ に格納（73 行）
+  - DrawNavigatorPortrait は肖像テクスチャのみ（202-227 行）で名前ラベル無し
+- suggestedUse: 制作: ナビキャラ名の差し替えをプレイで確認
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T04:11:00+09:00
+- lastSeenAt: 2026-11-10T04:11:00+09:00
 
 #### UC-Debug
 
@@ -1828,7 +1893,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-013008 | at: 2026-11-10T01:30:31.017847+09:00 | scenario: SHP-Config-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-014010 | at: 2026-11-10T01:40:32.359685+09:00 | scenario: SHP-DevBuild-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-015009 | at: 2026-11-10T01:50:42.672348+09:00 | scenario: SHP-Release-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-020007 | at: 2026-11-10T02:00:32.963377+09:00 | scenario: SHP-Smoke-001 | new: 3 | updated: 0
@@ -1843,6 +1907,7 @@
 - scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 
 ---
 

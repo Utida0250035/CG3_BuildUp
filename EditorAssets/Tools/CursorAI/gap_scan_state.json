@@ -6,7 +6,7 @@
     "UC-Debug",
     "UC-Ship"
   ],
-  "rotationCursor": 1,
+  "rotationCursor": 2,
   "scenarioScanCounts": {
     "PLY-Audio-001": 2,
     "AUT-AssetLoop-001": 2,
@@ -16,7 +16,7 @@
     "PLY-Movie-001": 2,
     "AUT-EditorPlace-001": 2,
     "PLY-SceneLoad-001": 2,
-    "AUT-Guidance-001": 1,
+    "AUT-Guidance-001": 2,
     "PLY-Visual-001": 1,
     "AUT-VisualTune-001": 1,
     "SHP-AssetPack-001": 1,
@@ -29,7 +29,7 @@
     "DBG-RenderDiag-001": 1,
     "DBG-Streaming-001": 1
   },
-  "lastCompletedScanId": "SCAN-20261110-040022",
+  "lastCompletedScanId": "SCAN-20261110-041018",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 28
+  "totalTicksCompleted": 29
 }
