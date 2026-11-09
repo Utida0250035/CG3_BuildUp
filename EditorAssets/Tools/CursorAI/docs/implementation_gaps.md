@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T02:30:58.381544+09:00
+- **lastIncrementalScanAt:** 2026-11-10T02:40:31.119512+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -835,6 +835,27 @@
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
 
+### GAP-Audio-PauseBgmLoop-001
+
+- status: open
+- tier: P2
+- score: 660
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 遷移フェードと BGM 制御 API が未接続
+- scope: UC-Play|Audio|PauseBgmLoop|Unwired|Project/Codes/Include/System/PlaySe.h:112
+- primary: `PauseBgmLoop`
+- summary: 【Play】Pause/Resume/Volume 付き BGM API がシーンから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PauseBgmLoop/ResumeBgmLoop/SetBgmLoopVolume は PlaySe.h に定義のみ
+  - Codes 全体からの呼び出し無し（rg PauseBgmLoop 0 件）
+  - ChangeSceneFade は音声と独立した暗転のみ
+- suggestedUse: プレイ: フェード中の BGM ダックやクロスフェードを実装可能にする
+- firstSeenAt: 2026-11-10T02:51:00+09:00
+- lastSeenAt: 2026-11-10T02:51:00+09:00
+
 ### GAP-Render-SceneBuildUp-001
 
 - status: open
@@ -896,6 +917,26 @@
 - suggestedUse: プレイ: 壊れたトラックでも原因が分かる／最低限のフォールバック演出
 - firstSeenAt: 2026-11-10T00:21:00+09:00
 - lastSeenAt: 2026-11-10T00:21:00+09:00
+
+### GAP-Scene-SceneTitle-001
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: BGM 再開・維持は SceneGame のみで Title/Result に無い
+- scope: UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:32
+- primary: `SceneTitle`
+- summary: 【Play】Title の BGM 途切れを検知・再開する処理が無い
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SceneGame::MaintainSceneBgmIfNeeded のみ Update で BGM 再開（SceneGame.cpp:227-239）
+  - SceneTitle::EnterScene で一度 PlayBgmLoop のみ（SceneTitle.cpp:37-38）、Update に維持ロジック無し
+- suggestedUse: プレイ: ストリーム異常でタイトル BGM が止まっても復帰
+- firstSeenAt: 2026-11-10T02:51:00+09:00
+- lastSeenAt: 2026-11-10T02:51:00+09:00
 
 ### GAP-Infra-verify_camera_policy-001
 
@@ -960,6 +1001,27 @@
 - roadmapLink: feature-memos/player_friendly_camera_policy.md
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-003
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BuildUp プレイ検証で SE/BGM 文脈が本編と異なる
+- scope: UC-Play|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:87
+- primary: `SceneBuildUp`
+- summary: 【Play】SceneBuildUp に BGM／シーン SE の入退場が無い
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SceneBuildUp::EnterScene に Audio 呼び出し無し（87-111 行、rg Bgm/PlaySe 0 件）
+  - 本編 SceneGame は Enter/Exit で PlayBgmLoop/StopBgmLoop
+- suggestedUse: プレイ: 検証シーンでも戦闘 SE と BGM 文脈を再現
+- firstSeenAt: 2026-11-10T02:51:00+09:00
+- lastSeenAt: 2026-11-10T02:51:00+09:00
 
 ### GAP-Scene-SceneMovie-001
 
@@ -1352,7 +1414,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-004013 | at: 2026-11-10T00:40:44.827867+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
@@ -1367,6 +1428,7 @@
 - scanId: SCAN-20261110-021019 | at: 2026-11-10T02:10:43.537320+09:00 | scenario: DBG-PlayArea-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-022017 | at: 2026-11-10T02:20:41.561155+09:00 | scenario: DBG-Profiler-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-023023 | at: 2026-11-10T02:30:58.381544+09:00 | scenario: DBG-RenderDiag-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-024011 | at: 2026-11-10T02:40:31.119512+09:00 | scenario: DBG-Streaming-001 | new: 3 | updated: 0
 
 ---
 

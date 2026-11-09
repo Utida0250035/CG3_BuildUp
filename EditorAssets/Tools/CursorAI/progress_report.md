@@ -1294,6 +1294,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-Streaming-001
 - **newIds:** 3（remaining クランプ、ログ無し、BuildUp でメニュー無し）
 
+## ギャップスキャン tick（SCAN-20261110-025019）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（2回目）
+- **newIds:** 3（Title BGM 維持無し、BuildUp 無音、PauseBgm 未使用）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
