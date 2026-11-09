@@ -1374,6 +1374,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-Component-001（3回目）
 - **newIds:** 3（Mesh 存在検出、AssetPath が Draw 内包、未対応 params UI）
 
+## ギャップスキャン tick（SCAN-20261110-053016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Movie-001（3回目）
+- **newIds:** 3（失敗時 StageView、JSON 全体拒否、遷移予約で更新停止）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

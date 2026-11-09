@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T05:11:23.847271+09:00
+- **lastIncrementalScanAt:** 2026-11-10T05:20:54.212485+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1901,6 +1901,28 @@
 - firstSeenAt: 2026-11-10T02:51:00+09:00
 - lastSeenAt: 2026-11-10T02:51:00+09:00
 
+### GAP-Scene-SceneMovie-007
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Movie-001
+- frequency: medium
+- frequencyBasis: トラック失敗時に方針外の StageView 固定カメラへフォールバック
+- scope: UC-Play|Scene|SceneMovie|Contract|Project/Codes/Source/Scene/SceneMovie.cpp:90
+- primary: `SceneMovie`
+- summary: 【Play】トラック開始失敗時に SetupStageViewCamera を呼ぶ
+- scenarioText: シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。
+- evidence:
+  - scene_movie 方針は失敗時即 return（scene_movie.md:14）
+  - EnterScene は TryBegin 失敗で SetupStageViewCamera（90-92 行）
+  - 次フレーム Update が RequestReturnToCaller（106-108 行）まで一瞬固定視点
+- suggestedUse: プレイ: 失敗パスでも MovieCamera 専用ポリシーを一貫
+- roadmapLink: feature-memos/scene_movie.md
+- firstSeenAt: 2026-11-10T05:31:00+09:00
+- lastSeenAt: 2026-11-10T05:31:00+09:00
+
 ### GAP-Scene-SceneParticleEditor-001
 
 - status: open
@@ -1945,6 +1967,28 @@
 - firstSeenAt: 2026-11-10T04:21:00+09:00
 - lastSeenAt: 2026-11-10T04:21:00+09:00
 
+### GAP-Runtime-MovieCameraTrackLoader-002
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Movie-001
+- frequency: medium
+- frequencyBasis: JSON 一部キーフレーム不正で全体ロード失敗
+- scope: UC-Play|Runtime|MovieCameraTrackLoader|Incomplete|Project/Codes/Source/Camera/MovieCameraTrackLoader.cpp:58
+- primary: `MovieCameraTrackLoader`
+- summary: 【Play】キーフレーム 1 件の不正でトラック全体を拒否
+- scenarioText: シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。
+- evidence:
+  - ParsePose 失敗で即 return false（58-60 行）
+  - エラー位置・理由のログ／UI なし
+  - EnterScene では単に trackPlaybackStarted_=false（SceneMovie.cpp:87-88）
+- suggestedUse: 制作: 壊れた JSON を部分再生または明確に修正指示
+- roadmapLink: feature-memos/movie_camera_controller.md
+- firstSeenAt: 2026-11-10T05:31:00+09:00
+- lastSeenAt: 2026-11-10T05:31:00+09:00
+
 ### GAP-Scene-SceneMovie-001
 
 - status: investigating
@@ -1965,6 +2009,28 @@
 - roadmapLink: feature-memos/scene_movie.md
 - firstSeenAt: 2026-11-09T23:32:00+09:00
 - lastSeenAt: 2026-11-09T23:32:00+09:00
+
+### GAP-Scene-SceneMovie-008
+
+- status: open
+- tier: P3
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Movie-001
+- frequency: low
+- frequencyBasis: フェード復帰待ち中に更新が止まり描画だけ続く
+- scope: UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:96
+- primary: `SceneMovie`
+- summary: 【Play】遷移予約後はカメラ／SkyDome 更新が停止
+- scenarioText: シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。
+- evidence:
+  - hasPendingSceneChange_ で Update 全体を return（96-98 行）
+  - movieCamera_.Update／skyDome_->Update は以降呼ばれない（111-115 行）
+  - DrawScene はスカイ描画を継続（122-125 行）
+- suggestedUse: プレイ: フェードアウト中もカメラ終端姿勢／背景アニメを維持
+- roadmapLink: feature-memos/scene_movie.md
+- firstSeenAt: 2026-11-10T05:31:00+09:00
+- lastSeenAt: 2026-11-10T05:31:00+09:00
 
 ### GAP-Runtime-MovieCameraTrackLoader-001
 
@@ -2336,7 +2402,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-025019 | at: 2026-11-10T02:50:44.964144+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-030010 | at: 2026-11-10T03:00:33.132938+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
@@ -2351,6 +2416,7 @@
 - scanId: SCAN-20261110-045017 | at: 2026-11-10T04:50:42.063624+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-050024 | at: 2026-11-10T05:01:03.395407+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 
 ---
 
