@@ -3201,6 +3201,97 @@
       "suggestedUse": "プレイ: ロード演出とシーン切替タイミングを一貫",
       "firstSeenAt": "2026-11-10T05:51:00+09:00",
       "lastSeenAt": "2026-11-10T05:51:00+09:00"
+    },
+    "GAP-UX-OperatorGuidanceSystem-005": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "welcome の actionId session に Notify 配線が無い",
+      "scopeKey": "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:150",
+      "primary": "OperatorGuidanceSystem",
+      "related": [
+        "welcome_battle",
+        "operator_guidance.json",
+        "NotifyAction"
+      ],
+      "summaryShort": "actionId session は JSON にあるがコードから通知されない",
+      "summary": "actionId session は JSON にあるがコードから通知されない",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "welcome_battle は actionId=session（operator_guidance.json:20）",
+        "NotifyAction 呼び出しは parry のみ（CmpMoveByInput.cpp:119）",
+        "操作完了で吹き出しを閉じる経路が session に無い（150-158 行）"
+      ],
+      "suggestedUse": "制作: 歓迎ヒントをデータ定義どおり操作で進められる",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T06:01:00+09:00",
+      "lastSeenAt": "2026-11-10T06:01:00+09:00"
+    },
+    "GAP-UX-OperatorGuidanceSystem-006": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Play"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 590,
+      "frequency": "medium",
+      "frequencyBasis": "画像読込失敗時 message も描画されず空枠",
+      "scopeKey": "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:297",
+      "primary": "OperatorGuidanceSystem",
+      "related": [
+        "bodyTexturePaths",
+        "hints.message"
+      ],
+      "summaryShort": "body テクスチャ無しでも message フォールバック無し",
+      "summary": "body テクスチャ無しでも message フォールバック無し",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "textureIndex==UINT32_MAX 時は枠のみ残る（297-306 行）",
+        "message 描画は未実装（229-306 行、feature-memo 今後）",
+        "制作でパス誤りに気づきにくい"
+      ],
+      "suggestedUse": "制作: テクスチャ未配置でも文言で案内を確認",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T06:01:00+09:00",
+      "lastSeenAt": "2026-11-10T06:01:00+09:00"
+    },
+    "GAP-Editor-UXAuthoring-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "AUT-Guidance-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "low",
+      "frequencyBasis": "welcomeHintId と hints.id の整合を自動検証しない",
+      "scopeKey": "UC-Authoring|Infra|operator_guidance_verify|MissingTest|EditorAssets/UX/operator_guidance.json:12",
+      "primary": "operator_guidance_verify",
+      "related": [
+        "tutorialReplacement",
+        "LoadFromJsonFile"
+      ],
+      "summaryShort": "operator_guidance.json の参照整合チェックが無い",
+      "summary": "operator_guidance.json の参照整合チェックが無い",
+      "scenarioText": "初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。",
+      "evidence": [
+        "welcomeHintId は welcome_battle（operator_guidance.json:15）",
+        "誤 id でも Load 成功し ShowHintById は無視（129-137 行）",
+        "CI／verify スクリプト呼び出し無し"
+      ],
+      "suggestedUse": "配布: 案内データ破損をマージ前に検知",
+      "roadmapLink": "feature-memos/operator_guidance_bubble.md",
+      "firstSeenAt": "2026-11-10T06:01:00+09:00",
+      "lastSeenAt": "2026-11-10T06:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -3320,7 +3411,10 @@
     "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:501": "GAP-Editor-EntityEditorUi-008",
     "UC-Play|Scene|GameOrder|Incomplete|Project/Codes/Include/Scene/GameOrder.h:69": "GAP-Scene-GameOrder-001",
     "UC-Play|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:364": "GAP-Editor-EditorSceneRuntime-006",
-    "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Source/Scene/ChangeSceneFade.cpp:54": "GAP-Scene-ChangeSceneFade-002"
+    "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Source/Scene/ChangeSceneFade.cpp:54": "GAP-Scene-ChangeSceneFade-002",
+    "UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:150": "GAP-UX-OperatorGuidanceSystem-005",
+    "UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:297": "GAP-UX-OperatorGuidanceSystem-006",
+    "UC-Authoring|Infra|operator_guidance_verify|MissingTest|EditorAssets/UX/operator_guidance.json:12": "GAP-Editor-UXAuthoring-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -3347,7 +3441,9 @@
     "Scene-SceneGame": 6,
     "Scene-SceneResult": 2,
     "Audio-StopBgmLoop": 2,
-    "UX-OperatorGuidanceSystem": 5,
+    "UX-OperatorGuidanceSystem": 7,
+    "Editor-UXAuthoring": 3,
+    "Infra-operator_guidance_verify": 2,
     "Camera-StageBounds": 2,
     "Scene-SceneParticleEditor": 2,
     "Scene-SceneTitle": 2,
@@ -4010,6 +4106,22 @@
         "GAP-Scene-GameOrder-001",
         "GAP-Editor-EditorSceneRuntime-006",
         "GAP-Scene-ChangeSceneFade-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-060016",
+      "at": "2026-11-10T06:00:51.363018+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-Guidance-001",
+      "areaHint": "UX",
+      "priorityScore": 1070,
+      "newIds": [
+        "GAP-UX-OperatorGuidanceSystem-005",
+        "GAP-UX-OperatorGuidanceSystem-006",
+        "GAP-Editor-UXAuthoring-002"
       ],
       "updatedIds": [],
       "closedIds": []

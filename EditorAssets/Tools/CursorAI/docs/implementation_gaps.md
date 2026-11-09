@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T05:40:57.713019+09:00
+- **lastIncrementalScanAt:** 2026-11-10T05:50:50.662782+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -847,6 +847,75 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
+
+### GAP-UX-OperatorGuidanceSystem-005
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-Guidance-001
+- frequency: medium
+- frequencyBasis: welcome の actionId session に Notify 配線が無い
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|Unwired|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:150
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】actionId session は JSON にあるがコードから通知されない
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - welcome_battle は actionId=session（operator_guidance.json:20）
+  - NotifyAction 呼び出しは parry のみ（CmpMoveByInput.cpp:119）
+  - 操作完了で吹き出しを閉じる経路が session に無い（150-158 行）
+- suggestedUse: 制作: 歓迎ヒントをデータ定義どおり操作で進められる
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T06:01:00+09:00
+- lastSeenAt: 2026-11-10T06:01:00+09:00
+
+### GAP-UX-OperatorGuidanceSystem-006
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Play
+- scenarioId: AUT-Guidance-001
+- frequency: medium
+- frequencyBasis: 画像読込失敗時 message も描画されず空枠
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|Incomplete|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:297
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】body テクスチャ無しでも message フォールバック無し
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - textureIndex==UINT32_MAX 時は枠のみ残る（297-306 行）
+  - message 描画は未実装（229-306 行、feature-memo 今後）
+  - 制作でパス誤りに気づきにくい
+- suggestedUse: 制作: テクスチャ未配置でも文言で案内を確認
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T06:01:00+09:00
+- lastSeenAt: 2026-11-10T06:01:00+09:00
+
+### GAP-Editor-UXAuthoring-002
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- secondaryUseCases: UC-Ship
+- scenarioId: AUT-Guidance-001
+- frequency: low
+- frequencyBasis: welcomeHintId と hints.id の整合を自動検証しない
+- scope: UC-Authoring|Infra|operator_guidance_verify|MissingTest|EditorAssets/UX/operator_guidance.json:12
+- primary: `operator_guidance_verify`
+- summary: 【Authoring】operator_guidance.json の参照整合チェックが無い
+- scenarioText: 初回利用者がオペレータ案内に沿って主要操作を完了できる（spec: operator_guidance_bubble.md）。
+- evidence:
+  - welcomeHintId は welcome_battle（operator_guidance.json:15）
+  - 誤 id でも Load 成功し ShowHintById は無視（129-137 行）
+  - CI／verify スクリプト呼び出し無し
+- suggestedUse: 配布: 案内データ破損をマージ前に検知
+- roadmapLink: feature-memos/operator_guidance_bubble.md
+- firstSeenAt: 2026-11-10T06:01:00+09:00
+- lastSeenAt: 2026-11-10T06:01:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-004
 
@@ -2528,7 +2597,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
@@ -2543,6 +2611,7 @@
 - scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 
 ---
 

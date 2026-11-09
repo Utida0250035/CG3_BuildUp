@@ -1389,6 +1389,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001（3回目）
 - **newIds:** 3（遷移中 Update 停止、子 Entity 未 Init、フェード中間で ChangeScene）
 
+## ギャップスキャン tick（SCAN-20261110-060016）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001（3回目）
+- **newIds:** 3（session 未配線、テクスチャ失敗時空枠、JSON 参照 verify 無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
