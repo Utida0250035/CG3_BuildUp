@@ -1424,6 +1424,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（5回目）
 - **newIds:** 3（BuildUp が EditorFrame 依存、F2 検証無し、PlayRequest Clear 未使用）
 
+## ギャップスキャン tick（SCAN-20261110-071014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（5回目）
+- **newIds:** 3（Resume 未使用、音量フェード未使用、撃墜／撃破 BGM 非対称）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
