@@ -3116,6 +3116,91 @@
       "suggestedUse": "制作: 再オープン後も一覧名とプレビュー実体名が一致",
       "firstSeenAt": "2026-11-10T05:41:00+09:00",
       "lastSeenAt": "2026-11-10T05:41:00+09:00"
+    },
+    "GAP-Scene-GameOrder-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 750,
+      "frequency": "high",
+      "frequencyBasis": "フェード中は現シーンも遷移先も Update が止まる",
+      "scopeKey": "UC-Play|Scene|GameOrder|Incomplete|Project/Codes/Include/Scene/GameOrder.h:69",
+      "primary": "GameOrder",
+      "related": [
+        "CommandChangeScene",
+        "ChangeSceneFade",
+        "EnterScene"
+      ],
+      "summaryShort": "遷移演出中はシーン Update が全面停止",
+      "summary": "遷移演出中はシーン Update が全面停止",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "GetIsExecute 中は sceneNow->Update を呼ばない（69-75 行）",
+        "ChangeSceneFade 中に ChangeScene 後も isExecute 継続（CommandChangeScene.h:108-129）",
+        "遷移先 EnterScene 直後も Update 停止が続く"
+      ],
+      "suggestedUse": "プレイ: ロード直後のカメラ／オブジェクトがフレーム進行する",
+      "firstSeenAt": "2026-11-10T05:51:00+09:00",
+      "lastSeenAt": "2026-11-10T05:51:00+09:00"
+    },
+    "GAP-Editor-EditorSceneRuntime-006": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 780,
+      "frequency": "medium",
+      "frequencyBasis": "子オブジェクト付き JSON が Init されない",
+      "scopeKey": "UC-Play|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:364",
+      "primary": "EditorSceneRuntime",
+      "related": [
+        "BuildEntitiesFromSceneDocument",
+        "SceneBuildUp",
+        "parentIndex"
+      ],
+      "summaryShort": "親付きインスタンスが Initialize を呼ばれない",
+      "summary": "親付きインスタンスが Initialize を呼ばれない",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "Initialize ループは parentIndex<0 のみ（364-370 行）",
+        "子 Entity の Cmp Upd が未初期化のまま Update されうる",
+        "SceneBuildUp EnterScene が同 API 経由で entities_ 構築（105 行）"
+      ],
+      "suggestedUse": "プレイ: 階層シーンを開いても子オブジェクトが安定動作",
+      "firstSeenAt": "2026-11-10T05:51:00+09:00",
+      "lastSeenAt": "2026-11-10T05:51:00+09:00"
+    },
+    "GAP-Scene-ChangeSceneFade-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "high",
+      "frequencyBasis": "暗転中にシーン入替えし旧シーン描画が止まる",
+      "scopeKey": "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Source/Scene/ChangeSceneFade.cpp:54",
+      "primary": "ChangeSceneFade",
+      "related": [
+        "CommandChangeScene::Update",
+        "ChangeScene"
+      ],
+      "summaryShort": "timeRatio 満了で即 isSceneChange となり中間で EnterScene",
+      "summary": "timeRatio 満了で即 isSceneChange となり中間で EnterScene",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "フェードアウト 0.5s 到達で isSceneChange=true（52-58 行）",
+        "CommandChangeScene が同フレームで ChangeScene 実行（108-114 行）",
+        "フェードイン完了までは旧シーン Update 停止のまま（GameOrder.h:69）"
+      ],
+      "suggestedUse": "プレイ: ロード演出とシーン切替タイミングを一貫",
+      "firstSeenAt": "2026-11-10T05:51:00+09:00",
+      "lastSeenAt": "2026-11-10T05:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -3232,11 +3317,15 @@
     "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:96": "GAP-Scene-SceneMovie-008",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:105": "GAP-Editor-EntityEditor-007",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:500": "GAP-Editor-EntityEditorUi-007",
-    "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:501": "GAP-Editor-EntityEditorUi-008"
+    "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:501": "GAP-Editor-EntityEditorUi-008",
+    "UC-Play|Scene|GameOrder|Incomplete|Project/Codes/Include/Scene/GameOrder.h:69": "GAP-Scene-GameOrder-001",
+    "UC-Play|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:364": "GAP-Editor-EditorSceneRuntime-006",
+    "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Source/Scene/ChangeSceneFade.cpp:54": "GAP-Scene-ChangeSceneFade-002"
   },
   "pendings": {},
   "nextSequence": {
-    "Scene-ChangeSceneFade": 2,
+    "Scene-ChangeSceneFade": 3,
+    "Scene-GameOrder": 2,
     "Scene-CommandScene": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
@@ -3266,7 +3355,7 @@
     "Infra-verify_camera_policy": 3,
     "Scene-Scene": 3,
     "Camera-StageViewCamera": 2,
-    "Editor-EditorSceneRuntime": 6,
+    "Editor-EditorSceneRuntime": 7,
     "Authoring-component_split_next": 2,
     "Infra-component_split_verify": 2,
     "Scene-SceneMovieRegistry": 2,
@@ -3905,6 +3994,22 @@
         "GAP-Editor-EntityEditor-007",
         "GAP-Editor-EntityEditorUi-007",
         "GAP-Editor-EntityEditorUi-008"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-055015",
+      "at": "2026-11-10T05:50:50.662782+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-SceneLoad-001",
+      "areaHint": "Scene",
+      "priorityScore": 1080,
+      "newIds": [
+        "GAP-Scene-GameOrder-001",
+        "GAP-Editor-EditorSceneRuntime-006",
+        "GAP-Scene-ChangeSceneFade-002"
       ],
       "updatedIds": [],
       "closedIds": []

@@ -1384,6 +1384,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001（3回目）
 - **newIds:** 3（プリファブ配置、JSON パス編集、表示名／entityName 分離）
 
+## ギャップスキャン tick（SCAN-20261110-055015）
+
+- **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001（3回目）
+- **newIds:** 3（遷移中 Update 停止、子 Entity 未 Init、フェード中間で ChangeScene）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

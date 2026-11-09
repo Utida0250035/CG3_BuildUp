@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T05:30:50.774020+09:00
+- **lastIncrementalScanAt:** 2026-11-10T05:40:57.713019+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1331,6 +1331,28 @@
 - firstSeenAt: 2026-11-10T00:21:00+09:00
 - lastSeenAt: 2026-11-10T00:21:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-006
+
+- status: open
+- tier: P1
+- score: 780
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Authoring
+- scenarioId: PLY-SceneLoad-001
+- frequency: medium
+- frequencyBasis: 子オブジェクト付き JSON が Init されない
+- scope: UC-Play|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:364
+- primary: `EditorSceneRuntime`
+- summary: 【Play】親付きインスタンスが Initialize を呼ばれない
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - Initialize ループは parentIndex<0 のみ（364-370 行）
+  - 子 Entity の Cmp Upd が未初期化のまま Update されうる
+  - SceneBuildUp EnterScene が同 API 経由で entities_ 構築（105 行）
+- suggestedUse: プレイ: 階層シーンを開いても子オブジェクトが安定動作
+- firstSeenAt: 2026-11-10T05:51:00+09:00
+- lastSeenAt: 2026-11-10T05:51:00+09:00
+
 ### GAP-Scene-SceneMovie-004
 
 - status: open
@@ -1395,6 +1417,27 @@
 - roadmapLink: feature-memos/volumetric_fog.md
 - firstSeenAt: 2026-11-10T04:21:00+09:00
 - lastSeenAt: 2026-11-10T04:21:00+09:00
+
+### GAP-Scene-GameOrder-001
+
+- status: open
+- tier: P1
+- score: 750
+- primaryUseCase: UC-Play
+- scenarioId: PLY-SceneLoad-001
+- frequency: high
+- frequencyBasis: フェード中は現シーンも遷移先も Update が止まる
+- scope: UC-Play|Scene|GameOrder|Incomplete|Project/Codes/Include/Scene/GameOrder.h:69
+- primary: `GameOrder`
+- summary: 【Play】遷移演出中はシーン Update が全面停止
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - GetIsExecute 中は sceneNow->Update を呼ばない（69-75 行）
+  - ChangeSceneFade 中に ChangeScene 後も isExecute 継続（CommandChangeScene.h:108-129）
+  - 遷移先 EnterScene 直後も Update 停止が続く
+- suggestedUse: プレイ: ロード直後のカメラ／オブジェクトがフレーム進行する
+- firstSeenAt: 2026-11-10T05:51:00+09:00
+- lastSeenAt: 2026-11-10T05:51:00+09:00
 
 ### GAP-Render-Lighting-002
 
@@ -1856,6 +1899,27 @@
 - suggestedUse: 配布: エディタ外での意図しないフリーカメラ更新を CI で検出
 - firstSeenAt: 2026-11-10T05:11:00+09:00
 - lastSeenAt: 2026-11-10T05:11:00+09:00
+
+### GAP-Scene-ChangeSceneFade-002
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Play
+- scenarioId: PLY-SceneLoad-001
+- frequency: high
+- frequencyBasis: 暗転中にシーン入替えし旧シーン描画が止まる
+- scope: UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Source/Scene/ChangeSceneFade.cpp:54
+- primary: `ChangeSceneFade`
+- summary: 【Play】timeRatio 満了で即 isSceneChange となり中間で EnterScene
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - フェードアウト 0.5s 到達で isSceneChange=true（52-58 行）
+  - CommandChangeScene が同フレームで ChangeScene 実行（108-114 行）
+  - フェードイン完了までは旧シーン Update 停止のまま（GameOrder.h:69）
+- suggestedUse: プレイ: ロード演出とシーン切替タイミングを一貫
+- firstSeenAt: 2026-11-10T05:51:00+09:00
+- lastSeenAt: 2026-11-10T05:51:00+09:00
 
 ### GAP-Scene-SceneResult-001
 
@@ -2464,7 +2528,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-034006 | at: 2026-11-10T03:40:52.914629+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
@@ -2479,6 +2542,7 @@
 - scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 
 ---
 
