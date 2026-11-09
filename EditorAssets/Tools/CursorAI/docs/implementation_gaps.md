@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T06:31:21.084005+09:00
+- **lastIncrementalScanAt:** 2026-11-10T06:41:03.845539+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -806,6 +806,27 @@
 - firstSeenAt: 2026-11-10T05:41:00+09:00
 - lastSeenAt: 2026-11-10T05:41:00+09:00
 
+### GAP-Editor-EntityEditor-008
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: オブジェクト追加が常に空テンプレのみ
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46
+- primary: `EntityEditor`
+- summary: 【Authoring】AddEmptyInstance が選択中定義を複製しない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - AddEmptyInstance は MakeDefaultEntityDefinition のみ（46-51 行）
+  - ヒエラルキー「オブジェクトを追加」は常にこの経路（EntityEditorUi.cpp:374）
+  - プレハブ JSON 経由の 2 段階が複製の実質代替
+- suggestedUse: 制作: 選択オブジェクトを複製して配置反復
+- firstSeenAt: 2026-11-10T06:51:00+09:00
+- lastSeenAt: 2026-11-10T06:51:00+09:00
+
 ### GAP-Editor-EntityEditorUi-008
 
 - status: open
@@ -847,6 +868,27 @@
 - roadmapLink: feature-memos/component_split_guidelines.md
 - firstSeenAt: 2026-11-10T03:31:00+09:00
 - lastSeenAt: 2026-11-10T03:31:00+09:00
+
+### GAP-Editor-EntityEditorUi-009
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 初期トランスフォームは 1 インスタンスずつ手入力
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:615
+- primary: `EntityEditorUi`
+- summary: 【Authoring】トランスフォームのコピー／一括適用 UI が無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 初期トランスフォームは選択中 definition の ImGui のみ（615-631 行）
+  - 複数選択・貼り付け・オフセット複製のボタン無し
+  - グリッド配置はプレハブ GAP（PrefabAsset-001）と同系の手順不足
+- suggestedUse: 制作: 同オフセットで多数配置する反復を短縮
+- firstSeenAt: 2026-11-10T06:51:00+09:00
+- lastSeenAt: 2026-11-10T06:51:00+09:00
 
 ### GAP-Infra-component_split_verify-001
 
@@ -891,6 +933,27 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
+
+### GAP-Editor-EditorImportedAsset-002
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: Imported 一覧 API が無く直近 1 件表示のみ
+- scope: UC-Authoring|Editor|EditorImportedAsset|MissingData|Project/Codes/Include/System/Editor/EditorImportedAsset.h:14
+- primary: `EditorImportedAsset`
+- summary: 【Authoring】Imported 配下のファイル一覧 API が無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Import 名前空間は Copy/Ensure/Queue のみ（EditorImportedAsset.h:11-14）
+  - UI は lastImportedAssetPath の TextWrapped のみ（EntityEditorUi.cpp:411-412）
+  - 過去ドロップ分を再選択して一括 CmpEditorAssetPath 付与できない
+- suggestedUse: 制作: インポート済みアセットを一覧から連続配置
+- firstSeenAt: 2026-11-10T06:51:00+09:00
+- lastSeenAt: 2026-11-10T06:51:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-005
 
@@ -2858,7 +2921,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-043016 | at: 2026-11-10T04:30:49.405497+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-044018 | at: 2026-11-10T04:40:56.930223+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -2873,6 +2935,7 @@
 - scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-063013 | at: 2026-11-10T06:31:21.084005+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-064013 | at: 2026-11-10T06:41:03.845539+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

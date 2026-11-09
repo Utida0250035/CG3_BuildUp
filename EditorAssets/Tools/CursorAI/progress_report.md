@@ -1414,6 +1414,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（4回目）
 - **newIds:** 3（PlaySceneBgm 全停止、PlaySeLoop 未使用、撃破演出中 BGM 維持無効）
 
+## ギャップスキャン tick（SCAN-20261110-065006）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（4回目）
+- **newIds:** 3（空追加のみ、Imported 一覧無し、トランスフォーム一括無し）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

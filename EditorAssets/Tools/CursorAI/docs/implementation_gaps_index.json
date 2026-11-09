@@ -3628,6 +3628,87 @@
       "suggestedUse": "プレイ: 演出フェーズでもストリーム切れを検知復帰",
       "firstSeenAt": "2026-11-10T06:41:00+09:00",
       "lastSeenAt": "2026-11-10T06:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-008": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "high",
+      "frequencyBasis": "オブジェクト追加が常に空テンプレのみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46",
+      "primary": "EntityEditor",
+      "related": [
+        "AddEmptyInstance",
+        "MakeDefaultEntityDefinition"
+      ],
+      "summaryShort": "AddEmptyInstance が選択中定義を複製しない",
+      "summary": "AddEmptyInstance が選択中定義を複製しない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "AddEmptyInstance は MakeDefaultEntityDefinition のみ（46-51 行）",
+        "ヒエラルキー「オブジェクトを追加」は常にこの経路（EntityEditorUi.cpp:374）",
+        "プレハブ JSON 経由の 2 段階が複製の実質代替"
+      ],
+      "suggestedUse": "制作: 選択オブジェクトを複製して配置反復",
+      "firstSeenAt": "2026-11-10T06:51:00+09:00",
+      "lastSeenAt": "2026-11-10T06:51:00+09:00"
+    },
+    "GAP-Editor-EditorImportedAsset-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "Imported 一覧 API が無く直近 1 件表示のみ",
+      "scopeKey": "UC-Authoring|Editor|EditorImportedAsset|MissingData|Project/Codes/Include/System/Editor/EditorImportedAsset.h:14",
+      "primary": "EditorImportedAsset",
+      "related": [
+        "CopyFileIntoImportedAssets",
+        "lastImportedAssetPath"
+      ],
+      "summaryShort": "Imported 配下のファイル一覧 API が無い",
+      "summary": "Imported 配下のファイル一覧 API が無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Import 名前空間は Copy/Ensure/Queue のみ（EditorImportedAsset.h:11-14）",
+        "UI は lastImportedAssetPath の TextWrapped のみ（EntityEditorUi.cpp:411-412）",
+        "過去ドロップ分を再選択して一括 CmpEditorAssetPath 付与できない"
+      ],
+      "suggestedUse": "制作: インポート済みアセットを一覧から連続配置",
+      "firstSeenAt": "2026-11-10T06:51:00+09:00",
+      "lastSeenAt": "2026-11-10T06:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-009": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "medium",
+      "frequencyBasis": "初期トランスフォームは 1 インスタンスずつ手入力",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:615",
+      "primary": "EntityEditorUi",
+      "related": [
+        "initialTransform",
+        "UiState"
+      ],
+      "summaryShort": "トランスフォームのコピー／一括適用 UI が無い",
+      "summary": "トランスフォームのコピー／一括適用 UI が無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "初期トランスフォームは選択中 definition の ImGui のみ（615-631 行）",
+        "複数選択・貼り付け・オフセット複製のボタン無し",
+        "グリッド配置はプレハブ GAP（PrefabAsset-001）と同系の手順不足"
+      ],
+      "suggestedUse": "制作: 同オフセットで多数配置する反復を短縮",
+      "firstSeenAt": "2026-11-10T06:51:00+09:00",
+      "lastSeenAt": "2026-11-10T06:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -3762,7 +3843,10 @@
     "UC-Debug|Scene|CommandScene|MissingData|Project/Codes/Source/Scene/CommandScene.cpp:17": "GAP-Scene-CommandScene-003",
     "UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:687": "GAP-Audio-PlaySceneBgm-001",
     "UC-Play|Audio|PlaySeLoop|Unwired|Project/Codes/Include/System/PlaySe.h:87": "GAP-Audio-PlaySeLoop-001",
-    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:228": "GAP-Scene-SceneGame-006"
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:228": "GAP-Scene-SceneGame-006",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46": "GAP-Editor-EntityEditor-008",
+    "UC-Authoring|Editor|EditorImportedAsset|MissingData|Project/Codes/Include/System/Editor/EditorImportedAsset.h:14": "GAP-Editor-EditorImportedAsset-002",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:615": "GAP-Editor-EntityEditorUi-009"
   },
   "pendings": {},
   "nextSequence": {
@@ -3770,9 +3854,9 @@
     "Scene-GameOrder": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 8,
-    "Editor-EntityEditorUi": 9,
-    "Editor-EditorImportedAsset": 2,
+    "Editor-EntityEditor": 9,
+    "Editor-EntityEditorUi": 10,
+    "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 2,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
@@ -4539,6 +4623,22 @@
         "GAP-Audio-PlaySceneBgm-001",
         "GAP-Audio-PlaySeLoop-001",
         "GAP-Scene-SceneGame-006"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-065006",
+      "at": "2026-11-10T06:51:08.763681+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-008",
+        "GAP-Editor-EditorImportedAsset-002",
+        "GAP-Editor-EntityEditorUi-009"
       ],
       "updatedIds": [],
       "closedIds": []
