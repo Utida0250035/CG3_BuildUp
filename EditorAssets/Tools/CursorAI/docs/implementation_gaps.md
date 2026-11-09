@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T00:20:31.379655+09:00
+- **lastIncrementalScanAt:** 2026-11-10T00:30:41.073675+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -369,6 +369,27 @@
 - firstSeenAt: 2026-11-09T23:32:00+09:00
 - lastSeenAt: 2026-11-09T23:32:00+09:00
 
+### GAP-Scene-CommandScene-002
+
+- status: open
+- tier: P2
+- score: 720
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Debug
+- scenarioId: PLY-SceneLoad-001
+- frequency: high
+- frequencyBasis: Development ビルド起動時は Title/Game ではなくエディタが最初のシーン
+- scope: UC-Play|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:16
+- primary: `CommandScene`
+- summary: 【Play】Development 起動の初期シーンがプレイ用シーンロード経路と一致しない
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - DEVELOPMENT&&USE_IMGUI では sceneNow_=SceneEntityEditor（CommandScene.cpp:16-17）
+  - Release 相当のみ SceneTitle からプレイシーンへ遷移
+- suggestedUse: プレイ: 本編シーンを開いたときの挙動を開発ビルドでも再現したい
+- firstSeenAt: 2026-11-10T00:41:00+09:00
+- lastSeenAt: 2026-11-10T00:41:00+09:00
+
 ### GAP-Scene-CommandScene-001
 
 - status: open
@@ -413,6 +434,26 @@
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
 
+### GAP-Scene-SceneGame-002
+
+- status: open
+- tier: P2
+- score: 650
+- primaryUseCase: UC-Play
+- scenarioId: PLY-SceneLoad-001
+- frequency: medium
+- frequencyBasis: EnterScene で UX JSON の成否がシーン安定性に影響しうるが未チェック
+- scope: UC-Play|Scene|SceneGame|Unwired|Project/Codes/Source/Scene/SceneGame.cpp:111
+- primary: `SceneGame`
+- summary: 【Play】シーン入場時の operator_guidance 読込失敗を検知・代替しない
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - LoadFromJsonFile の戻り値未使用（SceneGame.cpp:111-112）
+  - 相対パス ../EditorAssets/UX/... は CWD 依存（Ship 配布物とずれうる）
+- suggestedUse: プレイ: シーン開始時に UI／案内が欠けてもカメラ・戦闘が破綻しない
+- firstSeenAt: 2026-11-10T00:41:00+09:00
+- lastSeenAt: 2026-11-10T00:41:00+09:00
+
 ### GAP-Scene-SceneMovie-002
 
 - status: open
@@ -454,6 +495,27 @@
 - suggestedUse: ビルド・配布: 本番シーンのカメラロック漏れを自動検出
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-002
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Authoring
+- scenarioId: PLY-SceneLoad-001
+- frequency: medium
+- frequencyBasis: JSON シーンオープン失敗時に別内容が載る
+- scope: UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:92
+- primary: `SceneBuildUp`
+- summary: 【Play】シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない
+- scenarioText: プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。
+- evidence:
+  - TryLoadSceneDocument 失敗時 MakeDefaultEntityDefinition で代替（92-98 行）
+  - カメラは SetupStageViewCamera するが主要オブジェクト構成が保存内容と不一致
+- suggestedUse: プレイ: 開いたシーンが意図どおりのオブジェクト構成である
+- firstSeenAt: 2026-11-10T00:41:00+09:00
+- lastSeenAt: 2026-11-10T00:41:00+09:00
 
 ### GAP-Scene-Scene-001
 
@@ -537,6 +599,7 @@
 - scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-002012 | at: 2026-11-10T00:20:31.379655+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-003022 | at: 2026-11-10T00:30:41.073675+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 
 ---
 

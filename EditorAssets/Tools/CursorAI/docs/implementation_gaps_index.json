@@ -575,6 +575,88 @@
       "suggestedUse": "制作: 視覚的に配置して保存→再オープンで同じ姿勢を得る",
       "firstSeenAt": "2026-11-10T00:31:00+09:00",
       "lastSeenAt": "2026-11-10T00:31:00+09:00"
+    },
+    "GAP-Scene-CommandScene-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Debug"
+      ],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 720,
+      "frequency": "high",
+      "frequencyBasis": "Development ビルド起動時は Title/Game ではなくエディタが最初のシーン",
+      "scopeKey": "UC-Play|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:16",
+      "primary": "CommandScene",
+      "related": [
+        "SceneEntityEditor",
+        "SceneTitle"
+      ],
+      "summaryShort": "Development 起動の初期シーンがプレイ用シーンロード経路と一致しない",
+      "summary": "Development 起動の初期シーンがプレイ用シーンロード経路と一致しない",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "DEVELOPMENT&&USE_IMGUI では sceneNow_=SceneEntityEditor（CommandScene.cpp:16-17）",
+        "Release 相当のみ SceneTitle からプレイシーンへ遷移"
+      ],
+      "suggestedUse": "プレイ: 本編シーンを開いたときの挙動を開発ビルドでも再現したい",
+      "firstSeenAt": "2026-11-10T00:41:00+09:00",
+      "lastSeenAt": "2026-11-10T00:41:00+09:00"
+    },
+    "GAP-Scene-SceneGame-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 650,
+      "frequency": "medium",
+      "frequencyBasis": "EnterScene で UX JSON の成否がシーン安定性に影響しうるが未チェック",
+      "scopeKey": "UC-Play|Scene|SceneGame|Unwired|Project/Codes/Source/Scene/SceneGame.cpp:111",
+      "primary": "SceneGame",
+      "related": [
+        "OperatorGuidanceSystem",
+        "SceneScreenUi"
+      ],
+      "summaryShort": "シーン入場時の operator_guidance 読込失敗を検知・代替しない",
+      "summary": "シーン入場時の operator_guidance 読込失敗を検知・代替しない",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "LoadFromJsonFile の戻り値未使用（SceneGame.cpp:111-112）",
+        "相対パス ../EditorAssets/UX/... は CWD 依存（Ship 配布物とずれうる）"
+      ],
+      "suggestedUse": "プレイ: シーン開始時に UI／案内が欠けてもカメラ・戦闘が破綻しない",
+      "firstSeenAt": "2026-11-10T00:41:00+09:00",
+      "lastSeenAt": "2026-11-10T00:41:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Authoring"
+      ],
+      "scenarioId": "PLY-SceneLoad-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "medium",
+      "frequencyBasis": "JSON シーンオープン失敗時に別内容が載る",
+      "scopeKey": "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:92",
+      "primary": "SceneBuildUp",
+      "related": [
+        "TryLoadSceneDocument",
+        "BuildEntitiesFromSceneDocument"
+      ],
+      "summaryShort": "シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない",
+      "summary": "シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない",
+      "scenarioText": "プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する。",
+      "evidence": [
+        "TryLoadSceneDocument 失敗時 MakeDefaultEntityDefinition で代替（92-98 行）",
+        "カメラは SetupStageViewCamera するが主要オブジェクト構成が保存内容と不一致"
+      ],
+      "suggestedUse": "プレイ: 開いたシーンが意図どおりのオブジェクト構成である",
+      "firstSeenAt": "2026-11-10T00:41:00+09:00",
+      "lastSeenAt": "2026-11-10T00:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -598,7 +680,10 @@
     "UC-Play|Runtime|MovieCameraTrackLoader|MissingTest|Project/Codes/Source/Camera/MovieCameraTrackLoader.cpp:34": "GAP-Runtime-MovieCameraTrackLoader-001",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233": "GAP-Editor-EntityEditor-002",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:129": "GAP-Editor-EntityEditor-003",
-    "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:281": "GAP-Editor-EditorSceneRuntime-003"
+    "UC-Authoring|Editor|EditorSceneRuntime|MissingUI|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:281": "GAP-Editor-EditorSceneRuntime-003",
+    "UC-Play|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:16": "GAP-Scene-CommandScene-002",
+    "UC-Play|Scene|SceneGame|Unwired|Project/Codes/Source/Scene/SceneGame.cpp:111": "GAP-Scene-SceneGame-002",
+    "UC-Play|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:92": "GAP-Scene-SceneBuildUp-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -728,6 +813,22 @@
         "GAP-Editor-EntityEditor-002",
         "GAP-Editor-EntityEditor-003",
         "GAP-Editor-EditorSceneRuntime-003"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-004013",
+      "at": "2026-11-10T00:40:44.827867+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-SceneLoad-001",
+      "areaHint": "Scene",
+      "priorityScore": 1540,
+      "newIds": [
+        "GAP-Scene-CommandScene-002",
+        "GAP-Scene-SceneGame-002",
+        "GAP-Scene-SceneBuildUp-002"
       ],
       "updatedIds": [],
       "closedIds": []

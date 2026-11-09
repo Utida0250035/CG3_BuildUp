@@ -1229,6 +1229,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001
 - **newIds:** 3（未保存でシーン切替、読込失敗が空シーン化、ビューポート配置なし）
 
+## ギャップスキャン tick（SCAN-20261110-004013）
+
+- **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001
+- **newIds:** 3（Dev 起動がエディタ、UX JSON 未検知、BuildUp 読込失敗置換）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
