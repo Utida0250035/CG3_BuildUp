@@ -3034,6 +3034,88 @@
       "roadmapLink": "feature-memos/scene_movie.md",
       "firstSeenAt": "2026-11-10T05:31:00+09:00",
       "lastSeenAt": "2026-11-10T05:31:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-007": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-EditorPlace-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 650,
+      "frequency": "medium",
+      "frequencyBasis": "プリファブ配置で親子・複数配置が失われる",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:105",
+      "primary": "EntityEditor",
+      "related": [
+        "AddInstanceFromPrefabPath",
+        "parentIndex"
+      ],
+      "summaryShort": "プリファブから先頭 1 体のみ追加し親は常に解除",
+      "summary": "プリファブから先頭 1 体のみ追加し親は常に解除",
+      "scenarioText": "制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。",
+      "evidence": [
+        "シーン形式プリファブは instances.front() のみ採用（105-110 行）",
+        "追加時 parentIndex を必ず -1（110, 114 行）で保存済み階層を復元しない"
+      ],
+      "suggestedUse": "制作: プリファブで組んだ配置をそのままシーンへ載せる",
+      "firstSeenAt": "2026-11-10T05:41:00+09:00",
+      "lastSeenAt": "2026-11-10T05:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-007": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-EditorPlace-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 640,
+      "frequency": "medium",
+      "frequencyBasis": "保存先パスをインスペクタで誤変更しうる",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:500",
+      "primary": "EntityEditorUi",
+      "related": [
+        "jsonFilePath",
+        "selectedScenePath",
+        "SaveToJsonPath"
+      ],
+      "summaryShort": "インスペクタでシーン JSON パスを自由編集できる",
+      "summary": "インスペクタでシーン JSON パスを自由編集できる",
+      "scenarioText": "制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。",
+      "evidence": [
+        "DrawInspectorPanel が jsonFilePath を InputString（500 行）",
+        "プロジェクト一覧の selectedScenePath と同期・検証なし",
+        "保存は ui_.jsonFilePath へ直書き（EntityEditor.cpp:194）"
+      ],
+      "suggestedUse": "制作: 意図しないファイル上書きで再オープン時に状態が消えるのを防ぐ",
+      "firstSeenAt": "2026-11-10T05:41:00+09:00",
+      "lastSeenAt": "2026-11-10T05:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-008": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-EditorPlace-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "medium",
+      "frequencyBasis": "表示名とランタイム名が別フィールドで非同期",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:501",
+      "primary": "EntityEditorUi",
+      "related": [
+        "instanceName",
+        "entityName",
+        "BuildEntityFromDefinition"
+      ],
+      "summaryShort": "instanceName と entityName を別々に編集しうる",
+      "summary": "instanceName と entityName を別々に編集しうる",
+      "scenarioText": "制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。",
+      "evidence": [
+        "ヒエラルキーは instanceName 表示（332 行）",
+        "entityName は別 InputString（530 行）",
+        "BuildEntityFromDefinition は entityName のみ Entity 生成（EditorSceneRuntime.cpp:280）"
+      ],
+      "suggestedUse": "制作: 再オープン後も一覧名とプレビュー実体名が一致",
+      "firstSeenAt": "2026-11-10T05:41:00+09:00",
+      "lastSeenAt": "2026-11-10T05:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -3147,7 +3229,10 @@
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:271": "GAP-Editor-EntityEditorUi-006",
     "UC-Play|Scene|SceneMovie|Contract|Project/Codes/Source/Scene/SceneMovie.cpp:90": "GAP-Scene-SceneMovie-007",
     "UC-Play|Runtime|MovieCameraTrackLoader|Incomplete|Project/Codes/Source/Camera/MovieCameraTrackLoader.cpp:58": "GAP-Runtime-MovieCameraTrackLoader-002",
-    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:96": "GAP-Scene-SceneMovie-008"
+    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:96": "GAP-Scene-SceneMovie-008",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:105": "GAP-Editor-EntityEditor-007",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:500": "GAP-Editor-EntityEditorUi-007",
+    "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:501": "GAP-Editor-EntityEditorUi-008"
   },
   "pendings": {},
   "nextSequence": {
@@ -3155,7 +3240,8 @@
     "Scene-CommandScene": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 7,
+    "Editor-EntityEditor": 8,
+    "Editor-EntityEditorUi": 9,
     "Editor-EditorImportedAsset": 2,
     "Editor-EntityEditorHierarchy": 2,
     "Editor-UiState": 2,
@@ -3201,7 +3287,6 @@
     "Ship-smoke_runbook": 2,
     "Ship-main": 2,
     "Editor-EditorAssetsPaths": 2,
-    "Editor-EntityEditorUi": 6,
     "Editor-EntityEditorShortcuts": 2,
     "Editor-PrefabAsset": 2,
     "Debug-SceneViewTab": 2,
@@ -3804,6 +3889,22 @@
         "GAP-Scene-SceneMovie-007",
         "GAP-Runtime-MovieCameraTrackLoader-002",
         "GAP-Scene-SceneMovie-008"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-054019",
+      "at": "2026-11-10T05:40:57.713019+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-EditorPlace-001",
+      "areaHint": "Editor",
+      "priorityScore": 1070,
+      "newIds": [
+        "GAP-Editor-EntityEditor-007",
+        "GAP-Editor-EntityEditorUi-007",
+        "GAP-Editor-EntityEditorUi-008"
       ],
       "updatedIds": [],
       "closedIds": []

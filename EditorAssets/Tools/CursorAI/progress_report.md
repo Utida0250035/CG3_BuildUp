@@ -1379,6 +1379,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Movie-001（3回目）
 - **newIds:** 3（失敗時 StageView、JSON 全体拒否、遷移予約で更新停止）
 
+## ギャップスキャン tick（SCAN-20261110-054019）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001（3回目）
+- **newIds:** 3（プリファブ配置、JSON パス編集、表示名／entityName 分離）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

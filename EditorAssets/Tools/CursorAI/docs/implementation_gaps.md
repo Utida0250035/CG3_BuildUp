@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T05:20:54.212485+09:00
+- **lastIncrementalScanAt:** 2026-11-10T05:30:50.774020+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -659,6 +659,26 @@
 - firstSeenAt: 2026-11-10T05:21:00+09:00
 - lastSeenAt: 2026-11-10T05:21:00+09:00
 
+### GAP-Editor-EntityEditor-007
+
+- status: open
+- tier: P2
+- score: 650
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: medium
+- frequencyBasis: プリファブ配置で親子・複数配置が失われる
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:105
+- primary: `EntityEditor`
+- summary: 【Authoring】プリファブから先頭 1 体のみ追加し親は常に解除
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - シーン形式プリファブは instances.front() のみ採用（105-110 行）
+  - 追加時 parentIndex を必ず -1（110, 114 行）で保存済み階層を復元しない
+- suggestedUse: 制作: プリファブで組んだ配置をそのままシーンへ載せる
+- firstSeenAt: 2026-11-10T05:41:00+09:00
+- lastSeenAt: 2026-11-10T05:41:00+09:00
+
 ### GAP-Editor-EntityEditorDefinition-001
 
 - status: open
@@ -720,6 +740,48 @@
 - suggestedUse: 制作: 同一タグ群だけを選んで調整・複製の反復
 - firstSeenAt: 2026-11-10T05:01:00+09:00
 - lastSeenAt: 2026-11-10T05:01:00+09:00
+
+### GAP-Editor-EntityEditorUi-007
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: medium
+- frequencyBasis: 保存先パスをインスペクタで誤変更しうる
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:500
+- primary: `EntityEditorUi`
+- summary: 【Authoring】インスペクタでシーン JSON パスを自由編集できる
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - DrawInspectorPanel が jsonFilePath を InputString（500 行）
+  - プロジェクト一覧の selectedScenePath と同期・検証なし
+  - 保存は ui_.jsonFilePath へ直書き（EntityEditor.cpp:194）
+- suggestedUse: 制作: 意図しないファイル上書きで再オープン時に状態が消えるのを防ぐ
+- firstSeenAt: 2026-11-10T05:41:00+09:00
+- lastSeenAt: 2026-11-10T05:41:00+09:00
+
+### GAP-Editor-EntityEditorUi-008
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-EditorPlace-001
+- frequency: medium
+- frequencyBasis: 表示名とランタイム名が別フィールドで非同期
+- scope: UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:501
+- primary: `EntityEditorUi`
+- summary: 【Authoring】instanceName と entityName を別々に編集しうる
+- scenarioText: 制作者がエディタ上でオブジェクトを配置・保存し、再度開いて同じ状態を得られる。
+- evidence:
+  - ヒエラルキーは instanceName 表示（332 行）
+  - entityName は別 InputString（530 行）
+  - BuildEntityFromDefinition は entityName のみ Entity 生成（EditorSceneRuntime.cpp:280）
+- suggestedUse: 制作: 再オープン後も一覧名とプレビュー実体名が一致
+- firstSeenAt: 2026-11-10T05:41:00+09:00
+- lastSeenAt: 2026-11-10T05:41:00+09:00
 
 ### GAP-Authoring-component_split_next-001
 
@@ -2402,7 +2464,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-030010 | at: 2026-11-10T03:00:33.132938+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-031009 | at: 2026-11-10T03:10:29.006133+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-032016 | at: 2026-11-10T03:20:51.711983+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-033008 | at: 2026-11-10T03:30:33.093958+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
@@ -2417,6 +2478,7 @@
 - scanId: SCAN-20261110-050024 | at: 2026-11-10T05:01:03.395407+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 
 ---
 
