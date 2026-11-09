@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T00:00:39.746375+09:00
+- **lastIncrementalScanAt:** 2026-11-10T00:10:39.912798+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -267,6 +267,27 @@
 
 #### UC-Play
 
+### GAP-Scene-SceneMovieRegistry-001
+
+- status: open
+- tier: P1
+- score: 850
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Movie-001
+- frequency: low
+- frequencyBasis: 本編からカットシーンへ遷移する呼び出しがコード上存在しない
+- scope: UC-Play|Scene|SceneMovieRegistry|Unwired|Project/Codes/Source/Scene/SceneMovie.cpp:23
+- primary: `SceneMovieRegistry`
+- summary: 【Play】ムービーシーン起動がゲームプレイ経路に未接続
+- scenarioText: シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。
+- evidence:
+  - SceneMovieRegistry::Launch の呼び出しは Project/Codes 内に SceneMovie.cpp 自身以外無し
+  - feature-memo の起動例はドキュメントのみ（SceneGame 等からの遷移無し）
+- suggestedUse: プレイ: ボス戦前後などカットシーンを本編フローへ載せる
+- roadmapLink: feature-memos/scene_movie.md
+- firstSeenAt: 2026-11-10T00:21:00+09:00
+- lastSeenAt: 2026-11-10T00:21:00+09:00
+
 ### GAP-Scene-ChangeSceneFade-001
 
 - status: open
@@ -330,6 +351,27 @@
 - roadmapLink: feature-memos/player_terrain_silhouette.md
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Scene-SceneMovie-002
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Movie-001
+- frequency: medium
+- frequencyBasis: トラック JSON 失敗時に即リターンし「再生完了」体験にならない
+- scope: UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:106
+- primary: `SceneMovie`
+- summary: 【Play】トラック読込失敗時に初回 Update で即戻り（エラー表示なし）
+- scenarioText: シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。
+- evidence:
+  - EnterScene で TryBeginFromJsonFile 失敗時は SetupStageViewCamera のみ（90-92 行）
+  - trackPlaybackStarted_ false のまま Update が RequestReturnToCaller（106-108 行）
+  - ユーザー向けログ／UI 無しでフェード復帰のみ
+- suggestedUse: プレイ: 壊れたトラックでも原因が分かる／最低限のフォールバック演出
+- firstSeenAt: 2026-11-10T00:21:00+09:00
+- lastSeenAt: 2026-11-10T00:21:00+09:00
 
 ### GAP-Infra-verify_camera_policy-001
 
@@ -395,6 +437,28 @@
 - firstSeenAt: 2026-11-09T23:32:00+09:00
 - lastSeenAt: 2026-11-09T23:32:00+09:00
 
+### GAP-Runtime-MovieCameraTrackLoader-001
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- secondaryUseCases: UC-Ship
+- scenarioId: PLY-Movie-001
+- frequency: low
+- frequencyBasis: 同梱 sample_movie_track.json のロード成否を CI で見ていない
+- scope: UC-Play|Runtime|MovieCameraTrackLoader|MissingTest|Project/Codes/Source/Camera/MovieCameraTrackLoader.cpp:34
+- primary: `MovieCameraTrackLoader`
+- summary: 【Play】ムービートラック JSON のスモーク検証が自動化されていない
+- scenarioText: シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。
+- evidence:
+  - LoadMovieCameraTrackFromJson は keyframes>=2 を要求（MovieCameraTrackLoader.cpp:69）
+  - sample_movie_track.json の CI 読込チェック／ワークフロー呼び出し無し
+- suggestedUse: 配布: カットシーンアセット破損をマージ前に検知
+- roadmapLink: feature-memos/movie_camera_controller.md
+- firstSeenAt: 2026-11-10T00:21:00+09:00
+- lastSeenAt: 2026-11-10T00:21:00+09:00
+
 
 ---
 
@@ -410,6 +474,7 @@
 - scanId: SCAN-20261109-234011 | at: 2026-11-09T23:40:39.226713+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261109-235016 | at: 2026-11-09T23:50:37.574616+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-000016 | at: 2026-11-10T00:00:39.746375+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-001015 | at: 2026-11-10T00:10:39.912798+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 
 ---
 

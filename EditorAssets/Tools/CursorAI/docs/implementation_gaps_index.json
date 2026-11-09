@@ -414,6 +414,88 @@
       "roadmapLink": "feature-memos/component_split_guidelines.md",
       "firstSeenAt": "2026-11-10T00:11:00+09:00",
       "lastSeenAt": "2026-11-10T00:11:00+09:00"
+    },
+    "GAP-Scene-SceneMovieRegistry-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Movie-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 850,
+      "frequency": "low",
+      "frequencyBasis": "本編からカットシーンへ遷移する呼び出しがコード上存在しない",
+      "scopeKey": "UC-Play|Scene|SceneMovieRegistry|Unwired|Project/Codes/Source/Scene/SceneMovie.cpp:23",
+      "primary": "SceneMovieRegistry",
+      "related": [
+        "SceneGame",
+        "CommandChangeScene"
+      ],
+      "summaryShort": "ムービーシーン起動がゲームプレイ経路に未接続",
+      "summary": "ムービーシーン起動がゲームプレイ経路に未接続",
+      "scenarioText": "シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。",
+      "evidence": [
+        "SceneMovieRegistry::Launch の呼び出しは Project/Codes 内に SceneMovie.cpp 自身以外無し",
+        "feature-memo の起動例はドキュメントのみ（SceneGame 等からの遷移無し）"
+      ],
+      "suggestedUse": "プレイ: ボス戦前後などカットシーンを本編フローへ載せる",
+      "roadmapLink": "feature-memos/scene_movie.md",
+      "firstSeenAt": "2026-11-10T00:21:00+09:00",
+      "lastSeenAt": "2026-11-10T00:21:00+09:00"
+    },
+    "GAP-Scene-SceneMovie-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Movie-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 640,
+      "frequency": "medium",
+      "frequencyBasis": "トラック JSON 失敗時に即リターンし「再生完了」体験にならない",
+      "scopeKey": "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:106",
+      "primary": "SceneMovie",
+      "related": [
+        "MovieCameraController",
+        "TryBeginFromJsonFile"
+      ],
+      "summaryShort": "トラック読込失敗時に初回 Update で即戻り（エラー表示なし）",
+      "summary": "トラック読込失敗時に初回 Update で即戻り（エラー表示なし）",
+      "scenarioText": "シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。",
+      "evidence": [
+        "EnterScene で TryBeginFromJsonFile 失敗時は SetupStageViewCamera のみ（90-92 行）",
+        "trackPlaybackStarted_ false のまま Update が RequestReturnToCaller（106-108 行）",
+        "ユーザー向けログ／UI 無しでフェード復帰のみ"
+      ],
+      "suggestedUse": "プレイ: 壊れたトラックでも原因が分かる／最低限のフォールバック演出",
+      "firstSeenAt": "2026-11-10T00:21:00+09:00",
+      "lastSeenAt": "2026-11-10T00:21:00+09:00"
+    },
+    "GAP-Runtime-MovieCameraTrackLoader-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [
+        "UC-Ship"
+      ],
+      "scenarioId": "PLY-Movie-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "low",
+      "frequencyBasis": "同梱 sample_movie_track.json のロード成否を CI で見ていない",
+      "scopeKey": "UC-Play|Runtime|MovieCameraTrackLoader|MissingTest|Project/Codes/Source/Camera/MovieCameraTrackLoader.cpp:34",
+      "primary": "MovieCameraTrackLoader",
+      "related": [
+        "EditorAssets/Camera/sample_movie_track.json"
+      ],
+      "summaryShort": "ムービートラック JSON のスモーク検証が自動化されていない",
+      "summary": "ムービートラック JSON のスモーク検証が自動化されていない",
+      "scenarioText": "シーン内ムービー／カットシーンが再生完了まで破綻しない（spec: scene_movie.md）。",
+      "evidence": [
+        "LoadMovieCameraTrackFromJson は keyframes>=2 を要求（MovieCameraTrackLoader.cpp:69）",
+        "sample_movie_track.json の CI 読込チェック／ワークフロー呼び出し無し"
+      ],
+      "suggestedUse": "配布: カットシーンアセット破損をマージ前に検知",
+      "roadmapLink": "feature-memos/movie_camera_controller.md",
+      "firstSeenAt": "2026-11-10T00:21:00+09:00",
+      "lastSeenAt": "2026-11-10T00:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -431,13 +513,16 @@
     "UC-Play|Scene|Scene|Contract|Project/Codes/Include/Scene/Scene.h:65": "GAP-Scene-Scene-001",
     "UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:291": "GAP-Editor-EditorSceneRuntime-002",
     "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:17": "GAP-Editor-EntityEditorDefinition-002",
-    "UC-Authoring|Infra|component_split_verify|MissingTest|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:19": "GAP-Infra-component_split_verify-001"
+    "UC-Authoring|Infra|component_split_verify|MissingTest|EditorAssets/Tools/CursorAI/docs/feature-memos/component_split_guidelines.md:19": "GAP-Infra-component_split_verify-001",
+    "UC-Play|Scene|SceneMovieRegistry|Unwired|Project/Codes/Source/Scene/SceneMovie.cpp:23": "GAP-Scene-SceneMovieRegistry-001",
+    "UC-Play|Scene|SceneMovie|Incomplete|Project/Codes/Source/Scene/SceneMovie.cpp:106": "GAP-Scene-SceneMovie-002",
+    "UC-Play|Runtime|MovieCameraTrackLoader|MissingTest|Project/Codes/Source/Camera/MovieCameraTrackLoader.cpp:34": "GAP-Runtime-MovieCameraTrackLoader-001"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 2,
     "Scene-CommandScene": 2,
-    "Scene-SceneMovie": 2,
+    "Scene-SceneMovie": 3,
     "Editor-EntityEditor": 2,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 3,
@@ -448,7 +533,9 @@
     "Infra-verify_camera_policy": 2,
     "Scene-Scene": 2,
     "Editor-EditorSceneRuntime": 3,
-    "Infra-component_split_verify": 2
+    "Infra-component_split_verify": 2,
+    "Scene-SceneMovieRegistry": 2,
+    "Runtime-MovieCameraTrackLoader": 2
   },
   "scans": [
     {
@@ -527,6 +614,22 @@
         "GAP-Editor-EditorSceneRuntime-002",
         "GAP-Editor-EntityEditorDefinition-002",
         "GAP-Infra-component_split_verify-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-002012",
+      "at": "2026-11-10T00:20:31.379655+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Movie-001",
+      "areaHint": "Runtime",
+      "priorityScore": 1540,
+      "newIds": [
+        "GAP-Scene-SceneMovieRegistry-001",
+        "GAP-Scene-SceneMovie-002",
+        "GAP-Runtime-MovieCameraTrackLoader-001"
       ],
       "updatedIds": [],
       "closedIds": []

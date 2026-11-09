@@ -1219,6 +1219,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-Component-001
 - **newIds:** 3（kind 不一致スキップ、登録表ドリフト、component verify 未整備）
 
+## ギャップスキャン tick（SCAN-20261110-002012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Movie-001
+- **newIds:** 3（Movie 未配線、トラック失敗即復帰、sample JSON 未 CI）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし
