@@ -1439,6 +1439,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（6回目）
 - **newIds:** 3（Launch が Enter 無し、実行＝タブのみ、README 手順のみ）
 
+## ギャップスキャン tick（SCAN-20261110-074024）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（6回目）
+- **newIds:** 3（BGM 再試行、イントロ中 SE 停止、タイトル Exit 即 BGM 停止）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

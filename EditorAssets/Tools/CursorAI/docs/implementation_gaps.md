@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T07:20:51.586186+09:00
+- **lastIncrementalScanAt:** 2026-11-10T07:31:02.344487+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2638,6 +2638,48 @@
 - firstSeenAt: 2026-11-10T03:21:00+09:00
 - lastSeenAt: 2026-11-10T03:21:00+09:00
 
+### GAP-Scene-SceneGame-008
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: イントロ中はエンティティ Update 停止で SE 発火も止まる
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:161
+- primary: `SceneGame`
+- summary: 【Play】イントロ中の Update 早期 return で弾幕 SE 無音
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - イントロ未完で return（161-169 行）、UpdateEntities 未到達
+  - BGM は EnterScene で開始し Maintain はその前に実行（115,159 行）
+  - 演出中の戦闘音效と BGM だけ先行の体感ばらつき
+- suggestedUse: プレイ: イントロと戦闘音のポリシーを統一
+- firstSeenAt: 2026-11-10T07:41:00+09:00
+- lastSeenAt: 2026-11-10T07:41:00+09:00
+
+### GAP-Audio-PlayBgmLoop-001
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: BGM 再試行が二度 PlaySceneBgm を呼ぶ
+- scope: UC-Play|Audio|PlayBgmLoop|Incomplete|Project/Codes/Include/System/PlaySe.h:187
+- primary: `PlayBgmLoop`
+- summary: 【Play】PlayBgmLoop 失敗時に PlaySceneBgm を再実行
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - 失敗時 1 度だけ再 PlaySceneBgm（185-188 行）
+  - 各回が StopAllStreamingVoices を呼ぶ（Audio.cpp:687）
+  - ストリーム復帰試行で戦闘 SE が二重切断しうる
+- suggestedUse: プレイ: BGM 再開と SE 共存
+- firstSeenAt: 2026-11-10T07:41:00+09:00
+- lastSeenAt: 2026-11-10T07:41:00+09:00
+
 ### GAP-Render-SceneTitle-001
 
 - status: open
@@ -2723,6 +2765,27 @@
 - roadmapLink: feature-memos/rim_light.md
 - firstSeenAt: 2026-11-10T06:11:00+09:00
 - lastSeenAt: 2026-11-10T06:11:00+09:00
+
+### GAP-Scene-SceneTitle-002
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: タイトル離脱時 ExitScene で BGM を即停止
+- scope: UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:67
+- primary: `SceneTitle`
+- summary: 【Play】ExitScene がフェード完了前に StopBgmLoop
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ExitScene で StopBgmLoop（67-69 行）
+  - 遷移は ChangeSceneFade 経由で暗転中も旧シーンが一時表示（CommandScene-001）
+  - タイトル BGM 維持ロジック無し（SceneTitle-001）
+- suggestedUse: プレイ: タイトル→ゲームの音切りをフェードに合わせる
+- firstSeenAt: 2026-11-10T07:41:00+09:00
+- lastSeenAt: 2026-11-10T07:41:00+09:00
 
 ### GAP-Audio-SetBgmLoopVolume-001
 
@@ -3179,7 +3242,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-050024 | at: 2026-11-10T05:01:03.395407+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-051012 | at: 2026-11-10T05:11:23.847271+09:00 | scenario: PLY-Camera-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
@@ -3194,6 +3256,7 @@
 - scanId: SCAN-20261110-070015 | at: 2026-11-10T07:00:50.713598+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-072023 | at: 2026-11-10T07:20:51.586186+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-073017 | at: 2026-11-10T07:31:02.344487+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 
