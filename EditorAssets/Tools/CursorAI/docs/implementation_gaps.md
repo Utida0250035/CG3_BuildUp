@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T06:11:00.391287+09:00
+- **lastIncrementalScanAt:** 2026-11-10T06:20:59.799180+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1381,6 +1381,28 @@
 - firstSeenAt: 2026-11-10T02:31:00+09:00
 - lastSeenAt: 2026-11-10T02:31:00+09:00
 
+### GAP-Scene-CommandScene-003
+
+- status: open
+- tier: P2
+- score: 670
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Development 起動が EntityEditor 固定で Feature 検証シーンに直行できない
+- scope: UC-Debug|Scene|CommandScene|MissingData|Project/Codes/Source/Scene/CommandScene.cpp:17
+- primary: `CommandScene`
+- summary: 【Debug】起動時シーンが SceneEntityEditor に固定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DEVELOPMENT&&USE_IMGUI で sceneNow_=SceneEntityEditor::Instance()（17 行）
+  - SceneBuildUpRegistry::Launch や template_test_play_area への分岐無し
+  - CommandScene-002 はプレイ観点、既定 Feature シーン導線は未言及
+- suggestedUse: デバッグ: ビルド起動直後から最小ランタイム検証に入れる
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T06:31:00+09:00
+- lastSeenAt: 2026-11-10T06:31:00+09:00
+
 ### GAP-Scene-SceneBuildUp-006
 
 - status: open
@@ -1422,6 +1444,28 @@
 - firstSeenAt: 2026-11-10T03:11:00+09:00
 - lastSeenAt: 2026-11-10T03:11:00+09:00
 
+### GAP-Infra-EditorScenePlayRequest-002
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: PlayRequest の読み取り口が未使用で遷移キューが死蔵
+- scope: UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:33
+- primary: `EditorScenePlayRequest`
+- summary: 【Debug】EditorScenePlayRequest::Path が参照されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Path() は jsonFilePath_ を返すのみ（EditorSceneAsset.h:33）
+  - Set/Clear は .cpp にあるが Editor／Scene 配下で Path() 呼び出し 0 件
+  - SceneBuildUp は EditorSceneAsset を include するが PlayRequest を消費しない
+- suggestedUse: デバッグ: エディタから渡した JSON を BuildUp 起動に反映
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T06:31:00+09:00
+- lastSeenAt: 2026-11-10T06:31:00+09:00
+
 ### GAP-Infra-combat_bounds_sandbox-001
 
 - status: open
@@ -1442,6 +1486,28 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T04:41:00+09:00
 - lastSeenAt: 2026-11-10T04:41:00+09:00
+
+### GAP-Scene-SceneBuildUp-007
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: BuildUp が EditorSceneRuntime を include するがシンボル未使用
+- scope: UC-Debug|Scene|SceneBuildUp|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:10
+- primary: `SceneBuildUp`
+- summary: 【Debug】SceneBuildUp が EditorSceneRuntime を参照しない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - #include EditorSceneRuntime.h（10 行）
+  - Entity 構築は EntityEditor::TryLoadSceneDocument のみ（91-105 行）
+  - ランタイム専用ローダ／検証が EditorSceneRuntime.cpp と分断
+- suggestedUse: デバッグ: 機能検証シーンがランタイム用ロード経路を共有
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-10T06:31:00+09:00
+- lastSeenAt: 2026-11-10T06:31:00+09:00
 
 #### UC-Play
 
@@ -2729,7 +2795,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-035010 | at: 2026-11-10T03:50:48.091396+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-040022 | at: 2026-11-10T04:01:02.891193+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-041018 | at: 2026-11-10T04:10:44.427042+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-042012 | at: 2026-11-10T04:21:03.907927+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
@@ -2744,6 +2809,7 @@
 - scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 
 ---
 

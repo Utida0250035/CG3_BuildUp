@@ -1404,6 +1404,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001（3回目）
 - **newIds:** 3（FOV 固定、プレビューカメラ、tuning 解像度未参照）
 
+## ギャップスキャン tick（SCAN-20261110-063013）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（4回目）
+- **newIds:** 3（PlayRequest Path 未使用、BuildUp が Runtime 未参照、起動が EntityEditor 固定）
+
 ## 実装済みと判断した項目（コード確認・即時 [x]）
 
 なし

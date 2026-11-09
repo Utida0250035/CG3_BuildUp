@@ -3462,6 +3462,91 @@
       "roadmapLink": "feature-memos/odyssey_style_stage_camera.md",
       "firstSeenAt": "2026-11-10T06:21:00+09:00",
       "lastSeenAt": "2026-11-10T06:21:00+09:00"
+    },
+    "GAP-Infra-EditorScenePlayRequest-002": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "PlayRequest の読み取り口が未使用で遷移キューが死蔵",
+      "scopeKey": "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:33",
+      "primary": "EditorScenePlayRequest",
+      "related": [
+        "SceneBuildUp",
+        "SceneEntityEditor"
+      ],
+      "summaryShort": "EditorScenePlayRequest::Path が参照されない",
+      "summary": "EditorScenePlayRequest::Path が参照されない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Path() は jsonFilePath_ を返すのみ（EditorSceneAsset.h:33）",
+        "Set/Clear は .cpp にあるが Editor／Scene 配下で Path() 呼び出し 0 件",
+        "SceneBuildUp は EditorSceneAsset を include するが PlayRequest を消費しない"
+      ],
+      "suggestedUse": "デバッグ: エディタから渡した JSON を BuildUp 起動に反映",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T06:31:00+09:00",
+      "lastSeenAt": "2026-11-10T06:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-007": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "low",
+      "frequencyBasis": "BuildUp が EditorSceneRuntime を include するがシンボル未使用",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:10",
+      "primary": "SceneBuildUp",
+      "related": [
+        "EditorSceneRuntime",
+        "BuildEntitiesFromSceneDocument"
+      ],
+      "summaryShort": "SceneBuildUp が EditorSceneRuntime を参照しない",
+      "summary": "SceneBuildUp が EditorSceneRuntime を参照しない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "#include EditorSceneRuntime.h（10 行）",
+        "Entity 構築は EntityEditor::TryLoadSceneDocument のみ（91-105 行）",
+        "ランタイム専用ローダ／検証が EditorSceneRuntime.cpp と分断"
+      ],
+      "suggestedUse": "デバッグ: 機能検証シーンがランタイム用ロード経路を共有",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T06:31:00+09:00",
+      "lastSeenAt": "2026-11-10T06:31:00+09:00"
+    },
+    "GAP-Scene-CommandScene-003": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 670,
+      "frequency": "high",
+      "frequencyBasis": "Development 起動が EntityEditor 固定で Feature 検証シーンに直行できない",
+      "scopeKey": "UC-Debug|Scene|CommandScene|MissingData|Project/Codes/Source/Scene/CommandScene.cpp:17",
+      "primary": "CommandScene",
+      "related": [
+        "SceneEntityEditor",
+        "SceneBuildUpRegistry",
+        "DebugPlayArea"
+      ],
+      "summaryShort": "起動時シーンが SceneEntityEditor に固定",
+      "summary": "起動時シーンが SceneEntityEditor に固定",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "DEVELOPMENT&&USE_IMGUI で sceneNow_=SceneEntityEditor::Instance()（17 行）",
+        "SceneBuildUpRegistry::Launch や template_test_play_area への分岐無し",
+        "CommandScene-002 はプレイ観点、既定 Feature シーン導線は未言及"
+      ],
+      "suggestedUse": "デバッグ: ビルド起動直後から最小ランタイム検証に入れる",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-10T06:31:00+09:00",
+      "lastSeenAt": "2026-11-10T06:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -3590,13 +3675,15 @@
     "UC-Play|Render|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:52": "GAP-Render-SceneResult-001",
     "UC-Authoring|Editor|EditorFrame|Contract|Project/Codes/Source/System/Editor/EditorFrame.cpp:129": "GAP-Editor-EditorFrame-001",
     "UC-Authoring|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:91": "GAP-Editor-SceneEntityEditor-005",
-    "UC-Authoring|Infra|stage_view_camera_tuning|Contract|EditorAssets/Camera/stage_view_camera_tuning.json:5": "GAP-Infra-stage_view_camera_tuning-002"
+    "UC-Authoring|Infra|stage_view_camera_tuning|Contract|EditorAssets/Camera/stage_view_camera_tuning.json:5": "GAP-Infra-stage_view_camera_tuning-002",
+    "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Include/System/Editor/Scene/EditorSceneAsset.h:33": "GAP-Infra-EditorScenePlayRequest-002",
+    "UC-Debug|Scene|SceneBuildUp|Unwired|Project/Codes/Source/Scene/SceneBuildUp.cpp:10": "GAP-Scene-SceneBuildUp-007",
+    "UC-Debug|Scene|CommandScene|MissingData|Project/Codes/Source/Scene/CommandScene.cpp:17": "GAP-Scene-CommandScene-003"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 3,
     "Scene-GameOrder": 2,
-    "Scene-CommandScene": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
     "Editor-EntityEditor": 8,
@@ -3612,8 +3699,9 @@
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 7,
-    "Infra-EditorScenePlayRequest": 2,
+    "Scene-SceneBuildUp": 8,
+    "Scene-CommandScene": 4,
+    "Infra-EditorScenePlayRequest": 3,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
     "Scene-SceneGame": 6,
@@ -4333,6 +4421,22 @@
         "GAP-Editor-EditorFrame-001",
         "GAP-Editor-SceneEntityEditor-005",
         "GAP-Infra-stage_view_camera_tuning-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-063013",
+      "at": "2026-11-10T06:31:21.084005+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Infra-EditorScenePlayRequest-002",
+        "GAP-Scene-SceneBuildUp-007",
+        "GAP-Scene-CommandScene-003"
       ],
       "updatedIds": [],
       "closedIds": []
