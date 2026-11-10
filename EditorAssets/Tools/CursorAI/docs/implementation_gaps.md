@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T05:00:33.872874+09:00
+- **lastIncrementalScanAt:** 2026-11-11T05:10:49.097514+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1699,6 +1699,27 @@
 - firstSeenAt: 2026-11-11T03:51:00+09:00
 - lastSeenAt: 2026-11-11T03:51:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-009
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレビュー読込が構築時のみ
+- scope: UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:309
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】AssetPath プレビューは構築時1回
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - BuildEntityFromDefinition 末尾で TryLoad のみ（309 行）
+  - Inspector で path 変更後もメッシュ差し替え自動なし
+  - 一括 path 適用後にプレビュー手動再構築が必要
+- suggestedUse: Authoring: assetPath 変更の即時プレビュー
+- firstSeenAt: 2026-11-11T05:21:00+09:00
+- lastSeenAt: 2026-11-11T05:21:00+09:00
+
 ### GAP-Editor-EntityEditor-015
 
 - status: open
@@ -1950,6 +1971,48 @@
 - suggestedUse: Authoring: ドロップキューの可視化
 - firstSeenAt: 2026-11-11T04:51:00+09:00
 - lastSeenAt: 2026-11-11T04:51:00+09:00
+
+### GAP-Editor-PrefabAsset-006
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ出力が連番のみ
+- scope: UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Prefab/PrefabAsset.cpp:34
+- primary: `PrefabAsset`
+- summary: 【Authoring】衝突時 stem_N 連番
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - exists 時は suffix 1..9999 のみ（34-39 行）
+  - 同一テンプレ反復出力で JSON が増殖
+  - 上書き更新やバージョン名を選べない
+- suggestedUse: Authoring: プレハブ一括書き出し命名
+- firstSeenAt: 2026-11-11T05:21:00+09:00
+- lastSeenAt: 2026-11-11T05:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-028
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ一覧がフルパス
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:499
+- primary: `EntityEditorUi`
+- summary: 【Authoring】Selectable が path 全文
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ラベルに generic_string パス直表示（497-501 行）
+  - シーン一覧は DisplayName 併記（451-453 行）と非対称
+  - 大量プレハブで選択と一括追加が煩雑
+- suggestedUse: Authoring: プレハブ一覧の短縮表示
+- firstSeenAt: 2026-11-11T05:21:00+09:00
+- lastSeenAt: 2026-11-11T05:21:00+09:00
 
 #### UC-Debug
 
@@ -5703,7 +5766,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-024014 | at: 2026-11-11T02:40:47.012554+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-025013 | at: 2026-11-11T02:51:07.177239+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-030016 | at: 2026-11-11T03:01:32.865102+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-031017 | at: 2026-11-11T03:11:06.426582+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -5718,6 +5780,7 @@
 - scanId: SCAN-20261111-044011 | at: 2026-11-11T04:40:29.023350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-045006 | at: 2026-11-11T04:50:25.719805+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-050017 | at: 2026-11-11T05:00:33.872874+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-051011 | at: 2026-11-11T05:10:49.097514+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

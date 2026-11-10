@@ -1704,6 +1704,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（19回目）
 - **newIds:** 3（Decoder EOF、Waiting 非ループ即停止、ストリーム wfEx 固定）
 
+## ギャップスキャン tick（SCAN-20261111-052010）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（19回目）
+- **newIds:** 3（プレハブ連番、一覧フルパス、AssetPath プレビュー1回）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
