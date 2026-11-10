@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T05:20:27.571439+09:00
+- **lastIncrementalScanAt:** 2026-11-11T05:30:54.455417+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -5081,6 +5081,27 @@
 - firstSeenAt: 2026-11-11T05:11:00+09:00
 - lastSeenAt: 2026-11-11T05:11:00+09:00
 
+### GAP-Audio-AudioManager-016
+
+- status: open
+- tier: P2
+- score: 530
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: SE 枯渇時 assert
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:379
+- primary: `AudioManager`
+- summary: 【Play】ボイス枯渇で assert
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - 2 回目 tryPlayShort 失敗で assert（379 行）
+  - シーン遷移直後の SE 集中で開発ビルド停止
+  - リリースでは空 Handle で音欠落のみ
+- suggestedUse: プレイ: SE プール枯渇のグレースフル処理
+- firstSeenAt: 2026-11-11T05:41:00+09:00
+- lastSeenAt: 2026-11-11T05:41:00+09:00
+
 ### GAP-Audio-PlaySceneBgm-002
 
 - status: open
@@ -5122,6 +5143,27 @@
 - suggestedUse: プレイ: 長尺ストリーム SE の途切れ診断
 - firstSeenAt: 2026-11-11T03:41:00+09:00
 - lastSeenAt: 2026-11-11T03:41:00+09:00
+
+### GAP-Audio-AudioManager-014
+
+- status: open
+- tier: P2
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: MF 出力 PCM が固定
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:489
+- primary: `AudioManager`
+- summary: 【Play】ストリーム PCM を 44.1k 固定
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetUINT32 SAMPLES_PER_SECOND 44100（489 行）
+  - 元メディアの fmt に追随しない
+  - AudioManager-013 と合わせピッチ／長さずれ
+- suggestedUse: プレイ: MF デコード fmt の反映
+- firstSeenAt: 2026-11-11T05:41:00+09:00
+- lastSeenAt: 2026-11-11T05:41:00+09:00
 
 ### GAP-Audio-IsBgmLoopPaused-001
 
@@ -5312,6 +5354,27 @@
 - suggestedUse: プレイ: 環境ループ SE の明示破棄
 - firstSeenAt: 2026-11-11T00:41:00+09:00
 - lastSeenAt: 2026-11-11T00:41:00+09:00
+
+### GAP-Audio-AudioManager-015
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 末尾をゼロ埋め
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:619
+- primary: `AudioManager`
+- summary: 【Play】不足バイトを 0 でパディング
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - bytesRead < kBufferSize で std::fill 0（619-621 行）
+  - ループ境界やチャンク末尾で無音挿入
+  - BGM ループ時にクリック／途切れ
+- suggestedUse: プレイ: ストリームバッファ境界の無音化回避
+- firstSeenAt: 2026-11-11T05:41:00+09:00
+- lastSeenAt: 2026-11-11T05:41:00+09:00
 
 ### GAP-Audio-PlaySeDetail-002
 
@@ -5829,7 +5892,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-030016 | at: 2026-11-11T03:01:32.865102+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-031017 | at: 2026-11-11T03:11:06.426582+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-032014 | at: 2026-11-11T03:21:02.300717+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-033012 | at: 2026-11-11T03:31:23.423901+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -5844,6 +5906,7 @@
 - scanId: SCAN-20261111-050017 | at: 2026-11-11T05:00:33.872874+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-051011 | at: 2026-11-11T05:10:49.097514+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-052010 | at: 2026-11-11T05:20:27.571439+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-053014 | at: 2026-11-11T05:30:54.455417+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

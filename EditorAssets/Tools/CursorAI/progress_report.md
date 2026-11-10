@@ -1714,6 +1714,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（20回目）
 - **newIds:** 3（実行はタブのみ、固定ライト上書き、Enter で Runtime 強制）
 
+## ギャップスキャン tick（SCAN-20261111-054008）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（20回目）
+- **newIds:** 3（MF PCM 固定、バッファ 0 埋め、SE 枯渇 assert）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
