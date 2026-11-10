@@ -4201,6 +4201,87 @@
       "suggestedUse": "制作: 同型コンポの優先度をまとめて調整",
       "firstSeenAt": "2026-11-10T07:51:00+09:00",
       "lastSeenAt": "2026-11-10T07:51:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-008": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "high",
+      "frequencyBasis": "エディタ Draw 内で GameOrder 外の camera->Update",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:181",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "ActiveCameraSystem",
+        "AllowDebugCameraControl"
+      ],
+      "summaryShort": "Edit ホバー時に Draw 内で camera->Update",
+      "summary": "Edit ホバー時に Draw 内で camera->Update",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "AllowDebugCameraControl は false だが Draw 内で camera->Update（181-183 行）",
+        "GameOrder は PrepareCamerasForDraw 経由（GameOrder.h:74）",
+        "機能検証シーンでもカメラ更新経路が二重"
+      ],
+      "suggestedUse": "Debug: エディタ検証シーンのカメラ政策を一本化",
+      "firstSeenAt": "2026-11-10T23:06:00+09:00",
+      "lastSeenAt": "2026-11-10T23:06:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-009": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 550,
+      "frequency": "medium",
+      "frequencyBasis": "RT 描画パスが毎回 engine->SetCamera する",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:250",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "EditorSceneRenderTargetHub",
+        "ActiveCameraSystem"
+      ],
+      "summaryShort": "シーンビュー RT が GameOrder 後に SetCamera",
+      "summary": "シーンビュー RT が GameOrder 後に SetCamera",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "DrawSceneViewContent で Fit 後 engine->SetCamera（249-250 行）",
+        "GameOrder 直前に ActiveCameraSystem が既に Bind（GameOrder.h:74）",
+        "本番相当 Runtime タブ試験でもエンジンカメラがフレーム内で上書き"
+      ],
+      "suggestedUse": "Debug: 検証シーンのカメラ解決をエンジン主導に揃える",
+      "firstSeenAt": "2026-11-10T23:06:00+09:00",
+      "lastSeenAt": "2026-11-10T23:06:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-011": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 590,
+      "frequency": "high",
+      "frequencyBasis": "プレビュー生成が SceneBuildUp 経路に接続されない",
+      "scopeKey": "UC-Debug|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:208",
+      "primary": "EntityEditor",
+      "related": [
+        "SceneBuildUpRegistry",
+        "BuildEntitiesFromSceneDocument"
+      ],
+      "summaryShort": "BuildPreviewScene がエディタ内ベクタのみ",
+      "summary": "BuildPreviewScene がエディタ内ベクタのみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "BuildPreviewScene は BuildEntitiesFromSceneDocument のみ（208-209 行）",
+        "SceneBuildUpRegistry::Launch や EditorScenePlayRequest へ渡さない",
+        "FeatureScene シナリオのエディタ外最小ランタイムが未接続"
+      ],
+      "suggestedUse": "Debug: JSON→BuildUp ワンショット検証",
+      "firstSeenAt": "2026-11-10T23:06:00+09:00",
+      "lastSeenAt": "2026-11-10T23:06:00+09:00"
     }
   },
   "scopeToId": {
@@ -4356,7 +4437,10 @@
     "UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:67": "GAP-Scene-SceneTitle-002",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:686": "GAP-Editor-EntityEditorUi-011",
     "UC-Authoring|Editor|PrefabAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:486": "GAP-Editor-PrefabAsset-003",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:724": "GAP-Editor-EntityEditorUi-012"
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:724": "GAP-Editor-EntityEditorUi-012",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:181": "GAP-Editor-SceneEntityEditor-008",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:250": "GAP-Editor-SceneEntityEditor-009",
+    "UC-Debug|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:208": "GAP-Editor-EntityEditor-011"
   },
   "pendings": {},
   "nextSequence": {
@@ -4364,14 +4448,14 @@
     "Scene-GameOrder": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 10,
+    "Editor-EntityEditor": 12,
     "Editor-EntityEditorUi": 13,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 2,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 3,
-    "Editor-SceneEntityEditor": 8,
+    "Editor-SceneEntityEditor": 10,
     "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
     "Infra-stage_view_camera_tuning": 3,
@@ -5249,6 +5333,22 @@
         "GAP-Editor-EntityEditorUi-011",
         "GAP-Editor-PrefabAsset-003",
         "GAP-Editor-EntityEditorUi-012"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-230538",
+      "at": "2026-11-10T23:06:48.156250+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Editor-SceneEntityEditor-008",
+        "GAP-Editor-SceneEntityEditor-009",
+        "GAP-Editor-EntityEditor-011"
       ],
       "updatedIds": [],
       "closedIds": []

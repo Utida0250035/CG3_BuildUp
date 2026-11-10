@@ -1513,6 +1513,12 @@
 - **ビルド:** Development / Release x64 成功（エージェント環境）
 - **手動確認:** Release exe 起動で JSON シーン表示、F1 でタイトル復帰は未確認
 
+## ギャップスキャン tick（SCAN-20261110-230538）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（7回目）
+- **newIds:** 3（Draw 内 camera Update、RT SetCamera、BuildPreviewScene のみ）
+- **備考:** ブランチ `cursor/cmp-camera-entity-0f04`（カメラ PR と同ブランチに doc 追記）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

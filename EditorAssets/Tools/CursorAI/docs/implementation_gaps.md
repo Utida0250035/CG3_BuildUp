@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T07:40:43.271911+09:00
+- **lastIncrementalScanAt:** 2026-11-10T07:50:37.543827+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1720,6 +1720,27 @@
 - firstSeenAt: 2026-11-10T04:41:00+09:00
 - lastSeenAt: 2026-11-10T04:41:00+09:00
 
+### GAP-Editor-EntityEditor-011
+
+- status: open
+- tier: P1
+- score: 590
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: プレビュー生成が SceneBuildUp 経路に接続されない
+- scope: UC-Debug|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:208
+- primary: `EntityEditor`
+- summary: 【Debug】BuildPreviewScene がエディタ内ベクタのみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildPreviewScene は BuildEntitiesFromSceneDocument のみ（208-209 行）
+  - SceneBuildUpRegistry::Launch や EditorScenePlayRequest へ渡さない
+  - FeatureScene シナリオのエディタ外最小ランタイムが未接続
+- suggestedUse: Debug: JSON→BuildUp ワンショット検証
+- firstSeenAt: 2026-11-10T23:06:00+09:00
+- lastSeenAt: 2026-11-10T23:06:00+09:00
+
 ### GAP-Scene-SceneBuildUp-008
 
 - status: open
@@ -1763,6 +1784,48 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:31:00+09:00
 - lastSeenAt: 2026-11-10T07:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-008
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: エディタ Draw 内で GameOrder 外の camera->Update
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:181
+- primary: `SceneEntityEditor`
+- summary: 【Debug】Edit ホバー時に Draw 内で camera->Update
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - AllowDebugCameraControl は false だが Draw 内で camera->Update（181-183 行）
+  - GameOrder は PrepareCamerasForDraw 経由（GameOrder.h:74）
+  - 機能検証シーンでもカメラ更新経路が二重
+- suggestedUse: Debug: エディタ検証シーンのカメラ政策を一本化
+- firstSeenAt: 2026-11-10T23:06:00+09:00
+- lastSeenAt: 2026-11-10T23:06:00+09:00
+
+### GAP-Editor-SceneEntityEditor-009
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: RT 描画パスが毎回 engine->SetCamera する
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:250
+- primary: `SceneEntityEditor`
+- summary: 【Debug】シーンビュー RT が GameOrder 後に SetCamera
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawSceneViewContent で Fit 後 engine->SetCamera（249-250 行）
+  - GameOrder 直前に ActiveCameraSystem が既に Bind（GameOrder.h:74）
+  - 本番相当 Runtime タブ試験でもエンジンカメラがフレーム内で上書き
+- suggestedUse: Debug: 検証シーンのカメラ解決をエンジン主導に揃える
+- firstSeenAt: 2026-11-10T23:06:00+09:00
+- lastSeenAt: 2026-11-10T23:06:00+09:00
 
 ### GAP-Infra-DebugPlayAreaGenerator-001
 
@@ -3305,7 +3368,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
@@ -3320,6 +3382,7 @@
 - scanId: SCAN-20261110-072023 | at: 2026-11-10T07:20:51.586186+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-073017 | at: 2026-11-10T07:31:02.344487+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-074024 | at: 2026-11-10T07:40:43.271911+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-075021 | at: 2026-11-10T07:50:37.543827+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 
