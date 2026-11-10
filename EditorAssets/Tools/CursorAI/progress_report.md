@@ -1584,6 +1584,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（11回目）
 - **newIds:** 3（SetSeVolume 未使用、IsPlaying+Paused、フェード中盤で次 BGM）
 
+## ギャップスキャン tick（SCAN-20261111-012017）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（11回目）
+- **newIds:** 3（シーン一覧二段、プレハブ常時新規、Cmp 型変更で params リセット）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

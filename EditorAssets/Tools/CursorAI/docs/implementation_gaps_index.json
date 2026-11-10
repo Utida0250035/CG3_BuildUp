@@ -5358,6 +5358,88 @@
       "suggestedUse": "プレイ: 暗転完了後に BGM 開始を同期",
       "firstSeenAt": "2026-11-11T01:11:00+09:00",
       "lastSeenAt": "2026-11-11T01:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-021": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "high",
+      "frequencyBasis": "シーン一覧が選択＋別ボタン二段操作",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:454",
+      "primary": "EntityEditorUi",
+      "related": [
+        "OpenSceneFromPath",
+        "ListSceneJsonFiles"
+      ],
+      "summaryShort": "Selectable はパス選択のみで即開かない",
+      "summary": "Selectable はパス選択のみで即開かない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Selectable は selectedScenePath 更新のみ（454-456 行）",
+        "実際のロードは「シーンを開く」別ボタン（462-464 行）",
+        "シーン切り替え反復で毎回 2 クリック"
+      ],
+      "suggestedUse": "制作: シーン一覧のダブルクリック／即開で往復短縮",
+      "firstSeenAt": "2026-11-11T01:21:00+09:00",
+      "lastSeenAt": "2026-11-11T01:21:00+09:00"
+    },
+    "GAP-Editor-PrefabAsset-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "medium",
+      "frequencyBasis": "プレハブ出力が毎回新規パス生成",
+      "scopeKey": "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:478",
+      "primary": "PrefabAsset",
+      "related": [
+        "MakeUniquePrefabFilePath",
+        "SaveSelectedInstanceToPrefabPath",
+        "selectedPrefabPath"
+      ],
+      "summaryShort": "出力が MakeUnique で上書き更新できない",
+      "summary": "出力が MakeUnique で上書き更新できない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "保存は常に MakeUniquePrefabFilePath（480-483 行）",
+        "一覧で選択中の selectedPrefabPath を上書きする経路無し",
+        "調整ループで Entity_0.json 群が増殖しやすい"
+      ],
+      "suggestedUse": "制作: 同プレハブへの反復上書き保存",
+      "firstSeenAt": "2026-11-11T01:21:00+09:00",
+      "lastSeenAt": "2026-11-11T01:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-022": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "medium",
+      "frequencyBasis": "型変更で params が全リセット",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DefaultParamsForType",
+        "ComponentSlot"
+      ],
+      "summaryShort": "コンボ変更で DefaultParams に差し替え",
+      "summary": "コンボ変更で DefaultParams に差し替え",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "型 Combo 変更時 selected.params = DefaultParamsForType（768-776 行）",
+        "既存 JSON フィールドのマージ・保持無し",
+        "似た Cmp 試行でパラメータを手打ちで戻す手間"
+      ],
+      "suggestedUse": "制作: 型差し替え時に共通キーを温存",
+      "firstSeenAt": "2026-11-11T01:21:00+09:00",
+      "lastSeenAt": "2026-11-11T01:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -5555,7 +5637,10 @@
     "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:354": "GAP-Editor-EditorSceneRuntime-007",
     "UC-Play|Audio|SetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:155": "GAP-Audio-SetSeVolume-001",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:810": "GAP-Audio-AudioManager-001",
-    "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114": "GAP-Scene-ChangeSceneFade-003"
+    "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114": "GAP-Scene-ChangeSceneFade-003",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:454": "GAP-Editor-EntityEditorUi-021",
+    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:478": "GAP-Editor-PrefabAsset-004",
+    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-022"
   },
   "pendings": {},
   "nextSequence": {
@@ -5566,7 +5651,8 @@
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
     "Editor-EntityEditor": 15,
-    "Editor-EntityEditorUi": 21,
+    "Editor-EntityEditorUi": 23,
+    "Editor-PrefabAsset": 4,
     "Editor-EntityEditorTagCatalog": 2,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 3,
@@ -5636,7 +5722,6 @@
     "Ship-main": 2,
     "Editor-EditorAssetsPaths": 2,
     "Editor-EntityEditorShortcuts": 2,
-    "Editor-PrefabAsset": 4,
     "Debug-SceneViewTab": 2,
     "Infra-LoopTick13Demo": 2,
     "Infra-scaffold_play_area": 2,
@@ -6685,6 +6770,22 @@
         "GAP-Audio-SetSeVolume-001",
         "GAP-Audio-AudioManager-001",
         "GAP-Scene-ChangeSceneFade-003"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-012017",
+      "at": "2026-11-11T01:20:47.808609+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditorUi-021",
+        "GAP-Editor-PrefabAsset-004",
+        "GAP-Editor-EntityEditorUi-022"
       ],
       "updatedIds": [],
       "closedIds": []
