@@ -1649,6 +1649,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（15回目）
 - **newIds:** 3（型変更で params 全置換、同名インポート連番、起動設定が暗黙 Save）
 
+## ギャップスキャン tick（SCAN-20261111-033012）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（16回目）
+- **newIds:** 3（launch 失敗が空文字、起動パス未正規化、BuildUp ルートのみ Draw）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

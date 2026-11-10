@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T03:11:06.426582+09:00
+- **lastIncrementalScanAt:** 2026-11-11T03:21:02.300717+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2749,6 +2749,28 @@
 - firstSeenAt: 2026-11-10T23:06:00+09:00
 - lastSeenAt: 2026-11-10T23:06:00+09:00
 
+### GAP-Infra-launch_config-002
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 欠損パスは静かに空文字
+- scope: UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:167
+- primary: `launch_config`
+- summary: 【Debug】設定読込失敗を区別できない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - TryLoadLaunchConfig 失敗で {}（167-168 行）
+  - startup ファイル欠損も同様に空（171-173 行）
+  - CommandScene-004 と合わせ原因特定が難しい
+- suggestedUse: Debug: 起動不能時に launch_config 理由を示す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T03:31:00+09:00
+- lastSeenAt: 2026-11-11T03:31:00+09:00
+
 ### GAP-Scene-SceneBuildUp-018
 
 - status: open
@@ -2791,6 +2813,27 @@
 - suggestedUse: Debug: 検証シーンのカメラ解決をエンジン主導に揃える
 - firstSeenAt: 2026-11-10T23:06:00+09:00
 - lastSeenAt: 2026-11-10T23:06:00+09:00
+
+### GAP-Editor-EditorSceneAsset-001
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動パスを正規化せずそのまま保存
+- scope: UC-Debug|Editor|EditorSceneAsset|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:157
+- primary: `EditorSceneAsset`
+- summary: 【Debug】startupScenePath を生文字列で保存
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - config.startupScenePath = sceneJsonPath 直代入（157 行）
+  - lexically_normal / EditorAssets 基準への統一無し
+  - cwd 依存で Release BuildUp とエディタ表示が乖離（BuildUp-005）
+- suggestedUse: Debug: launch パスをリポジトリ基準で固定
+- firstSeenAt: 2026-11-11T03:31:00+09:00
+- lastSeenAt: 2026-11-11T03:31:00+09:00
 
 ### GAP-Scene-SceneBuildUp-019
 
@@ -2944,6 +2987,27 @@
 - suggestedUse: Debug: ランタイムプレビューの描画コストと一貫性
 - firstSeenAt: 2026-11-11T03:01:00+09:00
 - lastSeenAt: 2026-11-11T03:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-021
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 描画はルート Entity のみ走査
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:85
+- primary: `SceneBuildUp`
+- summary: 【Debug】子付きインスタンスは親 Draw 任せ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GetParent()==nullptr のみ Draw（85-86 行）
+  - 親子不整合や親非 Draw 時は子が表示されない
+  - エディタ階層 JSON の機能検証で欠落に気付きにくい
+- suggestedUse: Debug: ヒエラルキー試験の描画契約を明示
+- firstSeenAt: 2026-11-11T03:31:00+09:00
+- lastSeenAt: 2026-11-11T03:31:00+09:00
 
 ### GAP-Infra-scaffold_play_area-002
 
@@ -5030,7 +5094,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-005013 | at: 2026-11-11T00:50:53.522256+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-010025 | at: 2026-11-11T01:01:08.244530+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-011012 | at: 2026-11-11T01:11:11.772098+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -5045,6 +5108,7 @@
 - scanId: SCAN-20261111-025013 | at: 2026-11-11T02:51:07.177239+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-030016 | at: 2026-11-11T03:01:32.865102+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-031017 | at: 2026-11-11T03:11:06.426582+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-032014 | at: 2026-11-11T03:21:02.300717+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

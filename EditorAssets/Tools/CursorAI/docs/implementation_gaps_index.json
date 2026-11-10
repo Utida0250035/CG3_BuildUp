@@ -6454,6 +6454,91 @@
       "suggestedUse": "制作: launch 設定と明示保存の分離",
       "firstSeenAt": "2026-11-11T03:21:00+09:00",
       "lastSeenAt": "2026-11-11T03:21:00+09:00"
+    },
+    "GAP-Infra-launch_config-002": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "medium",
+      "frequencyBasis": "欠損パスは静かに空文字",
+      "scopeKey": "UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:167",
+      "primary": "launch_config",
+      "related": [
+        "ResolveStartupScenePath",
+        "TryLoadLaunchConfig",
+        "CommandScene"
+      ],
+      "summaryShort": "設定読込失敗を区別できない",
+      "summary": "設定読込失敗を区別できない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "TryLoadLaunchConfig 失敗で {}（167-168 行）",
+        "startup ファイル欠損も同様に空（171-173 行）",
+        "CommandScene-004 と合わせ原因特定が難しい"
+      ],
+      "suggestedUse": "Debug: 起動不能時に launch_config 理由を示す",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T03:31:00+09:00",
+      "lastSeenAt": "2026-11-11T03:31:00+09:00"
+    },
+    "GAP-Editor-EditorSceneAsset-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "起動パスを正規化せずそのまま保存",
+      "scopeKey": "UC-Debug|Editor|EditorSceneAsset|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:157",
+      "primary": "EditorSceneAsset",
+      "related": [
+        "TrySetRepositoryStartupScene",
+        "launch_config",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "startupScenePath を生文字列で保存",
+      "summary": "startupScenePath を生文字列で保存",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "config.startupScenePath = sceneJsonPath 直代入（157 行）",
+        "lexically_normal / EditorAssets 基準への統一無し",
+        "cwd 依存で Release BuildUp とエディタ表示が乖離（BuildUp-005）"
+      ],
+      "suggestedUse": "Debug: launch パスをリポジトリ基準で固定",
+      "firstSeenAt": "2026-11-11T03:31:00+09:00",
+      "lastSeenAt": "2026-11-11T03:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-021": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "medium",
+      "frequencyBasis": "描画はルート Entity のみ走査",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:85",
+      "primary": "SceneBuildUp",
+      "related": [
+        "DrawRuntimeEntities",
+        "BuildEntitiesFromSceneDocument",
+        "parentIndex"
+      ],
+      "summaryShort": "子付きインスタンスは親 Draw 任せ",
+      "summary": "子付きインスタンスは親 Draw 任せ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "GetParent()==nullptr のみ Draw（85-86 行）",
+        "親子不整合や親非 Draw 時は子が表示されない",
+        "エディタ階層 JSON の機能検証で欠落に気付きにくい"
+      ],
+      "suggestedUse": "Debug: ヒエラルキー試験の描画契約を明示",
+      "firstSeenAt": "2026-11-11T03:31:00+09:00",
+      "lastSeenAt": "2026-11-11T03:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -6688,7 +6773,10 @@
     "UC-Play|Audio|AudioManager|Contract|Project/Codes/Source/Audio/Audio.cpp:972": "GAP-Audio-AudioManager-006",
     "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775": "GAP-Editor-EntityEditorUi-025",
     "UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:53": "GAP-Editor-EditorImportedAsset-003",
-    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:412": "GAP-Editor-EntityEditor-019"
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:412": "GAP-Editor-EntityEditor-019",
+    "UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:167": "GAP-Infra-launch_config-002",
+    "UC-Debug|Editor|EditorSceneAsset|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:157": "GAP-Editor-EditorSceneAsset-001",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:85": "GAP-Scene-SceneBuildUp-021"
   },
   "pendings": {},
   "nextSequence": {
@@ -6721,12 +6809,13 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 21,
+    "Scene-SceneBuildUp": 22,
     "Infra-scaffold_play_area": 3,
     "Editor-EditorSceneRuntime": 8,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 5,
-    "Infra-launch_config": 2,
+    "Infra-launch_config": 3,
+    "Editor-EditorSceneAsset": 2,
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
@@ -8031,6 +8120,22 @@
         "GAP-Editor-EntityEditorUi-025",
         "GAP-Editor-EditorImportedAsset-003",
         "GAP-Editor-EntityEditor-019"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-033012",
+      "at": "2026-11-11T03:31:23.423901+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Infra-launch_config-002",
+        "GAP-Editor-EditorSceneAsset-001",
+        "GAP-Scene-SceneBuildUp-021"
       ],
       "updatedIds": [],
       "closedIds": []
