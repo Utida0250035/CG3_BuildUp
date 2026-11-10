@@ -1134,3 +1134,348 @@
 - **理由:** `roadmap.md` に未完了 `- [ ]` がなくなったため `loop-roadmap-dev-15m` を unsubscribe
 
 **状態:** ループ停止（timer 解除済み）
+
+---
+
+## セッション 2026-11-09 23:30（用途別・実装ギャップ正本の新規作成）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- `docs/implementation_gaps.md`（schema 2・運用ルール・空一覧）
+- `docs/implementation_gaps_index.json`（空 index）
+- `docs/use_case_scenarios.md`（UC 各 5 シナリオのシード）
+- `cursorInstructions.md` §6.6 追記
+
+### 2. 課題・選択
+
+- ギャップスキャンループ本体（スクリプト／自動マージ）は未実装。正本ファイルと手順のみ。
+
+### 3. 次ステップ
+
+- 初回 tick: `UC-Debug` + `DBG-Streaming-001` などでスキャンし index にマージ
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+- **CursorAI ドキュメント（ギャップ在庫）**
+  - 用途: デバッグ・制作・出荷の観点で不足を ID 付きで蓄積し、半自律ループで重複なく更新する
+  - 使用場面: デバッグ／制作（エディタ）／ビルド・配布（シナリオ定義）
+  - 用途から決めた仕様: 用途不明は GAP 化せず PENDING のみ。`Codes/` の変更はギャップ tick とは分離
+
+---
+
+## セッション 2026-11-09 23:35（ギャップスキャン tick 機構）
+
+**ブランチ:** `cursor/cloud-agent-1794144340853-5xzcq`
+
+### 1. 完了したこと
+
+- キーワード「ギャップスキャンを実行して」用 §6.6 拡張・`.cursor/rules/gap-scan.mdc`
+- `planGapScanTick.py` / `recordGapScanTick.py` / `syncImplementationGapsMd.py`
+- `loopGapScanDev.ps1`（§7.1.4）
+
+### 3. 次ステップ
+
+- チャットまたは `loopGapScanDev.ps1` で初回 tick 実行
+
+---
+
+## ギャップスキャン tick（SCAN-20261109-232947）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001
+- **newIds:** 3（ChangeSceneFade 遷移 SE 未配線、CommandScene BGM 瞬断、SceneMovie オーディオ方針）
+- **loop:** `loop-gap-scan` 10m タイマー登録済み
+
+## ギャップスキャン tick（SCAN-20261109-234011）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001
+- **newIds:** 3（エンティティ複製 UI なし、複数選択なし、コンポーネント CP なし）
+
+## ギャップスキャン tick（SCAN-20261109-235016）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001
+- **newIds:** 3（SceneBuildUp 未配線、シーン実行がプレビュー限定、FeatureTest 既定シーンなし）
+
+## ギャップスキャン tick（SCAN-20261110-000016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Camera-001
+- **newIds:** 3（BuildUp シルエットなし、verify_camera_policy 未 CI、Scene 基底 unlock 既定）
+
+## ギャップスキャン tick（SCAN-20261110-001015）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Component-001
+- **newIds:** 3（kind 不一致スキップ、登録表ドリフト、component verify 未整備）
+
+## ギャップスキャン tick（SCAN-20261110-002012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Movie-001
+- **newIds:** 3（Movie 未配線、トラック失敗即復帰、sample JSON 未 CI）
+
+## ギャップスキャン tick（SCAN-20261110-003022）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001
+- **newIds:** 3（未保存でシーン切替、読込失敗が空シーン化、ビューポート配置なし）
+
+## ギャップスキャン tick（SCAN-20261110-004013）
+
+- **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001
+- **newIds:** 3（Dev 起動がエディタ、UX JSON 未検知、BuildUp 読込失敗置換）
+
+## ギャップスキャン tick（SCAN-20261110-005019）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001
+- **newIds:** 3（message 未描画、UX JSON エディタなし、actionId parry のみ）
+
+## ギャップスキャン tick（SCAN-20261110-010019）
+
+- **useCase:** UC-Play / **scenario:** PLY-Visual-001
+- **newIds:** 3（ライト直書き、BuildUp フォグ等なし、SceneMovie リムなし）
+
+## ギャップスキャン tick（SCAN-20261110-011015）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001
+- **newIds:** 3（カメラ tuning エディタ未実装、JSON 手動同期、ポスト UI なし）
+
+## ギャップスキャン tick（SCAN-20261110-012008）
+
+- **useCase:** UC-Ship / **scenario:** SHP-AssetPack-001
+- **newIds:** 3（PostBuild は Assets のみ、amesh CI 無し、アセットパス検証無し）
+
+## ギャップスキャン tick（SCAN-20261110-013008）
+
+- **useCase:** UC-Ship / **scenario:** SHP-Config-001
+- **newIds:** 3（Debug も DEVELOPMENT、Editor TU が Release に残る、構成マトリクス CI 無し）
+
+## ギャップスキャン tick（SCAN-20261110-014010）
+
+- **useCase:** UC-Ship / **scenario:** SHP-DevBuild-001
+- **newIds:** 3（buildDevelopment と CI 差分、NuGet 無し、Cloud Linux 未定義）
+
+## ギャップスキャン tick（SCAN-20261110-015009）
+
+- **useCase:** UC-Ship / **scenario:** SHP-Release-001
+- **newIds:** 3（Release PDB、JsonTest 同梱、ForDebug TU 未除外）
+
+## ギャップスキャン tick（SCAN-20261110-020007）
+
+- **useCase:** UC-Ship / **scenario:** SHP-Smoke-001
+- **newIds:** 3（Release CI スモーク無し、手順書無し、main にスモーク CLI 無し）
+
+## ギャップスキャン tick（SCAN-20261110-021019）
+
+- **useCase:** UC-Debug / **scenario:** DBG-PlayArea-001
+- **newIds:** 3（DebugPlayArea パス未定義、シーン一覧対象外、scaffold 未配線）
+
+## ギャップスキャン tick（SCAN-20261110-022017）
+
+- **useCase:** UC-Debug / **scenario:** DBG-Profiler-001
+- **newIds:** 3（区間プロファイラ無し、Δt UI 無し、Release 相当計測手順無し）
+
+## ギャップスキャン tick（SCAN-20261110-023023）
+
+- **useCase:** UC-Debug / **scenario:** DBG-RenderDiag-001
+- **newIds:** 3（Lighting ImGui 未配線、Editor 診断パネル無し、影の可視化無し）
+
+## ギャップスキャン tick（SCAN-20261110-024011）
+
+- **useCase:** UC-Debug / **scenario:** DBG-Streaming-001
+- **newIds:** 3（remaining クランプ、ログ無し、BuildUp でメニュー無し）
+
+## ギャップスキャン tick（SCAN-20261110-025019）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（2回目）
+- **newIds:** 3（Title BGM 維持無し、BuildUp 無音、PauseBgm 未使用）
+
+## ギャップスキャン tick（SCAN-20261110-030010）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（2回目）
+- **newIds:** 3（複製ショートカット無し、プレハブ一括配置無し、ヒエラルキー DnD 無し）
+
+## ギャップスキャン tick（SCAN-20261110-031009）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（2回目）
+- **newIds:** 3（機能検証メニュー無し、実行ビューはプレビューのみ、LoopTick13Demo 未登録）
+
+## ギャップスキャン tick（SCAN-20261110-032016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Camera-001（2回目）
+- **newIds:** 3（StageBounds 固定、BuildUp が境界未反映、ParticleEditor の Debug カメラ制限）
+
+## ギャップスキャン tick（SCAN-20261110-033008）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Component-001（2回目）
+- **newIds:** 3（CmpMesh 未登録、未知 type が Draw 既定、次分割候補未整備）
+
+## ギャップスキャン tick（SCAN-20261110-034006）
+
+- **useCase:** UC-Play / **scenario:** PLY-Movie-001（2回目）
+- **newIds:** 3（returnScene null ハング、SkyDome／カメラ順序、トラックパス未解決）
+
+## ギャップスキャン tick（SCAN-20261110-035010）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001（2回目）
+- **newIds:** 3（配置変更は手動保存、ビューポート配置 UI 無し、再入場でディスク再読込）
+
+## ギャップスキャン tick（SCAN-20261110-040022）
+
+- **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001（2回目）
+- **newIds:** 3（遷移中 Set 無視、Game 入場カメラ順序、BuildUp パス未解決）
+
+## ギャップスキャン tick（SCAN-20261110-041018）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001（2回目）
+- **newIds:** 3（hints 必須ロード、howTo 二重表示、displayName 未描画）
+
+## ギャップスキャン tick（SCAN-20261110-042012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Visual-001（2回目）
+- **newIds:** 3（毎フレーム lighting 上書き、二重 VolumetricFog、Title にリム無し）
+
+## ギャップスキャン tick（SCAN-20261110-043016）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001（2回目）
+- **newIds:** 3（プレビューにポスト無し、調整メニュー無し、lighting 用 JSON 無し）
+
+## ギャップスキャン tick（SCAN-20261110-044018）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（3回目）
+- **newIds:** 3（PlayRequest 未配線、sandbox JSON 未参照、BuildUp 復帰不可）
+
+## ギャップスキャン tick（SCAN-20261110-045017）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（3回目）
+- **newIds:** 3（Result BGM 未維持、撃破即 BGM 停止、StopBgm 全停止）
+
+## ギャップスキャン tick（SCAN-20261110-050024）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（3回目）
+- **newIds:** 3（インポート適用 UI、ドロップがコピー止まり、タグでツリー絞込無し）
+
+## ギャップスキャン tick（SCAN-20261110-051012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Camera-001（3回目）
+- **newIds:** 3（AllowDebug 既定、verify が Allow 未検査、StageViewCamera アスペクト固定）
+
+## ギャップスキャン tick（SCAN-20261110-052013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Component-001（3回目）
+- **newIds:** 3（Mesh 存在検出、AssetPath が Draw 内包、未対応 params UI）
+
+## ギャップスキャン tick（SCAN-20261110-053016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Movie-001（3回目）
+- **newIds:** 3（失敗時 StageView、JSON 全体拒否、遷移予約で更新停止）
+
+## ギャップスキャン tick（SCAN-20261110-054019）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-EditorPlace-001（3回目）
+- **newIds:** 3（プリファブ配置、JSON パス編集、表示名／entityName 分離）
+
+## ギャップスキャン tick（SCAN-20261110-055015）
+
+- **useCase:** UC-Play / **scenario:** PLY-SceneLoad-001（3回目）
+- **newIds:** 3（遷移中 Update 停止、子 Entity 未 Init、フェード中間で ChangeScene）
+
+## ギャップスキャン tick（SCAN-20261110-060016）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-Guidance-001（3回目）
+- **newIds:** 3（session 未配線、テクスチャ失敗時空枠、JSON 参照 verify 無し）
+
+## ギャップスキャン tick（SCAN-20261110-061024）
+
+- **useCase:** UC-Play / **scenario:** PLY-Visual-001（3回目）
+- **newIds:** 3（Fog Flush 順、EnterScene 未ライティング、Result 簡易光のみ）
+
+## ギャップスキャン tick（SCAN-20261110-062012）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-VisualTune-001（3回目）
+- **newIds:** 3（FOV 固定、プレビューカメラ、tuning 解像度未参照）
+
+## ギャップスキャン tick（SCAN-20261110-063013）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（4回目）
+- **newIds:** 3（PlayRequest Path 未使用、BuildUp が Runtime 未参照、起動が EntityEditor 固定）
+
+## ギャップスキャン tick（SCAN-20261110-064013）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（4回目）
+- **newIds:** 3（PlaySceneBgm 全停止、PlaySeLoop 未使用、撃破演出中 BGM 維持無効）
+
+## ギャップスキャン tick（SCAN-20261110-065006）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（4回目）
+- **newIds:** 3（空追加のみ、Imported 一覧無し、トランスフォーム一括無し）
+
+## ギャップスキャン tick（SCAN-20261110-070015）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（5回目）
+- **newIds:** 3（BuildUp が EditorFrame 依存、F2 検証無し、PlayRequest Clear 未使用）
+
+## ギャップスキャン tick（SCAN-20261110-071014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（5回目）
+- **newIds:** 3（Resume 未使用、音量フェード未使用、撃墜／撃破 BGM 非対称）
+
+## ギャップスキャン tick（SCAN-20261110-072023）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（5回目）
+- **newIds:** 3（単体削除のみ、タグ一括解除無し、プレハブが Definition のみ）
+
+## ギャップスキャン tick（SCAN-20261110-073017）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（6回目）
+- **newIds:** 3（Launch が Enter 無し、実行＝タブのみ、README 手順のみ）
+
+## ギャップスキャン tick（SCAN-20261110-074024）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（6回目）
+- **newIds:** 3（BGM 再試行、イントロ中 SE 停止、タイトル Exit 即 BGM 停止）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+- **ギャップスキャン自動化（CursorAI ツール）**
+  - 用途: デバッグ・制作・出荷観点の不足を優先順 1 シナリオ／tick で蓄積
+  - 使用場面: デバッグ（半自律 `/loop`）
+  - 用途から決めた仕様: roadmap ループと分離、ドキュメントのみ tick はビルド・ブランチ不要
+
+## ギャップスキャン tick（SCAN-20261110-075021）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（6回目）
+- **newIds:** 3（コンポ 1 件削除、プレハブ 1 体追加、実行順 1 スロットのみ）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし

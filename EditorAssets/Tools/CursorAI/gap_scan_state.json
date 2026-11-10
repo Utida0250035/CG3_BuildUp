@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "useCaseRotation": [
+    "UC-Play",
+    "UC-Authoring",
+    "UC-Debug",
+    "UC-Ship"
+  ],
+  "rotationCursor": 2,
+  "scenarioScanCounts": {
+    "PLY-Audio-001": 6,
+    "AUT-AssetLoop-001": 6,
+    "DBG-FeatureScene-001": 6,
+    "PLY-Camera-001": 3,
+    "AUT-Component-001": 3,
+    "PLY-Movie-001": 3,
+    "AUT-EditorPlace-001": 3,
+    "PLY-SceneLoad-001": 3,
+    "AUT-Guidance-001": 3,
+    "PLY-Visual-001": 3,
+    "AUT-VisualTune-001": 3,
+    "SHP-AssetPack-001": 1,
+    "SHP-Config-001": 1,
+    "SHP-DevBuild-001": 1,
+    "SHP-Release-001": 1,
+    "SHP-Smoke-001": 1,
+    "DBG-PlayArea-001": 1,
+    "DBG-Profiler-001": 1,
+    "DBG-RenderDiag-001": 1,
+    "DBG-Streaming-001": 1
+  },
+  "lastCompletedScanId": "SCAN-20261110-075021",
+  "currentPlannedScanId": "",
+  "totalTicksCompleted": 51
+}

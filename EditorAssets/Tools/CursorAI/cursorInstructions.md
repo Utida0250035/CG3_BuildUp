@@ -199,6 +199,49 @@
 
 - ユーザーから回答を得た用途は「推測」ではなく **「確認済み」** と明記する。
 
+### 6.6 用途別・実装ギャップスキャン（キーワード・`/loop`）
+
+**起動キーワード（1 回 = 1 tick）:** **`ギャップスキャンを実行して`**
+
+チャットで上記を送る、または `/loop` の gap-scan tick が同文言を送る。
+
+**正本（ギャップ在庫）**
+
+| ファイル | 役割 |
+|----------|------|
+| `EditorAssets/Tools/CursorAI/docs/implementation_gaps.md` | 人間が読む一覧（用途別不足） |
+| `EditorAssets/Tools/CursorAI/docs/implementation_gaps_index.json` | ID・`scopeKey`・重複禁止の機械正本 |
+| `EditorAssets/Tools/CursorAI/docs/use_case_scenarios.md` | UseCase ごとの「できるべきこと」シナリオ |
+
+**tick 計画（優先順位・範囲はスクリプトが 1 件だけ選定）**
+
+| ファイル | 役割 |
+|----------|------|
+| `planGapScanTick.py` | 未スキャン優先・UseCase ローテーションで **シナリオ 1 件** を選び `gap_scan_tick.json` へ出力 |
+| `gap_scan_tick.json` | 当該 tick の範囲（`scanId`・`scenarioId`・`areaHint`・`searchHints`） |
+| `gap_scan_state.json` | ローテーション・シナリオスキャン回数 |
+| `recordGapScanTick.py` | tick 完了記録（`scans` 追記・ローテーション進行） |
+| `syncImplementationGapsMd.py` | index から `implementation_gaps.md` の一覧・履歴を再同期 |
+
+`progress_report.md` はセッション報告のみ（ギャップ本文を正本にしない）。
+
+**1 tick の手順（キーワード受信後は毎回この順）**
+
+1. `python3 EditorAssets/Tools/CursorAI/planGapScanTick.py` を実行し **`gap_scan_tick.json` を Read**（`status: in_progress` の計画に厳守。自前で範囲を広げない）。
+2. `implementation_gaps_index.json` を Read。
+3. 計画の `scenarioId` / `scenarioText` / `areaHint` / `searchHints` のみを対象に、**「その用途でできないこと」** をコード・仕様（`spec` md）と突合。
+4. 各候補に `scopeKey` = `primaryUseCase | Area | PrimarySymbol | Kind | Anchor` を付与。`scopeToId` にあれば **同一 ID を更新**（新規 ID 禁止）。
+5. 新規のみ `GAP-<Area>-<Subject>-<NNN>` を採番（`nextSequence` を index で管理可）。`summary` は `【Play|Authoring|Debug|Ship】…` 型を守る。
+6. **用途が推測できない** 候補は GAP 化せず、`pendings` に `PENDING-UC-*` のみ。
+7. `syncImplementationGapsMd.py` を実行。
+8. `recordGapScanTick.py --new-ids … --updated-ids …` を実行。
+9. `progress_report.md` に **`scanId`・`primaryUseCase`・`newIds` 件数** を追記。
+
+**コード変更**
+
+- ギャップスキャン **のみ** の tick では **ビルド不要**・**§6.5 作業ブランチ不要**（ドキュメント／index のみ）。コミットはユーザー許可または `/loop` 方針に従う。
+- ギャップ解消の実装 tick は従来どおり §4 ビルド・§6.5 ブランチ運用に従う。
+
 ## 7. モードの開始・終了
 
 - **開始:** ユーザーが「半自律」「半自律稼働」等と明示したとき。
@@ -236,6 +279,14 @@
 #### 7.1.3 状態ファイル
 
 - **`loop_state.json`** … `lastGoodCommit`（ロールバック先）、連続失敗回数。エージェントが直接編集せず上記スクリプト経由で更新する。
+
+#### 7.1.4 `/loop` ギャップスキャン（roadmap ループと独立）
+
+- **起動:** `EditorAssets/Tools/CursorAI/loopGapScanDev.ps1`（`progress_report` 200kB 監視は `loopReportGuard.ps1` と同様）。
+- **間隔:** `-IntervalMinutes`（既定 90）。各周期のプロンプトは **「ギャップスキャンを実行して」** を含む（§6.6 参照）。
+- **1 tick:** `planGapScanTick.py` → スキャン → `syncImplementationGapsMd.py` → `recordGapScanTick.py`。**ビルドしない**。**`loopMergeTickToDevelop.ps1` 不要**（Git マージなし tick でよい）。
+- **停止:** ユーザー「ループ停止」、`progress_report` 肥大化（§7.1）、または `use_case_scenarios.md` の全シナリオが十分回った後の手動停止。
+- **蓄積:** 正本は `implementation_gaps_index.json` / `implementation_gaps.md`。`progress_report` には scan 要約のみ追記。
 
 ## 8. タスク完了時の Git 自動フロー（コミット許可後）
 
