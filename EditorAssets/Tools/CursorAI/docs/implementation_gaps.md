@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T04:00:54.388539+09:00
+- **lastIncrementalScanAt:** 2026-11-11T04:10:35.991951+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1594,6 +1594,27 @@
 - firstSeenAt: 2026-11-11T00:51:00+09:00
 - lastSeenAt: 2026-11-11T00:51:00+09:00
 
+### GAP-Editor-EntityEditorDefinition-005
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 型変更時 params 非マージ
+- scope: UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:103
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】from_json が params を丸ごと代入
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 既知 type は kind だけ DefaultKind（103-105 行）
+  - params は j.value のみで DefaultParams 未マージ（108 行）
+  - 一括コンポ差替で欠損キーが残り手修正が増える
+- suggestedUse: Authoring: テンプレ差替の既定値補完
+- firstSeenAt: 2026-11-11T04:21:00+09:00
+- lastSeenAt: 2026-11-11T04:21:00+09:00
+
 ### GAP-Editor-EntityEditorTagCatalog-002
 
 - status: open
@@ -1783,6 +1804,27 @@
 - firstSeenAt: 2026-11-11T03:21:00+09:00
 - lastSeenAt: 2026-11-11T03:21:00+09:00
 
+### GAP-Editor-EditorImportedAsset-004
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: 衝突時の連番リネームのみ
+- scope: UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:57
+- primary: `EditorImportedAsset`
+- summary: 【Authoring】衝突解決が stem_N 連番のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - exists(dest) 時 stem+連番+ext のみ（53-62 行）
+  - バッチ全体の接頭辞やタイムスタンプを選べない
+  - 大量同名アセットの整理に外部リネームが必要
+- suggestedUse: Authoring: 一括インポート命名規則
+- firstSeenAt: 2026-11-11T04:21:00+09:00
+- lastSeenAt: 2026-11-11T04:21:00+09:00
+
 ### GAP-Editor-EntityEditor-017
 
 - status: open
@@ -1824,6 +1866,27 @@
 - suggestedUse: 制作: 作業切替で Dock を既定に戻す
 - firstSeenAt: 2026-11-11T01:51:00+09:00
 - lastSeenAt: 2026-11-11T01:51:00+09:00
+
+### GAP-Editor-EntityEditor-020
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 一括 D&D 後プレビュー未更新
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:278
+- primary: `EntityEditor`
+- summary: 【Authoring】インポート後プレビュー再適用なし
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ProcessDroppedFileImports はコピーと status のみ（271-290 行）
+  - requestApplyPreview を立てず手動プレビュー待ち
+  - 複数ファイル時も最後の path だけ UiState に残る
+- suggestedUse: Authoring: D&D 直後のビュー反映を自動化
+- firstSeenAt: 2026-11-11T04:21:00+09:00
+- lastSeenAt: 2026-11-11T04:21:00+09:00
 
 #### UC-Debug
 
@@ -5347,7 +5410,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-014014 | at: 2026-11-11T01:40:52.216206+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-015018 | at: 2026-11-11T01:50:48.708567+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-020020 | at: 2026-11-11T02:01:01.214707+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-021016 | at: 2026-11-11T02:11:03.810105+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -5362,6 +5424,7 @@
 - scanId: SCAN-20261111-034021 | at: 2026-11-11T03:40:47.570879+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-035014 | at: 2026-11-11T03:50:30.395021+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

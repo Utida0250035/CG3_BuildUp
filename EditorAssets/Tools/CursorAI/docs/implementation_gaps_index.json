@@ -6873,6 +6873,90 @@
       "suggestedUse": "プレイ: コールバック内プリフィル検討",
       "firstSeenAt": "2026-11-11T04:11:00+09:00",
       "lastSeenAt": "2026-11-11T04:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-020": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "medium",
+      "frequencyBasis": "一括 D&D 後プレビュー未更新",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:278",
+      "primary": "EntityEditor",
+      "related": [
+        "ProcessDroppedFileImports",
+        "requestApplyPreview",
+        "lastImportedAssetPath"
+      ],
+      "summaryShort": "インポート後プレビュー再適用なし",
+      "summary": "インポート後プレビュー再適用なし",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "ProcessDroppedFileImports はコピーと status のみ（271-290 行）",
+        "requestApplyPreview を立てず手動プレビュー待ち",
+        "複数ファイル時も最後の path だけ UiState に残る"
+      ],
+      "suggestedUse": "Authoring: D&D 直後のビュー反映を自動化",
+      "firstSeenAt": "2026-11-11T04:21:00+09:00",
+      "lastSeenAt": "2026-11-11T04:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorDefinition-005": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "medium",
+      "frequencyBasis": "型変更時 params 非マージ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:103",
+      "primary": "EntityEditorDefinition",
+      "related": [
+        "from_json",
+        "DefaultParamsForType",
+        "ComponentSlot"
+      ],
+      "summaryShort": "from_json が params を丸ごと代入",
+      "summary": "from_json が params を丸ごと代入",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "既知 type は kind だけ DefaultKind（103-105 行）",
+        "params は j.value のみで DefaultParams 未マージ（108 行）",
+        "一括コンポ差替で欠損キーが残り手修正が増える"
+      ],
+      "suggestedUse": "Authoring: テンプレ差替の既定値補完",
+      "firstSeenAt": "2026-11-11T04:21:00+09:00",
+      "lastSeenAt": "2026-11-11T04:21:00+09:00"
+    },
+    "GAP-Editor-EditorImportedAsset-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "low",
+      "frequencyBasis": "衝突時の連番リネームのみ",
+      "scopeKey": "UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:57",
+      "primary": "EditorImportedAsset",
+      "related": [
+        "CopyFileIntoImportedAssets",
+        "stem",
+        "suffix"
+      ],
+      "summaryShort": "衝突解決が stem_N 連番のみ",
+      "summary": "衝突解決が stem_N 連番のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "exists(dest) 時 stem+連番+ext のみ（53-62 行）",
+        "バッチ全体の接頭辞やタイムスタンプを選べない",
+        "大量同名アセットの整理に外部リネームが必要"
+      ],
+      "suggestedUse": "Authoring: 一括インポート命名規則",
+      "firstSeenAt": "2026-11-11T04:21:00+09:00",
+      "lastSeenAt": "2026-11-11T04:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -7122,7 +7206,10 @@
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:26": "GAP-Scene-SceneBuildUp-022",
     "UC-Play|Audio|PlaySeDetail|Contract|Project/Codes/Include/System/PlaySe.h:32": "GAP-Audio-PlaySeDetail-002",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:554": "GAP-Audio-AudioManager-009",
-    "UC-Play|Audio|StreamingVoiceCallback|Incomplete|Project/Codes/Source/Audio/StreamingVoiceCallBack.cpp:7": "GAP-Audio-StreamingVoiceCallback-002"
+    "UC-Play|Audio|StreamingVoiceCallback|Incomplete|Project/Codes/Source/Audio/StreamingVoiceCallBack.cpp:7": "GAP-Audio-StreamingVoiceCallback-002",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:278": "GAP-Editor-EntityEditor-020",
+    "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:103": "GAP-Editor-EntityEditorDefinition-005",
+    "UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:57": "GAP-Editor-EditorImportedAsset-004"
   },
   "pendings": {},
   "nextSequence": {
@@ -7139,15 +7226,15 @@
     "Scene-SceneGame": 13,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 20,
+    "Editor-EntityEditor": 21,
     "Editor-PrefabAsset": 6,
     "Editor-EntityEditorUi": 27,
     "Editor-EditorEntityWorkbench": 5,
     "Editor-EntityEditorTagCatalog": 3,
-    "Editor-EditorImportedAsset": 4,
+    "Editor-EditorImportedAsset": 5,
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
-    "Editor-EntityEditorDefinition": 5,
+    "Editor-EntityEditorDefinition": 6,
     "Scene-SceneBuildUpRegistry": 4,
     "Editor-SceneEntityEditor": 12,
     "Scene-SceneCameraRig": 2,
@@ -8547,6 +8634,22 @@
         "GAP-Audio-PlaySeDetail-002",
         "GAP-Audio-AudioManager-009",
         "GAP-Audio-StreamingVoiceCallback-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-042015",
+      "at": "2026-11-11T04:21:02.733755+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-020",
+        "GAP-Editor-EntityEditorDefinition-005",
+        "GAP-Editor-EditorImportedAsset-004"
       ],
       "updatedIds": [],
       "closedIds": []
