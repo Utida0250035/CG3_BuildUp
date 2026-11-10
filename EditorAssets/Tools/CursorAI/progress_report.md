@@ -1614,6 +1614,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（13回目）
 - **newIds:** 3（PlaySe ハンドル破棄、ワンショット一括停止なし、Title Submit+フェード）
 
+## ギャップスキャン tick（SCAN-20261111-022018）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（13回目）
+- **newIds:** 3（保存後プレビュー無し、複数ドロップ上書き、シーン切替でプレハブ選択残り）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

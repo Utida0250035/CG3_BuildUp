@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T02:01:01.214707+09:00
+- **lastIncrementalScanAt:** 2026-11-11T02:11:03.810105+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1212,6 +1212,27 @@
 - firstSeenAt: 2026-11-10T07:51:00+09:00
 - lastSeenAt: 2026-11-10T07:51:00+09:00
 
+### GAP-Editor-EntityEditor-016
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: 保存後にプレビュー再構築が走らない
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:192
+- primary: `EntityEditor`
+- summary: 【Authoring】requestSaveToDisk が needApply を立てない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - SaveToJsonPath のみ実行（192-195 行）で needApply 無し
+  - requestApplyPreview や Reload と非対称（186-198 行）
+  - 保存直後の Runtime プレビューがディスク内容とずれうる
+- suggestedUse: 制作: 保存とプレビュー同期をワンアクションに
+- firstSeenAt: 2026-11-11T02:21:00+09:00
+- lastSeenAt: 2026-11-11T02:21:00+09:00
+
 ### GAP-Editor-EntityEditorHierarchy-002
 
 - status: open
@@ -1550,6 +1571,48 @@
 - suggestedUse: 制作: 保存前に複数案をメモリで試す
 - firstSeenAt: 2026-11-11T01:51:00+09:00
 - lastSeenAt: 2026-11-11T01:51:00+09:00
+
+### GAP-Editor-PrefabAsset-005
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: シーン切替でプレハブ選択が残る
+- scope: UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233
+- primary: `PrefabAsset`
+- summary: 【Authoring】OpenScene が selectedPrefabPath をクリアしない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - OpenSceneFromPath は Load と selectedScenePath のみ（233-240 行）
+  - 別シーンで前シーンのプレハブが選択表示のまま
+  - 誤って「シーンへ追加」で異シーン文脈へ投入しうる
+- suggestedUse: 制作: シーン切替時にプレハブ選択をリセット
+- firstSeenAt: 2026-11-11T02:21:00+09:00
+- lastSeenAt: 2026-11-11T02:21:00+09:00
+
+### GAP-Editor-EntityEditor-017
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 同一フレーム複数ドロップが最後だけ残る
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:288
+- primary: `EntityEditor`
+- summary: 【Authoring】ループ内で lastImported が上書き
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - for 各 dropped で lastImportedAssetPath 代入（280-289 行）
+  - 複数ファイル同時ドロップで直近 1 件のみ UI に残る
+  - Ui-023 の適用はさらに 1 スロットずつ
+- suggestedUse: 制作: 一括ドロップをキュー表示して順適用
+- firstSeenAt: 2026-11-11T02:21:00+09:00
+- lastSeenAt: 2026-11-11T02:21:00+09:00
 
 ### GAP-Editor-EditorEntityWorkbench-003
 
@@ -4584,7 +4647,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-234025 | at: 2026-11-10T23:42:41.699471+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-235013 | at: 2026-11-10T23:50:56.634759+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-000032 | at: 2026-11-11T00:01:17.401951+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-001015 | at: 2026-11-11T00:10:56.667870+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -4599,6 +4661,7 @@
 - scanId: SCAN-20261111-014014 | at: 2026-11-11T01:40:52.216206+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-015018 | at: 2026-11-11T01:50:48.708567+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-020020 | at: 2026-11-11T02:01:01.214707+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-021016 | at: 2026-11-11T02:11:03.810105+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

@@ -5862,6 +5862,90 @@
       "suggestedUse": "プレイ: タイトル→ゲームの SE/BGM 手応え",
       "firstSeenAt": "2026-11-11T02:11:00+09:00",
       "lastSeenAt": "2026-11-11T02:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-016": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "high",
+      "frequencyBasis": "保存後にプレビュー再構築が走らない",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:192",
+      "primary": "EntityEditor",
+      "related": [
+        "requestSaveToDisk",
+        "requestApplyPreview",
+        "TickPendingRequests"
+      ],
+      "summaryShort": "requestSaveToDisk が needApply を立てない",
+      "summary": "requestSaveToDisk が needApply を立てない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "SaveToJsonPath のみ実行（192-195 行）で needApply 無し",
+        "requestApplyPreview や Reload と非対称（186-198 行）",
+        "保存直後の Runtime プレビューがディスク内容とずれうる"
+      ],
+      "suggestedUse": "制作: 保存とプレビュー同期をワンアクションに",
+      "firstSeenAt": "2026-11-11T02:21:00+09:00",
+      "lastSeenAt": "2026-11-11T02:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-017": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "medium",
+      "frequencyBasis": "同一フレーム複数ドロップが最後だけ残る",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:288",
+      "primary": "EntityEditor",
+      "related": [
+        "ProcessDroppedFileImports",
+        "lastImportedAssetPath",
+        "FileDropQueue"
+      ],
+      "summaryShort": "ループ内で lastImported が上書き",
+      "summary": "ループ内で lastImported が上書き",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "for 各 dropped で lastImportedAssetPath 代入（280-289 行）",
+        "複数ファイル同時ドロップで直近 1 件のみ UI に残る",
+        "Ui-023 の適用はさらに 1 スロットずつ"
+      ],
+      "suggestedUse": "制作: 一括ドロップをキュー表示して順適用",
+      "firstSeenAt": "2026-11-11T02:21:00+09:00",
+      "lastSeenAt": "2026-11-11T02:21:00+09:00"
+    },
+    "GAP-Editor-PrefabAsset-005": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "medium",
+      "frequencyBasis": "シーン切替でプレハブ選択が残る",
+      "scopeKey": "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233",
+      "primary": "PrefabAsset",
+      "related": [
+        "OpenSceneFromPath",
+        "selectedPrefabPath",
+        "AddInstanceFromPrefabPath"
+      ],
+      "summaryShort": "OpenScene が selectedPrefabPath をクリアしない",
+      "summary": "OpenScene が selectedPrefabPath をクリアしない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "OpenSceneFromPath は Load と selectedScenePath のみ（233-240 行）",
+        "別シーンで前シーンのプレハブが選択表示のまま",
+        "誤って「シーンへ追加」で異シーン文脈へ投入しうる"
+      ],
+      "suggestedUse": "制作: シーン切替時にプレハブ選択をリセット",
+      "firstSeenAt": "2026-11-11T02:21:00+09:00",
+      "lastSeenAt": "2026-11-11T02:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -6077,7 +6161,10 @@
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:117": "GAP-Scene-SceneBuildUp-017",
     "UC-Play|Audio|PlaySe|Incomplete|Project/Codes/Include/System/PlaySe.h:54": "GAP-Audio-PlaySe-001",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Include/Audio/Audio.h:147": "GAP-Audio-AudioManager-002",
-    "UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:50": "GAP-Scene-SceneTitle-003"
+    "UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:50": "GAP-Scene-SceneTitle-003",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:192": "GAP-Editor-EntityEditor-016",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:288": "GAP-Editor-EntityEditor-017",
+    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233": "GAP-Editor-PrefabAsset-005"
   },
   "pendings": {},
   "nextSequence": {
@@ -6091,10 +6178,10 @@
     "Scene-SceneGame": 13,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 16,
+    "Editor-EntityEditor": 18,
+    "Editor-PrefabAsset": 6,
     "Editor-EntityEditorUi": 24,
     "Editor-EditorEntityWorkbench": 4,
-    "Editor-PrefabAsset": 4,
     "Editor-EntityEditorTagCatalog": 2,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 3,
@@ -7306,6 +7393,22 @@
         "GAP-Audio-PlaySe-001",
         "GAP-Audio-AudioManager-002",
         "GAP-Scene-SceneTitle-003"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-022018",
+      "at": "2026-11-11T02:21:03.662472+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-016",
+        "GAP-Editor-EntityEditor-017",
+        "GAP-Editor-PrefabAsset-005"
       ],
       "updatedIds": [],
       "closedIds": []
