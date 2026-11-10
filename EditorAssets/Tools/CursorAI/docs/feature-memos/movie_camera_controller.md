@@ -35,3 +35,21 @@ CommandChangeScene::Instance()->Set(movie, std::make_unique<ChangeSceneFade>().r
 
 - `Escape` でスキップ（returnScene へフェード）
 - トラック終了で自動遷移
+
+---
+
+## SceneMovie（ムービー用シーン）
+
+**クラス:** `SceneMovie` / `SceneMovieRegistry`
+
+### 用途
+
+- **ランタイム:** 短いカットシーンを単独シーンとして再生し、完了後に呼び出し元へ戻る
+- **制作:** トラック JSON を差し替えてリピート確認（スカイドームのみの簡易 3D 背景）
+
+### ポリシー
+
+- `IsStageViewCameraLocked() == true`
+- カメラは `MovieCameraController` のみ（失敗時は即 return へ）
+
+> `scene_movie.md` は GAP／roadmap リンク互換用スタブ（本文は本節）。

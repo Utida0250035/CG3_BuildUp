@@ -8,7 +8,8 @@
 |----------|------|
 | **`roadmap_rough.md`** | 下書き（常にテンプレ＋貼付欄） |
 | **`roadmap_rough.template.md`** | 再生成用テンプレ（編集はこちら） |
-| **`roadmap_rough_old.md`** | 直近1回分の取り込み済み下書き（上書き） |
+| **`roadmap_rough_old.md`** | 直近1回分の取り込み退避（本文は `roadmap.md` へ取り込み済み・重複なし） |
+| **`entity_camera_components.md`** | エンティティカメラの要件・段階ロードマップ（チェック付き正本） |
 | **`roadmap.md`** | 正本（`##` / `###` / `- [ ]`・`- [x]`） |
 
 ## 書き方

@@ -1479,3 +1479,19 @@
 ## 用途不明で確認待ち（§6.4）
 
 なし
+
+---
+
+## エンティティカメラ要件ドキュメント（P0）
+
+- **実施:** `entity_camera_components.md` 作成、`roadmap.md` リンク、`scene_movie`→`movie_camera_controller` 統合スタブ、`roadmap_rough_old` 重複本文削除
+- **手動確認:** 未実施（ドキュメントのみ）
+- **未検証:** なし（ビルド対象外）
+- **次:** P1 実装（`cursor/cmp-camera-entity-0f04`）
+
+## 推測した用途（§6.4）
+
+- **entity_camera_components.md**
+  - 用途: エンティティカメラの要件・段階チェックの正本（他エージェント引き継ぎ）
+  - 使用場面: 半自律・Cloud Agent の着手前 Read
+  - 仕様: progress_report とチェック更新を同期
