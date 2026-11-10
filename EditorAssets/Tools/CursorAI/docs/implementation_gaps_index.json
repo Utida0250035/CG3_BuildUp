@@ -7264,6 +7264,90 @@
       "suggestedUse": "Debug: Feature シーン起動の単一 API",
       "firstSeenAt": "2026-11-11T05:01:00+09:00",
       "lastSeenAt": "2026-11-11T05:01:00+09:00"
+    },
+    "GAP-Audio-AudioDecoder-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "EOF 時の voice 状態未更新",
+      "scopeKey": "UC-Play|Audio|AudioDecoder|Incomplete|Project/Codes/Source/Audio/AudioDecoder.cpp:102",
+      "primary": "AudioDecoder",
+      "related": [
+        "ReadNextChunk",
+        "MF_SOURCE_READERF_ENDOFSTREAM",
+        "RefillBuffer"
+      ],
+      "summaryShort": "EOF で break のみ",
+      "summary": "EOF で break のみ",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "ENDOFSTREAM でループ脱出（102 行）",
+        "ループ再生の巻き戻しと区別しない",
+        "非ループ長尺 SE が突然 Stopped へ落ちる"
+      ],
+      "suggestedUse": "プレイ: ストリーム終端とループ境界",
+      "firstSeenAt": "2026-11-11T05:11:00+09:00",
+      "lastSeenAt": "2026-11-11T05:11:00+09:00"
+    },
+    "GAP-Audio-AudioManager-012": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 530,
+      "frequency": "medium",
+      "frequencyBasis": "Waiting 非ループは即停止",
+      "scopeKey": "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:100",
+      "primary": "AudioManager",
+      "related": [
+        "Update",
+        "VoiceState::Waiting",
+        "TryRecoverLoopingStreamingVoice"
+      ],
+      "summaryShort": "Waiting 非ループは Stop で終了",
+      "summary": "Waiting 非ループは Stop で終了",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "isLoop でない Waiting は Recover せず Stop（100-110 行）",
+        "一時的バッファ枯渇も終了扱い",
+        "シーン遷移直後の長尺 SE が途中で切れる"
+      ],
+      "suggestedUse": "プレイ: 非ループストリームのリトライ",
+      "firstSeenAt": "2026-11-11T05:11:00+09:00",
+      "lastSeenAt": "2026-11-11T05:11:00+09:00"
+    },
+    "GAP-Audio-AudioManager-013": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "low",
+      "frequencyBasis": "ストリーム wfEx が固定",
+      "scopeKey": "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:206",
+      "primary": "AudioManager",
+      "related": [
+        "SetupStreaming",
+        "StandardWaveFormatEx",
+        "MFCreateSourceReaderFromURL"
+      ],
+      "summaryShort": "SetupStreaming が 44.1kHz 固定",
+      "summary": "SetupStreaming が 44.1kHz 固定",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "isSuitableStreaming の wfEx は StandardWaveFormatEx のみ（203-206 行）",
+        "実ファイルのサンプルレートを MF から反映しない",
+        "再生位置 API の 44100 固定と累積誤差（AudioManager-006）"
+      ],
+      "suggestedUse": "プレイ: ストリーム fmt 同期",
+      "firstSeenAt": "2026-11-11T05:11:00+09:00",
+      "lastSeenAt": "2026-11-11T05:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -7527,14 +7611,17 @@
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377": "GAP-Editor-EntityEditorUi-027",
     "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:372": "GAP-Editor-EditorSceneRuntime-008",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:149": "GAP-Scene-SceneBuildUp-024",
-    "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:44": "GAP-Scene-SceneBuildUpRegistry-004"
+    "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:44": "GAP-Scene-SceneBuildUpRegistry-004",
+    "UC-Play|Audio|AudioDecoder|Incomplete|Project/Codes/Source/Audio/AudioDecoder.cpp:102": "GAP-Audio-AudioDecoder-002",
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:100": "GAP-Audio-AudioManager-012",
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:206": "GAP-Audio-AudioManager-013"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 4,
     "Audio-SetSeVolume": 2,
-    "Audio-AudioManager": 12,
-    "Audio-AudioDecoder": 2,
+    "Audio-AudioManager": 14,
+    "Audio-AudioDecoder": 3,
     "Audio-StreamingVoiceCallback": 3,
     "Audio-IsSuitableStreaming": 2,
     "Audio-PlaySe": 2,
@@ -9033,6 +9120,22 @@
         "GAP-Editor-EditorSceneRuntime-008",
         "GAP-Scene-SceneBuildUp-024",
         "GAP-Scene-SceneBuildUpRegistry-004"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-051011",
+      "at": "2026-11-11T05:10:49.097514+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1060,
+      "newIds": [
+        "GAP-Audio-AudioDecoder-002",
+        "GAP-Audio-AudioManager-012",
+        "GAP-Audio-AudioManager-013"
       ],
       "updatedIds": [],
       "closedIds": []

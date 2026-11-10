@@ -1699,6 +1699,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（19回目）
 - **newIds:** 3（子 Entity 未 Initialize、カメラ無し無言 return、Launch は Enter なし）
 
+## ギャップスキャン tick（SCAN-20261111-051011）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（19回目）
+- **newIds:** 3（Decoder EOF、Waiting 非ループ即停止、ストリーム wfEx 固定）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
