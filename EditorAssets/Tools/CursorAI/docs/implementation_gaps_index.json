@@ -7600,6 +7600,90 @@
       "suggestedUse": "プレイ: SE プール枯渇のグレースフル処理",
       "firstSeenAt": "2026-11-11T05:41:00+09:00",
       "lastSeenAt": "2026-11-11T05:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditorTagCatalog-003": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 470,
+      "frequency": "medium",
+      "frequencyBasis": "カタログ付与が 1 タグ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:621",
+      "primary": "EntityEditorTagCatalog",
+      "related": [
+        "tagCatalog",
+        "AddTagToEntityDefinition",
+        "DrawInspectorPanel"
+      ],
+      "summaryShort": "カタログ付与は 1 件ずつ",
+      "summary": "カタログ付与は 1 件ずつ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Combo+Button で picked 1 タグのみ（621-625 行）",
+        "複数インスタンス／複数タグの一括付与 UI なし",
+        "Asset ループで同ロールタグを量産する手間"
+      ],
+      "suggestedUse": "Authoring: カタログタグの一括付与",
+      "firstSeenAt": "2026-11-11T05:51:00+09:00",
+      "lastSeenAt": "2026-11-11T05:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-029": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "medium",
+      "frequencyBasis": "実行順が 1 スロットのみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745",
+      "primary": "EntityEditorUi",
+      "related": [
+        "executionOrder",
+        "ComponentSlot",
+        "CollectComponentIndicesForKind"
+      ],
+      "summaryShort": "実行順 InputInt が単体",
+      "summary": "実行順 InputInt が単体",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "選択スロットのみ executionOrder 編集（745-747 行）",
+        "同種別コンポ複数の一括整列 UI なし",
+        "プレハブ複製後の優先度揃えが手作業"
+      ],
+      "suggestedUse": "Authoring: 実行順の一括オフセット",
+      "firstSeenAt": "2026-11-11T05:51:00+09:00",
+      "lastSeenAt": "2026-11-11T05:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-030": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "medium",
+      "frequencyBasis": "型差替で params 全置換",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DefaultParamsForType",
+        "Combo",
+        "EntityEditorDefinition-005"
+      ],
+      "summaryShort": "型 Combo で params 初期化",
+      "summary": "型 Combo で params 初期化",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "型変更時 selected.params = DefaultParamsForType（775 行）",
+        "既存 params のマージや一括型差替なし",
+        "似た AssetPath を持つ複数体の調整が反復"
+      ],
+      "suggestedUse": "Authoring: 型差替時の params マージ",
+      "firstSeenAt": "2026-11-11T05:51:00+09:00",
+      "lastSeenAt": "2026-11-11T05:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -7790,7 +7874,7 @@
     "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19": "GAP-Audio-PlaySeDetail-001",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:261": "GAP-Editor-EntityEditor-013",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:163": "GAP-Editor-EntityEditor-014",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745": "GAP-Editor-EntityEditorUi-019",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745": "GAP-Editor-EntityEditorUi-029",
     "UC-Debug|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:96": "GAP-Scene-SceneBuildUp-013",
     "UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:422": "GAP-Editor-EntityEditorUi-020",
     "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:354": "GAP-Editor-EditorSceneRuntime-007",
@@ -7875,7 +7959,9 @@
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:113": "GAP-Scene-SceneBuildUp-026",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:489": "GAP-Audio-AudioManager-014",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:619": "GAP-Audio-AudioManager-015",
-    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:379": "GAP-Audio-AudioManager-016"
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:379": "GAP-Audio-AudioManager-016",
+    "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:621": "GAP-Editor-EntityEditorTagCatalog-003",
+    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775": "GAP-Editor-EntityEditorUi-030"
   },
   "pendings": {},
   "nextSequence": {
@@ -7894,9 +7980,9 @@
     "Runtime-MovieCameraTrackLoader": 3,
     "Editor-EntityEditor": 22,
     "Editor-PrefabAsset": 7,
-    "Editor-EntityEditorUi": 29,
+    "Editor-EntityEditorUi": 31,
     "Editor-EditorEntityWorkbench": 5,
-    "Editor-EntityEditorTagCatalog": 3,
+    "Editor-EntityEditorTagCatalog": 4,
     "Editor-EditorImportedAsset": 5,
     "Editor-FileDropQueue": 2,
     "Editor-EntityEditorHierarchy": 3,
@@ -9445,6 +9531,22 @@
         "GAP-Audio-AudioManager-014",
         "GAP-Audio-AudioManager-015",
         "GAP-Audio-AudioManager-016"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-055013",
+      "at": "2026-11-11T05:50:38.019955+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditorTagCatalog-003",
+        "GAP-Editor-EntityEditorUi-029",
+        "GAP-Editor-EntityEditorUi-030"
       ],
       "updatedIds": [],
       "closedIds": []

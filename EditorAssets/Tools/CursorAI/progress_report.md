@@ -1719,6 +1719,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（20回目）
 - **newIds:** 3（MF PCM 固定、バッファ 0 埋め、SE 枯渇 assert）
 
+## ギャップスキャン tick（SCAN-20261111-055013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（20回目）
+- **newIds:** 3（タグ 1 件付与、実行順単体、型差替 params 全置換）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
