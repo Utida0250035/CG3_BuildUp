@@ -1644,6 +1644,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（15回目）
 - **newIds:** 3（Paused 中 Update スキップ、OnStreamEnd 瞬断、BGM 秒数 44.1kHz 固定）
 
+## ギャップスキャン tick（SCAN-20261111-032014）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（15回目）
+- **newIds:** 3（型変更で params 全置換、同名インポート連番、起動設定が暗黙 Save）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
