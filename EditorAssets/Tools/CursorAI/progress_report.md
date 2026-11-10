@@ -1709,6 +1709,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（19回目）
 - **newIds:** 3（プレハブ連番、一覧フルパス、AssetPath プレビュー1回）
 
+## ギャップスキャン tick（SCAN-20261111-053014）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（20回目）
+- **newIds:** 3（実行はタブのみ、固定ライト上書き、Enter で Runtime 強制）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

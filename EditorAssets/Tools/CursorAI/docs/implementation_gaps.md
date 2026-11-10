@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T05:10:49.097514+09:00
+- **lastIncrementalScanAt:** 2026-11-11T05:20:27.571439+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2914,6 +2914,27 @@
 - firstSeenAt: 2026-11-10T23:31:00+09:00
 - lastSeenAt: 2026-11-10T23:31:00+09:00
 
+### GAP-Editor-SceneEntityEditor-012
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: シーン実行がエディタ内のみ
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:132
+- primary: `SceneEntityEditor`
+- summary: 【Debug】実行は Runtime タブ切替のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - requestPlayRuntimeScene は Save+Rebuild+タブ（132-141 行）
+  - SceneBuildUpRegistry::Launch を呼ばない
+  - Release 相当の BuildUp 検証と経路が分断
+- suggestedUse: Debug: エディタ外ランタイム起動の一本化
+- firstSeenAt: 2026-11-11T05:31:00+09:00
+- lastSeenAt: 2026-11-11T05:31:00+09:00
+
 ### GAP-Infra-EditorScenePlayRequest-004
 
 - status: open
@@ -3344,6 +3365,27 @@
 - firstSeenAt: 2026-11-11T03:31:00+09:00
 - lastSeenAt: 2026-11-11T03:31:00+09:00
 
+### GAP-Scene-SceneBuildUp-025
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 毎フレーム固定ライト上書き
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:68
+- primary: `SceneBuildUp`
+- summary: 【Debug】描画毎に半ランバート固定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - SetupRuntimeLighting が方向・強度固定（68-77 行）
+  - DrawRuntimeViewContent から毎回呼び出し（144 行）
+  - JSON 側ライティング検証が上書きされる
+- suggestedUse: Debug: Feature シーンのライト設定保持
+- firstSeenAt: 2026-11-11T05:31:00+09:00
+- lastSeenAt: 2026-11-11T05:31:00+09:00
+
 ### GAP-Infra-launch_config-003
 
 - status: open
@@ -3408,6 +3450,27 @@
 - suggestedUse: Debug: ランタイムビューのカメラ欠落表示
 - firstSeenAt: 2026-11-11T05:01:00+09:00
 - lastSeenAt: 2026-11-11T05:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-026
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Enter で Runtime タブ強制
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:113
+- primary: `SceneBuildUp`
+- summary: 【Debug】EnterScene が Runtime 固定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene 末尾で SetSceneViewTab(Runtime)（112-114 行）
+  - Game/Edit タブ経由の比較検証ができない
+  - EditorEntityEditor とのタブ状態が衝突しうる
+- suggestedUse: Debug: 検証用タブ初期値の設定化
+- firstSeenAt: 2026-11-11T05:31:00+09:00
+- lastSeenAt: 2026-11-11T05:31:00+09:00
 
 ### GAP-Scene-SceneBuildUpRegistry-003
 
@@ -5766,7 +5829,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-025013 | at: 2026-11-11T02:51:07.177239+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-030016 | at: 2026-11-11T03:01:32.865102+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-031017 | at: 2026-11-11T03:11:06.426582+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-032014 | at: 2026-11-11T03:21:02.300717+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -5781,6 +5843,7 @@
 - scanId: SCAN-20261111-045006 | at: 2026-11-11T04:50:25.719805+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-050017 | at: 2026-11-11T05:00:33.872874+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-051011 | at: 2026-11-11T05:10:49.097514+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-052010 | at: 2026-11-11T05:20:27.571439+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

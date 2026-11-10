@@ -7432,6 +7432,90 @@
       "suggestedUse": "Authoring: assetPath 変更の即時プレビュー",
       "firstSeenAt": "2026-11-11T05:21:00+09:00",
       "lastSeenAt": "2026-11-11T05:21:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-012": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 570,
+      "frequency": "medium",
+      "frequencyBasis": "シーン実行がエディタ内のみ",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:132",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "requestPlayRuntimeScene",
+        "SceneBuildUpRegistry",
+        "previewEntities_"
+      ],
+      "summaryShort": "実行は Runtime タブ切替のみ",
+      "summary": "実行は Runtime タブ切替のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "requestPlayRuntimeScene は Save+Rebuild+タブ（132-141 行）",
+        "SceneBuildUpRegistry::Launch を呼ばない",
+        "Release 相当の BuildUp 検証と経路が分断"
+      ],
+      "suggestedUse": "Debug: エディタ外ランタイム起動の一本化",
+      "firstSeenAt": "2026-11-11T05:31:00+09:00",
+      "lastSeenAt": "2026-11-11T05:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-025": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "medium",
+      "frequencyBasis": "毎フレーム固定ライト上書き",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:68",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SetupRuntimeLighting",
+        "DrawRuntimeViewContent",
+        "DirectionalLightData"
+      ],
+      "summaryShort": "描画毎に半ランバート固定",
+      "summary": "描画毎に半ランバート固定",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "SetupRuntimeLighting が方向・強度固定（68-77 行）",
+        "DrawRuntimeViewContent から毎回呼び出し（144 行）",
+        "JSON 側ライティング検証が上書きされる"
+      ],
+      "suggestedUse": "Debug: Feature シーンのライト設定保持",
+      "firstSeenAt": "2026-11-11T05:31:00+09:00",
+      "lastSeenAt": "2026-11-11T05:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-026": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "Enter で Runtime タブ強制",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:113",
+      "primary": "SceneBuildUp",
+      "related": [
+        "EnterScene",
+        "EditorFrame",
+        "SceneViewTab"
+      ],
+      "summaryShort": "EnterScene が Runtime 固定",
+      "summary": "EnterScene が Runtime 固定",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "EnterScene 末尾で SetSceneViewTab(Runtime)（112-114 行）",
+        "Game/Edit タブ経由の比較検証ができない",
+        "EditorEntityEditor とのタブ状態が衝突しうる"
+      ],
+      "suggestedUse": "Debug: 検証用タブ初期値の設定化",
+      "firstSeenAt": "2026-11-11T05:31:00+09:00",
+      "lastSeenAt": "2026-11-11T05:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -7701,7 +7785,10 @@
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:206": "GAP-Audio-AudioManager-013",
     "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Prefab/PrefabAsset.cpp:34": "GAP-Editor-PrefabAsset-006",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:499": "GAP-Editor-EntityEditorUi-028",
-    "UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:309": "GAP-Editor-EditorSceneRuntime-009"
+    "UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:309": "GAP-Editor-EditorSceneRuntime-009",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:132": "GAP-Editor-SceneEntityEditor-012",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:68": "GAP-Scene-SceneBuildUp-025",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:113": "GAP-Scene-SceneBuildUp-026"
   },
   "pendings": {},
   "nextSequence": {
@@ -7729,14 +7816,14 @@
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 6,
     "Scene-SceneBuildUpRegistry": 5,
-    "Editor-SceneEntityEditor": 12,
+    "Editor-SceneEntityEditor": 13,
     "Scene-SceneCameraRig": 2,
     "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 25,
+    "Scene-SceneBuildUp": 27,
     "Infra-scaffold_play_area": 3,
     "Editor-EditorSceneRuntime": 10,
     "Entity-CmpCamera": 2,
@@ -9239,6 +9326,22 @@
         "GAP-Editor-PrefabAsset-006",
         "GAP-Editor-EntityEditorUi-028",
         "GAP-Editor-EditorSceneRuntime-009"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-053014",
+      "at": "2026-11-11T05:30:54.455417+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Editor-SceneEntityEditor-012",
+        "GAP-Scene-SceneBuildUp-025",
+        "GAP-Scene-SceneBuildUp-026"
       ],
       "updatedIds": [],
       "closedIds": []
