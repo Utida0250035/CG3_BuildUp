@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T02:40:47.012554+09:00
+- **lastIncrementalScanAt:** 2026-11-11T02:51:07.177239+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1581,16 +1581,16 @@
 - primaryUseCase: UC-Authoring
 - scenarioId: AUT-AssetLoop-001
 - frequency: medium
-- frequencyBasis: Cmp 削除が 1 スロットずつ
-- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707
+- frequencyBasis: Cmp 削除後に requestApplyPreview のみ
+- scope: UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:710
 - primary: `EntityEditorUi`
 - summary: 【Authoring】選択中コンポーネントのみ削除
 - scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
 - evidence:
-  - erase は ui_.selectedComponentIndex 1 件（707-709 行）
-  - 種別フィルタ内の一括削除／同型クリアボタン無し
-  - EntityEditorUi-018 と逆方向の反復が手順化されていない
-- suggestedUse: 制作: 試行錯誤後の Draw 層一括削除
+  - erase 後 SyncSelectedComponentToKind のみ（707-711 行）
+  - Disk 保存やプレビュー差分表示のフィードバック無し
+  - Ui-018 の削除粒度と合わせ反復試行が視覚追跡しづらい
+- suggestedUse: 制作: コンポ削除後のプレビュー更新を明示
 - firstSeenAt: 2026-11-11T02:51:00+09:00
 - lastSeenAt: 2026-11-11T02:51:00+09:00
 
@@ -2163,6 +2163,28 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T06:31:00+09:00
 - lastSeenAt: 2026-11-10T06:31:00+09:00
+
+### GAP-Editor-EditorSceneRuntime-008
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: BuildUp 共有ローダがタグ同期しない
+- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:321
+- primary: `EditorSceneRuntime`
+- summary: 【Debug】TryLoad が tagCatalog 同期を省略
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - JSON parse のみで Merge/Sync 無し（321-350 行）
+  - EntityEditor::LoadFromJsonPath は同期あり（171-173 行）
+  - SceneBuildUp-018 と同系だがローダ共通層の欠落
+- suggestedUse: Debug: 機能検証 JSON のタグ契約をエディタと一致
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T03:01:00+09:00
+- lastSeenAt: 2026-11-11T03:01:00+09:00
 
 ### GAP-Scene-SceneBuildUp-006
 
@@ -2839,6 +2861,27 @@
 - firstSeenAt: 2026-11-11T02:01:00+09:00
 - lastSeenAt: 2026-11-11T02:01:00+09:00
 
+### GAP-Scene-SceneBuildUp-020
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: ランタイムビュー毎フレームでライト再設定
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:144
+- primary: `SceneBuildUp`
+- summary: 【Debug】ビュー描画ごとに SetupRuntimeLighting
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawRuntimeViewContent 先頭で SetupRuntimeLighting（144 行）
+  - EnterScene でも SetupStageViewCamera（110 行）と非対称
+  - ImGui 機能検証でライト状態がフレーム毎に上書き
+- suggestedUse: Debug: ランタイムプレビューの描画コストと一貫性
+- firstSeenAt: 2026-11-11T03:01:00+09:00
+- lastSeenAt: 2026-11-11T03:01:00+09:00
+
 ### GAP-Infra-scaffold_play_area-002
 
 - status: open
@@ -2860,6 +2903,27 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-11T02:31:00+09:00
 - lastSeenAt: 2026-11-11T02:31:00+09:00
+
+### GAP-Scene-SceneBuildUpRegistry-003
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Launch が毎回 new して vector に蓄積
+- scope: UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:43
+- primary: `SceneBuildUpRegistry`
+- summary: 【Debug】Launch が同一パス重複を防がない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - make_unique+push_back のみ（39-44 行）
+  - Exit まで OnSceneExited 以外で解放されない（47-56 行）
+  - シーン実行の連打で所有リストが膨らみうる
+- suggestedUse: Debug: 機能検証の再 Launch ポリシーを明示
+- firstSeenAt: 2026-11-11T03:01:00+09:00
+- lastSeenAt: 2026-11-11T03:01:00+09:00
 
 #### UC-Play
 
@@ -4840,7 +4904,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-002014 | at: 2026-11-11T00:20:30.448375+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-003024 | at: 2026-11-11T00:30:49.903825+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-004014 | at: 2026-11-11T00:40:44.205681+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-005013 | at: 2026-11-11T00:50:53.522256+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -4855,6 +4918,7 @@
 - scanId: SCAN-20261111-022018 | at: 2026-11-11T02:21:03.662472+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-023031 | at: 2026-11-11T02:31:18.921192+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-024014 | at: 2026-11-11T02:40:47.012554+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-025013 | at: 2026-11-11T02:51:07.177239+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

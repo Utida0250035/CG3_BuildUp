@@ -1634,6 +1634,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（14回目）
 - **newIds:** 3（削除時子の親付替え無し、CmpCamera 既定 params 無し、Cmp 1 件ずつ削除のみ）
 
+## ギャップスキャン tick（SCAN-20261111-030016）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（15回目）
+- **newIds:** 3（TryLoad タグ未同期、ビュー毎ライト再設定、Registry Launch 蓄積）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

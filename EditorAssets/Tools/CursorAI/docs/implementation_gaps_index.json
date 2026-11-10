@@ -6183,8 +6183,8 @@
       "tier": "P3",
       "score": 510,
       "frequency": "medium",
-      "frequencyBasis": "Cmp 削除が 1 スロットずつ",
-      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707",
+      "frequencyBasis": "Cmp 削除後に requestApplyPreview のみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:710",
       "primary": "EntityEditorUi",
       "related": [
         "selectedComponentIndex",
@@ -6194,13 +6194,98 @@
       "summary": "選択中コンポーネントのみ削除",
       "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
       "evidence": [
-        "erase は ui_.selectedComponentIndex 1 件（707-709 行）",
-        "種別フィルタ内の一括削除／同型クリアボタン無し",
-        "EntityEditorUi-018 と逆方向の反復が手順化されていない"
+        "erase 後 SyncSelectedComponentToKind のみ（707-711 行）",
+        "Disk 保存やプレビュー差分表示のフィードバック無し",
+        "Ui-018 の削除粒度と合わせ反復試行が視覚追跡しづらい"
       ],
-      "suggestedUse": "制作: 試行錯誤後の Draw 層一括削除",
+      "suggestedUse": "制作: コンポ削除後のプレビュー更新を明示",
       "firstSeenAt": "2026-11-11T02:51:00+09:00",
       "lastSeenAt": "2026-11-11T02:51:00+09:00"
+    },
+    "GAP-Editor-EditorSceneRuntime-008": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 640,
+      "frequency": "high",
+      "frequencyBasis": "BuildUp 共有ローダがタグ同期しない",
+      "scopeKey": "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:321",
+      "primary": "EditorSceneRuntime",
+      "related": [
+        "TryLoadSceneDocument",
+        "MergeTagCatalogFromRegistry",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "TryLoad が tagCatalog 同期を省略",
+      "summary": "TryLoad が tagCatalog 同期を省略",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "JSON parse のみで Merge/Sync 無し（321-350 行）",
+        "EntityEditor::LoadFromJsonPath は同期あり（171-173 行）",
+        "SceneBuildUp-018 と同系だがローダ共通層の欠落"
+      ],
+      "suggestedUse": "Debug: 機能検証 JSON のタグ契約をエディタと一致",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T03:01:00+09:00",
+      "lastSeenAt": "2026-11-11T03:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-020": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "medium",
+      "frequencyBasis": "ランタイムビュー毎フレームでライト再設定",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:144",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SetupRuntimeLighting",
+        "DrawRuntimeViewContent",
+        "EditorSceneRenderTargetHub"
+      ],
+      "summaryShort": "ビュー描画ごとに SetupRuntimeLighting",
+      "summary": "ビュー描画ごとに SetupRuntimeLighting",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "DrawRuntimeViewContent 先頭で SetupRuntimeLighting（144 行）",
+        "EnterScene でも SetupStageViewCamera（110 行）と非対称",
+        "ImGui 機能検証でライト状態がフレーム毎に上書き"
+      ],
+      "suggestedUse": "Debug: ランタイムプレビューの描画コストと一貫性",
+      "firstSeenAt": "2026-11-11T03:01:00+09:00",
+      "lastSeenAt": "2026-11-11T03:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUpRegistry-003": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "Launch が毎回 new して vector に蓄積",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:43",
+      "primary": "SceneBuildUpRegistry",
+      "related": [
+        "Launch",
+        "OnSceneExited",
+        "ownedScenes_"
+      ],
+      "summaryShort": "Launch が同一パス重複を防がない",
+      "summary": "Launch が同一パス重複を防がない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "make_unique+push_back のみ（39-44 行）",
+        "Exit まで OnSceneExited 以外で解放されない（47-56 行）",
+        "シーン実行の連打で所有リストが膨らみうる"
+      ],
+      "suggestedUse": "Debug: 機能検証の再 Launch ポリシーを明示",
+      "firstSeenAt": "2026-11-11T03:01:00+09:00",
+      "lastSeenAt": "2026-11-11T03:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -6382,7 +6467,6 @@
     "UC-Play|Audio|GetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:151": "GAP-Audio-GetSeFrequencyRatio-001",
     "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62": "GAP-Scene-SceneResult-002",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37": "GAP-Editor-EntityEditorUi-017",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707": "GAP-Editor-EntityEditorUi-024",
     "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001",
     "UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19": "GAP-Entity-CmpCamera-001",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125": "GAP-Scene-SceneBuildUp-011",
@@ -6426,7 +6510,11 @@
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884": "GAP-Audio-AudioManager-004",
     "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Source/Audio/Audio.cpp:191": "GAP-Audio-IsSuitableStreaming-001",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:65": "GAP-Editor-EntityEditor-018",
-    "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:72": "GAP-Editor-EntityEditorDefinition-004"
+    "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:72": "GAP-Editor-EntityEditorDefinition-004",
+    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:710": "GAP-Editor-EntityEditorUi-024",
+    "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:321": "GAP-Editor-EditorSceneRuntime-008",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:144": "GAP-Scene-SceneBuildUp-020",
+    "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:43": "GAP-Scene-SceneBuildUpRegistry-003"
   },
   "pendings": {},
   "nextSequence": {
@@ -6450,7 +6538,7 @@
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 5,
-    "Scene-SceneBuildUpRegistry": 3,
+    "Scene-SceneBuildUpRegistry": 4,
     "Editor-SceneEntityEditor": 12,
     "Scene-SceneCameraRig": 2,
     "Infra-DebugPlayAreaGenerator": 2,
@@ -6458,9 +6546,9 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 20,
+    "Scene-SceneBuildUp": 21,
     "Infra-scaffold_play_area": 3,
-    "Editor-EditorSceneRuntime": 7,
+    "Editor-EditorSceneRuntime": 8,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 5,
     "Infra-launch_config": 2,
@@ -7720,6 +7808,22 @@
         "GAP-Editor-EntityEditor-018",
         "GAP-Editor-EntityEditorDefinition-004",
         "GAP-Editor-EntityEditorUi-024"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-030016",
+      "at": "2026-11-11T03:01:32.865102+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Editor-EditorSceneRuntime-008",
+        "GAP-Scene-SceneBuildUp-020",
+        "GAP-Scene-SceneBuildUpRegistry-003"
       ],
       "updatedIds": [],
       "closedIds": []
