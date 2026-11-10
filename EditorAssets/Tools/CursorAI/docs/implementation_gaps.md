@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T01:20:47.808609+09:00
+- **lastIncrementalScanAt:** 2026-11-11T01:31:16.625329+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -3238,6 +3238,27 @@
 - firstSeenAt: 2026-11-10T05:51:00+09:00
 - lastSeenAt: 2026-11-10T05:51:00+09:00
 
+### GAP-Scene-SceneGame-012
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: イントロ中も BGM 復帰が走る
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:162
+- primary: `SceneGame`
+- summary: 【Play】イントロ中に Maintain が PlaySceneBgm
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - intro 分岐の前で MaintainSceneBgmIfNeeded（162 行）
+  - 復帰 PlayBgmLoop→PlaySceneBgm で全ストリーム停止（PlaySceneBgm-001）
+  - イントロ SE（PlaySubmitSe 等）が BGM 再開で切れうる
+- suggestedUse: プレイ: カットシーン中の BGM/SE 優先度
+- firstSeenAt: 2026-11-11T01:41:00+09:00
+- lastSeenAt: 2026-11-11T01:41:00+09:00
+
 ### GAP-Scene-SceneResult-001
 
 - status: open
@@ -3342,6 +3363,27 @@
 - roadmapLink: feature-memos/scene_movie.md
 - firstSeenAt: 2026-11-10T03:41:00+09:00
 - lastSeenAt: 2026-11-10T03:41:00+09:00
+
+### GAP-Scene-GameOrder-002
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: GameOrder が audio_ を保持するのみ
+- scope: UC-Play|Scene|GameOrder|Incomplete|Project/Codes/Source/Scene/GameOrder.cpp:14
+- primary: `GameOrder`
+- summary: 【Play】フレームループが音声を管理しない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - コンストラクタで audio_ 取得のみ（GameOrder.cpp:14）
+  - Update ループに Pause/Resume や遷移中ダッキング無し（GameOrder.h:61-78）
+  - シーン個別（SceneGame Maintain）頼みで統一ポリシーが無い
+- suggestedUse: プレイ: 暗転・ポーズ時の BGM/SE を中央制御
+- firstSeenAt: 2026-11-11T01:41:00+09:00
+- lastSeenAt: 2026-11-11T01:41:00+09:00
 
 ### GAP-Scene-Scene-001
 
@@ -4002,6 +4044,27 @@
 - firstSeenAt: 2026-11-11T00:11:00+09:00
 - lastSeenAt: 2026-11-11T00:11:00+09:00
 
+### GAP-Audio-SetSeFrequencyRatio-001
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: SE ピッチ API が未配線
+- scope: UC-Play|Audio|SetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:147
+- primary: `SetSeFrequencyRatio`
+- summary: 【Play】SetSeFrequencyRatio がゲームから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetSeFrequencyRatio は SetHandleFrequencyRatio 委譲（147-148 行）
+  - rg SetSeFrequencyRatio は PlaySe.h 定義のみ
+  - SetBgmLoopPitch-001 と対で一時変化 SE が演出に無い
+- suggestedUse: プレイ: スロー演出時の SE ピッチ連動
+- firstSeenAt: 2026-11-11T01:41:00+09:00
+- lastSeenAt: 2026-11-11T01:41:00+09:00
+
 #### UC-Ship
 
 ### GAP-Ship-CG2_BuildUp-001
@@ -4329,7 +4392,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-230538 | at: 2026-11-10T23:06:48.156250+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-231005 | at: 2026-11-10T23:10:45.414301+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-232021 | at: 2026-11-10T23:20:52.299988+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-233005 | at: 2026-11-10T23:31:09.917190+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -4344,6 +4406,7 @@
 - scanId: SCAN-20261111-010025 | at: 2026-11-11T01:01:08.244530+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-011012 | at: 2026-11-11T01:11:11.772098+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-013013 | at: 2026-11-11T01:31:16.625329+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

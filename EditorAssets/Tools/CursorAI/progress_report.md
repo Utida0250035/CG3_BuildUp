@@ -1594,6 +1594,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（12回目）
 - **newIds:** 3（startup 空で Title、launch_config が Scene_0、Enter で SetupStageViewCamera）
 
+## ギャップスキャン tick（SCAN-20261111-014014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（12回目）
+- **newIds:** 3（SetSeFrequency 未使用、GameOrder 音声未管理、イントロ中 Maintain）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
