@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T03:40:47.570879+09:00
+- **lastIncrementalScanAt:** 2026-11-11T03:50:30.395021+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2877,6 +2877,27 @@
 - firstSeenAt: 2026-11-10T23:06:00+09:00
 - lastSeenAt: 2026-11-10T23:06:00+09:00
 
+### GAP-Scene-CommandScene-005
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動 JSON の事前検証なし
+- scope: UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:21
+- primary: `CommandScene`
+- summary: 【Debug】Launch 前に TryLoad を呼ばない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - exists(startupScene) 判定まで（21-24 行）
+  - JSON 内容や tag 同期は EnterScene 到達後（BuildUp-013/018）
+  - 壊れた Feature シーンで Title フォールバック無し
+- suggestedUse: Debug: 起動前に Feature JSON を検証
+- firstSeenAt: 2026-11-11T04:01:00+09:00
+- lastSeenAt: 2026-11-11T04:01:00+09:00
+
 ### GAP-Editor-EditorSceneAsset-001
 
 - status: open
@@ -3072,6 +3093,28 @@
 - firstSeenAt: 2026-11-11T03:31:00+09:00
 - lastSeenAt: 2026-11-11T03:31:00+09:00
 
+### GAP-Infra-launch_config-003
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: launch_config が 1 キーのみ上書き保存
+- scope: UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:136
+- primary: `launch_config`
+- summary: 【Debug】JSON は startupScenePath のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - json 代入は startupScenePath のみ（136-137 行）
+  - schemaVersion や DebugPlayArea 既定無し
+  - 手編集メタとエディタ保存の競合リスク
+- suggestedUse: Debug: 起動設定 JSON の拡張余地を明示
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T04:01:00+09:00
+- lastSeenAt: 2026-11-11T04:01:00+09:00
+
 ### GAP-Infra-scaffold_play_area-002
 
 - status: open
@@ -3114,6 +3157,27 @@
 - suggestedUse: Debug: 機能検証の再 Launch ポリシーを明示
 - firstSeenAt: 2026-11-11T03:01:00+09:00
 - lastSeenAt: 2026-11-11T03:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-022
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: 表示名がロード前のパス stem のまま
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:26
+- primary: `SceneBuildUp`
+- summary: 【Debug】ctor で displayName を仮設定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - コンストラクタが path stem を設定（24-27 行）
+  - EnterScene 成功まで sceneName 未反映（105-107 行）
+  - UI ヘッダと実ロード名のずれ（BuildUp-016 と同系）
+- suggestedUse: Debug: 試験シーン名をウィンドウへ即反映
+- firstSeenAt: 2026-11-11T04:01:00+09:00
+- lastSeenAt: 2026-11-11T04:01:00+09:00
 
 #### UC-Play
 
@@ -5220,7 +5284,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-013013 | at: 2026-11-11T01:31:16.625329+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-014014 | at: 2026-11-11T01:40:52.216206+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-015018 | at: 2026-11-11T01:50:48.708567+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -5235,6 +5298,7 @@
 - scanId: SCAN-20261111-032014 | at: 2026-11-11T03:21:02.300717+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-033012 | at: 2026-11-11T03:31:23.423901+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-034021 | at: 2026-11-11T03:40:47.570879+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-035014 | at: 2026-11-11T03:50:30.395021+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

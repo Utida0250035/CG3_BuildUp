@@ -6705,6 +6705,90 @@
       "suggestedUse": "制作: シーンパスは一覧選択に限定",
       "firstSeenAt": "2026-11-11T03:51:00+09:00",
       "lastSeenAt": "2026-11-11T03:51:00+09:00"
+    },
+    "GAP-Infra-launch_config-003": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "medium",
+      "frequencyBasis": "launch_config が 1 キーのみ上書き保存",
+      "scopeKey": "UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:136",
+      "primary": "launch_config",
+      "related": [
+        "TrySaveLaunchConfig",
+        "TrySetRepositoryStartupScene"
+      ],
+      "summaryShort": "JSON は startupScenePath のみ",
+      "summary": "JSON は startupScenePath のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "json 代入は startupScenePath のみ（136-137 行）",
+        "schemaVersion や DebugPlayArea 既定無し",
+        "手編集メタとエディタ保存の競合リスク"
+      ],
+      "suggestedUse": "Debug: 起動設定 JSON の拡張余地を明示",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T04:01:00+09:00",
+      "lastSeenAt": "2026-11-11T04:01:00+09:00"
+    },
+    "GAP-Scene-CommandScene-005": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 550,
+      "frequency": "medium",
+      "frequencyBasis": "起動 JSON の事前検証なし",
+      "scopeKey": "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:21",
+      "primary": "CommandScene",
+      "related": [
+        "ResolveStartupScenePath",
+        "SceneBuildUpRegistry::Launch",
+        "EnterScene"
+      ],
+      "summaryShort": "Launch 前に TryLoad を呼ばない",
+      "summary": "Launch 前に TryLoad を呼ばない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "exists(startupScene) 判定まで（21-24 行）",
+        "JSON 内容や tag 同期は EnterScene 到達後（BuildUp-013/018）",
+        "壊れた Feature シーンで Title フォールバック無し"
+      ],
+      "suggestedUse": "Debug: 起動前に Feature JSON を検証",
+      "firstSeenAt": "2026-11-11T04:01:00+09:00",
+      "lastSeenAt": "2026-11-11T04:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-022": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 470,
+      "frequency": "low",
+      "frequencyBasis": "表示名がロード前のパス stem のまま",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:26",
+      "primary": "SceneBuildUp",
+      "related": [
+        "sceneDisplayName_",
+        "EnterScene",
+        "SceneDisplayNameFromPath"
+      ],
+      "summaryShort": "ctor で displayName を仮設定",
+      "summary": "ctor で displayName を仮設定",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "コンストラクタが path stem を設定（24-27 行）",
+        "EnterScene 成功まで sceneName 未反映（105-107 行）",
+        "UI ヘッダと実ロード名のずれ（BuildUp-016 と同系）"
+      ],
+      "suggestedUse": "Debug: 試験シーン名をウィンドウへ即反映",
+      "firstSeenAt": "2026-11-11T04:01:00+09:00",
+      "lastSeenAt": "2026-11-11T04:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -6948,7 +7032,10 @@
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:728": "GAP-Audio-AudioManager-008",
     "UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:96": "GAP-Editor-EditorEntityWorkbench-004",
     "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:837": "GAP-Editor-EntityEditorTagCatalog-002",
-    "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:521": "GAP-Editor-EntityEditorUi-026"
+    "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:521": "GAP-Editor-EntityEditorUi-026",
+    "UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:136": "GAP-Infra-launch_config-003",
+    "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:21": "GAP-Scene-CommandScene-005",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:26": "GAP-Scene-SceneBuildUp-022"
   },
   "pendings": {},
   "nextSequence": {
@@ -6982,12 +7069,12 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 22,
+    "Scene-SceneBuildUp": 23,
     "Infra-scaffold_play_area": 3,
     "Editor-EditorSceneRuntime": 8,
     "Entity-CmpCamera": 2,
-    "Scene-CommandScene": 5,
-    "Infra-launch_config": 3,
+    "Scene-CommandScene": 6,
+    "Infra-launch_config": 4,
     "Editor-EditorSceneAsset": 2,
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
@@ -8341,6 +8428,22 @@
         "GAP-Editor-EditorEntityWorkbench-004",
         "GAP-Editor-EntityEditorTagCatalog-002",
         "GAP-Editor-EntityEditorUi-026"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-040020",
+      "at": "2026-11-11T04:00:54.388539+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Infra-launch_config-003",
+        "GAP-Scene-CommandScene-005",
+        "GAP-Scene-SceneBuildUp-022"
       ],
       "updatedIds": [],
       "closedIds": []

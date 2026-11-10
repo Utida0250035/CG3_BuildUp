@@ -1664,6 +1664,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（16回目）
 - **newIds:** 3（プレイモードのみトグル、タグ改名 1 語ずつ、JSON パス自由編集）
 
+## ギャップスキャン tick（SCAN-20261111-040020）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（17回目）
+- **newIds:** 3（launch 1 キー保存、起動前 JSON 未検証、BuildUp 表示名が ctor 仮値）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
