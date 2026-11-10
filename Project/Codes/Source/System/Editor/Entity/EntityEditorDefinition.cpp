@@ -17,7 +17,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentSlotKind,
 bool IsKnownEntityEditorComponent(const std::string &typeName) {
   return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
-         typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath";
+         typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
+         typeName == "CmpCamera";
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
@@ -25,7 +26,7 @@ ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
     return ComponentSlotKind::Draw;
   }
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
-      typeName == "CmpHitSphere") {
+      typeName == "CmpHitSphere" || typeName == "CmpCamera") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath") {

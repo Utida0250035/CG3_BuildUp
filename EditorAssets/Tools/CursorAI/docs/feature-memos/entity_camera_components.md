@@ -45,13 +45,13 @@
 
 ### P1 — CmpCamera・自動スポーン・単一アクティブ
 
-- [ ] `CmpCamera`（`Camera` 所有。DEVELOPMENT 暫定で内部 `DebugCamera` 可）
-- [ ] `SceneCameraRig` + 既定 `MainCamera.json` 自動スポーン
-- [ ] `ActiveCameraSystem` + `GameOrder` 描画直前 Prepare
-- [ ] `Scene::GetCamera()` → primary `CmpCamera` 委譲
-- [ ] エディタ登録（`EntityEditorDefinition` / `EditorSceneRuntime` / `kKnownComponents`）
-- [ ] vcxproj 登録
-- [ ] **報告:** 手動確認（実施 / 未実施）、未検証の有無
+- [x] `CmpCamera`（`Camera` 所有。DEVELOPMENT 暫定で内部 `DebugCamera` 可）
+- [x] `SceneCameraRig` + 既定 `MainCamera.json` 自動スポーン
+- [x] `ActiveCameraSystem` + `GameOrder` 描画直前 Prepare
+- [x] `Scene::GetCamera()` → primary `CmpCamera` 委譲
+- [x] エディタ登録（`EntityEditorDefinition` / `EditorSceneRuntime` / `kKnownComponents`）
+- [x] vcxproj 登録（`verify_vcxproj_coverage.py` OK）
+- [x] **報告:** 手動確認 **未実施**、段階末 **未検証あり**（progress_report 参照）
 
 ### P2 — エンジン複数カメラ（切替）
 

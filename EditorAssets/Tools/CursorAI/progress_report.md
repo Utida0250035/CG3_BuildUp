@@ -1489,9 +1489,20 @@
 - **未検証:** なし（ビルド対象外）
 - **次:** P1 実装（`cursor/cmp-camera-entity-0f04`）
 
+## エンティティカメラ Phase P1 完了
+
+- **実施:** `CmpCamera` / `SceneCameraRig` / `ActiveCameraSystem` / `MainCamera.json` / `EntityFactory` プレハブ読み込み / エディタ登録 / `GameOrder` 描画直前 Prepare
+- **手動確認:** **未実施**（タイトル・ゲーム・エディタでのカメラ挙動）
+- **段階末・未検証:** **あり**（MSVC ビルド・実機確認はローカル待ち）
+- **次 Phase:** **P2** — エンジン側の複数カメラ登録・アクティブ index 切替、primary 契約明文化
+
 ## 推測した用途（§6.4）
 
 - **entity_camera_components.md**
   - 用途: エンティティカメラの要件・段階チェックの正本（他エージェント引き継ぎ）
   - 使用場面: 半自律・Cloud Agent の着手前 Read
   - 仕様: progress_report とチェック更新を同期
+- **CmpCamera / SceneCameraRig（P1）**
+  - 用途: 全シーンで主カメラをエンティティ化し `GetCamera()` を統一
+  - 使用場面: ランタイム描画、StageView 適用、将来の複数カメラ
+  - 仕様: 自動スポーン、`camera.main` タグ、描画直前行列更新

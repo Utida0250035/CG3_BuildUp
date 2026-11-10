@@ -9,6 +9,10 @@ namespace Atrum {
 class Camera;
 class Entity;
 
+namespace EntityEditor {
+struct EntityDefinition;
+}
+
 class EntityFactory final {
 private:
   EntityFactory() = delete;
@@ -23,6 +27,11 @@ public:
   static std::unique_ptr<Entity> LinearEnemyBullet(const Math::Vector3 &velocity,
                                                    const Math::Vector3 &position);
   static std::unique_ptr<Entity> Parry(Entity *parent);
+
+  static std::unique_ptr<Entity> MainCameraEntity();
+  static std::unique_ptr<Entity> TryMainCameraFromDefaultPrefab();
+  static std::unique_ptr<Entity>
+  FromEntityDefinition(const EntityEditor::EntityDefinition &definition);
 
   EntityFactory(const EntityFactory &) = delete;
   EntityFactory &operator=(const EntityFactory &) = delete;

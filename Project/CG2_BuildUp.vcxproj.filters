@@ -49,6 +49,9 @@
     <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\ActiveCameraSystem.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
@@ -217,6 +220,9 @@
     <ClCompile Include="Codes\Source\Scene\PlayerDeathPresentation.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneCameraRig.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\Scene.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -356,6 +362,9 @@
       <Filter>Codes\Source\System\Entity\Components</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpCamera.cpp">
       <Filter>Codes\Source\System\Entity\Components</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpSwing.cpp">
