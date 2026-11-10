@@ -1684,6 +1684,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（18回目）
 - **newIds:** 3（ChangeScene 常時描画、Enter 無条件、PlayRequest 未 Clear）
 
+## ギャップスキャン tick（SCAN-20261111-044011）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（18回目）
+- **newIds:** 3（BGM Pause が Stop のみ、Resume に Refill なし、PlaySceneBgm 失敗 playId）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

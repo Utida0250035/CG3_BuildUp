@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T04:21:02.733755+09:00
+- **lastIncrementalScanAt:** 2026-11-11T04:30:30.823712+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -4703,6 +4703,27 @@
 - firstSeenAt: 2026-11-11T03:41:00+09:00
 - lastSeenAt: 2026-11-11T03:41:00+09:00
 
+### GAP-Audio-AudioManager-010
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: BGM 一時停止が Stop のみ
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:821
+- primary: `AudioManager`
+- summary: 【Play】ストリーム BGM 停止は XAudio Stop
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PauseSceneBgm は pVoice->Stop のみ（842-843 行）
+  - キュー済みバッファや Streaming 状態を整理しない
+  - ポーズ解除やシーン復帰で途切れ・クリックが出うる
+- suggestedUse: プレイ: ポーズ中も BGM キューを維持
+- firstSeenAt: 2026-11-11T04:41:00+09:00
+- lastSeenAt: 2026-11-11T04:41:00+09:00
+
 ### GAP-Audio-AudioManager-006
 
 - status: open
@@ -4723,6 +4744,27 @@
 - suggestedUse: プレイ: ストリーム BGM のシーク／ループ位置
 - firstSeenAt: 2026-11-11T03:11:00+09:00
 - lastSeenAt: 2026-11-11T03:11:00+09:00
+
+### GAP-Audio-AudioManager-011
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: Resume が Start のみ
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884
+- primary: `AudioManager`
+- summary: 【Play】Resume は Start 後 Refill なし
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ストリーム Paused→Playing は Start のみ（884-889 行）
+  - SubmitInitialBuffer/Refill を再実行しない
+  - 長時間ポーズ後に無音やアンダーラン
+- suggestedUse: プレイ: 復帰時のストリーム再プライム
+- firstSeenAt: 2026-11-11T04:41:00+09:00
+- lastSeenAt: 2026-11-11T04:41:00+09:00
 
 ### GAP-Scene-SceneMovie-001
 
@@ -4766,6 +4808,27 @@
 - roadmapLink: feature-memos/scene_movie.md
 - firstSeenAt: 2026-11-10T05:31:00+09:00
 - lastSeenAt: 2026-11-10T05:31:00+09:00
+
+### GAP-Audio-PlaySceneBgm-002
+
+- status: open
+- tier: P2
+- score: 530
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 失敗時 playId 不一致
+- scope: UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:710
+- primary: `PlaySceneBgm`
+- summary: 【Play】Init 失敗で voice playId だけ巻き戻し
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - InitializeStreaming 失敗時 streamingVoice.playId=65536（710-712 行）
+  - 返却 Handle は currentPlayId のまま isSuccess=false
+  - 再試行 PlayBgmLoop が古い Handle で Stop/Pause できない
+- suggestedUse: プレイ: シーン遷移 BGM 失敗のハンドル整合
+- firstSeenAt: 2026-11-11T04:41:00+09:00
+- lastSeenAt: 2026-11-11T04:41:00+09:00
 
 ### GAP-Audio-AudioDecoder-001
 
@@ -5473,7 +5536,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-020020 | at: 2026-11-11T02:01:01.214707+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-021016 | at: 2026-11-11T02:11:03.810105+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-022018 | at: 2026-11-11T02:21:03.662472+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-023031 | at: 2026-11-11T02:31:18.921192+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -5488,6 +5550,7 @@
 - scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-043006 | at: 2026-11-11T04:30:30.823712+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 
