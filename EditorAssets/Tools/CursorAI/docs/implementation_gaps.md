@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T02:51:07.177239+09:00
+- **lastIncrementalScanAt:** 2026-11-11T03:01:32.865102+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -3813,6 +3813,27 @@
 - firstSeenAt: 2026-11-11T02:41:00+09:00
 - lastSeenAt: 2026-11-11T02:41:00+09:00
 
+### GAP-Audio-StreamingVoiceCallback-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ストリーム終端で Waiting→即停止
+- scope: UC-Play|Audio|StreamingVoiceCallback|Incomplete|Project/Codes/Source/Audio/StreamingVoiceCallBack.cpp:13
+- primary: `StreamingVoiceCallback`
+- summary: 【Play】OnStreamEnd が Waiting のみセット
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - OnStreamEnd→Waiting（13-16 行）
+  - 非ループは Update で Stop→Stopped（100-110 行）
+  - ループ以外の長尺 SE が終端で瞬断
+- suggestedUse: プレイ: ストリーム終端のフェード／シーン跨ぎ
+- firstSeenAt: 2026-11-11T03:11:00+09:00
+- lastSeenAt: 2026-11-11T03:11:00+09:00
+
 ### GAP-Scene-GameOrder-002
 
 - status: open
@@ -4005,6 +4026,27 @@
 - suggestedUse: プレイ: イントロと戦闘音のポリシーを統一
 - firstSeenAt: 2026-11-10T07:41:00+09:00
 - lastSeenAt: 2026-11-10T07:41:00+09:00
+
+### GAP-Audio-AudioManager-005
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 一時停止中にデコード補充が止まる
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:82
+- primary: `AudioManager`
+- summary: 【Play】Paused ストリームは Update をスキップ
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - state==Paused で continue（82-84 行）
+  - RefillBuffer / TryRecover 未到達
+  - ResumeSceneBgm-004 と合わせバッファ枯渇で無音化しうる
+- suggestedUse: プレイ: ポーズ中もストリームキューを維持
+- firstSeenAt: 2026-11-11T03:11:00+09:00
+- lastSeenAt: 2026-11-11T03:11:00+09:00
 
 ### GAP-Audio-PlayBgmLoop-001
 
@@ -4217,6 +4259,27 @@
 - suggestedUse: プレイ: リザルト→タイトルの BGM をフェードに合わせる
 - firstSeenAt: 2026-11-11T00:11:00+09:00
 - lastSeenAt: 2026-11-11T00:11:00+09:00
+
+### GAP-Audio-AudioManager-006
+
+- status: open
+- tier: P3
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: ストリーム BGM 秒数が 44.1kHz 固定
+- scope: UC-Play|Audio|AudioManager|Contract|Project/Codes/Source/Audio/Audio.cpp:972
+- primary: `AudioManager`
+- summary: 【Play】再生位置計算が 44100 固定
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - kStreamSampleRate = 44100（972-974 行）
+  - Short 経路は wfEx.nSamplesPerSec を参照（993-999 行）
+  - MF PCM 強制 44.1kHz と整合はするが将来レート差でズレ
+- suggestedUse: プレイ: ストリーム BGM のシーク／ループ位置
+- firstSeenAt: 2026-11-11T03:11:00+09:00
+- lastSeenAt: 2026-11-11T03:11:00+09:00
 
 ### GAP-Scene-SceneMovie-001
 
@@ -4904,7 +4967,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-003024 | at: 2026-11-11T00:30:49.903825+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-004014 | at: 2026-11-11T00:40:44.205681+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-005013 | at: 2026-11-11T00:50:53.522256+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-010025 | at: 2026-11-11T01:01:08.244530+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -4919,6 +4981,7 @@
 - scanId: SCAN-20261111-023031 | at: 2026-11-11T02:31:18.921192+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-024014 | at: 2026-11-11T02:40:47.012554+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-025013 | at: 2026-11-11T02:51:07.177239+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-030016 | at: 2026-11-11T03:01:32.865102+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

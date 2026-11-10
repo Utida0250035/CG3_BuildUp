@@ -1639,6 +1639,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（15回目）
 - **newIds:** 3（TryLoad タグ未同期、ビュー毎ライト再設定、Registry Launch 蓄積）
 
+## ギャップスキャン tick（SCAN-20261111-031017）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（15回目）
+- **newIds:** 3（Paused 中 Update スキップ、OnStreamEnd 瞬断、BGM 秒数 44.1kHz 固定）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
