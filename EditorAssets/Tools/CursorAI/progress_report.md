@@ -1609,6 +1609,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（13回目）
 - **newIds:** 3（Exit でタブ未復帰、JSON パス非表示、フェード中 F1 無効）
 
+## ギャップスキャン tick（SCAN-20261111-021016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（13回目）
+- **newIds:** 3（PlaySe ハンドル破棄、ワンショット一括停止なし、Title Submit+フェード）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
