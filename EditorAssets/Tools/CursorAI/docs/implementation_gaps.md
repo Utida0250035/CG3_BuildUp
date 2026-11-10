@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T23:06:48.156250+09:00
+- **lastIncrementalScanAt:** 2026-11-10T23:10:45.414301+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1106,6 +1106,27 @@
 - firstSeenAt: 2026-11-10T07:51:00+09:00
 - lastSeenAt: 2026-11-10T07:51:00+09:00
 
+### GAP-Editor-EntityEditorHierarchy-002
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: ヒエラルキー選択が 1 体ずつ
+- scope: UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:333
+- primary: `EntityEditorHierarchy`
+- summary: 【Authoring】Selectable が単一 instanceIndex のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawHierarchyNode はクリック 1 件で selectedInstanceIndex 更新（333-334 行）
+  - 複数選択・一括複製・一括タグ付け UI 無し
+  - EntityEditorHierarchy-001 と同系
+- suggestedUse: 制作: 複数エンティティの一括調整
+- firstSeenAt: 2026-11-10T23:21:00+09:00
+- lastSeenAt: 2026-11-10T23:21:00+09:00
+
 ### GAP-Editor-UXAuthoring-002
 
 - status: open
@@ -1151,6 +1172,27 @@
 - firstSeenAt: 2026-11-10T06:21:00+09:00
 - lastSeenAt: 2026-11-10T06:21:00+09:00
 
+### GAP-Editor-EntityEditorUi-014
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: コンポ型変更が選択 1 スロットのみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768
+- primary: `EntityEditorUi`
+- summary: 【Authoring】型 Combo 変更は params を既定に置換
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Combo 変更で params=DefaultParamsForType（768-776 行）
+  - 同型スロットへの一括型差し替え・params 維持無し
+  - 複製反復で毎スロット手作業
+- suggestedUse: 制作: 同型 Cmp の型/パラメータ一括更新
+- firstSeenAt: 2026-11-10T23:21:00+09:00
+- lastSeenAt: 2026-11-10T23:21:00+09:00
+
 ### GAP-Editor-EntityEditorUi-012
 
 - status: open
@@ -1192,6 +1234,27 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
+
+### GAP-Editor-EntityEditorUi-013
+
+- status: open
+- tier: P3
+- score: 530
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 未知 Cmp は TextDisabled のみでパラメータ一括編集不可
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:272
+- primary: `EntityEditorUi`
+- summary: 【Authoring】未対応コンポーネントは警告表示のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawComponentParams は未登録型で return false（272-273 行）
+  - JSON 直編集か再追加が必要
+  - CmpCamera 等追加後も未知型が混在すると一括調整不可
+- suggestedUse: 制作: 未知型の最低限 JSON 編集 UI
+- firstSeenAt: 2026-11-10T23:21:00+09:00
+- lastSeenAt: 2026-11-10T23:21:00+09:00
 
 #### UC-Debug
 
@@ -3431,7 +3494,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
@@ -3446,6 +3508,7 @@
 - scanId: SCAN-20261110-074024 | at: 2026-11-10T07:40:43.271911+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-075021 | at: 2026-11-10T07:50:37.543827+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-230538 | at: 2026-11-10T23:06:48.156250+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-231005 | at: 2026-11-10T23:10:45.414301+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

@@ -4363,6 +4363,87 @@
       "suggestedUse": "プレイ: フェード中も BGM 生存監視",
       "firstSeenAt": "2026-11-10T23:11:00+09:00",
       "lastSeenAt": "2026-11-10T23:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-013": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 530,
+      "frequency": "medium",
+      "frequencyBasis": "未知 Cmp は TextDisabled のみでパラメータ一括編集不可",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:272",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DrawComponentParams",
+        "DefaultParamsForType"
+      ],
+      "summaryShort": "未対応コンポーネントは警告表示のみ",
+      "summary": "未対応コンポーネントは警告表示のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "DrawComponentParams は未登録型で return false（272-273 行）",
+        "JSON 直編集か再追加が必要",
+        "CmpCamera 等追加後も未知型が混在すると一括調整不可"
+      ],
+      "suggestedUse": "制作: 未知型の最低限 JSON 編集 UI",
+      "firstSeenAt": "2026-11-10T23:21:00+09:00",
+      "lastSeenAt": "2026-11-10T23:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorHierarchy-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "high",
+      "frequencyBasis": "ヒエラルキー選択が 1 体ずつ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:333",
+      "primary": "EntityEditorHierarchy",
+      "related": [
+        "DrawHierarchyNode",
+        "selectedInstanceIndex"
+      ],
+      "summaryShort": "Selectable が単一 instanceIndex のみ",
+      "summary": "Selectable が単一 instanceIndex のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "DrawHierarchyNode はクリック 1 件で selectedInstanceIndex 更新（333-334 行）",
+        "複数選択・一括複製・一括タグ付け UI 無し",
+        "EntityEditorHierarchy-001 と同系"
+      ],
+      "suggestedUse": "制作: 複数エンティティの一括調整",
+      "firstSeenAt": "2026-11-10T23:21:00+09:00",
+      "lastSeenAt": "2026-11-10T23:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-014": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 550,
+      "frequency": "medium",
+      "frequencyBasis": "コンポ型変更が選択 1 スロットのみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DefaultParamsForType",
+        "AppendKnownComponentSlot"
+      ],
+      "summaryShort": "型 Combo 変更は params を既定に置換",
+      "summary": "型 Combo 変更は params を既定に置換",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Combo 変更で params=DefaultParamsForType（768-776 行）",
+        "同型スロットへの一括型差し替え・params 維持無し",
+        "複製反復で毎スロット手作業"
+      ],
+      "suggestedUse": "制作: 同型 Cmp の型/パラメータ一括更新",
+      "firstSeenAt": "2026-11-10T23:21:00+09:00",
+      "lastSeenAt": "2026-11-10T23:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -4524,7 +4605,10 @@
     "UC-Debug|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:208": "GAP-Editor-EntityEditor-011",
     "UC-Play|Audio|IsBgmLoopPaused|Unwired|Project/Codes/Include/System/PlaySe.h:127": "GAP-Audio-IsBgmLoopPaused-001",
     "UC-Play|Audio|GetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:132": "GAP-Audio-GetBgmLoopPlaybackSeconds-001",
-    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:158": "GAP-Scene-SceneGame-009"
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:158": "GAP-Scene-SceneGame-009",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:272": "GAP-Editor-EntityEditorUi-013",
+    "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:333": "GAP-Editor-EntityEditorHierarchy-002",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-014"
   },
   "pendings": {},
   "nextSequence": {
@@ -4533,9 +4617,9 @@
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
     "Editor-EntityEditor": 12,
-    "Editor-EntityEditorUi": 13,
+    "Editor-EntityEditorUi": 15,
     "Editor-EditorImportedAsset": 3,
-    "Editor-EntityEditorHierarchy": 2,
+    "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 3,
@@ -5451,6 +5535,22 @@
         "GAP-Audio-IsBgmLoopPaused-001",
         "GAP-Audio-GetBgmLoopPlaybackSeconds-001",
         "GAP-Scene-SceneGame-009"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-232021",
+      "at": "2026-11-10T23:20:52.299988+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditorUi-013",
+        "GAP-Editor-EntityEditorHierarchy-002",
+        "GAP-Editor-EntityEditorUi-014"
       ],
       "updatedIds": [],
       "closedIds": []
