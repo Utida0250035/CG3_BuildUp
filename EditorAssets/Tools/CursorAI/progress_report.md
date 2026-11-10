@@ -1745,6 +1745,12 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（22回目）
 - **newIds:** 3（instanceName 未反映、プレビュー親のみ、scaffold は名前のみ）
 
+## ギャップスキャンループ停止（ユーザー指示）
+
+- **日時:** 2026-11-11（JST）
+- **操作:** `loop-gap-scan`（600s）を `unsubscribe`（`sub_dbb157f3-f608-4454-966b-142597f448d8`）
+- **直前状態:** オープン GAP 289、完了スキャン 96 回（tick 97 まで）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
