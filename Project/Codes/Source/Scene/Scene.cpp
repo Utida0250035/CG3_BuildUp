@@ -6,13 +6,14 @@
 
 #include <cmath>
 
+// Release（NDEBUG）では DebugCamera を使わない
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
 #include "ForDebug/DebugCamera.h"
 #endif
 
 namespace Atrum {
 
-Scene::Scene() = default;
+Scene::Scene() { InitializeCamera(); }
 
 Scene::~Scene() = default;
 
@@ -29,39 +30,34 @@ void Scene::ReleaseParticleEmitterManager() {
 
 void Scene::EnsureCommonResources() { EnsureParticleEmitterManager(); }
 
-void Scene::ReleaseCommonResources() {
-  cameraRig_.Clear();
-  ReleaseParticleEmitterManager();
-}
+void Scene::ReleaseCommonResources() { ReleaseParticleEmitterManager(); }
 
 Particle::Emitter::EmitterManager *Scene::GetParticleEmitterManager() {
   EnsureParticleEmitterManager();
   return particleEmitterManager_.get();
 }
 
-Atrum::Camera *Scene::GetCamera() { return cameraRig_.GetPrimaryCamera(); }
+void Scene::InitializeCamera() {
+#if defined(DEVELOPMENT) && !defined(NDEBUG)
+  camera_ = std::make_unique<Atrum::Debug::DebugCamera>();
+#else
+  camera_ = std::make_unique<Atrum::Camera>();
+#endif
 
-const Atrum::Camera *Scene::GetCamera() const {
-  return cameraRig_.GetPrimaryCamera();
-}
-
-void Scene::PrepareCamerasForDraw() {
-  cameraRig_.PrepareActiveCameraBeforeDraw(*this);
+  camera_->Initialize();
+  camera_->CreateOrthographicMatrix(Atrum::Window::kDefaultClientWidth,
+                                    Atrum::Window::kDefaultClientHeight);
 }
 
 void Scene::SetupStageViewCamera() {
   using namespace Atrum;
 
-  Camera *camera = GetCamera();
-  if (camera == nullptr) {
-    return;
-  }
-
   const StageViewCameraPose pose = ComputeStageBattleViewPose();
-  ApplyStageViewCameraPose(camera, pose);
+  ApplyStageViewCameraPose(camera_.get(), pose);
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
-  if (auto *debugCam = dynamic_cast<Debug::DebugCamera *>(camera)) {
+  if (auto *debugCam =
+          dynamic_cast<Debug::DebugCamera *>(camera_.get())) {
     debugCam->RefPivot() = pose.pivot;
     debugCam->RefDistance() = std::abs(pose.eye.z - pose.pivot.z);
   }

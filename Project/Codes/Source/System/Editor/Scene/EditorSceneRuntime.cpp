@@ -7,7 +7,6 @@
 #include "System/Entity/Components/CmpEditorTextureBillboard.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
-#include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
@@ -56,9 +55,6 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpHitSphere") {
       return entity.HasUpdCmp<CmpHitSphere>();
     }
-    if (slot.typeName == "CmpCamera") {
-      return entity.HasUpdCmp<CmpCamera>();
-    }
   }
   if (slot.kind == ComponentSlotKind::Data) {
     if (slot.typeName == "CmpEditorAssetPath") {
@@ -88,10 +84,6 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   }
   if (slot.typeName == "CmpHitSphere" && slot.kind == ComponentSlotKind::Upd) {
     entity.AddUpdCmp<CmpHitSphere>();
-    return true;
-  }
-  if (slot.typeName == "CmpCamera" && slot.kind == ComponentSlotKind::Upd) {
-    entity.AddUpdCmp<CmpCamera>();
     return true;
   }
   if (slot.typeName == "CmpEditorAssetPath" &&

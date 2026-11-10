@@ -1,5 +1,4 @@
 #pragma once
-#include "Camera/ActiveCameraSystem.h"
 #include "Engine/AtrumEngine.h"
 #include "Input/AbstractInput.h"
 #include "Scene/CommandScene.h"
@@ -57,6 +56,15 @@ namespace Atrum {
 			AbstractInput::Instance()->Update();
 
 			Scene* sceneNow = commandScene_->GetSceneNow();
+			Atrum::Camera* camera = sceneNow->GetCamera();
+			if (sceneNow->IsStageViewCameraLocked()) {
+				// プレイヤー操作で視点を変えさせない（player_friendly_camera_policy.md）
+				camera->UpdateMatrix();
+			} else if (!sceneNow->AllowDebugCameraControl()) {
+				camera->UpdateMatrix();
+			} else {
+				camera->Update();
+			}
 
 			if (!commandChangeScene_->GetIsExecute()) {
 				// シーン遷移の処理中でなければ
@@ -71,8 +79,7 @@ namespace Atrum {
 
 			sceneNow = commandScene_->GetSceneNow();
 
-			ActiveCameraSystem::Instance().PrepareSceneAndBindEngine(
-			    sceneNow, Engine::Instance());
+			Engine::Instance()->SetCamera(sceneNow->GetCamera());
 
 			// 現在シーンの描画処理（PreDraw / PostDraw を含む）
 			sceneNow->Draw();
