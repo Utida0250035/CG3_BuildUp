@@ -1679,6 +1679,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（17回目）
 - **newIds:** 3（D&D 後プレビュー未更新、from_json params 未マージ、衝突リネーム連番のみ）
 
+## ギャップスキャン tick（SCAN-20261111-043006）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（18回目）
+- **newIds:** 3（ChangeScene 常時描画、Enter 無条件、PlayRequest 未 Clear）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

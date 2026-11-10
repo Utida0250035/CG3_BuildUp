@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T04:10:35.991951+09:00
+- **lastIncrementalScanAt:** 2026-11-11T04:21:02.733755+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2982,6 +2982,27 @@
 - firstSeenAt: 2026-11-11T03:31:00+09:00
 - lastSeenAt: 2026-11-11T03:31:00+09:00
 
+### GAP-Scene-CommandScene-006
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Release 起動で Enter 無条件
+- scope: UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:30
+- primary: `CommandScene`
+- summary: 【Debug】sceneNow 確定後 Enter を無条件
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildUp Launch 成否を見ず EnterScene（22-30 行）
+  - 壊れた JSON でも Enter が走りフォールバックと混同
+  - CommandScene-005 は path 解決のみ、Enter 検証なし
+- suggestedUse: Debug: 起動シーン検証とタイトルフォールバック
+- firstSeenAt: 2026-11-11T04:31:00+09:00
+- lastSeenAt: 2026-11-11T04:31:00+09:00
+
 ### GAP-Scene-SceneBuildUp-019
 
 - status: open
@@ -3069,6 +3090,27 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-11T02:01:00+09:00
 - lastSeenAt: 2026-11-11T02:01:00+09:00
+
+### GAP-Editor-EditorSceneAsset-002
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: PlayRequest が Clear されない
+- scope: UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:182
+- primary: `EditorSceneAsset`
+- summary: 【Debug】PlayRequest がパスだけ保持
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Set は jsonFilePath_ 代入のみ（182-184 行）
+  - BuildUp Exit で Clear 呼び出しなし
+  - エディタ再実行と launch 設定の食い違いが残る
+- suggestedUse: Debug: 検証シーン実行後のリクエスト整合
+- firstSeenAt: 2026-11-11T04:31:00+09:00
+- lastSeenAt: 2026-11-11T04:31:00+09:00
 
 ### GAP-Infra-EditorScenePlayRequest-003
 
@@ -3241,6 +3283,27 @@
 - suggestedUse: Debug: 試験シーン名をウィンドウへ即反映
 - firstSeenAt: 2026-11-11T04:01:00+09:00
 - lastSeenAt: 2026-11-11T04:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-023
+
+- status: open
+- tier: P3
+- score: 460
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Feature シーンでも遷移 UI 常時
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:191
+- primary: `SceneBuildUp`
+- summary: 【Debug】Draw で ChangeScene 常時描画
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - ImGui 有効でも engine->PreDraw 後に CommandChangeScene::Draw（191-192 行）
+  - Release 相当の DrawScene は #else 分岐のみ（188-190 行）
+  - 最小検証ビューにフェード UI が重なる
+- suggestedUse: Debug: 機能検証用の描画経路分離
+- firstSeenAt: 2026-11-11T04:31:00+09:00
+- lastSeenAt: 2026-11-11T04:31:00+09:00
 
 #### UC-Play
 
@@ -5410,7 +5473,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-015018 | at: 2026-11-11T01:50:48.708567+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-020020 | at: 2026-11-11T02:01:01.214707+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-021016 | at: 2026-11-11T02:11:03.810105+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-022018 | at: 2026-11-11T02:21:03.662472+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -5425,6 +5487,7 @@
 - scanId: SCAN-20261111-035014 | at: 2026-11-11T03:50:30.395021+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

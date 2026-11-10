@@ -6957,6 +6957,90 @@
       "suggestedUse": "Authoring: 一括インポート命名規則",
       "firstSeenAt": "2026-11-11T04:21:00+09:00",
       "lastSeenAt": "2026-11-11T04:21:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-023": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 460,
+      "frequency": "low",
+      "frequencyBasis": "Feature シーンでも遷移 UI 常時",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:191",
+      "primary": "SceneBuildUp",
+      "related": [
+        "Draw",
+        "CommandChangeScene",
+        "DrawScene"
+      ],
+      "summaryShort": "Draw で ChangeScene 常時描画",
+      "summary": "Draw で ChangeScene 常時描画",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "ImGui 有効でも engine->PreDraw 後に CommandChangeScene::Draw（191-192 行）",
+        "Release 相当の DrawScene は #else 分岐のみ（188-190 行）",
+        "最小検証ビューにフェード UI が重なる"
+      ],
+      "suggestedUse": "Debug: 機能検証用の描画経路分離",
+      "firstSeenAt": "2026-11-11T04:31:00+09:00",
+      "lastSeenAt": "2026-11-11T04:31:00+09:00"
+    },
+    "GAP-Scene-CommandScene-006": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "Release 起動で Enter 無条件",
+      "scopeKey": "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:30",
+      "primary": "CommandScene",
+      "related": [
+        "ResolveStartupScenePath",
+        "EnterScene",
+        "SceneTitle"
+      ],
+      "summaryShort": "sceneNow 確定後 Enter を無条件",
+      "summary": "sceneNow 確定後 Enter を無条件",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "BuildUp Launch 成否を見ず EnterScene（22-30 行）",
+        "壊れた JSON でも Enter が走りフォールバックと混同",
+        "CommandScene-005 は path 解決のみ、Enter 検証なし"
+      ],
+      "suggestedUse": "Debug: 起動シーン検証とタイトルフォールバック",
+      "firstSeenAt": "2026-11-11T04:31:00+09:00",
+      "lastSeenAt": "2026-11-11T04:31:00+09:00"
+    },
+    "GAP-Editor-EditorSceneAsset-002": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "low",
+      "frequencyBasis": "PlayRequest が Clear されない",
+      "scopeKey": "UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:182",
+      "primary": "EditorSceneAsset",
+      "related": [
+        "EditorScenePlayRequest",
+        "TrySetRepositoryStartupScene",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "PlayRequest がパスだけ保持",
+      "summary": "PlayRequest がパスだけ保持",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Set は jsonFilePath_ 代入のみ（182-184 行）",
+        "BuildUp Exit で Clear 呼び出しなし",
+        "エディタ再実行と launch 設定の食い違いが残る"
+      ],
+      "suggestedUse": "Debug: 検証シーン実行後のリクエスト整合",
+      "firstSeenAt": "2026-11-11T04:31:00+09:00",
+      "lastSeenAt": "2026-11-11T04:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -7209,7 +7293,10 @@
     "UC-Play|Audio|StreamingVoiceCallback|Incomplete|Project/Codes/Source/Audio/StreamingVoiceCallBack.cpp:7": "GAP-Audio-StreamingVoiceCallback-002",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:278": "GAP-Editor-EntityEditor-020",
     "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:103": "GAP-Editor-EntityEditorDefinition-005",
-    "UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:57": "GAP-Editor-EditorImportedAsset-004"
+    "UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:57": "GAP-Editor-EditorImportedAsset-004",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:191": "GAP-Scene-SceneBuildUp-023",
+    "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:30": "GAP-Scene-CommandScene-006",
+    "UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:182": "GAP-Editor-EditorSceneAsset-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -7243,13 +7330,13 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 23,
+    "Scene-SceneBuildUp": 24,
     "Infra-scaffold_play_area": 3,
     "Editor-EditorSceneRuntime": 8,
     "Entity-CmpCamera": 2,
-    "Scene-CommandScene": 6,
+    "Scene-CommandScene": 7,
     "Infra-launch_config": 4,
-    "Editor-EditorSceneAsset": 2,
+    "Editor-EditorSceneAsset": 3,
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
@@ -8650,6 +8737,22 @@
         "GAP-Editor-EntityEditor-020",
         "GAP-Editor-EntityEditorDefinition-005",
         "GAP-Editor-EditorImportedAsset-004"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-043006",
+      "at": "2026-11-11T04:30:30.823712+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-SceneBuildUp-023",
+        "GAP-Scene-CommandScene-006",
+        "GAP-Editor-EditorSceneAsset-002"
       ],
       "updatedIds": [],
       "closedIds": []
