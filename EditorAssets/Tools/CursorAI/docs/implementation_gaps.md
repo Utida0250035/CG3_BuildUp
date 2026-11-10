@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T04:40:29.023350+09:00
+- **lastIncrementalScanAt:** 2026-11-11T04:50:25.719805+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2416,28 +2416,6 @@
 - firstSeenAt: 2026-11-10T06:31:00+09:00
 - lastSeenAt: 2026-11-10T06:31:00+09:00
 
-### GAP-Editor-EditorSceneRuntime-008
-
-- status: open
-- tier: P2
-- score: 640
-- primaryUseCase: UC-Debug
-- scenarioId: DBG-FeatureScene-001
-- frequency: high
-- frequencyBasis: BuildUp 共有ローダがタグ同期しない
-- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:321
-- primary: `EditorSceneRuntime`
-- summary: 【Debug】TryLoad が tagCatalog 同期を省略
-- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
-- evidence:
-  - JSON parse のみで Merge/Sync 無し（321-350 行）
-  - EntityEditor::LoadFromJsonPath は同期あり（171-173 行）
-  - SceneBuildUp-018 と同系だがローダ共通層の欠落
-- suggestedUse: Debug: 機能検証 JSON のタグ契約をエディタと一致
-- roadmapLink: feature-memos/debug_test_play_area.md
-- firstSeenAt: 2026-11-11T03:01:00+09:00
-- lastSeenAt: 2026-11-11T03:01:00+09:00
-
 ### GAP-Scene-SceneBuildUp-006
 
 - status: open
@@ -2917,6 +2895,27 @@
 - firstSeenAt: 2026-11-11T02:01:00+09:00
 - lastSeenAt: 2026-11-11T02:01:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-008
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 子 Entity が Initialize されない
+- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:372
+- primary: `EditorSceneRuntime`
+- summary: 【Debug】親なしインスタンスだけ初期化
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Initialize は parentIndex<0 のみ（372-378 行）
+  - 子階層の Cmp が未初期化のまま BuildUp 実行
+  - Draw は親のみ走るため子の不具合が見えにくい
+- suggestedUse: Debug: 階層付き検証シーンのランタイム再現
+- firstSeenAt: 2026-11-11T05:01:00+09:00
+- lastSeenAt: 2026-11-11T05:01:00+09:00
+
 ### GAP-Editor-SceneEntityEditor-008
 
 - status: open
@@ -3240,6 +3239,27 @@
 - firstSeenAt: 2026-11-11T03:01:00+09:00
 - lastSeenAt: 2026-11-11T03:01:00+09:00
 
+### GAP-Scene-SceneBuildUpRegistry-004
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Launch だけで Enter なし
+- scope: UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:44
+- primary: `SceneBuildUpRegistry`
+- summary: 【Debug】Launch は Scene 生成のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Launch は make_unique と push_back（39-44 行）
+  - EnterScene は呼び出し側必須（CommandScene 30 行）
+  - scaffold 手順の二段 API が機能試験の導線を複雑化
+- suggestedUse: Debug: Feature シーン起動の単一 API
+- firstSeenAt: 2026-11-11T05:01:00+09:00
+- lastSeenAt: 2026-11-11T05:01:00+09:00
+
 ### GAP-Scene-SceneBuildUp-021
 
 - status: open
@@ -3304,6 +3324,27 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-11T02:31:00+09:00
 - lastSeenAt: 2026-11-11T02:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-024
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: カメラ無しで描画スキップ
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:149
+- primary: `SceneBuildUp`
+- summary: 【Debug】camera==nullptr で無言 return
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GetCamera 失敗時 return のみ（148-150 行）
+  - 機能検証でカメラ欠落が空画面に見える
+  - CmpCamera 未配置のテンプレと切り分け困難
+- suggestedUse: Debug: ランタイムビューのカメラ欠落表示
+- firstSeenAt: 2026-11-11T05:01:00+09:00
+- lastSeenAt: 2026-11-11T05:01:00+09:00
 
 ### GAP-Scene-SceneBuildUpRegistry-003
 
@@ -5599,7 +5640,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-022018 | at: 2026-11-11T02:21:03.662472+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-023031 | at: 2026-11-11T02:31:18.921192+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-024014 | at: 2026-11-11T02:40:47.012554+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-025013 | at: 2026-11-11T02:51:07.177239+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -5614,6 +5654,7 @@
 - scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-043006 | at: 2026-11-11T04:30:30.823712+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-044011 | at: 2026-11-11T04:40:29.023350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-045006 | at: 2026-11-11T04:50:25.719805+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

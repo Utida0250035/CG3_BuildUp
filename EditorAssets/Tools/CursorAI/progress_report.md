@@ -1694,6 +1694,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（18回目）
 - **newIds:** 3（プレハブ先頭 1 件、Drop キュー不可視、インスタンス複製 UI なし）
 
+## ギャップスキャン tick（SCAN-20261111-050017）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（19回目）
+- **newIds:** 3（子 Entity 未 Initialize、カメラ無し無言 return、Launch は Enter なし）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

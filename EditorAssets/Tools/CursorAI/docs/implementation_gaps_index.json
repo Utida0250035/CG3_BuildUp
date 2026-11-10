@@ -6292,28 +6292,27 @@
       "scenarioId": "DBG-FeatureScene-001",
       "status": "open",
       "tier": "P2",
-      "score": 640,
-      "frequency": "high",
-      "frequencyBasis": "BuildUp 共有ローダがタグ同期しない",
-      "scopeKey": "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:321",
+      "score": 560,
+      "frequency": "medium",
+      "frequencyBasis": "子 Entity が Initialize されない",
+      "scopeKey": "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:372",
       "primary": "EditorSceneRuntime",
       "related": [
-        "TryLoadSceneDocument",
-        "MergeTagCatalogFromRegistry",
-        "SceneBuildUp"
+        "BuildEntitiesFromSceneDocument",
+        "SetParent",
+        "ResolveDependencies"
       ],
-      "summaryShort": "TryLoad が tagCatalog 同期を省略",
-      "summary": "TryLoad が tagCatalog 同期を省略",
+      "summaryShort": "親なしインスタンスだけ初期化",
+      "summary": "親なしインスタンスだけ初期化",
       "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
       "evidence": [
-        "JSON parse のみで Merge/Sync 無し（321-350 行）",
-        "EntityEditor::LoadFromJsonPath は同期あり（171-173 行）",
-        "SceneBuildUp-018 と同系だがローダ共通層の欠落"
+        "Initialize は parentIndex<0 のみ（372-378 行）",
+        "子階層の Cmp が未初期化のまま BuildUp 実行",
+        "Draw は親のみ走るため子の不具合が見えにくい"
       ],
-      "suggestedUse": "Debug: 機能検証 JSON のタグ契約をエディタと一致",
-      "roadmapLink": "feature-memos/debug_test_play_area.md",
-      "firstSeenAt": "2026-11-11T03:01:00+09:00",
-      "lastSeenAt": "2026-11-11T03:01:00+09:00"
+      "suggestedUse": "Debug: 階層付き検証シーンのランタイム再現",
+      "firstSeenAt": "2026-11-11T05:01:00+09:00",
+      "lastSeenAt": "2026-11-11T05:01:00+09:00"
     },
     "GAP-Scene-SceneBuildUp-020": {
       "primaryUseCase": "UC-Debug",
@@ -7209,6 +7208,62 @@
       "suggestedUse": "Authoring: インスタンス複製ショートカット",
       "firstSeenAt": "2026-11-11T04:51:00+09:00",
       "lastSeenAt": "2026-11-11T04:51:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-024": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "カメラ無しで描画スキップ",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:149",
+      "primary": "SceneBuildUp",
+      "related": [
+        "DrawRuntimeViewContent",
+        "GetCamera",
+        "SetupStageViewCamera"
+      ],
+      "summaryShort": "camera==nullptr で無言 return",
+      "summary": "camera==nullptr で無言 return",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "GetCamera 失敗時 return のみ（148-150 行）",
+        "機能検証でカメラ欠落が空画面に見える",
+        "CmpCamera 未配置のテンプレと切り分け困難"
+      ],
+      "suggestedUse": "Debug: ランタイムビューのカメラ欠落表示",
+      "firstSeenAt": "2026-11-11T05:01:00+09:00",
+      "lastSeenAt": "2026-11-11T05:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUpRegistry-004": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "low",
+      "frequencyBasis": "Launch だけで Enter なし",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:44",
+      "primary": "SceneBuildUpRegistry",
+      "related": [
+        "Launch",
+        "EnterScene",
+        "ownedScenes_"
+      ],
+      "summaryShort": "Launch は Scene 生成のみ",
+      "summary": "Launch は Scene 生成のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Launch は make_unique と push_back（39-44 行）",
+        "EnterScene は呼び出し側必須（CommandScene 30 行）",
+        "scaffold 手順の二段 API が機能試験の導線を複雑化"
+      ],
+      "suggestedUse": "Debug: Feature シーン起動の単一 API",
+      "firstSeenAt": "2026-11-11T05:01:00+09:00",
+      "lastSeenAt": "2026-11-11T05:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -7469,7 +7524,10 @@
     "UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:710": "GAP-Audio-PlaySceneBgm-002",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:104": "GAP-Editor-EntityEditor-021",
     "UC-Authoring|Editor|FileDropQueue|Incomplete|Project/Codes/Include/System/Editor/EditorImportedAsset.h:22": "GAP-Editor-FileDropQueue-001",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377": "GAP-Editor-EntityEditorUi-027"
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377": "GAP-Editor-EntityEditorUi-027",
+    "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:372": "GAP-Editor-EditorSceneRuntime-008",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:149": "GAP-Scene-SceneBuildUp-024",
+    "UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:44": "GAP-Scene-SceneBuildUpRegistry-004"
   },
   "pendings": {},
   "nextSequence": {
@@ -7496,7 +7554,7 @@
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 6,
-    "Scene-SceneBuildUpRegistry": 4,
+    "Scene-SceneBuildUpRegistry": 5,
     "Editor-SceneEntityEditor": 12,
     "Scene-SceneCameraRig": 2,
     "Infra-DebugPlayAreaGenerator": 2,
@@ -7504,9 +7562,9 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 24,
+    "Scene-SceneBuildUp": 25,
     "Infra-scaffold_play_area": 3,
-    "Editor-EditorSceneRuntime": 8,
+    "Editor-EditorSceneRuntime": 9,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 7,
     "Infra-launch_config": 4,
@@ -8959,6 +9017,22 @@
         "GAP-Editor-EntityEditor-021",
         "GAP-Editor-FileDropQueue-001",
         "GAP-Editor-EntityEditorUi-027"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-050017",
+      "at": "2026-11-11T05:00:33.872874+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Editor-EditorSceneRuntime-008",
+        "GAP-Scene-SceneBuildUp-024",
+        "GAP-Scene-SceneBuildUpRegistry-004"
       ],
       "updatedIds": [],
       "closedIds": []
