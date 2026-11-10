@@ -1574,6 +1574,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（10回目）
 - **newIds:** 3（削除後シーン先頭固定、ロードで選択 0、実行順 1 件ずつ）
 
+## ギャップスキャン tick（SCAN-20261111-010025）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（11回目）
+- **newIds:** 3（BuildUp ロード失敗ダミー、起動パス試行 UI 無し、BuildEntities に MainCamera 無し）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
