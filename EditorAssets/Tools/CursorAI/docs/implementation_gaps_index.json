@@ -4861,6 +4861,89 @@
       "suggestedUse": "プレイ: リザルト→タイトルの BGM をフェードに合わせる",
       "firstSeenAt": "2026-11-11T00:11:00+09:00",
       "lastSeenAt": "2026-11-11T00:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-017": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 620,
+      "frequency": "medium",
+      "frequencyBasis": "CmpCamera 追加可だがパラメータ UI 無し",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DrawComponentParams",
+        "CmpCamera",
+        "kKnownComponents"
+      ],
+      "summaryShort": "CmpCamera が既知型だが未対応表示",
+      "summary": "CmpCamera が既知型だが未対応表示",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "kKnownComponents に CmpCamera 登録（37 行）",
+        "DrawComponentParams に分岐無し→272 行の未対応表示",
+        "MainCamera 量産時に JSON 直編集が必要"
+      ],
+      "suggestedUse": "制作: camera.main タグ付き Cmp の反復調整",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T00:21:00+09:00",
+      "lastSeenAt": "2026-11-11T00:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-018": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 530,
+      "frequency": "medium",
+      "frequencyBasis": "コンポ削除が 1 スロットずつ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707",
+      "primary": "EntityEditorUi",
+      "related": [
+        "ComponentSlot",
+        "AppendKnownComponentSlot"
+      ],
+      "summaryShort": "コンポーネント削除が選択 1 件のみ",
+      "summary": "コンポーネント削除が選択 1 件のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "削除ボタンは selectedComponentIndex のみ erase（707-711 行）",
+        "同型 Cmp の一括削除・置換前整理 UI 無し",
+        "EntityEditorUi-014 の型変更と合わせ手順が長い"
+      ],
+      "suggestedUse": "制作: 試行錯誤後の Cmp 一括掃除",
+      "firstSeenAt": "2026-11-11T00:21:00+09:00",
+      "lastSeenAt": "2026-11-11T00:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorTagCatalog-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "medium",
+      "frequencyBasis": "タグパネルがカタログ管理のみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818",
+      "primary": "EntityEditorTagCatalog",
+      "related": [
+        "DrawTagsPanel",
+        "AddTagToEntityDefinition"
+      ],
+      "summaryShort": "登録タグから全インスタンス一括付与無し",
+      "summary": "登録タグから全インスタンス一括付与無し",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "DrawTagsPanel は catalog 追加・改名・削除のみ（792-849 行）",
+        "インスペクタの「カタログのタグを付与」は選択 1 体（621 行）",
+        "camera.main 等のロールタグを多数配置へ展開する導線なし"
+      ],
+      "suggestedUse": "制作: ロールタグのシーン全域への一括付与",
+      "firstSeenAt": "2026-11-11T00:21:00+09:00",
+      "lastSeenAt": "2026-11-11T00:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -5040,7 +5123,10 @@
     "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:161": "GAP-Infra-EditorScenePlayRequest-004",
     "UC-Play|Audio|GetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:159": "GAP-Audio-GetSeVolume-001",
     "UC-Play|Audio|GetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:151": "GAP-Audio-GetSeFrequencyRatio-001",
-    "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62": "GAP-Scene-SceneResult-002"
+    "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62": "GAP-Scene-SceneResult-002",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37": "GAP-Editor-EntityEditorUi-017",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707": "GAP-Editor-EntityEditorUi-018",
+    "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -5049,7 +5135,8 @@
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
     "Editor-EntityEditor": 13,
-    "Editor-EntityEditorUi": 17,
+    "Editor-EntityEditorUi": 19,
+    "Editor-EntityEditorTagCatalog": 2,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
@@ -6068,6 +6155,22 @@
         "GAP-Audio-GetSeVolume-001",
         "GAP-Audio-GetSeFrequencyRatio-001",
         "GAP-Scene-SceneResult-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-002014",
+      "at": "2026-11-11T00:20:30.448375+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditorUi-017",
+        "GAP-Editor-EntityEditorUi-018",
+        "GAP-Editor-EntityEditorTagCatalog-001"
       ],
       "updatedIds": [],
       "closedIds": []

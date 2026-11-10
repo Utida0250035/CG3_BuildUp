@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T00:01:17.401951+09:00
+- **lastIncrementalScanAt:** 2026-11-11T00:10:56.667870+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -911,6 +911,28 @@
 - firstSeenAt: 2026-11-10T06:51:00+09:00
 - lastSeenAt: 2026-11-10T06:51:00+09:00
 
+### GAP-Editor-EntityEditorUi-017
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: CmpCamera 追加可だがパラメータ UI 無し
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37
+- primary: `EntityEditorUi`
+- summary: 【Authoring】CmpCamera が既知型だが未対応表示
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - kKnownComponents に CmpCamera 登録（37 行）
+  - DrawComponentParams に分岐無し→272 行の未対応表示
+  - MainCamera 量産時に JSON 直編集が必要
+- suggestedUse: 制作: camera.main タグ付き Cmp の反復調整
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:21:00+09:00
+- lastSeenAt: 2026-11-11T00:21:00+09:00
+
 ### GAP-Infra-component_split_verify-001
 
 - status: open
@@ -1105,6 +1127,27 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T06:01:00+09:00
 - lastSeenAt: 2026-11-10T06:01:00+09:00
+
+### GAP-Editor-EntityEditorTagCatalog-001
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: タグパネルがカタログ管理のみ
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】登録タグから全インスタンス一括付与無し
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawTagsPanel は catalog 追加・改名・削除のみ（792-849 行）
+  - インスペクタの「カタログのタグを付与」は選択 1 体（621 行）
+  - camera.main 等のロールタグを多数配置へ展開する導線なし
+- suggestedUse: 制作: ロールタグのシーン全域への一括付与
+- firstSeenAt: 2026-11-11T00:21:00+09:00
+- lastSeenAt: 2026-11-11T00:21:00+09:00
 
 ### GAP-Editor-EntityEditorUi-011
 
@@ -1318,6 +1361,27 @@
 - suggestedUse: 制作: 未知型の最低限 JSON 編集 UI
 - firstSeenAt: 2026-11-10T23:21:00+09:00
 - lastSeenAt: 2026-11-10T23:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-018
+
+- status: open
+- tier: P3
+- score: 530
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: コンポ削除が 1 スロットずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707
+- primary: `EntityEditorUi`
+- summary: 【Authoring】コンポーネント削除が選択 1 件のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 削除ボタンは selectedComponentIndex のみ erase（707-711 行）
+  - 同型 Cmp の一括削除・置換前整理 UI 無し
+  - EntityEditorUi-014 の型変更と合わせ手順が長い
+- suggestedUse: 制作: 試行錯誤後の Cmp 一括掃除
+- firstSeenAt: 2026-11-11T00:21:00+09:00
+- lastSeenAt: 2026-11-11T00:21:00+09:00
 
 #### UC-Debug
 
@@ -3815,7 +3879,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-064013 | at: 2026-11-10T06:41:03.845539+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-065006 | at: 2026-11-10T06:51:08.763681+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-070015 | at: 2026-11-10T07:00:50.713598+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -3830,6 +3893,7 @@
 - scanId: SCAN-20261110-234025 | at: 2026-11-10T23:42:41.699471+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-235013 | at: 2026-11-10T23:50:56.634759+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-000032 | at: 2026-11-11T00:01:17.401951+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-001015 | at: 2026-11-11T00:10:56.667870+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 
