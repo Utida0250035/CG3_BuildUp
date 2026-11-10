@@ -126,6 +126,8 @@ namespace Atrum {
 
 	SceneTitle::SceneTitle() {}
 
+	SceneTitle::~SceneTitle() = default;
+
 	SceneTitle* SceneTitle::Instance() {
 		static SceneTitle instance;
 		return &instance;

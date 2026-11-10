@@ -16,6 +16,10 @@ namespace Atrum {
 SceneMovie::SceneMovie(std::string trackJsonPath, Scene *returnScene)
     : trackJsonPath_(std::move(trackJsonPath)), returnScene_(returnScene) {}
 
+SceneMovie::~SceneMovie() = default;
+
+SceneMovieRegistry::~SceneMovieRegistry() = default;
+
 SceneMovieRegistry &SceneMovieRegistry::Instance() {
   static SceneMovieRegistry instance;
   return instance;

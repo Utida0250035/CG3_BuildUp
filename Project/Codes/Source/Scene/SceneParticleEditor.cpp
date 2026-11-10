@@ -1,6 +1,8 @@
 #include "Scene/SceneParticleEditor.h"
 
+#include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "System/Entity/Entity.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"

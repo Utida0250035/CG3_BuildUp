@@ -80,6 +80,8 @@ namespace Atrum {
 
 	SceneGame::SceneGame() {}
 
+	SceneGame::~SceneGame() = default;
+
 	SceneGame* SceneGame::Instance() {
 		static SceneGame instance;
 		return &instance;

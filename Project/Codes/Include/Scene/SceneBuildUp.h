@@ -20,6 +20,7 @@ class Scene;
 class SceneBuildUp final : public Scene {
 public:
   SceneBuildUp(std::string sceneJsonPath, Scene *returnScene);
+  ~SceneBuildUp() override;
 
   void EnterScene() override;
   void Update() override;
@@ -49,6 +50,8 @@ private:
 /// 非シングルトン SceneBuildUp の生成・所有（遷移先ポインタはここが保持）
 class SceneBuildUpRegistry final {
 public:
+  ~SceneBuildUpRegistry();
+
   static SceneBuildUpRegistry &Instance();
 
   /// 新しい SceneBuildUp を生成し、シーン遷移用の生ポインタを返す

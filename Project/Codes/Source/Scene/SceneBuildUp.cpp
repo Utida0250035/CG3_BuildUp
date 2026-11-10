@@ -27,6 +27,10 @@ SceneBuildUp::SceneBuildUp(std::string sceneJsonPath, Scene *returnScene)
       Editor::Scene::SceneDisplayNameFromPath(sceneJsonPath_);
 }
 
+SceneBuildUp::~SceneBuildUp() = default;
+
+SceneBuildUpRegistry::~SceneBuildUpRegistry() = default;
+
 SceneBuildUpRegistry &SceneBuildUpRegistry::Instance() {
   static SceneBuildUpRegistry instance;
   return instance;

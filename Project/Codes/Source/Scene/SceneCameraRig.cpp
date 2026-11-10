@@ -16,7 +16,32 @@ bool EntityHasMainCameraTag(const Entity &entity) {
   return entity.HasTagHash(Hash64(kMainCameraTag));
 }
 
+const Entity *ResolvePrimaryCameraEntity(
+    const std::vector<std::unique_ptr<Entity>> &entities) {
+  const Entity *primaryEntity = nullptr;
+  for (const auto &entity : entities) {
+    if (!entity || !entity->HasUpdCmp<CmpCamera>()) {
+      continue;
+    }
+    if (EntityHasMainCameraTag(*entity)) {
+      return entity.get();
+    }
+    if (primaryEntity == nullptr) {
+      primaryEntity = entity.get();
+    }
+  }
+  return primaryEntity;
+}
+
 } // namespace
+
+SceneCameraRig::SceneCameraRig() = default;
+
+SceneCameraRig::~SceneCameraRig() = default;
+
+SceneCameraRig::SceneCameraRig(SceneCameraRig &&) noexcept = default;
+
+SceneCameraRig &SceneCameraRig::operator=(SceneCameraRig &&) noexcept = default;
 
 void SceneCameraRig::EnsureAutoSpawnedCameras() {
   if (autoSpawnAttempted_ && FindPrimaryCmpCamera() != nullptr) {
@@ -48,20 +73,24 @@ void SceneCameraRig::Clear() {
   autoSpawnAttempted_ = false;
 }
 
-CmpCamera *SceneCameraRig::FindPrimaryCmpCamera() const {
-  const Entity *primaryEntity = nullptr;
+CmpCamera *SceneCameraRig::FindPrimaryCmpCamera() {
+  Entity *primaryEntity = nullptr;
   for (const auto &entity : entities_) {
     if (!entity || !entity->HasUpdCmp<CmpCamera>()) {
       continue;
     }
     if (EntityHasMainCameraTag(*entity)) {
-      primaryEntity = entity.get();
-      break;
+      return entity->GetUpdCmp<CmpCamera>();
     }
     if (primaryEntity == nullptr) {
       primaryEntity = entity.get();
     }
   }
+  return primaryEntity ? primaryEntity->GetUpdCmp<CmpCamera>() : nullptr;
+}
+
+const CmpCamera *SceneCameraRig::FindPrimaryCmpCamera() const {
+  const Entity *primaryEntity = ResolvePrimaryCameraEntity(entities_);
   if (primaryEntity == nullptr) {
     return nullptr;
   }

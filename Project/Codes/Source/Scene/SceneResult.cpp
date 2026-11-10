@@ -120,6 +120,8 @@ void SceneResult::DrawBackgrounds() {
 
 SceneResult::SceneResult() {}
 
+SceneResult::~SceneResult() = default;
+
 SceneResult *SceneResult::Instance() {
   static SceneResult instance;
   return &instance;

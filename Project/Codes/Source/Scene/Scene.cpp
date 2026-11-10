@@ -1,6 +1,7 @@
 #include "Scene/Scene.h"
 
 #include "Camera/StageViewCamera.h"
+#include "System/Entity/Entity.h"
 #include "Engine/AtrumEngine.h"
 #include "Scene/CommandChangeScene.h"
 

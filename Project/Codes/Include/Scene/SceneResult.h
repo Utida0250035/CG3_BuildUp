@@ -15,7 +15,7 @@ class Entity;
 class SceneResult : public Scene {
 public:
   SceneResult();
-  ~SceneResult() override = default;
+  ~SceneResult() override;
 
   void EnterScene() override;
   void Update() override;
