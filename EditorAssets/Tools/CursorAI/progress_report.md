@@ -1564,6 +1564,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（10回目）
 - **newIds:** 3（Cmp 正射影既定、BuildUp Update 漏れ、stageView ロック固定）
 
+## ギャップスキャン tick（SCAN-20261111-004014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（10回目）
+- **newIds:** 3（Game Exit 即 BGM 停止、StopSe 未使用、PlaySe キャッシュ無期限）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

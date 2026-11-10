@@ -5028,6 +5028,87 @@
       "roadmapLink": "feature-memos/debug_test_play_area.md",
       "firstSeenAt": "2026-11-11T00:31:00+09:00",
       "lastSeenAt": "2026-11-11T00:31:00+09:00"
+    },
+    "GAP-Scene-SceneGame-011": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 570,
+      "frequency": "medium",
+      "frequencyBasis": "ExitScene で BGM を即停止",
+      "scopeKey": "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:122",
+      "primary": "SceneGame",
+      "related": [
+        "ChangeSceneFade",
+        "RequestRestartRound"
+      ],
+      "summaryShort": "フェード中も Exit で StopBgmLoop",
+      "summary": "フェード中も Exit で StopBgmLoop",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "ExitScene で StopBgmLoop（122-125 行）",
+        "リスタート／リザルト遷移は ChangeSceneFade 経由",
+        "SceneTitle-002・SceneResult-002 と同様の暗転中音切れ"
+      ],
+      "suggestedUse": "プレイ: ゲーム→他シーンの BGM をフェード連動",
+      "firstSeenAt": "2026-11-11T00:41:00+09:00",
+      "lastSeenAt": "2026-11-11T00:41:00+09:00"
+    },
+    "GAP-Audio-StopSe-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "low",
+      "frequencyBasis": "StopSe がシーン退出で未使用",
+      "scopeKey": "UC-Play|Audio|StopSe|Unwired|Project/Codes/Include/System/PlaySe.h:97",
+      "primary": "StopSe",
+      "related": [
+        "StopBgmLoop",
+        "PlaySeLoop"
+      ],
+      "summaryShort": "ループ SE ハンドルの個別停止が無い",
+      "summary": "ループ SE ハンドルの個別停止が無い",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "StopSe は Handle 単位停止（97-104 行）",
+        "シーン Exit は StopBgmLoop のみ（SceneTitle/Game/Result）",
+        "PlaySeLoop で開始した SE が遷移後も残りうる"
+      ],
+      "suggestedUse": "プレイ: 環境ループ SE の明示破棄",
+      "firstSeenAt": "2026-11-11T00:41:00+09:00",
+      "lastSeenAt": "2026-11-11T00:41:00+09:00"
+    },
+    "GAP-Audio-PlaySeDetail-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "SE パスキャッシュが無期限保持",
+      "scopeKey": "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19",
+      "primary": "PlaySeDetail",
+      "related": [
+        "GetOrLoadSeIndex",
+        "AudioManager::Load"
+      ],
+      "summaryShort": "static cache がアンロードされない",
+      "summary": "static cache がアンロードされない",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "GetOrLoadSeIndex の static unordered_map（19-32 行）",
+        "シーン遷移・長時間プレイでエントリ追記のみ",
+        "ボイス停止とデコーダキャッシュの整合ポリシーなし"
+      ],
+      "suggestedUse": "プレイ: 長時間セッションの SE メモリ管理",
+      "firstSeenAt": "2026-11-11T00:41:00+09:00",
+      "lastSeenAt": "2026-11-11T00:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -5213,7 +5294,10 @@
     "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001",
     "UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19": "GAP-Entity-CmpCamera-001",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125": "GAP-Scene-SceneBuildUp-011",
-    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30": "GAP-Scene-SceneBuildUp-012"
+    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30": "GAP-Scene-SceneBuildUp-012",
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:122": "GAP-Scene-SceneGame-011",
+    "UC-Play|Audio|StopSe|Unwired|Project/Codes/Include/System/PlaySe.h:97": "GAP-Audio-StopSe-001",
+    "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19": "GAP-Audio-PlaySeDetail-001"
   },
   "pendings": {},
   "nextSequence": {
@@ -5243,7 +5327,9 @@
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
-    "Scene-SceneGame": 11,
+    "Scene-SceneGame": 12,
+    "Audio-StopSe": 2,
+    "Audio-PlaySeDetail": 2,
     "Audio-SetBgmLoopPlaybackSeconds": 2,
     "Audio-SetBgmLoopPitch": 2,
     "Scene-SceneTitle": 3,
@@ -6275,6 +6361,22 @@
         "GAP-Entity-CmpCamera-001",
         "GAP-Scene-SceneBuildUp-011",
         "GAP-Scene-SceneBuildUp-012"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-004014",
+      "at": "2026-11-11T00:40:44.205681+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1060,
+      "newIds": [
+        "GAP-Scene-SceneGame-011",
+        "GAP-Audio-StopSe-001",
+        "GAP-Audio-PlaySeDetail-001"
       ],
       "updatedIds": [],
       "closedIds": []
