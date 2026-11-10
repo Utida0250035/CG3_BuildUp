@@ -7125,6 +7125,90 @@
       "suggestedUse": "プレイ: シーン遷移 BGM 失敗のハンドル整合",
       "firstSeenAt": "2026-11-11T04:41:00+09:00",
       "lastSeenAt": "2026-11-11T04:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-021": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "medium",
+      "frequencyBasis": "プレハブ先頭 1 件のみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:104",
+      "primary": "EntityEditor",
+      "related": [
+        "AddInstanceFromPrefabPath",
+        "EditorSceneDocument",
+        "PrefabAsset"
+      ],
+      "summaryShort": "プレハブ追加は instances[0]",
+      "summary": "プレハブ追加は instances[0]",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "entities 配列は front のみ取得（104-109 行）",
+        "複数インスタンス入りシーン JSON を一括取り込めない",
+        "PrefabAsset UI は 1 クリック 1 体の繰り返し"
+      ],
+      "suggestedUse": "Authoring: マルチプレハブの一括配置",
+      "firstSeenAt": "2026-11-11T04:51:00+09:00",
+      "lastSeenAt": "2026-11-11T04:51:00+09:00"
+    },
+    "GAP-Editor-FileDropQueue-001": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "Drain が全件一括搬出",
+      "scopeKey": "UC-Authoring|Editor|FileDropQueue|Incomplete|Project/Codes/Include/System/Editor/EditorImportedAsset.h:22",
+      "primary": "FileDropQueue",
+      "related": [
+        "ProcessDroppedFileImports",
+        "Push",
+        "pending_"
+      ],
+      "summaryShort": "Drain で pending 全消去",
+      "summary": "Drain で pending 全消去",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Drain は move 後 clear のみ（EditorImportedAsset.cpp:21-24）",
+        "UI が pending 件数や内容を参照する API なし",
+        "一括 D&D の進捗確認と部分再試行ができない"
+      ],
+      "suggestedUse": "Authoring: ドロップキューの可視化",
+      "firstSeenAt": "2026-11-11T04:51:00+09:00",
+      "lastSeenAt": "2026-11-11T04:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-027": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "medium",
+      "frequencyBasis": "追加は空テンプレのみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377",
+      "primary": "EntityEditorUi",
+      "related": [
+        "AddEmptyInstance",
+        "DrawHierarchyPanel",
+        "MakeDefaultEntityDefinition"
+      ],
+      "summaryShort": "複製ボタンが無い",
+      "summary": "複製ボタンが無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "「オブジェクトを追加」は AddEmptyInstance のみ（375-377 行）",
+        "選択中定義の複製 API／UI が無い",
+        "類似アセット量産でプレハブ保存を毎回繰り返す"
+      ],
+      "suggestedUse": "Authoring: インスタンス複製ショートカット",
+      "firstSeenAt": "2026-11-11T04:51:00+09:00",
+      "lastSeenAt": "2026-11-11T04:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -7382,13 +7466,16 @@
     "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:30": "GAP-Scene-CommandScene-006",
     "UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:182": "GAP-Editor-EditorSceneAsset-002",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:821": "GAP-Audio-AudioManager-010",
-    "UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:710": "GAP-Audio-PlaySceneBgm-002"
+    "UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:710": "GAP-Audio-PlaySceneBgm-002",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:104": "GAP-Editor-EntityEditor-021",
+    "UC-Authoring|Editor|FileDropQueue|Incomplete|Project/Codes/Include/System/Editor/EditorImportedAsset.h:22": "GAP-Editor-FileDropQueue-001",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377": "GAP-Editor-EntityEditorUi-027"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 4,
     "Audio-SetSeVolume": 2,
-    "Audio-AudioManager": 10,
+    "Audio-AudioManager": 12,
     "Audio-AudioDecoder": 2,
     "Audio-StreamingVoiceCallback": 3,
     "Audio-IsSuitableStreaming": 2,
@@ -7399,12 +7486,13 @@
     "Scene-SceneGame": 13,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 21,
+    "Editor-EntityEditor": 22,
     "Editor-PrefabAsset": 6,
-    "Editor-EntityEditorUi": 27,
+    "Editor-EntityEditorUi": 28,
     "Editor-EditorEntityWorkbench": 5,
     "Editor-EntityEditorTagCatalog": 3,
     "Editor-EditorImportedAsset": 5,
+    "Editor-FileDropQueue": 2,
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 6,
@@ -7431,7 +7519,7 @@
     "Audio-SetBgmLoopPlaybackSeconds": 2,
     "Audio-SetBgmLoopPitch": 2,
     "Audio-PlayBgmLoop": 2,
-    "Audio-PlaySceneBgm": 2,
+    "Audio-PlaySceneBgm": 3,
     "Audio-PlaySeLoop": 2,
     "Audio-ResumeBgmLoop": 2,
     "Audio-SetBgmLoopVolume": 2,
@@ -8855,6 +8943,22 @@
         "GAP-Audio-AudioManager-010",
         "GAP-Audio-AudioManager-011",
         "GAP-Audio-PlaySceneBgm-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-045006",
+      "at": "2026-11-11T04:50:25.719805+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-021",
+        "GAP-Editor-FileDropQueue-001",
+        "GAP-Editor-EntityEditorUi-027"
       ],
       "updatedIds": [],
       "closedIds": []

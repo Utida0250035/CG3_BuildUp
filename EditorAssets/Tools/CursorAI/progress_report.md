@@ -1689,6 +1689,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（18回目）
 - **newIds:** 3（BGM Pause が Stop のみ、Resume に Refill なし、PlaySceneBgm 失敗 playId）
 
+## ギャップスキャン tick（SCAN-20261111-045006）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（18回目）
+- **newIds:** 3（プレハブ先頭 1 件、Drop キュー不可視、インスタンス複製 UI なし）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T04:30:30.823712+09:00
+- **lastIncrementalScanAt:** 2026-11-11T04:40:29.023350+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1762,6 +1762,27 @@
 - firstSeenAt: 2026-11-11T03:21:00+09:00
 - lastSeenAt: 2026-11-11T03:21:00+09:00
 
+### GAP-Editor-EntityEditor-021
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ先頭 1 件のみ
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:104
+- primary: `EntityEditor`
+- summary: 【Authoring】プレハブ追加は instances[0]
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - entities 配列は front のみ取得（104-109 行）
+  - 複数インスタンス入りシーン JSON を一括取り込めない
+  - PrefabAsset UI は 1 クリック 1 体の繰り返し
+- suggestedUse: Authoring: マルチプレハブの一括配置
+- firstSeenAt: 2026-11-11T04:51:00+09:00
+- lastSeenAt: 2026-11-11T04:51:00+09:00
+
 ### GAP-Editor-PrefabAsset-005
 
 - status: open
@@ -1846,6 +1867,27 @@
 - firstSeenAt: 2026-11-11T02:21:00+09:00
 - lastSeenAt: 2026-11-11T02:21:00+09:00
 
+### GAP-Editor-EntityEditorUi-027
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 追加は空テンプレのみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377
+- primary: `EntityEditorUi`
+- summary: 【Authoring】複製ボタンが無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「オブジェクトを追加」は AddEmptyInstance のみ（375-377 行）
+  - 選択中定義の複製 API／UI が無い
+  - 類似アセット量産でプレハブ保存を毎回繰り返す
+- suggestedUse: Authoring: インスタンス複製ショートカット
+- firstSeenAt: 2026-11-11T04:51:00+09:00
+- lastSeenAt: 2026-11-11T04:51:00+09:00
+
 ### GAP-Editor-EditorEntityWorkbench-003
 
 - status: open
@@ -1887,6 +1929,27 @@
 - suggestedUse: Authoring: D&D 直後のビュー反映を自動化
 - firstSeenAt: 2026-11-11T04:21:00+09:00
 - lastSeenAt: 2026-11-11T04:21:00+09:00
+
+### GAP-Editor-FileDropQueue-001
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: Drain が全件一括搬出
+- scope: UC-Authoring|Editor|FileDropQueue|Incomplete|Project/Codes/Include/System/Editor/EditorImportedAsset.h:22
+- primary: `FileDropQueue`
+- summary: 【Authoring】Drain で pending 全消去
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Drain は move 後 clear のみ（EditorImportedAsset.cpp:21-24）
+  - UI が pending 件数や内容を参照する API なし
+  - 一括 D&D の進捗確認と部分再試行ができない
+- suggestedUse: Authoring: ドロップキューの可視化
+- firstSeenAt: 2026-11-11T04:51:00+09:00
+- lastSeenAt: 2026-11-11T04:51:00+09:00
 
 #### UC-Debug
 
@@ -5536,7 +5599,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-021016 | at: 2026-11-11T02:11:03.810105+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-022018 | at: 2026-11-11T02:21:03.662472+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-023031 | at: 2026-11-11T02:31:18.921192+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-024014 | at: 2026-11-11T02:40:47.012554+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -5551,6 +5613,7 @@
 - scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-043006 | at: 2026-11-11T04:30:30.823712+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-044011 | at: 2026-11-11T04:40:29.023350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 
