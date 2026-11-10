@@ -1724,6 +1724,12 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（20回目）
 - **newIds:** 3（タグ 1 件付与、実行順単体、型差替 params 全置換）
 
+## ギャップスキャン tick（SCAN-20261111-060023）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（21回目）
+- **newIds:** 3（シーン一覧 Scenes のみ、launch 空 path、Exit で Ui 残存）
+- **fix:** `EntityEditorUi-029` と `-019` の scopeKey 衝突（:745）を :746 に分離
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

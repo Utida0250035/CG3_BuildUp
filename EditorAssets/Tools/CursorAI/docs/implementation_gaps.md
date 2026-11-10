@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T05:40:40.897350+09:00
+- **lastIncrementalScanAt:** 2026-11-11T06:01:00.247216+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1981,7 +1981,7 @@
 - scenarioId: AUT-AssetLoop-001
 - frequency: medium
 - frequencyBasis: 実行順が 1 スロットのみ
-- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:746
 - primary: `EntityEditorUi`
 - summary: 【Authoring】実行順 InputInt が単体
 - scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
@@ -3128,6 +3128,27 @@
 - firstSeenAt: 2026-11-11T02:31:00+09:00
 - lastSeenAt: 2026-11-11T02:31:00+09:00
 
+### GAP-Editor-EditorSceneAsset-003
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: シーン一覧が Scenes のみ
+- scope: UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:20
+- primary: `EditorSceneAsset`
+- summary: 【Debug】ListSceneJson は単一 Dir
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - directory_iterator は引数 root のみ（20-37 行）
+  - DebugPlayArea の .scene.json がプロジェクト一覧に出ない
+  - launch_config 保存先選定が手打ちパス依存
+- suggestedUse: Debug: 検証シーンを一覧に統合
+- firstSeenAt: 2026-11-11T06:01:00+09:00
+- lastSeenAt: 2026-11-11T06:01:00+09:00
+
 ### GAP-Editor-SceneEntityEditor-009
 
 - status: open
@@ -3277,6 +3298,27 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T06:31:00+09:00
 - lastSeenAt: 2026-11-10T06:31:00+09:00
+
+### GAP-Infra-launch_config-004
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: 空 path でも JSON 存在可
+- scope: UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:123
+- primary: `launch_config`
+- summary: 【Debug】startupScenePath 空で false
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - キー欠落／空文字で load 失敗（119-123 行）
+  - 壊れた JSON と未設定の区別が弱い
+  - Release 起動がタイトルへ落ち原因追跡が難しい
+- suggestedUse: Debug: launch 設定の診断メッセージ
+- firstSeenAt: 2026-11-11T06:01:00+09:00
+- lastSeenAt: 2026-11-11T06:01:00+09:00
 
 ### GAP-Scene-SceneBuildUp-015
 
@@ -3448,6 +3490,27 @@
 - suggestedUse: Debug: Feature シーンのライト設定保持
 - firstSeenAt: 2026-11-11T05:31:00+09:00
 - lastSeenAt: 2026-11-11T05:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-013
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Exit で Ui 状態残存
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:292
+- primary: `SceneEntityEditor`
+- summary: 【Debug】Exit はプレビュー解放のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - ExitScene は Finalize+clear+Release（292-299 行）
+  - UiState の Runtime フラグや selected パスをリセットしない
+  - BuildUp 往復後にエディタ状態がズレる
+- suggestedUse: Debug: 検証シーン離脱時の Ui 整合
+- firstSeenAt: 2026-11-11T06:01:00+09:00
+- lastSeenAt: 2026-11-11T06:01:00+09:00
 
 ### GAP-Infra-launch_config-003
 
@@ -5955,8 +6018,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-032014 | at: 2026-11-11T03:21:02.300717+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-033012 | at: 2026-11-11T03:31:23.423901+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-034021 | at: 2026-11-11T03:40:47.570879+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-035014 | at: 2026-11-11T03:50:30.395021+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -5970,6 +6031,8 @@
 - scanId: SCAN-20261111-052010 | at: 2026-11-11T05:20:27.571439+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-053014 | at: 2026-11-11T05:30:54.455417+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-054008 | at: 2026-11-11T05:40:40.897350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-055013 | at: 2026-11-11T05:50:38.019955+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-060023 | at: 2026-11-11T06:01:00.247216+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

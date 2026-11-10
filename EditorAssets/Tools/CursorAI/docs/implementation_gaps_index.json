@@ -7638,7 +7638,7 @@
       "score": 480,
       "frequency": "medium",
       "frequencyBasis": "実行順が 1 スロットのみ",
-      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:746",
       "primary": "EntityEditorUi",
       "related": [
         "executionOrder",
@@ -7684,6 +7684,90 @@
       "suggestedUse": "Authoring: 型差替時の params マージ",
       "firstSeenAt": "2026-11-11T05:51:00+09:00",
       "lastSeenAt": "2026-11-11T05:51:00+09:00"
+    },
+    "GAP-Editor-EditorSceneAsset-003": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 550,
+      "frequency": "medium",
+      "frequencyBasis": "シーン一覧が Scenes のみ",
+      "scopeKey": "UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:20",
+      "primary": "EditorSceneAsset",
+      "related": [
+        "ListSceneJsonFiles",
+        "kScenesDirectory",
+        "DebugPlayArea"
+      ],
+      "summaryShort": "ListSceneJson は単一 Dir",
+      "summary": "ListSceneJson は単一 Dir",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "directory_iterator は引数 root のみ（20-37 行）",
+        "DebugPlayArea の .scene.json がプロジェクト一覧に出ない",
+        "launch_config 保存先選定が手打ちパス依存"
+      ],
+      "suggestedUse": "Debug: 検証シーンを一覧に統合",
+      "firstSeenAt": "2026-11-11T06:01:00+09:00",
+      "lastSeenAt": "2026-11-11T06:01:00+09:00"
+    },
+    "GAP-Infra-launch_config-004": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "low",
+      "frequencyBasis": "空 path でも JSON 存在可",
+      "scopeKey": "UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:123",
+      "primary": "launch_config",
+      "related": [
+        "TryLoadLaunchConfig",
+        "ResolveStartupScenePath",
+        "startupScenePath"
+      ],
+      "summaryShort": "startupScenePath 空で false",
+      "summary": "startupScenePath 空で false",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "キー欠落／空文字で load 失敗（119-123 行）",
+        "壊れた JSON と未設定の区別が弱い",
+        "Release 起動がタイトルへ落ち原因追跡が難しい"
+      ],
+      "suggestedUse": "Debug: launch 設定の診断メッセージ",
+      "firstSeenAt": "2026-11-11T06:01:00+09:00",
+      "lastSeenAt": "2026-11-11T06:01:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-013": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "Exit で Ui 状態残存",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:292",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "ExitScene",
+        "previewEntities_",
+        "requestPlayRuntimeScene"
+      ],
+      "summaryShort": "Exit はプレビュー解放のみ",
+      "summary": "Exit はプレビュー解放のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "ExitScene は Finalize+clear+Release（292-299 行）",
+        "UiState の Runtime フラグや selected パスをリセットしない",
+        "BuildUp 往復後にエディタ状態がズレる"
+      ],
+      "suggestedUse": "Debug: 検証シーン離脱時の Ui 整合",
+      "firstSeenAt": "2026-11-11T06:01:00+09:00",
+      "lastSeenAt": "2026-11-11T06:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -7874,7 +7958,8 @@
     "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19": "GAP-Audio-PlaySeDetail-001",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:261": "GAP-Editor-EntityEditor-013",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:163": "GAP-Editor-EntityEditor-014",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745": "GAP-Editor-EntityEditorUi-029",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745": "GAP-Editor-EntityEditorUi-019",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:746": "GAP-Editor-EntityEditorUi-029",
     "UC-Debug|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:96": "GAP-Scene-SceneBuildUp-013",
     "UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:422": "GAP-Editor-EntityEditorUi-020",
     "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:354": "GAP-Editor-EditorSceneRuntime-007",
@@ -7961,7 +8046,10 @@
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:619": "GAP-Audio-AudioManager-015",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:379": "GAP-Audio-AudioManager-016",
     "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:621": "GAP-Editor-EntityEditorTagCatalog-003",
-    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775": "GAP-Editor-EntityEditorUi-030"
+    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775": "GAP-Editor-EntityEditorUi-030",
+    "UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:20": "GAP-Editor-EditorSceneAsset-003",
+    "UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:123": "GAP-Infra-launch_config-004",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:292": "GAP-Editor-SceneEntityEditor-013"
   },
   "pendings": {},
   "nextSequence": {
@@ -7989,7 +8077,7 @@
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 6,
     "Scene-SceneBuildUpRegistry": 5,
-    "Editor-SceneEntityEditor": 13,
+    "Editor-SceneEntityEditor": 14,
     "Scene-SceneCameraRig": 2,
     "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
@@ -8001,8 +8089,8 @@
     "Editor-EditorSceneRuntime": 10,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 7,
-    "Infra-launch_config": 4,
-    "Editor-EditorSceneAsset": 3,
+    "Infra-launch_config": 5,
+    "Editor-EditorSceneAsset": 4,
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
@@ -9547,6 +9635,22 @@
         "GAP-Editor-EntityEditorTagCatalog-003",
         "GAP-Editor-EntityEditorUi-029",
         "GAP-Editor-EntityEditorUi-030"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-060023",
+      "at": "2026-11-11T06:01:00.247216+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Editor-EditorSceneAsset-003",
+        "GAP-Infra-launch_config-004",
+        "GAP-Editor-SceneEntityEditor-013"
       ],
       "updatedIds": [],
       "closedIds": []
