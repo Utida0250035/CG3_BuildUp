@@ -7852,6 +7852,90 @@
       "suggestedUse": "プレイ: ストリーム判定の設定化",
       "firstSeenAt": "2026-11-11T06:11:00+09:00",
       "lastSeenAt": "2026-11-11T06:11:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-022": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "medium",
+      "frequencyBasis": "プレハブは定義のみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:82",
+      "primary": "EntityEditor",
+      "related": [
+        "SaveSelectedInstanceToPrefabPath",
+        "EntityDefinition",
+        "SceneEntityInstance"
+      ],
+      "summaryShort": "プレハブ出力が Definition のみ",
+      "summary": "プレハブ出力が Definition のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Save は SelectedDefinition のみ JSON（82-85 行）",
+        "親 index・initialTransform は Scene 側",
+        "複製配置ワークでプレハブ再適用が手作業"
+      ],
+      "suggestedUse": "Authoring: インスタンス付きプレハブ",
+      "firstSeenAt": "2026-11-11T06:21:00+09:00",
+      "lastSeenAt": "2026-11-11T06:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-031": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 470,
+      "frequency": "low",
+      "frequencyBasis": "全タグ解除が 1 体",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:629",
+      "primary": "EntityEditorUi",
+      "related": [
+        "DrawInspectorPanel",
+        "document.tags",
+        "tagHashes"
+      ],
+      "summaryShort": "タグ全解除は選択 1 件",
+      "summary": "タグ全解除は選択 1 件",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "「タグをすべて解除」は document のみ（629-632 行）",
+        "シーン内複数インスタンスへの一括解除なし",
+        "テスト用タグの付け直しが反復"
+      ],
+      "suggestedUse": "Authoring: タグのシーン一括解除",
+      "firstSeenAt": "2026-11-11T06:21:00+09:00",
+      "lastSeenAt": "2026-11-11T06:21:00+09:00"
+    },
+    "GAP-Editor-EntityEditorTagCatalog-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "medium",
+      "frequencyBasis": "タグ改名が 1 件",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:836",
+      "primary": "EntityEditorTagCatalog",
+      "related": [
+        "RenameTagInDocument",
+        "DrawTagsPanel",
+        "tagCatalog"
+      ],
+      "summaryShort": "改名は selectedCatalogTag のみ",
+      "summary": "改名は selectedCatalogTag のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "RenameTagInDocument 1 名前（836-839 行）",
+        "接頭辞一括変更 UI なし",
+        "量産アセットのタグ整列が手入力"
+      ],
+      "suggestedUse": "Authoring: カタログタグの一括改名",
+      "firstSeenAt": "2026-11-11T06:21:00+09:00",
+      "lastSeenAt": "2026-11-11T06:21:00+09:00"
     }
   },
   "scopeToId": {
@@ -8136,16 +8220,19 @@
     "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:292": "GAP-Editor-SceneEntityEditor-013",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:241": "GAP-Audio-AudioManager-017",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:587": "GAP-Audio-AudioManager-018",
-    "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Include/Audio/Audio.h:70": "GAP-Audio-IsSuitableStreaming-002"
+    "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Include/Audio/Audio.h:70": "GAP-Audio-IsSuitableStreaming-002",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:82": "GAP-Editor-EntityEditor-022",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:629": "GAP-Editor-EntityEditorUi-031",
+    "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:836": "GAP-Editor-EntityEditorTagCatalog-004"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 4,
     "Audio-SetSeVolume": 2,
-    "Audio-AudioManager": 17,
+    "Audio-AudioManager": 19,
     "Audio-AudioDecoder": 3,
     "Audio-StreamingVoiceCallback": 3,
-    "Audio-IsSuitableStreaming": 2,
+    "Audio-IsSuitableStreaming": 3,
     "Audio-PlaySe": 2,
     "Scene-SceneTitle": 4,
     "Scene-GameOrder": 3,
@@ -8153,11 +8240,11 @@
     "Scene-SceneGame": 13,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 22,
+    "Editor-EntityEditor": 23,
     "Editor-PrefabAsset": 7,
-    "Editor-EntityEditorUi": 31,
+    "Editor-EntityEditorUi": 32,
     "Editor-EditorEntityWorkbench": 5,
-    "Editor-EntityEditorTagCatalog": 4,
+    "Editor-EntityEditorTagCatalog": 5,
     "Editor-EditorImportedAsset": 5,
     "Editor-FileDropQueue": 2,
     "Editor-EntityEditorHierarchy": 3,
@@ -9754,6 +9841,22 @@
         "GAP-Audio-AudioManager-017",
         "GAP-Audio-AudioManager-018",
         "GAP-Audio-IsSuitableStreaming-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-062020",
+      "at": "2026-11-11T06:20:43.604694+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-022",
+        "GAP-Editor-EntityEditorUi-031",
+        "GAP-Editor-EntityEditorTagCatalog-004"
       ],
       "updatedIds": [],
       "closedIds": []

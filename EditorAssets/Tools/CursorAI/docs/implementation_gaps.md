@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T06:01:00.247216+09:00
+- **lastIncrementalScanAt:** 2026-11-11T06:11:05.731943+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1888,6 +1888,27 @@
 - firstSeenAt: 2026-11-11T02:21:00+09:00
 - lastSeenAt: 2026-11-11T02:21:00+09:00
 
+### GAP-Editor-EntityEditor-022
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブは定義のみ
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:82
+- primary: `EntityEditor`
+- summary: 【Authoring】プレハブ出力が Definition のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Save は SelectedDefinition のみ JSON（82-85 行）
+  - 親 index・initialTransform は Scene 側
+  - 複製配置ワークでプレハブ再適用が手作業
+- suggestedUse: Authoring: インスタンス付きプレハブ
+- firstSeenAt: 2026-11-11T06:21:00+09:00
+- lastSeenAt: 2026-11-11T06:21:00+09:00
+
 ### GAP-Editor-EntityEditorUi-027
 
 - status: open
@@ -1971,6 +1992,27 @@
 - suggestedUse: Authoring: D&D 直後のビュー反映を自動化
 - firstSeenAt: 2026-11-11T04:21:00+09:00
 - lastSeenAt: 2026-11-11T04:21:00+09:00
+
+### GAP-Editor-EntityEditorTagCatalog-004
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: タグ改名が 1 件
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:836
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】改名は selectedCatalogTag のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - RenameTagInDocument 1 名前（836-839 行）
+  - 接頭辞一括変更 UI なし
+  - 量産アセットのタグ整列が手入力
+- suggestedUse: Authoring: カタログタグの一括改名
+- firstSeenAt: 2026-11-11T06:21:00+09:00
+- lastSeenAt: 2026-11-11T06:21:00+09:00
 
 ### GAP-Editor-EntityEditorUi-029
 
@@ -2076,6 +2118,27 @@
 - suggestedUse: Authoring: プレハブ一覧の短縮表示
 - firstSeenAt: 2026-11-11T05:21:00+09:00
 - lastSeenAt: 2026-11-11T05:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-031
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: 全タグ解除が 1 体
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:629
+- primary: `EntityEditorUi`
+- summary: 【Authoring】タグ全解除は選択 1 件
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「タグをすべて解除」は document のみ（629-632 行）
+  - シーン内複数インスタンスへの一括解除なし
+  - テスト用タグの付け直しが反復
+- suggestedUse: Authoring: タグのシーン一括解除
+- firstSeenAt: 2026-11-11T06:21:00+09:00
+- lastSeenAt: 2026-11-11T06:21:00+09:00
 
 #### UC-Debug
 
@@ -6081,7 +6144,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-034021 | at: 2026-11-11T03:40:47.570879+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-035014 | at: 2026-11-11T03:50:30.395021+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -6096,6 +6158,7 @@
 - scanId: SCAN-20261111-054008 | at: 2026-11-11T05:40:40.897350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-055013 | at: 2026-11-11T05:50:38.019955+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-060023 | at: 2026-11-11T06:01:00.247216+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-061024 | at: 2026-11-11T06:11:05.731943+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

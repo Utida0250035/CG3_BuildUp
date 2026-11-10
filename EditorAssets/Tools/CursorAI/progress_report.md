@@ -1735,6 +1735,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（21回目）
 - **newIds:** 3（Load index キャッシュ、PlayStreaming playId、5MB 閾値固定）
 
+## ギャップスキャン tick（SCAN-20261111-062020）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（21回目）
+- **newIds:** 3（プレハブ定義のみ、タグ全解除 1 体、カタログ改名 1 件）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
