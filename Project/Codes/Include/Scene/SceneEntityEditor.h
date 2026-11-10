@@ -44,8 +44,10 @@ private:
   void SetupPreviewCamera();
   void RebuildPreviewScene();
 
-  void DrawSceneViewContent(Editor::SceneViewTab viewTab, int width,
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  void DrawSceneViewContent(Atrum::Editor::SceneViewTab viewTab, int width,
                             int height);
+#endif
   void DrawPreviewEntities();
 };
 

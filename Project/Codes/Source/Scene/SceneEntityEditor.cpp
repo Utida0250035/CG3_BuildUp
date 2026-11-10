@@ -1,5 +1,6 @@
 #include "Scene/SceneEntityEditor.h"
 
+#include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
@@ -7,11 +8,13 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneParticleEditor.h"
+#include "System/Editor/Entity/EntityEditor.h"
+#include "System/Entity/Entity.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorInfiniteGrid.h"
 #include "System/Editor/EditorSceneRenderTarget.h"
-#include "System/Editor/Entity/EntityEditor.h"
-#include "System/Entity/Entity.h"
+#endif
 #include <vector>
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
@@ -130,10 +133,12 @@ void SceneEntityEditor::Update() {
     editor_->Ui().requestPlayRuntimeScene = false;
     editor_->SaveToJsonPath(editor_->Ui().jsonFilePath);
     RebuildPreviewScene();
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
     Editor::EditorFrame::Instance().SetSceneViewTab(
         Editor::SceneViewTab::Runtime);
     editor_->Ui().previewSimulationEnabled = true;
     editor_->Ui().requestFocusRuntimeSceneView = true;
+#endif
   }
 
   if (editor_->Ui().requestOpenParticleEditor) {
@@ -218,6 +223,8 @@ void SceneEntityEditor::DrawPreviewEntities() {
   }
 }
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+
 void SceneEntityEditor::DrawSceneViewContent(
     const Editor::SceneViewTab viewTab, const int width, const int height) {
   const bool isEditViewPass = viewTab == Editor::SceneViewTab::Edit;
@@ -265,6 +272,8 @@ void SceneEntityEditor::DrawSceneViewContent(
   }
 #endif
 }
+
+#endif
 
 void SceneEntityEditor::DrawScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
