@@ -1654,6 +1654,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（16回目）
 - **newIds:** 3（launch 失敗が空文字、起動パス未正規化、BuildUp ルートのみ Draw）
 
+## ギャップスキャン tick（SCAN-20261111-034021）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（16回目）
+- **newIds:** 3（失敗時 playId 不整合、PCM 端数退避、BGM フォールバックで短音解放）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
