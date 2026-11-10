@@ -6033,6 +6033,90 @@
       "roadmapLink": "feature-memos/debug_test_play_area.md",
       "firstSeenAt": "2026-11-11T02:31:00+09:00",
       "lastSeenAt": "2026-11-11T02:31:00+09:00"
+    },
+    "GAP-Audio-AudioManager-003": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 640,
+      "frequency": "medium",
+      "frequencyBasis": "ストリーム SE プール枯渇で強制停止",
+      "scopeKey": "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:449",
+      "primary": "AudioManager",
+      "related": [
+        "AcquireStreamingVoiceIndex",
+        "PlayStreaming",
+        "ResetStreamingVoice"
+      ],
+      "summaryShort": "空き無しで全汎用ストリームをリセット",
+      "summary": "空き無しで全汎用ストリームをリセット",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "Stopped が無いと index>=1 を ResetStreamingVoice（449-453 行）",
+        "BGM 用 voice 0 は除外だが同時ストリーム SE は奪い合い",
+        "PlayStreaming は Handle を返すが呼び元が Stop 不能だと鳴り直し不能"
+      ],
+      "suggestedUse": "プレイ: 長尺ストリーム SE の同時発音上限と優先度",
+      "firstSeenAt": "2026-11-11T02:41:00+09:00",
+      "lastSeenAt": "2026-11-11T02:41:00+09:00"
+    },
+    "GAP-Audio-AudioManager-004": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "ストリーム BGM 一時停止後の再開が薄い",
+      "scopeKey": "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884",
+      "primary": "AudioManager",
+      "related": [
+        "ResumeSceneBgm",
+        "PauseSceneBgm",
+        "RefillBuffer"
+      ],
+      "summaryShort": "Resume は Start のみでデコード再開なし",
+      "summary": "Resume は Start のみでデコード再開なし",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "Pause で pVoice->Stop（842-843 行）",
+        "Resume は state 確認後 Start のみ（884-889 行）",
+        "SubmitInitialBuffer / RefillBuffer を呼ばずバッファ枯渇で無音化しうる"
+      ],
+      "suggestedUse": "プレイ: ポーズ／OS 割込み後のストリーム BGM 復帰",
+      "firstSeenAt": "2026-11-11T02:41:00+09:00",
+      "lastSeenAt": "2026-11-11T02:41:00+09:00"
+    },
+    "GAP-Audio-IsSuitableStreaming-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "low",
+      "frequencyBasis": "5MB 閾値のみで経路が分岐",
+      "scopeKey": "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Source/Audio/Audio.cpp:191",
+      "primary": "IsSuitableStreaming",
+      "related": [
+        "Load",
+        "PlaySceneBgm",
+        "kFileSizeThreshold"
+      ],
+      "summaryShort": "ファイルサイズだけでストリーム判定",
+      "summary": "ファイルサイズだけでストリーム判定",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "GetFileSize > kFileSizeThreshold（5MB, Audio.h:70）のみ（191-193 行）",
+        "短い高ビットレート BGM は全載せ、長い低容量は非ストリーム",
+        "遷移後の BGM 経路・メモリピークがアセット設計に依存"
+      ],
+      "suggestedUse": "プレイ: BGM 長尺のロード／ストリーム方針を明示",
+      "firstSeenAt": "2026-11-11T02:41:00+09:00",
+      "lastSeenAt": "2026-11-11T02:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -6253,13 +6337,17 @@
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:288": "GAP-Editor-EntityEditor-017",
     "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233": "GAP-Editor-PrefabAsset-005",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:105": "GAP-Scene-SceneBuildUp-018",
-    "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:44": "GAP-Infra-scaffold_play_area-002"
+    "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:44": "GAP-Infra-scaffold_play_area-002",
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:449": "GAP-Audio-AudioManager-003",
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884": "GAP-Audio-AudioManager-004",
+    "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Source/Audio/Audio.cpp:191": "GAP-Audio-IsSuitableStreaming-001"
   },
   "pendings": {},
   "nextSequence": {
     "Scene-ChangeSceneFade": 4,
     "Audio-SetSeVolume": 2,
-    "Audio-AudioManager": 3,
+    "Audio-AudioManager": 5,
+    "Audio-IsSuitableStreaming": 2,
     "Audio-PlaySe": 2,
     "Scene-SceneTitle": 4,
     "Scene-GameOrder": 3,
@@ -7514,6 +7602,22 @@
         "GAP-Scene-SceneBuildUp-018",
         "GAP-Scene-SceneBuildUp-019",
         "GAP-Infra-scaffold_play_area-002"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-024014",
+      "at": "2026-11-11T02:40:47.012554+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1060,
+      "newIds": [
+        "GAP-Audio-AudioManager-003",
+        "GAP-Audio-AudioManager-004",
+        "GAP-Audio-IsSuitableStreaming-001"
       ],
       "updatedIds": [],
       "closedIds": []

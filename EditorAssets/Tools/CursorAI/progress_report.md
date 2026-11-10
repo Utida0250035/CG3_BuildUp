@@ -1624,6 +1624,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（14回目）
 - **newIds:** 3（BuildUp タグカタログ未同期、AllowDebugCamera 未上書き、scaffold 完了案内が Launch のみ）
 
+## ギャップスキャン tick（SCAN-20261111-024014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（14回目）
+- **newIds:** 3（ストリームプール奪取、Resume が Start のみ、5MB 閾値のみでストリーム判定）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
