@@ -1534,6 +1534,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（8回目）
 - **newIds:** 3（BuildUp entities と cameraRig 分離、RT で StageView 再上書き、Runtime タブ差し替え）
 
+## ギャップスキャン tick（SCAN-20261110-234025）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（8回目）
+- **newIds:** 3（BGM シーク未配線、ピッチ未配線、撃破演出中の維持スキップ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

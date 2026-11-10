@@ -4530,6 +4530,88 @@
       "suggestedUse": "制作: 同型 Cmp の型/パラメータ一括更新",
       "firstSeenAt": "2026-11-10T23:21:00+09:00",
       "lastSeenAt": "2026-11-10T23:21:00+09:00"
+    },
+    "GAP-Audio-SetBgmLoopPlaybackSeconds-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "low",
+      "frequencyBasis": "BGM シーク API がシーン遷移に未使用",
+      "scopeKey": "UC-Play|Audio|SetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:141",
+      "primary": "SetBgmLoopPlaybackSeconds",
+      "related": [
+        "GetBgmLoopPlaybackSeconds",
+        "PlayBgmLoop"
+      ],
+      "summaryShort": "再生位置指定がゲームシーン未使用",
+      "summary": "再生位置指定がゲームシーン未使用",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "SetBgmLoopPlaybackSeconds は Manager 委譲のみ（141-145 行）",
+        "取得側 GAP 済みだが Title/Game/Result は再開時常に先頭から",
+        "Pause/Resume と組み合わせた位置復元ポリシーなし"
+      ],
+      "suggestedUse": "プレイ: シーン戻りで BGM 位置を復元",
+      "firstSeenAt": "2026-11-10T23:41:00+09:00",
+      "lastSeenAt": "2026-11-10T23:41:00+09:00"
+    },
+    "GAP-Audio-SetBgmLoopPitch-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "low",
+      "frequencyBasis": "BGM ピッチ API が未配線",
+      "scopeKey": "UC-Play|Audio|SetBgmLoopPitch|Unwired|Project/Codes/Include/System/PlaySe.h:163",
+      "primary": "SetBgmLoopPitch",
+      "related": [
+        "SetSeFrequencyRatio",
+        "CombatCameraShake"
+      ],
+      "summaryShort": "SetBgmLoopPitch がシーンから未呼び出し",
+      "summary": "SetBgmLoopPitch がシーンから未呼び出し",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "SetBgmLoopPitch は SetSeFrequencyRatio 委譲（163-165 行）",
+        "rg SetBgmLoopPitch は PlaySe.h 定義のみ",
+        "スロー演出・ポーズ中の音程調整が BGM に反映されない"
+      ],
+      "suggestedUse": "プレイ: 演出に合わせた BGM ピッチ制御",
+      "firstSeenAt": "2026-11-10T23:41:00+09:00",
+      "lastSeenAt": "2026-11-10T23:41:00+09:00"
+    },
+    "GAP-Scene-SceneGame-010": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "敗北／撃破演出中は BGM 維持をスキップ",
+      "scopeKey": "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:231",
+      "primary": "SceneGame",
+      "related": [
+        "MaintainSceneBgmIfNeeded",
+        "BossDeathPresentation",
+        "pendingDefeat_"
+      ],
+      "summaryShort": "pendingDefeat 中は Maintain が return",
+      "summary": "pendingDefeat 中は Maintain が return",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "MaintainSceneBgmIfNeeded は pendingDefeat_!=None で即 return（231-233 行）",
+        "撃破演出 Update は冒頭 return で Maintain 未到達（134-141 行）",
+        "ストリーム切断時も演出中は BGM 自動復帰しない"
+      ],
+      "suggestedUse": "プレイ: 長い死亡演出中も BGM 切断を復帰",
+      "firstSeenAt": "2026-11-10T23:41:00+09:00",
+      "lastSeenAt": "2026-11-10T23:41:00+09:00"
     }
   },
   "scopeToId": {
@@ -4697,7 +4779,10 @@
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-014",
     "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:109": "GAP-Scene-SceneBuildUp-009",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:147": "GAP-Scene-SceneBuildUp-010",
-    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248": "GAP-Editor-SceneEntityEditor-010"
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248": "GAP-Editor-SceneEntityEditor-010",
+    "UC-Play|Audio|SetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:141": "GAP-Audio-SetBgmLoopPlaybackSeconds-001",
+    "UC-Play|Audio|SetBgmLoopPitch|Unwired|Project/Codes/Include/System/PlaySe.h:163": "GAP-Audio-SetBgmLoopPitch-001",
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:231": "GAP-Scene-SceneGame-010"
   },
   "pendings": {},
   "nextSequence": {
@@ -4724,7 +4809,9 @@
     "Infra-EditorScenePlayRequest": 4,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
-    "Scene-SceneGame": 10,
+    "Scene-SceneGame": 11,
+    "Audio-SetBgmLoopPlaybackSeconds": 2,
+    "Audio-SetBgmLoopPitch": 2,
     "Scene-SceneTitle": 3,
     "Audio-PlayBgmLoop": 2,
     "Audio-PlaySceneBgm": 2,
@@ -5640,6 +5727,38 @@
         "GAP-Editor-EntityEditorUi-013",
         "GAP-Editor-EntityEditorHierarchy-002",
         "GAP-Editor-EntityEditorUi-014"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-233005",
+      "at": "2026-11-10T23:31:09.917190+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-SceneBuildUp-009",
+        "GAP-Scene-SceneBuildUp-010",
+        "GAP-Editor-SceneEntityEditor-010"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-234025",
+      "at": "2026-11-10T23:42:41.699471+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1060,
+      "newIds": [
+        "GAP-Audio-SetBgmLoopPlaybackSeconds-001",
+        "GAP-Audio-SetBgmLoopPitch-001",
+        "GAP-Scene-SceneGame-010"
       ],
       "updatedIds": [],
       "closedIds": []
