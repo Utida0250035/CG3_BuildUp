@@ -1569,6 +1569,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（10回目）
 - **newIds:** 3（Game Exit 即 BGM 停止、StopSe 未使用、PlaySe キャッシュ無期限）
 
+## ギャップスキャン tick（SCAN-20261111-005013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（10回目）
+- **newIds:** 3（削除後シーン先頭固定、ロードで選択 0、実行順 1 件ずつ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

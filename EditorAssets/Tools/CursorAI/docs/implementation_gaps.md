@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T00:30:49.903825+09:00
+- **lastIncrementalScanAt:** 2026-11-11T00:40:44.205681+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1257,6 +1257,27 @@
 - firstSeenAt: 2026-11-10T06:21:00+09:00
 - lastSeenAt: 2026-11-10T06:21:00+09:00
 
+### GAP-Editor-EntityEditor-014
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: ロード後に選択インデックスが 0 固定
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:163
+- primary: `EntityEditor`
+- summary: 【Authoring】LoadFromJsonPath が選択を先頭に戻す
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 成功ロード後 selectedInstanceIndex=0（163 行）
+  - selectedComponentIndex も 0 リセット（164 行）
+  - ディスク再読込・シーン切替のたびに末尾編集位置を失う
+- suggestedUse: 制作: 同一シーン内の反復編集で選択を維持
+- firstSeenAt: 2026-11-11T00:51:00+09:00
+- lastSeenAt: 2026-11-11T00:51:00+09:00
+
 ### GAP-Editor-EntityEditorUi-014
 
 - status: open
@@ -1382,6 +1403,48 @@
 - suggestedUse: 制作: 試行錯誤後の Cmp 一括掃除
 - firstSeenAt: 2026-11-11T00:21:00+09:00
 - lastSeenAt: 2026-11-11T00:21:00+09:00
+
+### GAP-Editor-EntityEditor-013
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: シーン削除後の自動切替が先頭固定
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:261
+- primary: `EntityEditor`
+- summary: 【Authoring】削除後は remaining.front() のみ開く
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 開いていた JSON 削除時 OpenSceneFromPath(remaining.front())（261-264 行）
+  - ソート済み一覧の先頭のみ・ユーザー選択なし
+  - 連続削除作業で意図しないシーンへ飛ぶ
+- suggestedUse: 制作: シーン整理時の作業コンテキスト維持
+- firstSeenAt: 2026-11-11T00:51:00+09:00
+- lastSeenAt: 2026-11-11T00:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-019
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 実行順が 1 Cmp ずつ手入力
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745
+- primary: `EntityEditorUi`
+- summary: 【Authoring】InputInt で実行順が 1 スロットのみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 選択中 slot の executionOrder のみ InputInt（745-747 行）
+  - 同種 Cmp の一括 priority 調整 UI 無し
+  - 複製反復で毎スロット手作業
+- suggestedUse: 制作: Draw/Upd 層の実行順を一括整列
+- firstSeenAt: 2026-11-11T00:51:00+09:00
+- lastSeenAt: 2026-11-11T00:51:00+09:00
 
 #### UC-Debug
 
@@ -4008,7 +4071,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-072023 | at: 2026-11-10T07:20:51.586186+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-073017 | at: 2026-11-10T07:31:02.344487+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-074024 | at: 2026-11-10T07:40:43.271911+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -4023,6 +4085,7 @@
 - scanId: SCAN-20261111-001015 | at: 2026-11-11T00:10:56.667870+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-002014 | at: 2026-11-11T00:20:30.448375+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-003024 | at: 2026-11-11T00:30:49.903825+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-004014 | at: 2026-11-11T00:40:44.205681+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

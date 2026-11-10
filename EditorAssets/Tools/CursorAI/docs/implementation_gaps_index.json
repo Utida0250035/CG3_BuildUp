@@ -5109,6 +5109,87 @@
       "suggestedUse": "プレイ: 長時間セッションの SE メモリ管理",
       "firstSeenAt": "2026-11-11T00:41:00+09:00",
       "lastSeenAt": "2026-11-11T00:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-013": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "low",
+      "frequencyBasis": "シーン削除後の自動切替が先頭固定",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:261",
+      "primary": "EntityEditor",
+      "related": [
+        "DeleteSceneFile",
+        "ListSceneJsonFiles"
+      ],
+      "summaryShort": "削除後は remaining.front() のみ開く",
+      "summary": "削除後は remaining.front() のみ開く",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "開いていた JSON 削除時 OpenSceneFromPath(remaining.front())（261-264 行）",
+        "ソート済み一覧の先頭のみ・ユーザー選択なし",
+        "連続削除作業で意図しないシーンへ飛ぶ"
+      ],
+      "suggestedUse": "制作: シーン整理時の作業コンテキスト維持",
+      "firstSeenAt": "2026-11-11T00:51:00+09:00",
+      "lastSeenAt": "2026-11-11T00:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-014": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 550,
+      "frequency": "medium",
+      "frequencyBasis": "ロード後に選択インデックスが 0 固定",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:163",
+      "primary": "EntityEditor",
+      "related": [
+        "LoadFromJsonPath",
+        "selectedInstanceIndex"
+      ],
+      "summaryShort": "LoadFromJsonPath が選択を先頭に戻す",
+      "summary": "LoadFromJsonPath が選択を先頭に戻す",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "成功ロード後 selectedInstanceIndex=0（163 行）",
+        "selectedComponentIndex も 0 リセット（164 行）",
+        "ディスク再読込・シーン切替のたびに末尾編集位置を失う"
+      ],
+      "suggestedUse": "制作: 同一シーン内の反復編集で選択を維持",
+      "firstSeenAt": "2026-11-11T00:51:00+09:00",
+      "lastSeenAt": "2026-11-11T00:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-019": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 520,
+      "frequency": "medium",
+      "frequencyBasis": "実行順が 1 Cmp ずつ手入力",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745",
+      "primary": "EntityEditorUi",
+      "related": [
+        "executionOrder",
+        "ComponentSlot"
+      ],
+      "summaryShort": "InputInt で実行順が 1 スロットのみ",
+      "summary": "InputInt で実行順が 1 スロットのみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "選択中 slot の executionOrder のみ InputInt（745-747 行）",
+        "同種 Cmp の一括 priority 調整 UI 無し",
+        "複製反復で毎スロット手作業"
+      ],
+      "suggestedUse": "制作: Draw/Upd 層の実行順を一括整列",
+      "firstSeenAt": "2026-11-11T00:51:00+09:00",
+      "lastSeenAt": "2026-11-11T00:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -5297,7 +5378,10 @@
     "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30": "GAP-Scene-SceneBuildUp-012",
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:122": "GAP-Scene-SceneGame-011",
     "UC-Play|Audio|StopSe|Unwired|Project/Codes/Include/System/PlaySe.h:97": "GAP-Audio-StopSe-001",
-    "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19": "GAP-Audio-PlaySeDetail-001"
+    "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19": "GAP-Audio-PlaySeDetail-001",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:261": "GAP-Editor-EntityEditor-013",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:163": "GAP-Editor-EntityEditor-014",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745": "GAP-Editor-EntityEditorUi-019"
   },
   "pendings": {},
   "nextSequence": {
@@ -5305,8 +5389,8 @@
     "Scene-GameOrder": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 13,
-    "Editor-EntityEditorUi": 19,
+    "Editor-EntityEditor": 15,
+    "Editor-EntityEditorUi": 20,
     "Editor-EntityEditorTagCatalog": 2,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 3,
@@ -6377,6 +6461,22 @@
         "GAP-Scene-SceneGame-011",
         "GAP-Audio-StopSe-001",
         "GAP-Audio-PlaySeDetail-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-005013",
+      "at": "2026-11-11T00:50:53.522256+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-013",
+        "GAP-Editor-EntityEditor-014",
+        "GAP-Editor-EntityEditorUi-019"
       ],
       "updatedIds": [],
       "closedIds": []
