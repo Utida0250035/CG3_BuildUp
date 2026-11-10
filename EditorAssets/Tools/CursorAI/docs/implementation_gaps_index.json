@@ -5946,6 +5946,93 @@
       "suggestedUse": "制作: シーン切替時にプレハブ選択をリセット",
       "firstSeenAt": "2026-11-11T02:21:00+09:00",
       "lastSeenAt": "2026-11-11T02:21:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-018": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "medium",
+      "frequencyBasis": "JSON ロード後にタグカタログ同期が無い",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:105",
+      "primary": "SceneBuildUp",
+      "related": [
+        "MergeTagCatalogFromRegistry",
+        "TryLoadSceneDocument",
+        "EntityEditor"
+      ],
+      "summaryShort": "BuildUp が tagCatalog マージを飛ばす",
+      "summary": "BuildUp が tagCatalog マージを飛ばす",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "TryLoad 後 BuildEntities 直前にタグ同期無し（105-109 行）",
+        "EntityEditor::LoadFromJsonPath は Merge/Sync 実施（171-173 行）",
+        "camera.main 等ロールタグの検証結果がエディタとずれうる"
+      ],
+      "suggestedUse": "Debug: Feature JSON のタグ契約を本編と同一化",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T02:31:00+09:00",
+      "lastSeenAt": "2026-11-11T02:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-019": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "ステージロックとデバッグカメラ許可が矛盾",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30",
+      "primary": "SceneBuildUp",
+      "related": [
+        "AllowDebugCameraControl",
+        "CmpCamera::PrepareBeforeDraw",
+        "IsStageViewCameraLocked"
+      ],
+      "summaryShort": "AllowDebugCameraControl をオーバーライドしない",
+      "summary": "AllowDebugCameraControl をオーバーライドしない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "IsStageViewCameraLocked のみ true（30 行）",
+        "Scene 既定 AllowDebugCameraControl true（Scene.h:71）",
+        "PrepareBeforeDraw に allowDebug=true が渡り本番相当試験と方針が曖昧"
+      ],
+      "suggestedUse": "Debug: 機能検証は本番カメラ契約に固定",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T02:31:00+09:00",
+      "lastSeenAt": "2026-11-11T02:31:00+09:00"
+    },
+    "GAP-Infra-scaffold_play_area-002": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "medium",
+      "frequencyBasis": "scaffold 完了メッセージが UI 導線を含まない",
+      "scopeKey": "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:44",
+      "primary": "scaffold_play_area",
+      "related": [
+        "DebugPlayArea",
+        "launch_config.json",
+        "SceneBuildUpRegistry"
+      ],
+      "summaryShort": "生成後は Launch のみ案内",
+      "summary": "生成後は Launch のみ案内",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "print は Launch または EntityEditor OpenScene（44 行）",
+        "Scenes/ と DebugPlayArea/ の一覧差・起動シーン設定手順無し",
+        "scaffold_play_area-001 / DebugPlayAreaGenerator-001 と手順分散"
+      ],
+      "suggestedUse": "Debug: scaffold から試験起動まで一続きの手順",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T02:31:00+09:00",
+      "lastSeenAt": "2026-11-11T02:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -6131,7 +6218,7 @@
     "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001",
     "UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19": "GAP-Entity-CmpCamera-001",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125": "GAP-Scene-SceneBuildUp-011",
-    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30": "GAP-Scene-SceneBuildUp-012",
+    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30": "GAP-Scene-SceneBuildUp-019",
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:122": "GAP-Scene-SceneGame-011",
     "UC-Play|Audio|StopSe|Unwired|Project/Codes/Include/System/PlaySe.h:97": "GAP-Audio-StopSe-001",
     "UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19": "GAP-Audio-PlaySeDetail-001",
@@ -6164,7 +6251,9 @@
     "UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:50": "GAP-Scene-SceneTitle-003",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:192": "GAP-Editor-EntityEditor-016",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:288": "GAP-Editor-EntityEditor-017",
-    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233": "GAP-Editor-PrefabAsset-005"
+    "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233": "GAP-Editor-PrefabAsset-005",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:105": "GAP-Scene-SceneBuildUp-018",
+    "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:44": "GAP-Infra-scaffold_play_area-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -6195,7 +6284,8 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 18,
+    "Scene-SceneBuildUp": 20,
+    "Infra-scaffold_play_area": 3,
     "Editor-EditorSceneRuntime": 7,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 5,
@@ -6251,7 +6341,6 @@
     "Editor-EntityEditorShortcuts": 2,
     "Debug-SceneViewTab": 2,
     "Infra-LoopTick13Demo": 2,
-    "Infra-scaffold_play_area": 2,
     "Infra-frame_profiler": 2,
     "Debug-FrameDeltaTime": 2,
     "Ship-Development_opt": 2,
@@ -7409,6 +7498,22 @@
         "GAP-Editor-EntityEditor-016",
         "GAP-Editor-EntityEditor-017",
         "GAP-Editor-PrefabAsset-005"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-023031",
+      "at": "2026-11-11T02:31:18.921192+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-SceneBuildUp-018",
+        "GAP-Scene-SceneBuildUp-019",
+        "GAP-Infra-scaffold_play_area-002"
       ],
       "updatedIds": [],
       "closedIds": []

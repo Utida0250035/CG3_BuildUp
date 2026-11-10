@@ -1619,6 +1619,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（13回目）
 - **newIds:** 3（保存後プレビュー無し、複数ドロップ上書き、シーン切替でプレハブ選択残り）
 
+## ギャップスキャン tick（SCAN-20261111-023031）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（14回目）
+- **newIds:** 3（BuildUp タグカタログ未同期、AllowDebugCamera 未上書き、scaffold 完了案内が Launch のみ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
