@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T06:11:05.731943+09:00
+- **lastIncrementalScanAt:** 2026-11-11T06:20:43.604694+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -3275,6 +3275,27 @@
 - firstSeenAt: 2026-11-11T03:31:00+09:00
 - lastSeenAt: 2026-11-11T03:31:00+09:00
 
+### GAP-Editor-EditorSceneRuntime-010
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: instanceName 未反映
+- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:358
+- primary: `EditorSceneRuntime`
+- summary: 【Debug】Entity 名が definition のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Build は definition のみ渡す（358-359 行）
+  - instanceName と entityName の差がランタイムに出ない
+  - 検証シーンのヒエラルキー表示と実体がずれる
+- suggestedUse: Debug: インスタンス名のランタイム反映
+- firstSeenAt: 2026-11-11T06:31:00+09:00
+- lastSeenAt: 2026-11-11T06:31:00+09:00
+
 ### GAP-Scene-CommandScene-006
 
 - status: open
@@ -3425,6 +3446,27 @@
 - suggestedUse: Debug: 検証シーン実行後のリクエスト整合
 - firstSeenAt: 2026-11-11T04:31:00+09:00
 - lastSeenAt: 2026-11-11T04:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-014
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: プレビュー描画が親のみ
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:215
+- primary: `SceneEntityEditor`
+- summary: 【Debug】DrawPreview が親 root のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GetParent==nullptr のみ Draw（220-221 行）
+  - BuildUp DrawRuntimeEntities と同型（SceneBuildUp-021）
+  - 子付き検証シーンがエディタで欠ける
+- suggestedUse: Debug: 階層プレビューの子描画
+- firstSeenAt: 2026-11-11T06:31:00+09:00
+- lastSeenAt: 2026-11-11T06:31:00+09:00
 
 ### GAP-Infra-EditorScenePlayRequest-003
 
@@ -3681,6 +3723,27 @@
 - suggestedUse: Debug: 機能検証の再 Launch ポリシーを明示
 - firstSeenAt: 2026-11-11T03:01:00+09:00
 - lastSeenAt: 2026-11-11T03:01:00+09:00
+
+### GAP-Infra-scaffold_play_area-003
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: scaffold が sceneName のみ差替
+- scope: UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:37
+- primary: `scaffold_play_area`
+- summary: 【Debug】生成は sceneName 差替のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - data['sceneName']=name のみ（37 行）
+  - テンプレ entities はそのままコピー
+  - 用途別検証シーンのコンポ差し替えは手編集
+- suggestedUse: Debug: scaffold のコンポプリセット
+- firstSeenAt: 2026-11-11T06:31:00+09:00
+- lastSeenAt: 2026-11-11T06:31:00+09:00
 
 ### GAP-Scene-SceneBuildUp-022
 
@@ -6144,7 +6207,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-035014 | at: 2026-11-11T03:50:30.395021+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -6159,6 +6221,7 @@
 - scanId: SCAN-20261111-055013 | at: 2026-11-11T05:50:38.019955+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-060023 | at: 2026-11-11T06:01:00.247216+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-061024 | at: 2026-11-11T06:11:05.731943+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-062020 | at: 2026-11-11T06:20:43.604694+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

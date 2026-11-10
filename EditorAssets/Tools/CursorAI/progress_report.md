@@ -1740,6 +1740,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（21回目）
 - **newIds:** 3（プレハブ定義のみ、タグ全解除 1 体、カタログ改名 1 件）
 
+## ギャップスキャン tick（SCAN-20261111-063020）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（22回目）
+- **newIds:** 3（instanceName 未反映、プレビュー親のみ、scaffold は名前のみ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

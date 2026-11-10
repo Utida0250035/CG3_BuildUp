@@ -7936,6 +7936,90 @@
       "suggestedUse": "Authoring: カタログタグの一括改名",
       "firstSeenAt": "2026-11-11T06:21:00+09:00",
       "lastSeenAt": "2026-11-11T06:21:00+09:00"
+    },
+    "GAP-Editor-EditorSceneRuntime-010": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "instanceName 未反映",
+      "scopeKey": "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:358",
+      "primary": "EditorSceneRuntime",
+      "related": [
+        "BuildEntitiesFromSceneDocument",
+        "instanceName",
+        "BuildEntityFromDefinition"
+      ],
+      "summaryShort": "Entity 名が definition のみ",
+      "summary": "Entity 名が definition のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Build は definition のみ渡す（358-359 行）",
+        "instanceName と entityName の差がランタイムに出ない",
+        "検証シーンのヒエラルキー表示と実体がずれる"
+      ],
+      "suggestedUse": "Debug: インスタンス名のランタイム反映",
+      "firstSeenAt": "2026-11-11T06:31:00+09:00",
+      "lastSeenAt": "2026-11-11T06:31:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-014": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "medium",
+      "frequencyBasis": "プレビュー描画が親のみ",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:215",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "DrawPreviewEntities",
+        "GetParent",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "DrawPreview が親 root のみ",
+      "summary": "DrawPreview が親 root のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "GetParent==nullptr のみ Draw（220-221 行）",
+        "BuildUp DrawRuntimeEntities と同型（SceneBuildUp-021）",
+        "子付き検証シーンがエディタで欠ける"
+      ],
+      "suggestedUse": "Debug: 階層プレビューの子描画",
+      "firstSeenAt": "2026-11-11T06:31:00+09:00",
+      "lastSeenAt": "2026-11-11T06:31:00+09:00"
+    },
+    "GAP-Infra-scaffold_play_area-003": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 470,
+      "frequency": "low",
+      "frequencyBasis": "scaffold が sceneName のみ差替",
+      "scopeKey": "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:37",
+      "primary": "scaffold_play_area",
+      "related": [
+        "template_test_play_area",
+        "DebugPlayArea",
+        "scaffold_play_area-002"
+      ],
+      "summaryShort": "生成は sceneName 差替のみ",
+      "summary": "生成は sceneName 差替のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "data['sceneName']=name のみ（37 行）",
+        "テンプレ entities はそのままコピー",
+        "用途別検証シーンのコンポ差し替えは手編集"
+      ],
+      "suggestedUse": "Debug: scaffold のコンポプリセット",
+      "firstSeenAt": "2026-11-11T06:31:00+09:00",
+      "lastSeenAt": "2026-11-11T06:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -8223,7 +8307,10 @@
     "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Include/Audio/Audio.h:70": "GAP-Audio-IsSuitableStreaming-002",
     "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:82": "GAP-Editor-EntityEditor-022",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:629": "GAP-Editor-EntityEditorUi-031",
-    "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:836": "GAP-Editor-EntityEditorTagCatalog-004"
+    "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:836": "GAP-Editor-EntityEditorTagCatalog-004",
+    "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:358": "GAP-Editor-EditorSceneRuntime-010",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:215": "GAP-Editor-SceneEntityEditor-014",
+    "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:37": "GAP-Infra-scaffold_play_area-003"
   },
   "pendings": {},
   "nextSequence": {
@@ -8251,7 +8338,7 @@
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 6,
     "Scene-SceneBuildUpRegistry": 5,
-    "Editor-SceneEntityEditor": 14,
+    "Editor-SceneEntityEditor": 15,
     "Scene-SceneCameraRig": 2,
     "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
@@ -8259,8 +8346,8 @@
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
     "Scene-SceneBuildUp": 27,
-    "Infra-scaffold_play_area": 3,
-    "Editor-EditorSceneRuntime": 10,
+    "Infra-scaffold_play_area": 4,
+    "Editor-EditorSceneRuntime": 11,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 7,
     "Infra-launch_config": 5,
@@ -9857,6 +9944,22 @@
         "GAP-Editor-EntityEditor-022",
         "GAP-Editor-EntityEditorUi-031",
         "GAP-Editor-EntityEditorTagCatalog-004"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-063020",
+      "at": "2026-11-11T06:30:44.449545+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Editor-EditorSceneRuntime-010",
+        "GAP-Editor-SceneEntityEditor-014",
+        "GAP-Infra-scaffold_play_area-003"
       ],
       "updatedIds": [],
       "closedIds": []
