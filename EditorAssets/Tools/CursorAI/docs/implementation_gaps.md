@@ -5291,6 +5291,27 @@
 - firstSeenAt: 2026-11-11T05:41:00+09:00
 - lastSeenAt: 2026-11-11T05:41:00+09:00
 
+### GAP-Audio-AudioManager-018
+
+- status: open
+- tier: P2
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: PlayStreaming 失敗 Handle
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:587
+- primary: `AudioManager`
+- summary: 【Play】Init 失敗で playId 不一致
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - 失敗時 voice playId=65536（587-589 行）
+  - Handle は currentPlayId のまま返却
+  - PlaySceneBgm-002 と同型の停止不能
+- suggestedUse: プレイ: 長尺 SE 失敗ハンドル整合
+- firstSeenAt: 2026-11-11T06:11:00+09:00
+- lastSeenAt: 2026-11-11T06:11:00+09:00
+
 ### GAP-Audio-IsBgmLoopPaused-001
 
 - status: open
@@ -5502,6 +5523,27 @@
 - firstSeenAt: 2026-11-11T05:41:00+09:00
 - lastSeenAt: 2026-11-11T05:41:00+09:00
 
+### GAP-Audio-AudioManager-017
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: Load が index キャッシュ
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:241
+- primary: `AudioManager`
+- summary: 【Play】Load ヒットで再判定なし
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - soundIndexMap_ 命中は index 返却のみ（241-243 行）
+  - ファイルサイズ変化で short/stream 経路が固定
+  - シーン再読込と PlaySeDetail キャッシュが連鎖
+- suggestedUse: プレイ: 音源 Load の再検証
+- firstSeenAt: 2026-11-11T06:11:00+09:00
+- lastSeenAt: 2026-11-11T06:11:00+09:00
+
 ### GAP-Audio-PlaySeDetail-002
 
 - status: open
@@ -5543,6 +5585,27 @@
 - suggestedUse: プレイ: シーン戻りで BGM 位置を復元
 - firstSeenAt: 2026-11-10T23:41:00+09:00
 - lastSeenAt: 2026-11-10T23:41:00+09:00
+
+### GAP-Audio-IsSuitableStreaming-002
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 5MB 閾値が定数のみ
+- scope: UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Include/Audio/Audio.h:70
+- primary: `IsSuitableStreaming`
+- summary: 【Play】閾値 5MB がハードコード
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - kFileSizeThreshold = 5MiB 固定（Audio.h:70）
+  - コンテンツ種別や端末に応じた切替なし
+  - 境界付近 BGM で short/stream が揺れる
+- suggestedUse: プレイ: ストリーム判定の設定化
+- firstSeenAt: 2026-11-11T06:11:00+09:00
+- lastSeenAt: 2026-11-11T06:11:00+09:00
 
 ### GAP-Audio-SetBgmLoopPitch-001
 

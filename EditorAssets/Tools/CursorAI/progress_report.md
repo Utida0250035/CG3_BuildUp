@@ -1730,6 +1730,11 @@
 - **newIds:** 3（シーン一覧 Scenes のみ、launch 空 path、Exit で Ui 残存）
 - **fix:** `EntityEditorUi-029` と `-019` の scopeKey 衝突（:745）を :746 に分離
 
+## ギャップスキャン tick（SCAN-20261111-061024）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（21回目）
+- **newIds:** 3（Load index キャッシュ、PlayStreaming playId、5MB 閾値固定）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
