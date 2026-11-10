@@ -1629,6 +1629,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（14回目）
 - **newIds:** 3（ストリームプール奪取、Resume が Start のみ、5MB 閾値のみでストリーム判定）
 
+## ギャップスキャン tick（SCAN-20261111-025013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（14回目）
+- **newIds:** 3（削除時子の親付替え無し、CmpCamera 既定 params 無し、Cmp 1 件ずつ削除のみ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

@@ -6117,6 +6117,90 @@
       "suggestedUse": "プレイ: BGM 長尺のロード／ストリーム方針を明示",
       "firstSeenAt": "2026-11-11T02:41:00+09:00",
       "lastSeenAt": "2026-11-11T02:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-018": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "medium",
+      "frequencyBasis": "親削除で子がルートに散る",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:65",
+      "primary": "EntityEditor",
+      "related": [
+        "RemoveSelectedInstance",
+        "parentIndex",
+        "DrawHierarchyPanel"
+      ],
+      "summaryShort": "削除時に子を祖父へ昇格しない",
+      "summary": "削除時に子を祖父へ昇格しない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "parentIndex==removeIndex の子は -1 のみ（65-66 行）",
+        "削除ノードの親へ子を付け替える処理無し",
+        "グループ親を消すと配下がフラット化し再親付けが手作業"
+      ],
+      "suggestedUse": "制作: ヒエラルキー整理の削除を非破壊に",
+      "firstSeenAt": "2026-11-11T02:51:00+09:00",
+      "lastSeenAt": "2026-11-11T02:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorDefinition-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 570,
+      "frequency": "medium",
+      "frequencyBasis": "CmpCamera が既知型なのに既定 params 無し",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:72",
+      "primary": "EntityEditorDefinition",
+      "related": [
+        "DefaultParamsForType",
+        "IsKnownEntityEditorComponent",
+        "CmpCamera"
+      ],
+      "summaryShort": "CmpCamera 追加で params が空オブジェクト",
+      "summary": "CmpCamera 追加で params が空オブジェクト",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "IsKnown に CmpCamera を含む（17-21 行）",
+        "DefaultParamsForType は 72 行で object() フォールバック",
+        "カメラ大量配置時に JSON 手入力または都度編集が必要"
+      ],
+      "suggestedUse": "制作: カメラ試配置のプリセット既定化",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T02:51:00+09:00",
+      "lastSeenAt": "2026-11-11T02:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-024": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "medium",
+      "frequencyBasis": "Cmp 削除が 1 スロットずつ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707",
+      "primary": "EntityEditorUi",
+      "related": [
+        "selectedComponentIndex",
+        "Ui-018"
+      ],
+      "summaryShort": "選択中コンポーネントのみ削除",
+      "summary": "選択中コンポーネントのみ削除",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "erase は ui_.selectedComponentIndex 1 件（707-709 行）",
+        "種別フィルタ内の一括削除／同型クリアボタン無し",
+        "EntityEditorUi-018 と逆方向の反復が手順化されていない"
+      ],
+      "suggestedUse": "制作: 試行錯誤後の Draw 層一括削除",
+      "firstSeenAt": "2026-11-11T02:51:00+09:00",
+      "lastSeenAt": "2026-11-11T02:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -6298,7 +6382,7 @@
     "UC-Play|Audio|GetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:151": "GAP-Audio-GetSeFrequencyRatio-001",
     "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62": "GAP-Scene-SceneResult-002",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37": "GAP-Editor-EntityEditorUi-017",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707": "GAP-Editor-EntityEditorUi-018",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707": "GAP-Editor-EntityEditorUi-024",
     "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001",
     "UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19": "GAP-Entity-CmpCamera-001",
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125": "GAP-Scene-SceneBuildUp-011",
@@ -6340,7 +6424,9 @@
     "UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:44": "GAP-Infra-scaffold_play_area-002",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:449": "GAP-Audio-AudioManager-003",
     "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884": "GAP-Audio-AudioManager-004",
-    "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Source/Audio/Audio.cpp:191": "GAP-Audio-IsSuitableStreaming-001"
+    "UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Source/Audio/Audio.cpp:191": "GAP-Audio-IsSuitableStreaming-001",
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:65": "GAP-Editor-EntityEditor-018",
+    "UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:72": "GAP-Editor-EntityEditorDefinition-004"
   },
   "pendings": {},
   "nextSequence": {
@@ -6355,15 +6441,15 @@
     "Scene-SceneGame": 13,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 18,
+    "Editor-EntityEditor": 19,
     "Editor-PrefabAsset": 6,
-    "Editor-EntityEditorUi": 24,
+    "Editor-EntityEditorUi": 25,
     "Editor-EditorEntityWorkbench": 4,
     "Editor-EntityEditorTagCatalog": 2,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
-    "Editor-EntityEditorDefinition": 4,
+    "Editor-EntityEditorDefinition": 5,
     "Scene-SceneBuildUpRegistry": 3,
     "Editor-SceneEntityEditor": 12,
     "Scene-SceneCameraRig": 2,
@@ -7618,6 +7704,22 @@
         "GAP-Audio-AudioManager-003",
         "GAP-Audio-AudioManager-004",
         "GAP-Audio-IsSuitableStreaming-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-025013",
+      "at": "2026-11-11T02:51:07.177239+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-018",
+        "GAP-Editor-EntityEditorDefinition-004",
+        "GAP-Editor-EntityEditorUi-024"
       ],
       "updatedIds": [],
       "closedIds": []

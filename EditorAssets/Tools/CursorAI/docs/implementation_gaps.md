@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T02:31:18.921192+09:00
+- **lastIncrementalScanAt:** 2026-11-11T02:40:47.012554+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1191,6 +1191,28 @@
 - firstSeenAt: 2026-11-11T01:21:00+09:00
 - lastSeenAt: 2026-11-11T01:21:00+09:00
 
+### GAP-Editor-EntityEditorDefinition-004
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: CmpCamera が既知型なのに既定 params 無し
+- scope: UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:72
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】CmpCamera 追加で params が空オブジェクト
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - IsKnown に CmpCamera を含む（17-21 行）
+  - DefaultParamsForType は 72 行で object() フォールバック
+  - カメラ大量配置時に JSON 手入力または都度編集が必要
+- suggestedUse: 制作: カメラ試配置のプリセット既定化
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T02:51:00+09:00
+- lastSeenAt: 2026-11-11T02:51:00+09:00
+
 ### GAP-Editor-PrefabAsset-003
 
 - status: open
@@ -1551,6 +1573,27 @@
 - firstSeenAt: 2026-11-11T01:21:00+09:00
 - lastSeenAt: 2026-11-11T01:21:00+09:00
 
+### GAP-Editor-EntityEditorUi-024
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: Cmp 削除が 1 スロットずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707
+- primary: `EntityEditorUi`
+- summary: 【Authoring】選択中コンポーネントのみ削除
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - erase は ui_.selectedComponentIndex 1 件（707-709 行）
+  - 種別フィルタ内の一括削除／同型クリアボタン無し
+  - EntityEditorUi-018 と逆方向の反復が手順化されていない
+- suggestedUse: 制作: 試行錯誤後の Draw 層一括削除
+- firstSeenAt: 2026-11-11T02:51:00+09:00
+- lastSeenAt: 2026-11-11T02:51:00+09:00
+
 ### GAP-Editor-EntityEditor-015
 
 - status: open
@@ -1571,6 +1614,27 @@
 - suggestedUse: 制作: 保存前に複数案をメモリで試す
 - firstSeenAt: 2026-11-11T01:51:00+09:00
 - lastSeenAt: 2026-11-11T01:51:00+09:00
+
+### GAP-Editor-EntityEditor-018
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 親削除で子がルートに散る
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:65
+- primary: `EntityEditor`
+- summary: 【Authoring】削除時に子を祖父へ昇格しない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - parentIndex==removeIndex の子は -1 のみ（65-66 行）
+  - 削除ノードの親へ子を付け替える処理無し
+  - グループ親を消すと配下がフラット化し再親付けが手作業
+- suggestedUse: 制作: ヒエラルキー整理の削除を非破壊に
+- firstSeenAt: 2026-11-11T02:51:00+09:00
+- lastSeenAt: 2026-11-11T02:51:00+09:00
 
 ### GAP-Editor-PrefabAsset-005
 
@@ -4776,7 +4840,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-001015 | at: 2026-11-11T00:10:56.667870+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-002014 | at: 2026-11-11T00:20:30.448375+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-003024 | at: 2026-11-11T00:30:49.903825+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-004014 | at: 2026-11-11T00:40:44.205681+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -4791,6 +4854,7 @@
 - scanId: SCAN-20261111-021016 | at: 2026-11-11T02:11:03.810105+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-022018 | at: 2026-11-11T02:21:03.662472+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-023031 | at: 2026-11-11T02:31:18.921192+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-024014 | at: 2026-11-11T02:40:47.012554+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 
