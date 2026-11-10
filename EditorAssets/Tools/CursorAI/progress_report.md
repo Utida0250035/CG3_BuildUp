@@ -1669,6 +1669,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（17回目）
 - **newIds:** 3（launch 1 キー保存、起動前 JSON 未検証、BuildUp 表示名が ctor 仮値）
 
+## ギャップスキャン tick（SCAN-20261111-041012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（17回目）
+- **newIds:** 3（SE index 永久キャッシュ、初期 Refill 1 回、OnBufferEnd が Streaming のみ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
