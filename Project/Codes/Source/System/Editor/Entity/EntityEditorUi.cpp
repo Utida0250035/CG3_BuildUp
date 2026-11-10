@@ -34,6 +34,7 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpRotator", ComponentSlotKind::Upd},
     {"CmpScroll", ComponentSlotKind::Upd},
     {"CmpHitSphere", ComponentSlotKind::Upd},
+    {"CmpCamera", ComponentSlotKind::Upd},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,
