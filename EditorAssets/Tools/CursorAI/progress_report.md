@@ -1604,6 +1604,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（12回目）
 - **newIds:** 3（Dock 初回固定、直近ドロップ 1 Cmp、新規即保存）
 
+## ギャップスキャン tick（SCAN-20261111-020020）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（13回目）
+- **newIds:** 3（Exit でタブ未復帰、JSON パス非表示、フェード中 F1 無効）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

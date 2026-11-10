@@ -5693,6 +5693,92 @@
       "suggestedUse": "制作: 保存前に複数案をメモリで試す",
       "firstSeenAt": "2026-11-11T01:51:00+09:00",
       "lastSeenAt": "2026-11-11T01:51:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-015": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "medium",
+      "frequencyBasis": "退出時にエディタタブが Runtime のまま",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:210",
+      "primary": "SceneBuildUp",
+      "related": [
+        "EditorFrame",
+        "SetSceneViewTab",
+        "returnScene_"
+      ],
+      "summaryShort": "ExitScene が SceneViewTab を戻さない",
+      "summary": "ExitScene が SceneViewTab を戻さない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "EnterScene は Runtime タブ固定（112-113 行）",
+        "ExitScene は Teardown のみ（210-213 行）で EditorFrame 更新無し",
+        "F1 復帰後も EntityEditor の表示タブが Runtime 想定のまま"
+      ],
+      "suggestedUse": "Debug: 検証終了後にエディットビューへ自動復帰",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T02:01:00+09:00",
+      "lastSeenAt": "2026-11-11T02:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-016": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "high",
+      "frequencyBasis": "実行中 JSON パスが UI に出ない",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|MissingUI|Project/Codes/Source/Scene/SceneBuildUp.cpp:180",
+      "primary": "SceneBuildUp",
+      "related": [
+        "sceneJsonPath_",
+        "LayoutDedicatedSceneViewWindow"
+      ],
+      "summaryShort": "専用ランタイムウィンドウが汎用文言のみ",
+      "summary": "専用ランタイムウィンドウが汎用文言のみ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "statusLine は固定説明文（182 行）で sceneJsonPath_ 非表示",
+        "sceneDisplayName_ はコンストラクタ由来のみ（26-27 行）",
+        "cwd ずれで別 JSON を読んでも UI から判別しづらい（BuildUp-005 と同系）"
+      ],
+      "suggestedUse": "Debug: どの JSON を試しているかヘッダで確認",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T02:01:00+09:00",
+      "lastSeenAt": "2026-11-11T02:01:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-017": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 570,
+      "frequency": "medium",
+      "frequencyBasis": "フェード中は Update 停止で F1 無効",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:117",
+      "primary": "SceneBuildUp",
+      "related": [
+        "GameOrder",
+        "CommandChangeScene",
+        "ChangeSceneFade"
+      ],
+      "summaryShort": "遷移演出中 F1 復帰が処理されない",
+      "summary": "遷移演出中 F1 復帰が処理されない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "F1 は Update 内のみ（117-122 行）",
+        "GameOrder は GetIsExecute 中 sceneNow->Update を呼ばない（GameOrder.h:61-67）",
+        "BuildUp 出入りの暗転中はエディタへ戻れない"
+      ],
+      "suggestedUse": "Debug: 検証シーンの出入りをフェード中も中断可能に",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T02:01:00+09:00",
+      "lastSeenAt": "2026-11-11T02:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -5902,7 +5988,10 @@
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:162": "GAP-Scene-SceneGame-012",
     "UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:211": "GAP-Editor-EditorEntityWorkbench-003",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:136": "GAP-Editor-EntityEditorUi-023",
-    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:230": "GAP-Editor-EntityEditor-015"
+    "UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:230": "GAP-Editor-EntityEditor-015",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:210": "GAP-Scene-SceneBuildUp-015",
+    "UC-Debug|Scene|SceneBuildUp|MissingUI|Project/Codes/Source/Scene/SceneBuildUp.cpp:180": "GAP-Scene-SceneBuildUp-016",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:117": "GAP-Scene-SceneBuildUp-017"
   },
   "pendings": {},
   "nextSequence": {
@@ -5931,7 +6020,7 @@
     "Infra-stage_view_camera_tuning": 3,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 15,
+    "Scene-SceneBuildUp": 18,
     "Editor-EditorSceneRuntime": 7,
     "Entity-CmpCamera": 2,
     "Scene-CommandScene": 5,
@@ -7098,6 +7187,22 @@
         "GAP-Editor-EditorEntityWorkbench-003",
         "GAP-Editor-EntityEditorUi-023",
         "GAP-Editor-EntityEditor-015"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-020020",
+      "at": "2026-11-11T02:01:01.214707+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-SceneBuildUp-015",
+        "GAP-Scene-SceneBuildUp-016",
+        "GAP-Scene-SceneBuildUp-017"
       ],
       "updatedIds": [],
       "closedIds": []

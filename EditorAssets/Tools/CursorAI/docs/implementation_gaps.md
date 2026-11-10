@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T01:40:52.216206+09:00
+- **lastIncrementalScanAt:** 2026-11-11T01:50:48.708567+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2494,6 +2494,28 @@
 - firstSeenAt: 2026-11-11T00:01:00+09:00
 - lastSeenAt: 2026-11-11T00:01:00+09:00
 
+### GAP-Scene-SceneBuildUp-017
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: フェード中は Update 停止で F1 無効
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:117
+- primary: `SceneBuildUp`
+- summary: 【Debug】遷移演出中 F1 復帰が処理されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - F1 は Update 内のみ（117-122 行）
+  - GameOrder は GetIsExecute 中 sceneNow->Update を呼ばない（GameOrder.h:61-67）
+  - BuildUp 出入りの暗転中はエディタへ戻れない
+- suggestedUse: Debug: 検証シーンの出入りをフェード中も中断可能に
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:01:00+09:00
+- lastSeenAt: 2026-11-11T02:01:00+09:00
+
 ### GAP-Editor-SceneEntityEditor-008
 
 - status: open
@@ -2580,6 +2602,28 @@
 - firstSeenAt: 2026-11-10T06:31:00+09:00
 - lastSeenAt: 2026-11-10T06:31:00+09:00
 
+### GAP-Scene-SceneBuildUp-015
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 退出時にエディタタブが Runtime のまま
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:210
+- primary: `SceneBuildUp`
+- summary: 【Debug】ExitScene が SceneViewTab を戻さない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene は Runtime タブ固定（112-113 行）
+  - ExitScene は Teardown のみ（210-213 行）で EditorFrame 更新無し
+  - F1 復帰後も EntityEditor の表示タブが Runtime 想定のまま
+- suggestedUse: Debug: 検証終了後にエディットビューへ自動復帰
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:01:00+09:00
+- lastSeenAt: 2026-11-11T02:01:00+09:00
+
 ### GAP-Infra-EditorScenePlayRequest-003
 
 - status: open
@@ -2601,6 +2645,28 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:01:00+09:00
 - lastSeenAt: 2026-11-10T07:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-016
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: 実行中 JSON パスが UI に出ない
+- scope: UC-Debug|Scene|SceneBuildUp|MissingUI|Project/Codes/Source/Scene/SceneBuildUp.cpp:180
+- primary: `SceneBuildUp`
+- summary: 【Debug】専用ランタイムウィンドウが汎用文言のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - statusLine は固定説明文（182 行）で sceneJsonPath_ 非表示
+  - sceneDisplayName_ はコンストラクタ由来のみ（26-27 行）
+  - cwd ずれで別 JSON を読んでも UI から判別しづらい（BuildUp-005 と同系）
+- suggestedUse: Debug: どの JSON を試しているかヘッダで確認
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:01:00+09:00
+- lastSeenAt: 2026-11-11T02:01:00+09:00
 
 #### UC-Play
 
@@ -4455,7 +4521,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-232021 | at: 2026-11-10T23:20:52.299988+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-233005 | at: 2026-11-10T23:31:09.917190+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-234025 | at: 2026-11-10T23:42:41.699471+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-235013 | at: 2026-11-10T23:50:56.634759+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -4470,6 +4535,7 @@
 - scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-013013 | at: 2026-11-11T01:31:16.625329+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-014014 | at: 2026-11-11T01:40:52.216206+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-015018 | at: 2026-11-11T01:50:48.708567+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 
