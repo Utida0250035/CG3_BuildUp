@@ -4612,6 +4612,87 @@
       "suggestedUse": "プレイ: 長い死亡演出中も BGM 切断を復帰",
       "firstSeenAt": "2026-11-10T23:41:00+09:00",
       "lastSeenAt": "2026-11-10T23:41:00+09:00"
+    },
+    "GAP-Editor-EntityEditor-012": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 640,
+      "frequency": "high",
+      "frequencyBasis": "インスタンス複製 API が無い",
+      "scopeKey": "UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46",
+      "primary": "EntityEditor",
+      "related": [
+        "AddEmptyInstance",
+        "AddInstanceFromPrefabPath"
+      ],
+      "summaryShort": "選択エンティティの複製が無い",
+      "summary": "選択エンティティの複製が無い",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "AddEmptyInstance は既定定義のみ（46-55 行）",
+        "プレハブ経由は 1 体ずつ追加（92-120 行）",
+        "Cmp／タグ／transform を保った複製が JSON 手編集依存"
+      ],
+      "suggestedUse": "制作: 配置反復を複製ワンクリックで短縮",
+      "firstSeenAt": "2026-11-10T23:51:00+09:00",
+      "lastSeenAt": "2026-11-10T23:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-015": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "high",
+      "frequencyBasis": "ヒエラルキーは空オブジェクト追加のみ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:375",
+      "primary": "EntityEditorUi",
+      "related": [
+        "AddEmptyInstance",
+        "DrawHierarchyPanel"
+      ],
+      "summaryShort": "「オブジェクトを追加」は空のみ",
+      "summary": "「オブジェクトを追加」は空のみ",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "ボタンは AddEmptyInstance のみ（375-377 行）",
+        "選択中定義の複製／オフセット複製ボタン無し",
+        "EntityEditor-012 と同系で UI 導線が未整備"
+      ],
+      "suggestedUse": "制作: 選択オブジェクトの複製をヒエラルキーから",
+      "firstSeenAt": "2026-11-10T23:51:00+09:00",
+      "lastSeenAt": "2026-11-10T23:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-016": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "CmpHitSphere の球パラメータが 1 個ずつ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242",
+      "primary": "EntityEditorUi",
+      "related": [
+        "CmpHitSphere",
+        "DrawComponentParams"
+      ],
+      "summaryShort": "ヒット球は選択 1 球のみ編集",
+      "summary": "ヒット球は選択 1 球のみ編集",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "Selectable で selectedSphereIndex を 1 件更新（242-246 行）",
+        "radius/offset の Drag は選択球のみ（249-267 行）",
+        "複数球の半径一括・配列コピー UI 無し"
+      ],
+      "suggestedUse": "制作: コライダー配列の一括スケール調整",
+      "firstSeenAt": "2026-11-10T23:51:00+09:00",
+      "lastSeenAt": "2026-11-10T23:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -4782,7 +4863,10 @@
     "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248": "GAP-Editor-SceneEntityEditor-010",
     "UC-Play|Audio|SetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:141": "GAP-Audio-SetBgmLoopPlaybackSeconds-001",
     "UC-Play|Audio|SetBgmLoopPitch|Unwired|Project/Codes/Include/System/PlaySe.h:163": "GAP-Audio-SetBgmLoopPitch-001",
-    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:231": "GAP-Scene-SceneGame-010"
+    "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:231": "GAP-Scene-SceneGame-010",
+    "UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46": "GAP-Editor-EntityEditor-012",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:375": "GAP-Editor-EntityEditorUi-015",
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242": "GAP-Editor-EntityEditorUi-016"
   },
   "pendings": {},
   "nextSequence": {
@@ -4790,8 +4874,8 @@
     "Scene-GameOrder": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
-    "Editor-EntityEditor": 12,
-    "Editor-EntityEditorUi": 15,
+    "Editor-EntityEditor": 13,
+    "Editor-EntityEditorUi": 17,
     "Editor-EditorImportedAsset": 3,
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
@@ -5759,6 +5843,22 @@
         "GAP-Audio-SetBgmLoopPlaybackSeconds-001",
         "GAP-Audio-SetBgmLoopPitch-001",
         "GAP-Scene-SceneGame-010"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261110-235013",
+      "at": "2026-11-10T23:50:56.634759+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EntityEditor-012",
+        "GAP-Editor-EntityEditorUi-015",
+        "GAP-Editor-EntityEditorUi-016"
       ],
       "updatedIds": [],
       "closedIds": []

@@ -1539,6 +1539,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（8回目）
 - **newIds:** 3（BGM シーク未配線、ピッチ未配線、撃破演出中の維持スキップ）
 
+## ギャップスキャン tick（SCAN-20261110-235013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（8回目）
+- **newIds:** 3（インスタンス複製 API 無し、空追加のみ、HitSphere 単一球編集）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

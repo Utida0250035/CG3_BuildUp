@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T23:31:09.917190+09:00
+- **lastIncrementalScanAt:** 2026-11-10T23:42:41.699471+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -765,6 +765,27 @@
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
 
+### GAP-Editor-EntityEditor-012
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: インスタンス複製 API が無い
+- scope: UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46
+- primary: `EntityEditor`
+- summary: 【Authoring】選択エンティティの複製が無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - AddEmptyInstance は既定定義のみ（46-55 行）
+  - プレハブ経由は 1 体ずつ追加（92-120 行）
+  - Cmp／タグ／transform を保った複製が JSON 手編集依存
+- suggestedUse: 制作: 配置反復を複製ワンクリックで短縮
+- firstSeenAt: 2026-11-10T23:51:00+09:00
+- lastSeenAt: 2026-11-10T23:51:00+09:00
+
 ### GAP-Editor-EntityEditorHierarchy-001
 
 - status: open
@@ -975,6 +996,27 @@
 - suggestedUse: 制作: インポート済みアセットを一覧から連続配置
 - firstSeenAt: 2026-11-10T06:51:00+09:00
 - lastSeenAt: 2026-11-10T06:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-015
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: ヒエラルキーは空オブジェクト追加のみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:375
+- primary: `EntityEditorUi`
+- summary: 【Authoring】「オブジェクトを追加」は空のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ボタンは AddEmptyInstance のみ（375-377 行）
+  - 選択中定義の複製／オフセット複製ボタン無し
+  - EntityEditor-012 と同系で UI 導線が未整備
+- suggestedUse: 制作: 選択オブジェクトの複製をヒエラルキーから
+- firstSeenAt: 2026-11-10T23:51:00+09:00
+- lastSeenAt: 2026-11-10T23:51:00+09:00
 
 ### GAP-Editor-PrefabAsset-002
 
@@ -1213,6 +1255,27 @@
 - suggestedUse: 制作: 同型コンポの優先度をまとめて調整
 - firstSeenAt: 2026-11-10T07:51:00+09:00
 - lastSeenAt: 2026-11-10T07:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-016
+
+- status: open
+- tier: P3
+- score: 540
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: CmpHitSphere の球パラメータが 1 個ずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242
+- primary: `EntityEditorUi`
+- summary: 【Authoring】ヒット球は選択 1 球のみ編集
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Selectable で selectedSphereIndex を 1 件更新（242-246 行）
+  - radius/offset の Drag は選択球のみ（249-267 行）
+  - 複数球の半径一括・配列コピー UI 無し
+- suggestedUse: 制作: コライダー配列の一括スケール調整
+- firstSeenAt: 2026-11-10T23:51:00+09:00
+- lastSeenAt: 2026-11-10T23:51:00+09:00
 
 ### GAP-UX-OperatorGuidanceSystem-004
 
@@ -3623,7 +3686,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-063013 | at: 2026-11-10T06:31:21.084005+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-064013 | at: 2026-11-10T06:41:03.845539+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -3638,6 +3700,7 @@
 - scanId: SCAN-20261110-231005 | at: 2026-11-10T23:10:45.414301+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-232021 | at: 2026-11-10T23:20:52.299988+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-233005 | at: 2026-11-10T23:31:09.917190+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-234025 | at: 2026-11-10T23:42:41.699471+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 
