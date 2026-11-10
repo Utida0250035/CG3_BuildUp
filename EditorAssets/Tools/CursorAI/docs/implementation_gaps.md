@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T00:10:56.667870+09:00
+- **lastIncrementalScanAt:** 2026-11-11T00:20:30.448375+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1911,6 +1911,50 @@
 - firstSeenAt: 2026-11-10T07:31:00+09:00
 - lastSeenAt: 2026-11-10T07:31:00+09:00
 
+### GAP-Scene-SceneBuildUp-011
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Update が JSON 実体ベクタのみ
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125
+- primary: `SceneBuildUp`
+- summary: 【Debug】cameraRig 実体は Update されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Update は entities_ の Active のみ（125-128 行）
+  - EnsureAutoSpawnedCameras の MainCamera は rig 側のみ（SceneCameraRig.cpp:61-62）
+  - PrepareBeforeDraw 以外の Cmp ロジックが機能検証で欠落しうる
+- suggestedUse: Debug: 自動スポーンカメラもランタイム更新対象に
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:31:00+09:00
+- lastSeenAt: 2026-11-11T00:31:00+09:00
+
+### GAP-Entity-CmpCamera-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Cmp 初期化が正射影行列固定
+- scope: UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19
+- primary: `CmpCamera`
+- summary: 【Debug】Initialize が Orthographic を既定生成
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - CreateOrthographicMatrix が Initialize 直後（19-20 行）
+  - BuildUp RT は FitCameraPerspectiveToViewport（SceneBuildUp.cpp:152）
+  - 機能検証で JSON カメラの透視パラメータを試しにくい
+- suggestedUse: Debug: ステージビュー透視と Cmp 既定の整合
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:31:00+09:00
+- lastSeenAt: 2026-11-11T00:31:00+09:00
+
 ### GAP-Infra-EditorScenePlayRequest-002
 
 - status: open
@@ -2040,6 +2084,28 @@
 - roadmapLink: feature-memos/entity_camera_components.md
 - firstSeenAt: 2026-11-10T23:31:00+09:00
 - lastSeenAt: 2026-11-10T23:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-012
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: BuildUp が stageView ロック固定
+- scope: UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30
+- primary: `SceneBuildUp`
+- summary: 【Debug】IsStageViewCameraLocked が常時 true
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - override で true 固定（SceneBuildUp.h:30）
+  - PrepareBeforeDraw は stageViewLocked 時 UpdateMatrix のみ（CmpCamera.cpp:29-31）
+  - EntityEditor は false（SceneEntityEditor.h:32）と非対称で検証シーン差分が大きい
+- suggestedUse: Debug: ロック ON/OFF を切り替えて Cmp を試す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T00:31:00+09:00
+- lastSeenAt: 2026-11-11T00:31:00+09:00
 
 ### GAP-Scene-SceneBuildUpRegistry-002
 
@@ -3879,7 +3945,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-065006 | at: 2026-11-10T06:51:08.763681+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-070015 | at: 2026-11-10T07:00:50.713598+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-072023 | at: 2026-11-10T07:20:51.586186+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -3894,6 +3959,7 @@
 - scanId: SCAN-20261110-235013 | at: 2026-11-10T23:50:56.634759+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-000032 | at: 2026-11-11T00:01:17.401951+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-001015 | at: 2026-11-11T00:10:56.667870+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-002014 | at: 2026-11-11T00:20:30.448375+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

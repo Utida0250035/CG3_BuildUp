@@ -1559,6 +1559,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（9回目）
 - **newIds:** 3（CmpCamera UI 無し、コンポ単体削除、タグ一括付与無し）
 
+## ギャップスキャン tick（SCAN-20261111-003024）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（10回目）
+- **newIds:** 3（Cmp 正射影既定、BuildUp Update 漏れ、stageView ロック固定）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

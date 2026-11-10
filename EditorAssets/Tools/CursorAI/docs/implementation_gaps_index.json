@@ -4944,6 +4944,90 @@
       "suggestedUse": "制作: ロールタグのシーン全域への一括付与",
       "firstSeenAt": "2026-11-11T00:21:00+09:00",
       "lastSeenAt": "2026-11-11T00:21:00+09:00"
+    },
+    "GAP-Entity-CmpCamera-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "Cmp 初期化が正射影行列固定",
+      "scopeKey": "UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19",
+      "primary": "CmpCamera",
+      "related": [
+        "FitCameraPerspectiveToViewport",
+        "SceneBuildUp"
+      ],
+      "summaryShort": "Initialize が Orthographic を既定生成",
+      "summary": "Initialize が Orthographic を既定生成",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "CreateOrthographicMatrix が Initialize 直後（19-20 行）",
+        "BuildUp RT は FitCameraPerspectiveToViewport（SceneBuildUp.cpp:152）",
+        "機能検証で JSON カメラの透視パラメータを試しにくい"
+      ],
+      "suggestedUse": "Debug: ステージビュー透視と Cmp 既定の整合",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T00:31:00+09:00",
+      "lastSeenAt": "2026-11-11T00:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-011": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 610,
+      "frequency": "high",
+      "frequencyBasis": "Update が JSON 実体ベクタのみ",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SceneCameraRig",
+        "Entity::Update"
+      ],
+      "summaryShort": "cameraRig 実体は Update されない",
+      "summary": "cameraRig 実体は Update されない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Update は entities_ の Active のみ（125-128 行）",
+        "EnsureAutoSpawnedCameras の MainCamera は rig 側のみ（SceneCameraRig.cpp:61-62）",
+        "PrepareBeforeDraw 以外の Cmp ロジックが機能検証で欠落しうる"
+      ],
+      "suggestedUse": "Debug: 自動スポーンカメラもランタイム更新対象に",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T00:31:00+09:00",
+      "lastSeenAt": "2026-11-11T00:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-012": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "medium",
+      "frequencyBasis": "BuildUp が stageView ロック固定",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30",
+      "primary": "SceneBuildUp",
+      "related": [
+        "CmpCamera::PrepareBeforeDraw",
+        "AllowDebugCameraControl"
+      ],
+      "summaryShort": "IsStageViewCameraLocked が常時 true",
+      "summary": "IsStageViewCameraLocked が常時 true",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "override で true 固定（SceneBuildUp.h:30）",
+        "PrepareBeforeDraw は stageViewLocked 時 UpdateMatrix のみ（CmpCamera.cpp:29-31）",
+        "EntityEditor は false（SceneEntityEditor.h:32）と非対称で検証シーン差分が大きい"
+      ],
+      "suggestedUse": "Debug: ロック ON/OFF を切り替えて Cmp を試す",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T00:31:00+09:00",
+      "lastSeenAt": "2026-11-11T00:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -5126,7 +5210,10 @@
     "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62": "GAP-Scene-SceneResult-002",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37": "GAP-Editor-EntityEditorUi-017",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707": "GAP-Editor-EntityEditorUi-018",
-    "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001"
+    "UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818": "GAP-Editor-EntityEditorTagCatalog-001",
+    "UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19": "GAP-Entity-CmpCamera-001",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125": "GAP-Scene-SceneBuildUp-011",
+    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30": "GAP-Scene-SceneBuildUp-012"
   },
   "pendings": {},
   "nextSequence": {
@@ -5150,7 +5237,8 @@
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 11,
+    "Scene-SceneBuildUp": 13,
+    "Entity-CmpCamera": 2,
     "Scene-CommandScene": 4,
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
@@ -6171,6 +6259,22 @@
         "GAP-Editor-EntityEditorUi-017",
         "GAP-Editor-EntityEditorUi-018",
         "GAP-Editor-EntityEditorTagCatalog-001"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-003024",
+      "at": "2026-11-11T00:30:49.903825+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Entity-CmpCamera-001",
+        "GAP-Scene-SceneBuildUp-011",
+        "GAP-Scene-SceneBuildUp-012"
       ],
       "updatedIds": [],
       "closedIds": []
