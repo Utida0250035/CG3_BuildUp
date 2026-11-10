@@ -1519,6 +1519,11 @@
 - **newIds:** 3（Draw 内 camera Update、RT SetCamera、BuildPreviewScene のみ）
 - **備考:** ブランチ `cursor/cmp-camera-entity-0f04`（カメラ PR と同ブランチに doc 追記）
 
+## ギャップスキャン tick（SCAN-20261110-231005）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（7回目）
+- **newIds:** 3（IsBgmLoopPaused 未使用、再生秒 API 未使用、遷移中 BGM 維持スキップ）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T07:50:37.543827+09:00
+- **lastIncrementalScanAt:** 2026-11-10T23:06:48.156250+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2934,6 +2934,27 @@
 - firstSeenAt: 2026-11-10T07:11:00+09:00
 - lastSeenAt: 2026-11-10T07:11:00+09:00
 
+### GAP-Scene-SceneGame-009
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: フェード遷移中は BGM 切断検知が止まる
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:158
+- primary: `SceneGame`
+- summary: 【Play】遷移演出中は MaintainSceneBgm を呼ばない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - GetIsExecute 時は Update 冒頭で return（158-160 行）
+  - MaintainSceneBgmIfNeeded はその手前のみ到達
+  - 遷移暗転中にストリーミング切れても再試行しない
+- suggestedUse: プレイ: フェード中も BGM 生存監視
+- firstSeenAt: 2026-11-10T23:11:00+09:00
+- lastSeenAt: 2026-11-10T23:11:00+09:00
+
 ### GAP-Scene-SceneMovie-001
 
 - status: investigating
@@ -2977,6 +2998,27 @@
 - firstSeenAt: 2026-11-10T05:31:00+09:00
 - lastSeenAt: 2026-11-10T05:31:00+09:00
 
+### GAP-Audio-IsBgmLoopPaused-001
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BGM 一時停止状態を UI／ロジックが参照できない
+- scope: UC-Play|Audio|IsBgmLoopPaused|Unwired|Project/Codes/Include/System/PlaySe.h:127
+- primary: `IsBgmLoopPaused`
+- summary: 【Play】IsBgmLoopPaused がシーンから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PlaySe.h に定義のみ（127-129 行）
+  - Pause/Resume API は gap 化済みだが状態照会が無い
+  - シーン側は IsPlaying のみ（MaintainSceneBgmIfNeeded）
+- suggestedUse: プレイ: ポーズメニューと BGM 状態の同期
+- firstSeenAt: 2026-11-10T23:11:00+09:00
+- lastSeenAt: 2026-11-10T23:11:00+09:00
+
 ### GAP-Runtime-MovieCameraTrackLoader-001
 
 - status: open
@@ -3019,6 +3061,27 @@
 - roadmapLink: feature-memos/rim_light.md
 - firstSeenAt: 2026-11-10T01:01:00+09:00
 - lastSeenAt: 2026-11-10T01:01:00+09:00
+
+### GAP-Audio-GetBgmLoopPlaybackSeconds-001
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BGM 再生位置のシーン復元 API が未接続
+- scope: UC-Play|Audio|GetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:132
+- primary: `GetBgmLoopPlaybackSeconds`
+- summary: 【Play】再生秒取得がゲームシーン未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - Get/SetBgmLoopPlaybackSeconds が PlaySe.h のみ（132-145 行）
+  - シーン再入時は毎回 PlayBgmLoop 先頭から（SceneTitle/Game/Result）
+  - 遷移後も期待位置の継続ポリシーなし
+- suggestedUse: プレイ: シーン戻りで BGM 位置を復元
+- firstSeenAt: 2026-11-10T23:11:00+09:00
+- lastSeenAt: 2026-11-10T23:11:00+09:00
 
 ### GAP-Audio-PlaySeLoop-001
 
@@ -3368,7 +3431,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
@@ -3383,6 +3445,7 @@
 - scanId: SCAN-20261110-073017 | at: 2026-11-10T07:31:02.344487+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-074024 | at: 2026-11-10T07:40:43.271911+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-075021 | at: 2026-11-10T07:50:37.543827+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-230538 | at: 2026-11-10T23:06:48.156250+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 
