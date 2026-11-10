@@ -4693,6 +4693,93 @@
       "suggestedUse": "制作: コライダー配列の一括スケール調整",
       "firstSeenAt": "2026-11-10T23:51:00+09:00",
       "lastSeenAt": "2026-11-10T23:51:00+09:00"
+    },
+    "GAP-Scene-SceneCameraRig-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 710,
+      "frequency": "high",
+      "frequencyBasis": "primary 解決が rig 内部 entities のみ",
+      "scopeKey": "UC-Debug|Scene|SceneCameraRig|Contract|Project/Codes/Source/Scene/SceneCameraRig.cpp:76",
+      "primary": "SceneCameraRig",
+      "related": [
+        "SceneBuildUp",
+        "CmpCamera",
+        "EnsureAutoSpawnedCameras"
+      ],
+      "summaryShort": "FindPrimaryCmpCamera が rig 配列のみ走査",
+      "summary": "FindPrimaryCmpCamera が rig 配列のみ走査",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "FindPrimaryCmpCamera は entities_ ベクタのみ（76-88 行）",
+        "SceneBuildUp の JSON 実体は別 vector（GAP-Scene-SceneBuildUp-009）",
+        "機能検証で JSON の camera.main を primary にできない"
+      ],
+      "suggestedUse": "Debug: シーンロード実体と rig primary を統合",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T00:01:00+09:00",
+      "lastSeenAt": "2026-11-11T00:01:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-011": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "high",
+      "frequencyBasis": "プレビュー用カメラ初期化が rig 直操作",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:94",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "previewEntities_",
+        "SetupPreviewCamera",
+        "SceneCameraRig"
+      ],
+      "summaryShort": "SetupPreviewCamera が GetCamera のみ更新",
+      "summary": "SetupPreviewCamera が GetCamera のみ更新",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "EnterScene で SetupPreviewCamera→GetCamera translate（94-98 行）",
+        "previewEntities_ の CmpCamera は行列に反映されない",
+        "機能検証シーンでもエディタプレビューは rig カメラ前提"
+      ],
+      "suggestedUse": "Debug: JSON カメラをプレビュー初期姿勢に反映",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T00:01:00+09:00",
+      "lastSeenAt": "2026-11-11T00:01:00+09:00"
+    },
+    "GAP-Infra-EditorScenePlayRequest-004": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 570,
+      "frequency": "medium",
+      "frequencyBasis": "起動シーン設定が PlayRequest を書くだけ",
+      "scopeKey": "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:161",
+      "primary": "EditorScenePlayRequest",
+      "related": [
+        "TrySetRepositoryStartupScene",
+        "SceneBuildUpRegistry",
+        "launch_config.json"
+      ],
+      "summaryShort": "Set 後に BuildUp 起動が無い",
+      "summary": "Set 後に BuildUp 起動が無い",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "TrySetRepositoryStartupScene が Set のみ（161 行）",
+        "DEVELOPMENT 起動は SceneEntityEditor 固定（CommandScene-003）",
+        "PlayRequest 読み取りは未配線（001〜003 と同系）"
+      ],
+      "suggestedUse": "Debug: 起動シーン JSON からワンアクションで検証ランタイム",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T00:01:00+09:00",
+      "lastSeenAt": "2026-11-11T00:01:00+09:00"
     }
   },
   "scopeToId": {
@@ -4866,7 +4953,10 @@
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:231": "GAP-Scene-SceneGame-010",
     "UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46": "GAP-Editor-EntityEditor-012",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:375": "GAP-Editor-EntityEditorUi-015",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242": "GAP-Editor-EntityEditorUi-016"
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242": "GAP-Editor-EntityEditorUi-016",
+    "UC-Debug|Scene|SceneCameraRig|Contract|Project/Codes/Source/Scene/SceneCameraRig.cpp:76": "GAP-Scene-SceneCameraRig-001",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:94": "GAP-Editor-SceneEntityEditor-011",
+    "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:161": "GAP-Infra-EditorScenePlayRequest-004"
   },
   "pendings": {},
   "nextSequence": {
@@ -4881,7 +4971,8 @@
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 3,
-    "Editor-SceneEntityEditor": 11,
+    "Editor-SceneEntityEditor": 12,
+    "Scene-SceneCameraRig": 2,
     "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
     "Infra-stage_view_camera_tuning": 3,
@@ -4890,7 +4981,7 @@
     "Infra-FeatureTestScene": 2,
     "Scene-SceneBuildUp": 11,
     "Scene-CommandScene": 4,
-    "Infra-EditorScenePlayRequest": 4,
+    "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
     "Scene-SceneGame": 11,
@@ -5859,6 +5950,22 @@
         "GAP-Editor-EntityEditor-012",
         "GAP-Editor-EntityEditorUi-015",
         "GAP-Editor-EntityEditorUi-016"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-000032",
+      "at": "2026-11-11T00:01:17.401951+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-SceneCameraRig-001",
+        "GAP-Editor-SceneEntityEditor-011",
+        "GAP-Infra-EditorScenePlayRequest-004"
       ],
       "updatedIds": [],
       "closedIds": []

@@ -1544,6 +1544,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（8回目）
 - **newIds:** 3（インスタンス複製 API 無し、空追加のみ、HitSphere 単一球編集）
 
+## ギャップスキャン tick（SCAN-20261111-000032）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（9回目）
+- **newIds:** 3（SceneCameraRig 走査範囲、プレビュー rig カメラ、PlayRequest 起動未配線）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
