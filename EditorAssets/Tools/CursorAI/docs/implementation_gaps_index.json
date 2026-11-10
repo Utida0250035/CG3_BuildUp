@@ -5275,6 +5275,89 @@
       "roadmapLink": "feature-memos/entity_camera_components.md",
       "firstSeenAt": "2026-11-11T01:01:00+09:00",
       "lastSeenAt": "2026-11-11T01:01:00+09:00"
+    },
+    "GAP-Audio-SetSeVolume-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 490,
+      "frequency": "low",
+      "frequencyBasis": "ループ SE／BGM 音量 API が未配線",
+      "scopeKey": "UC-Play|Audio|SetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:155",
+      "primary": "SetSeVolume",
+      "related": [
+        "SetBgmLoopVolume",
+        "PlaySeLoop"
+      ],
+      "summaryShort": "SetSeVolume がゲームロジックから未使用",
+      "summary": "SetSeVolume がゲームロジックから未使用",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "SetSeVolume は AudioManager::SetHandleVolume 委譲（155-157 行）",
+        "rg SetSeVolume は PlaySe.h 定義のみ（SetBgmLoopVolume-001 と対）",
+        "ダメージ演出などで SE 音量を下げる契約が無い"
+      ],
+      "suggestedUse": "プレイ: ヒットストップ中の SE ダッキング",
+      "firstSeenAt": "2026-11-11T01:11:00+09:00",
+      "lastSeenAt": "2026-11-11T01:11:00+09:00"
+    },
+    "GAP-Audio-AudioManager-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 610,
+      "frequency": "medium",
+      "frequencyBasis": "一時停止中も IsPlaying が true",
+      "scopeKey": "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:810",
+      "primary": "AudioManager",
+      "related": [
+        "IsPlaying",
+        "MaintainSceneBgmIfNeeded",
+        "PauseSceneBgm"
+      ],
+      "summaryShort": "BGM 一時停止中は復帰判定が誤る",
+      "summary": "BGM 一時停止中は復帰判定が誤る",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "IsPlaying は Paused も true（810-811 行、Audio.h:157 コメント）",
+        "MaintainSceneBgmIfNeeded は IsPlaying のみ見る（SceneGame.cpp:236-238）",
+        "PauseBgmLoop 未配線と組み合わせると永久無音に見える"
+      ],
+      "suggestedUse": "プレイ: ポーズ／OS 割込み後の BGM 再開",
+      "firstSeenAt": "2026-11-11T01:11:00+09:00",
+      "lastSeenAt": "2026-11-11T01:11:00+09:00"
+    },
+    "GAP-Scene-ChangeSceneFade-003": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 630,
+      "frequency": "high",
+      "frequencyBasis": "暗転中に次シーン Enter で BGM が先行",
+      "scopeKey": "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114",
+      "primary": "ChangeSceneFade",
+      "related": [
+        "CommandChangeScene",
+        "EnterScene",
+        "PlayBgmLoop"
+      ],
+      "summaryShort": "フェード中盤で次 BGM が始まる",
+      "summary": "フェード中盤で次 BGM が始まる",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "isSceneChange 到達で ChangeScene 即実行（CommandChangeScene.h:108-114）",
+        "新シーン EnterScene が PlayBgmLoop、旧 Exit が StopBgmLoop",
+        "フェードイン完了前から次 BGM が鳴り二重／不自然切替（ChangeSceneFade-002 と音声面）"
+      ],
+      "suggestedUse": "プレイ: 暗転完了後に BGM 開始を同期",
+      "firstSeenAt": "2026-11-11T01:11:00+09:00",
+      "lastSeenAt": "2026-11-11T01:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -5469,11 +5552,16 @@
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745": "GAP-Editor-EntityEditorUi-019",
     "UC-Debug|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:96": "GAP-Scene-SceneBuildUp-013",
     "UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:422": "GAP-Editor-EntityEditorUi-020",
-    "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:354": "GAP-Editor-EditorSceneRuntime-007"
+    "UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:354": "GAP-Editor-EditorSceneRuntime-007",
+    "UC-Play|Audio|SetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:155": "GAP-Audio-SetSeVolume-001",
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:810": "GAP-Audio-AudioManager-001",
+    "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114": "GAP-Scene-ChangeSceneFade-003"
   },
   "pendings": {},
   "nextSequence": {
-    "Scene-ChangeSceneFade": 3,
+    "Scene-ChangeSceneFade": 4,
+    "Audio-SetSeVolume": 2,
+    "Audio-AudioManager": 2,
     "Scene-GameOrder": 2,
     "Scene-SceneMovie": 9,
     "Runtime-MovieCameraTrackLoader": 3,
@@ -6581,6 +6669,22 @@
         "GAP-Scene-SceneBuildUp-013",
         "GAP-Editor-EntityEditorUi-020",
         "GAP-Editor-EditorSceneRuntime-007"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-011012",
+      "at": "2026-11-11T01:11:11.772098+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1060,
+      "newIds": [
+        "GAP-Audio-SetSeVolume-001",
+        "GAP-Audio-AudioManager-001",
+        "GAP-Scene-ChangeSceneFade-003"
       ],
       "updatedIds": [],
       "closedIds": []

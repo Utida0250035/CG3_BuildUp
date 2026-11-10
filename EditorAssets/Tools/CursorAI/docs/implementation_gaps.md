@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T00:50:53.522256+09:00
+- **lastIncrementalScanAt:** 2026-11-11T01:01:08.244530+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -3004,6 +3004,27 @@
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
 
+### GAP-Scene-ChangeSceneFade-003
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: high
+- frequencyBasis: 暗転中に次シーン Enter で BGM が先行
+- scope: UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114
+- primary: `ChangeSceneFade`
+- summary: 【Play】フェード中盤で次 BGM が始まる
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - isSceneChange 到達で ChangeScene 即実行（CommandChangeScene.h:108-114）
+  - 新シーン EnterScene が PlayBgmLoop、旧 Exit が StopBgmLoop
+  - フェードイン完了前から次 BGM が鳴り二重／不自然切替（ChangeSceneFade-002 と音声面）
+- suggestedUse: プレイ: 暗転完了後に BGM 開始を同期
+- firstSeenAt: 2026-11-11T01:11:00+09:00
+- lastSeenAt: 2026-11-11T01:11:00+09:00
+
 ### GAP-Scene-SceneBuildUp-002
 
 - status: open
@@ -3107,6 +3128,27 @@
 - suggestedUse: プレイ: クリア後リザルトで BGM が止まっても自動復帰
 - firstSeenAt: 2026-11-10T04:51:00+09:00
 - lastSeenAt: 2026-11-10T04:51:00+09:00
+
+### GAP-Audio-AudioManager-001
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 一時停止中も IsPlaying が true
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:810
+- primary: `AudioManager`
+- summary: 【Play】BGM 一時停止中は復帰判定が誤る
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - IsPlaying は Paused も true（810-811 行、Audio.h:157 コメント）
+  - MaintainSceneBgmIfNeeded は IsPlaying のみ見る（SceneGame.cpp:236-238）
+  - PauseBgmLoop 未配線と組み合わせると永久無音に見える
+- suggestedUse: プレイ: ポーズ／OS 割込み後の BGM 再開
+- firstSeenAt: 2026-11-11T01:11:00+09:00
+- lastSeenAt: 2026-11-11T01:11:00+09:00
 
 ### GAP-Scene-Scene-002
 
@@ -3726,6 +3768,27 @@
 - firstSeenAt: 2026-11-10T23:41:00+09:00
 - lastSeenAt: 2026-11-10T23:41:00+09:00
 
+### GAP-Audio-SetSeVolume-001
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: ループ SE／BGM 音量 API が未配線
+- scope: UC-Play|Audio|SetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:155
+- primary: `SetSeVolume`
+- summary: 【Play】SetSeVolume がゲームロジックから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetSeVolume は AudioManager::SetHandleVolume 委譲（155-157 行）
+  - rg SetSeVolume は PlaySe.h 定義のみ（SetBgmLoopVolume-001 と対）
+  - ダメージ演出などで SE 音量を下げる契約が無い
+- suggestedUse: プレイ: ヒットストップ中の SE ダッキング
+- firstSeenAt: 2026-11-11T01:11:00+09:00
+- lastSeenAt: 2026-11-11T01:11:00+09:00
+
 ### GAP-Audio-GetSeVolume-001
 
 - status: open
@@ -4137,7 +4200,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-073017 | at: 2026-11-10T07:31:02.344487+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-074024 | at: 2026-11-10T07:40:43.271911+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-075021 | at: 2026-11-10T07:50:37.543827+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-230538 | at: 2026-11-10T23:06:48.156250+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
@@ -4152,6 +4214,7 @@
 - scanId: SCAN-20261111-003024 | at: 2026-11-11T00:30:49.903825+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-004014 | at: 2026-11-11T00:40:44.205681+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-005013 | at: 2026-11-11T00:50:53.522256+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-010025 | at: 2026-11-11T01:01:08.244530+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 
 ---
 

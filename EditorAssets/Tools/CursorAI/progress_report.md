@@ -1579,6 +1579,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（11回目）
 - **newIds:** 3（BuildUp ロード失敗ダミー、起動パス試行 UI 無し、BuildEntities に MainCamera 無し）
 
+## ギャップスキャン tick（SCAN-20261111-011012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（11回目）
+- **newIds:** 3（SetSeVolume 未使用、IsPlaying+Paused、フェード中盤で次 BGM）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
