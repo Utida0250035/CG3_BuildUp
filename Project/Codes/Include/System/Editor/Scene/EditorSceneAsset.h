@@ -24,7 +24,21 @@ std::string SceneDisplayNameFromPath(const std::string &jsonFilePath);
 /// Scenes フォルダ内のシーン JSON を削除する（成功で true）
 bool TryDeleteSceneJsonFile(const std::string &jsonFilePath);
 
-/// 実行シーン遷移用の JSON パス（SceneEntityEditor → Runtime）
+/// スタートアップシーン設定（launch_config.json）
+struct LaunchConfig {
+  std::string startupScenePath{};
+};
+
+bool TryLoadLaunchConfig(LaunchConfig &outConfig);
+bool TrySaveLaunchConfig(const LaunchConfig &config);
+
+/// シーン JSON を検証し launch_config.json に書き込む（リポジトリ共有用）
+bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath);
+
+/// 起動時に使うシーンパス（未設定・欠損時は空文字）
+std::string ResolveStartupScenePath();
+
+/// 実行シーン遷移用の JSON パス（メモリ；永続化は LaunchConfig）
 class EditorScenePlayRequest {
 public:
   static EditorScenePlayRequest &Instance();

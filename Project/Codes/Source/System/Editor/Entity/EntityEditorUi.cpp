@@ -404,6 +404,26 @@ void EntityEditor::DrawProjectPanel() {
     ui_.requestSaveToDisk = true;
     ui_.requestPlayRuntimeScene = true;
   }
+  if (ImGui::Button("起動シーンに設定")) {
+    const std::string targetPath = ui_.jsonFilePath.empty()
+                                       ? ui_.selectedScenePath
+                                       : ui_.jsonFilePath;
+    if (!targetPath.empty()) {
+      SaveToJsonPath(targetPath);
+    }
+    if (Atrum::Editor::Scene::TrySetRepositoryStartupScene(targetPath)) {
+      ui_.importStatusMessage =
+          "Release 起動シーンを launch_config.json に保存しました";
+    } else {
+      ui_.importStatusMessage =
+          "起動シーンの保存に失敗しました（パスと JSON を確認してください）";
+    }
+  }
+  const std::string startupPath =
+      Atrum::Editor::Scene::ResolveStartupScenePath();
+  if (!startupPath.empty()) {
+    ImGui::TextDisabled("Release 起動: %s", startupPath.c_str());
+  }
   ImGui::Separator();
 
   ImGui::TextUnformatted("ファイルドロップ（obj / png 等）");

@@ -109,7 +109,8 @@
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
+xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -148,7 +149,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
+xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -188,7 +190,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
+xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>

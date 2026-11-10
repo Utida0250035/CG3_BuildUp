@@ -1506,3 +1506,16 @@
   - 用途: 全シーンで主カメラをエンティティ化し `GetCamera()` を統一
   - 使用場面: ランタイム描画、StageView 適用、将来の複数カメラ
   - 仕様: 自動スポーン、`camera.main` タグ、描画直前行列更新
+
+## Release スタートアップシーン（launch_config.json）
+
+- **実装:** `EditorAssets/launch_config.json`・`ResolveStartupScenePath`・Release `CommandScene` → `SceneBuildUp`・エディタ「起動シーンに設定」・Post-build で `EditorAssets` 同梱
+- **ビルド:** Development / Release x64 成功（エージェント環境）
+- **手動確認:** Release exe 起動で JSON シーン表示、F1 でタイトル復帰は未確認
+
+## 推測した用途（§6.4）
+
+- **launch_config / SceneBuildUp 起動**
+  - 用途: 配布ビルドでエディタ作成シーンを本番同等パスで試す
+  - 使用場面: 制作物のスモークテスト、デモ配布、CI 用プレイ可能ビルド
+  - 仕様: パスは exe 隣 `../EditorAssets` 基準、欠損時はタイトルフォールバック

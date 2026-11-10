@@ -1,7 +1,10 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
+#include "System/Editor/EditorAssetsPaths.h"
 #include <algorithm>
+#include <fstream>
 #include <filesystem>
+#include <nlohmann/json.hpp>
 #include <system_error>
 
 namespace Atrum::Editor::Scene {
@@ -91,6 +94,84 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   }
 
   return fs::remove(absoluteTarget, ec) && !ec;
+}
+
+bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
+  namespace fs = std::filesystem;
+  outConfig = {};
+  const fs::path configPath = EditorAssets::kLaunchConfigPath;
+  if (!fs::exists(configPath)) {
+    return false;
+  }
+
+  std::ifstream file(configPath);
+  if (!file.is_open()) {
+    return false;
+  }
+
+  nlohmann::json json{};
+  try {
+    file >> json;
+  } catch (...) {
+    return false;
+  }
+
+  if (json.contains("startupScenePath") &&
+      json.at("startupScenePath").is_string()) {
+    outConfig.startupScenePath = json.at("startupScenePath").get<std::string>();
+  }
+  return !outConfig.startupScenePath.empty();
+}
+
+bool TrySaveLaunchConfig(const LaunchConfig &config) {
+  if (config.startupScenePath.empty()) {
+    return false;
+  }
+
+  namespace fs = std::filesystem;
+  const fs::path configPath = EditorAssets::kLaunchConfigPath;
+  std::error_code ec{};
+  fs::create_directories(configPath.parent_path(), ec);
+
+  nlohmann::json json{};
+  json["startupScenePath"] = config.startupScenePath;
+
+  std::ofstream file(configPath);
+  if (!file.is_open()) {
+    return false;
+  }
+  file << json.dump(4);
+  file.flush();
+  return file.good();
+}
+
+bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath) {
+  if (sceneJsonPath.empty()) {
+    return false;
+  }
+  namespace fs = std::filesystem;
+  if (!fs::exists(sceneJsonPath) || fs::path(sceneJsonPath).extension() != ".json") {
+    return false;
+  }
+  LaunchConfig config{};
+  config.startupScenePath = sceneJsonPath;
+  if (!TrySaveLaunchConfig(config)) {
+    return false;
+  }
+  EditorScenePlayRequest::Instance().Set(sceneJsonPath);
+  return true;
+}
+
+std::string ResolveStartupScenePath() {
+  LaunchConfig config{};
+  if (!TryLoadLaunchConfig(config)) {
+    return {};
+  }
+  namespace fs = std::filesystem;
+  if (!fs::exists(config.startupScenePath)) {
+    return {};
+  }
+  return config.startupScenePath;
 }
 
 EditorScenePlayRequest &EditorScenePlayRequest::Instance() {
