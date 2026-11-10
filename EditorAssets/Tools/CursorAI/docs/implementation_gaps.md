@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T01:11:11.772098+09:00
+- **lastIncrementalScanAt:** 2026-11-11T01:20:47.808609+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -2168,6 +2168,28 @@
 - firstSeenAt: 2026-11-10T04:41:00+09:00
 - lastSeenAt: 2026-11-10T04:41:00+09:00
 
+### GAP-Scene-CommandScene-004
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動シーン未設定時に Title 固定
+- scope: UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:25
+- primary: `CommandScene`
+- summary: 【Debug】startup 空なら BuildUp ではなく Title
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Release 分岐で ResolveStartupScenePath 空時 sceneNow_=SceneTitle（25-27 行）
+  - DebugPlayArea テンプレや FeatureTestScene へのフォールバック無し
+  - launch_config 欠損時も機能検証 JSON へ直行できない
+- suggestedUse: Debug: 未設定時も既定 Feature シーンを BuildUp
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T01:31:00+09:00
+- lastSeenAt: 2026-11-11T01:31:00+09:00
+
 ### GAP-Editor-EntityEditor-011
 
 - status: open
@@ -2233,6 +2255,28 @@
 - firstSeenAt: 2026-11-10T07:01:00+09:00
 - lastSeenAt: 2026-11-10T07:01:00+09:00
 
+### GAP-Scene-SceneBuildUp-014
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Enter 直後に戦闘ステージカメラ固定
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:110
+- primary: `SceneBuildUp`
+- summary: 【Debug】ロード直後 SetupStageViewCamera を呼ぶ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildEntities 直後に SetupStageViewCamera（110 行）
+  - PrepareCamerasForDraw 前に rig カメラへ戦闘ポーズ適用
+  - DrawRuntimeViewContent でも再適用（147 行）で JSON Cmp 試験と二重
+- suggestedUse: Debug: 機能検証 Enter でカメラを JSON 主導に
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T01:31:00+09:00
+- lastSeenAt: 2026-11-11T01:31:00+09:00
+
 ### GAP-Editor-SceneEntityEditor-011
 
 - status: open
@@ -2254,6 +2298,28 @@
 - roadmapLink: feature-memos/entity_camera_components.md
 - firstSeenAt: 2026-11-11T00:01:00+09:00
 - lastSeenAt: 2026-11-11T00:01:00+09:00
+
+### GAP-Infra-launch_config-001
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: 共有 launch_config が汎用 Scene_0 固定
+- scope: UC-Debug|Infra|launch_config|MissingData|EditorAssets/launch_config.json:2
+- primary: `launch_config`
+- summary: 【Debug】startup が Feature 検証シーンではない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - startupScenePath は ../EditorAssets/Scenes/Scene_0.json（2 行）
+  - DebugPlayArea/template_test_play_area は未参照
+  - Release BuildUp 起動がエディタ新規シーン相当になる
+- suggestedUse: Debug: リポジトリ既定を最小検証 JSON に
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T01:31:00+09:00
+- lastSeenAt: 2026-11-11T01:31:00+09:00
 
 ### GAP-Scene-SceneBuildUp-010
 
@@ -4263,7 +4329,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-075021 | at: 2026-11-10T07:50:37.543827+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-230538 | at: 2026-11-10T23:06:48.156250+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-231005 | at: 2026-11-10T23:10:45.414301+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-232021 | at: 2026-11-10T23:20:52.299988+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
@@ -4278,6 +4343,7 @@
 - scanId: SCAN-20261111-005013 | at: 2026-11-11T00:50:53.522256+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-010025 | at: 2026-11-11T01:01:08.244530+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-011012 | at: 2026-11-11T01:11:11.772098+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

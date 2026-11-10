@@ -1589,6 +1589,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（11回目）
 - **newIds:** 3（シーン一覧二段、プレハブ常時新規、Cmp 型変更で params リセット）
 
+## ギャップスキャン tick（SCAN-20261111-013013）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（12回目）
+- **newIds:** 3（startup 空で Title、launch_config が Scene_0、Enter で SetupStageViewCamera）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

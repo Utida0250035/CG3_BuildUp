@@ -5440,6 +5440,93 @@
       "suggestedUse": "制作: 型差し替え時に共通キーを温存",
       "firstSeenAt": "2026-11-11T01:21:00+09:00",
       "lastSeenAt": "2026-11-11T01:21:00+09:00"
+    },
+    "GAP-Scene-CommandScene-004": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 600,
+      "frequency": "medium",
+      "frequencyBasis": "起動シーン未設定時に Title 固定",
+      "scopeKey": "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:25",
+      "primary": "CommandScene",
+      "related": [
+        "ResolveStartupScenePath",
+        "SceneTitle",
+        "SceneBuildUpRegistry"
+      ],
+      "summaryShort": "startup 空なら BuildUp ではなく Title",
+      "summary": "startup 空なら BuildUp ではなく Title",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "Release 分岐で ResolveStartupScenePath 空時 sceneNow_=SceneTitle（25-27 行）",
+        "DebugPlayArea テンプレや FeatureTestScene へのフォールバック無し",
+        "launch_config 欠損時も機能検証 JSON へ直行できない"
+      ],
+      "suggestedUse": "Debug: 未設定時も既定 Feature シーンを BuildUp",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T01:31:00+09:00",
+      "lastSeenAt": "2026-11-11T01:31:00+09:00"
+    },
+    "GAP-Infra-launch_config-001": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "high",
+      "frequencyBasis": "共有 launch_config が汎用 Scene_0 固定",
+      "scopeKey": "UC-Debug|Infra|launch_config|MissingData|EditorAssets/launch_config.json:2",
+      "primary": "launch_config",
+      "related": [
+        "ResolveStartupScenePath",
+        "template_test_play_area",
+        "FeatureTestScene"
+      ],
+      "summaryShort": "startup が Feature 検証シーンではない",
+      "summary": "startup が Feature 検証シーンではない",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "startupScenePath は ../EditorAssets/Scenes/Scene_0.json（2 行）",
+        "DebugPlayArea/template_test_play_area は未参照",
+        "Release BuildUp 起動がエディタ新規シーン相当になる"
+      ],
+      "suggestedUse": "Debug: リポジトリ既定を最小検証 JSON に",
+      "roadmapLink": "feature-memos/debug_test_play_area.md",
+      "firstSeenAt": "2026-11-11T01:31:00+09:00",
+      "lastSeenAt": "2026-11-11T01:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-014": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 590,
+      "frequency": "high",
+      "frequencyBasis": "Enter 直後に戦闘ステージカメラ固定",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:110",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SetupStageViewCamera",
+        "SceneCameraRig",
+        "EnterScene"
+      ],
+      "summaryShort": "ロード直後 SetupStageViewCamera を呼ぶ",
+      "summary": "ロード直後 SetupStageViewCamera を呼ぶ",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "BuildEntities 直後に SetupStageViewCamera（110 行）",
+        "PrepareCamerasForDraw 前に rig カメラへ戦闘ポーズ適用",
+        "DrawRuntimeViewContent でも再適用（147 行）で JSON Cmp 試験と二重"
+      ],
+      "suggestedUse": "Debug: 機能検証 Enter でカメラを JSON 主導に",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-11T01:31:00+09:00",
+      "lastSeenAt": "2026-11-11T01:31:00+09:00"
     }
   },
   "scopeToId": {
@@ -5640,7 +5727,10 @@
     "UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114": "GAP-Scene-ChangeSceneFade-003",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:454": "GAP-Editor-EntityEditorUi-021",
     "UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:478": "GAP-Editor-PrefabAsset-004",
-    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-022"
+    "UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-022",
+    "UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:25": "GAP-Scene-CommandScene-004",
+    "UC-Debug|Infra|launch_config|MissingData|EditorAssets/launch_config.json:2": "GAP-Infra-launch_config-001",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:110": "GAP-Scene-SceneBuildUp-014"
   },
   "pendings": {},
   "nextSequence": {
@@ -5667,10 +5757,11 @@
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 14,
+    "Scene-SceneBuildUp": 15,
     "Editor-EditorSceneRuntime": 7,
     "Entity-CmpCamera": 2,
-    "Scene-CommandScene": 4,
+    "Scene-CommandScene": 5,
+    "Infra-launch_config": 2,
     "Infra-EditorScenePlayRequest": 5,
     "Infra-combat_bounds_sandbox": 2,
     "Scene-CommandChangeScene": 2,
@@ -6786,6 +6877,22 @@
         "GAP-Editor-EntityEditorUi-021",
         "GAP-Editor-PrefabAsset-004",
         "GAP-Editor-EntityEditorUi-022"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-013013",
+      "at": "2026-11-11T01:31:16.625329+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Debug",
+      "scenarioId": "DBG-FeatureScene-001",
+      "areaHint": "Scene",
+      "priorityScore": 1050,
+      "newIds": [
+        "GAP-Scene-CommandScene-004",
+        "GAP-Infra-launch_config-001",
+        "GAP-Scene-SceneBuildUp-014"
       ],
       "updatedIds": [],
       "closedIds": []
