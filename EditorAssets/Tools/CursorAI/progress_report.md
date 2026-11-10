@@ -1599,6 +1599,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（12回目）
 - **newIds:** 3（SetSeFrequency 未使用、GameOrder 音声未管理、イントロ中 Maintain）
 
+## ギャップスキャン tick（SCAN-20261111-015018）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（12回目）
+- **newIds:** 3（Dock 初回固定、直近ドロップ 1 Cmp、新規即保存）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

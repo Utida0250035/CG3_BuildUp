@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T01:31:16.625329+09:00
+- **lastIncrementalScanAt:** 2026-11-11T01:40:52.216206+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1341,6 +1341,27 @@
 - firstSeenAt: 2026-11-10T23:21:00+09:00
 - lastSeenAt: 2026-11-10T23:21:00+09:00
 
+### GAP-Editor-EntityEditorUi-023
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: インポート適用が 1 スロットずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:136
+- primary: `EntityEditorUi`
+- summary: 【Authoring】直近ドロップ適用が選択中 Cmp のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「直近ドロップを assetPath に適用」は CmpEditorAssetPath 編集中のみ（136-139 行）
+  - 複数 mesh／billboard スロットへの一括適用無し
+  - EditorImportedAsset-002 と合わせてドロップ反復が冗長
+- suggestedUse: 制作: 直近インポートを複数 Cmp へ一括セット
+- firstSeenAt: 2026-11-11T01:51:00+09:00
+- lastSeenAt: 2026-11-11T01:51:00+09:00
+
 ### GAP-Editor-EntityEditorUi-012
 
 - status: open
@@ -1508,6 +1529,48 @@
 - suggestedUse: 制作: シーン一覧のダブルクリック／即開で往復短縮
 - firstSeenAt: 2026-11-11T01:21:00+09:00
 - lastSeenAt: 2026-11-11T01:21:00+09:00
+
+### GAP-Editor-EntityEditor-015
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 新規シーンが即ディスク保存
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:230
+- primary: `EntityEditor`
+- summary: 【Authoring】新規作成が requestSaveToDisk 必須
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - CreateNewSceneFile 末尾で requestSaveToDisk=true（230 行）
+  - メモリ上ドラフトのまま試す経路無し
+  - 試行錯誤のたびに Scenes 配下に JSON が増える
+- suggestedUse: 制作: 保存前に複数案をメモリで試す
+- firstSeenAt: 2026-11-11T01:51:00+09:00
+- lastSeenAt: 2026-11-11T01:51:00+09:00
+
+### GAP-Editor-EditorEntityWorkbench-003
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: Dock 既定レイアウトが初回固定
+- scope: UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:211
+- primary: `EditorEntityWorkbench`
+- summary: 【Authoring】defaultLayoutBuilt が static で一回切り
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - static defaultLayoutBuilt は初回のみ DockBuilder（211-240 行）
+  - レイアウトリセット／プリセット保存 UI 無し
+  - パネル配置を戻すには imgui.ini 手削除依存
+- suggestedUse: 制作: 作業切替で Dock を既定に戻す
+- firstSeenAt: 2026-11-11T01:51:00+09:00
+- lastSeenAt: 2026-11-11T01:51:00+09:00
 
 #### UC-Debug
 
@@ -4392,7 +4455,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-231005 | at: 2026-11-10T23:10:45.414301+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-232021 | at: 2026-11-10T23:20:52.299988+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-233005 | at: 2026-11-10T23:31:09.917190+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-234025 | at: 2026-11-10T23:42:41.699471+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -4407,6 +4469,7 @@
 - scanId: SCAN-20261111-011012 | at: 2026-11-11T01:11:11.772098+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-013013 | at: 2026-11-11T01:31:16.625329+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-014014 | at: 2026-11-11T01:40:52.216206+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 
