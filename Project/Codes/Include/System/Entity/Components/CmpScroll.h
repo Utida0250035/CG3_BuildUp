@@ -14,7 +14,7 @@ private:
 public:
   constexpr UpdCmpGroup UpdGroup() const override { return UpdCmpGroup::ANIMATION; }
 
-  void ResolveDependence() override { frameDeltaTime_ = FrameDeltaTime::Instance(); }
+  void ResolveDependence() override { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
 
   void Update() override {
     Math::Vector3 &translate = RefOwner().RefTransform().translate;

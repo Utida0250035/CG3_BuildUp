@@ -9,7 +9,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     return 1;
   }
 
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   engine->Initialize("LE2A_03_ウチダ_コウタ_ジャンパリィ");
   engine->SetFps(60);
 
@@ -23,7 +23,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
   }
 
   engine->Finalize();
-  Atrum::Engine::Destroy();
+  Atrum::AtrumEngine::Destroy();
 
   return 0;
 }

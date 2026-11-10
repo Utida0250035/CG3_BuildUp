@@ -15,7 +15,7 @@ float OrbitRadiusFromTranslate(const Math::Vector3 &translate) {
 
 } // namespace
 
-void CmpOrbiter::ResolveDependence() { frameDeltaTime_ = FrameDeltaTime::Instance(); }
+void CmpOrbiter::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
 
 void CmpOrbiter::SetRotateSpeed(const float rotateSpeed) {
   rotateSpeed_ = rotateSpeed;

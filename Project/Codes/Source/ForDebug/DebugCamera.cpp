@@ -1,5 +1,6 @@
 #include "Engine/Alias/DebugAlias.h"
 
+#include "Engine/EngineAccess.h"
 #include "ForDebug/Log.h"
 #include "ForDebug/DebugCamera.h"
 #include "Input/PlayInput.h"
@@ -24,7 +25,7 @@ namespace Atrum::Debug {
 
 #ifdef DEVELOPMENT
 
-		input_ = I::PlayInput::Instance();
+		input_ = ::Atrum::EnginePlayInput();
 
 #endif
 

@@ -17,7 +17,7 @@ void TimedStageViewCameraController::TickTiming() {
     return;
   }
 
-  elapsedSeconds_ += FrameDeltaTime::Instance()->GetDeltaTime();
+  elapsedSeconds_ += ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 }
 
 float TimedStageViewCameraController::GetTimedProgress01() const {

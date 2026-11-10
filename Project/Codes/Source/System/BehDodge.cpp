@@ -34,7 +34,7 @@ void BehDodge::Finalize() { cmpLhRigidBody_->RefVelocity() = {}; }
 void BehDodge::ResolveDependence() {
   cmpDirection_ = RefGrandOwner().GetDataCmp<CmpDirection>();
   cmpLhRigidBody_ = RefGrandOwner().GetUpdCmp<CmpLhRigidBody>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 } // namespace Atrum

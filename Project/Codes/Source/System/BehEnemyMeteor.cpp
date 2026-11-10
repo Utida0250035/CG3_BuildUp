@@ -19,7 +19,7 @@ namespace Atrum {
 void BehEnemyMeteor::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void BehEnemyMeteor::Initialize() {

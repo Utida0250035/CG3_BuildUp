@@ -38,7 +38,7 @@ Math::Vector3 SnapToBattlePlane(const Math::Vector3 &worldPosition,
 void BehEnemyBulletCurtainRadialFan::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void BehEnemyBulletCurtainRadialFan::BeginTelegraph() {

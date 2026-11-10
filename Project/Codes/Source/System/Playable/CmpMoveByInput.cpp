@@ -47,7 +47,7 @@ namespace Atrum::Player {
 	void CmpMoveByInput2D::ResolveDependence() {
 		cmpInput_ = CmpInput::Instance();
 		cmpInput_->ResolveDependence();
-		frameDeltaTime_ = FrameDeltaTime::Instance();
+		frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 
 		cmpDirection_ = RefOwner().GetDataCmp<CmpDirection>();
 		if (CmpParry* cmpParry = RefOwner().GetDataCmp<CmpParry>();

@@ -42,7 +42,7 @@ void MovieCameraController::Update() {
     return;
   }
 
-  playbackTimeSeconds_ += FrameDeltaTime::Instance()->GetDeltaTime();
+  playbackTimeSeconds_ += ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
   ApplyPoseAtTime(playbackTimeSeconds_);
 
   if (playbackTimeSeconds_ >= totalDurationSeconds_) {

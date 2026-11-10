@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio/Audio.h"
+#include "Engine/AtrumEngine.h"
 #include <cstddef>
 #include <filesystem>
 #include <string>
@@ -16,7 +17,7 @@ inline size_t GetOrLoadSeIndex(const std::string &path) {
   }
 
   static std::unordered_map<std::string, size_t> cache;
-  Audio::AudioManager *audio = Audio::Manager::Instance();
+  Audio::AudioManager *audio = ::Atrum::EngineAudioManager();
 
   const auto found = cache.find(path);
   if (found == cache.end()) {
@@ -50,7 +51,7 @@ inline void PlaySe(const std::string &path) {
     return;
   }
 
-  Audio::Manager::Instance()->Play(index);
+  ::Atrum::EngineAudioManager()->Play(index);
 }
 
 /// Assets / Resources など複数候補から存在する SE を再生
@@ -90,7 +91,7 @@ inline Audio::Handle PlaySeLoop(const std::string &path) {
     return {};
   }
 
-  return Audio::Manager::Instance()->Play(index, true);
+  return ::Atrum::EngineAudioManager()->Play(index, true);
 }
 
 inline void StopSe(const Audio::Handle &handle) {
@@ -99,38 +100,38 @@ inline void StopSe(const Audio::Handle &handle) {
     return;
   }
 
-  Audio::Manager::Instance()->Stop(handle);
+  ::Atrum::EngineAudioManager()->Stop(handle);
 }
 
 /// シーン BGM を停止（ハンドル不一致で残ったストリーミングボイスも解放）
 inline void StopBgmLoop(const Audio::Handle &handle) {
   StopSe(handle);
-  Audio::Manager::Instance()->StopAllStreamingVoices();
-  Audio::Manager::Instance()->StopAllLoopingShortVoices();
+  ::Atrum::EngineAudioManager()->StopAllStreamingVoices();
+  ::Atrum::EngineAudioManager()->StopAllLoopingShortVoices();
 }
 
 inline void PauseBgmLoop(const Audio::Handle &handle) {
   if (!handle.isSuccess) {
     return;
   }
-  Audio::Manager::Instance()->PauseSceneBgm(handle);
+  ::Atrum::EngineAudioManager()->PauseSceneBgm(handle);
 }
 
 inline void ResumeBgmLoop(const Audio::Handle &handle) {
   if (!handle.isSuccess) {
     return;
   }
-  Audio::Manager::Instance()->ResumeSceneBgm(handle);
+  ::Atrum::EngineAudioManager()->ResumeSceneBgm(handle);
 }
 
 inline bool IsBgmLoopPaused(const Audio::Handle &handle) {
-  return Audio::Manager::Instance()->IsSceneBgmPaused(handle);
+  return ::Atrum::EngineAudioManager()->IsSceneBgmPaused(handle);
 }
 
 /// 失敗時は負値
 inline float GetBgmLoopPlaybackSeconds(const Audio::Handle &handle) {
   float seconds = -1.0f;
-  if (Audio::Manager::Instance()->GetSceneBgmPlaybackSeconds(handle,
+  if (::Atrum::EngineAudioManager()->GetSceneBgmPlaybackSeconds(handle,
                                                                seconds)) {
     return seconds;
   }
@@ -139,24 +140,24 @@ inline float GetBgmLoopPlaybackSeconds(const Audio::Handle &handle) {
 
 inline bool SetBgmLoopPlaybackSeconds(const Audio::Handle &handle,
                                       float seconds) {
-  return Audio::Manager::Instance()->SetSceneBgmPlaybackSeconds(handle,
+  return ::Atrum::EngineAudioManager()->SetSceneBgmPlaybackSeconds(handle,
                                                                 seconds);
 }
 
 inline bool SetSeFrequencyRatio(const Audio::Handle &handle, float ratio) {
-  return Audio::Manager::Instance()->SetHandleFrequencyRatio(handle, ratio);
+  return ::Atrum::EngineAudioManager()->SetHandleFrequencyRatio(handle, ratio);
 }
 
 inline bool GetSeFrequencyRatio(const Audio::Handle &handle, float &outRatio) {
-  return Audio::Manager::Instance()->GetHandleFrequencyRatio(handle, outRatio);
+  return ::Atrum::EngineAudioManager()->GetHandleFrequencyRatio(handle, outRatio);
 }
 
 inline bool SetSeVolume(const Audio::Handle &handle, float volume) {
-  return Audio::Manager::Instance()->SetHandleVolume(handle, volume);
+  return ::Atrum::EngineAudioManager()->SetHandleVolume(handle, volume);
 }
 
 inline bool GetSeVolume(const Audio::Handle &handle, float &outVolume) {
-  return Audio::Manager::Instance()->GetHandleVolume(handle, outVolume);
+  return ::Atrum::EngineAudioManager()->GetHandleVolume(handle, outVolume);
 }
 
 inline bool SetBgmLoopPitch(const Audio::Handle &handle, float pitchRatio) {
@@ -180,7 +181,7 @@ inline Audio::Handle PlayBgmLoop(
     return {};
   }
 
-  Audio::AudioManager *audio = Audio::Manager::Instance();
+  Audio::AudioManager *audio = ::Atrum::EngineAudioManager();
   Audio::Handle handle = audio->PlaySceneBgm(index);
   if (!handle.isSuccess) {
     // デコーダ／ボイス状態の不整合時に 1 度だけ再試行

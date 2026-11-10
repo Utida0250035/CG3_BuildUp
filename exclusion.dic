@@ -73,3 +73,11 @@ srgbi
 texconv
 UNORM
 xyzw
+pendings
+unwired
+xcopy
+NDEBUG
+slnx
+nullptr
+Manip
+ifstream

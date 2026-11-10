@@ -33,6 +33,13 @@
 #include "Math/Vector2.h"
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
+#include "Audio/Audio.h"
+#include "Engine/Renderer/Draw.h"
+#include "Engine/Renderer/DrawSprite.h"
+#include "Engine/Resource/ModelStorage.h"
+#include "Engine/Resource/TextureStorage.h"
+#include "Input/DirectInput.h"
+#include "Input/PlayInput.h"
 #include "System/DeltaTime.h"
 #include <array>
 #include <cstdint>
@@ -154,35 +161,33 @@ namespace Atrum {
 
 		/* 時間差分 */
 
-		// フレーム間の記録
-		FrameDeltaTime* frameDeltaTime_ = nullptr;
+		// フレーム間の記録（Engine::Process が更新）
+		std::unique_ptr<FrameDeltaTime> frameDeltaTime_;
 
 		// fps調整用
-		std::unique_ptr<DeltaTime> deltaTime_ = nullptr;
+		std::unique_ptr<DeltaTime> deltaTime_;
 
 		/* プレイヤー入力 */
 
-		// DirectInput
-		Input::DirectInput* directInput_ = nullptr;
+		std::unique_ptr<Input::DirectInput> directInput_;
 
-		// SDL2入力
-		Input::PlayInput* playInput_ = nullptr;
+		std::unique_ptr<Input::PlayInput> playInput_;
 
 		/* アセットストレージ */
 
-		ModelStorage* pModelStorage_ = nullptr;
+		std::unique_ptr<TextureStorage> textureStorage_;
 
-		TextureStorage* pTextureStorage_ = nullptr;
+		std::unique_ptr<ModelStorage> modelStorage_;
 
 		/* 描画 */
 
-		Draw* pDraw_ = nullptr;
+		std::unique_ptr<Draw> draw_;
 
-		DrawSprite* pDrawSprite_ = nullptr;
+		std::unique_ptr<DrawSprite> drawSprite_;
 
 		/* 音源再生 */
 
-		Audio::AudioManager* audio_ = nullptr;
+		std::unique_ptr<Audio::AudioManager> audioManager_;
 
 		/**/
 
@@ -547,6 +552,38 @@ namespace Atrum {
 
 		/// Object3D 描画用のヒープ・PSO・VB/IB・ルート CBV（PreDraw 後半と同等）
 		void RebindObject3dDrawBindings();
+
+		FrameDeltaTime *GetFrameDeltaTime() { return frameDeltaTime_.get(); }
+		const FrameDeltaTime *GetFrameDeltaTime() const {
+			return frameDeltaTime_.get();
+		}
+
+		Input::PlayInput *GetPlayInput() { return playInput_.get(); }
+		const Input::PlayInput *GetPlayInput() const { return playInput_.get(); }
+
+		Input::DirectInput *GetDirectInput() { return directInput_.get(); }
+		const Input::DirectInput *GetDirectInput() const {
+			return directInput_.get();
+		}
+
+		TextureStorage *GetTextureStorage() { return textureStorage_.get(); }
+		const TextureStorage *GetTextureStorage() const {
+			return textureStorage_.get();
+		}
+
+		ModelStorage *GetModelStorage() { return modelStorage_.get(); }
+		const ModelStorage *GetModelStorage() const { return modelStorage_.get(); }
+
+		Draw *GetDraw() { return draw_.get(); }
+		const Draw *GetDraw() const { return draw_.get(); }
+
+		DrawSprite *GetDrawSprite() { return drawSprite_.get(); }
+		const DrawSprite *GetDrawSprite() const { return drawSprite_.get(); }
+
+		Audio::AudioManager *GetAudioManager() { return audioManager_.get(); }
+		const Audio::AudioManager *GetAudioManager() const {
+			return audioManager_.get();
+		}
 
 		void SetCamera(Camera* camera);
 

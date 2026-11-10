@@ -19,10 +19,6 @@ namespace Atrum::Audio {
 		~AudioManager();
 
 	private:
-		AudioManager() = default;
-
-		static std::unique_ptr<AudioManager> instance_;
-
 		template<typename T>
 		using ComPtr = Microsoft::WRL::ComPtr<T>;
 
@@ -117,11 +113,11 @@ namespace Atrum::Audio {
 
 		bool SeekSceneBgmStreamingVoice(StreamingSourceVoice& voice, float seconds);
 
+	public:
+
 		struct Token {
 			explicit Token() = default;
 		};
-
-	public:
 
 		explicit AudioManager(Token) {}
 
@@ -185,28 +181,6 @@ namespace Atrum::Audio {
 #if defined(DEVELOPMENT)
 		void CollectStreamingMemoryDebug(StreamingMemoryDebugSnapshot& outSnapshot) const;
 #endif
-
-		static AudioManager* Instance() {
-
-			if (!instance_) {
-
-				instance_ = std::make_unique<AudioManager>(Token{});
-
-			}
-
-			return instance_.get();
-
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-
-				instance_.reset();
-
-			}
-
-		}
 
 		AudioManager(const AudioManager& source) = delete;
 		AudioManager operator=(const AudioManager& source) = delete;

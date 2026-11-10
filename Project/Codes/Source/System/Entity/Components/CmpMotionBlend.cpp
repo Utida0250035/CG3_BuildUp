@@ -30,7 +30,7 @@ void CmpMotionBlend::Update() {
     return;
   }
 
-  const float delta = FrameDeltaTime::Instance()->GetDeltaTime();
+  const float delta = ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
   playbackTime_ += delta * playbackSpeed_;
 
   const float duration =

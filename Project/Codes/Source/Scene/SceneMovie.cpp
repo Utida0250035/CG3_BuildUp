@@ -99,7 +99,7 @@ void SceneMovie::Update() {
   }
 
   if (returnScene_ != nullptr &&
-      Input::PlayInput::Instance()->IsKeyTrigger(Input::Key::ESCAPE)) {
+      ::Atrum::EnginePlayInput()->IsKeyTrigger(Input::Key::ESCAPE)) {
     RequestReturnToCaller();
     return;
   }

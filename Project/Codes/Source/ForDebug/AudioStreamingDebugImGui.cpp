@@ -3,6 +3,7 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
 #include "Audio/Audio.h"
+#include "Engine/EngineAccess.h"
 #include "Audio/VoiceState.h"
 #include "ForDebug/ImGui.h"
 
@@ -67,7 +68,7 @@ void DrawAudioStreamingMemoryDebugWindow() {
   }
 
   Audio::StreamingMemoryDebugSnapshot snapshot{};
-  Audio::Manager::Instance()->CollectStreamingMemoryDebug(snapshot);
+  ::Atrum::EngineAudioManager()->CollectStreamingMemoryDebug(snapshot);
 
   char buf[64];
   FormatBytes(snapshot.loadedShortSoundBytes, buf, sizeof(buf));

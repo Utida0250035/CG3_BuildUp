@@ -5,7 +5,7 @@
 
 namespace Atrum {
 
-void CmpLhRigidBody::ResolveDependence() { frameDeltaTime_ = FrameDeltaTime::Instance(); }
+void CmpLhRigidBody::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
 
 void CmpLhRigidBody::Initialize() { velocity_ = {}; }
 

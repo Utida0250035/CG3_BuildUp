@@ -1,4 +1,4 @@
-﻿#include "Scene/Scene.h"
+#include "Scene/Scene.h"
 
 #include "Camera/StageViewCamera.h"
 #include "Engine/AtrumEngine.h"
@@ -65,7 +65,7 @@ void Scene::SetupStageViewCamera() {
 }
 
 void Scene::Draw() {
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
 
   engine->PreDraw();
   DrawScene();

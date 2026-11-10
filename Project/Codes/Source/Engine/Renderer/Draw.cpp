@@ -59,8 +59,6 @@ void AgentDebugLogDraw(const char *location, const char *message,
 
 namespace Atrum {
 
-	std::unique_ptr<Draw> Draw::instance_ = nullptr;
-
 	void Draw::Initialize(ID3D12Device* device,
 		CommandContext* commandContextDirect,
 		DescriptorAllocator* srvAllocator) {

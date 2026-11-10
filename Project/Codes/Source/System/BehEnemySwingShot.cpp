@@ -14,7 +14,7 @@ void BehEnemySwingShot::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
   cmpRotator_ = RefGrandOwner().GetUpdCmp<CmpRotator>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void BehEnemySwingShot::Initialize() { shotCoolTimer_ = 0.0f; }

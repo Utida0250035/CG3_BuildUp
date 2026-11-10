@@ -138,7 +138,7 @@ namespace {
 	}
 
 	void Emitter::InitializeFromParams(const std::vector<Param>& params) {
-		frameDeltaTime_ = FrameDeltaTime::Instance();
+		frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 
 		layers_.resize(params.size());
 		particles_.resize(params.size());
@@ -464,7 +464,7 @@ namespace {
 
 	void Emitter::Draw() {
 
-		Atrum::Engine* engine = Atrum::Engine::Instance();
+		Atrum::Engine* engine = ::Atrum::EngineInstance();
 		if (engine == nullptr) {
 			return;
 		}

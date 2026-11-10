@@ -22,7 +22,7 @@ namespace {
 			.intensity = 8.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
-		Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 	}
 
 } // namespace
@@ -58,7 +58,7 @@ namespace Atrum {
 		SetupStageLighting();
 		DrawBackgrounds();
 
-		if (Atrum::AtrumEngine* engine = Atrum::AtrumEngine::Instance()) {
+		if (Atrum::AtrumEngine* engine = ::Atrum::EngineInstance()) {
 			Atrum::SceneScreenUi::DrawTitleSceneUi(engine, GetCamera());
 		}
 	}

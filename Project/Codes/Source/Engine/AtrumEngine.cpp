@@ -103,6 +103,24 @@ namespace Atrum {
 
 std::unique_ptr<AtrumEngine> AtrumEngine::instance_ = nullptr;
 
+AtrumEngine *EngineInstance() { return AtrumEngine::Instance(); }
+
+FrameDeltaTime *EngineFrameDeltaTime() {
+	return AtrumEngine::Instance()->GetFrameDeltaTime();
+}
+
+Input::PlayInput *EnginePlayInput() {
+	return AtrumEngine::Instance()->GetPlayInput();
+}
+
+Audio::AudioManager *EngineAudioManager() {
+	return AtrumEngine::Instance()->GetAudioManager();
+}
+
+TextureStorage *EngineTextureStorage() {
+	return AtrumEngine::Instance()->GetTextureStorage();
+}
+
 template <typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS *exception) {
@@ -218,18 +236,18 @@ void AtrumEngine::InitAssetStorages() {
 
   /* アセットストレージの初期化 */
 
-  pTextureStorage_ = TextureStorage::Instance();
-  pTextureStorage_->Initialize(
+  textureStorage_ = std::make_unique<TextureStorage>(TextureStorage::Token{});
+  textureStorage_->Initialize(
       commandContextDirect_.get(), fenceManager_.get(), swapChainManager_.get(),
       srvAllocator_.get(), renderDevice_->GetDevice(), &temporaryResources_);
 
-  uint32_t modelDefaultTexture =
-      pTextureStorage_->GetTexture("./Assets/Images/white4x4.png");
+  const uint32_t modelDefaultTexture =
+      textureStorage_->GetTexture("./Assets/Images/white4x4.png");
 
-  pModelStorage_ = ModelStorage::Instance();
-  pModelStorage_->Initialize(commandContextDirect_.get(),
-                             renderDevice_->GetDevice(), &temporaryResources_,
-                             modelDefaultTexture);
+  modelStorage_ = std::make_unique<ModelStorage>(ModelStorage::Token{});
+  modelStorage_->Initialize(commandContextDirect_.get(),
+                            renderDevice_->GetDevice(), &temporaryResources_,
+                            modelDefaultTexture, textureStorage_.get());
 }
 
 void AtrumEngine::InitDepthStencil() {
@@ -258,9 +276,9 @@ void AtrumEngine::InitRenderer() {
 
   /* 描画クラスの初期化 */
 
-  pDraw_ = Draw::Instance();
-  pDraw_->Initialize(renderDevice_->GetDevice(), commandContextDirect_.get(),
-                     srvAllocator_.get());
+  draw_ = std::make_unique<Draw>(Draw::Token{});
+  draw_->Initialize(renderDevice_->GetDevice(), commandContextDirect_.get(),
+                    srvAllocator_.get());
 
   {
     std::array<ID3D12PipelineState *,
@@ -274,13 +292,14 @@ void AtrumEngine::InitRenderer() {
       object3dPso[i] = graphicsPSObjects[i]->GetPSO();
       particlePso[i] = graphicsParticlePSObjects[i]->GetPSO();
     }
-    pDraw_->RegisterObject3dAndParticlePipelines(object3dPso, particlePso);
-    pDraw_->SetActiveBlendMode(blendMode_);
+    draw_->RegisterObject3dAndParticlePipelines(object3dPso, particlePso);
+    draw_->SetActiveBlendMode(blendMode_);
   }
 
-  pDrawSprite_ = DrawSprite::Instance();
-  pDrawSprite_->Initialize(renderDevice_->GetDevice(),
-                           commandContextDirect_.get(), srvAllocator_.get());
+  drawSprite_ = std::make_unique<DrawSprite>(DrawSprite::Token{});
+  drawSprite_->Initialize(renderDevice_->GetDevice(),
+                          commandContextDirect_.get(), srvAllocator_.get(),
+                          textureStorage_.get());
 }
 
 void AtrumEngine::InitPlayInput() {
@@ -295,11 +314,10 @@ void AtrumEngine::InitPlayInput() {
   }
 
   // DirectInput
-  directInput_ = I::DirectInput::Instance();
+  directInput_ = std::make_unique<I::DirectInput>();
   directInput_->Initialize(window_.get());
 
-  // SDL2入力
-  playInput_ = I::PlayInput::Instance();
+  playInput_ = std::make_unique<I::PlayInput>();
 }
 
 void AtrumEngine::Initialize(const std::string &windowLabel,
@@ -410,6 +428,8 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
         static_cast<BlendMode>(i));
   }
 
+  this->InitAssetStorages();
+
   this->InitRenderer();
 
   /**/
@@ -423,20 +443,16 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   this->EnableAdditionalException();
 
-  this->InitAssetStorages();
-
   this->InitPlayInput();
 
   /* 時間差分マネージャーの生成 */
 
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = std::make_unique<FrameDeltaTime>();
   frameDeltaTime_->Initialize();
   deltaTime_ = std::make_unique<DeltaTime>();
 
-  /* 音源マネージャーの初期化 */
-
-  audio_ = Audio::Manager::Instance();
-  audio_->Initialize();
+  audioManager_ = std::make_unique<Audio::AudioManager>(Audio::AudioManager::Token{});
+  audioManager_->Initialize();
 
   /* 初期化完了のログ出力 */
 
@@ -544,7 +560,7 @@ bool AtrumEngine::Process() {
 
   directInput_->Update();
 
-  audio_->Update();
+  audioManager_->Update();
 
   frameDeltaTime_->CalcDeltaTime();
 
@@ -665,19 +681,19 @@ void AtrumEngine::RebindObject3dDrawBindings() {
 
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
-  pDraw_->SetActiveBlendMode(blendMode_);
+  draw_->SetActiveBlendMode(blendMode_);
 
   commandContextDirect_->GetCommandList()->IASetVertexBuffers(
-      0, 1, pDraw_->vertexBuffer_->PGetVertexBufferView());
+      0, 1, draw_->vertexBuffer_->PGetVertexBufferView());
   commandContextDirect_->GetCommandList()->IASetIndexBuffer(
-      pDraw_->indexBuffer_->PGetBufferView());
+      draw_->indexBuffer_->PGetBufferView());
   commandContextDirect_->GetCommandList()->IASetPrimitiveTopology(
       D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
-      0, pDraw_->materialBuffer_->GetGpuVirtualAddress());
+      0, draw_->materialBuffer_->GetGpuVirtualAddress());
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
-      1, pDraw_->transformationBuffer_->GetGpuVirtualAddress());
+      1, draw_->transformationBuffer_->GetGpuVirtualAddress());
 
   FlushDirectionalLightConstantBuffer();
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
@@ -901,14 +917,14 @@ void AtrumEngine::PostDraw() {
         deviceRemovedReason =
             renderDevice_->GetDevice()->GetDeviceRemovedReason();
       }
-      const uint32_t drawVertexCount = pDraw_->vertexBuffer_->GetDrewCount();
-      const uint32_t drawIndexCount = pDraw_->indexBuffer_->GetDrewCount();
+      const uint32_t drawVertexCount = draw_->vertexBuffer_->GetDrewCount();
+      const uint32_t drawIndexCount = draw_->indexBuffer_->GetDrewCount();
       const bool drawVertexOverflow =
           drawVertexCount > Draw::kVertexMaxDrawCount;
       const bool drawCbOverflow =
-          pDraw_->constantBufferCount_ >= Draw::kMaxDrawCount;
+          draw_->constantBufferCount_ >= Draw::kMaxDrawCount;
       const bool spriteCbOverflow =
-          pDrawSprite_->constantBufferCount_ >= DrawSprite::kMaxDrawCount;
+          drawSprite_->constantBufferCount_ >= DrawSprite::kMaxDrawCount;
       AgentDebugLog(
           "AtrumEngine.cpp:PostDraw",
           "frame draw usage",
@@ -916,9 +932,9 @@ void AtrumEngine::PostDraw() {
           std::format(
               R"({{"backBufferIndex":{},"drawConstantBufferCount":{},"drawVertexCount":{},"drawIndexCount":{},"drawVertexMax":{},"drawCbMax":{},"spriteConstantBufferCount":{},"drawVertexOverflow":{},"drawCbOverflow":{},"spriteCbOverflow":{},"deviceRemovedHr":{}}})",
               swapChainManager_->GetBackBufferIndex(),
-              pDraw_->constantBufferCount_, drawVertexCount, drawIndexCount,
+              draw_->constantBufferCount_, drawVertexCount, drawIndexCount,
               Draw::kVertexMaxDrawCount, Draw::kMaxDrawCount,
-              pDrawSprite_->constantBufferCount_, drawVertexOverflow,
+              drawSprite_->constantBufferCount_, drawVertexOverflow,
               drawCbOverflow, spriteCbOverflow,
               static_cast<long>(deviceRemovedReason)));
       ++postDrawLogCount;
@@ -929,16 +945,16 @@ void AtrumEngine::PostDraw() {
 #endif
 
   // 描画頂点数のカウントをリセット
-  pDrawSprite_->vertexBuffer_->ResetDrewCount();
-  pDraw_->vertexBuffer_->ResetDrewCount();
+  drawSprite_->vertexBuffer_->ResetDrewCount();
+  draw_->vertexBuffer_->ResetDrewCount();
 
   // 頂点インデックス数のカウントをリセット
-  pDrawSprite_->indexBuffer_->ResetDrewCount();
-  pDraw_->indexBuffer_->ResetDrewCount();
+  drawSprite_->indexBuffer_->ResetDrewCount();
+  draw_->indexBuffer_->ResetDrewCount();
 
   // 定数バッファのカウントをリセット
-  pDrawSprite_->constantBufferCount_ = 0;
-  pDraw_->constantBufferCount_ = 0;
+  drawSprite_->constantBufferCount_ = 0;
+  draw_->constantBufferCount_ = 0;
 }
 
 void AtrumEngine::Finalize() {
@@ -950,13 +966,14 @@ void AtrumEngine::Finalize() {
 
   /* 解放処理 */
 
-  TextureStorage::Destroy();
-
-  ModelStorage::Destroy();
-
-  Draw::Destroy();
-
-  DrawSprite::Destroy();
+  textureStorage_.reset();
+  modelStorage_.reset();
+  draw_.reset();
+  drawSprite_.reset();
+  audioManager_.reset();
+  frameDeltaTime_.reset();
+  playInput_.reset();
+  directInput_.reset();
 
   temporaryResources_.clear();
 
@@ -1049,7 +1066,7 @@ void AtrumEngine::DrawTriangle(const uint32_t &textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawTriangle(textureIndex, textureColor, uvTransform, worldMatrix,
+  draw_->DrawTriangle(textureIndex, textureColor, uvTransform, worldMatrix,
                        vertexData, isLighting,
                        directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1062,7 +1079,7 @@ void AtrumEngine::DrawSphere(const uint32_t& textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawSphere(textureIndex, textureColor, uvTransform, worldMatrix,
+  draw_->DrawSphere(textureIndex, textureColor, uvTransform, worldMatrix,
                      radius, subdivision, isLighting,
                      directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1075,7 +1092,7 @@ void AtrumEngine::DrawBillboard(const uint32_t &textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawBillboard(textureIndex, textureColor, uvTransform, worldMatrix,
+  draw_->DrawBillboard(textureIndex, textureColor, uvTransform, worldMatrix,
                         isLighting,
                         directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1087,7 +1104,7 @@ void AtrumEngine::DrawSphereParticlesInstanced(
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawSphereParticlesInstanced(
+  draw_->DrawSphereParticlesInstanced(
       textureIndex, uvTransform, instances, subdivision, isLighting,
       directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1099,7 +1116,7 @@ void AtrumEngine::DrawBillboardParticlesInstanced(
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawBillboardParticlesInstanced(
+  draw_->DrawBillboardParticlesInstanced(
       textureIndex, uvTransform, instances, isLighting,
       directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1110,7 +1127,7 @@ void AtrumEngine::DrawModelParticlesInstanced(
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawModelParticlesInstanced(
+  draw_->DrawModelParticlesInstanced(
       model, instances, isLighting, directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
@@ -1123,7 +1140,7 @@ void AtrumEngine::DrawLine3D(const uint32_t &textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawLine3D(textureIndex, textureColor, uvTransform, worldStart,
+  draw_->DrawLine3D(textureIndex, textureColor, uvTransform, worldStart,
                      worldEnd, width, isLighting,
                      directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1135,7 +1152,7 @@ void AtrumEngine::DrawLine3DOnFloor(
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawLine3DOnFloor(textureIndex, textureColor, uvTransform, worldStart,
+  draw_->DrawLine3DOnFloor(textureIndex, textureColor, uvTransform, worldStart,
                             worldEnd, width, isLighting,
                             directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1149,7 +1166,7 @@ void AtrumEngine::DrawLine3DOnFloorPlane(
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawLine3DOnFloorPlane(
+  draw_->DrawLine3DOnFloorPlane(
       textureIndex, textureColor, uvTransform, worldStart, worldEnd,
       lineWidthPixels, viewportWidth, viewportHeight, floorY, isLighting,
       directionalLightBuffer_->GetGpuVirtualAddress());
@@ -1165,7 +1182,7 @@ void AtrumEngine::DrawDashedLine3D(const uint32_t &textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawDashedLine3D(textureIndex, textureColor, uvTransform, worldStart,
+  draw_->DrawDashedLine3D(textureIndex, textureColor, uvTransform, worldStart,
                            worldEnd, width, dashLength, gapLength, isLighting,
                            directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1177,7 +1194,7 @@ void AtrumEngine::DrawAsymmetricPyramid(
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDraw_->DrawAsymmetricPyramid(textureIndex, textureColor, uvTransform,
+  draw_->DrawAsymmetricPyramid(textureIndex, textureColor, uvTransform,
                                 worldMatrix, mesh, isLighting,
                                 directionalLightBuffer_->GetGpuVirtualAddress());
 }
@@ -1186,7 +1203,7 @@ void AtrumEngine::PrepareSprite() {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDrawSprite_->PrepareSprite();
+  drawSprite_->PrepareSprite();
 }
 
 void AtrumEngine::DrawSpriteRect(const uint32_t &textureIndex,
@@ -1198,7 +1215,7 @@ void AtrumEngine::DrawSpriteRect(const uint32_t &textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDrawSprite_->DrawSpriteRect(textureIndex, textureColor, uvTransform,
+  drawSprite_->DrawSpriteRect(textureIndex, textureColor, uvTransform,
                                rectTransform, spriteSize, spriteLeftTop);
 }
 
@@ -1210,7 +1227,7 @@ void AtrumEngine::DrawSpriteLine(const uint32_t &textureIndex,
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDrawSprite_->DrawSpriteLine(textureIndex, textureColor, uvTransform, start,
+  drawSprite_->DrawSpriteLine(textureIndex, textureColor, uvTransform, start,
                                end, width, posZ);
 }
 
@@ -1218,26 +1235,26 @@ void AtrumEngine::DrawSpriteCall(const uint32_t &textureIndex) {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
-  pDrawSprite_->DrawSpriteCall(textureIndex);
+  drawSprite_->DrawSpriteCall(textureIndex);
 }
 
 void AtrumEngine::DrawModel(AssetModel *model,
                             const Math::Matrix4x4 &worldMatrix,
                             const bool isLighting, const Math::Vector4 &color) {
-  pDraw_->DrawModel(model, worldMatrix, color, isLighting,
+  draw_->DrawModel(model, worldMatrix, color, isLighting,
                     directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
 uint32_t AtrumEngine::GetTexture(const std::string &filePath) {
 
-  return pTextureStorage_->GetTexture(filePath);
+  return textureStorage_->GetTexture(filePath);
 }
 
 std::shared_ptr<AssetModel> AtrumEngine::GetModel(
     const std::string &directoryPathObj, const std::string &objFileName,
     const std::string &directoryPathMtl, const std::string &mtlFileName) {
 
-  return pModelStorage_->GetModel(directoryPathObj, objFileName,
+  return modelStorage_->GetModel(directoryPathObj, objFileName,
                                   directoryPathMtl, mtlFileName);
 }
 
@@ -1247,8 +1264,8 @@ void AtrumEngine::SetDirectionalLightData(const DirectionalLightData &data) {
 }
 
 void AtrumEngine::FlushDirectionalLightConstantBuffer() {
-  if (pDraw_ != nullptr && pDraw_->camera_ != nullptr) {
-    directionalLightData_.cameraWorldPosition = pDraw_->camera_->GetTranslate();
+  if (draw_ != nullptr && draw_->camera_ != nullptr) {
+    directionalLightData_.cameraWorldPosition = draw_->camera_->GetTranslate();
   }
   volumetricFog_.ApplyTo(directionalLightData_);
   godRays_.ApplyTo(directionalLightData_);
@@ -1259,8 +1276,8 @@ void AtrumEngine::FlushDirectionalLightConstantBuffer() {
 }
 
 void AtrumEngine::SetCamera(Camera *camera) {
-  pDraw_->SetCamera(camera);
-  pDrawSprite_->SetCamera(camera);
+  draw_->SetCamera(camera);
+  drawSprite_->SetCamera(camera);
 }
 
 void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
@@ -1268,14 +1285,14 @@ void AtrumEngine::SetBlendMode(const BlendMode &blendMode) {
 
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode_)]->GetPSO());
-  pDraw_->SetActiveBlendMode(blendMode_);
+  draw_->SetActiveBlendMode(blendMode_);
 }
 
 void AtrumEngine::SetBlendModeForFrame(const BlendMode &blendMode) {
   // PSOを設定
   commandContextDirect_->GetCommandList()->SetPipelineState(
       graphicsPSObjects[static_cast<uint32_t>(blendMode)]->GetPSO());
-  pDraw_->SetActiveBlendMode(blendMode);
+  draw_->SetActiveBlendMode(blendMode);
 }
 
 CoUnInitializer::~CoUnInitializer() {

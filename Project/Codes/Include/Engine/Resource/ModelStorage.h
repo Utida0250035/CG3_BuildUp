@@ -34,25 +34,24 @@ namespace Atrum {
 
 	private:
 
-		static std::unique_ptr<ModelStorage> instance_;
-
 		CommandContext* pCommandContextDirect_ = nullptr;
 		ID3D12Device* pDevice_ = nullptr;
 		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
+		TextureStorage* textureStorage_ = nullptr;
 
 		std::vector<AssetMeshNode> LoadObjFile(const std::string& directoryPath, const std::string& fileName, std::vector<std::string>& useMaterialNames);
 
 		std::vector<std::shared_ptr<AssetMaterialData>> LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& fileName);
 
+	public:
+
 		struct Token {
 			explicit Token() = default;
 		};
 
-	public:
-
 		explicit ModelStorage(Token) {}
 
-		void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex);
+		void Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex, TextureStorage* textureStorage);
 
 		std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
@@ -61,37 +60,7 @@ namespace Atrum {
 		ModelStorage operator=(const ModelStorage& source) = delete;
 		ModelStorage(const ModelStorage& source) = delete;
 
-		static ModelStorage* Instance() {
-
-			if (instance_ == nullptr) {
-
-				instance_ = std::make_unique<ModelStorage>(Token{});
-
-			}
-
-			return instance_.get();
-
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-
-				for (auto& ptr : instance_->assetModelMap_) {
-
-					const auto& pModel = ptr.second.lock();
-
-					if (pModel) {
-						pModel->ReleaseResources();
-					}
-
-				}
-
-				instance_.reset();
-
-			}
-
-		}
+		void ReleaseLoadedModelResources();
 
 	};
 

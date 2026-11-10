@@ -37,11 +37,15 @@ namespace Atrum {
 
 	private:
 
+		friend AtrumEngine;
+
+	public:
+
 		struct Token {
 			explicit Token() = default;
 		};
 
-		friend AtrumEngine;
+	private:
 
 		Camera* camera_ = nullptr;
 
@@ -85,8 +89,6 @@ namespace Atrum {
 		~Draw() = default;
 
 	private:
-
-		static std::unique_ptr<Draw> instance_;
 
 		/// <summary>
 		/// 三角形の描画呼び出し
@@ -288,23 +290,6 @@ namespace Atrum {
 		Draw(const Draw& source) = delete;
 
 		void Finalize();
-
-		static Draw* Instance() {
-
-			if (!instance_) {
-
-				instance_ = std::make_unique<Draw>(Token{});
-			}
-
-			return instance_.get();
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-				instance_.reset();
-			}
-		}
 	};
 
 } // namespace Atrum

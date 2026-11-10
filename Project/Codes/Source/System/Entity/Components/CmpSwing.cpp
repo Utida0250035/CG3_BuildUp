@@ -20,7 +20,7 @@ void CmpSwing::Update() {
   }
 }
 
-void CmpSwing::ResolveDependence() { frameDeltaTime_ = FrameDeltaTime::Instance(); }
+void CmpSwing::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
 
 void CmpSwing::StartSwing() {
   if (!pivot_) {

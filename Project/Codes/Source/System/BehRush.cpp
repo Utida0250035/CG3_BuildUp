@@ -10,7 +10,7 @@
 namespace Atrum {
 
 void BehRush::ResolveDependence() {
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
 }
 

@@ -43,7 +43,7 @@ void AddOrbiterAimTelegraph(Entity &boss, Entity &orbiterEntity, Entity *player)
 void BehEnemyOrbiterSalvo::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void BehEnemyOrbiterSalvo::BeginVolleyTelegraph() {

@@ -29,7 +29,7 @@ void SetupEditorLighting() {
       .intensity = 6.0f,
       .lightModel = Atrum::LightModel::HalfLambert,
   };
-  Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
@@ -144,7 +144,7 @@ void SceneEntityEditor::Update() {
     return;
   }
 
-  if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F2)) {
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
     Atrum::CommandChangeScene::Instance()->Set(
         SceneParticleEditor::Instance(),
         std::make_unique<ChangeSceneFade>().release());
@@ -172,7 +172,7 @@ void SceneEntityEditor::Update() {
 }
 
 void SceneEntityEditor::Draw() {
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   editor_->LayoutEditorWorkbench();
@@ -225,7 +225,7 @@ void SceneEntityEditor::DrawSceneViewContent(
     return;
   }
 
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
@@ -271,7 +271,7 @@ void SceneEntityEditor::DrawScene() {
   // Draw() 内でレンダーテクスチャへ描画済み
 #else
   SetupEditorLighting();
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
