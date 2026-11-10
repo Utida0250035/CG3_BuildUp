@@ -4780,6 +4780,87 @@
       "roadmapLink": "feature-memos/debug_test_play_area.md",
       "firstSeenAt": "2026-11-11T00:01:00+09:00",
       "lastSeenAt": "2026-11-11T00:01:00+09:00"
+    },
+    "GAP-Audio-GetSeVolume-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 480,
+      "frequency": "low",
+      "frequencyBasis": "音量照会 API がゲーム未使用",
+      "scopeKey": "UC-Play|Audio|GetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:159",
+      "primary": "GetSeVolume",
+      "related": [
+        "SetBgmLoopVolume",
+        "SetSeVolume"
+      ],
+      "summaryShort": "GetSeVolume がシーンから未呼び出し",
+      "summary": "GetSeVolume がシーンから未呼び出し",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "GetSeVolume は Manager 委譲のみ（159-161 行）",
+        "SetBgmLoopVolume は GAP 済みで取得側未配線",
+        "フェード／ポーズ UI と実音量の同期ポリシーなし"
+      ],
+      "suggestedUse": "プレイ: BGM ダッキングの状態復元",
+      "firstSeenAt": "2026-11-11T00:11:00+09:00",
+      "lastSeenAt": "2026-11-11T00:11:00+09:00"
+    },
+    "GAP-Audio-GetSeFrequencyRatio-001": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 470,
+      "frequency": "low",
+      "frequencyBasis": "ピッチ照会 API が未配線",
+      "scopeKey": "UC-Play|Audio|GetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:151",
+      "primary": "GetSeFrequencyRatio",
+      "related": [
+        "SetBgmLoopPitch",
+        "SetSeFrequencyRatio"
+      ],
+      "summaryShort": "GetSeFrequencyRatio が未使用",
+      "summary": "GetSeFrequencyRatio が未使用",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "GetSeFrequencyRatio は定義のみ（151-153 行）",
+        "SetBgmLoopPitch GAP（163 行）と非対称",
+        "演出後にピッチを元に戻すロジック無し"
+      ],
+      "suggestedUse": "プレイ: スロー演出後の BGM ピッチ復帰",
+      "firstSeenAt": "2026-11-11T00:11:00+09:00",
+      "lastSeenAt": "2026-11-11T00:11:00+09:00"
+    },
+    "GAP-Scene-SceneResult-002": {
+      "primaryUseCase": "UC-Play",
+      "secondaryUseCases": [],
+      "scenarioId": "PLY-Audio-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 560,
+      "frequency": "medium",
+      "frequencyBasis": "リザルト離脱で BGM がフェード前に停止",
+      "scopeKey": "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62",
+      "primary": "SceneResult",
+      "related": [
+        "ChangeSceneFade",
+        "SceneTitle"
+      ],
+      "summaryShort": "ExitScene が即 StopBgmLoop",
+      "summary": "ExitScene が即 StopBgmLoop",
+      "scenarioText": "プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。",
+      "evidence": [
+        "ExitScene で StopBgmLoop（62-63 行）",
+        "遷移は ChangeSceneFade 経由（45-47 行）",
+        "SceneTitle-002 と同様に暗転中の音切れが起きうる"
+      ],
+      "suggestedUse": "プレイ: リザルト→タイトルの BGM をフェードに合わせる",
+      "firstSeenAt": "2026-11-11T00:11:00+09:00",
+      "lastSeenAt": "2026-11-11T00:11:00+09:00"
     }
   },
   "scopeToId": {
@@ -4956,7 +5037,10 @@
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242": "GAP-Editor-EntityEditorUi-016",
     "UC-Debug|Scene|SceneCameraRig|Contract|Project/Codes/Source/Scene/SceneCameraRig.cpp:76": "GAP-Scene-SceneCameraRig-001",
     "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:94": "GAP-Editor-SceneEntityEditor-011",
-    "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:161": "GAP-Infra-EditorScenePlayRequest-004"
+    "UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:161": "GAP-Infra-EditorScenePlayRequest-004",
+    "UC-Play|Audio|GetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:159": "GAP-Audio-GetSeVolume-001",
+    "UC-Play|Audio|GetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:151": "GAP-Audio-GetSeFrequencyRatio-001",
+    "UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62": "GAP-Scene-SceneResult-002"
   },
   "pendings": {},
   "nextSequence": {
@@ -4993,7 +5077,9 @@
     "Audio-PlaySeLoop": 2,
     "Audio-ResumeBgmLoop": 2,
     "Audio-SetBgmLoopVolume": 2,
-    "Scene-SceneResult": 2,
+    "Scene-SceneResult": 3,
+    "Audio-GetSeVolume": 2,
+    "Audio-GetSeFrequencyRatio": 2,
     "Audio-StopBgmLoop": 2,
     "Audio-IsBgmLoopPaused": 2,
     "Audio-GetBgmLoopPlaybackSeconds": 2,
@@ -5966,6 +6052,22 @@
         "GAP-Scene-SceneCameraRig-001",
         "GAP-Editor-SceneEntityEditor-011",
         "GAP-Infra-EditorScenePlayRequest-004"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-001015",
+      "at": "2026-11-11T00:10:56.667870+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Play",
+      "scenarioId": "PLY-Audio-001",
+      "areaHint": "Streaming",
+      "priorityScore": 1060,
+      "newIds": [
+        "GAP-Audio-GetSeVolume-001",
+        "GAP-Audio-GetSeFrequencyRatio-001",
+        "GAP-Scene-SceneResult-002"
       ],
       "updatedIds": [],
       "closedIds": []

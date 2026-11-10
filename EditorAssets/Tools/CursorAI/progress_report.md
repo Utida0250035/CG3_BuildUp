@@ -1549,6 +1549,11 @@
 - **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（9回目）
 - **newIds:** 3（SceneCameraRig 走査範囲、プレビュー rig カメラ、PlayRequest 起動未配線）
 
+## ギャップスキャン tick（SCAN-20261111-001015）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（9回目）
+- **newIds:** 3（GetSeVolume 未配線、GetSeFrequencyRatio 未配線、リザルト Exit 即 BGM 停止）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**
