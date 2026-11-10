@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T23:10:45.414301+09:00
+- **lastIncrementalScanAt:** 2026-11-10T23:20:52.299988+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1568,6 +1568,28 @@
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
 
+### GAP-Scene-SceneBuildUp-009
+
+- status: open
+- tier: P1
+- score: 700
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: JSON 実体と Scene::cameraRig_ が別配列
+- scope: UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:109
+- primary: `SceneBuildUp`
+- summary: 【Debug】entities_ と GetCamera の cameraRig が未接続
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene は entities_ のみ構築（109 行）
+  - GetCamera は cameraRig_.GetPrimaryCamera（Scene.cpp:43）
+  - cameraRig は EnsureAutoSpawnedCameras で既定 MainCamera を別生成し JSON の CmpCamera を描画対象にしない
+- suggestedUse: Debug: JSON 上の CmpCamera を機能検証の主カメラにする
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-10T23:31:00+09:00
+- lastSeenAt: 2026-11-10T23:31:00+09:00
+
 ### GAP-Audio-StreamingDebug-002
 
 - status: open
@@ -1826,6 +1848,28 @@
 - firstSeenAt: 2026-11-10T07:01:00+09:00
 - lastSeenAt: 2026-11-10T07:01:00+09:00
 
+### GAP-Scene-SceneBuildUp-010
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: RT 描画パスが GameOrder 後に StageView を再適用
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:147
+- primary: `SceneBuildUp`
+- summary: 【Debug】DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GameOrder が Draw 直前に ActiveCameraSystem::PrepareSceneAndBindEngine（GameOrder.h:74-75）
+  - DrawRuntimeViewContent が再度 SetupStageViewCamera→SetCamera（147-153 行）
+  - 機能検証でも CmpCamera 行列が戦闘ステージ固定ポーズに上書きされる
+- suggestedUse: Debug: BuildUp RT が本編 GameOrder カメラ契約と一致
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-10T23:31:00+09:00
+- lastSeenAt: 2026-11-10T23:31:00+09:00
+
 ### GAP-Scene-SceneBuildUpRegistry-002
 
 - status: open
@@ -1847,6 +1891,28 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:31:00+09:00
 - lastSeenAt: 2026-11-10T07:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-010
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Runtime タブ描画が戦闘カメラに一時差し替え
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248
+- primary: `SceneEntityEditor`
+- summary: 【Debug】Runtime タブで SetupStageViewCamera に差し替え
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawSceneViewContent の非 Edit パスで DebugCamera 退避後 SetupStageViewCamera（248-252 行）
+  - 描画後 RestoreDebugCamera（270-272 行）でプレビュー用に戻す
+  - JSON CmpCamera の挙動を Runtime タブ単体で検証できない
+- suggestedUse: Debug: エディタ実行ビューでエンティティカメラをそのまま試す
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-10T23:31:00+09:00
+- lastSeenAt: 2026-11-10T23:31:00+09:00
 
 ### GAP-Editor-SceneEntityEditor-008
 
@@ -3494,7 +3560,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
@@ -3509,6 +3574,7 @@
 - scanId: SCAN-20261110-075021 | at: 2026-11-10T07:50:37.543827+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-230538 | at: 2026-11-10T23:06:48.156250+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261110-231005 | at: 2026-11-10T23:10:45.414301+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261110-232021 | at: 2026-11-10T23:20:52.299988+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

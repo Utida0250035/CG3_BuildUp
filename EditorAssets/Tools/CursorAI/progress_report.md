@@ -1529,6 +1529,11 @@
 - **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（7回目）
 - **newIds:** 3（未知 Cmp UI、単一ヒエラルキー選択、型変更 1 スロット）
 
+## ギャップスキャン tick（SCAN-20261110-233005）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（8回目）
+- **newIds:** 3（BuildUp entities と cameraRig 分離、RT で StageView 再上書き、Runtime タブ差し替え）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

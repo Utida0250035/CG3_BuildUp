@@ -4283,6 +4283,92 @@
       "firstSeenAt": "2026-11-10T23:06:00+09:00",
       "lastSeenAt": "2026-11-10T23:06:00+09:00"
     },
+    "GAP-Scene-SceneBuildUp-009": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P1",
+      "score": 700,
+      "frequency": "high",
+      "frequencyBasis": "JSON 実体と Scene::cameraRig_ が別配列",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:109",
+      "primary": "SceneBuildUp",
+      "related": [
+        "SceneCameraRig",
+        "BuildEntitiesFromSceneDocument",
+        "CmpCamera"
+      ],
+      "summaryShort": "entities_ と GetCamera の cameraRig が未接続",
+      "summary": "entities_ と GetCamera の cameraRig が未接続",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "EnterScene は entities_ のみ構築（109 行）",
+        "GetCamera は cameraRig_.GetPrimaryCamera（Scene.cpp:43）",
+        "cameraRig は EnsureAutoSpawnedCameras で既定 MainCamera を別生成し JSON の CmpCamera を描画対象にしない"
+      ],
+      "suggestedUse": "Debug: JSON 上の CmpCamera を機能検証の主カメラにする",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-10T23:31:00+09:00",
+      "lastSeenAt": "2026-11-10T23:31:00+09:00"
+    },
+    "GAP-Scene-SceneBuildUp-010": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 580,
+      "frequency": "high",
+      "frequencyBasis": "RT 描画パスが GameOrder 後に StageView を再適用",
+      "scopeKey": "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:147",
+      "primary": "SceneBuildUp",
+      "related": [
+        "ActiveCameraSystem",
+        "SetupStageViewCamera"
+      ],
+      "summaryShort": "DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera",
+      "summary": "DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "GameOrder が Draw 直前に ActiveCameraSystem::PrepareSceneAndBindEngine（GameOrder.h:74-75）",
+        "DrawRuntimeViewContent が再度 SetupStageViewCamera→SetCamera（147-153 行）",
+        "機能検証でも CmpCamera 行列が戦闘ステージ固定ポーズに上書きされる"
+      ],
+      "suggestedUse": "Debug: BuildUp RT が本編 GameOrder カメラ契約と一致",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-10T23:31:00+09:00",
+      "lastSeenAt": "2026-11-10T23:31:00+09:00"
+    },
+    "GAP-Editor-SceneEntityEditor-010": {
+      "primaryUseCase": "UC-Debug",
+      "secondaryUseCases": [],
+      "scenarioId": "DBG-FeatureScene-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 570,
+      "frequency": "medium",
+      "frequencyBasis": "Runtime タブ描画が戦闘カメラに一時差し替え",
+      "scopeKey": "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248",
+      "primary": "SceneEntityEditor",
+      "related": [
+        "SceneViewTab::Runtime",
+        "SetupStageViewCamera",
+        "CmpCamera"
+      ],
+      "summaryShort": "Runtime タブで SetupStageViewCamera に差し替え",
+      "summary": "Runtime タブで SetupStageViewCamera に差し替え",
+      "scenarioText": "開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。",
+      "evidence": [
+        "DrawSceneViewContent の非 Edit パスで DebugCamera 退避後 SetupStageViewCamera（248-252 行）",
+        "描画後 RestoreDebugCamera（270-272 行）でプレビュー用に戻す",
+        "JSON CmpCamera の挙動を Runtime タブ単体で検証できない"
+      ],
+      "suggestedUse": "Debug: エディタ実行ビューでエンティティカメラをそのまま試す",
+      "roadmapLink": "feature-memos/entity_camera_components.md",
+      "firstSeenAt": "2026-11-10T23:31:00+09:00",
+      "lastSeenAt": "2026-11-10T23:31:00+09:00"
+    },
     "GAP-Audio-IsBgmLoopPaused-001": {
       "primaryUseCase": "UC-Play",
       "secondaryUseCases": [],
@@ -4608,7 +4694,10 @@
     "UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:158": "GAP-Scene-SceneGame-009",
     "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:272": "GAP-Editor-EntityEditorUi-013",
     "UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:333": "GAP-Editor-EntityEditorHierarchy-002",
-    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-014"
+    "UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768": "GAP-Editor-EntityEditorUi-014",
+    "UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:109": "GAP-Scene-SceneBuildUp-009",
+    "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:147": "GAP-Scene-SceneBuildUp-010",
+    "UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248": "GAP-Editor-SceneEntityEditor-010"
   },
   "pendings": {},
   "nextSequence": {
@@ -4623,14 +4712,14 @@
     "Editor-UiState": 2,
     "Editor-EntityEditorDefinition": 4,
     "Scene-SceneBuildUpRegistry": 3,
-    "Editor-SceneEntityEditor": 10,
+    "Editor-SceneEntityEditor": 11,
     "Infra-DebugPlayAreaGenerator": 2,
     "Editor-EditorFrame": 2,
     "Infra-stage_view_camera_tuning": 3,
     "Editor-EditorEntityWorkbench": 2,
     "Authoring-visual_lighting_profile": 2,
     "Infra-FeatureTestScene": 2,
-    "Scene-SceneBuildUp": 9,
+    "Scene-SceneBuildUp": 11,
     "Scene-CommandScene": 4,
     "Infra-EditorScenePlayRequest": 4,
     "Infra-combat_bounds_sandbox": 2,
