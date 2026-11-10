@@ -1659,6 +1659,11 @@
 - **useCase:** UC-Play / **scenario:** PLY-Audio-001（16回目）
 - **newIds:** 3（失敗時 playId 不整合、PCM 端数退避、BGM フォールバックで短音解放）
 
+## ギャップスキャン tick（SCAN-20261111-035014）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（16回目）
+- **newIds:** 3（プレイモードのみトグル、タグ改名 1 語ずつ、JSON パス自由編集）
+
 ## 推測した用途（§6.4）
 
 - **launch_config / SceneBuildUp 起動**

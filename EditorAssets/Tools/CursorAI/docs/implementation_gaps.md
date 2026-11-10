@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T03:31:23.423901+09:00
+- **lastIncrementalScanAt:** 2026-11-11T03:40:47.570879+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -1468,6 +1468,27 @@
 - firstSeenAt: 2026-11-10T23:51:00+09:00
 - lastSeenAt: 2026-11-10T23:51:00+09:00
 
+### GAP-Editor-EntityEditorUi-026
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: JSON パスをインスペクタで自由編集
+- scope: UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:521
+- primary: `EntityEditorUi`
+- summary: 【Authoring】シーン JSON パスを InputString 編集
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ImGui::InputString で jsonFilePath 直接変更（521 行）
+  - 存在検証やプロジェクトパネル同期無し
+  - 誤パス保存→再読込失敗の反復が手戻り
+- suggestedUse: 制作: シーンパスは一覧選択に限定
+- firstSeenAt: 2026-11-11T03:51:00+09:00
+- lastSeenAt: 2026-11-11T03:51:00+09:00
+
 ### GAP-UX-OperatorGuidanceSystem-004
 
 - status: open
@@ -1573,6 +1594,27 @@
 - firstSeenAt: 2026-11-11T00:51:00+09:00
 - lastSeenAt: 2026-11-11T00:51:00+09:00
 
+### GAP-Editor-EntityEditorTagCatalog-002
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: カタログタグ改名が 1 語ずつ
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:837
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】改名は選択 1 タグのみ一括反映
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - RenameTagInDocument は document 全体走査だが UI は 1 選択（835-840 行）
+  - 類似タグのプレフィックス一括や検索置換無し
+  - TagCatalog-001 の一括付与と逆向きが手作業
+- suggestedUse: 制作: ロールタグ命名規則の一括リネーム
+- firstSeenAt: 2026-11-11T03:51:00+09:00
+- lastSeenAt: 2026-11-11T03:51:00+09:00
+
 ### GAP-Editor-EntityEditorUi-021
 
 - status: open
@@ -1614,6 +1656,27 @@
 - suggestedUse: 制作: コンポ削除後のプレビュー更新を明示
 - firstSeenAt: 2026-11-11T02:51:00+09:00
 - lastSeenAt: 2026-11-11T02:51:00+09:00
+
+### GAP-Editor-EditorEntityWorkbench-004
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレイモードはシミュレーションのみ
+- scope: UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:96
+- primary: `EditorEntityWorkbench`
+- summary: 【Authoring】メニュー「プレイ」は保存・実行を呼ばない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - プレイ選択で previewSimulationEnabled のみ true（96-98 行）
+  - シーンを実行は Save+requestPlayRuntimeScene（77-79 行）と別
+  - Edit↔Play 反復で実行パスと挙動が二系統
+- suggestedUse: 制作: プレイ試行の操作を一本化
+- firstSeenAt: 2026-11-11T03:51:00+09:00
+- lastSeenAt: 2026-11-11T03:51:00+09:00
 
 ### GAP-Editor-EntityEditor-015
 
@@ -5157,7 +5220,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-011012 | at: 2026-11-11T01:11:11.772098+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-012017 | at: 2026-11-11T01:20:47.808609+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-013013 | at: 2026-11-11T01:31:16.625329+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-014014 | at: 2026-11-11T01:40:52.216206+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -5172,6 +5234,7 @@
 - scanId: SCAN-20261111-031017 | at: 2026-11-11T03:11:06.426582+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-032014 | at: 2026-11-11T03:21:02.300717+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-033012 | at: 2026-11-11T03:31:23.423901+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-034021 | at: 2026-11-11T03:40:47.570879+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 
 ---
 

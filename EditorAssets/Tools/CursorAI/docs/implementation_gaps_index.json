@@ -6623,6 +6623,88 @@
       "suggestedUse": "プレイ: シーン遷移時の SE 優先度",
       "firstSeenAt": "2026-11-11T03:41:00+09:00",
       "lastSeenAt": "2026-11-11T03:41:00+09:00"
+    },
+    "GAP-Editor-EditorEntityWorkbench-004": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 500,
+      "frequency": "medium",
+      "frequencyBasis": "プレイモードはシミュレーションのみ",
+      "scopeKey": "UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:96",
+      "primary": "EditorEntityWorkbench",
+      "related": [
+        "requestPlayRuntimeScene",
+        "previewSimulationEnabled"
+      ],
+      "summaryShort": "メニュー「プレイ」は保存・実行を呼ばない",
+      "summary": "メニュー「プレイ」は保存・実行を呼ばない",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "プレイ選択で previewSimulationEnabled のみ true（96-98 行）",
+        "シーンを実行は Save+requestPlayRuntimeScene（77-79 行）と別",
+        "Edit↔Play 反復で実行パスと挙動が二系統"
+      ],
+      "suggestedUse": "制作: プレイ試行の操作を一本化",
+      "firstSeenAt": "2026-11-11T03:51:00+09:00",
+      "lastSeenAt": "2026-11-11T03:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorTagCatalog-002": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P3",
+      "score": 510,
+      "frequency": "medium",
+      "frequencyBasis": "カタログタグ改名が 1 語ずつ",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:837",
+      "primary": "EntityEditorTagCatalog",
+      "related": [
+        "RenameTagInDocument",
+        "DrawTagsPanel"
+      ],
+      "summaryShort": "改名は選択 1 タグのみ一括反映",
+      "summary": "改名は選択 1 タグのみ一括反映",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "RenameTagInDocument は document 全体走査だが UI は 1 選択（835-840 行）",
+        "類似タグのプレフィックス一括や検索置換無し",
+        "TagCatalog-001 の一括付与と逆向きが手作業"
+      ],
+      "suggestedUse": "制作: ロールタグ命名規則の一括リネーム",
+      "firstSeenAt": "2026-11-11T03:51:00+09:00",
+      "lastSeenAt": "2026-11-11T03:51:00+09:00"
+    },
+    "GAP-Editor-EntityEditorUi-026": {
+      "primaryUseCase": "UC-Authoring",
+      "secondaryUseCases": [],
+      "scenarioId": "AUT-AssetLoop-001",
+      "status": "open",
+      "tier": "P2",
+      "score": 540,
+      "frequency": "medium",
+      "frequencyBasis": "JSON パスをインスペクタで自由編集",
+      "scopeKey": "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:521",
+      "primary": "EntityEditorUi",
+      "related": [
+        "jsonFilePath",
+        "SaveToJsonPath",
+        "OpenSceneFromPath"
+      ],
+      "summaryShort": "シーン JSON パスを InputString 編集",
+      "summary": "シーン JSON パスを InputString 編集",
+      "scenarioText": "反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。",
+      "evidence": [
+        "ImGui::InputString で jsonFilePath 直接変更（521 行）",
+        "存在検証やプロジェクトパネル同期無し",
+        "誤パス保存→再読込失敗の反復が手戻り"
+      ],
+      "suggestedUse": "制作: シーンパスは一覧選択に限定",
+      "firstSeenAt": "2026-11-11T03:51:00+09:00",
+      "lastSeenAt": "2026-11-11T03:51:00+09:00"
     }
   },
   "scopeToId": {
@@ -6863,7 +6945,10 @@
     "UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:85": "GAP-Scene-SceneBuildUp-021",
     "UC-Play|Audio|AudioManager|Contract|Project/Codes/Source/Audio/Audio.cpp:719": "GAP-Audio-AudioManager-007",
     "UC-Play|Audio|AudioDecoder|Incomplete|Project/Codes/Source/Audio/AudioDecoder.cpp:124": "GAP-Audio-AudioDecoder-001",
-    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:728": "GAP-Audio-AudioManager-008"
+    "UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:728": "GAP-Audio-AudioManager-008",
+    "UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:96": "GAP-Editor-EditorEntityWorkbench-004",
+    "UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:837": "GAP-Editor-EntityEditorTagCatalog-002",
+    "UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:521": "GAP-Editor-EntityEditorUi-026"
   },
   "pendings": {},
   "nextSequence": {
@@ -6882,9 +6967,9 @@
     "Runtime-MovieCameraTrackLoader": 3,
     "Editor-EntityEditor": 20,
     "Editor-PrefabAsset": 6,
-    "Editor-EntityEditorUi": 26,
-    "Editor-EditorEntityWorkbench": 4,
-    "Editor-EntityEditorTagCatalog": 2,
+    "Editor-EntityEditorUi": 27,
+    "Editor-EditorEntityWorkbench": 5,
+    "Editor-EntityEditorTagCatalog": 3,
     "Editor-EditorImportedAsset": 4,
     "Editor-EntityEditorHierarchy": 3,
     "Editor-UiState": 2,
@@ -8240,6 +8325,22 @@
         "GAP-Audio-AudioManager-007",
         "GAP-Audio-AudioDecoder-001",
         "GAP-Audio-AudioManager-008"
+      ],
+      "updatedIds": [],
+      "closedIds": []
+    },
+    {
+      "scanId": "SCAN-20261111-035014",
+      "at": "2026-11-11T03:50:30.395021+09:00",
+      "mode": "incremental",
+      "primaryUseCase": "UC-Authoring",
+      "scenarioId": "AUT-AssetLoop-001",
+      "areaHint": "Editor",
+      "priorityScore": 1030,
+      "newIds": [
+        "GAP-Editor-EditorEntityWorkbench-004",
+        "GAP-Editor-EntityEditorTagCatalog-002",
+        "GAP-Editor-EntityEditorUi-026"
       ],
       "updatedIds": [],
       "closedIds": []
