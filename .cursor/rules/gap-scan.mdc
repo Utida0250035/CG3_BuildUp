@@ -20,6 +20,8 @@ alwaysApply: true
 4. **record** … `recordGapScanTick.py --new-ids … --updated-ids …`
 5. **報告** … `progress_report.md` に `scanId`・useCase・newIds 件数を追記。
 
+`/loop` の tick では 1 の前に `loopLease.ps1 -Action Begin`、5 の後に `-Action End`（`loop-lease.mdc`・§7.1.5）。占有衝突なら tick を中止する。
+
 ## 除外
 
 - 本 tick は **ビルド不要**・**startTaskBranchFromDevelop 不要**（ドキュメント／index のみ）。

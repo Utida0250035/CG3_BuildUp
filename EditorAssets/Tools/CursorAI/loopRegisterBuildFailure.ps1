@@ -2,6 +2,7 @@
 <#
   ビルド失敗 1 回分を記録。3 回目でロールバックし progress_report に追記する。
   -ErrorLines に MSBuild の error 行（ファイルパスと行番号を含むもの）を渡す。
+  -LoopId 指定時のロールバックは lease の自ループ占有パスのみ（§7.1.5）。
 #>
 param(
     [Parameter(Mandatory = $true)]
@@ -9,7 +10,8 @@ param(
     [string[]]$ErrorLines = @(),
     [switch]$RollbackNow,
     [string]$StatePath = "",
-    [string]$ReportPath = ""
+    [string]$ReportPath = "",
+    [string]$LoopId = ""
 )
 
 Set-StrictMode -Version Latest
@@ -55,7 +57,16 @@ $state.lastFailureLogExcerpt = $excerpt
 $shouldRollback = $RollbackNow -or ([int]$state.consecutiveBuildFailures -ge 3)
 
 if ($shouldRollback) {
-    & powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'loopRollbackToLastGood.ps1') -StatePath $StatePath
+    $rollbackArgs = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $PSScriptRoot 'loopRollbackToLastGood.ps1'), '-StatePath', $StatePath)
+    $rollbackScope = ''
+    if (-not [string]::IsNullOrWhiteSpace($LoopId)) {
+        $rollbackArgs += @('-LoopId', $LoopId)
+        $rollbackScope = "（lease の $LoopId 占有パスのみ）"
+    }
+    & powershell @rollbackArgs
+    if ($LASTEXITCODE -ne 0) {
+        $rollbackScope += "`n- **注意:** ロールバックが完了していない（exit $LASTEXITCODE）。作業ツリーを手動で確認すること"
+    }
     $stamp = (Get-Date).ToString('yyyy-MM-dd HH:mm')
     $failCount = [int]$state.consecutiveBuildFailures
     $block = @"
@@ -69,7 +80,7 @@ if ($shouldRollback) {
 ### ビルド失敗による中断
 
 - **連続失敗回数:** $failCount（上限 3 到達）
-- **措置:** ``loopRollbackToLastGood.ps1`` で最後に成功していたコミット（``lastGoodCommit``）へロールバック
+- **措置:** ``loopRollbackToLastGood.ps1`` で最後に成功していたコミット（``lastGoodCommit``）へロールバック$rollbackScope
 - **推測される原因（ビルドログ抜粋・ファイル／行番号必須）:**
 
 ``````

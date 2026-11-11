@@ -289,6 +289,34 @@
 - **停止:** ユーザー「ループ停止」、`progress_report` 肥大化（§7.1）、または `use_case_scenarios.md` の全シナリオが十分回った後の手動停止。
 - **蓄積:** 正本は `implementation_gaps_index.json` / `implementation_gaps.md`。`progress_report` には scan 要約のみ追記。
 
+#### 7.1.5 ループ占有宣言（`Control/lease.md`）
+
+複数の `/loop`（roadmap と gap-scan の同時稼働など）が同じファイルを編集しないよう、各ループは **触れるファイルを `EditorAssets/Tools/CursorAI/Control/lease.md` に宣言**し、**宣言したパスにしか書き込まない**（読み取りは自由）。`lease.md` は `loopLease.ps1` だけが更新する（手編集禁止）。
+
+- **ループ ID:** `loopRoadmapDev.ps1` は既定 `roadmap-dev`、`loopGapScanDev.ps1` は既定 `gap-scan`（tick プロンプトに記載される）。同種ループを複数動かすときは `-LoopId` で別名にする。
+- **パス:** リポジトリ相対。ファイル、またはディレクトリ（末尾 `/` または `/**`）。実在するディレクトリは自動で `/` 付きになる。
+- **共用ファイル（占有対象外・全ループが書き込み可）:** `progress_report.md`（追記のみ）、`task_backlog.md`・`docs/feature-memos/roadmap.md`（該当行のチェック更新など最小編集のみ）、`Control/`。
+- **期限:** 各占有は `IntervalMinutes × 2`（最短 60 分）で失効する。異常終了したループの占有が残り続けない。
+- **保存場所:** `lease.md` は Git 管理外（`.gitignore`）。`git worktree` で作業ツリーを分けた場合もメインワークツリー側の 1 ファイルを共有する。
+
+**tick ごとの手順**
+
+| タイミング | コマンド（`loopLease.ps1`） | 内容 |
+|------------|-----------------------------|------|
+| 初回 tick の最初 | `-Action Begin -LoopId <ID> -Paths "<今回触れるパス,…>" -Task "<タスク>"` | 占有を宣言。タスク選定・コード読解の後、**最初の書き込みの前**に実行 |
+| 2 回目以降の tick の最初 | `-Action Begin -LoopId <ID>` | 前 tick の最後に宣言した占有を確認（追加があれば `-Paths`） |
+| tick 途中で予定外のファイルが必要 | `-Action Claim -LoopId <ID> -Paths "<追加パス>"` | **書き込む前に**追加宣言 |
+| tick の最後 | `-Action End -LoopId <ID> -Paths "<次 tick で触れるパス,…>"` | 自分の占有を次 tick 分で **置き換える**（不要になったパスは削除）。次 tick が無ければ `-Paths` なしで占有を全削除 |
+| ループ停止 | `-Action Release -LoopId <ID>` | 自分の占有を全削除（自動停止時は起動スクリプトが実行） |
+
+- **占有衝突（exit 4）:** `Begin` / `Claim` で他ループの占有と重なったら **その tick を中止**する（`Claim` の場合は今回 tick で加えた変更を自分で元に戻す）。`progress_report.md` への「**占有衝突でスキップ**」セクション追記はスクリプトが行う。次 tick で再試行する。
+- **次タスクの選び方:** tick 最後に次タスクを決めるとき、`-Action Test -LoopId <ID> -Paths "…"` で衝突しないか確認し、衝突するなら衝突しない別の `- [ ]` を選ぶ（§7.1.2 と同じ考え方）。`End` は衝突したパスを宣言せず exit 4 を返す。
+- **Git スクリプト:** `/loop` 中は `loopMergeTickToDevelop.ps1` と `loopRegisterBuildFailure.ps1` に **`-LoopId <ID>` を必ず付ける**。コミットからは **tick 中の他ループの占有パスを除外**し、ビルド 3 回失敗時のロールバックは **自ループの占有パスだけ** を戻す（`git reset --hard` / `git clean -fd` で他ループの作業を消さない）。
+- **標準の占有例:**
+  - gap-scan: `EditorAssets/Tools/CursorAI/docs/implementation_gaps.md`, `EditorAssets/Tools/CursorAI/docs/implementation_gaps_index.json`, `EditorAssets/Tools/CursorAI/gap_scan_state.json`, `EditorAssets/Tools/CursorAI/gap_scan_tick.json`
+  - roadmap-dev: 今回タスクで編集するソース（`Src/…`）・`Project/CG2_BuildUp.vcxproj`（ファイル追加時）・`EditorAssets/Tools/CursorAI/loop_state.json`
+- **制約:** 同じ作業ツリーではブランチが全ループ共通（roadmap ループの checkout が他ループにも及ぶ）。roadmap ループを 2 本以上並行させるときは `git worktree` で作業ツリーを分ける。
+
 ## 8. タスク完了時の Git 自動フロー（コミット許可後）
 
 ユーザーが **コミット・プッシュを許可**（例:「コミットして」「プッシュOK」「タスク完了でコミット可」）したとき、半自律モードでは次を **この順で** 実行する。

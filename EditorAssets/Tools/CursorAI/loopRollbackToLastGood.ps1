@@ -1,9 +1,11 @@
 ﻿#Requires -Version 5.1
 <#
   直近のビルド成功時コミットへ作業ツリーを戻す。未記録時は git restore . と未追跡の整理に留める。
+  -LoopId 指定時は lease の自ループ占有パスだけを戻し、他ループの未コミット変更には触れない（§7.1.5）。
 #>
 param(
-    [string]$StatePath = ""
+    [string]$StatePath = "",
+    [string]$LoopId = ""
 )
 
 Set-StrictMode -Version Latest
@@ -25,6 +27,21 @@ if (Test-Path $StatePath) {
             $sha = [string]$state.lastGoodCommit
         }
     }
+}
+
+if (-not [string]::IsNullOrWhiteSpace($LoopId)) {
+    . (Join-Path $PSScriptRoot 'loopLeaseCommon.ps1')
+    $ownPaths = Get-LeaseOwnPaths -LoopId $LoopId
+    if ($ownPaths.Count -eq 0) {
+        Write-Warning "lease に $LoopId の占有パスが無いため、他ループ保護のためロールバックを行いません"
+        exit 1
+    }
+    if ([string]::IsNullOrWhiteSpace($sha)) {
+        $sha = (git rev-parse HEAD | Out-String).Trim()
+    }
+    Invoke-LeaseScopedRestore -Sha $sha -Paths $ownPaths
+    Write-Host "Rolled back lease paths of $LoopId to $sha"
+    exit 0
 }
 
 if (-not [string]::IsNullOrWhiteSpace($sha)) {

@@ -1,12 +1,14 @@
 ﻿#Requires -Version 5.1
 <#
   /loop 成功 tick 用: 作業ブランチにコミット → develop へマージ → push → 作業ブランチ削除 → 次タスク用ブランチ作成（§7.1.1）。
+  -LoopId 指定時は、tick 中の他ループが lease で占有しているパスをコミット対象から外す（§7.1.5）。
 #>
 param(
     [Parameter(Mandatory = $true)]
     [string]$CommitMessage,
     [Parameter(Mandatory = $true)]
-    [string]$NextBranchName
+    [string]$NextBranchName,
+    [string]$LoopId = ''
 )
 
 Set-StrictMode -Version Latest
@@ -37,7 +39,23 @@ if ([string]::IsNullOrWhiteSpace($status)) {
     throw 'コミット対象の変更がありません'
 }
 
-Invoke-Git @('add', '-A')
+if ([string]::IsNullOrWhiteSpace($LoopId)) {
+    Invoke-Git @('add', '-A')
+}
+else {
+    . (Join-Path $PSScriptRoot 'loopLeaseCommon.ps1')
+    $foreignPaths = Get-LeaseForeignInTickPaths -LoopId $LoopId
+    $addArgs = @('add', '-A', '--', '.')
+    foreach ($p in $foreignPaths) {
+        $addArgs += ":(exclude)$($p.TrimEnd('/'))"
+        Write-Host "他ループ tick 中の占有のためコミット対象外: $p"
+    }
+    Invoke-Git $addArgs
+    & git diff --cached --quiet
+    if ($LASTEXITCODE -eq 0) {
+        throw 'コミット対象の変更がありません（変更は他ループ tick 中の占有パスのみ）'
+    }
+}
 Invoke-Git @('commit', '-m', $CommitMessage)
 Invoke-Git @('push', '-u', 'origin', $workBranch)
 

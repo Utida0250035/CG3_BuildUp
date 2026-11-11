@@ -1816,3 +1816,52 @@
   - 用途: BGM ストリームの remaining 肥大をデバッグメニューで即判別
   - 使用場面: デバッグ（DEVELOPMENT + ImGui）
   - 仕様: バーは 0〜1、比率 1 超は数値＋警告色（ランタイムコストはスナップショット取得のみ）
+
+---
+
+## セッション 2026-11-11 15:25（ループ占有宣言 lease.md の導入）
+
+**ブランチ:** `feature/agentCollisionAvoidance`（roadmap 外・ユーザー指示タスク）
+
+### 1. 進捗・完了したこと
+
+- `loopLease.ps1` / `loopLeaseCommon.ps1` を新規作成。`Control/lease.md` に各ループの占有パスを宣言（Begin / Claim / End / Release / Test / Show）。他ループと重なれば exit 4 で tick を中止し、`progress_report.md` に「占有衝突でスキップ」を追記
+- `lease.md` は Git 管理外（`.gitignore`）。メインワークツリー側に 1 つだけ置き、`git worktree` 間でも共有。占有は `IntervalMinutes × 2`（最短 60 分）で失効。読み書きはロックファイルで直列化
+- 既存スクリプトに任意引数 `-LoopId` を追加（未指定時の挙動は従来どおり）
+  - `loopMergeTickToDevelop.ps1`: tick 中の他ループの占有パスを `git add` から除外
+  - `loopRollbackToLastGood.ps1` / `loopRegisterBuildFailure.ps1`: 自ループの占有パスだけをロールバック（`reset --hard` / `clean -fd` を使わない）
+  - `loopRoadmapDev.ps1` / `loopGapScanDev.ps1`: ループ ID（既定 `roadmap-dev` / `gap-scan`）を tick プロンプトに記載、自動停止時に占有を解放
+- 手順: `cursorInstructions.md` §7.1.5、`.cursor/rules/loop-lease.mdc`（常時適用）、`gap-scan.mdc`・`roadmap-execute.mdc`・`README.md` に参照を追記
+- ユーザールール変更: 「既存実装の修正禁止」→「既存実装の修正よりも新たな実装など細分化での解決を優先」（`roadmap-execute.mdc` も同趣旨に変更）
+- 検証: PowerShell 5.1 で全 `.ps1` の構文確認、lease CLI の各操作、一時リポジトリでスコープ付きロールバック・コミット除外・スキップ報告を確認（ビルド対象のコード変更なし）
+
+### 2. 課題・設計上の選択肢
+
+- **同じ作業ツリーではブランチが全ループ共通。** roadmap ループの `git checkout` は他ループの作業ツリーにも及ぶ。roadmap ループを複数並行させる場合は `git worktree` で分ける必要がある（lease は同一ファイル編集の衝突を防ぐのみ）
+- **gap-scan の変更は roadmap ループのコミットに相乗りする。** gap-scan が tick 中でなければ、その変更は roadmap 側の `loopMergeTickToDevelop.ps1` でコミットされる（従来と同じ）
+- **既存実装の課題点:** `loopTaskCheckpoint.ps1` は手順書から参照されていない一方、`Invoke-Git` の引数名が自動変数 `$Args` と衝突しており（`loopMergeTickToDevelop.ps1` で修正済みの不具合と同種）、Rollback は `reset --hard` / `clean -fd` で作業ツリー全体を戻す。使う場合は修正、使わないなら削除を検討
+- **既存実装の課題点:** `loopGapScanDev.ps1` に BOM が無く、Windows PowerShell 5.1 で日本語が誤読される恐れがあった（今回 BOM を付与）
+
+### 3. 次ステップ
+
+1. コミット／マージ許可 → `finishTaskGit.ps1`
+2. 実ループ（roadmap-dev と gap-scan の同時稼働）で Begin / End の運用を確認
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+- **ループ占有宣言（lease.md）**
+  - 用途: エンジン・エディタ開発で、roadmap 実装ループとギャップスキャンループなど複数の自律エージェントを並行稼働させ、同じソースやドキュメントを同時編集して作業を壊し合うのを防ぐ
+  - 使用場面: ビルド・配布（開発ワークフロー／ツール）。ランタイム・出荷ビルドへの影響なし
+  - 用途から決めた仕様: 衝突時は待たずに tick ごとスキップ（ループ間隔ごとに再試行）、異常終了に備えて期限で失効、ロールバックとコミットは自分の占有範囲に限定、制作者の手編集を前提にしない自動生成ファイル

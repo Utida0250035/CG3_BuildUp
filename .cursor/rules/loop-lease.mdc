@@ -1,0 +1,20 @@
+---
+description: /loop の tick（roadmap・gap-scan）で他エージェントとの衝突を避ける占有宣言（lease.md）
+alwaysApply: true
+---
+
+# ループ占有宣言（lease）
+
+`/loop` の tick（ロードマップ・ギャップスキャンとも）では、`EditorAssets/Tools/CursorAI/cursorInstructions.md` **§7.1.5** に従う。
+
+## 必須動作
+
+1. **初回 tick の最初**（最初の書き込み前）: `loopLease.ps1 -Action Begin -LoopId <ID> -Paths "<触れるパス,…>" -Task "<タスク>"`
+2. **毎 tick の最初**: `loopLease.ps1 -Action Begin -LoopId <ID>` で占有を確認する。
+3. **exit 4（占有衝突）なら tick を中止**する。`progress_report.md` への「占有衝突でスキップ」追記はスクリプトが行う。
+4. tick 中は **自分の占有パスと共用ファイルにだけ書き込む**。予定外のファイルは書き込む前に `-Action Claim`。
+5. **毎 tick の最後**: `loopLease.ps1 -Action End -LoopId <ID> -Paths "<次 tick で触れるパス,…>"` で占有を置き換える（不要なパスは削除される）。
+6. `/loop` 中の `loopMergeTickToDevelop.ps1`・`loopRegisterBuildFailure.ps1` には `-LoopId <ID>` を付ける。
+7. ループ停止時は `loopLease.ps1 -Action Release -LoopId <ID>`。
+
+`lease.md` は手で編集しない。ループ ID は tick プロンプトに記載されたもの（既定 `roadmap-dev` / `gap-scan`）を使う。

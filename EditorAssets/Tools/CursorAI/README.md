@@ -29,6 +29,8 @@
 | `loopRegisterBuildFailure.ps1` | ビルド失敗記録（3 回でロールバック＋報告追記） |
 | `loopRollbackToLastGood.ps1` | `lastGoodCommit` へ復帰 |
 | `loop_state.json` | ループ用 Git 状態 |
+| `loopLease.ps1` / `loopLeaseCommon.ps1` | ループ占有宣言 `Control/lease.md` の操作（Begin / Claim / End / Release / Test / Show。§7.1.5） |
+| `Control/lease.md` | 各ループが触れるファイルの占有宣言（Git 管理外・自動生成） |
 
 ### `/loop` と報告の蓄積
 
@@ -38,6 +40,7 @@
 - **ビルド 3 回失敗**したサブタスクはロールバックし、ログの **ファイル名・行番号付き** で `progress_report` に中断理由を追記してから、依存のない別タスクへ。
 - **tick 着手前**は `startTaskBranchFromDevelop.ps1` で **develop から** 作業ブランチを切る。
 - **tick 成功時**は `loopMergeTickToDevelop.ps1` で **develop マージ・当該ブランチ削除・次ブランチ作成**（ユーザー確認不要）。
+- **占有宣言:** tick の最初に `loopLease.ps1 -Action Begin`、最後に `-Action End`。他ループと衝突したら tick を中止し「占有衝突でスキップ」を追記（`cursorInstructions.md` §7.1.5）。
 
 ## Cursor 連携
 
