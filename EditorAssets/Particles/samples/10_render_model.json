@@ -1,0 +1,27 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "POINT",
+    "emitPointPos": { "x": 0.0, "y": 0.5, "z": 0.0 },
+    "movementMode": "DIRECTIONAL",
+    "emitRate": 1.0,
+    "burstCount": 12,
+    "duration": 0.5,
+    "minLifeDuration": 0.6,
+    "maxLifeDuration": 0.95,
+    "baseVelocity": { "x": 0.0, "y": 2.0, "z": 0.0 },
+    "velocityRandom": { "x": 2.0, "y": 1.0, "z": 2.0 },
+    "acceleration": { "x": 0.0, "y": -5.0, "z": 0.0 },
+    "startScale": { "x": 0.15, "y": 0.15, "z": 0.15 },
+    "endScale": { "x": 0.08, "y": 0.08, "z": 0.08 },
+    "startColor": { "x": 1.0, "y": 1.0, "z": 1.0, "w": 1.0 },
+    "endColor": { "x": 1.0, "y": 1.0, "z": 1.0, "w": 0.15 },
+    "maxCount": 16,
+    "renderMode": "MODEL",
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  }
+]

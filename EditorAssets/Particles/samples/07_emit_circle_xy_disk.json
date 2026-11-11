@@ -1,0 +1,26 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "CIRCLE_XY",
+    "emitCircle": {
+      "center": { "x": 0.0, "y": 1.0, "z": 0.0 },
+      "radius": 1.0
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 40,
+    "duration": 0.5,
+    "minLifeDuration": 0.4,
+    "maxLifeDuration": 0.7,
+    "baseVelocity": { "x": 0.0, "y": 0.0, "z": 4.5 },
+    "velocityRandom": { "x": 1.5, "y": 1.5, "z": 1.0 },
+    "acceleration": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "startScale": { "x": 0.3, "y": 0.3, "z": 0.3 },
+    "endScale": { "x": 0.08, "y": 0.08, "z": 0.08 },
+    "startColor": { "x": 1.1, "y": 0.35, "z": 1.2, "w": 1.0 },
+    "endColor": { "x": 0.6, "y": 0.1, "z": 0.8, "w": 0.0 },
+    "maxCount": 44,
+    "renderMode": "BUILTIN_SPHERE"
+  }
+]

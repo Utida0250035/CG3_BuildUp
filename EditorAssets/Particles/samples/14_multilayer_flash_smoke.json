@@ -1,0 +1,49 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "POINT",
+    "emitPointPos": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 14,
+    "duration": 0.25,
+    "minLifeDuration": 0.12,
+    "maxLifeDuration": 0.22,
+    "baseVelocity": { "x": 0.0, "y": 4.0, "z": 0.0 },
+    "velocityRandom": { "x": 2.0, "y": 2.0, "z": 2.0 },
+    "acceleration": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "startScale": { "x": 0.65, "y": 0.65, "z": 0.65 },
+    "endScale": { "x": 0.15, "y": 0.15, "z": 0.15 },
+    "startColor": { "x": 1.8, "y": 1.7, "z": 1.4, "w": 1.0 },
+    "endColor": { "x": 1.2, "y": 0.5, "z": 0.2, "w": 0.0 },
+    "maxCount": 16,
+    "renderMode": "BUILTIN_SPHERE"
+  },
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "CONTINUOUS",
+    "emitShape": "SPHERE",
+    "emitSphere": {
+      "center": { "x": 0.0, "y": 0.0, "z": 0.0 },
+      "radius": 0.2
+    },
+    "movementMode": "DIRECTIONAL",
+    "emitRate": 35.0,
+    "burstCount": 0,
+    "isLooping": false,
+    "duration": 0.55,
+    "minLifeDuration": 0.45,
+    "maxLifeDuration": 0.85,
+    "baseVelocity": { "x": 0.0, "y": 2.2, "z": 0.0 },
+    "velocityRandom": { "x": 1.2, "y": 0.5, "z": 1.2 },
+    "acceleration": { "x": 0.0, "y": 0.8, "z": 0.0 },
+    "damping": 0.45,
+    "startScale": { "x": 0.55, "y": 0.55, "z": 0.55 },
+    "endScale": { "x": 1.0, "y": 1.0, "z": 1.0 },
+    "startColor": { "x": 0.45, "y": 0.48, "z": 0.5, "w": 0.45 },
+    "endColor": { "x": 0.35, "y": 0.38, "z": 0.4, "w": 0.0 },
+    "maxCount": 64,
+    "renderMode": "BUILTIN_SPHERE"
+  }
+]
