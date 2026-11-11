@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-11 — `/loop 15m` tick1: decoderBacklog 1超を ImGui で可視化（Development ビルド成功）
+**最新サマリー:** 2026-11-11 — tick1 マージ済み（5701d19）→ 次ブランチ `feature/SceneBgmTransitionCrossfade`
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -1790,7 +1790,7 @@
 
 | 項目 | 内容 |
 |------|------|
-| develop マージ | `/loop` 規定の `loopMergeTickToDevelop` が Auto-review skip。手動でマージ許可が必要 |
+| develop マージ | **完了**（ユーザー許可後 `loopMergeTickToDevelop`、commit `5701d19`） |
 | 次タスク候補 | シーン遷移 BGM／SE（在庫行・範囲大。着手前に細分化推奨） |
 
 ### 3. 次ステップ
