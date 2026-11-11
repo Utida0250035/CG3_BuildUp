@@ -367,15 +367,12 @@ void EntityEditor::LayoutEditorWorkbench() {
 
 void EntityEditor::DrawHierarchyPanel() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  const EditorSceneRunPhase runPhase = Atrum::Editor::QueryEntityEditorSceneRunPhase(
+  const Atrum::Editor::EditorSceneRunPhase runPhase =
+      Atrum::Editor::QueryEntityEditorSceneRunPhase(
       ui_, Atrum::Editor::EditorFrame::Instance().SceneViewTabSelection(),
       Atrum::CommandChangeScene::Instance()->GetIsExecute(),
       ui_.requestPlayRuntimeScene);
-<<<<<<< Updated upstream
   Atrum::Editor::DrawEntityEditorSceneModeToolbar(*this, runPhase);
-=======
-  Atrum::Editor::DrawEditorSceneRunPhaseBadge(runPhase);
->>>>>>> Stashed changes
 #else
   ImGui::TextDisabled("モード: %s",
                       ui_.interactionMode == EditorInteractionMode::Play

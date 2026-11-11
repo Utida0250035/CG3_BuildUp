@@ -17,11 +17,7 @@ struct SceneViewPanelOptions {
   bool showRuntimeView = true;
   const char *hintText = nullptr;
   bool showRunPhaseLabel = false;
-<<<<<<< Updated upstream
   EditorSceneRunPhase runPhase = EditorSceneRunPhase::Waiting;
-=======
-  EditorSceneRunPhase runPhase = EditorSceneRunPhase::Stopped;
->>>>>>> Stashed changes
 };
 
 /// 種別ごとのシーンビュー ImGui ウィンドウ（描画領域は背景透明）
@@ -30,11 +26,7 @@ void LayoutDedicatedSceneViewWindow(const char *windowTitle, SceneViewTab tab,
                                     const char *hintText = nullptr,
                                     bool showRunPhaseLabel = false,
                                     EditorSceneRunPhase runPhase =
-<<<<<<< Updated upstream
                                         EditorSceneRunPhase::Waiting);
-=======
-                                        EditorSceneRunPhase::Stopped);
->>>>>>> Stashed changes
 
 void LayoutEntityEditorSceneViews(const SceneViewPanelOptions &options);
 

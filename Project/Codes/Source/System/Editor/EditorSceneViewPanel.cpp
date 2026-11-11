@@ -88,14 +88,9 @@ void LayoutDedicatedSceneViewWindow(
     }
     if (showRunPhaseLabel) {
       ImGui::SameLine();
-<<<<<<< Updated upstream
       ImGui::TextUnformatted("|");
       ImGui::SameLine();
       DrawEditorSceneRunPhaseBadge(runPhase);
-=======
-      ImGui::TextDisabled("| %s",
-                          EditorSceneRunPhaseLabel(runPhase));
->>>>>>> Stashed changes
     }
   }
   ImGui::EndChild();

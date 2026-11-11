@@ -173,14 +173,8 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
   const EditorSceneRunPhase runPhase = QueryEntityEditorSceneRunPhase(
       ui, currentTab, sceneChanging, ui.requestPlayRuntimeScene);
 
-<<<<<<< Updated upstream
   ImGui::Separator();
   DrawEntityEditorSceneModeToolbar(editor, runPhase);
-=======
-  DrawSceneEditRunToggle(editor);
-  ImGui::SameLine();
-  DrawEditorSceneRunPhaseBadge(runPhase);
->>>>>>> Stashed changes
 
   const SceneViewTab current = currentTab;
   const char *currentLabel = kEditSceneViewTitle;
