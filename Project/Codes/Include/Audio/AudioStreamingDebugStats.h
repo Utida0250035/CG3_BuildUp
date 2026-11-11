@@ -26,7 +26,9 @@ struct StreamingVoiceMemoryRow {
   uint64_t samplesPlayed = 0;
   /// キュー充填（0〜1、BuffersQueued / kBufferCount）
   float queueFill01 = 0.0f;
-  /// デコーダ残りバイトの近似（remaining / chunkSize、上限1）
+  /// デコーダ残りバイト / 1チャンク（未クランプ。1超で remaining 肥大）
+  float decoderBacklogRatio = 0.0f;
+  /// 上記を 0〜1 にクランプ（プログレスバー用）
   float decoderBacklog01 = 0.0f;
 };
 

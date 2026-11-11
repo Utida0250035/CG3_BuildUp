@@ -1,6 +1,6 @@
 # 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-08 — `/loop 15m` tick15: ストリーミング進捗 ImGui
+**最新サマリー:** 2026-11-11 — `/loop 15m` tick1: decoderBacklog 1超を ImGui で可視化（Development ビルド成功）
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -1772,3 +1772,47 @@
 | 追加 | Audio / System / Camera / Scene / Render / Debug / Repository / Editor / UX にギャップ追補節 |
 | 統合 | P2/P3 246 件は節ごとに束ね（個別行は `implementation_gaps.md` 正本） |
 | 即時完了 | なし（実装タスクの新設のみ） |
+
+---
+
+## セッション 2026-11-11 14:33（/loop 15m tick1・ロードマップ実行）
+
+**ブランチ:** `fix/StreamingDebugDecoderBacklog`（`loopMergeTickToDevelop.ps1` はユーザー skip のため **未マージ**）  
+**タスク:** roadmap 先頭 `- [ ]` — decoderBacklog01 のクランプで remaining 肥大が見えない（`GAP-Audio-StreamingDebug-001`）
+
+### 1. 完了したこと
+
+- `StreamingVoiceMemoryRow::decoderBacklogRatio` を追加し、ImGui で 1 超を赤バー＋ `Nx !` 表示
+- `streaming_debug_imgui.md`・`roadmap.md` 該当行を `[x]`
+- **Development | x64** ビルド成功
+
+### 2. 課題・メモ
+
+| 項目 | 内容 |
+|------|------|
+| develop マージ | `/loop` 規定の `loopMergeTickToDevelop` が Auto-review skip。手動でマージ許可が必要 |
+| 次タスク候補 | シーン遷移 BGM／SE（在庫行・範囲大。着手前に細分化推奨） |
+
+### 3. 次ステップ
+
+1. コミット／マージ許可 → `loopMergeTickToDevelop.ps1` または `finishTaskGit.ps1`
+2. 次 tick: 上から次の `- [ ]`（BGM 遷移は §6.1 細分化を検討）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし（本 tick は実装あり）
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+- **decoderBacklog 可視化（GAP-Audio-StreamingDebug-001）**
+  - 用途: BGM ストリームの remaining 肥大をデバッグメニューで即判別
+  - 使用場面: デバッグ（DEVELOPMENT + ImGui）
+  - 仕様: バーは 0〜1、比率 1 超は数値＋警告色（ランタイムコストはスナップショット取得のみ）

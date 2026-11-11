@@ -1294,10 +1294,11 @@ float ClampVolume(const float volume) {
 			row.remainingBytes = voice.remainingData.size();
 			row.isStreamingFlag = voice.isStreaming.load();
 
-			row.decoderBacklog01 = std::clamp(
+			const float backlogRatio =
 			    static_cast<float>(row.remainingBytes) /
-			        static_cast<float>(StreamingSourceVoice::kBufferSize),
-			    0.0f, 1.0f);
+			    static_cast<float>(StreamingSourceVoice::kBufferSize);
+			row.decoderBacklogRatio = backlogRatio;
+			row.decoderBacklog01 = std::clamp(backlogRatio, 0.0f, 1.0f);
 
 			if (voice.pVoice != nullptr &&
 			    row.state != VoiceState::Stopped) {

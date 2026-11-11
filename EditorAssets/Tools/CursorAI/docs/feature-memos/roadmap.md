@@ -24,7 +24,7 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] decoderBacklog01 のクランプで remaining 肥大が見えない（gap: `GAP-Audio-StreamingDebug-001`・Debug・P1）
+- [x] decoderBacklog01 のクランプで remaining 肥大が見えない（gap: `GAP-Audio-StreamingDebug-001`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - [ ] シーン遷移時の BGM／SE 継続・クロスフェード・遷移 SE（CommandScene / ChangeSceneFade 系。在庫 45件）

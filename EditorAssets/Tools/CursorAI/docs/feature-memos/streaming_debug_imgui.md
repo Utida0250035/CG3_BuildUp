@@ -14,7 +14,7 @@
 
 - **再生(s):** `startTime100ns` + XAudio2 `SamplesPlayed`
 - **Queue:** `BuffersQueued / kBufferCount` プログレスバー
-- **読込:** `remainingData` バックログ近似 + `isStreaming` ラベル
+- **読込:** `remainingData` / チャンクサイズの比率（1 超は赤バー＋ `Nx !` 表示。バーは 1 でクランプ）
 
 ## 用途
 

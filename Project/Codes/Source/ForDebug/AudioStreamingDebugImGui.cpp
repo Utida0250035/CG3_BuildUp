@@ -120,8 +120,24 @@ void DrawAudioStreamingMemoryDebugWindow() {
         ImGui::ProgressBar(row.queueFill01, ImVec2(-1.0f, 0.0f), queueOverlay);
       }
       ImGui::TableSetColumnIndex(5);
-      ImGui::ProgressBar(row.decoderBacklog01, ImVec2(-1.0f, 0.0f),
-                         row.isStreamingFlag ? "stream" : "idle");
+      {
+        char backlogOverlay[48];
+        if (row.decoderBacklogRatio > 1.0f) {
+          std::snprintf(backlogOverlay, sizeof(backlogOverlay), "%.2fx !",
+                        row.decoderBacklogRatio);
+          ImGui::PushStyleColor(ImGuiCol_PlotHistogram,
+                                ImVec4(1.0f, 0.35f, 0.2f, 1.0f));
+        } else {
+          std::snprintf(backlogOverlay, sizeof(backlogOverlay), "%.0f%% %s",
+                        row.decoderBacklogRatio * 100.0f,
+                        row.isStreamingFlag ? "stream" : "idle");
+        }
+        ImGui::ProgressBar(row.decoderBacklog01, ImVec2(-1.0f, 0.0f),
+                           backlogOverlay);
+        if (row.decoderBacklogRatio > 1.0f) {
+          ImGui::PopStyleColor();
+        }
+      }
       ImGui::TableSetColumnIndex(6);
       FormatBytes(row.streamingBufferBytes, buf, sizeof(buf));
       ImGui::TextUnformatted(buf);
