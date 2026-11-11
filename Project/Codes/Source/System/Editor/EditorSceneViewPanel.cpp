@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorSceneViewPanel.h"
 
+#include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneRenderTarget.h"
 #include "ForDebug/ImGui.h"
 #include <imgui/imgui_internal.h>
@@ -41,9 +42,10 @@ void RegisterSceneViewRenderRequest(EditorFrame &frame, const SceneViewTab tab,
 
 } // namespace
 
-void LayoutDedicatedSceneViewWindow(const char *windowTitle, const SceneViewTab tab,
-                                    const char *statusLine,
-                                    const char *hintText) {
+void LayoutDedicatedSceneViewWindow(
+    const char *windowTitle, const SceneViewTab tab, const char *statusLine,
+    const char *hintText, const bool showRunPhaseLabel,
+    const EditorSceneRunPhase runPhase) {
   const ImGuiWindowFlags windowFlags =
       ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
 
@@ -84,6 +86,17 @@ void LayoutDedicatedSceneViewWindow(const char *windowTitle, const SceneViewTab 
       ImGui::SameLine();
       ImGui::TextDisabled("| %s", hintText);
     }
+    if (showRunPhaseLabel) {
+      ImGui::SameLine();
+<<<<<<< Updated upstream
+      ImGui::TextUnformatted("|");
+      ImGui::SameLine();
+      DrawEditorSceneRunPhaseBadge(runPhase);
+=======
+      ImGui::TextDisabled("| %s",
+                          EditorSceneRunPhaseLabel(runPhase));
+>>>>>>> Stashed changes
+    }
   }
   ImGui::EndChild();
   ImGui::PopStyleColor();
@@ -122,20 +135,24 @@ void LayoutDedicatedSceneViewWindow(const char *windowTitle, const SceneViewTab 
 }
 
 void LayoutEntityEditorSceneViews(const SceneViewPanelOptions &options) {
+  const bool showPhase = options.showRunPhaseLabel;
+  const EditorSceneRunPhase phase = options.runPhase;
   if (options.showEditView) {
     LayoutDedicatedSceneViewWindow(
         kEditSceneViewTitle, SceneViewTab::Edit,
-        "エディットビュー — デバッグカメラ・Unity風グリッド");
+        "エディットビュー — デバッグカメラ・Unity風グリッド", nullptr,
+        showPhase, phase);
   }
   if (options.showGameView) {
     LayoutDedicatedSceneViewWindow(
         kGameSceneViewTitle, SceneViewTab::Game,
-        "ゲームビュー — 初期状態（ステージカメラ・停止）");
+        "ゲームビュー — 初期状態（ステージカメラ・停止）", nullptr, showPhase,
+        phase);
   }
   if (options.showRuntimeView) {
     LayoutDedicatedSceneViewWindow(
         kRuntimeSceneViewTitle, SceneViewTab::Runtime,
-        "実行時ビュー — シミュレーション実行");
+        "実行時ビュー — シミュレーション実行", nullptr, showPhase, phase);
   }
 }
 

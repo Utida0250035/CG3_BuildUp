@@ -7,8 +7,10 @@
 #include "System/Editor/EditorCodeTemplateScaffold.h"
 #include <imgui/imgui_internal.h>
 #include "System/Editor/EditorFrame.h"
+#include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 
 namespace Atrum::Editor {
@@ -31,6 +33,24 @@ void SelectSceneViewTab(const SceneViewTab tab) {
   case SceneViewTab::Runtime:
     FocusSceneViewWindow(kRuntimeSceneViewTitle);
     break;
+  }
+}
+
+void DrawSceneEditRunToggle(EntityEditor::EntityEditor &editor) {
+  EntityEditor::UiState &ui = editor.Ui();
+  const bool isScene =
+      ui.interactionMode == EntityEditor::EditorInteractionMode::Edit;
+  const bool isRun =
+      ui.interactionMode == EntityEditor::EditorInteractionMode::Play;
+
+  ImGui::Separator();
+  if (ImGui::RadioButton("シーン", isScene)) {
+    SetEntityEditorSceneMode(ui, false);
+    SelectSceneViewTab(SceneViewTab::Edit);
+  }
+  ImGui::SameLine();
+  if (ImGui::RadioButton("実行", isRun)) {
+    SetEntityEditorSceneMode(ui, true);
   }
 }
 
@@ -89,13 +109,12 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
         ui.interactionMode == EntityEditor::EditorInteractionMode::Edit;
     const bool isPlay =
         ui.interactionMode == EntityEditor::EditorInteractionMode::Play;
-    if (ImGui::MenuItem("エディット", nullptr, isEdit)) {
-      ui.interactionMode = EntityEditor::EditorInteractionMode::Edit;
-      ui.previewSimulationEnabled = false;
+    if (ImGui::MenuItem("シーン（編集）", nullptr, isEdit)) {
+      SetEntityEditorSceneMode(ui, false);
+      SelectSceneViewTab(SceneViewTab::Edit);
     }
-    if (ImGui::MenuItem("プレイ", nullptr, isPlay)) {
-      ui.interactionMode = EntityEditor::EditorInteractionMode::Play;
-      ui.previewSimulationEnabled = true;
+    if (ImGui::MenuItem("実行（シミュレーション）", nullptr, isPlay)) {
+      SetEntityEditorSceneMode(ui, true);
     }
     ImGui::EndMenu();
   }
@@ -147,7 +166,23 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     ImGui::EndMenu();
   }
 
-  const SceneViewTab current = EditorFrame::Instance().SceneViewTabSelection();
+  const SceneViewTab currentTab =
+      EditorFrame::Instance().SceneViewTabSelection();
+  const bool sceneChanging =
+      Atrum::CommandChangeScene::Instance()->GetIsExecute();
+  const EditorSceneRunPhase runPhase = QueryEntityEditorSceneRunPhase(
+      ui, currentTab, sceneChanging, ui.requestPlayRuntimeScene);
+
+<<<<<<< Updated upstream
+  ImGui::Separator();
+  DrawEntityEditorSceneModeToolbar(editor, runPhase);
+=======
+  DrawSceneEditRunToggle(editor);
+  ImGui::SameLine();
+  DrawEditorSceneRunPhaseBadge(runPhase);
+>>>>>>> Stashed changes
+
+  const SceneViewTab current = currentTab;
   const char *currentLabel = kEditSceneViewTitle;
   switch (current) {
   case SceneViewTab::Game:
@@ -244,6 +279,11 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   sceneViewOptions.showEditView = true;
   sceneViewOptions.showGameView = true;
   sceneViewOptions.showRuntimeView = true;
+  sceneViewOptions.showRunPhaseLabel = true;
+  sceneViewOptions.runPhase = QueryEntityEditorSceneRunPhase(
+      editor.Ui(), EditorFrame::Instance().SceneViewTabSelection(),
+      Atrum::CommandChangeScene::Instance()->GetIsExecute(),
+      editor.Ui().requestPlayRuntimeScene);
   LayoutEntityEditorSceneViews(sceneViewOptions);
 
   if (editor.Ui().requestFocusRuntimeSceneView) {

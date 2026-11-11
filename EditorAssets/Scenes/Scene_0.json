@@ -4,6 +4,7 @@
             "definition": {
                 "components": [
                     {
+                        "executionOrder": 0,
                         "kind": 1,
                         "params": {
                             "color": {
@@ -41,7 +42,7 @@
                 "tagHashes": [],
                 "tags": []
             },
-            "instanceName": "Entity_0",
+            "instanceName": "Player",
             "parentIndex": -1
         }
     ],

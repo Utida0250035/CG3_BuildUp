@@ -3,6 +3,9 @@
 #include "System/Editor/Entity/EntityEditor.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
+#include "System/Editor/EditorFrame.h"
+#include "System/Editor/EditorSceneRunStatus.h"
+#include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
@@ -363,11 +366,22 @@ void EntityEditor::LayoutEditorWorkbench() {
 }
 
 void EntityEditor::DrawHierarchyPanel() {
-  if (ui_.interactionMode == EditorInteractionMode::Play) {
-    ImGui::TextDisabled("モード: プレイ");
-  } else {
-    ImGui::TextDisabled("モード: エディット");
-  }
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  const EditorSceneRunPhase runPhase = Atrum::Editor::QueryEntityEditorSceneRunPhase(
+      ui_, Atrum::Editor::EditorFrame::Instance().SceneViewTabSelection(),
+      Atrum::CommandChangeScene::Instance()->GetIsExecute(),
+      ui_.requestPlayRuntimeScene);
+<<<<<<< Updated upstream
+  Atrum::Editor::DrawEntityEditorSceneModeToolbar(*this, runPhase);
+=======
+  Atrum::Editor::DrawEditorSceneRunPhaseBadge(runPhase);
+>>>>>>> Stashed changes
+#else
+  ImGui::TextDisabled("モード: %s",
+                      ui_.interactionMode == EditorInteractionMode::Play
+                          ? "実行"
+                          : "シーン");
+#endif
 
   ImGui::Separator();
   ImGui::InputString("シーン名", scene_.sceneName);

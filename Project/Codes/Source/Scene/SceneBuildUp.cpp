@@ -15,7 +15,9 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/ImGui.h"
 #include "System/Editor/EditorFrame.h"
+#include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
+#include "Scene/CommandChangeScene.h"
 #include "System/Editor/EditorSceneRenderTarget.h"
 #endif
 
@@ -177,10 +179,14 @@ void SceneBuildUp::Draw() {
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   Editor::EditorFrame::Instance().ResetPerFrame();
+  const Editor::EditorSceneRunPhase runPhase =
+      Atrum::CommandChangeScene::Instance()->GetIsExecute()
+          ? Editor::EditorSceneRunPhase::Waiting
+          : Editor::EditorSceneRunPhase::Running;
   Editor::LayoutDedicatedSceneViewWindow(
       Editor::kRuntimeSceneViewTitle, Editor::SceneViewTab::Runtime,
       "実行時ビュー — ランタイム（ステージカメラ・シミュレーション実行）",
-      "F1: エンティティエディタへ戻る");
+      "F1: エンティティエディタへ戻る", true, runPhase);
 #endif
 
   engine->PreDraw();

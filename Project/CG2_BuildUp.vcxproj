@@ -337,6 +337,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorCodeTemplateScaffold.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
@@ -575,6 +576,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorCodeTemplateScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
