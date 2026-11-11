@@ -1,7 +1,8 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
-#include "System/Editor/EditorCodeTemplateScaffold.h"
+#include "System/Editor/EditorLuaScriptScaffold.h"
 
+#include "System/Editor/EditorAssetsPaths.h"
 #include "ForDebug/ImGui.h"
 #include <nlohmann/json.hpp>
 
@@ -16,7 +17,7 @@ namespace fs = std::filesystem;
 
 namespace {
 
-constexpr const char *kTemplateRoot = "../EditorAssets/Templates/Code";
+constexpr const char *kTemplateRoot = "../EditorAssets/Templates/Lua";
 constexpr const char *kManifestFile = "manifest.json";
 
 fs::path TemplateRootPath() { return fs::path(kTemplateRoot); }
@@ -62,7 +63,7 @@ std::string StripAuthorNotePlaceholder(std::string text) {
   std::string out;
   out.reserve(text.size());
   for (const std::string &line : SplitLines(text)) {
-    if (line.find("// %AuthorNote%") != std::string::npos) {
+    if (line.find("-- %AuthorNote%") != std::string::npos) {
       continue;
     }
     out.append(line);
@@ -73,7 +74,7 @@ std::string StripAuthorNotePlaceholder(std::string text) {
 
 } // namespace
 
-bool EditorCodeTemplateScaffold::IsValidClassName(const std::string &name) {
+bool EditorLuaScriptScaffold::IsValidScriptName(const std::string &name) {
   if (name.empty()) {
     return false;
   }
@@ -88,8 +89,8 @@ bool EditorCodeTemplateScaffold::IsValidClassName(const std::string &name) {
   return true;
 }
 
-bool EditorCodeTemplateScaffold::LoadManifest(
-    std::vector<CodeTemplateManifestEntry> &outEntries, std::string &error) {
+bool EditorLuaScriptScaffold::LoadManifest(
+    std::vector<LuaScriptManifestEntry> &outEntries, std::string &error) {
   outEntries.clear();
   const fs::path path = ManifestPath();
   if (!fs::is_regular_file(path)) {
@@ -112,7 +113,7 @@ bool EditorCodeTemplateScaffold::LoadManifest(
   }
 
   for (const auto &item : json.at("templates")) {
-    CodeTemplateManifestEntry entry{};
+    LuaScriptManifestEntry entry{};
     entry.id = item.at("id").get<std::string>();
     entry.label = item.value("label", entry.id);
     if (item.contains("requiredTokens")) {
@@ -129,31 +130,35 @@ bool EditorCodeTemplateScaffold::LoadManifest(
   return true;
 }
 
-std::string EditorCodeTemplateScaffold::SubstituteTokens(
-    std::string text, const CodeTemplateScaffoldRequest &request) {
-  ReplaceAll(text, "%ClassName%", request.className);
+std::string EditorLuaScriptScaffold::SubstituteTokens(
+    std::string text, const LuaScriptScaffoldRequest &request) {
+  ReplaceAll(text, "%ScriptName%", request.scriptName);
   ReplaceAll(text, "%UpdCmpGroup%", request.updCmpGroup);
-  ReplaceAll(text, "%AuthorNote%", request.authorNote);
+  if (request.authorNote.empty()) {
+    ReplaceAll(text, "%AuthorNote%", "");
+  } else {
+    ReplaceAll(text, "%AuthorNote%", request.authorNote);
+  }
   return text;
 }
 
-CodeTemplateScaffoldResult
-EditorCodeTemplateScaffold::Generate(const CodeTemplateScaffoldRequest &request) {
-  CodeTemplateScaffoldResult result{};
+LuaScriptScaffoldResult
+EditorLuaScriptScaffold::Generate(const LuaScriptScaffoldRequest &request) {
+  LuaScriptScaffoldResult result{};
 
-  if (!IsValidClassName(request.className)) {
-    result.message = "ClassName は英字始まりの英数字と _ のみ";
+  if (!IsValidScriptName(request.scriptName)) {
+    result.message = "ScriptName は英字始まりの英数字と _ のみ";
     return result;
   }
 
-  std::vector<CodeTemplateManifestEntry> entries;
+  std::vector<LuaScriptManifestEntry> entries;
   std::string loadError;
   if (!LoadManifest(entries, loadError)) {
     result.message = loadError;
     return result;
   }
 
-  const CodeTemplateManifestEntry *selected = nullptr;
+  const LuaScriptManifestEntry *selected = nullptr;
   for (const auto &entry : entries) {
     if (entry.id == request.templateId) {
       selected = &entry;
@@ -166,8 +171,8 @@ EditorCodeTemplateScaffold::Generate(const CodeTemplateScaffoldRequest &request)
   }
 
   for (const auto &required : selected->requiredTokens) {
-    if (required == "ClassName" && request.className.empty()) {
-      result.message = "ClassName が空です";
+    if (required == "ScriptName" && request.scriptName.empty()) {
+      result.message = "ScriptName が空です";
       return result;
     }
     if (required == "UpdCmpGroup" && request.updCmpGroup.empty()) {
@@ -211,7 +216,8 @@ EditorCodeTemplateScaffold::Generate(const CodeTemplateScaffoldRequest &request)
 
   for (const auto &item : planned) {
     if (fs::exists(item.path) && !request.forceOverwrite) {
-      result.message = "既存ファイルがあります（上書きにチェック）: " + item.path.string();
+      result.message =
+          "既存ファイルがあります（上書きにチェック）: " + item.path.string();
       return result;
     }
   }
@@ -229,16 +235,16 @@ EditorCodeTemplateScaffold::Generate(const CodeTemplateScaffoldRequest &request)
 
   result.success = true;
   result.message =
-      "生成完了。CG2_BuildUp.vcxproj へ ClCompile を追加し coverage 検査を推奨。";
+      "Lua スクリプトを生成しました（Phase 2 でランタイム読込予定）。";
   return result;
 }
 
-void EditorCodeTemplateScaffold::DrawImGuiPanel() {
-  static std::vector<CodeTemplateManifestEntry> entries;
+void EditorLuaScriptScaffold::DrawImGuiPanel() {
+  static std::vector<LuaScriptManifestEntry> entries;
   static bool loaded = false;
   static std::string loadError;
   static int templateIndex = 0;
-  static char classNameBuf[128] = "CmpMyComponent";
+  static char scriptNameBuf[128] = "my_component";
   static char authorNoteBuf[256] = "";
   static int updGroupIndex = 2;
   static bool forceOverwrite = false;
@@ -261,18 +267,21 @@ void EditorCodeTemplateScaffold::DrawImGuiPanel() {
     templateIndex = 0;
   }
 
+  ImGui::TextDisabled("出力先: Project/%s", EditorAssets::kScriptsDirectory);
+
   if (ImGui::BeginCombo("テンプレート",
                         entries[static_cast<size_t>(templateIndex)].label.c_str())) {
     for (int i = 0; i < static_cast<int>(entries.size()); ++i) {
       const bool selected = i == templateIndex;
-      if (ImGui::Selectable(entries[static_cast<size_t>(i)].label.c_str(), selected)) {
+      if (ImGui::Selectable(entries[static_cast<size_t>(i)].label.c_str(),
+                            selected)) {
         templateIndex = i;
       }
     }
     ImGui::EndCombo();
   }
 
-  ImGui::InputText("ClassName", classNameBuf, sizeof(classNameBuf));
+  ImGui::InputText("ScriptName", scriptNameBuf, sizeof(scriptNameBuf));
 
   const auto &current = entries[static_cast<size_t>(templateIndex)];
   const bool needsUpdGroup =
@@ -294,13 +303,13 @@ void EditorCodeTemplateScaffold::DrawImGuiPanel() {
   ImGui::Checkbox("既存を上書き", &forceOverwrite);
 
   if (ImGui::Button("生成")) {
-    CodeTemplateScaffoldRequest req{};
+    LuaScriptScaffoldRequest req{};
     req.templateId = current.id;
-    req.className = classNameBuf;
+    req.scriptName = scriptNameBuf;
     req.updCmpGroup = kUpdGroups[updGroupIndex];
     req.authorNote = authorNoteBuf;
     req.forceOverwrite = forceOverwrite;
-    const CodeTemplateScaffoldResult gen = Generate(req);
+    const LuaScriptScaffoldResult gen = Generate(req);
     statusMessage = gen.message;
     if (gen.success) {
       for (const auto &path : gen.writtenPaths) {

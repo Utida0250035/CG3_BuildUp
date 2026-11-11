@@ -1,0 +1,15 @@
+-- %AuthorNote%
+-- 更新コンポーネント用 Lua 雛形（ComponentUpd 相当・ランタイム読込は Phase 2）
+local M = {}
+
+M.scriptName = "%ScriptName%"
+-- C++ UpdCmpGroup 列挙に合わせたグループ名（Phase 2 でホストが参照予定）
+M.updCmpGroup = "%UpdCmpGroup%"
+
+function M.onResolve()
+end
+
+function M.onUpdate(dt)
+end
+
+return M

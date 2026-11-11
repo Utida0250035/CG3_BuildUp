@@ -1,9 +1,0 @@
-#include "System/%ClassName%.h"
-
-namespace Atrum {
-
-%ClassName%::%ClassName%(Entity &owner) : owner_{owner} {}
-
-void %ClassName%::Tick() {}
-
-} // namespace Atrum

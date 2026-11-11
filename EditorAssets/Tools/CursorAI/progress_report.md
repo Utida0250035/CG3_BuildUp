@@ -1757,3 +1757,18 @@
   - 用途: 配布ビルドでエディタ作成シーンを本番同等パスで試す
   - 使用場面: 制作物のスモークテスト、デモ配布、CI 用プレイ可能ビルド
   - 仕様: パスは exe 隣 `../EditorAssets` 基準、欠損時はタイトルフォールバック
+
+## セッション 2026-11-11（ギャップ在庫 → roadmap 手入れ）
+
+- **実施:** `implementation_gaps_index.json`（未解消 289）を `roadmap.md` に反映
+- **方針:** P0/P1 を各 `##` 節末の「ギャップスキャン追補」に 43 行（gap ID 付き）。P2/P3 はテーマ別在庫行＋正本参照
+- **追加:** ヘッダのギャップ在庫リンク、`## GapScan（索引）`
+- **再実行用:** `EditorAssets/Tools/CursorAI/syncGapScanToRoadmap.py`（index 更新後に再生成可）
+
+### roadmap 変更理由（§6.1）
+
+| 種別 | 内容 |
+|------|------|
+| 追加 | Audio / System / Camera / Scene / Render / Debug / Repository / Editor / UX にギャップ追補節 |
+| 統合 | P2/P3 246 件は節ごとに束ね（個別行は `implementation_gaps.md` 正本） |
+| 即時完了 | なし（実装タスクの新設のみ） |

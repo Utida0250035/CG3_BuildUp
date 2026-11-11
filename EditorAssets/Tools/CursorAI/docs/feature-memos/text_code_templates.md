@@ -1,33 +1,26 @@
-# テキスト系 %変数名% テンプレ（テンプレファイル）
+# テキスト系 %変数名% テンプレ（Lua スクリプト）
 
 ## 推測した用途
 
-- **レベル／ゲームロジック制作:** 新コンポーネント・行動クラスを命名規約どおりに素早く足す
-- **エディタ統合（次タスク）:** manifest 駆動でファイル生成・vcxproj 追記候補を提示
+- **レベル／ゲームロジック制作:** Draw / Upd / Beh 相当の Lua 雛形を命名規約どおりに素早く足す
+- **エディタ統合:** manifest 駆動で `Project/Assets/Scripts/` へファイル生成（Phase 1）。ランタイム読込は Phase 2
 
 ## 配置
 
-`EditorAssets/Templates/Code/`
+`EditorAssets/Templates/Lua/`
 
 - `manifest.json` — テンプレ ID、出力相対パス、必須トークン
-- `*.template` — 本体（`%ClassName%` 等）
+- `*.lua.template` — 本体（`%ScriptName%` 等）
 
 ## トークン規約
 
 | トークン | 意味 |
 |----------|------|
-| `%ClassName%` | C++ 型名（`Cmp` 接頭を含むことを推奨） |
-| `%UpdCmpGroup%` | `UpdCmpGroup` 列挙子名 |
-| `%AuthorNote%` | 任意コメント（空文字で置換可） |
-
-## スキャフォールド
-
-`EditorAssets/Tools/CodeTemplateGenerator/scaffold_from_template.py`
-
-- `list` — manifest のテンプレ ID 一覧
-- `generate <id> <ClassName>` — 置換・書き出し（`--dry-run` / `--force`）
+| `%ScriptName%` | Lua モジュール名（英字始まり・英数字と `_`） |
+| `%UpdCmpGroup%` | C++ `UpdCmpGroup` 列挙子名（更新雛形のみ） |
+| `%AuthorNote%` | 任意コメント（空で行ごと削除） |
 
 ## エディタ（DEVELOPMENT + USE_IMGUI）
 
-- メニュー **エディタ → コードテンプレ**、ドック **コードテンプレ**
-- `EditorCodeTemplateScaffold::DrawImGuiPanel()` — manifest 読み込みと生成
+- メニュー **エディタ → スクリプト**、ドック **スクリプト**
+- `EditorLuaScriptScaffold::DrawImGuiPanel()` — manifest 読み込みと生成

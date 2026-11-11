@@ -1,0 +1,16 @@
+-- %AuthorNote%
+-- 行動スクリプト雛形（Beh 相当・ランタイム読込は Phase 2）
+local M = {}
+
+M.scriptName = "%ScriptName%"
+
+function M.onEnter()
+end
+
+function M.onTick()
+end
+
+function M.onExit()
+end
+
+return M

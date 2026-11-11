@@ -1,0 +1,13 @@
+-- %AuthorNote%
+-- 描画コンポーネント用 Lua 雛形（ComponentDraw 相当・ランタイム読込は Phase 2）
+local M = {}
+
+M.scriptName = "%ScriptName%"
+
+function M.onResolve()
+end
+
+function M.onDraw()
+end
+
+return M

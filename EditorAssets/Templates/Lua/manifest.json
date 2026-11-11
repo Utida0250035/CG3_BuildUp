@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "tokenDelimiter": "%",
+  "description": "LuaJIT 用スクリプト雛形（Project/Assets/Scripts へ出力）",
+  "templates": [
+    {
+      "id": "component_draw",
+      "label": "ComponentDraw（描画コンポーネント）",
+      "outputs": [
+        {
+          "relativePath": "Project/Assets/Scripts/Components/Draw/%ScriptName%.lua",
+          "templateFile": "component_draw.lua.template"
+        }
+      ],
+      "requiredTokens": ["ScriptName"],
+      "optionalTokens": ["AuthorNote"]
+    },
+    {
+      "id": "component_upd",
+      "label": "ComponentUpd（更新コンポーネント）",
+      "outputs": [
+        {
+          "relativePath": "Project/Assets/Scripts/Components/Upd/%ScriptName%.lua",
+          "templateFile": "component_upd.lua.template"
+        }
+      ],
+      "requiredTokens": ["ScriptName", "UpdCmpGroup"],
+      "optionalTokens": ["AuthorNote"]
+    },
+    {
+      "id": "behavior",
+      "label": "Beh 系行動スクリプト",
+      "outputs": [
+        {
+          "relativePath": "Project/Assets/Scripts/Behaviors/%ScriptName%.lua",
+          "templateFile": "behavior.lua.template"
+        }
+      ],
+      "requiredTokens": ["ScriptName"],
+      "optionalTokens": ["AuthorNote"]
+    }
+  ]
+}
