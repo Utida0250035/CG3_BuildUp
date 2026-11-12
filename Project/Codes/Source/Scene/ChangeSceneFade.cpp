@@ -28,7 +28,7 @@ void ChangeSceneFade::Update() {
 
 	if (isSceneChange_) {
 
-		waitCount_ += FrameDeltaTime::Instance()->GetDeltaTime();
+		waitCount_ += ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 
 		if (waitCount_ >= 0.25f) {
 
@@ -39,7 +39,7 @@ void ChangeSceneFade::Update() {
 
 			waitCount_ = 1.0f;
 
-			timeRatio_ -= 1.0f / 0.25f * FrameDeltaTime::Instance()->GetDeltaTime();
+			timeRatio_ -= 1.0f / 0.25f * ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 
 			if (timeRatio_ <= 0.0f) {
 
@@ -49,7 +49,7 @@ void ChangeSceneFade::Update() {
 
 	} else {
 
-		timeRatio_ += 1.0f / 0.5f * FrameDeltaTime::Instance()->GetDeltaTime();
+		timeRatio_ += 1.0f / 0.5f * ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 
 		if (timeRatio_ >= 1.0f) {
 

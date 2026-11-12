@@ -12,6 +12,9 @@ namespace Atrum {
 void CmpMeshSphere::Draw() {
   AtrumEngine *engine = AtrumEngine::Instance();
   const Entity *owner = GetOwner();
+  if (owner == nullptr) {
+    return;
+  }
   const float scale = RefOwner().GetTransform().scale.x;
   float drawRadius = radius_ * scale;
   Math::Vector4 drawColor = colorVec_;

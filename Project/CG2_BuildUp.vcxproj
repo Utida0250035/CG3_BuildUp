@@ -109,7 +109,8 @@
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
+xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -148,7 +149,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
+xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -188,7 +190,8 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dxil.dll"
-xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
+xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
+xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>
@@ -210,6 +213,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Camera\CameraController\MovieCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\MovieCameraTrackLoader.cpp" />
+    <ClCompile Include="Codes\Source\Camera\ActiveCameraSystem.cpp" />
     <ClCompile Include="Codes\Source\Camera\CombatCameraShake.cpp" />
     <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp" />
     <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp" />
@@ -311,6 +315,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Scene\CommandScene.cpp" />
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp" />
     <ClCompile Include="Codes\Source\Scene\Scene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneCameraRig.cpp" />
     <ClCompile Include="Codes\Source\Scene\BossDeathPresentation.cpp" />
     <ClCompile Include="Codes\Source\Scene\PlayerDeathPresentation.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGame.cpp" />
@@ -319,6 +324,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneParticleDemo.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovie.cpp" />
@@ -371,6 +377,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpOrbiter.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpReflectAbleBullet.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpCamera.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpSwing.cpp" />
@@ -457,6 +464,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Camera\CameraController\MovieCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\MovieCameraTrackLoader.h" />
+    <ClInclude Include="Codes\Include\Camera\ActiveCameraSystem.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCamera.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCameraEasing.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
@@ -548,6 +556,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
     <ClInclude Include="Codes\Include\Scene\GameOrder.h" />
     <ClInclude Include="Codes\Include\Scene\Scene.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h" />
     <ClInclude Include="Codes\Include\Scene\BossDeathPresentation.h" />
     <ClInclude Include="Codes\Include\Scene\PlayerDeathPresentation.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGame.h" />
@@ -556,6 +565,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\Scene\SceneResult.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneParticleDemo.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovie.h" />
@@ -609,6 +619,7 @@ xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"</Command>
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpParry.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpReflectAbleBullet.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpRotator.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpScroll.h" />

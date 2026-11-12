@@ -49,7 +49,7 @@ void CameraGameIntroController::Update() {
     return;
   }
 
-  const float deltaTime = FrameDeltaTime::Instance()->GetDeltaTime();
+  const float deltaTime = ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
   phaseElapsedSeconds_ += deltaTime;
 
   if (phase_ == Phase::HpBarReveal) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/EngineAccess.h"
 #include <chrono>
 #include <memory>
 
@@ -35,18 +36,12 @@ class DeltaTime final {
 class FrameDeltaTime final {
    private:
 	std::unique_ptr<DeltaTime> deltaTime_;
-	FrameDeltaTime() = default;
-	~FrameDeltaTime() = default;
 
    public:
+	FrameDeltaTime() = default;
+	~FrameDeltaTime() = default;
 	FrameDeltaTime(const FrameDeltaTime& source) = delete;
 	FrameDeltaTime operator=(const FrameDeltaTime& source) = delete;
-
-	static FrameDeltaTime* Instance() {
-		static FrameDeltaTime instance;
-
-		return &instance;
-	}
 
 	void Initialize() { deltaTime_ = std::make_unique<DeltaTime>(); }
 	void CalcDeltaTime() { 

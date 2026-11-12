@@ -22,7 +22,7 @@ void SetupStageLighting() {
       .intensity = 8.0f,
       .lightModel = Atrum::LightModel::HalfLambert,
   };
-  Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 }
 
 } // namespace
@@ -52,7 +52,7 @@ void SceneResult::DrawScene() {
   SetupStageLighting();
   DrawBackgrounds();
 
-  if (Atrum::AtrumEngine *engine = Atrum::AtrumEngine::Instance()) {
+  if (Atrum::AtrumEngine *engine = ::Atrum::EngineInstance()) {
     Atrum::SceneScreenUi::DrawResultSceneUi(engine, GetCamera());
   }
 }
@@ -119,6 +119,8 @@ void SceneResult::DrawBackgrounds() {
 }
 
 SceneResult::SceneResult() {}
+
+SceneResult::~SceneResult() = default;
 
 SceneResult *SceneResult::Instance() {
   static SceneResult instance;

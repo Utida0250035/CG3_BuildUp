@@ -59,8 +59,6 @@ void AgentDebugLogDraw(const char *location, const char *message,
 
 namespace Atrum {
 
-	std::unique_ptr<Draw> Draw::instance_ = nullptr;
-
 	void Draw::Initialize(ID3D12Device* device,
 		CommandContext* commandContextDirect,
 		DescriptorAllocator* srvAllocator) {
@@ -664,6 +662,10 @@ namespace Atrum {
 		const uint32_t& vertexCountInInstance,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
+		if (indexDataCountInInstance == 0 || vertexCountInInstance == 0) {
+			return;
+		}
+
 		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
 			return;
 		}
@@ -715,6 +717,10 @@ namespace Atrum {
 	void Draw::DrawCall(const uint32_t& textureIndex,
 		const uint32_t& vertexCountInInstance,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
+
+		if (vertexCountInInstance == 0) {
+			return;
+		}
 
 		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
 			return;

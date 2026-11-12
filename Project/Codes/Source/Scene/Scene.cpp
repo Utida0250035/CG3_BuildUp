@@ -1,19 +1,19 @@
-﻿#include "Scene/Scene.h"
+#include "Scene/Scene.h"
 
 #include "Camera/StageViewCamera.h"
+#include "System/Entity/Entity.h"
 #include "Engine/AtrumEngine.h"
 #include "Scene/CommandChangeScene.h"
 
 #include <cmath>
 
-// Release（NDEBUG）では DebugCamera を使わない
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
 #include "ForDebug/DebugCamera.h"
 #endif
 
 namespace Atrum {
 
-Scene::Scene() { InitializeCamera(); }
+Scene::Scene() = default;
 
 Scene::~Scene() = default;
 
@@ -30,34 +30,39 @@ void Scene::ReleaseParticleEmitterManager() {
 
 void Scene::EnsureCommonResources() { EnsureParticleEmitterManager(); }
 
-void Scene::ReleaseCommonResources() { ReleaseParticleEmitterManager(); }
+void Scene::ReleaseCommonResources() {
+  cameraRig_.Clear();
+  ReleaseParticleEmitterManager();
+}
 
 Particle::Emitter::EmitterManager *Scene::GetParticleEmitterManager() {
   EnsureParticleEmitterManager();
   return particleEmitterManager_.get();
 }
 
-void Scene::InitializeCamera() {
-#if defined(DEVELOPMENT) && !defined(NDEBUG)
-  camera_ = std::make_unique<Atrum::Debug::DebugCamera>();
-#else
-  camera_ = std::make_unique<Atrum::Camera>();
-#endif
+Atrum::Camera *Scene::GetCamera() { return cameraRig_.GetPrimaryCamera(); }
 
-  camera_->Initialize();
-  camera_->CreateOrthographicMatrix(Atrum::Window::kDefaultClientWidth,
-                                    Atrum::Window::kDefaultClientHeight);
+const Atrum::Camera *Scene::GetCamera() const {
+  return cameraRig_.GetPrimaryCamera();
+}
+
+void Scene::PrepareCamerasForDraw() {
+  cameraRig_.PrepareActiveCameraBeforeDraw(*this);
 }
 
 void Scene::SetupStageViewCamera() {
   using namespace Atrum;
 
+  Camera *camera = GetCamera();
+  if (camera == nullptr) {
+    return;
+  }
+
   const StageViewCameraPose pose = ComputeStageBattleViewPose();
-  ApplyStageViewCameraPose(camera_.get(), pose);
+  ApplyStageViewCameraPose(camera, pose);
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
-  if (auto *debugCam =
-          dynamic_cast<Debug::DebugCamera *>(camera_.get())) {
+  if (auto *debugCam = dynamic_cast<Debug::DebugCamera *>(camera)) {
     debugCam->RefPivot() = pose.pivot;
     debugCam->RefDistance() = std::abs(pose.eye.z - pose.pivot.z);
   }

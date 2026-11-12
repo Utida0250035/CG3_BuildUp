@@ -1,18 +1,5 @@
 # ムービー用シーン（SceneMovie）
 
-**クラス:** `SceneMovie` / `SceneMovieRegistry`  
-**依存:** `MovieCameraController`、`EditorAssets/Camera/*.json`
+**正本:** [movie_camera_controller.md](./movie_camera_controller.md) の「SceneMovie」節。
 
-## 用途
-
-- **ランタイム:** 短いカットシーンを単独シーンとして再生し、完了後に呼び出し元へ戻る
-- **制作:** トラック JSON を差し替えてリピート確認（スカイドームのみの簡易3D背景）
-
-## ポリシー
-
-- `IsStageViewCameraLocked() == true`
-- カメラは `MovieCameraController` のみ（失敗時は即 return へ）
-
-## 起動例
-
-`movie_camera_controller.md` 参照。
+GAP・`roadmap_rough` の `spec: feature-memos/scene_movie.md` 参照用スタブ（重複本文は統合済み）。

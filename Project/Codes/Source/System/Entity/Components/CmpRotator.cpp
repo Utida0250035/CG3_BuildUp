@@ -5,7 +5,7 @@
 
 namespace Atrum {
 
-void CmpRotator::ResolveDependence() { frameDeltaTime_ = FrameDeltaTime::Instance(); }
+void CmpRotator::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
 
 void CmpRotator::Update() {
   if (!entPivot_) {

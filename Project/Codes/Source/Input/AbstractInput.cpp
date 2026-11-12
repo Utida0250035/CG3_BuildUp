@@ -85,7 +85,7 @@ void ApplyGamepadInput(I::XInputController *gamepad, Atrum::InputData &data) {
 namespace Atrum {
 
 void AbstractInput::Initialize() {
-  input_ = I::PlayInput::Instance();
+  input_ = ::Atrum::EnginePlayInput();
   gamepad_ = I::XInputController::Instance();
 }
 
@@ -117,7 +117,7 @@ void AbstractInput::Update() {
   }
 
   if (spacedVectorTimer_ > 0.0f) {
-    spacedVectorTimer_ -= FrameDeltaTime::Instance()->GetDeltaTime();
+    spacedVectorTimer_ -= ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 
     if (spacedVectorTimer_ <= 0.0f) {
       spacedVectorTimer_ = 0.0f;

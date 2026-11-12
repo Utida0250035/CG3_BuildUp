@@ -15,8 +15,6 @@
 
 namespace Atrum {
 
-	std::unique_ptr<TextureStorage> TextureStorage::instance_ = nullptr;
-
 	void TextureStorage::Initialize(CommandContext* commandContextDirect, Fence* fence, SwapChain* swapChain, DescriptorAllocator* srvAllocator, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources) {
 
 		pCommandContextDirect_ = commandContextDirect;

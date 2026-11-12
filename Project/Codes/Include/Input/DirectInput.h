@@ -21,19 +21,11 @@ class DirectInput final {
 private:
   template <typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-  ~DirectInput() = default;
-  DirectInput() = default;
-
 public:
+  DirectInput() = default;
+  ~DirectInput() = default;
   DirectInput(const DirectInput &source) = delete;
   DirectInput operator=(const DirectInput &source) = delete;
-
-  static DirectInput *Instance() {
-
-    static DirectInput instance;
-
-    return &instance;
-  }
 
 private:
   Window *window_ = nullptr;

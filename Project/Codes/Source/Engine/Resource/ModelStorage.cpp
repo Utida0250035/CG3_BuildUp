@@ -36,14 +36,16 @@ namespace Atrum {
 		return nullptr;
 	}
 
-	std::unique_ptr<ModelStorage> ModelStorage::instance_ = nullptr;
-
-	void ModelStorage::Initialize(CommandContext* commandContextDirect, ID3D12Device* device, std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources, uint32_t defaultTextureIndex) {
+	void ModelStorage::Initialize(
+	    CommandContext* commandContextDirect, ID3D12Device* device,
+	    std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources,
+	    uint32_t defaultTextureIndex, TextureStorage* textureStorage) {
 
 		pCommandContextDirect_ = commandContextDirect;
 		pDevice_ = device;
 		pTemporaryResources_ = pTemporaryResources;
 		defaultTextureSrvIndex_ = defaultTextureIndex;
+		textureStorage_ = textureStorage;
 
 	}
 
@@ -428,7 +430,8 @@ namespace Atrum {
 					textureFilePath = directoryPath + "/" + textureFileName;
 
 					// ファイルパスを基にテクスチャ取得
-					assetMaterial->textureSrvIndex = TextureStorage::Instance()->GetTexture(textureFilePath);
+					assetMaterial->textureSrvIndex =
+					    textureStorage_->GetTexture(textureFilePath);
 
 					assetMaterialData.emplace_back(assetMaterial);
 

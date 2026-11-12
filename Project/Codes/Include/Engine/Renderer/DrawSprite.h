@@ -22,6 +22,7 @@ namespace Atrum {
 	class AtrumEngine;
 
 	class Camera;
+	class TextureStorage;
 
 	class DrawSprite final {
 
@@ -82,6 +83,7 @@ namespace Atrum {
 		ID3D12Device* pDevice_ = nullptr;
 		CommandContext* pCommandContextDirect_ = nullptr;
 		DescriptorAllocator* pSrvAllocator_ = nullptr;
+		TextureStorage* textureStorage_ = nullptr;
 
 		inline static constexpr uint32_t kMaxDrawCount = 1024;
 
@@ -96,19 +98,17 @@ namespace Atrum {
 
 	private:
 
-		static std::unique_ptr<DrawSprite> instance_;
-
 		Camera* camera_ = nullptr;
+
+	public:
 
 		struct Token {
 			explicit Token() = default;
 		};
 
-	public:
-
 		DrawSprite(Token) {}
 
-		void Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator);
+		void Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator, TextureStorage* textureStorage);
 
 		/// <summary>
 		/// Spriteの準備
@@ -139,32 +139,8 @@ namespace Atrum {
 
 		void SetCamera(Camera* camera) { camera_ = camera; }
 
-		/* シングルトン */
-
 		DrawSprite operator=(const DrawSprite& source) = delete;
 		DrawSprite(const DrawSprite& source) = delete;
-
-		static DrawSprite* Instance() {
-
-			if (!instance_) {
-
-				instance_ = std::make_unique<DrawSprite>(Token{});
-
-			}
-
-			return instance_.get();
-
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-
-				instance_.reset();
-
-			}
-
-		}
 
 	};
 

@@ -200,6 +200,7 @@ void System::Update(const float deltaSeconds) {
 }
 
 void System::DrawNavigatorPortrait(AtrumEngine *engine, Camera *camera) const {
+  (void)camera;
   if (navigator_.portraitTexturePaths.empty()) {
     return;
   }

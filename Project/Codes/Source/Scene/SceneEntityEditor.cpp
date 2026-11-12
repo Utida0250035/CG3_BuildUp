@@ -1,17 +1,21 @@
 #include "Scene/SceneEntityEditor.h"
 
+#include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
+#include "Scene/SceneParticleDemo.h"
 #include "Scene/SceneParticleEditor.h"
+#include "System/Editor/Entity/EntityEditor.h"
+#include "System/Entity/Entity.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorInfiniteGrid.h"
 #include "System/Editor/EditorSceneRenderTarget.h"
-#include "System/Editor/Entity/EntityEditor.h"
-#include "System/Entity/Entity.h"
+#endif
 #include <vector>
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
@@ -29,7 +33,7 @@ void SetupEditorLighting() {
       .intensity = 6.0f,
       .lightModel = Atrum::LightModel::HalfLambert,
   };
-  Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
@@ -130,10 +134,12 @@ void SceneEntityEditor::Update() {
     editor_->Ui().requestPlayRuntimeScene = false;
     editor_->SaveToJsonPath(editor_->Ui().jsonFilePath);
     RebuildPreviewScene();
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
     Editor::EditorFrame::Instance().SetSceneViewTab(
         Editor::SceneViewTab::Runtime);
     editor_->Ui().previewSimulationEnabled = true;
     editor_->Ui().requestFocusRuntimeSceneView = true;
+#endif
   }
 
   if (editor_->Ui().requestOpenParticleEditor) {
@@ -144,9 +150,16 @@ void SceneEntityEditor::Update() {
     return;
   }
 
-  if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F2)) {
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
     Atrum::CommandChangeScene::Instance()->Set(
         SceneParticleEditor::Instance(),
+        std::make_unique<ChangeSceneFade>().release());
+    return;
+  }
+
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
+    Atrum::CommandChangeScene::Instance()->Set(
+        SceneParticleDemo::Instance(),
         std::make_unique<ChangeSceneFade>().release());
     return;
   }
@@ -172,7 +185,7 @@ void SceneEntityEditor::Update() {
 }
 
 void SceneEntityEditor::Draw() {
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   editor_->LayoutEditorWorkbench();
@@ -218,6 +231,8 @@ void SceneEntityEditor::DrawPreviewEntities() {
   }
 }
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+
 void SceneEntityEditor::DrawSceneViewContent(
     const Editor::SceneViewTab viewTab, const int width, const int height) {
   const bool isEditViewPass = viewTab == Editor::SceneViewTab::Edit;
@@ -225,7 +240,7 @@ void SceneEntityEditor::DrawSceneViewContent(
     return;
   }
 
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
@@ -266,12 +281,14 @@ void SceneEntityEditor::DrawSceneViewContent(
 #endif
 }
 
+#endif
+
 void SceneEntityEditor::DrawScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   // Draw() 内でレンダーテクスチャへ描画済み
 #else
   SetupEditorLighting();
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }

@@ -25,6 +25,7 @@
 #include "System/Entity/Entity.h"
 #include "System/DeltaTime.h"
 #include "System/EntityFactory.h"
+#include "System/PlayerParryReach.h"
 #include "System/Particle/GameCombatParticleEffects.h"
 #include "System/PlaySe.h"
 
@@ -78,6 +79,8 @@ namespace {
 namespace Atrum {
 
 	SceneGame::SceneGame() {}
+
+	SceneGame::~SceneGame() = default;
 
 	SceneGame* SceneGame::Instance() {
 		static SceneGame instance;
@@ -178,7 +181,7 @@ namespace Atrum {
 
 		UpdateEntities();
 
-		if (Atrum::FrameDeltaTime* frameDeltaTime = Atrum::FrameDeltaTime::Instance()) {
+		if (Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime()) {
 			Atrum::CombatCameraShake& cameraShake =
 				Atrum::CombatCameraShake::Instance();
 			const float deltaTime = frameDeltaTime->GetDeltaTime();
@@ -189,7 +192,7 @@ namespace Atrum {
 
 		Atrum::Particle::Combat::SetEffectCamera(GetCamera());
 		Atrum::Particle::Combat::UpdateCombatParticleEffects();
-		if (Atrum::FrameDeltaTime *frameDeltaTime = Atrum::FrameDeltaTime::Instance()) {
+		if (Atrum::FrameDeltaTime *frameDeltaTime = ::Atrum::EngineFrameDeltaTime()) {
 			Atrum::OperatorGuidance::System::Instance().Update(
 				frameDeltaTime->GetDeltaTime());
 		}
@@ -216,7 +219,7 @@ namespace Atrum {
 			return;
 		}
 
-		Atrum::AtrumEngine* engine = Atrum::AtrumEngine::Instance();
+		Atrum::AtrumEngine* engine = ::Atrum::EngineInstance();
 		if (engine == nullptr || GetCamera() == nullptr) {
 			return;
 		}
@@ -229,7 +232,7 @@ namespace Atrum {
 			return;
 		}
 
-		Atrum::Audio::AudioManager* audio = Atrum::Audio::Manager::Instance();
+		Atrum::Audio::AudioManager* audio = ::Atrum::EngineAudioManager();
 		if (sceneBgmHandle_.isSuccess &&
 			audio->IsPlaying(sceneBgmHandle_)) {
 			return;
@@ -240,7 +243,7 @@ namespace Atrum {
 	}
 
 	void SceneGame::DrawHowToPlayUi() {
-		Atrum::AtrumEngine* engine = Atrum::AtrumEngine::Instance();
+		Atrum::AtrumEngine* engine = ::Atrum::EngineInstance();
 		if (engine == nullptr || GetCamera() == nullptr) {
 			return;
 		}
@@ -254,7 +257,7 @@ namespace Atrum {
 			return;
 		}
 
-		Atrum::AtrumEngine* engine = Atrum::AtrumEngine::Instance();
+		Atrum::AtrumEngine* engine = ::Atrum::EngineInstance();
 		if (engine == nullptr || GetCamera() == nullptr) {
 			return;
 		}
@@ -272,7 +275,7 @@ namespace Atrum {
 			return;
 		}
 
-		Atrum::Engine* engine = Atrum::Engine::Instance();
+		Atrum::Engine* engine = ::Atrum::EngineInstance();
 		if (engine == nullptr || GetCamera() == nullptr) {
 			return;
 		}
@@ -354,7 +357,7 @@ namespace Atrum {
 			return;
 		}
 
-		Atrum::FrameDeltaTime* frameDeltaTime = Atrum::FrameDeltaTime::Instance();
+		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {
 			return;
 		}
@@ -378,7 +381,7 @@ namespace Atrum {
 			return;
 		}
 
-		Atrum::FrameDeltaTime* frameDeltaTime = Atrum::FrameDeltaTime::Instance();
+		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {
 			return;
 		}
@@ -456,7 +459,7 @@ namespace Atrum {
 
 		if (player_ && pendingDefeat_ == DefeatKind::None) {
 			Atrum::PlayerTerrainSilhouette::DrawOccludedSilhouette(
-			    Atrum::AtrumEngine::Instance(), player_->GetWorldMatrix(),
+			    ::Atrum::EngineInstance(), player_->GetWorldMatrix(),
 			    Atrum::kParryColliderRadius);
 		}
 	}

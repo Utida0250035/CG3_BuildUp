@@ -34,8 +34,6 @@ float ClampVolume(const float volume) {
 
 } // namespace
 
-	std::unique_ptr<AudioManager> AudioManager::instance_ = nullptr;
-
 	AudioManager::~AudioManager() {
 
 		sourceVoicePool_.clear();

@@ -34,7 +34,7 @@ Math::Vector3 OutwardFromBossThroughOrbiter(Entity &boss,
 void BehEnemyOrbiterSpoke::ResolveDependence() {
   cmpBullet_ = RefGrandOwner().GetUpdCmp<CmpReflectAbleBullet>();
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void BehEnemyOrbiterSpoke::BeginTelegraph() {

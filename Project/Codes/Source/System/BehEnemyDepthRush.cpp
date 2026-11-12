@@ -73,7 +73,7 @@ void BehEnemyDepthRush::RegisterReturnTelegraph() {
 
 void BehEnemyDepthRush::ResolveDependence() {
   cmpEnemy_ = RefGrandOwner().GetUpdCmp<CmpEnemy>();
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void BehEnemyDepthRush::Initialize() {

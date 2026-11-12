@@ -7,6 +7,7 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/EntityFactory.h"
+#include "System/Entity/Entity.h"
 
 #include <algorithm>
 
@@ -14,6 +15,10 @@ namespace Atrum {
 
 SceneMovie::SceneMovie(std::string trackJsonPath, Scene *returnScene)
     : trackJsonPath_(std::move(trackJsonPath)), returnScene_(returnScene) {}
+
+SceneMovie::~SceneMovie() = default;
+
+SceneMovieRegistry::~SceneMovieRegistry() = default;
 
 SceneMovieRegistry &SceneMovieRegistry::Instance() {
   static SceneMovieRegistry instance;
@@ -98,7 +103,7 @@ void SceneMovie::Update() {
   }
 
   if (returnScene_ != nullptr &&
-      Input::PlayInput::Instance()->IsKeyTrigger(Input::Key::Escape)) {
+      ::Atrum::EnginePlayInput()->IsKeyTrigger(Input::Key::ESCAPE)) {
     RequestReturnToCaller();
     return;
   }

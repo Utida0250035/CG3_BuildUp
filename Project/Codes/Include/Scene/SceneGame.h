@@ -20,7 +20,7 @@ class Entity;
 class SceneGame : public Scene {
 public:
   SceneGame();
-  ~SceneGame() override = default;
+  ~SceneGame() override;
 
   void EnterScene() override;
   void Update() override;

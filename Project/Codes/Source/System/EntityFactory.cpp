@@ -1,4 +1,8 @@
 #include "System/EntityFactory.h"
+
+#include "System/Editor/Entity/EntityEditorDefinition.h"
+#include "System/Entity/Components/CmpCamera.h"
+#include "System/Json/JsonHandler.h"
 #include "System/CombatBulletTuning.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Quaternion.h"
@@ -29,6 +33,7 @@
 #include "System/Entity/EntityTagRegistry.h"
 #include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/Playable/CmpMoveByInput.h"
+#include <filesystem>
 #include <iterator>
 #include <numbers>
 #include <cstdlib>
@@ -419,6 +424,64 @@ std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(
   cmpLhRigidBody->SetIsUseGravity(false);
   cmpLhRigidBody->SetIsUseSpaceEnd(false);
   return bullet;
+}
+
+namespace {
+
+constexpr const char *kMainCameraPrefabPath =
+    "../EditorAssets/Entities/MainCamera.json";
+constexpr const char *kMainCameraTag = "camera.main";
+
+} // namespace
+
+std::unique_ptr<Entity> EntityFactory::FromEntityDefinition(
+    const EntityEditor::EntityDefinition &definition) {
+  std::unique_ptr<Entity> entity = std::make_unique<Entity>();
+  entity->SetInitialTransform(definition.initialTransform);
+  if (!definition.tags.empty()) {
+    entity->SetTagsFromNames(definition.tags);
+  } else if (!definition.tagHashes.empty()) {
+    entity->SetTagHashes(definition.tagHashes);
+  }
+
+  for (const EntityEditor::ComponentSlot &slot : definition.components) {
+    if (slot.kind == EntityEditor::ComponentSlotKind::Upd &&
+        slot.typeName == "CmpCamera") {
+      entity->AddUpdCmp<CmpCamera>();
+    }
+  }
+
+  if (!entity->HasUpdCmp<CmpCamera>()) {
+    return nullptr;
+  }
+
+  entity->ResolveDependencies();
+  entity->Initialize();
+  return entity;
+}
+
+std::unique_ptr<Entity> EntityFactory::MainCameraEntity() {
+  std::unique_ptr<Entity> entity = std::make_unique<Entity>();
+  entity->AddTag(kMainCameraTag);
+  entity->AddUpdCmp<CmpCamera>();
+  entity->ResolveDependencies();
+  entity->Initialize();
+  return entity;
+}
+
+std::unique_ptr<Entity> EntityFactory::TryMainCameraFromDefaultPrefab() {
+  namespace fs = std::filesystem;
+  if (!fs::exists(kMainCameraPrefabPath)) {
+    return nullptr;
+  }
+  try {
+    const EntityEditor::EntityDefinition definition =
+        Json::JsonHandler::LoadFromFile<EntityEditor::EntityDefinition>(
+            kMainCameraPrefabPath);
+    return FromEntityDefinition(definition);
+  } catch (...) {
+    return nullptr;
+  }
 }
 
 std::unique_ptr<Entity> EntityFactory::Parry(Entity *parent) {

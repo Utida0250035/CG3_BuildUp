@@ -1479,3 +1479,293 @@
 ## 用途不明で確認待ち（§6.4）
 
 なし
+
+---
+
+## エンティティカメラ要件ドキュメント（P0）
+
+- **実施:** `entity_camera_components.md` 作成、`roadmap.md` リンク、`scene_movie`→`movie_camera_controller` 統合スタブ、`roadmap_rough_old` 重複本文削除
+- **手動確認:** 未実施（ドキュメントのみ）
+- **未検証:** なし（ビルド対象外）
+- **次:** P1 実装（`cursor/cmp-camera-entity-0f04`）
+
+## エンティティカメラ Phase P1 完了
+
+- **実施:** `CmpCamera` / `SceneCameraRig` / `ActiveCameraSystem` / `MainCamera.json` / `EntityFactory` プレハブ読み込み / エディタ登録 / `GameOrder` 描画直前 Prepare
+- **手動確認:** **未実施**（タイトル・ゲーム・エディタでのカメラ挙動）
+- **段階末・未検証:** **あり**（MSVC ビルド・実機確認はローカル待ち）
+- **次 Phase:** **P2** — エンジン側の複数カメラ登録・アクティブ index 切替、primary 契約明文化
+
+## 推測した用途（§6.4）
+
+- **entity_camera_components.md**
+  - 用途: エンティティカメラの要件・段階チェックの正本（他エージェント引き継ぎ）
+  - 使用場面: 半自律・Cloud Agent の着手前 Read
+  - 仕様: progress_report とチェック更新を同期
+- **CmpCamera / SceneCameraRig（P1）**
+  - 用途: 全シーンで主カメラをエンティティ化し `GetCamera()` を統一
+  - 使用場面: ランタイム描画、StageView 適用、将来の複数カメラ
+  - 仕様: 自動スポーン、`camera.main` タグ、描画直前行列更新
+
+## Release スタートアップシーン（launch_config.json）
+
+- **実装:** `EditorAssets/launch_config.json`・`ResolveStartupScenePath`・Release `CommandScene` → `SceneBuildUp`・エディタ「起動シーンに設定」・Post-build で `EditorAssets` 同梱
+- **ビルド:** Development / Release x64 成功（エージェント環境）
+- **手動確認:** Release exe 起動で JSON シーン表示、F1 でタイトル復帰は未確認
+
+## ギャップスキャン tick（SCAN-20261110-230538）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（7回目）
+- **newIds:** 3（Draw 内 camera Update、RT SetCamera、BuildPreviewScene のみ）
+- **備考:** ブランチ `cursor/cmp-camera-entity-0f04`（カメラ PR と同ブランチに doc 追記）
+
+## ギャップスキャン tick（SCAN-20261110-231005）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（7回目）
+- **newIds:** 3（IsBgmLoopPaused 未使用、再生秒 API 未使用、遷移中 BGM 維持スキップ）
+
+## ギャップスキャン tick（SCAN-20261110-232021）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（7回目）
+- **newIds:** 3（未知 Cmp UI、単一ヒエラルキー選択、型変更 1 スロット）
+
+## ギャップスキャン tick（SCAN-20261110-233005）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（8回目）
+- **newIds:** 3（BuildUp entities と cameraRig 分離、RT で StageView 再上書き、Runtime タブ差し替え）
+
+## ギャップスキャン tick（SCAN-20261110-234025）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（8回目）
+- **newIds:** 3（BGM シーク未配線、ピッチ未配線、撃破演出中の維持スキップ）
+
+## ギャップスキャン tick（SCAN-20261110-235013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（8回目）
+- **newIds:** 3（インスタンス複製 API 無し、空追加のみ、HitSphere 単一球編集）
+
+## ギャップスキャン tick（SCAN-20261111-000032）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（9回目）
+- **newIds:** 3（SceneCameraRig 走査範囲、プレビュー rig カメラ、PlayRequest 起動未配線）
+
+## ギャップスキャン tick（SCAN-20261111-001015）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（9回目）
+- **newIds:** 3（GetSeVolume 未配線、GetSeFrequencyRatio 未配線、リザルト Exit 即 BGM 停止）
+
+## ギャップスキャン tick（SCAN-20261111-002014）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（9回目）
+- **newIds:** 3（CmpCamera UI 無し、コンポ単体削除、タグ一括付与無し）
+
+## ギャップスキャン tick（SCAN-20261111-003024）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（10回目）
+- **newIds:** 3（Cmp 正射影既定、BuildUp Update 漏れ、stageView ロック固定）
+
+## ギャップスキャン tick（SCAN-20261111-004014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（10回目）
+- **newIds:** 3（Game Exit 即 BGM 停止、StopSe 未使用、PlaySe キャッシュ無期限）
+
+## ギャップスキャン tick（SCAN-20261111-005013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（10回目）
+- **newIds:** 3（削除後シーン先頭固定、ロードで選択 0、実行順 1 件ずつ）
+
+## ギャップスキャン tick（SCAN-20261111-010025）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（11回目）
+- **newIds:** 3（BuildUp ロード失敗ダミー、起動パス試行 UI 無し、BuildEntities に MainCamera 無し）
+
+## ギャップスキャン tick（SCAN-20261111-011012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（11回目）
+- **newIds:** 3（SetSeVolume 未使用、IsPlaying+Paused、フェード中盤で次 BGM）
+
+## ギャップスキャン tick（SCAN-20261111-012017）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（11回目）
+- **newIds:** 3（シーン一覧二段、プレハブ常時新規、Cmp 型変更で params リセット）
+
+## ギャップスキャン tick（SCAN-20261111-013013）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（12回目）
+- **newIds:** 3（startup 空で Title、launch_config が Scene_0、Enter で SetupStageViewCamera）
+
+## ギャップスキャン tick（SCAN-20261111-014014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（12回目）
+- **newIds:** 3（SetSeFrequency 未使用、GameOrder 音声未管理、イントロ中 Maintain）
+
+## ギャップスキャン tick（SCAN-20261111-015018）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（12回目）
+- **newIds:** 3（Dock 初回固定、直近ドロップ 1 Cmp、新規即保存）
+
+## ギャップスキャン tick（SCAN-20261111-020020）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（13回目）
+- **newIds:** 3（Exit でタブ未復帰、JSON パス非表示、フェード中 F1 無効）
+
+## ギャップスキャン tick（SCAN-20261111-021016）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（13回目）
+- **newIds:** 3（PlaySe ハンドル破棄、ワンショット一括停止なし、Title Submit+フェード）
+
+## ギャップスキャン tick（SCAN-20261111-022018）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（13回目）
+- **newIds:** 3（保存後プレビュー無し、複数ドロップ上書き、シーン切替でプレハブ選択残り）
+
+## ギャップスキャン tick（SCAN-20261111-023031）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（14回目）
+- **newIds:** 3（BuildUp タグカタログ未同期、AllowDebugCamera 未上書き、scaffold 完了案内が Launch のみ）
+
+## ギャップスキャン tick（SCAN-20261111-024014）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（14回目）
+- **newIds:** 3（ストリームプール奪取、Resume が Start のみ、5MB 閾値のみでストリーム判定）
+
+## ギャップスキャン tick（SCAN-20261111-025013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（14回目）
+- **newIds:** 3（削除時子の親付替え無し、CmpCamera 既定 params 無し、Cmp 1 件ずつ削除のみ）
+
+## ギャップスキャン tick（SCAN-20261111-030016）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（15回目）
+- **newIds:** 3（TryLoad タグ未同期、ビュー毎ライト再設定、Registry Launch 蓄積）
+
+## ギャップスキャン tick（SCAN-20261111-031017）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（15回目）
+- **newIds:** 3（Paused 中 Update スキップ、OnStreamEnd 瞬断、BGM 秒数 44.1kHz 固定）
+
+## ギャップスキャン tick（SCAN-20261111-032014）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（15回目）
+- **newIds:** 3（型変更で params 全置換、同名インポート連番、起動設定が暗黙 Save）
+
+## ギャップスキャン tick（SCAN-20261111-033012）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（16回目）
+- **newIds:** 3（launch 失敗が空文字、起動パス未正規化、BuildUp ルートのみ Draw）
+
+## ギャップスキャン tick（SCAN-20261111-034021）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（16回目）
+- **newIds:** 3（失敗時 playId 不整合、PCM 端数退避、BGM フォールバックで短音解放）
+
+## ギャップスキャン tick（SCAN-20261111-035014）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（16回目）
+- **newIds:** 3（プレイモードのみトグル、タグ改名 1 語ずつ、JSON パス自由編集）
+
+## ギャップスキャン tick（SCAN-20261111-040020）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（17回目）
+- **newIds:** 3（launch 1 キー保存、起動前 JSON 未検証、BuildUp 表示名が ctor 仮値）
+
+## ギャップスキャン tick（SCAN-20261111-041012）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（17回目）
+- **newIds:** 3（SE index 永久キャッシュ、初期 Refill 1 回、OnBufferEnd が Streaming のみ）
+
+## ギャップスキャン tick（SCAN-20261111-042015）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（17回目）
+- **newIds:** 3（D&D 後プレビュー未更新、from_json params 未マージ、衝突リネーム連番のみ）
+
+## ギャップスキャン tick（SCAN-20261111-043006）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（18回目）
+- **newIds:** 3（ChangeScene 常時描画、Enter 無条件、PlayRequest 未 Clear）
+
+## ギャップスキャン tick（SCAN-20261111-044011）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（18回目）
+- **newIds:** 3（BGM Pause が Stop のみ、Resume に Refill なし、PlaySceneBgm 失敗 playId）
+
+## ギャップスキャン tick（SCAN-20261111-045006）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（18回目）
+- **newIds:** 3（プレハブ先頭 1 件、Drop キュー不可視、インスタンス複製 UI なし）
+
+## ギャップスキャン tick（SCAN-20261111-050017）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（19回目）
+- **newIds:** 3（子 Entity 未 Initialize、カメラ無し無言 return、Launch は Enter なし）
+
+## ギャップスキャン tick（SCAN-20261111-051011）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（19回目）
+- **newIds:** 3（Decoder EOF、Waiting 非ループ即停止、ストリーム wfEx 固定）
+
+## ギャップスキャン tick（SCAN-20261111-052010）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（19回目）
+- **newIds:** 3（プレハブ連番、一覧フルパス、AssetPath プレビュー1回）
+
+## ギャップスキャン tick（SCAN-20261111-053014）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（20回目）
+- **newIds:** 3（実行はタブのみ、固定ライト上書き、Enter で Runtime 強制）
+
+## ギャップスキャン tick（SCAN-20261111-054008）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（20回目）
+- **newIds:** 3（MF PCM 固定、バッファ 0 埋め、SE 枯渇 assert）
+
+## ギャップスキャン tick（SCAN-20261111-055013）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（20回目）
+- **newIds:** 3（タグ 1 件付与、実行順単体、型差替 params 全置換）
+
+## ギャップスキャン tick（SCAN-20261111-060023）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（21回目）
+- **newIds:** 3（シーン一覧 Scenes のみ、launch 空 path、Exit で Ui 残存）
+- **fix:** `EntityEditorUi-029` と `-019` の scopeKey 衝突（:745）を :746 に分離
+
+## ギャップスキャン tick（SCAN-20261111-061024）
+
+- **useCase:** UC-Play / **scenario:** PLY-Audio-001（21回目）
+- **newIds:** 3（Load index キャッシュ、PlayStreaming playId、5MB 閾値固定）
+
+## ギャップスキャン tick（SCAN-20261111-062020）
+
+- **useCase:** UC-Authoring / **scenario:** AUT-AssetLoop-001（21回目）
+- **newIds:** 3（プレハブ定義のみ、タグ全解除 1 体、カタログ改名 1 件）
+
+## ギャップスキャン tick（SCAN-20261111-063020）
+
+- **useCase:** UC-Debug / **scenario:** DBG-FeatureScene-001（22回目）
+- **newIds:** 3（instanceName 未反映、プレビュー親のみ、scaffold は名前のみ）
+
+## ギャップスキャンループ停止（ユーザー指示）
+
+- **日時:** 2026-11-11（JST）
+- **操作:** `loop-gap-scan`（600s）を `unsubscribe`（`sub_dbb157f3-f608-4454-966b-142597f448d8`）
+- **直前状態:** オープン GAP 289、完了スキャン 96 回（tick 97 まで）
+
+## 推測した用途（§6.4）
+
+- **launch_config / SceneBuildUp 起動**
+  - 用途: 配布ビルドでエディタ作成シーンを本番同等パスで試す
+  - 使用場面: 制作物のスモークテスト、デモ配布、CI 用プレイ可能ビルド
+  - 仕様: パスは exe 隣 `../EditorAssets` 基準、欠損時はタイトルフォールバック
+
+## パーティクル能力サンプル JSON（ユーザー依頼）
+
+- **追加:** `EditorAssets/Particles/SAMPLES.md` と `samples/01`〜`15`（発射モード・形状・運動・描画・キル領域・多レイヤー等を1ファイル1テーマ）
+- **用途:** パーティクルエディタで「今何が表現できるか」をすぐ見比べるカタログデータ
+- **使用場面:** エフェクト仕様の検討、新規演出のたたき、プログラマ／アーティスト間の共通言語
+
+## パーティクルデモシーン SceneParticleDemo（F3）
+
+- **実装:** `SceneParticleDemo` … 15 サンプル自動巡回 + ボール壁反射で `demos/ball_wall_shockwave.json` を衝突点再生
+- **遷移:** EntityEditor / ParticleEditor から **F3**（F1/F2 で戻り）
+- **推測した用途:** エフェクト・演出の見本市、プログラム連携前の体験デモ、パーティクル JSON の自動スモーク

@@ -5,12 +5,12 @@
 
 namespace Atrum::Player {
 
-void CmpInput::ResolveDependence() { frameDeltaTime_ = FrameDeltaTime::Instance(); }
+void CmpInput::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
 
 void CmpInput::Update() {
   using Input::GamepadButton;
   using Input::Key;
-  Input::PlayInput *input = Input::PlayInput::Instance();
+  Input::PlayInput *input = ::Atrum::EnginePlayInput();
   Input::XInputController *gamepad = Input::XInputController::Instance();
 
   isJumpKeyPrePush_ = inputData_.isJumpPress;

@@ -49,7 +49,7 @@ void ApplyBossBodyColorFromHealth(Entity &boss) {
 
 void CmpEnemy::ResolveDependence() {
   behaviorBox_.SetGrandOwner(&RefOwner());
-  frameDeltaTime_ = FrameDeltaTime::Instance();
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void CmpEnemy::Initialize() {

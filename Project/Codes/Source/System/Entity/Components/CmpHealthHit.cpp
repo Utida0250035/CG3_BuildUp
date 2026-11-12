@@ -50,7 +50,7 @@ Math::Vector4 CmpHealthHit::GetHurtFlashInnerColor() const {
 
 void CmpHealthHit::ResolveDependence() {
 	cmpHitSphere_ = RefOwner().GetUpdCmp<CmpHitSphere>();
-	frameDeltaTime_ = FrameDeltaTime::Instance();
+	frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
 
 void CmpHealthHit::Initialize() {

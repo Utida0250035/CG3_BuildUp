@@ -1,6 +1,8 @@
 #include "Scene/SceneParticleEditor.h"
 
+#include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "System/Entity/Entity.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"
@@ -9,6 +11,7 @@
 #include "Scene/CommandScene.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneEntityEditor.h"
+#include "Scene/SceneParticleDemo.h"
 #endif
 #include "System/Json/JsonHandler.h"
 #include "System/Particle/EmitterManager.h"
@@ -39,7 +42,7 @@ namespace {
 			.intensity = 6.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
-		Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 	}
 
 	Atrum::Particle::Emitter::EmitterManager *EditorEmitterManager() {
@@ -171,9 +174,15 @@ void SceneParticleEditor::Update() {
 	HandleEditorRequests();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-	if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F1)) {
+	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
 		Atrum::CommandChangeScene::Instance()->Set(SceneEntityEditor::Instance(),
 			std::make_unique<ChangeSceneFade>().release());
+		return;
+	}
+	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
+		Atrum::CommandChangeScene::Instance()->Set(
+		    SceneParticleDemo::Instance(),
+		    std::make_unique<ChangeSceneFade>().release());
 		return;
 	}
 #endif
@@ -185,7 +194,7 @@ void SceneParticleEditor::Update() {
 	}
 	particleManager->SetCamera(GetCamera());
 
-	if (Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::SPACE)) {
+	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::SPACE)) {
 		if (Atrum::Visual::Particle::Emitter *emitter =
 		        particleManager->Find(kParticleEditorPreviewEmitterName)) {
 			emitter->RestartPreview();
@@ -206,7 +215,7 @@ void SceneParticleEditor::Update() {
 void SceneParticleEditor::DrawScene() {
 	SetupEditorLighting();
 
-	Atrum::Engine* engine = Atrum::Engine::Instance();
+	Atrum::Engine* engine = ::Atrum::EngineInstance();
 	Atrum::Particle::Emitter::EmitterManager *mgr = EditorEmitterManager();
 	if (engine == nullptr || mgr == nullptr ||
 	    mgr->Find(kParticleEditorPreviewEmitterName) == nullptr) {

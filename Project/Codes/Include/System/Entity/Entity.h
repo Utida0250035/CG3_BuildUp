@@ -103,6 +103,18 @@ public:
     return nullptr;
   }
 
+  template <typename T> const T *GetUpdCmp() const {
+    for (const auto &component : updComponents_) {
+      if (auto p = dynamic_cast<const T *>(component.get())) {
+        return p;
+      }
+    }
+
+    assert(false && "UpdCmp not found, can't get");
+
+    return nullptr;
+  }
+
   template <typename T> bool HasUpdCmp() const {
     for (const auto &component : updComponents_) {
       if (auto p = dynamic_cast<T *>(component.get())) {

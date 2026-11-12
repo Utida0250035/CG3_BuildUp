@@ -68,7 +68,7 @@ float GetTextureWidth(const uint32_t textureIndex) {
   }
 
   return static_cast<float>(
-      TextureStorage::Instance()->GetTextureWidth(textureIndex));
+      ::Atrum::EngineTextureStorage()->GetTextureWidth(textureIndex));
 }
 
 float GetTextureHeight(const uint32_t textureIndex) {
@@ -77,7 +77,7 @@ float GetTextureHeight(const uint32_t textureIndex) {
   }
 
   return static_cast<float>(
-      TextureStorage::Instance()->GetTextureHeight(textureIndex));
+      ::Atrum::EngineTextureStorage()->GetTextureHeight(textureIndex));
 }
 
 void DrawTextureTopLeft(AtrumEngine *engine, const uint32_t textureIndex,

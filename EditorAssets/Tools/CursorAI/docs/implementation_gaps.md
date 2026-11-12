@@ -8,7 +8,7 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-10T07:40:43.271911+09:00
+- **lastIncrementalScanAt:** 2026-11-11T06:20:43.604694+09:00
 - **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
@@ -765,6 +765,27 @@
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
 
+### GAP-Editor-EntityEditor-012
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: インスタンス複製 API が無い
+- scope: UC-Authoring|Editor|EntityEditor|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:46
+- primary: `EntityEditor`
+- summary: 【Authoring】選択エンティティの複製が無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - AddEmptyInstance は既定定義のみ（46-55 行）
+  - プレハブ経由は 1 体ずつ追加（92-120 行）
+  - Cmp／タグ／transform を保った複製が JSON 手編集依存
+- suggestedUse: 制作: 配置反復を複製ワンクリックで短縮
+- firstSeenAt: 2026-11-10T23:51:00+09:00
+- lastSeenAt: 2026-11-10T23:51:00+09:00
+
 ### GAP-Editor-EntityEditorHierarchy-001
 
 - status: open
@@ -890,6 +911,28 @@
 - firstSeenAt: 2026-11-10T06:51:00+09:00
 - lastSeenAt: 2026-11-10T06:51:00+09:00
 
+### GAP-Editor-EntityEditorUi-017
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: CmpCamera 追加可だがパラメータ UI 無し
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:37
+- primary: `EntityEditorUi`
+- summary: 【Authoring】CmpCamera が既知型だが未対応表示
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - kKnownComponents に CmpCamera 登録（37 行）
+  - DrawComponentParams に分岐無し→272 行の未対応表示
+  - MainCamera 量産時に JSON 直編集が必要
+- suggestedUse: 制作: camera.main タグ付き Cmp の反復調整
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:21:00+09:00
+- lastSeenAt: 2026-11-11T00:21:00+09:00
+
 ### GAP-Infra-component_split_verify-001
 
 - status: open
@@ -975,6 +1018,27 @@
 - suggestedUse: 制作: インポート済みアセットを一覧から連続配置
 - firstSeenAt: 2026-11-10T06:51:00+09:00
 - lastSeenAt: 2026-11-10T06:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-015
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: ヒエラルキーは空オブジェクト追加のみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:375
+- primary: `EntityEditorUi`
+- summary: 【Authoring】「オブジェクトを追加」は空のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ボタンは AddEmptyInstance のみ（375-377 行）
+  - 選択中定義の複製／オフセット複製ボタン無し
+  - EntityEditor-012 と同系で UI 導線が未整備
+- suggestedUse: 制作: 選択オブジェクトの複製をヒエラルキーから
+- firstSeenAt: 2026-11-10T23:51:00+09:00
+- lastSeenAt: 2026-11-10T23:51:00+09:00
 
 ### GAP-Editor-PrefabAsset-002
 
@@ -1064,6 +1128,27 @@
 - firstSeenAt: 2026-11-10T06:01:00+09:00
 - lastSeenAt: 2026-11-10T06:01:00+09:00
 
+### GAP-Editor-EntityEditorTagCatalog-001
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: タグパネルがカタログ管理のみ
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:818
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】登録タグから全インスタンス一括付与無し
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawTagsPanel は catalog 追加・改名・削除のみ（792-849 行）
+  - インスペクタの「カタログのタグを付与」は選択 1 体（621 行）
+  - camera.main 等のロールタグを多数配置へ展開する導線なし
+- suggestedUse: 制作: ロールタグのシーン全域への一括付与
+- firstSeenAt: 2026-11-11T00:21:00+09:00
+- lastSeenAt: 2026-11-11T00:21:00+09:00
+
 ### GAP-Editor-EntityEditorUi-011
 
 - status: open
@@ -1085,6 +1170,49 @@
 - firstSeenAt: 2026-11-10T07:51:00+09:00
 - lastSeenAt: 2026-11-10T07:51:00+09:00
 
+### GAP-Editor-PrefabAsset-004
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ出力が毎回新規パス生成
+- scope: UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:478
+- primary: `PrefabAsset`
+- summary: 【Authoring】出力が MakeUnique で上書き更新できない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 保存は常に MakeUniquePrefabFilePath（480-483 行）
+  - 一覧で選択中の selectedPrefabPath を上書きする経路無し
+  - 調整ループで Entity_0.json 群が増殖しやすい
+- suggestedUse: 制作: 同プレハブへの反復上書き保存
+- firstSeenAt: 2026-11-11T01:21:00+09:00
+- lastSeenAt: 2026-11-11T01:21:00+09:00
+
+### GAP-Editor-EntityEditorDefinition-004
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: CmpCamera が既知型なのに既定 params 無し
+- scope: UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:72
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】CmpCamera 追加で params が空オブジェクト
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - IsKnown に CmpCamera を含む（17-21 行）
+  - DefaultParamsForType は 72 行で object() フォールバック
+  - カメラ大量配置時に JSON 手入力または都度編集が必要
+- suggestedUse: 制作: カメラ試配置のプリセット既定化
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T02:51:00+09:00
+- lastSeenAt: 2026-11-11T02:51:00+09:00
+
 ### GAP-Editor-PrefabAsset-003
 
 - status: open
@@ -1105,6 +1233,90 @@
 - suggestedUse: 制作: 同プレハブ大量配置の手数削減
 - firstSeenAt: 2026-11-10T07:51:00+09:00
 - lastSeenAt: 2026-11-10T07:51:00+09:00
+
+### GAP-Editor-EntityEditor-016
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: 保存後にプレビュー再構築が走らない
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:192
+- primary: `EntityEditor`
+- summary: 【Authoring】requestSaveToDisk が needApply を立てない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - SaveToJsonPath のみ実行（192-195 行）で needApply 無し
+  - requestApplyPreview や Reload と非対称（186-198 行）
+  - 保存直後の Runtime プレビューがディスク内容とずれうる
+- suggestedUse: 制作: 保存とプレビュー同期をワンアクションに
+- firstSeenAt: 2026-11-11T02:21:00+09:00
+- lastSeenAt: 2026-11-11T02:21:00+09:00
+
+### GAP-Editor-EntityEditorHierarchy-002
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: ヒエラルキー選択が 1 体ずつ
+- scope: UC-Authoring|Editor|EntityEditorHierarchy|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:333
+- primary: `EntityEditorHierarchy`
+- summary: 【Authoring】Selectable が単一 instanceIndex のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawHierarchyNode はクリック 1 件で selectedInstanceIndex 更新（333-334 行）
+  - 複数選択・一括複製・一括タグ付け UI 無し
+  - EntityEditorHierarchy-001 と同系
+- suggestedUse: 制作: 複数エンティティの一括調整
+- firstSeenAt: 2026-11-10T23:21:00+09:00
+- lastSeenAt: 2026-11-10T23:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-022
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 型変更で params が全リセット
+- scope: UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768
+- primary: `EntityEditorUi`
+- summary: 【Authoring】コンボ変更で DefaultParams に差し替え
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 型 Combo 変更時 selected.params = DefaultParamsForType（768-776 行）
+  - 既存 JSON フィールドのマージ・保持無し
+  - 似た Cmp 試行でパラメータを手打ちで戻す手間
+- suggestedUse: 制作: 型差し替え時に共通キーを温存
+- firstSeenAt: 2026-11-11T01:21:00+09:00
+- lastSeenAt: 2026-11-11T01:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-025
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: 型変更で params 全置換
+- scope: UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775
+- primary: `EntityEditorUi`
+- summary: 【Authoring】型 Combo で既定 params に上書き
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Combo 変更時 selected.params = DefaultParamsForType（773-775 行）
+  - 細調整済み params を保持せず JSON 手戻り
+  - Ui-014 と同系だが型切替でも全消し
+- suggestedUse: 制作: Cmp 型試行錯誤後も数値を維持
+- firstSeenAt: 2026-11-11T03:21:00+09:00
+- lastSeenAt: 2026-11-11T03:21:00+09:00
 
 ### GAP-Editor-UXAuthoring-002
 
@@ -1151,6 +1363,69 @@
 - firstSeenAt: 2026-11-10T06:21:00+09:00
 - lastSeenAt: 2026-11-10T06:21:00+09:00
 
+### GAP-Editor-EntityEditor-014
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: ロード後に選択インデックスが 0 固定
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:163
+- primary: `EntityEditor`
+- summary: 【Authoring】LoadFromJsonPath が選択を先頭に戻す
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 成功ロード後 selectedInstanceIndex=0（163 行）
+  - selectedComponentIndex も 0 リセット（164 行）
+  - ディスク再読込・シーン切替のたびに末尾編集位置を失う
+- suggestedUse: 制作: 同一シーン内の反復編集で選択を維持
+- firstSeenAt: 2026-11-11T00:51:00+09:00
+- lastSeenAt: 2026-11-11T00:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-014
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: コンポ型変更が選択 1 スロットのみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:768
+- primary: `EntityEditorUi`
+- summary: 【Authoring】型 Combo 変更は params を既定に置換
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Combo 変更で params=DefaultParamsForType（768-776 行）
+  - 同型スロットへの一括型差し替え・params 維持無し
+  - 複製反復で毎スロット手作業
+- suggestedUse: 制作: 同型 Cmp の型/パラメータ一括更新
+- firstSeenAt: 2026-11-10T23:21:00+09:00
+- lastSeenAt: 2026-11-10T23:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-023
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: インポート適用が 1 スロットずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:136
+- primary: `EntityEditorUi`
+- summary: 【Authoring】直近ドロップ適用が選択中 Cmp のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「直近ドロップを assetPath に適用」は CmpEditorAssetPath 編集中のみ（136-139 行）
+  - 複数 mesh／billboard スロットへの一括適用無し
+  - EditorImportedAsset-002 と合わせてドロップ反復が冗長
+- suggestedUse: 制作: 直近インポートを複数 Cmp へ一括セット
+- firstSeenAt: 2026-11-11T01:51:00+09:00
+- lastSeenAt: 2026-11-11T01:51:00+09:00
+
 ### GAP-Editor-EntityEditorUi-012
 
 - status: open
@@ -1172,6 +1447,48 @@
 - firstSeenAt: 2026-11-10T07:51:00+09:00
 - lastSeenAt: 2026-11-10T07:51:00+09:00
 
+### GAP-Editor-EntityEditorUi-016
+
+- status: open
+- tier: P3
+- score: 540
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: CmpHitSphere の球パラメータが 1 個ずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:242
+- primary: `EntityEditorUi`
+- summary: 【Authoring】ヒット球は選択 1 球のみ編集
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Selectable で selectedSphereIndex を 1 件更新（242-246 行）
+  - radius/offset の Drag は選択球のみ（249-267 行）
+  - 複数球の半径一括・配列コピー UI 無し
+- suggestedUse: 制作: コライダー配列の一括スケール調整
+- firstSeenAt: 2026-11-10T23:51:00+09:00
+- lastSeenAt: 2026-11-10T23:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-026
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: JSON パスをインスペクタで自由編集
+- scope: UC-Authoring|Editor|EntityEditorUi|Contract|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:521
+- primary: `EntityEditorUi`
+- summary: 【Authoring】シーン JSON パスを InputString 編集
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ImGui::InputString で jsonFilePath 直接変更（521 行）
+  - 存在検証やプロジェクトパネル同期無し
+  - 誤パス保存→再読込失敗の反復が手戻り
+- suggestedUse: 制作: シーンパスは一覧選択に限定
+- firstSeenAt: 2026-11-11T03:51:00+09:00
+- lastSeenAt: 2026-11-11T03:51:00+09:00
+
 ### GAP-UX-OperatorGuidanceSystem-004
 
 - status: open
@@ -1192,6 +1509,636 @@
 - roadmapLink: feature-memos/operator_guidance_bubble.md
 - firstSeenAt: 2026-11-10T04:11:00+09:00
 - lastSeenAt: 2026-11-10T04:11:00+09:00
+
+### GAP-Editor-EntityEditorUi-013
+
+- status: open
+- tier: P3
+- score: 530
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 未知 Cmp は TextDisabled のみでパラメータ一括編集不可
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:272
+- primary: `EntityEditorUi`
+- summary: 【Authoring】未対応コンポーネントは警告表示のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - DrawComponentParams は未登録型で return false（272-273 行）
+  - JSON 直編集か再追加が必要
+  - CmpCamera 等追加後も未知型が混在すると一括調整不可
+- suggestedUse: 制作: 未知型の最低限 JSON 編集 UI
+- firstSeenAt: 2026-11-10T23:21:00+09:00
+- lastSeenAt: 2026-11-10T23:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-018
+
+- status: open
+- tier: P3
+- score: 530
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: コンポ削除が 1 スロットずつ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:707
+- primary: `EntityEditorUi`
+- summary: 【Authoring】コンポーネント削除が選択 1 件のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 削除ボタンは selectedComponentIndex のみ erase（707-711 行）
+  - 同型 Cmp の一括削除・置換前整理 UI 無し
+  - EntityEditorUi-014 の型変更と合わせ手順が長い
+- suggestedUse: 制作: 試行錯誤後の Cmp 一括掃除
+- firstSeenAt: 2026-11-11T00:21:00+09:00
+- lastSeenAt: 2026-11-11T00:21:00+09:00
+
+### GAP-Editor-EntityEditor-013
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: シーン削除後の自動切替が先頭固定
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:261
+- primary: `EntityEditor`
+- summary: 【Authoring】削除後は remaining.front() のみ開く
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 開いていた JSON 削除時 OpenSceneFromPath(remaining.front())（261-264 行）
+  - ソート済み一覧の先頭のみ・ユーザー選択なし
+  - 連続削除作業で意図しないシーンへ飛ぶ
+- suggestedUse: 制作: シーン整理時の作業コンテキスト維持
+- firstSeenAt: 2026-11-11T00:51:00+09:00
+- lastSeenAt: 2026-11-11T00:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-019
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 実行順が 1 Cmp ずつ手入力
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:745
+- primary: `EntityEditorUi`
+- summary: 【Authoring】InputInt で実行順が 1 スロットのみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 選択中 slot の executionOrder のみ InputInt（745-747 行）
+  - 同種 Cmp の一括 priority 調整 UI 無し
+  - 複製反復で毎スロット手作業
+- suggestedUse: 制作: Draw/Upd 層の実行順を一括整列
+- firstSeenAt: 2026-11-11T00:51:00+09:00
+- lastSeenAt: 2026-11-11T00:51:00+09:00
+
+### GAP-Editor-EntityEditorDefinition-005
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 型変更時 params 非マージ
+- scope: UC-Authoring|Editor|EntityEditorDefinition|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp:103
+- primary: `EntityEditorDefinition`
+- summary: 【Authoring】from_json が params を丸ごと代入
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 既知 type は kind だけ DefaultKind（103-105 行）
+  - params は j.value のみで DefaultParams 未マージ（108 行）
+  - 一括コンポ差替で欠損キーが残り手修正が増える
+- suggestedUse: Authoring: テンプレ差替の既定値補完
+- firstSeenAt: 2026-11-11T04:21:00+09:00
+- lastSeenAt: 2026-11-11T04:21:00+09:00
+
+### GAP-Editor-EntityEditorTagCatalog-002
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: カタログタグ改名が 1 語ずつ
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:837
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】改名は選択 1 タグのみ一括反映
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - RenameTagInDocument は document 全体走査だが UI は 1 選択（835-840 行）
+  - 類似タグのプレフィックス一括や検索置換無し
+  - TagCatalog-001 の一括付与と逆向きが手作業
+- suggestedUse: 制作: ロールタグ命名規則の一括リネーム
+- firstSeenAt: 2026-11-11T03:51:00+09:00
+- lastSeenAt: 2026-11-11T03:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-021
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: high
+- frequencyBasis: シーン一覧が選択＋別ボタン二段操作
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:454
+- primary: `EntityEditorUi`
+- summary: 【Authoring】Selectable はパス選択のみで即開かない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Selectable は selectedScenePath 更新のみ（454-456 行）
+  - 実際のロードは「シーンを開く」別ボタン（462-464 行）
+  - シーン切り替え反復で毎回 2 クリック
+- suggestedUse: 制作: シーン一覧のダブルクリック／即開で往復短縮
+- firstSeenAt: 2026-11-11T01:21:00+09:00
+- lastSeenAt: 2026-11-11T01:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-024
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: Cmp 削除後に requestApplyPreview のみ
+- scope: UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:710
+- primary: `EntityEditorUi`
+- summary: 【Authoring】選択中コンポーネントのみ削除
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - erase 後 SyncSelectedComponentToKind のみ（707-711 行）
+  - Disk 保存やプレビュー差分表示のフィードバック無し
+  - Ui-018 の削除粒度と合わせ反復試行が視覚追跡しづらい
+- suggestedUse: 制作: コンポ削除後のプレビュー更新を明示
+- firstSeenAt: 2026-11-11T02:51:00+09:00
+- lastSeenAt: 2026-11-11T02:51:00+09:00
+
+### GAP-Editor-EditorEntityWorkbench-004
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレイモードはシミュレーションのみ
+- scope: UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:96
+- primary: `EditorEntityWorkbench`
+- summary: 【Authoring】メニュー「プレイ」は保存・実行を呼ばない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - プレイ選択で previewSimulationEnabled のみ true（96-98 行）
+  - シーンを実行は Save+requestPlayRuntimeScene（77-79 行）と別
+  - Edit↔Play 反復で実行パスと挙動が二系統
+- suggestedUse: 制作: プレイ試行の操作を一本化
+- firstSeenAt: 2026-11-11T03:51:00+09:00
+- lastSeenAt: 2026-11-11T03:51:00+09:00
+
+### GAP-Editor-EditorSceneRuntime-009
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレビュー読込が構築時のみ
+- scope: UC-Authoring|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:309
+- primary: `EditorSceneRuntime`
+- summary: 【Authoring】AssetPath プレビューは構築時1回
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - BuildEntityFromDefinition 末尾で TryLoad のみ（309 行）
+  - Inspector で path 変更後もメッシュ差し替え自動なし
+  - 一括 path 適用後にプレビュー手動再構築が必要
+- suggestedUse: Authoring: assetPath 変更の即時プレビュー
+- firstSeenAt: 2026-11-11T05:21:00+09:00
+- lastSeenAt: 2026-11-11T05:21:00+09:00
+
+### GAP-Editor-EntityEditor-015
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 新規シーンが即ディスク保存
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:230
+- primary: `EntityEditor`
+- summary: 【Authoring】新規作成が requestSaveToDisk 必須
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - CreateNewSceneFile 末尾で requestSaveToDisk=true（230 行）
+  - メモリ上ドラフトのまま試す経路無し
+  - 試行錯誤のたびに Scenes 配下に JSON が増える
+- suggestedUse: 制作: 保存前に複数案をメモリで試す
+- firstSeenAt: 2026-11-11T01:51:00+09:00
+- lastSeenAt: 2026-11-11T01:51:00+09:00
+
+### GAP-Editor-EntityEditor-018
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 親削除で子がルートに散る
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:65
+- primary: `EntityEditor`
+- summary: 【Authoring】削除時に子を祖父へ昇格しない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - parentIndex==removeIndex の子は -1 のみ（65-66 行）
+  - 削除ノードの親へ子を付け替える処理無し
+  - グループ親を消すと配下がフラット化し再親付けが手作業
+- suggestedUse: 制作: ヒエラルキー整理の削除を非破壊に
+- firstSeenAt: 2026-11-11T02:51:00+09:00
+- lastSeenAt: 2026-11-11T02:51:00+09:00
+
+### GAP-Editor-EntityEditor-019
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 起動シーン設定が暗黙 Save を伴う
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:412
+- primary: `EntityEditor`
+- summary: 【Authoring】起動設定前に SaveToJsonPath
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 起動シーンに設定で target 非空なら Save（407-413 行）
+  - 未保存プレビュー差分がディスクへ確定
+  - Save 専用ボタンと操作が非対称（EntityEditor-016 と関連）
+- suggestedUse: 制作: launch 設定と明示保存の分離
+- firstSeenAt: 2026-11-11T03:21:00+09:00
+- lastSeenAt: 2026-11-11T03:21:00+09:00
+
+### GAP-Editor-EntityEditor-021
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ先頭 1 件のみ
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:104
+- primary: `EntityEditor`
+- summary: 【Authoring】プレハブ追加は instances[0]
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - entities 配列は front のみ取得（104-109 行）
+  - 複数インスタンス入りシーン JSON を一括取り込めない
+  - PrefabAsset UI は 1 クリック 1 体の繰り返し
+- suggestedUse: Authoring: マルチプレハブの一括配置
+- firstSeenAt: 2026-11-11T04:51:00+09:00
+- lastSeenAt: 2026-11-11T04:51:00+09:00
+
+### GAP-Editor-PrefabAsset-005
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: シーン切替でプレハブ選択が残る
+- scope: UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:233
+- primary: `PrefabAsset`
+- summary: 【Authoring】OpenScene が selectedPrefabPath をクリアしない
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - OpenSceneFromPath は Load と selectedScenePath のみ（233-240 行）
+  - 別シーンで前シーンのプレハブが選択表示のまま
+  - 誤って「シーンへ追加」で異シーン文脈へ投入しうる
+- suggestedUse: 制作: シーン切替時にプレハブ選択をリセット
+- firstSeenAt: 2026-11-11T02:21:00+09:00
+- lastSeenAt: 2026-11-11T02:21:00+09:00
+
+### GAP-Editor-EditorImportedAsset-003
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 同名ドロップで連番ファイル増殖
+- scope: UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:53
+- primary: `EditorImportedAsset`
+- summary: 【Authoring】重複時に stem_N へ自動リネーム
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - exists(dest) 時 suffix 1..9999 で新ファイル（53-59 行）
+  - 上書き／差し替え確認 UI 無し
+  - 同 obj 再ドロップで Imported が散逸しパス更新が煩雑
+- suggestedUse: 制作: 反復ドロップ時の上書き方針
+- firstSeenAt: 2026-11-11T03:21:00+09:00
+- lastSeenAt: 2026-11-11T03:21:00+09:00
+
+### GAP-Editor-EditorImportedAsset-004
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: 衝突時の連番リネームのみ
+- scope: UC-Authoring|Editor|EditorImportedAsset|Incomplete|Project/Codes/Source/System/Editor/EditorImportedAsset.cpp:57
+- primary: `EditorImportedAsset`
+- summary: 【Authoring】衝突解決が stem_N 連番のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - exists(dest) 時 stem+連番+ext のみ（53-62 行）
+  - バッチ全体の接頭辞やタイムスタンプを選べない
+  - 大量同名アセットの整理に外部リネームが必要
+- suggestedUse: Authoring: 一括インポート命名規則
+- firstSeenAt: 2026-11-11T04:21:00+09:00
+- lastSeenAt: 2026-11-11T04:21:00+09:00
+
+### GAP-Editor-EntityEditor-017
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 同一フレーム複数ドロップが最後だけ残る
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:288
+- primary: `EntityEditor`
+- summary: 【Authoring】ループ内で lastImported が上書き
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - for 各 dropped で lastImportedAssetPath 代入（280-289 行）
+  - 複数ファイル同時ドロップで直近 1 件のみ UI に残る
+  - Ui-023 の適用はさらに 1 スロットずつ
+- suggestedUse: 制作: 一括ドロップをキュー表示して順適用
+- firstSeenAt: 2026-11-11T02:21:00+09:00
+- lastSeenAt: 2026-11-11T02:21:00+09:00
+
+### GAP-Editor-EntityEditor-022
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブは定義のみ
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:82
+- primary: `EntityEditor`
+- summary: 【Authoring】プレハブ出力が Definition のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Save は SelectedDefinition のみ JSON（82-85 行）
+  - 親 index・initialTransform は Scene 側
+  - 複製配置ワークでプレハブ再適用が手作業
+- suggestedUse: Authoring: インスタンス付きプレハブ
+- firstSeenAt: 2026-11-11T06:21:00+09:00
+- lastSeenAt: 2026-11-11T06:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-027
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 追加は空テンプレのみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:377
+- primary: `EntityEditorUi`
+- summary: 【Authoring】複製ボタンが無い
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「オブジェクトを追加」は AddEmptyInstance のみ（375-377 行）
+  - 選択中定義の複製 API／UI が無い
+  - 類似アセット量産でプレハブ保存を毎回繰り返す
+- suggestedUse: Authoring: インスタンス複製ショートカット
+- firstSeenAt: 2026-11-11T04:51:00+09:00
+- lastSeenAt: 2026-11-11T04:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-030
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 型差替で params 全置換
+- scope: UC-Authoring|Editor|EntityEditorUi|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:775
+- primary: `EntityEditorUi`
+- summary: 【Authoring】型 Combo で params 初期化
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 型変更時 selected.params = DefaultParamsForType（775 行）
+  - 既存 params のマージや一括型差替なし
+  - 似た AssetPath を持つ複数体の調整が反復
+- suggestedUse: Authoring: 型差替時の params マージ
+- firstSeenAt: 2026-11-11T05:51:00+09:00
+- lastSeenAt: 2026-11-11T05:51:00+09:00
+
+### GAP-Editor-EditorEntityWorkbench-003
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: Dock 既定レイアウトが初回固定
+- scope: UC-Authoring|Editor|EditorEntityWorkbench|Incomplete|Project/Codes/Source/System/Editor/EditorEntityWorkbench.cpp:211
+- primary: `EditorEntityWorkbench`
+- summary: 【Authoring】defaultLayoutBuilt が static で一回切り
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - static defaultLayoutBuilt は初回のみ DockBuilder（211-240 行）
+  - レイアウトリセット／プリセット保存 UI 無し
+  - パネル配置を戻すには imgui.ini 手削除依存
+- suggestedUse: 制作: 作業切替で Dock を既定に戻す
+- firstSeenAt: 2026-11-11T01:51:00+09:00
+- lastSeenAt: 2026-11-11T01:51:00+09:00
+
+### GAP-Editor-EntityEditor-020
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 一括 D&D 後プレビュー未更新
+- scope: UC-Authoring|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:278
+- primary: `EntityEditor`
+- summary: 【Authoring】インポート後プレビュー再適用なし
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ProcessDroppedFileImports はコピーと status のみ（271-290 行）
+  - requestApplyPreview を立てず手動プレビュー待ち
+  - 複数ファイル時も最後の path だけ UiState に残る
+- suggestedUse: Authoring: D&D 直後のビュー反映を自動化
+- firstSeenAt: 2026-11-11T04:21:00+09:00
+- lastSeenAt: 2026-11-11T04:21:00+09:00
+
+### GAP-Editor-EntityEditorTagCatalog-004
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: タグ改名が 1 件
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:836
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】改名は selectedCatalogTag のみ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - RenameTagInDocument 1 名前（836-839 行）
+  - 接頭辞一括変更 UI なし
+  - 量産アセットのタグ整列が手入力
+- suggestedUse: Authoring: カタログタグの一括改名
+- firstSeenAt: 2026-11-11T06:21:00+09:00
+- lastSeenAt: 2026-11-11T06:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-029
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: 実行順が 1 スロットのみ
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:746
+- primary: `EntityEditorUi`
+- summary: 【Authoring】実行順 InputInt が単体
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 選択スロットのみ executionOrder 編集（745-747 行）
+  - 同種別コンポ複数の一括整列 UI なし
+  - プレハブ複製後の優先度揃えが手作業
+- suggestedUse: Authoring: 実行順の一括オフセット
+- firstSeenAt: 2026-11-11T05:51:00+09:00
+- lastSeenAt: 2026-11-11T05:51:00+09:00
+
+### GAP-Editor-FileDropQueue-001
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: Drain が全件一括搬出
+- scope: UC-Authoring|Editor|FileDropQueue|Incomplete|Project/Codes/Include/System/Editor/EditorImportedAsset.h:22
+- primary: `FileDropQueue`
+- summary: 【Authoring】Drain で pending 全消去
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Drain は move 後 clear のみ（EditorImportedAsset.cpp:21-24）
+  - UI が pending 件数や内容を参照する API なし
+  - 一括 D&D の進捗確認と部分再試行ができない
+- suggestedUse: Authoring: ドロップキューの可視化
+- firstSeenAt: 2026-11-11T04:51:00+09:00
+- lastSeenAt: 2026-11-11T04:51:00+09:00
+
+### GAP-Editor-PrefabAsset-006
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ出力が連番のみ
+- scope: UC-Authoring|Editor|PrefabAsset|Incomplete|Project/Codes/Source/System/Editor/Prefab/PrefabAsset.cpp:34
+- primary: `PrefabAsset`
+- summary: 【Authoring】衝突時 stem_N 連番
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - exists 時は suffix 1..9999 のみ（34-39 行）
+  - 同一テンプレ反復出力で JSON が増殖
+  - 上書き更新やバージョン名を選べない
+- suggestedUse: Authoring: プレハブ一括書き出し命名
+- firstSeenAt: 2026-11-11T05:21:00+09:00
+- lastSeenAt: 2026-11-11T05:21:00+09:00
+
+### GAP-Editor-EntityEditorTagCatalog-003
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: カタログ付与が 1 タグ
+- scope: UC-Authoring|Editor|EntityEditorTagCatalog|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:621
+- primary: `EntityEditorTagCatalog`
+- summary: 【Authoring】カタログ付与は 1 件ずつ
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - Combo+Button で picked 1 タグのみ（621-625 行）
+  - 複数インスタンス／複数タグの一括付与 UI なし
+  - Asset ループで同ロールタグを量産する手間
+- suggestedUse: Authoring: カタログタグの一括付与
+- firstSeenAt: 2026-11-11T05:51:00+09:00
+- lastSeenAt: 2026-11-11T05:51:00+09:00
+
+### GAP-Editor-EntityEditorUi-028
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: medium
+- frequencyBasis: プレハブ一覧がフルパス
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:499
+- primary: `EntityEditorUi`
+- summary: 【Authoring】Selectable が path 全文
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - ラベルに generic_string パス直表示（497-501 行）
+  - シーン一覧は DisplayName 併記（451-453 行）と非対称
+  - 大量プレハブで選択と一括追加が煩雑
+- suggestedUse: Authoring: プレハブ一覧の短縮表示
+- firstSeenAt: 2026-11-11T05:21:00+09:00
+- lastSeenAt: 2026-11-11T05:21:00+09:00
+
+### GAP-Editor-EntityEditorUi-031
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Authoring
+- scenarioId: AUT-AssetLoop-001
+- frequency: low
+- frequencyBasis: 全タグ解除が 1 体
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:629
+- primary: `EntityEditorUi`
+- summary: 【Authoring】タグ全解除は選択 1 件
+- scenarioText: 反復作業（複製・一括調整）がエディタ専用 UI で過度な手順にならない。
+- evidence:
+  - 「タグをすべて解除」は document のみ（629-632 行）
+  - シーン内複数インスタンスへの一括解除なし
+  - テスト用タグの付け直しが反復
+- suggestedUse: Authoring: タグのシーン一括解除
+- firstSeenAt: 2026-11-11T06:21:00+09:00
+- lastSeenAt: 2026-11-11T06:21:00+09:00
 
 #### UC-Debug
 
@@ -1485,6 +2432,28 @@
 - firstSeenAt: 2026-11-10T02:41:00+09:00
 - lastSeenAt: 2026-11-10T02:41:00+09:00
 
+### GAP-Scene-SceneCameraRig-001
+
+- status: open
+- tier: P1
+- score: 710
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: primary 解決が rig 内部 entities のみ
+- scope: UC-Debug|Scene|SceneCameraRig|Contract|Project/Codes/Source/Scene/SceneCameraRig.cpp:76
+- primary: `SceneCameraRig`
+- summary: 【Debug】FindPrimaryCmpCamera が rig 配列のみ走査
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - FindPrimaryCmpCamera は entities_ ベクタのみ（76-88 行）
+  - SceneBuildUp の JSON 実体は別 vector（GAP-Scene-SceneBuildUp-009）
+  - 機能検証で JSON の camera.main を primary にできない
+- suggestedUse: Debug: シーンロード実体と rig primary を統合
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:01:00+09:00
+- lastSeenAt: 2026-11-11T00:01:00+09:00
+
 ### GAP-Infra-scaffold_play_area-001
 
 - status: open
@@ -1504,6 +2473,28 @@
 - suggestedUse: デバッグ: エディタ内で名前入力→テスト JSON 生成まで一気通貫
 - firstSeenAt: 2026-11-10T02:11:00+09:00
 - lastSeenAt: 2026-11-10T02:11:00+09:00
+
+### GAP-Scene-SceneBuildUp-009
+
+- status: open
+- tier: P1
+- score: 700
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: JSON 実体と Scene::cameraRig_ が別配列
+- scope: UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Source/Scene/SceneBuildUp.cpp:109
+- primary: `SceneBuildUp`
+- summary: 【Debug】entities_ と GetCamera の cameraRig が未接続
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene は entities_ のみ構築（109 行）
+  - GetCamera は cameraRig_.GetPrimaryCamera（Scene.cpp:43）
+  - cameraRig は EnsureAutoSpawnedCameras で既定 MainCamera を別生成し JSON の CmpCamera を描画対象にしない
+- suggestedUse: Debug: JSON 上の CmpCamera を機能検証の主カメラにする
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-10T23:31:00+09:00
+- lastSeenAt: 2026-11-10T23:31:00+09:00
 
 ### GAP-Audio-StreamingDebug-002
 
@@ -1547,6 +2538,28 @@
 - suggestedUse: デバッグ: 最適化とエディタ OFF で Release に近い計測を再現
 - firstSeenAt: 2026-11-10T02:21:00+09:00
 - lastSeenAt: 2026-11-10T02:21:00+09:00
+
+### GAP-Editor-EditorSceneRuntime-007
+
+- status: open
+- tier: P1
+- score: 680
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: ロード経路が MainCamera 自動スポーンを含まない
+- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:354
+- primary: `EditorSceneRuntime`
+- summary: 【Debug】BuildEntities が camera.main 欠落を補わない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildEntitiesFromSceneDocument は instances のみ（354-380 行）
+  - Scene::cameraRig 自動スポーンは別経路（SceneBuildUp-009）
+  - Release BuildUp と Editor プレビューでカメラ解決が二重
+- suggestedUse: Debug: JSON ロード経路を本番と同じ camera 契約に
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T01:01:00+09:00
+- lastSeenAt: 2026-11-11T01:01:00+09:00
 
 ### GAP-Render-DirectionalShadow-001
 
@@ -1655,6 +2668,28 @@
 - firstSeenAt: 2026-11-10T03:11:00+09:00
 - lastSeenAt: 2026-11-10T03:11:00+09:00
 
+### GAP-Scene-SceneBuildUp-013
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: JSON 読込失敗がダミーシーンに隠蔽
+- scope: UC-Debug|Scene|SceneBuildUp|MissingData|Project/Codes/Source/Scene/SceneBuildUp.cpp:96
+- primary: `SceneBuildUp`
+- summary: 【Debug】ロード失敗時に空の Entity_0 を生成
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - TryLoadSceneDocument 失敗で MakeDefaultEntityDefinition（96-102 行）
+  - エラー表示や Launch 中止が無い
+  - 壊れた機能検証 JSON でもプレイヤブルに見える
+- suggestedUse: Debug: 検証シーン JSON 不整合を即検知
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T01:01:00+09:00
+- lastSeenAt: 2026-11-11T01:01:00+09:00
+
 ### GAP-Editor-SceneEntityEditor-007
 
 - status: open
@@ -1676,6 +2711,50 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:31:00+09:00
 - lastSeenAt: 2026-11-10T07:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-011
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Update が JSON 実体ベクタのみ
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:125
+- primary: `SceneBuildUp`
+- summary: 【Debug】cameraRig 実体は Update されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Update は entities_ の Active のみ（125-128 行）
+  - EnsureAutoSpawnedCameras の MainCamera は rig 側のみ（SceneCameraRig.cpp:61-62）
+  - PrepareBeforeDraw 以外の Cmp ロジックが機能検証で欠落しうる
+- suggestedUse: Debug: 自動スポーンカメラもランタイム更新対象に
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:31:00+09:00
+- lastSeenAt: 2026-11-11T00:31:00+09:00
+
+### GAP-Entity-CmpCamera-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Cmp 初期化が正射影行列固定
+- scope: UC-Debug|Entity|CmpCamera|Contract|Project/Codes/Source/System/Entity/Components/CmpCamera.cpp:19
+- primary: `CmpCamera`
+- summary: 【Debug】Initialize が Orthographic を既定生成
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - CreateOrthographicMatrix が Initialize 直後（19-20 行）
+  - BuildUp RT は FitCameraPerspectiveToViewport（SceneBuildUp.cpp:152）
+  - 機能検証で JSON カメラの透視パラメータを試しにくい
+- suggestedUse: Debug: ステージビュー透視と Cmp 既定の整合
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:31:00+09:00
+- lastSeenAt: 2026-11-11T00:31:00+09:00
 
 ### GAP-Infra-EditorScenePlayRequest-002
 
@@ -1720,6 +2799,71 @@
 - firstSeenAt: 2026-11-10T04:41:00+09:00
 - lastSeenAt: 2026-11-10T04:41:00+09:00
 
+### GAP-Scene-CommandScene-004
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動シーン未設定時に Title 固定
+- scope: UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:25
+- primary: `CommandScene`
+- summary: 【Debug】startup 空なら BuildUp ではなく Title
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Release 分岐で ResolveStartupScenePath 空時 sceneNow_=SceneTitle（25-27 行）
+  - DebugPlayArea テンプレや FeatureTestScene へのフォールバック無し
+  - launch_config 欠損時も機能検証 JSON へ直行できない
+- suggestedUse: Debug: 未設定時も既定 Feature シーンを BuildUp
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T01:31:00+09:00
+- lastSeenAt: 2026-11-11T01:31:00+09:00
+
+### GAP-Editor-EntityEditor-011
+
+- status: open
+- tier: P1
+- score: 590
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: プレビュー生成が SceneBuildUp 経路に接続されない
+- scope: UC-Debug|Editor|EntityEditor|Incomplete|Project/Codes/Source/System/Editor/Entity/EntityEditor.cpp:208
+- primary: `EntityEditor`
+- summary: 【Debug】BuildPreviewScene がエディタ内ベクタのみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildPreviewScene は BuildEntitiesFromSceneDocument のみ（208-209 行）
+  - SceneBuildUpRegistry::Launch や EditorScenePlayRequest へ渡さない
+  - FeatureScene シナリオのエディタ外最小ランタイムが未接続
+- suggestedUse: Debug: JSON→BuildUp ワンショット検証
+- firstSeenAt: 2026-11-10T23:06:00+09:00
+- lastSeenAt: 2026-11-10T23:06:00+09:00
+
+### GAP-Editor-EntityEditorUi-020
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動シーンパス表示のみで試行不可
+- scope: UC-Debug|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:422
+- primary: `EntityEditorUi`
+- summary: 【Debug】Release 起動パスを表示するだけ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - ResolveStartupScenePath を TextDisabled 表示のみ（422-425 行）
+  - 起動シーンに設定（407 行）は launch_config 保存のみ
+  - EditorScenePlayRequest-004 と同系で DEVELOPMENT から BuildUp 試行無し
+- suggestedUse: Debug: 設定済み起動 JSON をエディタから BuildUp 試験
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T01:01:00+09:00
+- lastSeenAt: 2026-11-11T01:01:00+09:00
+
 ### GAP-Scene-SceneBuildUp-008
 
 - status: open
@@ -1742,6 +2886,116 @@
 - firstSeenAt: 2026-11-10T07:01:00+09:00
 - lastSeenAt: 2026-11-10T07:01:00+09:00
 
+### GAP-Scene-SceneBuildUp-014
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: Enter 直後に戦闘ステージカメラ固定
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:110
+- primary: `SceneBuildUp`
+- summary: 【Debug】ロード直後 SetupStageViewCamera を呼ぶ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildEntities 直後に SetupStageViewCamera（110 行）
+  - PrepareCamerasForDraw 前に rig カメラへ戦闘ポーズ適用
+  - DrawRuntimeViewContent でも再適用（147 行）で JSON Cmp 試験と二重
+- suggestedUse: Debug: 機能検証 Enter でカメラを JSON 主導に
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T01:31:00+09:00
+- lastSeenAt: 2026-11-11T01:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-011
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: プレビュー用カメラ初期化が rig 直操作
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:94
+- primary: `SceneEntityEditor`
+- summary: 【Debug】SetupPreviewCamera が GetCamera のみ更新
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene で SetupPreviewCamera→GetCamera translate（94-98 行）
+  - previewEntities_ の CmpCamera は行列に反映されない
+  - 機能検証シーンでもエディタプレビューは rig カメラ前提
+- suggestedUse: Debug: JSON カメラをプレビュー初期姿勢に反映
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T00:01:00+09:00
+- lastSeenAt: 2026-11-11T00:01:00+09:00
+
+### GAP-Infra-launch_config-001
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: 共有 launch_config が汎用 Scene_0 固定
+- scope: UC-Debug|Infra|launch_config|MissingData|EditorAssets/launch_config.json:2
+- primary: `launch_config`
+- summary: 【Debug】startup が Feature 検証シーンではない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - startupScenePath は ../EditorAssets/Scenes/Scene_0.json（2 行）
+  - DebugPlayArea/template_test_play_area は未参照
+  - Release BuildUp 起動がエディタ新規シーン相当になる
+- suggestedUse: Debug: リポジトリ既定を最小検証 JSON に
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T01:31:00+09:00
+- lastSeenAt: 2026-11-11T01:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-010
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: RT 描画パスが GameOrder 後に StageView を再適用
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:147
+- primary: `SceneBuildUp`
+- summary: 【Debug】DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GameOrder が Draw 直前に ActiveCameraSystem::PrepareSceneAndBindEngine（GameOrder.h:74-75）
+  - DrawRuntimeViewContent が再度 SetupStageViewCamera→SetCamera（147-153 行）
+  - 機能検証でも CmpCamera 行列が戦闘ステージ固定ポーズに上書きされる
+- suggestedUse: Debug: BuildUp RT が本編 GameOrder カメラ契約と一致
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-10T23:31:00+09:00
+- lastSeenAt: 2026-11-10T23:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-012
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: BuildUp が stageView ロック固定
+- scope: UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30
+- primary: `SceneBuildUp`
+- summary: 【Debug】IsStageViewCameraLocked が常時 true
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - override で true 固定（SceneBuildUp.h:30）
+  - PrepareBeforeDraw は stageViewLocked 時 UpdateMatrix のみ（CmpCamera.cpp:29-31）
+  - EntityEditor は false（SceneEntityEditor.h:32）と非対称で検証シーン差分が大きい
+- suggestedUse: Debug: ロック ON/OFF を切り替えて Cmp を試す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T00:31:00+09:00
+- lastSeenAt: 2026-11-11T00:31:00+09:00
+
 ### GAP-Scene-SceneBuildUpRegistry-002
 
 - status: open
@@ -1763,6 +3017,327 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:31:00+09:00
 - lastSeenAt: 2026-11-10T07:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-010
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Runtime タブ描画が戦闘カメラに一時差し替え
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:248
+- primary: `SceneEntityEditor`
+- summary: 【Debug】Runtime タブで SetupStageViewCamera に差し替え
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawSceneViewContent の非 Edit パスで DebugCamera 退避後 SetupStageViewCamera（248-252 行）
+  - 描画後 RestoreDebugCamera（270-272 行）でプレビュー用に戻す
+  - JSON CmpCamera の挙動を Runtime タブ単体で検証できない
+- suggestedUse: Debug: エディタ実行ビューでエンティティカメラをそのまま試す
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-10T23:31:00+09:00
+- lastSeenAt: 2026-11-10T23:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-012
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: シーン実行がエディタ内のみ
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:132
+- primary: `SceneEntityEditor`
+- summary: 【Debug】実行は Runtime タブ切替のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - requestPlayRuntimeScene は Save+Rebuild+タブ（132-141 行）
+  - SceneBuildUpRegistry::Launch を呼ばない
+  - Release 相当の BuildUp 検証と経路が分断
+- suggestedUse: Debug: エディタ外ランタイム起動の一本化
+- firstSeenAt: 2026-11-11T05:31:00+09:00
+- lastSeenAt: 2026-11-11T05:31:00+09:00
+
+### GAP-Infra-EditorScenePlayRequest-004
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動シーン設定が PlayRequest を書くだけ
+- scope: UC-Debug|Infra|EditorScenePlayRequest|Unwired|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:161
+- primary: `EditorScenePlayRequest`
+- summary: 【Debug】Set 後に BuildUp 起動が無い
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - TrySetRepositoryStartupScene が Set のみ（161 行）
+  - DEVELOPMENT 起動は SceneEntityEditor 固定（CommandScene-003）
+  - PlayRequest 読み取りは未配線（001〜003 と同系）
+- suggestedUse: Debug: 起動シーン JSON からワンアクションで検証ランタイム
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T00:01:00+09:00
+- lastSeenAt: 2026-11-11T00:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-017
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: フェード中は Update 停止で F1 無効
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:117
+- primary: `SceneBuildUp`
+- summary: 【Debug】遷移演出中 F1 復帰が処理されない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - F1 は Update 内のみ（117-122 行）
+  - GameOrder は GetIsExecute 中 sceneNow->Update を呼ばない（GameOrder.h:61-67）
+  - BuildUp 出入りの暗転中はエディタへ戻れない
+- suggestedUse: Debug: 検証シーンの出入りをフェード中も中断可能に
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:01:00+09:00
+- lastSeenAt: 2026-11-11T02:01:00+09:00
+
+### GAP-Editor-EditorSceneRuntime-008
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 子 Entity が Initialize されない
+- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:372
+- primary: `EditorSceneRuntime`
+- summary: 【Debug】親なしインスタンスだけ初期化
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Initialize は parentIndex<0 のみ（372-378 行）
+  - 子階層の Cmp が未初期化のまま BuildUp 実行
+  - Draw は親のみ走るため子の不具合が見えにくい
+- suggestedUse: Debug: 階層付き検証シーンのランタイム再現
+- firstSeenAt: 2026-11-11T05:01:00+09:00
+- lastSeenAt: 2026-11-11T05:01:00+09:00
+
+### GAP-Editor-SceneEntityEditor-008
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: エディタ Draw 内で GameOrder 外の camera->Update
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:181
+- primary: `SceneEntityEditor`
+- summary: 【Debug】Edit ホバー時に Draw 内で camera->Update
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - AllowDebugCameraControl は false だが Draw 内で camera->Update（181-183 行）
+  - GameOrder は PrepareCamerasForDraw 経由（GameOrder.h:74）
+  - 機能検証シーンでもカメラ更新経路が二重
+- suggestedUse: Debug: エディタ検証シーンのカメラ政策を一本化
+- firstSeenAt: 2026-11-10T23:06:00+09:00
+- lastSeenAt: 2026-11-10T23:06:00+09:00
+
+### GAP-Infra-launch_config-002
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 欠損パスは静かに空文字
+- scope: UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:167
+- primary: `launch_config`
+- summary: 【Debug】設定読込失敗を区別できない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - TryLoadLaunchConfig 失敗で {}（167-168 行）
+  - startup ファイル欠損も同様に空（171-173 行）
+  - CommandScene-004 と合わせ原因特定が難しい
+- suggestedUse: Debug: 起動不能時に launch_config 理由を示す
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T03:31:00+09:00
+- lastSeenAt: 2026-11-11T03:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-018
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: JSON ロード後にタグカタログ同期が無い
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:105
+- primary: `SceneBuildUp`
+- summary: 【Debug】BuildUp が tagCatalog マージを飛ばす
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - TryLoad 後 BuildEntities 直前にタグ同期無し（105-109 行）
+  - EntityEditor::LoadFromJsonPath は Merge/Sync 実施（171-173 行）
+  - camera.main 等ロールタグの検証結果がエディタとずれうる
+- suggestedUse: Debug: Feature JSON のタグ契約を本編と同一化
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:31:00+09:00
+- lastSeenAt: 2026-11-11T02:31:00+09:00
+
+### GAP-Editor-EditorSceneAsset-003
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: シーン一覧が Scenes のみ
+- scope: UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:20
+- primary: `EditorSceneAsset`
+- summary: 【Debug】ListSceneJson は単一 Dir
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - directory_iterator は引数 root のみ（20-37 行）
+  - DebugPlayArea の .scene.json がプロジェクト一覧に出ない
+  - launch_config 保存先選定が手打ちパス依存
+- suggestedUse: Debug: 検証シーンを一覧に統合
+- firstSeenAt: 2026-11-11T06:01:00+09:00
+- lastSeenAt: 2026-11-11T06:01:00+09:00
+
+### GAP-Editor-SceneEntityEditor-009
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: RT 描画パスが毎回 engine->SetCamera する
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:250
+- primary: `SceneEntityEditor`
+- summary: 【Debug】シーンビュー RT が GameOrder 後に SetCamera
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawSceneViewContent で Fit 後 engine->SetCamera（249-250 行）
+  - GameOrder 直前に ActiveCameraSystem が既に Bind（GameOrder.h:74）
+  - 本番相当 Runtime タブ試験でもエンジンカメラがフレーム内で上書き
+- suggestedUse: Debug: 検証シーンのカメラ解決をエンジン主導に揃える
+- firstSeenAt: 2026-11-10T23:06:00+09:00
+- lastSeenAt: 2026-11-10T23:06:00+09:00
+
+### GAP-Scene-CommandScene-005
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動 JSON の事前検証なし
+- scope: UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:21
+- primary: `CommandScene`
+- summary: 【Debug】Launch 前に TryLoad を呼ばない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - exists(startupScene) 判定まで（21-24 行）
+  - JSON 内容や tag 同期は EnterScene 到達後（BuildUp-013/018）
+  - 壊れた Feature シーンで Title フォールバック無し
+- suggestedUse: Debug: 起動前に Feature JSON を検証
+- firstSeenAt: 2026-11-11T04:01:00+09:00
+- lastSeenAt: 2026-11-11T04:01:00+09:00
+
+### GAP-Editor-EditorSceneAsset-001
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 起動パスを正規化せずそのまま保存
+- scope: UC-Debug|Editor|EditorSceneAsset|Contract|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:157
+- primary: `EditorSceneAsset`
+- summary: 【Debug】startupScenePath を生文字列で保存
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - config.startupScenePath = sceneJsonPath 直代入（157 行）
+  - lexically_normal / EditorAssets 基準への統一無し
+  - cwd 依存で Release BuildUp とエディタ表示が乖離（BuildUp-005）
+- suggestedUse: Debug: launch パスをリポジトリ基準で固定
+- firstSeenAt: 2026-11-11T03:31:00+09:00
+- lastSeenAt: 2026-11-11T03:31:00+09:00
+
+### GAP-Editor-EditorSceneRuntime-010
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: instanceName 未反映
+- scope: UC-Debug|Editor|EditorSceneRuntime|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp:358
+- primary: `EditorSceneRuntime`
+- summary: 【Debug】Entity 名が definition のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Build は definition のみ渡す（358-359 行）
+  - instanceName と entityName の差がランタイムに出ない
+  - 検証シーンのヒエラルキー表示と実体がずれる
+- suggestedUse: Debug: インスタンス名のランタイム反映
+- firstSeenAt: 2026-11-11T06:31:00+09:00
+- lastSeenAt: 2026-11-11T06:31:00+09:00
+
+### GAP-Scene-CommandScene-006
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: Release 起動で Enter 無条件
+- scope: UC-Debug|Scene|CommandScene|Incomplete|Project/Codes/Source/Scene/CommandScene.cpp:30
+- primary: `CommandScene`
+- summary: 【Debug】sceneNow 確定後 Enter を無条件
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - BuildUp Launch 成否を見ず EnterScene（22-30 行）
+  - 壊れた JSON でも Enter が走りフォールバックと混同
+  - CommandScene-005 は path 解決のみ、Enter 検証なし
+- suggestedUse: Debug: 起動シーン検証とタイトルフォールバック
+- firstSeenAt: 2026-11-11T04:31:00+09:00
+- lastSeenAt: 2026-11-11T04:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-019
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: ステージロックとデバッグカメラ許可が矛盾
+- scope: UC-Debug|Scene|SceneBuildUp|Contract|Project/Codes/Include/Scene/SceneBuildUp.h:30
+- primary: `SceneBuildUp`
+- summary: 【Debug】AllowDebugCameraControl をオーバーライドしない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - IsStageViewCameraLocked のみ true（30 行）
+  - Scene 既定 AllowDebugCameraControl true（Scene.h:71）
+  - PrepareBeforeDraw に allowDebug=true が渡り本番相当試験と方針が曖昧
+- suggestedUse: Debug: 機能検証は本番カメラ契約に固定
+- roadmapLink: feature-memos/entity_camera_components.md
+- firstSeenAt: 2026-11-11T02:31:00+09:00
+- lastSeenAt: 2026-11-11T02:31:00+09:00
 
 ### GAP-Infra-DebugPlayAreaGenerator-001
 
@@ -1808,6 +3383,91 @@
 - firstSeenAt: 2026-11-10T06:31:00+09:00
 - lastSeenAt: 2026-11-10T06:31:00+09:00
 
+### GAP-Infra-launch_config-004
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: 空 path でも JSON 存在可
+- scope: UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:123
+- primary: `launch_config`
+- summary: 【Debug】startupScenePath 空で false
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - キー欠落／空文字で load 失敗（119-123 行）
+  - 壊れた JSON と未設定の区別が弱い
+  - Release 起動がタイトルへ落ち原因追跡が難しい
+- suggestedUse: Debug: launch 設定の診断メッセージ
+- firstSeenAt: 2026-11-11T06:01:00+09:00
+- lastSeenAt: 2026-11-11T06:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-015
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 退出時にエディタタブが Runtime のまま
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:210
+- primary: `SceneBuildUp`
+- summary: 【Debug】ExitScene が SceneViewTab を戻さない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene は Runtime タブ固定（112-113 行）
+  - ExitScene は Teardown のみ（210-213 行）で EditorFrame 更新無し
+  - F1 復帰後も EntityEditor の表示タブが Runtime 想定のまま
+- suggestedUse: Debug: 検証終了後にエディットビューへ自動復帰
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:01:00+09:00
+- lastSeenAt: 2026-11-11T02:01:00+09:00
+
+### GAP-Editor-EditorSceneAsset-002
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: PlayRequest が Clear されない
+- scope: UC-Debug|Editor|EditorSceneAsset|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:182
+- primary: `EditorSceneAsset`
+- summary: 【Debug】PlayRequest がパスだけ保持
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Set は jsonFilePath_ 代入のみ（182-184 行）
+  - BuildUp Exit で Clear 呼び出しなし
+  - エディタ再実行と launch 設定の食い違いが残る
+- suggestedUse: Debug: 検証シーン実行後のリクエスト整合
+- firstSeenAt: 2026-11-11T04:31:00+09:00
+- lastSeenAt: 2026-11-11T04:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-014
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: プレビュー描画が親のみ
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:215
+- primary: `SceneEntityEditor`
+- summary: 【Debug】DrawPreview が親 root のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GetParent==nullptr のみ Draw（220-221 行）
+  - BuildUp DrawRuntimeEntities と同型（SceneBuildUp-021）
+  - 子付き検証シーンがエディタで欠ける
+- suggestedUse: Debug: 階層プレビューの子描画
+- firstSeenAt: 2026-11-11T06:31:00+09:00
+- lastSeenAt: 2026-11-11T06:31:00+09:00
+
 ### GAP-Infra-EditorScenePlayRequest-003
 
 - status: open
@@ -1829,6 +3489,303 @@
 - roadmapLink: feature-memos/debug_test_play_area.md
 - firstSeenAt: 2026-11-10T07:01:00+09:00
 - lastSeenAt: 2026-11-10T07:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-016
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: high
+- frequencyBasis: 実行中 JSON パスが UI に出ない
+- scope: UC-Debug|Scene|SceneBuildUp|MissingUI|Project/Codes/Source/Scene/SceneBuildUp.cpp:180
+- primary: `SceneBuildUp`
+- summary: 【Debug】専用ランタイムウィンドウが汎用文言のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - statusLine は固定説明文（182 行）で sceneJsonPath_ 非表示
+  - sceneDisplayName_ はコンストラクタ由来のみ（26-27 行）
+  - cwd ずれで別 JSON を読んでも UI から判別しづらい（BuildUp-005 と同系）
+- suggestedUse: Debug: どの JSON を試しているかヘッダで確認
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:01:00+09:00
+- lastSeenAt: 2026-11-11T02:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-020
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: ランタイムビュー毎フレームでライト再設定
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:144
+- primary: `SceneBuildUp`
+- summary: 【Debug】ビュー描画ごとに SetupRuntimeLighting
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - DrawRuntimeViewContent 先頭で SetupRuntimeLighting（144 行）
+  - EnterScene でも SetupStageViewCamera（110 行）と非対称
+  - ImGui 機能検証でライト状態がフレーム毎に上書き
+- suggestedUse: Debug: ランタイムプレビューの描画コストと一貫性
+- firstSeenAt: 2026-11-11T03:01:00+09:00
+- lastSeenAt: 2026-11-11T03:01:00+09:00
+
+### GAP-Scene-SceneBuildUpRegistry-004
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Launch だけで Enter なし
+- scope: UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:44
+- primary: `SceneBuildUpRegistry`
+- summary: 【Debug】Launch は Scene 生成のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - Launch は make_unique と push_back（39-44 行）
+  - EnterScene は呼び出し側必須（CommandScene 30 行）
+  - scaffold 手順の二段 API が機能試験の導線を複雑化
+- suggestedUse: Debug: Feature シーン起動の単一 API
+- firstSeenAt: 2026-11-11T05:01:00+09:00
+- lastSeenAt: 2026-11-11T05:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-021
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 描画はルート Entity のみ走査
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:85
+- primary: `SceneBuildUp`
+- summary: 【Debug】子付きインスタンスは親 Draw 任せ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GetParent()==nullptr のみ Draw（85-86 行）
+  - 親子不整合や親非 Draw 時は子が表示されない
+  - エディタ階層 JSON の機能検証で欠落に気付きにくい
+- suggestedUse: Debug: ヒエラルキー試験の描画契約を明示
+- firstSeenAt: 2026-11-11T03:31:00+09:00
+- lastSeenAt: 2026-11-11T03:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-025
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: 毎フレーム固定ライト上書き
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:68
+- primary: `SceneBuildUp`
+- summary: 【Debug】描画毎に半ランバート固定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - SetupRuntimeLighting が方向・強度固定（68-77 行）
+  - DrawRuntimeViewContent から毎回呼び出し（144 行）
+  - JSON 側ライティング検証が上書きされる
+- suggestedUse: Debug: Feature シーンのライト設定保持
+- firstSeenAt: 2026-11-11T05:31:00+09:00
+- lastSeenAt: 2026-11-11T05:31:00+09:00
+
+### GAP-Editor-SceneEntityEditor-013
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Exit で Ui 状態残存
+- scope: UC-Debug|Editor|SceneEntityEditor|Incomplete|Project/Codes/Source/Scene/SceneEntityEditor.cpp:292
+- primary: `SceneEntityEditor`
+- summary: 【Debug】Exit はプレビュー解放のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - ExitScene は Finalize+clear+Release（292-299 行）
+  - UiState の Runtime フラグや selected パスをリセットしない
+  - BuildUp 往復後にエディタ状態がズレる
+- suggestedUse: Debug: 検証シーン離脱時の Ui 整合
+- firstSeenAt: 2026-11-11T06:01:00+09:00
+- lastSeenAt: 2026-11-11T06:01:00+09:00
+
+### GAP-Infra-launch_config-003
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: launch_config が 1 キーのみ上書き保存
+- scope: UC-Debug|Infra|launch_config|Incomplete|Project/Codes/Source/System/Editor/Scene/EditorSceneAsset.cpp:136
+- primary: `launch_config`
+- summary: 【Debug】JSON は startupScenePath のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - json 代入は startupScenePath のみ（136-137 行）
+  - schemaVersion や DebugPlayArea 既定無し
+  - 手編集メタとエディタ保存の競合リスク
+- suggestedUse: Debug: 起動設定 JSON の拡張余地を明示
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T04:01:00+09:00
+- lastSeenAt: 2026-11-11T04:01:00+09:00
+
+### GAP-Infra-scaffold_play_area-002
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: medium
+- frequencyBasis: scaffold 完了メッセージが UI 導線を含まない
+- scope: UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:44
+- primary: `scaffold_play_area`
+- summary: 【Debug】生成後は Launch のみ案内
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - print は Launch または EntityEditor OpenScene（44 行）
+  - Scenes/ と DebugPlayArea/ の一覧差・起動シーン設定手順無し
+  - scaffold_play_area-001 / DebugPlayAreaGenerator-001 と手順分散
+- suggestedUse: Debug: scaffold から試験起動まで一続きの手順
+- roadmapLink: feature-memos/debug_test_play_area.md
+- firstSeenAt: 2026-11-11T02:31:00+09:00
+- lastSeenAt: 2026-11-11T02:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-024
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: カメラ無しで描画スキップ
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:149
+- primary: `SceneBuildUp`
+- summary: 【Debug】camera==nullptr で無言 return
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - GetCamera 失敗時 return のみ（148-150 行）
+  - 機能検証でカメラ欠落が空画面に見える
+  - CmpCamera 未配置のテンプレと切り分け困難
+- suggestedUse: Debug: ランタイムビューのカメラ欠落表示
+- firstSeenAt: 2026-11-11T05:01:00+09:00
+- lastSeenAt: 2026-11-11T05:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-026
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Enter で Runtime タブ強制
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:113
+- primary: `SceneBuildUp`
+- summary: 【Debug】EnterScene が Runtime 固定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - EnterScene 末尾で SetSceneViewTab(Runtime)（112-114 行）
+  - Game/Edit タブ経由の比較検証ができない
+  - EditorEntityEditor とのタブ状態が衝突しうる
+- suggestedUse: Debug: 検証用タブ初期値の設定化
+- firstSeenAt: 2026-11-11T05:31:00+09:00
+- lastSeenAt: 2026-11-11T05:31:00+09:00
+
+### GAP-Scene-SceneBuildUpRegistry-003
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Launch が毎回 new して vector に蓄積
+- scope: UC-Debug|Scene|SceneBuildUpRegistry|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:43
+- primary: `SceneBuildUpRegistry`
+- summary: 【Debug】Launch が同一パス重複を防がない
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - make_unique+push_back のみ（39-44 行）
+  - Exit まで OnSceneExited 以外で解放されない（47-56 行）
+  - シーン実行の連打で所有リストが膨らみうる
+- suggestedUse: Debug: 機能検証の再 Launch ポリシーを明示
+- firstSeenAt: 2026-11-11T03:01:00+09:00
+- lastSeenAt: 2026-11-11T03:01:00+09:00
+
+### GAP-Infra-scaffold_play_area-003
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: scaffold が sceneName のみ差替
+- scope: UC-Debug|Infra|scaffold_play_area|Incomplete|EditorAssets/Tools/DebugPlayAreaGenerator/scaffold_play_area.py:37
+- primary: `scaffold_play_area`
+- summary: 【Debug】生成は sceneName 差替のみ
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - data['sceneName']=name のみ（37 行）
+  - テンプレ entities はそのままコピー
+  - 用途別検証シーンのコンポ差し替えは手編集
+- suggestedUse: Debug: scaffold のコンポプリセット
+- firstSeenAt: 2026-11-11T06:31:00+09:00
+- lastSeenAt: 2026-11-11T06:31:00+09:00
+
+### GAP-Scene-SceneBuildUp-022
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: 表示名がロード前のパス stem のまま
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:26
+- primary: `SceneBuildUp`
+- summary: 【Debug】ctor で displayName を仮設定
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - コンストラクタが path stem を設定（24-27 行）
+  - EnterScene 成功まで sceneName 未反映（105-107 行）
+  - UI ヘッダと実ロード名のずれ（BuildUp-016 と同系）
+- suggestedUse: Debug: 試験シーン名をウィンドウへ即反映
+- firstSeenAt: 2026-11-11T04:01:00+09:00
+- lastSeenAt: 2026-11-11T04:01:00+09:00
+
+### GAP-Scene-SceneBuildUp-023
+
+- status: open
+- tier: P3
+- score: 460
+- primaryUseCase: UC-Debug
+- scenarioId: DBG-FeatureScene-001
+- frequency: low
+- frequencyBasis: Feature シーンでも遷移 UI 常時
+- scope: UC-Debug|Scene|SceneBuildUp|Incomplete|Project/Codes/Source/Scene/SceneBuildUp.cpp:191
+- primary: `SceneBuildUp`
+- summary: 【Debug】Draw で ChangeScene 常時描画
+- scenarioText: 開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる。
+- evidence:
+  - ImGui 有効でも engine->PreDraw 後に CommandChangeScene::Draw（191-192 行）
+  - Release 相当の DrawScene は #else 分岐のみ（188-190 行）
+  - 最小検証ビューにフェード UI が重なる
+- suggestedUse: Debug: 機能検証用の描画経路分離
+- firstSeenAt: 2026-11-11T04:31:00+09:00
+- lastSeenAt: 2026-11-11T04:31:00+09:00
 
 #### UC-Play
 
@@ -2278,6 +4235,27 @@
 - firstSeenAt: 2026-11-10T03:41:00+09:00
 - lastSeenAt: 2026-11-10T03:41:00+09:00
 
+### GAP-Audio-AudioManager-003
+
+- status: open
+- tier: P2
+- score: 640
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ストリーム SE プール枯渇で強制停止
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:449
+- primary: `AudioManager`
+- summary: 【Play】空き無しで全汎用ストリームをリセット
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - Stopped が無いと index>=1 を ResetStreamingVoice（449-453 行）
+  - BGM 用 voice 0 は除外だが同時ストリーム SE は奪い合い
+  - PlayStreaming は Handle を返すが呼び元が Stop 不能だと鳴り直し不能
+- suggestedUse: プレイ: 長尺ストリーム SE の同時発音上限と優先度
+- firstSeenAt: 2026-11-11T02:41:00+09:00
+- lastSeenAt: 2026-11-11T02:41:00+09:00
+
 ### GAP-Audio-PlaySceneBgm-001
 
 - status: open
@@ -2382,6 +4360,27 @@
 - firstSeenAt: 2026-11-10T02:51:00+09:00
 - lastSeenAt: 2026-11-10T02:51:00+09:00
 
+### GAP-Audio-PlaySe-001
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: high
+- frequencyBasis: ワンショット SE がハンドル無しで追跡不可
+- scope: UC-Play|Audio|PlaySe|Incomplete|Project/Codes/Include/System/PlaySe.h:54
+- primary: `PlaySe`
+- summary: 【Play】PlaySe が Play の Handle を捨てる
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PlaySe は Manager::Play(index) の戻り値未使用（48-54 行）
+  - シーン Exit は StopBgmLoop のみでワンショット停止なし
+  - Combat の PlaySe が遷移後も鳴り続けうる（StopSe-001 と同系）
+- suggestedUse: プレイ: シーン切替で SE 残骸を制御
+- firstSeenAt: 2026-11-11T02:11:00+09:00
+- lastSeenAt: 2026-11-11T02:11:00+09:00
+
 ### GAP-Camera-StageViewCamera-001
 
 - status: open
@@ -2423,6 +4422,27 @@
 - suggestedUse: ビルド・配布: 本番シーンのカメラロック漏れを自動検出
 - firstSeenAt: 2026-11-10T00:01:00+09:00
 - lastSeenAt: 2026-11-10T00:01:00+09:00
+
+### GAP-Scene-ChangeSceneFade-003
+
+- status: open
+- tier: P2
+- score: 630
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: high
+- frequencyBasis: 暗転中に次シーン Enter で BGM が先行
+- scope: UC-Play|Scene|ChangeSceneFade|Incomplete|Project/Codes/Include/Scene/CommandChangeScene.h:114
+- primary: `ChangeSceneFade`
+- summary: 【Play】フェード中盤で次 BGM が始まる
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - isSceneChange 到達で ChangeScene 即実行（CommandChangeScene.h:108-114）
+  - 新シーン EnterScene が PlayBgmLoop、旧 Exit が StopBgmLoop
+  - フェードイン完了前から次 BGM が鳴り二重／不自然切替（ChangeSceneFade-002 と音声面）
+- suggestedUse: プレイ: 暗転完了後に BGM 開始を同期
+- firstSeenAt: 2026-11-11T01:11:00+09:00
+- lastSeenAt: 2026-11-11T01:11:00+09:00
 
 ### GAP-Scene-SceneBuildUp-002
 
@@ -2508,6 +4528,27 @@
 - firstSeenAt: 2026-11-10T05:51:00+09:00
 - lastSeenAt: 2026-11-10T05:51:00+09:00
 
+### GAP-Scene-SceneGame-012
+
+- status: open
+- tier: P2
+- score: 620
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: イントロ中も BGM 復帰が走る
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:162
+- primary: `SceneGame`
+- summary: 【Play】イントロ中に Maintain が PlaySceneBgm
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - intro 分岐の前で MaintainSceneBgmIfNeeded（162 行）
+  - 復帰 PlayBgmLoop→PlaySceneBgm で全ストリーム停止（PlaySceneBgm-001）
+  - イントロ SE（PlaySubmitSe 等）が BGM 再開で切れうる
+- suggestedUse: プレイ: カットシーン中の BGM/SE 優先度
+- firstSeenAt: 2026-11-11T01:41:00+09:00
+- lastSeenAt: 2026-11-11T01:41:00+09:00
+
 ### GAP-Scene-SceneResult-001
 
 - status: open
@@ -2527,6 +4568,27 @@
 - suggestedUse: プレイ: クリア後リザルトで BGM が止まっても自動復帰
 - firstSeenAt: 2026-11-10T04:51:00+09:00
 - lastSeenAt: 2026-11-10T04:51:00+09:00
+
+### GAP-Audio-AudioManager-001
+
+- status: open
+- tier: P2
+- score: 610
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 一時停止中も IsPlaying が true
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:810
+- primary: `AudioManager`
+- summary: 【Play】BGM 一時停止中は復帰判定が誤る
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - IsPlaying は Paused も true（810-811 行、Audio.h:157 コメント）
+  - MaintainSceneBgmIfNeeded は IsPlaying のみ見る（SceneGame.cpp:236-238）
+  - PauseBgmLoop 未配線と組み合わせると永久無音に見える
+- suggestedUse: プレイ: ポーズ／OS 割込み後の BGM 再開
+- firstSeenAt: 2026-11-11T01:11:00+09:00
+- lastSeenAt: 2026-11-11T01:11:00+09:00
 
 ### GAP-Scene-Scene-002
 
@@ -2592,6 +4654,69 @@
 - firstSeenAt: 2026-11-10T03:41:00+09:00
 - lastSeenAt: 2026-11-10T03:41:00+09:00
 
+### GAP-Audio-AudioManager-004
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ストリーム BGM 一時停止後の再開が薄い
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884
+- primary: `AudioManager`
+- summary: 【Play】Resume は Start のみでデコード再開なし
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - Pause で pVoice->Stop（842-843 行）
+  - Resume は state 確認後 Start のみ（884-889 行）
+  - SubmitInitialBuffer / RefillBuffer を呼ばずバッファ枯渇で無音化しうる
+- suggestedUse: プレイ: ポーズ／OS 割込み後のストリーム BGM 復帰
+- firstSeenAt: 2026-11-11T02:41:00+09:00
+- lastSeenAt: 2026-11-11T02:41:00+09:00
+
+### GAP-Audio-StreamingVoiceCallback-001
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ストリーム終端で Waiting→即停止
+- scope: UC-Play|Audio|StreamingVoiceCallback|Incomplete|Project/Codes/Source/Audio/StreamingVoiceCallBack.cpp:13
+- primary: `StreamingVoiceCallback`
+- summary: 【Play】OnStreamEnd が Waiting のみセット
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - OnStreamEnd→Waiting（13-16 行）
+  - 非ループは Update で Stop→Stopped（100-110 行）
+  - ループ以外の長尺 SE が終端で瞬断
+- suggestedUse: プレイ: ストリーム終端のフェード／シーン跨ぎ
+- firstSeenAt: 2026-11-11T03:11:00+09:00
+- lastSeenAt: 2026-11-11T03:11:00+09:00
+
+### GAP-Scene-GameOrder-002
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: GameOrder が audio_ を保持するのみ
+- scope: UC-Play|Scene|GameOrder|Incomplete|Project/Codes/Source/Scene/GameOrder.cpp:14
+- primary: `GameOrder`
+- summary: 【Play】フレームループが音声を管理しない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - コンストラクタで audio_ 取得のみ（GameOrder.cpp:14）
+  - Update ループに Pause/Resume や遷移中ダッキング無し（GameOrder.h:61-78）
+  - シーン個別（SceneGame Maintain）頼みで統一ポリシーが無い
+- suggestedUse: プレイ: 暗転・ポーズ時の BGM/SE を中央制御
+- firstSeenAt: 2026-11-11T01:41:00+09:00
+- lastSeenAt: 2026-11-11T01:41:00+09:00
+
 ### GAP-Scene-Scene-001
 
 - status: open
@@ -2656,6 +4781,27 @@
 - firstSeenAt: 2026-11-10T07:11:00+09:00
 - lastSeenAt: 2026-11-10T07:11:00+09:00
 
+### GAP-Scene-SceneGame-010
+
+- status: open
+- tier: P2
+- score: 600
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 敗北／撃破演出中は BGM 維持をスキップ
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:231
+- primary: `SceneGame`
+- summary: 【Play】pendingDefeat 中は Maintain が return
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - MaintainSceneBgmIfNeeded は pendingDefeat_!=None で即 return（231-233 行）
+  - 撃破演出 Update は冒頭 return で Maintain 未到達（134-141 行）
+  - ストリーム切断時も演出中は BGM 自動復帰しない
+- suggestedUse: プレイ: 長い死亡演出中も BGM 切断を復帰
+- firstSeenAt: 2026-11-10T23:41:00+09:00
+- lastSeenAt: 2026-11-10T23:41:00+09:00
+
 ### GAP-Scene-SceneMovie-007
 
 - status: open
@@ -2701,6 +4847,27 @@
 - firstSeenAt: 2026-11-10T03:21:00+09:00
 - lastSeenAt: 2026-11-10T03:21:00+09:00
 
+### GAP-Audio-AudioManager-002
+
+- status: open
+- tier: P2
+- score: 590
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ワンショット停止の集約 API が無い
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Include/Audio/Audio.h:147
+- primary: `AudioManager`
+- summary: 【Play】StopAll は BGM 系ループのみ
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - Stop(handle) は個別のみ（147 行）
+  - StopAllLoopingShortVoices は PlaySceneBgm/StopBgmLoop 経路（295, 686 行）
+  - 非ループ Play 音のシーン一括停止ポリシーなし
+- suggestedUse: プレイ: ExitScene で戦闘 SE を確実に消す
+- firstSeenAt: 2026-11-11T02:11:00+09:00
+- lastSeenAt: 2026-11-11T02:11:00+09:00
+
 ### GAP-Scene-SceneGame-008
 
 - status: open
@@ -2721,6 +4888,27 @@
 - suggestedUse: プレイ: イントロと戦闘音のポリシーを統一
 - firstSeenAt: 2026-11-10T07:41:00+09:00
 - lastSeenAt: 2026-11-10T07:41:00+09:00
+
+### GAP-Audio-AudioManager-005
+
+- status: open
+- tier: P2
+- score: 580
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 一時停止中にデコード補充が止まる
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:82
+- primary: `AudioManager`
+- summary: 【Play】Paused ストリームは Update をスキップ
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - state==Paused で continue（82-84 行）
+  - RefillBuffer / TryRecover 未到達
+  - ResumeSceneBgm-004 と合わせバッファ枯渇で無音化しうる
+- suggestedUse: プレイ: ポーズ中もストリームキューを維持
+- firstSeenAt: 2026-11-11T03:11:00+09:00
+- lastSeenAt: 2026-11-11T03:11:00+09:00
 
 ### GAP-Audio-PlayBgmLoop-001
 
@@ -2786,6 +4974,27 @@
 - firstSeenAt: 2026-11-10T05:31:00+09:00
 - lastSeenAt: 2026-11-10T05:31:00+09:00
 
+### GAP-Audio-AudioManager-007
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ストリーム BGM 失敗で playId が不整合
+- scope: UC-Play|Audio|AudioManager|Contract|Project/Codes/Source/Audio/Audio.cpp:719
+- primary: `AudioManager`
+- summary: 【Play】Handle と voice の playId がずれる
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - 失敗時 voice.playId=65536（710-711 行）
+  - 返却 Handle は currentPlayId のまま（714-719 行）
+  - IsPlaying/Stop が voice と不一致になり復帰試行が空振りしうる
+- suggestedUse: プレイ: ストリーム BGM 再開ハンドル契約
+- firstSeenAt: 2026-11-11T03:41:00+09:00
+- lastSeenAt: 2026-11-11T03:41:00+09:00
+
 ### GAP-Audio-ResumeBgmLoop-001
 
 - status: open
@@ -2829,6 +5038,27 @@
 - firstSeenAt: 2026-11-10T06:11:00+09:00
 - lastSeenAt: 2026-11-10T06:11:00+09:00
 
+### GAP-Scene-SceneGame-011
+
+- status: open
+- tier: P2
+- score: 570
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ExitScene で BGM を即停止
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:122
+- primary: `SceneGame`
+- summary: 【Play】フェード中も Exit で StopBgmLoop
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ExitScene で StopBgmLoop（122-125 行）
+  - リスタート／リザルト遷移は ChangeSceneFade 経由
+  - SceneTitle-002・SceneResult-002 と同様の暗転中音切れ
+- suggestedUse: プレイ: ゲーム→他シーンの BGM をフェード連動
+- firstSeenAt: 2026-11-11T00:41:00+09:00
+- lastSeenAt: 2026-11-11T00:41:00+09:00
+
 ### GAP-Scene-SceneTitle-002
 
 - status: open
@@ -2850,6 +5080,27 @@
 - firstSeenAt: 2026-11-10T07:41:00+09:00
 - lastSeenAt: 2026-11-10T07:41:00+09:00
 
+### GAP-Audio-AudioManager-009
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 初期再生後の Refill が 1 回
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:554
+- primary: `AudioManager`
+- summary: 【Play】Start 後に Refill を 1 回だけ
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SubmitInitialBuffer→StartStreaming 後 Refill 1 回（549-554 行）
+  - ダブルバッファ満タン前提が弱くアンダーランしうる
+  - Update の Streaming 状態遷移と初期ギャップが連鎖
+- suggestedUse: プレイ: ストリーム開始時のプリロード強化
+- firstSeenAt: 2026-11-11T04:11:00+09:00
+- lastSeenAt: 2026-11-11T04:11:00+09:00
+
 ### GAP-Audio-SetBgmLoopVolume-001
 
 - status: open
@@ -2870,6 +5121,153 @@
 - suggestedUse: プレイ: 遷移中の BGM 音量フェード
 - firstSeenAt: 2026-11-10T07:11:00+09:00
 - lastSeenAt: 2026-11-10T07:11:00+09:00
+
+### GAP-Scene-SceneGame-009
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: フェード遷移中は BGM 切断検知が止まる
+- scope: UC-Play|Scene|SceneGame|Incomplete|Project/Codes/Source/Scene/SceneGame.cpp:158
+- primary: `SceneGame`
+- summary: 【Play】遷移演出中は MaintainSceneBgm を呼ばない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - GetIsExecute 時は Update 冒頭で return（158-160 行）
+  - MaintainSceneBgmIfNeeded はその手前のみ到達
+  - 遷移暗転中にストリーミング切れても再試行しない
+- suggestedUse: プレイ: フェード中も BGM 生存監視
+- firstSeenAt: 2026-11-10T23:11:00+09:00
+- lastSeenAt: 2026-11-10T23:11:00+09:00
+
+### GAP-Scene-SceneResult-002
+
+- status: open
+- tier: P2
+- score: 560
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: リザルト離脱で BGM がフェード前に停止
+- scope: UC-Play|Scene|SceneResult|Incomplete|Project/Codes/Source/Scene/SceneResult.cpp:62
+- primary: `SceneResult`
+- summary: 【Play】ExitScene が即 StopBgmLoop
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ExitScene で StopBgmLoop（62-63 行）
+  - 遷移は ChangeSceneFade 経由（45-47 行）
+  - SceneTitle-002 と同様に暗転中の音切れが起きうる
+- suggestedUse: プレイ: リザルト→タイトルの BGM をフェードに合わせる
+- firstSeenAt: 2026-11-11T00:11:00+09:00
+- lastSeenAt: 2026-11-11T00:11:00+09:00
+
+### GAP-Audio-AudioManager-008
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: ストリーム失敗後に短音経路へ奪取
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:728
+- primary: `AudioManager`
+- summary: 【Play】BGM フォールバックで短音ボイス解放
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PlayShort 失敗後 ReleaseWaitingShortVoices（728-729 行）
+  - 遷移直後のワンショット SE が待機中から切られる
+  - ストリーム非対応 BGM と短音 SE の同居が脆い
+- suggestedUse: プレイ: シーン遷移時の SE 優先度
+- firstSeenAt: 2026-11-11T03:41:00+09:00
+- lastSeenAt: 2026-11-11T03:41:00+09:00
+
+### GAP-Audio-AudioManager-010
+
+- status: open
+- tier: P2
+- score: 550
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: BGM 一時停止が Stop のみ
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:821
+- primary: `AudioManager`
+- summary: 【Play】ストリーム BGM 停止は XAudio Stop
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PauseSceneBgm は pVoice->Stop のみ（842-843 行）
+  - キュー済みバッファや Streaming 状態を整理しない
+  - ポーズ解除やシーン復帰で途切れ・クリックが出うる
+- suggestedUse: プレイ: ポーズ中も BGM キューを維持
+- firstSeenAt: 2026-11-11T04:41:00+09:00
+- lastSeenAt: 2026-11-11T04:41:00+09:00
+
+### GAP-Audio-AudioDecoder-002
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: EOF 時の voice 状態未更新
+- scope: UC-Play|Audio|AudioDecoder|Incomplete|Project/Codes/Source/Audio/AudioDecoder.cpp:102
+- primary: `AudioDecoder`
+- summary: 【Play】EOF で break のみ
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ENDOFSTREAM でループ脱出（102 行）
+  - ループ再生の巻き戻しと区別しない
+  - 非ループ長尺 SE が突然 Stopped へ落ちる
+- suggestedUse: プレイ: ストリーム終端とループ境界
+- firstSeenAt: 2026-11-11T05:11:00+09:00
+- lastSeenAt: 2026-11-11T05:11:00+09:00
+
+### GAP-Audio-AudioManager-006
+
+- status: open
+- tier: P3
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: ストリーム BGM 秒数が 44.1kHz 固定
+- scope: UC-Play|Audio|AudioManager|Contract|Project/Codes/Source/Audio/Audio.cpp:972
+- primary: `AudioManager`
+- summary: 【Play】再生位置計算が 44100 固定
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - kStreamSampleRate = 44100（972-974 行）
+  - Short 経路は wfEx.nSamplesPerSec を参照（993-999 行）
+  - MF PCM 強制 44.1kHz と整合はするが将来レート差でズレ
+- suggestedUse: プレイ: ストリーム BGM のシーク／ループ位置
+- firstSeenAt: 2026-11-11T03:11:00+09:00
+- lastSeenAt: 2026-11-11T03:11:00+09:00
+
+### GAP-Audio-AudioManager-011
+
+- status: open
+- tier: P2
+- score: 540
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: Resume が Start のみ
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:884
+- primary: `AudioManager`
+- summary: 【Play】Resume は Start 後 Refill なし
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - ストリーム Paused→Playing は Start のみ（884-889 行）
+  - SubmitInitialBuffer/Refill を再実行しない
+  - 長時間ポーズ後に無音やアンダーラン
+- suggestedUse: プレイ: 復帰時のストリーム再プライム
+- firstSeenAt: 2026-11-11T04:41:00+09:00
+- lastSeenAt: 2026-11-11T04:41:00+09:00
 
 ### GAP-Scene-SceneMovie-001
 
@@ -2914,6 +5312,195 @@
 - firstSeenAt: 2026-11-10T05:31:00+09:00
 - lastSeenAt: 2026-11-10T05:31:00+09:00
 
+### GAP-Audio-AudioManager-012
+
+- status: open
+- tier: P2
+- score: 530
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: Waiting 非ループは即停止
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:100
+- primary: `AudioManager`
+- summary: 【Play】Waiting 非ループは Stop で終了
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - isLoop でない Waiting は Recover せず Stop（100-110 行）
+  - 一時的バッファ枯渇も終了扱い
+  - シーン遷移直後の長尺 SE が途中で切れる
+- suggestedUse: プレイ: 非ループストリームのリトライ
+- firstSeenAt: 2026-11-11T05:11:00+09:00
+- lastSeenAt: 2026-11-11T05:11:00+09:00
+
+### GAP-Audio-AudioManager-016
+
+- status: open
+- tier: P2
+- score: 530
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: SE 枯渇時 assert
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:379
+- primary: `AudioManager`
+- summary: 【Play】ボイス枯渇で assert
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - 2 回目 tryPlayShort 失敗で assert（379 行）
+  - シーン遷移直後の SE 集中で開発ビルド停止
+  - リリースでは空 Handle で音欠落のみ
+- suggestedUse: プレイ: SE プール枯渇のグレースフル処理
+- firstSeenAt: 2026-11-11T05:41:00+09:00
+- lastSeenAt: 2026-11-11T05:41:00+09:00
+
+### GAP-Audio-PlaySceneBgm-002
+
+- status: open
+- tier: P2
+- score: 530
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 失敗時 playId 不一致
+- scope: UC-Play|Audio|PlaySceneBgm|Incomplete|Project/Codes/Source/Audio/Audio.cpp:710
+- primary: `PlaySceneBgm`
+- summary: 【Play】Init 失敗で voice playId だけ巻き戻し
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - InitializeStreaming 失敗時 streamingVoice.playId=65536（710-712 行）
+  - 返却 Handle は currentPlayId のまま isSuccess=false
+  - 再試行 PlayBgmLoop が古い Handle で Stop/Pause できない
+- suggestedUse: プレイ: シーン遷移 BGM 失敗のハンドル整合
+- firstSeenAt: 2026-11-11T04:41:00+09:00
+- lastSeenAt: 2026-11-11T04:41:00+09:00
+
+### GAP-Audio-AudioDecoder-001
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: PCM 端数バイトを remaining へ退避
+- scope: UC-Play|Audio|AudioDecoder|Incomplete|Project/Codes/Source/Audio/AudioDecoder.cpp:124
+- primary: `AudioDecoder`
+- summary: 【Play】4 バイト揃えで端数を次回へ
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - remainder!=0 で validBytes を切り詰め（124-140 行）
+  - ストリーム境界で無音／クリックが出うる
+  - MF デコードと XAUDIO2 PCM ブロック境界の仮定
+- suggestedUse: プレイ: 長尺ストリーム SE の途切れ診断
+- firstSeenAt: 2026-11-11T03:41:00+09:00
+- lastSeenAt: 2026-11-11T03:41:00+09:00
+
+### GAP-Audio-AudioManager-014
+
+- status: open
+- tier: P2
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: MF 出力 PCM が固定
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:489
+- primary: `AudioManager`
+- summary: 【Play】ストリーム PCM を 44.1k 固定
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetUINT32 SAMPLES_PER_SECOND 44100（489 行）
+  - 元メディアの fmt に追随しない
+  - AudioManager-013 と合わせピッチ／長さずれ
+- suggestedUse: プレイ: MF デコード fmt の反映
+- firstSeenAt: 2026-11-11T05:41:00+09:00
+- lastSeenAt: 2026-11-11T05:41:00+09:00
+
+### GAP-Audio-AudioManager-018
+
+- status: open
+- tier: P2
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: PlayStreaming 失敗 Handle
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:587
+- primary: `AudioManager`
+- summary: 【Play】Init 失敗で playId 不一致
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - 失敗時 voice playId=65536（587-589 行）
+  - Handle は currentPlayId のまま返却
+  - PlaySceneBgm-002 と同型の停止不能
+- suggestedUse: プレイ: 長尺 SE 失敗ハンドル整合
+- firstSeenAt: 2026-11-11T06:11:00+09:00
+- lastSeenAt: 2026-11-11T06:11:00+09:00
+
+### GAP-Audio-IsBgmLoopPaused-001
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BGM 一時停止状態を UI／ロジックが参照できない
+- scope: UC-Play|Audio|IsBgmLoopPaused|Unwired|Project/Codes/Include/System/PlaySe.h:127
+- primary: `IsBgmLoopPaused`
+- summary: 【Play】IsBgmLoopPaused がシーンから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - PlaySe.h に定義のみ（127-129 行）
+  - Pause/Resume API は gap 化済みだが状態照会が無い
+  - シーン側は IsPlaying のみ（MaintainSceneBgmIfNeeded）
+- suggestedUse: プレイ: ポーズメニューと BGM 状態の同期
+- firstSeenAt: 2026-11-10T23:11:00+09:00
+- lastSeenAt: 2026-11-10T23:11:00+09:00
+
+### GAP-Audio-IsSuitableStreaming-001
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 5MB 閾値のみで経路が分岐
+- scope: UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Source/Audio/Audio.cpp:191
+- primary: `IsSuitableStreaming`
+- summary: 【Play】ファイルサイズだけでストリーム判定
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - GetFileSize > kFileSizeThreshold（5MB, Audio.h:70）のみ（191-193 行）
+  - 短い高ビットレート BGM は全載せ、長い低容量は非ストリーム
+  - 遷移後の BGM 経路・メモリピークがアセット設計に依存
+- suggestedUse: プレイ: BGM 長尺のロード／ストリーム方針を明示
+- firstSeenAt: 2026-11-11T02:41:00+09:00
+- lastSeenAt: 2026-11-11T02:41:00+09:00
+
+### GAP-Audio-StreamingVoiceCallback-002
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: バッファ終了で state のみ更新
+- scope: UC-Play|Audio|StreamingVoiceCallback|Incomplete|Project/Codes/Source/Audio/StreamingVoiceCallBack.cpp:7
+- primary: `StreamingVoiceCallback`
+- summary: 【Play】OnBufferEnd が Streaming へ遷移
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - OnBufferEnd は parentVoice->state=Streaming（7-9 行）
+  - 同フレーム Refill に依存し Update 待ち
+  - 高負荷時にキュー枯渇とクリックが出うる
+- suggestedUse: プレイ: コールバック内プリフィル検討
+- firstSeenAt: 2026-11-11T04:11:00+09:00
+- lastSeenAt: 2026-11-11T04:11:00+09:00
+
 ### GAP-Runtime-MovieCameraTrackLoader-001
 
 - status: open
@@ -2957,6 +5544,279 @@
 - firstSeenAt: 2026-11-10T01:01:00+09:00
 - lastSeenAt: 2026-11-10T01:01:00+09:00
 
+### GAP-Scene-SceneTitle-003
+
+- status: open
+- tier: P3
+- score: 520
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 決定 SE と暗転開始が同フレーム
+- scope: UC-Play|Scene|SceneTitle|Incomplete|Project/Codes/Source/Scene/SceneTitle.cpp:50
+- primary: `SceneTitle`
+- summary: 【Play】Submit 直後にフェード遷移
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - isSubmitTrigger で PlaySubmitSe の直後 ChangeScene（50-52 行）
+  - ExitScene が StopBgmLoop（67 行）だが Submit は Handle 無し
+  - 暗転中にワンショットと次 BGM の重なり（ChangeSceneFade-003 と同系）
+- suggestedUse: プレイ: タイトル→ゲームの SE/BGM 手応え
+- firstSeenAt: 2026-11-11T02:11:00+09:00
+- lastSeenAt: 2026-11-11T02:11:00+09:00
+
+### GAP-Audio-AudioManager-013
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: ストリーム wfEx が固定
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:206
+- primary: `AudioManager`
+- summary: 【Play】SetupStreaming が 44.1kHz 固定
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - isSuitableStreaming の wfEx は StandardWaveFormatEx のみ（203-206 行）
+  - 実ファイルのサンプルレートを MF から反映しない
+  - 再生位置 API の 44100 固定と累積誤差（AudioManager-006）
+- suggestedUse: プレイ: ストリーム fmt 同期
+- firstSeenAt: 2026-11-11T05:11:00+09:00
+- lastSeenAt: 2026-11-11T05:11:00+09:00
+
+### GAP-Audio-GetBgmLoopPlaybackSeconds-001
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BGM 再生位置のシーン復元 API が未接続
+- scope: UC-Play|Audio|GetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:132
+- primary: `GetBgmLoopPlaybackSeconds`
+- summary: 【Play】再生秒取得がゲームシーン未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - Get/SetBgmLoopPlaybackSeconds が PlaySe.h のみ（132-145 行）
+  - シーン再入時は毎回 PlayBgmLoop 先頭から（SceneTitle/Game/Result）
+  - 遷移後も期待位置の継続ポリシーなし
+- suggestedUse: プレイ: シーン戻りで BGM 位置を復元
+- firstSeenAt: 2026-11-10T23:11:00+09:00
+- lastSeenAt: 2026-11-10T23:11:00+09:00
+
+### GAP-Audio-StopSe-001
+
+- status: open
+- tier: P3
+- score: 510
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: StopSe がシーン退出で未使用
+- scope: UC-Play|Audio|StopSe|Unwired|Project/Codes/Include/System/PlaySe.h:97
+- primary: `StopSe`
+- summary: 【Play】ループ SE ハンドルの個別停止が無い
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - StopSe は Handle 単位停止（97-104 行）
+  - シーン Exit は StopBgmLoop のみ（SceneTitle/Game/Result）
+  - PlaySeLoop で開始した SE が遷移後も残りうる
+- suggestedUse: プレイ: 環境ループ SE の明示破棄
+- firstSeenAt: 2026-11-11T00:41:00+09:00
+- lastSeenAt: 2026-11-11T00:41:00+09:00
+
+### GAP-Audio-AudioManager-015
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: 末尾をゼロ埋め
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:619
+- primary: `AudioManager`
+- summary: 【Play】不足バイトを 0 でパディング
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - bytesRead < kBufferSize で std::fill 0（619-621 行）
+  - ループ境界やチャンク末尾で無音挿入
+  - BGM ループ時にクリック／途切れ
+- suggestedUse: プレイ: ストリームバッファ境界の無音化回避
+- firstSeenAt: 2026-11-11T05:41:00+09:00
+- lastSeenAt: 2026-11-11T05:41:00+09:00
+
+### GAP-Audio-AudioManager-017
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: Load が index キャッシュ
+- scope: UC-Play|Audio|AudioManager|Incomplete|Project/Codes/Source/Audio/Audio.cpp:241
+- primary: `AudioManager`
+- summary: 【Play】Load ヒットで再判定なし
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - soundIndexMap_ 命中は index 返却のみ（241-243 行）
+  - ファイルサイズ変化で short/stream 経路が固定
+  - シーン再読込と PlaySeDetail キャッシュが連鎖
+- suggestedUse: プレイ: 音源 Load の再検証
+- firstSeenAt: 2026-11-11T06:11:00+09:00
+- lastSeenAt: 2026-11-11T06:11:00+09:00
+
+### GAP-Audio-PlaySeDetail-002
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: medium
+- frequencyBasis: SE index キャッシュが永久
+- scope: UC-Play|Audio|PlaySeDetail|Contract|Project/Codes/Include/System/PlaySe.h:32
+- primary: `PlaySeDetail`
+- summary: 【Play】キャッシュ命中で再 Load しない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - cache ヒットは index 返却のみ（22-32 行）
+  - ファイル差し替えやストリーム閾値変化を反映しない
+  - PlaySeDetail-001 の path キャッシュと長尺 SE 経路が固定化
+- suggestedUse: プレイ: 開発中の SE 差し替えを無停止反映
+- firstSeenAt: 2026-11-11T04:11:00+09:00
+- lastSeenAt: 2026-11-11T04:11:00+09:00
+
+### GAP-Audio-SetBgmLoopPlaybackSeconds-001
+
+- status: open
+- tier: P3
+- score: 500
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BGM シーク API がシーン遷移に未使用
+- scope: UC-Play|Audio|SetBgmLoopPlaybackSeconds|Unwired|Project/Codes/Include/System/PlaySe.h:141
+- primary: `SetBgmLoopPlaybackSeconds`
+- summary: 【Play】再生位置指定がゲームシーン未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetBgmLoopPlaybackSeconds は Manager 委譲のみ（141-145 行）
+  - 取得側 GAP 済みだが Title/Game/Result は再開時常に先頭から
+  - Pause/Resume と組み合わせた位置復元ポリシーなし
+- suggestedUse: プレイ: シーン戻りで BGM 位置を復元
+- firstSeenAt: 2026-11-10T23:41:00+09:00
+- lastSeenAt: 2026-11-10T23:41:00+09:00
+
+### GAP-Audio-IsSuitableStreaming-002
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 5MB 閾値が定数のみ
+- scope: UC-Play|Audio|IsSuitableStreaming|Contract|Project/Codes/Include/Audio/Audio.h:70
+- primary: `IsSuitableStreaming`
+- summary: 【Play】閾値 5MB がハードコード
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - kFileSizeThreshold = 5MiB 固定（Audio.h:70）
+  - コンテンツ種別や端末に応じた切替なし
+  - 境界付近 BGM で short/stream が揺れる
+- suggestedUse: プレイ: ストリーム判定の設定化
+- firstSeenAt: 2026-11-11T06:11:00+09:00
+- lastSeenAt: 2026-11-11T06:11:00+09:00
+
+### GAP-Audio-SetBgmLoopPitch-001
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: BGM ピッチ API が未配線
+- scope: UC-Play|Audio|SetBgmLoopPitch|Unwired|Project/Codes/Include/System/PlaySe.h:163
+- primary: `SetBgmLoopPitch`
+- summary: 【Play】SetBgmLoopPitch がシーンから未呼び出し
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetBgmLoopPitch は SetSeFrequencyRatio 委譲（163-165 行）
+  - rg SetBgmLoopPitch は PlaySe.h 定義のみ
+  - スロー演出・ポーズ中の音程調整が BGM に反映されない
+- suggestedUse: プレイ: 演出に合わせた BGM ピッチ制御
+- firstSeenAt: 2026-11-10T23:41:00+09:00
+- lastSeenAt: 2026-11-10T23:41:00+09:00
+
+### GAP-Audio-SetSeVolume-001
+
+- status: open
+- tier: P3
+- score: 490
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: ループ SE／BGM 音量 API が未配線
+- scope: UC-Play|Audio|SetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:155
+- primary: `SetSeVolume`
+- summary: 【Play】SetSeVolume がゲームロジックから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetSeVolume は AudioManager::SetHandleVolume 委譲（155-157 行）
+  - rg SetSeVolume は PlaySe.h 定義のみ（SetBgmLoopVolume-001 と対）
+  - ダメージ演出などで SE 音量を下げる契約が無い
+- suggestedUse: プレイ: ヒットストップ中の SE ダッキング
+- firstSeenAt: 2026-11-11T01:11:00+09:00
+- lastSeenAt: 2026-11-11T01:11:00+09:00
+
+### GAP-Audio-GetSeVolume-001
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: 音量照会 API がゲーム未使用
+- scope: UC-Play|Audio|GetSeVolume|Unwired|Project/Codes/Include/System/PlaySe.h:159
+- primary: `GetSeVolume`
+- summary: 【Play】GetSeVolume がシーンから未呼び出し
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - GetSeVolume は Manager 委譲のみ（159-161 行）
+  - SetBgmLoopVolume は GAP 済みで取得側未配線
+  - フェード／ポーズ UI と実音量の同期ポリシーなし
+- suggestedUse: プレイ: BGM ダッキングの状態復元
+- firstSeenAt: 2026-11-11T00:11:00+09:00
+- lastSeenAt: 2026-11-11T00:11:00+09:00
+
+### GAP-Audio-PlaySeDetail-001
+
+- status: open
+- tier: P3
+- score: 480
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: SE パスキャッシュが無期限保持
+- scope: UC-Play|Audio|PlaySeDetail|Incomplete|Project/Codes/Include/System/PlaySe.h:19
+- primary: `PlaySeDetail`
+- summary: 【Play】static cache がアンロードされない
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - GetOrLoadSeIndex の static unordered_map（19-32 行）
+  - シーン遷移・長時間プレイでエントリ追記のみ
+  - ボイス停止とデコーダキャッシュの整合ポリシーなし
+- suggestedUse: プレイ: 長時間セッションの SE メモリ管理
+- firstSeenAt: 2026-11-11T00:41:00+09:00
+- lastSeenAt: 2026-11-11T00:41:00+09:00
+
 ### GAP-Audio-PlaySeLoop-001
 
 - status: open
@@ -2977,6 +5837,48 @@
 - suggestedUse: プレイ: BGM と独立したループ SE 層
 - firstSeenAt: 2026-11-10T06:41:00+09:00
 - lastSeenAt: 2026-11-10T06:41:00+09:00
+
+### GAP-Audio-GetSeFrequencyRatio-001
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: ピッチ照会 API が未配線
+- scope: UC-Play|Audio|GetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:151
+- primary: `GetSeFrequencyRatio`
+- summary: 【Play】GetSeFrequencyRatio が未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - GetSeFrequencyRatio は定義のみ（151-153 行）
+  - SetBgmLoopPitch GAP（163 行）と非対称
+  - 演出後にピッチを元に戻すロジック無し
+- suggestedUse: プレイ: スロー演出後の BGM ピッチ復帰
+- firstSeenAt: 2026-11-11T00:11:00+09:00
+- lastSeenAt: 2026-11-11T00:11:00+09:00
+
+### GAP-Audio-SetSeFrequencyRatio-001
+
+- status: open
+- tier: P3
+- score: 470
+- primaryUseCase: UC-Play
+- scenarioId: PLY-Audio-001
+- frequency: low
+- frequencyBasis: SE ピッチ API が未配線
+- scope: UC-Play|Audio|SetSeFrequencyRatio|Unwired|Project/Codes/Include/System/PlaySe.h:147
+- primary: `SetSeFrequencyRatio`
+- summary: 【Play】SetSeFrequencyRatio がゲームから未使用
+- scenarioText: プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける。
+- evidence:
+  - SetSeFrequencyRatio は SetHandleFrequencyRatio 委譲（147-148 行）
+  - rg SetSeFrequencyRatio は PlaySe.h 定義のみ
+  - SetBgmLoopPitch-001 と対で一時変化 SE が演出に無い
+- suggestedUse: プレイ: スロー演出時の SE ピッチ連動
+- firstSeenAt: 2026-11-11T01:41:00+09:00
+- lastSeenAt: 2026-11-11T01:41:00+09:00
 
 #### UC-Ship
 
@@ -3305,21 +6207,21 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261110-052013 | at: 2026-11-10T05:20:54.212485+09:00 | scenario: AUT-Component-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-053016 | at: 2026-11-10T05:30:50.774020+09:00 | scenario: PLY-Movie-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-054019 | at: 2026-11-10T05:40:57.713019+09:00 | scenario: AUT-EditorPlace-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-055015 | at: 2026-11-10T05:50:50.662782+09:00 | scenario: PLY-SceneLoad-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-060016 | at: 2026-11-10T06:00:51.363018+09:00 | scenario: AUT-Guidance-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-061024 | at: 2026-11-10T06:11:00.391287+09:00 | scenario: PLY-Visual-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-062012 | at: 2026-11-10T06:20:59.799180+09:00 | scenario: AUT-VisualTune-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-063013 | at: 2026-11-10T06:31:21.084005+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-064013 | at: 2026-11-10T06:41:03.845539+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-065006 | at: 2026-11-10T06:51:08.763681+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-070015 | at: 2026-11-10T07:00:50.713598+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-071014 | at: 2026-11-10T07:10:46.973414+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-072023 | at: 2026-11-10T07:20:51.586186+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-073017 | at: 2026-11-10T07:31:02.344487+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
-- scanId: SCAN-20261110-074024 | at: 2026-11-10T07:40:43.271911+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-043006 | at: 2026-11-11T04:30:30.823712+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-044011 | at: 2026-11-11T04:40:29.023350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-045006 | at: 2026-11-11T04:50:25.719805+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-050017 | at: 2026-11-11T05:00:33.872874+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-051011 | at: 2026-11-11T05:10:49.097514+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-052010 | at: 2026-11-11T05:20:27.571439+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-053014 | at: 2026-11-11T05:30:54.455417+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-054008 | at: 2026-11-11T05:40:40.897350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-055013 | at: 2026-11-11T05:50:38.019955+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-060023 | at: 2026-11-11T06:01:00.247216+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-061024 | at: 2026-11-11T06:11:05.731943+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-062020 | at: 2026-11-11T06:20:43.604694+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 
 ---
 

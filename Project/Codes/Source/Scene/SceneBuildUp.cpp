@@ -27,6 +27,10 @@ SceneBuildUp::SceneBuildUp(std::string sceneJsonPath, Scene *returnScene)
       Editor::Scene::SceneDisplayNameFromPath(sceneJsonPath_);
 }
 
+SceneBuildUp::~SceneBuildUp() = default;
+
+SceneBuildUpRegistry::~SceneBuildUpRegistry() = default;
+
 SceneBuildUpRegistry &SceneBuildUpRegistry::Instance() {
   static SceneBuildUpRegistry instance;
   return instance;
@@ -70,7 +74,7 @@ void SceneBuildUp::SetupRuntimeLighting() {
       .intensity = 6.0f,
       .lightModel = Atrum::LightModel::HalfLambert,
   };
-  Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 }
 
 void SceneBuildUp::DrawRuntimeEntities() {
@@ -112,7 +116,7 @@ void SceneBuildUp::EnterScene() {
 
 void SceneBuildUp::Update() {
   if (returnScene_ != nullptr &&
-      Atrum::Input::PlayInput::Instance()->IsKeyTrigger(Atrum::Input::Key::F1)) {
+      ::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
     Atrum::CommandChangeScene::Instance()->Set(
         returnScene_, std::make_unique<ChangeSceneFade>().release());
     return;
@@ -132,7 +136,7 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
     return;
   }
 
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
@@ -155,9 +159,8 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
 void SceneBuildUp::DrawScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   return;
-#endif
-
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+#else
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
@@ -166,10 +169,11 @@ void SceneBuildUp::DrawScene() {
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
   engine->SetCamera(GetCamera());
   DrawRuntimeEntities();
+#endif
 }
 
 void SceneBuildUp::Draw() {
-  Atrum::Engine *engine = Atrum::Engine::Instance();
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   Editor::EditorFrame::Instance().ResetPerFrame();

@@ -28,17 +28,6 @@ namespace Atrum::Input {
 
 	private:
 
-		/// <summary>
-		/// デフォルトコンストラクタ
-		/// </summary>
-		PlayInput() = default;
-
-		/// <summary>
-		/// デフォルトデストラクタ
-		/// </summary>
-		~PlayInput() = default;
-
-
 		// キー入力(今フレーム)
 		bool keys_[256]{ false };
 		// キー入力(前フレーム)
@@ -60,17 +49,8 @@ namespace Atrum::Input {
 
 	public:
 
-		/// <summary>
-		/// インスタンスの取得
-		/// </summary>
-		/// <returns></returns>
-		static PlayInput* Instance() {
-
-			static PlayInput instance;
-
-			return &instance;
-
-		}
+		PlayInput() = default;
+		~PlayInput() = default;
 
 		PlayInput(const PlayInput& source) = delete;
 		PlayInput operator=(const PlayInput& source) = delete;

@@ -22,7 +22,7 @@ namespace {
 			.intensity = 8.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
-		Atrum::Engine::Instance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
 	}
 
 } // namespace
@@ -41,25 +41,24 @@ namespace Atrum {
 	void SceneTitle::Update() {
 		UpdateBackgrounds();
 
-		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
-
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 		// エディタビルドの起動シーンは SceneEntityEditor（タイトル経由の遷移は無効）
 		return;
-#endif
-
+#else
+		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
 		if (input.isSubmitTrigger) {
 			Atrum::PlaySubmitSe();
 			Atrum::CommandChangeScene::Instance()->Set(SceneGame::Instance(),
 				std::make_unique<ChangeSceneFade>().release());
 		}
+#endif
 	}
 
 	void SceneTitle::DrawScene() {
 		SetupStageLighting();
 		DrawBackgrounds();
 
-		if (Atrum::AtrumEngine* engine = Atrum::AtrumEngine::Instance()) {
+		if (Atrum::AtrumEngine* engine = ::Atrum::EngineInstance()) {
 			Atrum::SceneScreenUi::DrawTitleSceneUi(engine, GetCamera());
 		}
 	}
@@ -126,6 +125,8 @@ namespace Atrum {
 	}
 
 	SceneTitle::SceneTitle() {}
+
+	SceneTitle::~SceneTitle() = default;
 
 	SceneTitle* SceneTitle::Instance() {
 		static SceneTitle instance;

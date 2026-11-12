@@ -33,7 +33,7 @@ bool CmpMotionCrossfade::CrossfadeToClip(const std::string &jsonPath,
 }
 
 void CmpMotionCrossfade::Update() {
-  const float delta = FrameDeltaTime::Instance()->GetDeltaTime();
+  const float delta = ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
   crossfade_.Advance(delta);
   RefOwner().RefTransform() = crossfade_.EvaluatePose();
 }

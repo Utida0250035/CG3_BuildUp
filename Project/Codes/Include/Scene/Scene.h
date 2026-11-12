@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Camera/Camera.h"
 #include "System/Particle/EmitterManager.h"
+#include "Scene/SceneCameraRig.h"
 #include <memory>
 
 namespace Atrum {
+
+class Camera;
 
 /// <summary>
 /// シーン類 > 基底クラス
@@ -12,10 +14,7 @@ namespace Atrum {
 class Scene {
 
 protected:
-  /// <summary>
-  /// シーンごとのカメラ
-  /// </summary>
-  std::unique_ptr<Atrum::Camera> camera_;
+  SceneCameraRig cameraRig_{};
 
   /// このシーンに紐づくパーティクル（EnterScene で生成、ExitScene で解放）
   std::unique_ptr<Particle::Emitter::EmitterManager> particleEmitterManager_{};
@@ -25,8 +24,6 @@ protected:
 
   /// 紐づいたパーティクルマネージャを破棄する（ReleaseCommonResources から呼ぶ）
   void ReleaseParticleEmitterManager();
-
-  void InitializeCamera();
 
   /// <summary>
   /// 戦闘ステージ全体が画面に収まるようカメラを配置する
@@ -54,8 +51,11 @@ public:
   /// ExitScene でシーン共通リソースを解放する
   void ReleaseCommonResources();
 
-  Atrum::Camera *GetCamera() { return camera_.get(); }
-  const Atrum::Camera *GetCamera() const { return camera_.get(); }
+  Atrum::Camera *GetCamera();
+  const Atrum::Camera *GetCamera() const;
+
+  /// Update 完了後・Draw 直前（GameOrder / ActiveCameraSystem から呼ぶ）
+  void PrepareCamerasForDraw();
 
   /// <summary>
   /// true のとき DebugCamera の操作を行わず EnterScene で設定した戦闘カメラを維持する。

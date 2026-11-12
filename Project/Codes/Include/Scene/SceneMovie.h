@@ -16,6 +16,7 @@ class Scene;
 class SceneMovie final : public Scene {
 public:
   SceneMovie(std::string trackJsonPath, Scene *returnScene);
+  ~SceneMovie() override;
 
   void EnterScene() override;
   void Update() override;
@@ -43,6 +44,8 @@ private:
 
 class SceneMovieRegistry final {
 public:
+  ~SceneMovieRegistry();
+
   static SceneMovieRegistry &Instance();
 
   Scene *Launch(const std::string &trackJsonPath, Scene *returnScene);

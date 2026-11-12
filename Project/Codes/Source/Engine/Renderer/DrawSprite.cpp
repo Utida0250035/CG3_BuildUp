@@ -24,15 +24,17 @@ namespace {
 
 namespace Atrum {
 
-	std::unique_ptr<DrawSprite> DrawSprite::instance_ = nullptr;
-
-	void DrawSprite::Initialize(ID3D12Device* device, CommandContext* commandContextDirect, DescriptorAllocator* srvAllocator) {
+	void DrawSprite::Initialize(ID3D12Device* device,
+	                            CommandContext* commandContextDirect,
+	                            DescriptorAllocator* srvAllocator,
+	                            TextureStorage* textureStorage) {
 
 		pDevice_ = device;
 
 		pCommandContextDirect_ = commandContextDirect;
 
 		pSrvAllocator_ = srvAllocator;
+		textureStorage_ = textureStorage;
 
 		CreateVertexBuffer();
 
@@ -134,7 +136,7 @@ namespace Atrum {
 			return;
 		}
 
-		TextureStorage* textureStorage = TextureStorage::Instance();
+		TextureStorage* textureStorage = textureStorage_;
 
 		// 画像サイズ
 		Vector2 sourceTextureSize = { static_cast<float>(textureStorage->GetTextureWidth(textureIndex)), static_cast<float>(textureStorage->GetTextureHeight(textureIndex)) };

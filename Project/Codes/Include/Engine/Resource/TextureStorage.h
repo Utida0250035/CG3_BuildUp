@@ -47,8 +47,6 @@ namespace Atrum {
 
 		void MakeShaderResourceView(Texture& texture, const DirectX::TexMetadata& metaData);
 
-		static std::unique_ptr<TextureStorage> instance_;
-
 		CommandContext* pCommandContextDirect_ = nullptr;
 		Fence* pFence_ = nullptr;
 		SwapChain* pSwapChain_ = nullptr;
@@ -56,11 +54,11 @@ namespace Atrum {
 		ID3D12Device* pDevice_ = nullptr;
 		std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>>* pTemporaryResources_ = nullptr;
 
+	public:
+
 		struct Token {
 			explicit Token() = default;
 		};
-
-	public:
 
 		explicit TextureStorage(Token) {}
 
@@ -72,26 +70,6 @@ namespace Atrum {
 
 		TextureStorage operator=(const TextureStorage& source) = delete;
 		TextureStorage(const TextureStorage& source) = delete;
-
-		static TextureStorage* Instance() {
-
-			if (!instance_) {
-
-				instance_ = std::make_unique<TextureStorage>(Token{});
-
-			}
-
-			return instance_.get();
-
-		}
-
-		static void Destroy() {
-
-			if (instance_) {
-				instance_.reset();
-			}
-
-		}
 
 	};
 
