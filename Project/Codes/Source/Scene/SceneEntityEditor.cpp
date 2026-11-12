@@ -7,6 +7,7 @@
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
+#include "Scene/SceneParticleDemo.h"
 #include "Scene/SceneParticleEditor.h"
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Entity/Entity.h"
@@ -152,6 +153,13 @@ void SceneEntityEditor::Update() {
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
     Atrum::CommandChangeScene::Instance()->Set(
         SceneParticleEditor::Instance(),
+        std::make_unique<ChangeSceneFade>().release());
+    return;
+  }
+
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
+    Atrum::CommandChangeScene::Instance()->Set(
+        SceneParticleDemo::Instance(),
         std::make_unique<ChangeSceneFade>().release());
     return;
   }

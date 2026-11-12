@@ -292,7 +292,8 @@ void Draw(UiState &uiState, std::vector<Param> &layerParams) {
     return;
   }
 
-  ImGui::TextUnformatted("Space: プレビュー再生  |  F1: シーンエディタへ");
+  ImGui::TextUnformatted(
+      "Space: プレビュー再生  |  F1: シーンエディタ  |  F3: デモショール");
   ImGui::Separator();
 
   ImGui::InputString("JSON path", uiState.jsonFilePath);

@@ -1,6 +1,9 @@
 # パーティクル表現サンプル（能力カタログ）
 
-パーティクルエディタ（F2 → `SceneParticleEditor`）の **JSON path** に、下記いずれかのパスを指定してプレビューしてください。  
+**自動デモ（推奨）:** Development ビルドで **F3** → `SceneParticleDemo`。  
+サンプル JSON を順番に再生し、先頭に **ボール×壁＋衝撃波** の演出デモがあります（Space で次項目、ImGui で手動切替可）。
+
+手動プレビュー: パーティクルエディタ（F2 → `SceneParticleEditor`）の **JSON path** に下記パスを指定。  
 基準ディレクトリは実行ファイルから見た `../EditorAssets/Particles/` です。
 
 ## いま JSON で表現できること（一覧）
