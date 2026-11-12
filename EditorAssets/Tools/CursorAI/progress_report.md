@@ -1764,8 +1764,10 @@
 - **用途:** パーティクルエディタで「今何が表現できるか」をすぐ見比べるカタログデータ
 - **使用場面:** エフェクト仕様の検討、新規演出のたたき、プログラマ／アーティスト間の共通言語
 
-## パーティクルデモシーン SceneParticleDemo（F3）
+## パーティクルデモ（エンティティ＋コンポーネント化）
 
-- **実装:** `SceneParticleDemo` … 15 サンプル自動巡回 + ボール壁反射で `demos/ball_wall_shockwave.json` を衝突点再生
-- **遷移:** EntityEditor / ParticleEditor から **F3**（F1/F2 で戻り）
-- **推測した用途:** エフェクト・演出の見本市、プログラム連携前の体験デモ、パーティクル JSON の自動スモーク
+- **撤回:** 専用 `SceneParticleDemo` シーンクラスは削除
+- **追加コンポーネント:** `CmpParticleEmitter`（JSON 再生・カルーセル）、`CmpBounceBall`（壁反射＋衝撃波ワンショット）
+- **シーン:** `EditorAssets/Scenes/ParticleDemo.json`（Showreel / Ball / 壁エンティティ）
+- **起動:** F3 → 既存 `SceneBuildUp` で上記 JSON を実行
+- **推測した用途:** レベル制作データとしてパーティクル演出を試す、コンポーネント再利用、エディタで配置・調整

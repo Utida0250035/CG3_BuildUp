@@ -235,8 +235,14 @@
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\SceneParticleDemo.cpp">
-      <Filter>Source\Scene</Filter>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp">
+      <Filter>Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp">
+      <Filter>Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp">
+      <Filter>Source\System\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp">
       <Filter>Codes\Source\Scene</Filter>
@@ -768,8 +774,14 @@
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Scene\SceneParticleDemo.h">
-      <Filter>Include\Scene</Filter>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h">
+      <Filter>Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h">
+      <Filter>Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h">
+      <Filter>Include\System\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h">
       <Filter>Codes\Include\Scene</Filter>

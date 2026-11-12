@@ -7,8 +7,10 @@
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
-#include "Scene/SceneParticleDemo.h"
+#include "Scene/SceneBuildUp.h"
 #include "Scene/SceneParticleEditor.h"
+#include "System/Editor/EditorAssetsPaths.h"
+#include "System/Particle/SceneParticleServices.h"
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Entity/Entity.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -158,8 +160,10 @@ void SceneEntityEditor::Update() {
   }
 
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
+    const std::string demoScene =
+        std::string(Atrum::EditorAssets::kScenesDirectory) + "/ParticleDemo.json";
     Atrum::CommandChangeScene::Instance()->Set(
-        SceneParticleDemo::Instance(),
+        SceneBuildUpRegistry::Instance().Launch(demoScene, Instance()),
         std::make_unique<ChangeSceneFade>().release());
     return;
   }
@@ -181,6 +185,7 @@ void SceneEntityEditor::Update() {
         entity->Update();
       }
     }
+    Atrum::Particle::TickEmitterManagerForActiveScene(GetCamera());
   }
 }
 
@@ -273,6 +278,9 @@ void SceneEntityEditor::DrawSceneViewContent(
 #endif
 
   DrawPreviewEntities();
+  if (!isEditViewPass) {
+    Atrum::Particle::DrawEmitterManagerForActiveScene();
+  }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
   if (!isEditViewPass && debugCamera != nullptr) {

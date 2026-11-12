@@ -1,0 +1,215 @@
+{
+  "sceneName": "ParticleDemo",
+  "tagCatalog": [
+    "DEMO"
+  ],
+  "entities": [
+    {
+      "instanceName": "ParticleShowreel",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "ParticleShowreel",
+        "tags": [
+          "DEMO"
+        ],
+        "initialTransform": {
+          "translate": {
+            "x": 0,
+            "y": 1.2,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          },
+          "quaternion": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          }
+        },
+        "components": [
+          {
+            "kind": 0,
+            "typeName": "CmpParticleEmitter",
+            "params": {
+              "emitterName": "particle_demo_showreel",
+              "jsonFilePath": "samples/01_burst_directional_fountain.json",
+              "samplePaths": [
+                "samples/01_burst_directional_fountain.json",
+                "samples/02_burst_sphere_radial_spread.json",
+                "samples/03_burst_radial_converge.json",
+                "samples/04_continuous_fountain.json",
+                "samples/05_continuous_circle_xz_loop.json",
+                "samples/06_emit_aabb_smoke_box.json",
+                "samples/07_emit_circle_xy_disk.json",
+                "samples/08_emit_circle_yz_wall.json",
+                "samples/09_render_billboard.json",
+                "samples/10_render_model.json",
+                "samples/11_killfield_inside_sphere.json",
+                "samples/12_killfield_outside_aabb.json",
+                "samples/13_damping_float.json",
+                "samples/14_multilayer_flash_smoke.json",
+                "samples/15_simulation_local_burst.json"
+              ],
+              "autoCarousel": true,
+              "carouselIntervalSeconds": 5.0,
+              "followOwnerTransform": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "instanceName": "DemoBall",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "DemoBall",
+        "tags": [
+          "DEMO"
+        ],
+        "initialTransform": {
+          "translate": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          },
+          "quaternion": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          }
+        },
+        "components": [
+          {
+            "kind": 1,
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 0.32,
+              "subdivision": 10,
+              "isLightingEnabled": true,
+              "color": {
+                "x": 0.35,
+                "y": 0.78,
+                "z": 1.15,
+                "w": 1
+              }
+            }
+          },
+          {
+            "kind": 0,
+            "typeName": "CmpBounceBall",
+            "params": {
+              "velocity": {
+                "x": 7,
+                "y": 5.5,
+                "z": 0
+              },
+              "gravity": -14.0,
+              "leftWallX": -5.0,
+              "rightWallX": 5.0,
+              "groundY": -3.68,
+              "radius": 0.32,
+              "wallRestitution": 0.94,
+              "floorRestitution": 0.88,
+              "impactJsonPath": "demos/ball_wall_shockwave.json",
+              "impactCooldownSeconds": 0.12
+            }
+          }
+        ]
+      }
+    },
+    {
+      "instanceName": "WallLeft",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "WallLeft",
+        "initialTransform": {
+          "translate": {
+            "x": -5,
+            "y": 0.5,
+            "z": 0
+          },
+          "scale": {
+            "x": 0.2,
+            "y": 5.5,
+            "z": 1.2
+          },
+          "quaternion": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          }
+        },
+        "components": [
+          {
+            "kind": 1,
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 1.0,
+              "subdivision": 8,
+              "isLightingEnabled": true,
+              "color": {
+                "x": 0.55,
+                "y": 0.58,
+                "z": 0.65,
+                "w": 1
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "instanceName": "WallRight",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "WallRight",
+        "initialTransform": {
+          "translate": {
+            "x": 5,
+            "y": 0.5,
+            "z": 0
+          },
+          "scale": {
+            "x": 0.2,
+            "y": 5.5,
+            "z": 1.2
+          },
+          "quaternion": {
+            "x": 0,
+            "y": 0,
+            "z": 0,
+            "w": 1
+          }
+        },
+        "components": [
+          {
+            "kind": 1,
+            "typeName": "CmpMeshSphere",
+            "params": {
+              "radius": 1.0,
+              "subdivision": 8,
+              "isLightingEnabled": true,
+              "color": {
+                "x": 0.55,
+                "y": 0.58,
+                "z": 0.65,
+                "w": 1
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

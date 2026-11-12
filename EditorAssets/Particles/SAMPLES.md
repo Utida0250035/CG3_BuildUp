@@ -1,7 +1,13 @@
 # パーティクル表現サンプル（能力カタログ）
 
-**自動デモ（推奨）:** Development ビルドで **F3** → `SceneParticleDemo`。  
-サンプル JSON を順番に再生し、先頭に **ボール×壁＋衝撃波** の演出デモがあります（Space で次項目、ImGui で手動切替可）。
+**自動デモ（推奨）:** Development ビルドで **F3** → `EditorAssets/Scenes/ParticleDemo.json` を `SceneBuildUp` で実行。  
+エンティティ構成:
+
+- `ParticleShowreel` + **`CmpParticleEmitter`** … `samples/01`〜`15` を自動カルーセル
+- `DemoBall` + **`CmpBounceBall`** … 壁・床バウンス、衝突点で `demos/ball_wall_shockwave.json`
+- `WallLeft` / `WallRight` … `CmpMeshSphere` の壁オブジェクト
+
+シーン JSON を編集して演出を足せます（専用 C++ デモシーンは使いません）。
 
 手動プレビュー: パーティクルエディタ（F2 → `SceneParticleEditor`）の **JSON path** に下記パスを指定。  
 基準ディレクトリは実行ファイルから見た `../EditorAssets/Particles/` です。

@@ -21,7 +21,6 @@ LOCKED_REQUIRED = (
 UNLOCKED_EDITOR = (
     "SceneEntityEditor.h",
     "SceneParticleEditor.h",
-    "SceneParticleDemo.h",
 )
 
 

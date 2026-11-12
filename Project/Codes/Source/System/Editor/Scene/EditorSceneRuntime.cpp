@@ -7,7 +7,9 @@
 #include "System/Entity/Components/CmpEditorTextureBillboard.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
+#include "System/Entity/Components/CmpBounceBall.h"
 #include "System/Entity/Components/CmpCamera.h"
+#include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
@@ -59,6 +61,12 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpCamera") {
       return entity.HasUpdCmp<CmpCamera>();
     }
+    if (slot.typeName == "CmpParticleEmitter") {
+      return entity.HasUpdCmp<CmpParticleEmitter>();
+    }
+    if (slot.typeName == "CmpBounceBall") {
+      return entity.HasUpdCmp<CmpBounceBall>();
+    }
   }
   if (slot.kind == ComponentSlotKind::Data) {
     if (slot.typeName == "CmpEditorAssetPath") {
@@ -92,6 +100,15 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   }
   if (slot.typeName == "CmpCamera" && slot.kind == ComponentSlotKind::Upd) {
     entity.AddUpdCmp<CmpCamera>();
+    return true;
+  }
+  if (slot.typeName == "CmpParticleEmitter" &&
+      slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpParticleEmitter>();
+    return true;
+  }
+  if (slot.typeName == "CmpBounceBall" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpBounceBall>();
     return true;
   }
   if (slot.typeName == "CmpEditorAssetPath" &&
@@ -205,6 +222,48 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetLoadImageAsBillboard(p.value("loadImageAsBillboard", true));
     cmp->SetBillboardSize(p.value("billboardWidth", 1.0f),
                           p.value("billboardHeight", 1.0f));
+    return;
+  }
+
+  if (slot.typeName == "CmpParticleEmitter") {
+    if (!entity.HasUpdCmp<CmpParticleEmitter>()) {
+      return;
+    }
+    CmpParticleEmitter *cmp = entity.GetUpdCmp<CmpParticleEmitter>();
+    cmp->SetEmitterName(p.value("emitterName", std::string{}));
+    cmp->SetJsonFilePath(p.value("jsonFilePath", std::string{}));
+    std::vector<std::string> samplePaths;
+    if (p.contains("samplePaths") && p.at("samplePaths").is_array()) {
+      for (const nlohmann::json &item : p.at("samplePaths")) {
+        if (item.is_string()) {
+          samplePaths.push_back(item.get<std::string>());
+        }
+      }
+    }
+    cmp->SetSamplePaths(std::move(samplePaths));
+    cmp->SetAutoCarousel(p.value("autoCarousel", false));
+    cmp->SetCarouselIntervalSeconds(p.value("carouselIntervalSeconds", 5.0f));
+    cmp->SetFollowOwnerTransform(p.value("followOwnerTransform", true));
+    return;
+  }
+
+  if (slot.typeName == "CmpBounceBall") {
+    if (!entity.HasUpdCmp<CmpBounceBall>()) {
+      return;
+    }
+    CmpBounceBall *cmp = entity.GetUpdCmp<CmpBounceBall>();
+    cmp->SetInitialVelocity(p.value("velocity", Math::Vector3{7.0f, 5.5f, 0.0f}));
+    cmp->SetGravity(p.value("gravity", -14.0f));
+    cmp->SetLeftWallX(p.value("leftWallX", -5.0f));
+    cmp->SetRightWallX(p.value("rightWallX", 5.0f));
+    cmp->SetGroundY(p.value("groundY", -3.68f));
+    cmp->SetRadius(p.value("radius", 0.32f));
+    cmp->SetWallRestitution(p.value("wallRestitution", 0.94f));
+    cmp->SetFloorRestitution(p.value("floorRestitution", 0.88f));
+    cmp->SetImpactJsonPath(
+        p.value("impactJsonPath", std::string{"demos/ball_wall_shockwave.json"}));
+    cmp->SetImpactCooldownSeconds(p.value("impactCooldownSeconds", 0.12f));
+    return;
   }
 }
 
