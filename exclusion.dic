@@ -1,4 +1,4 @@
-HINSTANCE
+﻿HINSTANCE
 DXGI
 dxgi
 Atrum
@@ -82,3 +82,6 @@ nullptr
 Manip
 ifstream
 MSVC
+showreel
+killfield
+cooldown
