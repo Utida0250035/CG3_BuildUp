@@ -9,7 +9,7 @@
         "entityName": "BillboardGrid",
         "tags": ["DEMO"],
         "initialTransform": {
-          "translate": { "x": 0.0, "y": 0.5, "z": 0.0 },
+          "translate": { "x": 0.0, "y": 0.8, "z": 0.0 },
           "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
           "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 }
         },
@@ -21,10 +21,15 @@
               "textureFilePath": "./Assets/Images/white4x4.png",
               "gridCountX": 10,
               "gridCountY": 10,
-              "spacing": 1.15,
-              "billboardWidth": 0.85,
-              "billboardHeight": 0.85,
-              "baseColor": { "x": 0.95, "y": 0.98, "z": 1.0, "w": 1.0 }
+              "spacing": 1.35,
+              "cellFill": 0.78,
+              "useAutoSizeInCell": true,
+              "checkerboardEnabled": true,
+              "checkerColorA": { "x": 0.95, "y": 0.98, "z": 1.05, "w": 1.0 },
+              "checkerColorB": { "x": 0.38, "y": 0.48, "z": 0.65, "w": 1.0 },
+              "drawCellGridLines": true,
+              "gridLineColor": { "x": 0.28, "y": 0.32, "z": 0.4, "w": 0.92 },
+              "gridPlaneYOffset": -0.62
             }
           }
         ]

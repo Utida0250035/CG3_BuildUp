@@ -168,7 +168,18 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetTextureFilePath(p.value("textureFilePath", std::string{}));
     cmp->SetGridCountX(p.value("gridCountX", 10));
     cmp->SetGridCountY(p.value("gridCountY", 10));
-    cmp->SetSpacing(p.value("spacing", 1.15f));
+    cmp->SetSpacing(p.value("spacing", 1.35f));
+    cmp->SetCellFill(p.value("cellFill", 0.78f));
+    cmp->SetUseAutoSizeInCell(p.value("useAutoSizeInCell", true));
+    cmp->SetCheckerboardEnabled(p.value("checkerboardEnabled", true));
+    cmp->SetCheckerColorA(
+        p.value("checkerColorA", Math::Vector4{0.92f, 0.96f, 1.05f, 1.0f}));
+    cmp->SetCheckerColorB(
+        p.value("checkerColorB", Math::Vector4{0.42f, 0.52f, 0.68f, 1.0f}));
+    cmp->SetDrawCellGridLines(p.value("drawCellGridLines", true));
+    cmp->SetGridLineColor(
+        p.value("gridLineColor", Math::Vector4{0.35f, 0.4f, 0.48f, 0.95f}));
+    cmp->SetGridPlaneYOffset(p.value("gridPlaneYOffset", -0.55f));
     cmp->SetBillboardWidth(p.value("billboardWidth", 0.85f));
     cmp->SetBillboardHeight(p.value("billboardHeight", 0.85f));
     cmp->SetBaseColor(p.value("baseColor", Math::Vector4::White()));
