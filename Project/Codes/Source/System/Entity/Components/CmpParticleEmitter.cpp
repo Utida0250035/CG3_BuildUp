@@ -15,10 +15,16 @@ namespace Atrum {
 void CmpParticleEmitter::Initialize() {
   carouselIndex_ = 0;
   carouselElapsed_ = 0.0f;
+  if (autoCarousel_ && samplePaths_.size() > 1) {
+    carouselSlots_.Start(ResolvedEmitterName(), samplePaths_,
+                         carouselIntervalSeconds_);
+    return;
+  }
   EnsureEmitterRegistered();
 }
 
 void CmpParticleEmitter::Finalize() {
+  carouselSlots_.Stop();
   if (!emitterRegistered_) {
     return;
   }
@@ -102,6 +108,11 @@ void CmpParticleEmitter::EnsureEmitterRegistered() {
 void CmpParticleEmitter::Update() {
   FrameDeltaTime *frameDelta = EngineFrameDeltaTime();
   const float deltaSeconds = frameDelta != nullptr ? frameDelta->GetDeltaTime() : 0.0f;
+
+  if (carouselSlots_.IsRunning()) {
+    carouselSlots_.Update(deltaSeconds);
+    return;
+  }
 
   if (autoCarousel_ && samplePaths_.size() > 1) {
     carouselElapsed_ += deltaSeconds;

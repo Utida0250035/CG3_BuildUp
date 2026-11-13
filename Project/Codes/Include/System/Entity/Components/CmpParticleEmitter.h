@@ -1,12 +1,14 @@
 #pragma once
 
 #include "System/Entity/ComponentUpd.h"
+#include "System/Particle/ParticleSampleCarouselSlots.h"
 #include <string>
 #include <vector>
 
 namespace Atrum {
 
-/// エンティティ位置でパーティクル JSON を再生（Scene の EmitterManager 経由）
+/// エンティティ位置でパーティクル JSON を再生（Scene の EmitterManager 経由）。
+/// autoCarousel かつ sample が複数のときは、カメラ内の別位置へインデックスをずらして同時再生する。
 class CmpParticleEmitter : public ComponentUpd {
 public:
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -51,6 +53,7 @@ private:
   int carouselIndex_ = 0;
   float carouselElapsed_ = 0.0f;
   bool emitterRegistered_ = false;
+  Particle::ParticleSampleCarouselSlots carouselSlots_{};
 };
 
 } // namespace Atrum

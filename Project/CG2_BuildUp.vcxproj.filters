@@ -250,6 +250,9 @@
     <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp">
       <Filter>Source\System\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp">
+      <Filter>Source\System\Particle</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -793,6 +796,9 @@
       <Filter>Include\System\Entity\Components</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h">
+      <Filter>Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h">
       <Filter>Include\System\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h">

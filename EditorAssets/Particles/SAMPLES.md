@@ -3,7 +3,7 @@
 **自動デモ（推奨）:** Development ビルドで **F3** → `Project/Assets/Scenes/ParticleDemo.json` を `SceneBuildUp` で実行。  
 エンティティ構成:
 
-- `ParticleShowreel` + **`CmpParticleEmitter`** … `samples/01`〜`15` を自動カルーセル
+- `ParticleShowreel` + **`CmpParticleEmitter`** … `samples/01`〜`15` を、カメラ内の別位置へインデックスをずらして同時再生（一定間隔で窓を1つ進める）。転がるボールの衝撃波は別エンティティ
 - `DemoBall` + **`CmpBounceBall`** … 壁・床バウンス、衝突点で `demos/ball_wall_shockwave.json`
 - `WallLeft` / `WallRight` … `CmpMeshSphere` の壁オブジェクト
 

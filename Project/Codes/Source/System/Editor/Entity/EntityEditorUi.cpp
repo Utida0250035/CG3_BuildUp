@@ -262,6 +262,10 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["autoCarousel"] = autoCarousel;
       changed = true;
     }
+    if (autoCarousel) {
+      ImGui::TextDisabled(
+          "sample を画面内の別位置へ、インデックスをずらして同時再生");
+    }
     float interval = p.value("carouselIntervalSeconds", 5.0f);
     if (ImGui::DragFloat("carouselIntervalSeconds", &interval, 0.1f, 0.5f,
                          120.0f)) {
