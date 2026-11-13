@@ -8,7 +8,7 @@
 #include "Scene/SceneGame.h"
 #include "Scene/SceneResult.h"
 #include "Scene/SceneTitle.h"
-#include "System/Editor/EditorAssetsPaths.h"
+#include "System/GameAssetsPaths.h"
 
 #include <algorithm>
 #include <fstream>
@@ -44,16 +44,16 @@ std::string NormalizePathKey(std::string path) {
 void LoadDefaultEntries(std::vector<Entry> &out) {
   out = {
       Entry{EntryKind::BuildUp, {},
-            NormalizePathKey(std::string(EditorAssets::kScenesDirectory) +
+            NormalizePathKey(std::string(GameAssets::kScenesDirectory) +
                              "/ParticleDemo.json")},
       Entry{EntryKind::BuildUp, {},
-            NormalizePathKey(std::string(EditorAssets::kScenesDirectory) +
+            NormalizePathKey(std::string(GameAssets::kScenesDirectory) +
                              "/BillboardInstancing100.json")},
   };
 }
 
 bool TryLoadManifest(std::vector<Entry> &out) {
-  const std::string manifestPath = EditorAssets::kReleaseSceneCarouselPath;
+  const std::string manifestPath = GameAssets::kReleaseSceneCarouselPath;
   namespace fs = std::filesystem;
   if (!fs::exists(manifestPath)) {
     return false;

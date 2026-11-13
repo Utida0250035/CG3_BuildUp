@@ -20,6 +20,7 @@
 #include "Input/PlayInput.h"
 
 #include "System/Editor/EditorAssetsPaths.h"
+#include "System/GameAssetsPaths.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/Particle/ParticleEditorReferenceGrid.h"
 #include "System/Editor/Particle/ParticleEditorUi.h"
@@ -181,7 +182,7 @@ void SceneParticleEditor::Update() {
 		return;
 	}
 	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
-		const std::string demoScene = std::string(Atrum::EditorAssets::kScenesDirectory) +
+		const std::string demoScene = std::string(Atrum::GameAssets::kScenesDirectory) +
 		                              "/ParticleDemo.json";
 		Atrum::CommandChangeScene::Instance()->Set(
 		    SceneBuildUpRegistry::Instance().Launch(

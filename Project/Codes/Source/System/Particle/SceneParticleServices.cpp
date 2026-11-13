@@ -5,7 +5,7 @@
 #include "Engine/Blend/BlendMode.h"
 #include "Scene/CommandScene.h"
 #include "Scene/Scene.h"
-#include "System/Editor/EditorAssetsPaths.h"
+#include "System/GameAssetsPaths.h"
 #include "System/Particle/EmitterManager.h"
 
 #include <filesystem>
@@ -55,7 +55,7 @@ std::string ResolveParticleJsonPath(const std::string &path) {
   if (IsAbsoluteStylePath(path)) {
     return path;
   }
-  return std::string(EditorAssets::kParticlesDirectory) + "/" + path;
+  return std::string(GameAssets::kParticlesDirectory) + "/" + path;
 }
 
 } // namespace Atrum::Particle

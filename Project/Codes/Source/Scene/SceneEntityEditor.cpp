@@ -9,7 +9,7 @@
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneParticleEditor.h"
-#include "System/Editor/EditorAssetsPaths.h"
+#include "System/GameAssetsPaths.h"
 #include "System/Particle/SceneParticleServices.h"
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Entity/Entity.h"
@@ -161,7 +161,7 @@ void SceneEntityEditor::Update() {
 
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
     const std::string demoScene =
-        std::string(Atrum::EditorAssets::kScenesDirectory) + "/ParticleDemo.json";
+        std::string(Atrum::GameAssets::kScenesDirectory) + "/ParticleDemo.json";
     Atrum::CommandChangeScene::Instance()->Set(
         SceneBuildUpRegistry::Instance().Launch(demoScene, Instance()),
         std::make_unique<ChangeSceneFade>().release());

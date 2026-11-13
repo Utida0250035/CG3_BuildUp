@@ -1953,3 +1953,25 @@
   - 用途: 配布ビルドでのデモ・展示時に、初見のプレイヤーへ「Space で次のシーンへ進める」ことを常時示す
   - 使用場面: ビルド・配布（Release のみ）。エディタ／Development の表示には出さない
   - 用途から決めた仕様: 巡回リストに載ったシーンだけに出す（リストを変えれば表示対象も追従）、テクスチャは描画中でなく EnterScene で読み込み、案内画像は差し替えやすいよう PNG ファイル名で指定
+
+## セッション 2026-11-13 20:05（Release でも使う JSON を Assets へ移動）
+
+### 1. 実施内容
+
+- Release が読むシーン `ParticleDemo.json` / `BillboardInstancing100.json` を `Project/Assets/Scenes/` へ移動
+- それらが参照するパーティクル `samples/01`〜`15` と `demos/ball_wall_shockwave.json` を `Project/Assets/Particles/` へ移動
+- `launch_config.json`・`release_scene_carousel.json`・本編の `operator_guidance.json` も `Project/Assets/` へ移動し、パスを `./Assets/...` に更新
+- 相対パーティクルパスの解決先を `GameAssets::kParticlesDirectory`（`./Assets/Particles`）に変更
+- エディタのシーン一覧は `Assets/Scenes` と `EditorAssets/Scenes` の両方を表示。新規シーンの作成先はエディタ作業用の `EditorAssets/Scenes` のまま
+- `editorTest.json` と `Scene_0.json` などエディタ専用ファイルは `EditorAssets` に残置
+
+### 2. 課題・設計上の選択肢
+
+- **既存実装の課題点:** `feature-memos/operator_guidance_bubble.md` とギャップスキャン資料は、案内 JSON の場所を `EditorAssets/UX/operator_guidance.json` のまま記載している
+
+## 推測した用途（§6.4）
+
+- **Release 同梱のシーン・パーティクル JSON**
+  - 用途: 配布ビルドでのデモシーン再生、本編のパーティクル演出とオペレータ案内。制作中の下書きシーンはエディタ専用のまま分ける
+  - 使用場面: ビルド・配布、ランタイムのゲームプレイ、レベル／アセット制作（エディタから同じ Assets を開いて調整）
+  - 用途から決めた仕様: ゲームが読むパスは cwd（Project）からの `./Assets/...`。エディタ専用の試験 JSON と作業シーンは `../EditorAssets` のまま

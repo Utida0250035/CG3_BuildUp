@@ -1,6 +1,6 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
-#include "System/Editor/EditorAssetsPaths.h"
+#include "System/GameAssetsPaths.h"
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
@@ -38,6 +38,14 @@ std::vector<std::string> ListSceneJsonFiles(
   return paths;
 }
 
+std::vector<std::string> ListEditableSceneJsonFiles() {
+  std::vector<std::string> paths =
+      ListSceneJsonFiles(GameAssets::kScenesDirectory);
+  const std::vector<std::string> editorPaths = ListSceneJsonFiles();
+  paths.insert(paths.end(), editorPaths.begin(), editorPaths.end());
+  return paths;
+}
+
 std::string MakeUniqueSceneFilePath() {
   namespace fs = std::filesystem;
   EnsureScenesDirectoryExists();
@@ -69,23 +77,33 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   }
 
   std::error_code ec{};
-  const fs::path scenesRoot =
-      fs::absolute(kScenesDirectory, ec).lexically_normal();
-  if (ec) {
-    return false;
-  }
   const fs::path absoluteTarget = fs::absolute(target, ec).lexically_normal();
   if (ec) {
     return false;
   }
 
-  const fs::path relative = fs::relative(absoluteTarget, scenesRoot, ec);
-  if (ec || relative.empty()) {
-    return false;
+  const char *roots[] = {GameAssets::kScenesDirectory, kScenesDirectory};
+  bool insideManagedRoot = false;
+  for (const char *root : roots) {
+    const fs::path scenesRoot = fs::absolute(root, ec).lexically_normal();
+    if (ec) {
+      ec.clear();
+      continue;
+    }
+    const fs::path relative = fs::relative(absoluteTarget, scenesRoot, ec);
+    if (ec || relative.empty()) {
+      ec.clear();
+      continue;
+    }
+    const std::string relativeGeneric = relative.generic_string();
+    if (relativeGeneric.rfind("..", 0) == 0 ||
+        relativeGeneric.find("/../") != std::string::npos) {
+      continue;
+    }
+    insideManagedRoot = true;
+    break;
   }
-  const std::string relativeGeneric = relative.generic_string();
-  if (relativeGeneric.rfind("..", 0) == 0 ||
-      relativeGeneric.find("/../") != std::string::npos) {
+  if (!insideManagedRoot) {
     return false;
   }
 
@@ -99,7 +117,7 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
 bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
   namespace fs = std::filesystem;
   outConfig = {};
-  const fs::path configPath = EditorAssets::kLaunchConfigPath;
+  const fs::path configPath = GameAssets::kLaunchConfigPath;
   if (!fs::exists(configPath)) {
     return false;
   }
@@ -129,7 +147,7 @@ bool TrySaveLaunchConfig(const LaunchConfig &config) {
   }
 
   namespace fs = std::filesystem;
-  const fs::path configPath = EditorAssets::kLaunchConfigPath;
+  const fs::path configPath = GameAssets::kLaunchConfigPath;
   std::error_code ec{};
   fs::create_directories(configPath.parent_path(), ec);
 

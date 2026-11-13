@@ -27,6 +27,7 @@
 #include "System/EntityFactory.h"
 #include "System/PlayerParryReach.h"
 #include "System/Particle/GameCombatParticleEffects.h"
+#include "System/GameAssetsPaths.h"
 #include "System/PlaySe.h"
 
 namespace {
@@ -112,7 +113,7 @@ namespace Atrum {
 		Atrum::PlayerDamageScreenVignette::Instance().Reset();
 		Atrum::SceneScreenUi::PreloadGameSceneUiTextures();
 		Atrum::OperatorGuidance::System::Instance().LoadFromJsonFile(
-			"../EditorAssets/UX/operator_guidance.json");
+			Atrum::GameAssets::kOperatorGuidanceJson);
 		Atrum::OperatorGuidance::System::Instance().ResetSession();
 		operatorBattleReadyNotified_ = false;
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmGame.mp3",

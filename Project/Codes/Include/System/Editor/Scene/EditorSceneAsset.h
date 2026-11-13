@@ -15,6 +15,9 @@ void EnsureScenesDirectoryExists();
 std::vector<std::string> ListSceneJsonFiles(
     const std::string &directoryRelativePath = kScenesDirectory);
 
+/// ゲーム用 Assets/Scenes とエディタ作業用 EditorAssets/Scenes を合わせた一覧
+std::vector<std::string> ListEditableSceneJsonFiles();
+
 /// 未使用のシーンファイルパスを生成（Scene_0.json 形式）
 std::string MakeUniqueSceneFilePath();
 

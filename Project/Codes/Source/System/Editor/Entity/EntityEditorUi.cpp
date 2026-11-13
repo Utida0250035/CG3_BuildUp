@@ -10,6 +10,7 @@
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
+#include "System/GameAssetsPaths.h"
 #include "System/Hash64.h"
 #include "ForDebug/ImGui.h"
 #include "Math/Vector3.h"
@@ -558,9 +559,10 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::Separator();
 
   const std::vector<std::string> scenePaths =
-      Atrum::Editor::Scene::ListSceneJsonFiles();
+      Atrum::Editor::Scene::ListEditableSceneJsonFiles();
   if (scenePaths.empty()) {
-    ImGui::TextDisabled("シーンがありません: %s",
+    ImGui::TextDisabled("シーンがありません: %s / %s",
+                        Atrum::GameAssets::kScenesDirectory,
                         Atrum::Editor::Scene::kScenesDirectory);
   } else {
     for (const std::string &path : scenePaths) {

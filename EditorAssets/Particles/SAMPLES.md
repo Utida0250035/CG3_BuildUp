@@ -1,6 +1,6 @@
 # パーティクル表現サンプル（能力カタログ）
 
-**自動デモ（推奨）:** Development ビルドで **F3** → `EditorAssets/Scenes/ParticleDemo.json` を `SceneBuildUp` で実行。  
+**自動デモ（推奨）:** Development ビルドで **F3** → `Project/Assets/Scenes/ParticleDemo.json` を `SceneBuildUp` で実行。  
 エンティティ構成:
 
 - `ParticleShowreel` + **`CmpParticleEmitter`** … `samples/01`〜`15` を自動カルーセル
@@ -10,7 +10,7 @@
 シーン JSON を編集して演出を足せます（専用 C++ デモシーンは使いません）。
 
 手動プレビュー: パーティクルエディタ（F2 → `SceneParticleEditor`）の **JSON path** に下記パスを指定。  
-基準ディレクトリは実行ファイルから見た `../EditorAssets/Particles/` です。
+基準ディレクトリは実行ファイルから見た `./Assets/Particles/` です（Release でも同じ場所を読みます）。
 
 ## いま JSON で表現できること（一覧）
 
@@ -31,7 +31,7 @@
 
 ## サンプルファイル
 
-プレビュー用パス例: `../EditorAssets/Particles/samples/<ファイル名>`
+プレビュー用パス例: `./Assets/Particles/samples/<ファイル名>`
 
 | ファイル | 主に見るパラメータ |
 |----------|-------------------|

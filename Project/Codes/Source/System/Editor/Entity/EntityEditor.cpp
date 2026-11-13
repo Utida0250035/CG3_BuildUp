@@ -259,7 +259,7 @@ bool EntityEditor::DeleteSceneFile(const std::string &sceneJsonPath) {
   }
 
   const std::vector<std::string> remaining =
-      Atrum::Editor::Scene::ListSceneJsonFiles();
+      Atrum::Editor::Scene::ListEditableSceneJsonFiles();
   if (!remaining.empty()) {
     return OpenSceneFromPath(remaining.front());
   }
