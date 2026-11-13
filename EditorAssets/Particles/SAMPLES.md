@@ -3,7 +3,7 @@
 **自動デモ（推奨）:** Development ビルドで **F3** → `Project/Assets/Scenes/ParticleDemo.json` を `SceneBuildUp` で実行。  
 エンティティ構成:
 
-- `ParticleShowreel` + **`CmpParticleEmitter`** … `samples/01`〜`15` を、カメラ内の別位置へインデックスをずらして同時再生（一定間隔で窓を1つ進める）。転がるボールの衝撃波は別エンティティ
+- `ParticleShowreel` + **`CmpParticleEmitter`** … `samples/01`〜`16` を、カメラ内の別位置へインデックスをずらして同時再生（一定間隔で窓を1つ進める）。転がるボールの衝撃波は別エンティティ
 - `DemoBall` + **`CmpBounceBall`** … 壁・床バウンス、衝突点で `demos/ball_wall_shockwave.json`
 - `WallLeft` / `WallRight` … `CmpMeshSphere` の壁オブジェクト
 
@@ -50,5 +50,6 @@
 | `13_damping_float.json` | `damping` で減速しながら浮遊 |
 | `14_multilayer_flash_smoke.json` | 2レイヤー（閃光＋煙） |
 | `15_simulation_local_burst.json` | `LOCAL` 座標（エミッター移動時の挙動確認用） |
+| `16_multilayer_impact_stack.json` | 5レイヤー（煙・地を這う輪・火花・残り火・閃光）。寿命と描画を層で分ける |
 
 既存の戦闘向け参考（実行時パス）: `./Assets/Particles/parry_reflect.json` など。

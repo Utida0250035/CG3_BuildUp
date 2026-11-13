@@ -235,24 +235,6 @@
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp">
-      <Filter>Source\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp">
-      <Filter>Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp">
-      <Filter>Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp">
-      <Filter>Source\System\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp">
-      <Filter>Source\System\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp">
-      <Filter>Source\System\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -463,6 +445,44 @@
     <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>Externals\imgui\misc\cpp</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
+    <ClCompile Include="Codes\Source\Motion\MotionBlender.cpp" />
+    <ClCompile Include="Codes\Source\Motion\MotionClipLoader.cpp" />
+    <ClCompile Include="Codes\Source\Motion\MotionCrossfade.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp" />
+    <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp" />
+    <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorAssetPath.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorTextureBillboard.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
+    <ClCompile Include="Codes\Source\Visual\PlayerTerrainSilhouette.cpp" />
+    <ClCompile Include="Codes\Source\UX\OperatorGuidanceSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
@@ -783,24 +803,6 @@
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h">
-      <Filter>Include\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h">
-      <Filter>Include\System\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h">
-      <Filter>Include\System\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h">
-      <Filter>Include\System\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h">
-      <Filter>Include\System\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h">
-      <Filter>Include\System\Particle</Filter>
-    </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
@@ -1086,6 +1088,51 @@
     <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <Filter>Externals\imgui\misc\cpp</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\AudioStreamingDebugStats.h" />
+    <ClInclude Include="Codes\Include\Camera\ActiveCameraSystem.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h" />
+    <ClInclude Include="Codes\Include\Engine\Resource\ParticleGpuData.h" />
+    <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionBlender.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionClip.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionKeyframe.h" />
+    <ClInclude Include="Codes\Include\Motion\MotionCrossfade.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h" />
+    <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h" />
+    <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorAssetPath.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorTextureBillboard.h" />
+    <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h" />
+    <ClInclude Include="Codes\Include\System\GameAssetsPaths.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h" />
+    <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h" />
+    <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Codes">

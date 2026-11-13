@@ -27,7 +27,8 @@
                                 "samples/12_killfield_outside_aabb.json",
                                 "samples/13_damping_float.json",
                                 "samples/14_multilayer_flash_smoke.json",
-                                "samples/15_simulation_local_burst.json"
+                                "samples/15_simulation_local_burst.json",
+                                "samples/16_multilayer_impact_stack.json"
                             ]
                         },
                         "typeName": "CmpParticleEmitter"
