@@ -95,8 +95,8 @@ namespace Atrum {
 
 	void Draw::CreateParticleGpuResources() {
 		particleFrameBuffer_ =
-		    std::make_unique<SingleConstantBuffer<ParticleFrameGpuData>>();
-		particleFrameBuffer_->CreateBuffer(pDevice_);
+		    std::make_unique<MultiConstantBuffer<ParticleFrameGpuData>>();
+		particleFrameBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
 
 		particleInstanceCapacity_ = kMaxParticleInstances;
 		particleInstanceBufferResource_ = CreateUploadBuffer(
@@ -126,6 +126,27 @@ namespace Atrum {
 
 		pDevice_->CreateShaderResourceView(particleInstanceBufferResource_.Get(),
 		                                   &srvDesc, particleInstanceSrv_.cpu);
+	}
+
+	uint32_t Draw::WriteParticleInstancesToFrameBuffer(
+	    const std::vector<ParticleInstanceGpuData> &instances,
+	    uint32_t &outInstanceBase) {
+
+		outInstanceBase = particleInstanceWriteCount_;
+
+		const size_t remaining =
+		    particleInstanceCapacity_ - particleInstanceWriteCount_;
+		const uint32_t writeCount = static_cast<uint32_t>(
+		    std::min<size_t>(instances.size(), remaining));
+		if (writeCount == 0) {
+			return 0;
+		}
+
+		std::memcpy(particleInstanceData_ + particleInstanceWriteCount_,
+		            instances.data(),
+		            sizeof(ParticleInstanceGpuData) * writeCount);
+		particleInstanceWriteCount_ += writeCount;
+		return writeCount;
 	}
 
 	void Draw::WriteSphereMeshToBatch(const uint32_t subdivision,
@@ -298,7 +319,10 @@ namespace Atrum {
 		frame.cameraWorld =
 		    M::Vector4{invView.m[3][0], invView.m[3][1], invView.m[3][2], 1.0f};
 		frame.instanceBufferBase = instanceBufferBase;
-		particleFrameBuffer_->SetData(frame);
+		particleFrameBuffer_->SetData(frame, constantBufferCount_);
+		const D3D12_GPU_VIRTUAL_ADDRESS particleFrameAddr =
+		    particleFrameBuffer_->GetGpuVirtualAddress() +
+		    (constantBufferCount_ * sizeof(ParticleFrameGpuData));
 
 		MaterialData materialData{};
 		if (materialOverride != nullptr) {
@@ -318,8 +342,7 @@ namespace Atrum {
 		auto *cmd = pCommandContextDirect_->GetCommandList();
 
 		cmd->SetGraphicsRootConstantBufferView(0, materialAddr);
-		cmd->SetGraphicsRootConstantBufferView(
-		    4, particleFrameBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootConstantBufferView(4, particleFrameAddr);
 		cmd->SetGraphicsRootDescriptorTable(5, particleInstanceSrv_.gpu);
 
 		DescriptorAllocator::DescriptorHandle textureHandle =
@@ -383,7 +406,10 @@ namespace Atrum {
 		frame.cameraWorld =
 		    M::Vector4{invView.m[3][0], invView.m[3][1], invView.m[3][2], 1.0f};
 		frame.instanceBufferBase = instanceBufferBase;
-		particleFrameBuffer_->SetData(frame);
+		particleFrameBuffer_->SetData(frame, constantBufferCount_);
+		const D3D12_GPU_VIRTUAL_ADDRESS particleFrameAddr =
+		    particleFrameBuffer_->GetGpuVirtualAddress() +
+		    (constantBufferCount_ * sizeof(ParticleFrameGpuData));
 
 		MaterialData materialData{};
 		if (materialOverride != nullptr) {
@@ -403,8 +429,7 @@ namespace Atrum {
 		auto *cmd = pCommandContextDirect_->GetCommandList();
 
 		cmd->SetGraphicsRootConstantBufferView(0, materialAddr);
-		cmd->SetGraphicsRootConstantBufferView(
-		    4, particleFrameBuffer_->GetGpuVirtualAddress());
+		cmd->SetGraphicsRootConstantBufferView(4, particleFrameAddr);
 		cmd->SetGraphicsRootDescriptorTable(5, particleInstanceSrv_.gpu);
 
 		DescriptorAllocator::DescriptorHandle textureHandle =
@@ -452,40 +477,27 @@ namespace Atrum {
 		(void)isLighting;
 		(void)uvTransform;
 
-		uint32_t geomVertexStart = 0;
-		uint32_t geomIndexStart = 0;
+		uint32_t instanceBase = 0;
+		const uint32_t instanceCount =
+		    WriteParticleInstancesToFrameBuffer(instances, instanceBase);
+		if (instanceCount == 0) {
+			return;
+		}
+
+		const uint32_t geomVertexStart = vertexBuffer_->GetDrewCount();
+		const uint32_t geomIndexStart = indexBuffer_->GetDrewCount();
 		uint32_t sphereVertexCount = 0;
 		uint32_t sphereIndexCount = 0;
-		bool geometryWritten = false;
+		WriteSphereMeshToBatch(subdivision, 1.0f, geomVertexStart,
+		                       geomIndexStart, sphereVertexCount,
+		                       sphereIndexCount);
+		vertexBuffer_->AddDrewCount(sphereVertexCount);
+		indexBuffer_->AddDrewCount(sphereIndexCount);
 
-		const size_t total = instances.size();
-		for (size_t offset = 0; offset < total;
-		     offset += kMaxParticleInstances) {
-			const uint32_t batchCount = static_cast<uint32_t>(std::min<size_t>(
-			    kMaxParticleInstances, total - offset));
-
-			std::memcpy(
-			    particleInstanceData_,
-			    instances.data() + offset,
-			    sizeof(ParticleInstanceGpuData) * batchCount);
-
-			if (!geometryWritten) {
-				geomVertexStart = vertexBuffer_->GetDrewCount();
-				geomIndexStart = indexBuffer_->GetDrewCount();
-				WriteSphereMeshToBatch(
-				    subdivision, 1.0f, geomVertexStart, geomIndexStart,
-				    sphereVertexCount, sphereIndexCount);
-				vertexBuffer_->AddDrewCount(sphereVertexCount);
-				indexBuffer_->AddDrewCount(sphereIndexCount);
-				geometryWritten = true;
-			}
-
-			DrawParticleIndexedInstanced(
-			    textureIndex, sphereIndexCount, sphereVertexCount,
-			    geomVertexStart, geomIndexStart,
-			    static_cast<int32_t>(geomVertexStart), batchCount, 0,
-			    directionalLightAddress, nullptr);
-		}
+		DrawParticleIndexedInstanced(
+		    textureIndex, sphereIndexCount, sphereVertexCount, geomVertexStart,
+		    geomIndexStart, static_cast<int32_t>(geomVertexStart),
+		    instanceCount, instanceBase, directionalLightAddress, nullptr);
 	}
 
 	void Draw::DrawBillboardParticlesInstanced(
@@ -503,37 +515,25 @@ namespace Atrum {
 		constexpr uint32_t kQuadVertexCount = 4;
 		constexpr uint32_t kQuadIndexCount = 6;
 
-		uint32_t geomVertexStart = 0;
-		uint32_t geomIndexStart = 0;
-		bool geometryWritten = false;
-
 		camera_->UpdateMatrix();
 
-		const size_t total = instances.size();
-		for (size_t offset = 0; offset < total;
-		     offset += kMaxParticleInstances) {
-			const uint32_t batchCount = static_cast<uint32_t>(std::min<size_t>(
-			    kMaxParticleInstances, total - offset));
-
-			std::memcpy(
-			    particleInstanceData_,
-			    instances.data() + offset,
-			    sizeof(ParticleInstanceGpuData) * batchCount);
-
-			if (!geometryWritten) {
-				geomVertexStart = vertexBuffer_->GetDrewCount();
-				geomIndexStart = indexBuffer_->GetDrewCount();
-				WriteBillboardQuadToBatch(geomVertexStart, geomIndexStart);
-				vertexBuffer_->AddDrewCount(kQuadVertexCount);
-				indexBuffer_->AddDrewCount(kQuadIndexCount);
-				geometryWritten = true;
-			}
-
-			DrawParticleIndexedInstanced(
-			    textureIndex, kQuadIndexCount, kQuadVertexCount, geomVertexStart,
-			    geomIndexStart, static_cast<int32_t>(geomVertexStart), batchCount,
-			    0, directionalLightAddress, nullptr);
+		uint32_t instanceBase = 0;
+		const uint32_t instanceCount =
+		    WriteParticleInstancesToFrameBuffer(instances, instanceBase);
+		if (instanceCount == 0) {
+			return;
 		}
+
+		const uint32_t geomVertexStart = vertexBuffer_->GetDrewCount();
+		const uint32_t geomIndexStart = indexBuffer_->GetDrewCount();
+		WriteBillboardQuadToBatch(geomVertexStart, geomIndexStart);
+		vertexBuffer_->AddDrewCount(kQuadVertexCount);
+		indexBuffer_->AddDrewCount(kQuadIndexCount);
+
+		DrawParticleIndexedInstanced(
+		    textureIndex, kQuadIndexCount, kQuadVertexCount, geomVertexStart,
+		    geomIndexStart, static_cast<int32_t>(geomVertexStart),
+		    instanceCount, instanceBase, directionalLightAddress, nullptr);
 	}
 
 	void Draw::DrawModelParticlesInstanced(
@@ -549,34 +549,29 @@ namespace Atrum {
 			return;
 		}
 
-		const size_t total = instances.size();
-		for (size_t offset = 0; offset < total;
-		     offset += kMaxParticleInstances) {
-			const uint32_t batchCount = static_cast<uint32_t>(std::min<size_t>(
-			    kMaxParticleInstances, total - offset));
+		uint32_t instanceBase = 0;
+		const uint32_t instanceCount =
+		    WriteParticleInstancesToFrameBuffer(instances, instanceBase);
+		if (instanceCount == 0) {
+			return;
+		}
 
-			std::memcpy(
-			    particleInstanceData_,
-			    instances.data() + offset,
-			    sizeof(ParticleInstanceGpuData) * batchCount);
-
-			for (const auto &node : nodes) {
-				if (!node.mesh || !node.material) {
-					continue;
-				}
-
-				MaterialData meshMaterial{};
-				meshMaterial.color = node.material->baseColor;
-				meshMaterial.uvTransformMatrix = M::Matrix4x4::Identity();
-				meshMaterial.isLightingEnable = isLighting ? 1 : 0;
-				meshMaterial.isUseTexture = node.material->isUseTexture ? 1 : 0;
-
-				DrawParticleNonIndexedInstanced(
-				    node.material->textureSrvIndex,
-				    &node.mesh->vertexBufferView,
-				    static_cast<uint32_t>(node.mesh->vertices.size()),
-				    batchCount, 0, directionalLightAddress, &meshMaterial);
+		for (const auto &node : nodes) {
+			if (!node.mesh || !node.material) {
+				continue;
 			}
+
+			MaterialData meshMaterial{};
+			meshMaterial.color = node.material->baseColor;
+			meshMaterial.uvTransformMatrix = M::Matrix4x4::Identity();
+			meshMaterial.isLightingEnable = isLighting ? 1 : 0;
+			meshMaterial.isUseTexture = node.material->isUseTexture ? 1 : 0;
+
+			DrawParticleNonIndexedInstanced(
+			    node.material->textureSrvIndex, &node.mesh->vertexBufferView,
+			    static_cast<uint32_t>(node.mesh->vertices.size()),
+			    instanceCount, instanceBase, directionalLightAddress,
+			    &meshMaterial);
 		}
 	}
 

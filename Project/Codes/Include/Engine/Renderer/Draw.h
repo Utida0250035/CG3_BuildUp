@@ -58,14 +58,17 @@ namespace Atrum {
 		std::unique_ptr<MultiConstantBuffer<TransformationData>>
 			transformationBuffer_ = nullptr;
 
-		// パーティクル用（インスタンスごとの StructuredBuffer + フレーム CBV）
-		std::unique_ptr<SingleConstantBuffer<ParticleFrameGpuData>>
+		// パーティクル用（インスタンスごとの StructuredBuffer + ドローごとの CBV）
+		std::unique_ptr<MultiConstantBuffer<ParticleFrameGpuData>>
 			particleFrameBuffer_ = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12Resource> particleInstanceBufferResource_ =
 		    nullptr;
 		ParticleInstanceGpuData* particleInstanceData_ = nullptr;
 		size_t particleInstanceCapacity_ = 0;
 		DescriptorAllocator::DescriptorHandle particleInstanceSrv_{};
+
+		// 今フレームでインスタンスバッファに書き込み済みの要素数（GPU 実行前に上書きしないため前詰めで使う）
+		uint32_t particleInstanceWriteCount_ = 0;
 
 		// PreDraw 時点のブレンドに対応する Object3d PSO / パーティクル用 PSO
 		std::array<ID3D12PipelineState *,
@@ -122,6 +125,14 @@ namespace Atrum {
 		void CreateParticleInstanceSrv();
 
 		/// <summary>
+		/// 今フレームの未使用領域へインスタンスを書き込み、先頭位置を outInstanceBase に返す
+		/// </summary>
+		/// <returns> 書き込めた個数（容量不足時は切り詰め、0 なら描画しない） </returns>
+		uint32_t WriteParticleInstancesToFrameBuffer(
+			const std::vector<ParticleInstanceGpuData>& instances,
+			uint32_t& outInstanceBase);
+
+		/// <summary>
 		/// 球メッシュの頂点・インデックスをバッチバッファの指定位置に書き込む
 		/// </summary>
 		void WriteSphereMeshToBatch(const uint32_t subdivision, const float radius,
@@ -172,7 +183,7 @@ namespace Atrum {
 		// 画面上の頂点・インデックスの最大数（背景球＋弾＋戦闘パーティクルが同時に乗る量）
 		inline static constexpr uint32_t kVertexMaxDrawCount = 65536;
 
-		// 1 フレームあたりのパーティクルインスタンス上限（レイヤーごとバッチの先頭オフセットに使用）
+		// 1 フレームあたりのパーティクルインスタンス上限（全エミッタ・全レイヤーの合計）
 		inline static constexpr uint32_t kMaxParticleInstances = 16384;
 
 		// ビューポート

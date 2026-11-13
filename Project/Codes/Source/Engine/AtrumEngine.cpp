@@ -955,6 +955,9 @@ void AtrumEngine::PostDraw() {
   // 定数バッファのカウントをリセット
   drawSprite_->constantBufferCount_ = 0;
   draw_->constantBufferCount_ = 0;
+
+  // パーティクルインスタンスの書き込み位置をリセット
+  draw_->particleInstanceWriteCount_ = 0;
 }
 
 void AtrumEngine::Finalize() {

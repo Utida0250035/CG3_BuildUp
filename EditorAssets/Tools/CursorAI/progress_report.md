@@ -1906,3 +1906,27 @@
   - 用途: 配布ビルドでのデモ・展示。パーティクル表現とビルボードのインスタンシング描画を、Space／パッド A で交互に見せる
   - 使用場面: ビルド・配布（Release のみ）。Development／エディタの遷移には影響なし
   - 用途から決めた仕様: 巡回順はコード変更不要の JSON マニフェストで指定し、マニフェストが無い場合も同じ 2 シーンで巡回する
+
+## セッション 2026-11-13 18:41（複数エミッタ／複数レイヤーのパーティクル描画修正）
+
+ブランチ: `fix/particle-instance-buffer-per-draw`
+
+### 1. 実施内容
+
+- 原因: `Draw::Draw*ParticlesInstanced` が毎回インスタンスバッファの先頭へ `memcpy` し、`instanceBufferBase` も常に 0、`particleFrameBuffer_` も単一 CBV だったため、GPU 実行時にはフレーム内で最後に書いたデータ（後から追加される衝撃波エミッタ等）を全パーティクルドローが参照していた
+- `Draw::WriteParticleInstancesToFrameBuffer` を新設し、フレーム内で書き込み位置を前詰めで進める方式に変更（`particleInstanceWriteCount_`、`AtrumEngine` のフレーム末でリセット）。各ドローに `instanceBufferBase` を渡す（シェーダは対応済みのため変更なし）
+- `particleFrameBuffer_` を `MultiConstantBuffer`（`kMaxDrawCount` スロット）にし、`constantBufferCount_` 番目を各ドローの CBV に使用
+- 上限確認: `kMaxParticleInstances` = 16384（フレーム合計）。ParticleDemo は最大でも数百個、samples 各 JSON は 16〜128、`editorTest.json` 522 で **上限には到達していない**。上限超過時は超過分を描画しない（切り詰め）
+- Development|x64・Release|x64 ビルド成功（実機での見た目確認は未実施）
+
+### 2. 課題・設計上の選択肢
+
+- **既存実装の課題点:** インスタンス上限超過・`kMaxDrawCount` 超過はどちらも無言で描画をスキップする。Development ではログや ImGui で超過を通知できるとよい
+- **既存実装の課題点:** `Draw.cpp` に `AgentDebugLogDraw`（`./.cursor/debug-db6cac.log` へ書き込むデバッグ用コード）が残っている
+
+## 推測した用途（§6.4）
+
+- **パーティクルのフレーム内インスタンス割り当て**
+  - 用途: ランタイムのゲームプレイ演出（ヒット・衝突エフェクトの one-shot と常駐エフェクトの同時表示）、エディタでの複数エミッタ・多レイヤーのプレビュー
+  - 使用場面: ランタイムのゲームプレイ、レベル／アセット制作
+  - 用途から決めた仕様: 毎フレーム呼ばれるためメモリ確保なしの前詰め書き込み（既存アップロードバッファを再利用）、上限はフレーム合計で管理し超過時はクラッシュさせず切り詰め
