@@ -40,9 +40,6 @@ struct Entry {
 
 void LoadDefaultEntries(std::vector<Entry> &out) {
   out = {
-      Entry{EntryKind::Builtin, "Title", {}},
-      Entry{EntryKind::Builtin, "Game", {}},
-      Entry{EntryKind::Builtin, "Result", {}},
       Entry{EntryKind::BuildUp, {},
             NormalizePathKey(std::string(EditorAssets::kScenesDirectory) +
                              "/Scene_0.json")},

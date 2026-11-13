@@ -1,8 +1,5 @@
 {
   "entries": [
-    { "type": "builtin", "scene": "Title" },
-    { "type": "builtin", "scene": "Game" },
-    { "type": "builtin", "scene": "Result" },
     {
       "type": "buildUp",
       "sceneJsonPath": "../EditorAssets/Scenes/Scene_0.json"

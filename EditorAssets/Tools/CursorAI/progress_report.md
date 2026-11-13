@@ -1776,5 +1776,5 @@
 
 - **CmpBillboardInstancedGrid** … 10×10=100 枚を `DrawBillboardParticlesInstanced` で描画
 - **シーン:** `EditorAssets/Scenes/BillboardInstancing100.json`
-- **Release:** `release_scene_carousel.json` + `SceneReleaseCarousel`（Space / パッド A で Title→Game→Result→Scene_0→Billboard→… ループ）
+- **Release:** `release_scene_carousel.json` + `SceneReleaseCarousel`（Space / パッド A で BuildUp JSON のみ巡回。Title/Game/Result は対象外）
 - **推測した用途:** GPU インスタンシング確認、配布ビルドのシーン一覧スモーク、デモ・検証ループ
