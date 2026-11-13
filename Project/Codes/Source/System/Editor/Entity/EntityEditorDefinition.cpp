@@ -18,15 +18,19 @@ bool IsKnownEntityEditorComponent(const std::string &typeName) {
   return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
          typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
-         typeName == "CmpCamera";
+         typeName == "CmpCamera" ||          typeName == "CmpParticleEmitter" ||
+         typeName == "CmpBounceBall" ||
+         typeName == "CmpBillboardInstancedGrid";
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
-  if (typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere") {
+  if (typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
+      typeName == "CmpBillboardInstancedGrid") {
     return ComponentSlotKind::Draw;
   }
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
-      typeName == "CmpHitSphere" || typeName == "CmpCamera") {
+      typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
+      typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath") {
@@ -68,6 +72,43 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"loadImageAsBillboard", true},
             {"billboardWidth", 1.0f},
             {"billboardHeight", 1.0f}};
+  }
+  if (typeName == "CmpParticleEmitter") {
+    return {{"emitterName", ""},
+            {"jsonFilePath", "samples/01_burst_directional_fountain.json"},
+            {"samplePaths", nlohmann::json::array()},
+            {"autoCarousel", false},
+            {"carouselIntervalSeconds", 5.0f},
+            {"followOwnerTransform", true}};
+  }
+  if (typeName == "CmpBillboardInstancedGrid") {
+    return {{"textureFilePath", "./Assets/Images/white4x4.png"},
+            {"gridCountX", 10},
+            {"gridCountY", 10},
+            {"spacing", 1.35f},
+            {"cellFill", 0.78f},
+            {"useAutoSizeInCell", true},
+            {"checkerboardEnabled", true},
+            {"checkerColorA", Math::Vector4{0.92f, 0.96f, 1.05f, 1.0f}},
+            {"checkerColorB", Math::Vector4{0.42f, 0.52f, 0.68f, 1.0f}},
+            {"drawCellGridLines", true},
+            {"gridLineColor", Math::Vector4{0.35f, 0.4f, 0.48f, 0.95f}},
+            {"gridPlaneYOffset", -0.55f},
+            {"billboardWidth", 0.85f},
+            {"billboardHeight", 0.85f},
+            {"baseColor", Math::Vector4::White()}};
+  }
+  if (typeName == "CmpBounceBall") {
+    return {{"velocity", Math::Vector3{7.0f, 5.5f, 0.0f}},
+            {"gravity", -14.0f},
+            {"leftWallX", -5.0f},
+            {"rightWallX", 5.0f},
+            {"groundY", -3.68f},
+            {"radius", 0.32f},
+            {"wallRestitution", 0.94f},
+            {"floorRestitution", 0.88f},
+            {"impactJsonPath", "demos/ball_wall_shockwave.json"},
+            {"impactCooldownSeconds", 0.12f}};
   }
   return nlohmann::json::object();
 }

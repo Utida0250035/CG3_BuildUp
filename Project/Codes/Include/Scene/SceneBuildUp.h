@@ -29,6 +29,8 @@ public:
 
   bool IsStageViewCameraLocked() const override { return true; }
 
+  const std::string &SceneJsonPath() const { return sceneJsonPath_; }
+
 protected:
   void DrawScene() override;
 

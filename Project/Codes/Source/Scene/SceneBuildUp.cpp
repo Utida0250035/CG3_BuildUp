@@ -9,6 +9,7 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Entity/Entity.h"
+#include "System/Particle/SceneParticleServices.h"
 
 #include <algorithm>
 
@@ -129,6 +130,8 @@ void SceneBuildUp::Update() {
       entity->Update();
     }
   }
+
+  Particle::TickEmitterManagerForActiveScene(GetCamera());
 }
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -154,6 +157,7 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   Editor::FitCameraPerspectiveToViewport(camera, width, height);
   engine->SetCamera(camera);
   DrawRuntimeEntities();
+  Particle::DrawEmitterManagerForActiveScene();
 }
 
 #endif
@@ -171,6 +175,7 @@ void SceneBuildUp::DrawScene() {
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
   engine->SetCamera(GetCamera());
   DrawRuntimeEntities();
+  Particle::DrawEmitterManagerForActiveScene();
 #endif
 }
 

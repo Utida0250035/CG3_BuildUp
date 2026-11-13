@@ -1,0 +1,81 @@
+{
+    "entities": [
+        {
+            "definition": {
+                "components": [
+                    {
+                        "executionOrder": 0,
+                        "kind": 1,
+                        "params": {
+                            "cellFill": 0.78,
+                            "checkerColorA": {
+                                "w": 1.0,
+                                "x": 0.95,
+                                "y": 0.98,
+                                "z": 1.05
+                            },
+                            "checkerColorB": {
+                                "w": 1.0,
+                                "x": 0.38,
+                                "y": 0.48,
+                                "z": 0.65
+                            },
+                            "checkerboardEnabled": true,
+                            "drawCellGridLines": true,
+                            "gridCountX": 10,
+                            "gridCountY": 10,
+                            "gridLineColor": {
+                                "w": 0.92,
+                                "x": 0.28,
+                                "y": 0.32,
+                                "z": 0.4
+                            },
+                            "gridPlaneYOffset": -0.62,
+                            "spacing": 1.35,
+                            "textureFilePath": "./Assets/Images/white4x4.png",
+                            "useAutoSizeInCell": true
+                        },
+                        "typeName": "CmpBillboardInstancedGrid"
+                    }
+                ],
+                "entityName": "BillboardGrid",
+                "initialTransform": {
+                    "quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "translate": {
+                        "x": 0.0,
+                        "y": 0.800000011920929,
+                        "z": 0.0
+                    }
+                },
+                "tagHashes": [
+                    13462909046072465046
+                ],
+                "tags": [
+                    "DEMO"
+                ]
+            },
+            "instanceName": "BillboardGrid",
+            "parentIndex": -1
+        }
+    ],
+    "sceneName": "BillboardInstancing100",
+    "tagCatalog": [
+        "DEMO",
+        "ENEMY",
+        "ENEMY_ITEM",
+        "ENEMY_WEAPON",
+        "PLAYER",
+        "PLAYER_ITEM",
+        "PLAYER_WEAPON"
+    ]
+}

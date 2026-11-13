@@ -1,4 +1,4 @@
-HINSTANCE
+﻿HINSTANCE
 DXGI
 dxgi
 Atrum
@@ -85,3 +85,7 @@ MSVC
 gkey
 worktree
 unmatch
+MSVC
+showreel
+killfield
+cooldown

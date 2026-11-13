@@ -11,6 +11,8 @@
 #include "Scene/CommandScene.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneEntityEditor.h"
+#include "Scene/SceneBuildUp.h"
+#include "System/Editor/EditorAssetsPaths.h"
 #endif
 #include "System/Json/JsonHandler.h"
 #include "System/Particle/EmitterManager.h"
@@ -176,6 +178,15 @@ void SceneParticleEditor::Update() {
 	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
 		Atrum::CommandChangeScene::Instance()->Set(SceneEntityEditor::Instance(),
 			std::make_unique<ChangeSceneFade>().release());
+		return;
+	}
+	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
+		const std::string demoScene = std::string(Atrum::EditorAssets::kScenesDirectory) +
+		                              "/ParticleDemo.json";
+		Atrum::CommandChangeScene::Instance()->Set(
+		    SceneBuildUpRegistry::Instance().Launch(
+		        demoScene, SceneEntityEditor::Instance()),
+		    std::make_unique<ChangeSceneFade>().release());
 		return;
 	}
 #endif

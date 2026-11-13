@@ -1,4 +1,4 @@
-# 半自律稼働 progress report
+﻿# 半自律稼働 progress report
 
 **最新サマリー:** 2026-11-11 — tick1 マージ済み（5701d19）→ 次ブランチ `feature/SceneBgmTransitionCrossfade`
 
@@ -1758,6 +1758,27 @@
   - 使用場面: 制作物のスモークテスト、デモ配布、CI 用プレイ可能ビルド
   - 仕様: パスは exe 隣 `../EditorAssets` 基準、欠損時はタイトルフォールバック
 
+## パーティクル能力サンプル JSON（ユーザー依頼）
+
+- **追加:** `EditorAssets/Particles/SAMPLES.md` と `samples/01`〜`15`（発射モード・形状・運動・描画・キル領域・多レイヤー等を1ファイル1テーマ）
+- **用途:** パーティクルエディタで「今何が表現できるか」をすぐ見比べるカタログデータ
+- **使用場面:** エフェクト仕様の検討、新規演出のたたき、プログラマ／アーティスト間の共通言語
+
+## パーティクルデモ（エンティティ＋コンポーネント化）
+
+- **撤回:** 専用 `SceneParticleDemo` シーンクラスは削除
+- **追加コンポーネント:** `CmpParticleEmitter`（JSON 再生・カルーセル）、`CmpBounceBall`（壁反射＋衝撃波ワンショット）
+- **シーン:** `EditorAssets/Scenes/ParticleDemo.json`（Showreel / Ball / 壁エンティティ）
+- **起動:** F3 → 既存 `SceneBuildUp` で上記 JSON を実行
+- **推測した用途:** レベル制作データとしてパーティクル演出を試す、コンポーネント再利用、エディタで配置・調整
+
+## ビルボード100枚インスタンス＋Releaseシーン巡回
+
+- **CmpBillboardInstancedGrid** … 10×10=100 枚を `DrawBillboardParticlesInstanced` で描画
+- **シーン:** `EditorAssets/Scenes/BillboardInstancing100.json`
+- **Release:** `release_scene_carousel.json` + `SceneReleaseCarousel`（Space / パッド A で BuildUp JSON のみ巡回。Title/Game/Result は対象外）
+- **推測した用途:** GPU インスタンシング確認、配布ビルドのシーン一覧スモーク、デモ・検証ループ
+
 ## セッション 2026-11-11（ギャップ在庫 → roadmap 手入れ）
 
 - **実施:** `implementation_gaps_index.json`（未解消 289）を `roadmap.md` に反映
@@ -1865,3 +1886,23 @@
   - 用途: エンジン・エディタ開発で、roadmap 実装ループとギャップスキャンループなど複数の自律エージェントを並行稼働させ、同じソースやドキュメントを同時編集して作業を壊し合うのを防ぐ
   - 使用場面: ビルド・配布（開発ワークフロー／ツール）。ランタイム・出荷ビルドへの影響なし
   - 用途から決めた仕様: 衝突時は待たずに tick ごとスキップ（ループ間隔ごとに再試行）、異常終了に備えて期限で失効、ロールバックとコミットは自分の占有範囲に限定、制作者の手編集を前提にしない自動生成ファイル
+
+## セッション 2026-11-13 18:31（Release シーン巡回を ParticleDemo ⇔ BillboardInstancing100 に変更）
+
+### 1. 実施内容
+
+- Release ビルドのコンパイルエラー修正: `SceneReleaseCarousel.h`（`<vector>` 不足・`Entry` 型の宣言と定義の不一致 → `ReleaseCarouselEntry` に統一）、`SceneParticleServices.h`（`<string>` 不足）、`CmpParticleEmitter.cpp`（const 関数から `RefOwner()` 呼び出し → `GetOwner()`）、`GameOrder.h`（Release 分岐で `SceneReleaseCarousel.h` 未 include）
+- `EditorAssets/release_scene_carousel.json` と `SceneReleaseCarousel.cpp` の既定リストを `ParticleDemo.json` → `BillboardInstancing100.json` の 2 件に変更（起動シーンは `launch_config.json` の `BillboardInstancing100`）
+- Development|x64・Release|x64 ともビルド成功
+
+### 2. 課題・設計上の選択肢
+
+- **既存実装の課題点:** Development 構成でしかビルド確認しておらず、Release 専用コード（`!DEVELOPMENT && !USE_IMGUI`）の include 漏れが見逃されていた。`buildDevelopment.cmd` と同様の Release 用ビルドスクリプトがあるとよい
+- **既存実装の課題点:** `SceneReleaseCarousel.cpp` の既定リストは `release_scene_carousel.json` と内容が重複しており、変更時に二重管理になる
+
+## 推測した用途（§6.4）
+
+- **Release シーン巡回（ParticleDemo ⇔ BillboardInstancing100）**
+  - 用途: 配布ビルドでのデモ・展示。パーティクル表現とビルボードのインスタンシング描画を、Space／パッド A で交互に見せる
+  - 使用場面: ビルド・配布（Release のみ）。Development／エディタの遷移には影響なし
+  - 用途から決めた仕様: 巡回順はコード変更不要の JSON マニフェストで指定し、マニフェストが無い場合も同じ 2 シーンで巡回する

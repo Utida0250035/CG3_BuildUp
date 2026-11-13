@@ -1,0 +1,27 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "AABB",
+    "emitAabb": {
+      "min": { "x": -0.3, "y": -0.2, "z": -0.3 },
+      "max": { "x": 0.3, "y": 0.2, "z": 0.3 }
+    },
+    "movementMode": "DIRECTIONAL",
+    "emitRate": 1.0,
+    "burstCount": 20,
+    "duration": 0.4,
+    "minLifeDuration": 1.2,
+    "maxLifeDuration": 1.8,
+    "baseVelocity": { "x": 0.0, "y": 2.5, "z": 0.0 },
+    "velocityRandom": { "x": 1.8, "y": 0.5, "z": 1.8 },
+    "acceleration": { "x": 0.0, "y": 0.55, "z": 0.0 },
+    "damping": 0.85,
+    "startScale": { "x": 0.5, "y": 0.5, "z": 0.5 },
+    "endScale": { "x": 0.7, "y": 0.7, "z": 0.7 },
+    "startColor": { "x": 0.9, "y": 0.92, "z": 0.95, "w": 0.25 },
+    "endColor": { "x": 0.75, "y": 0.78, "z": 0.82, "w": 0.0 },
+    "maxCount": 24,
+    "renderMode": "BUILTIN_SPHERE"
+  }
+]

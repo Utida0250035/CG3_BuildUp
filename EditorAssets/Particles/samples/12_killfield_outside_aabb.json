@@ -1,0 +1,40 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "CONTINUOUS",
+    "emitShape": "POINT",
+    "emitPointPos": { "x": 0.0, "y": 0.6, "z": 0.0 },
+    "movementMode": "DIRECTIONAL",
+    "emitRate": 22.0,
+    "burstCount": 0,
+    "isLooping": true,
+    "duration": 2.0,
+    "minLifeDuration": 0.6,
+    "maxLifeDuration": 1.0,
+    "baseVelocity": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "velocityRandom": { "x": 2.5, "y": 2.5, "z": 2.5 },
+    "acceleration": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "damping": 1.2,
+    "startScale": { "x": 0.22, "y": 0.22, "z": 0.22 },
+    "endScale": { "x": 0.18, "y": 0.18, "z": 0.18 },
+    "startColor": { "x": 0.35, "y": 0.95, "z": 1.1, "w": 0.9 },
+    "endColor": { "x": 0.2, "y": 0.6, "z": 0.9, "w": 0.0 },
+    "killFieldParam": {
+      "isUse": true,
+      "mode": "OUTSIDE",
+      "shape": "AABB",
+      "simulationSpaceFromEmitter": "WORLD",
+      "position": { "x": 0.0, "y": 0.5, "z": 0.0 },
+      "localSphere": {
+        "center": { "x": 0.0, "y": 0.0, "z": 0.0 },
+        "radius": 0.0
+      },
+      "localAabb": {
+        "min": { "x": -0.55, "y": -0.35, "z": -0.55 },
+        "max": { "x": 0.55, "y": 0.35, "z": 0.55 }
+      }
+    },
+    "maxCount": 80,
+    "renderMode": "BUILTIN_SPHERE"
+  }
+]

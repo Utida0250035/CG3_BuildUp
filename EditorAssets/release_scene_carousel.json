@@ -1,0 +1,12 @@
+{
+  "entries": [
+    {
+      "type": "buildUp",
+      "sceneJsonPath": "../EditorAssets/Scenes/ParticleDemo.json"
+    },
+    {
+      "type": "buildUp",
+      "sceneJsonPath": "../EditorAssets/Scenes/BillboardInstancing100.json"
+    }
+  ]
+}

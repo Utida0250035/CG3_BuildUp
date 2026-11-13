@@ -13,4 +13,8 @@ constexpr const char *kScriptsDirectory = "Assets/Scripts";
 /// Release 起動時に読むスタートアップシーン指定（リポジトリにコミット）
 constexpr const char *kLaunchConfigPath = "../EditorAssets/launch_config.json";
 
+/// Release 用シーン巡回リスト（Space / パッド A）
+constexpr const char *kReleaseSceneCarouselPath =
+    "../EditorAssets/release_scene_carousel.json";
+
 } // namespace Atrum::EditorAssets

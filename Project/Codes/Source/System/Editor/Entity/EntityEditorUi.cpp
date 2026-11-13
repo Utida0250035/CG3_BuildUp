@@ -38,6 +38,9 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpScroll", ComponentSlotKind::Upd},
     {"CmpHitSphere", ComponentSlotKind::Upd},
     {"CmpCamera", ComponentSlotKind::Upd},
+    {"CmpParticleEmitter", ComponentSlotKind::Upd},
+    {"CmpBounceBall", ComponentSlotKind::Upd},
+    {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,
@@ -202,6 +205,112 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
     if (ImGui::DragFloat("scrollSpeed", &speed, 0.05f, -64.0f, 64.0f)) {
       p["scrollSpeed"] = speed;
       changed = true;
+    }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpBillboardInstancedGrid") {
+    std::string tex = p.value("textureFilePath", std::string{});
+    changed |= ImGui::InputString("textureFilePath", tex);
+    if (changed) {
+      p["textureFilePath"] = tex;
+    }
+    int gridX = p.value("gridCountX", 10);
+    if (ImGui::DragInt("gridCountX", &gridX, 1, 1, 32)) {
+      p["gridCountX"] = gridX;
+      changed = true;
+    }
+    int gridY = p.value("gridCountY", 10);
+    if (ImGui::DragInt("gridCountY", &gridY, 1, 1, 32)) {
+      p["gridCountY"] = gridY;
+      changed = true;
+    }
+    float spacing = p.value("spacing", 1.15f);
+    if (ImGui::DragFloat("spacing", &spacing, 0.01f, 0.1f, 8.0f)) {
+      p["spacing"] = spacing;
+      changed = true;
+    }
+    float w = p.value("billboardWidth", 0.85f);
+    if (ImGui::DragFloat("billboardWidth", &w, 0.01f, 0.05f, 8.0f)) {
+      p["billboardWidth"] = w;
+      changed = true;
+    }
+    float h = p.value("billboardHeight", 0.85f);
+    if (ImGui::DragFloat("billboardHeight", &h, 0.01f, 0.05f, 8.0f)) {
+      p["billboardHeight"] = h;
+      changed = true;
+    }
+    changed |= DrawVector4ColorParam("baseColor", p, "baseColor",
+                                     Math::Vector4::White());
+    return changed;
+  }
+
+  if (slot.typeName == "CmpParticleEmitter") {
+    std::string path = p.value("jsonFilePath", std::string{});
+  changed |= ImGui::InputString("jsonFilePath", path);
+    if (changed) {
+      p["jsonFilePath"] = path;
+    }
+    std::string emitterName = p.value("emitterName", std::string{});
+    changed |= ImGui::InputString("emitterName", emitterName);
+    if (changed) {
+      p["emitterName"] = emitterName;
+    }
+    bool autoCarousel = p.value("autoCarousel", false);
+    if (ImGui::Checkbox("autoCarousel", &autoCarousel)) {
+      p["autoCarousel"] = autoCarousel;
+      changed = true;
+    }
+    float interval = p.value("carouselIntervalSeconds", 5.0f);
+    if (ImGui::DragFloat("carouselIntervalSeconds", &interval, 0.1f, 0.5f,
+                         120.0f)) {
+      p["carouselIntervalSeconds"] = interval;
+      changed = true;
+    }
+    bool follow = p.value("followOwnerTransform", true);
+    if (ImGui::Checkbox("followOwnerTransform", &follow)) {
+      p["followOwnerTransform"] = follow;
+      changed = true;
+    }
+    const int sampleCount =
+        p.contains("samplePaths") && p.at("samplePaths").is_array()
+            ? static_cast<int>(p.at("samplePaths").size())
+            : 0;
+    ImGui::Text("samplePaths: %d 件（JSON で編集）", sampleCount);
+    return changed;
+  }
+
+  if (slot.typeName == "CmpBounceBall") {
+    changed |= DrawVector3Param("velocity", p, "velocity", {7.0f, 5.5f, 0.0f});
+    float gravity = p.value("gravity", -14.0f);
+    if (ImGui::DragFloat("gravity", &gravity, 0.1f, -80.0f, 0.0f)) {
+      p["gravity"] = gravity;
+      changed = true;
+    }
+    float leftWall = p.value("leftWallX", -5.0f);
+    if (ImGui::DragFloat("leftWallX", &leftWall, 0.05f, -32.0f, 32.0f)) {
+      p["leftWallX"] = leftWall;
+      changed = true;
+    }
+    float rightWall = p.value("rightWallX", 5.0f);
+    if (ImGui::DragFloat("rightWallX", &rightWall, 0.05f, -32.0f, 32.0f)) {
+      p["rightWallX"] = rightWall;
+      changed = true;
+    }
+    float groundY = p.value("groundY", -3.68f);
+    if (ImGui::DragFloat("groundY", &groundY, 0.05f, -16.0f, 16.0f)) {
+      p["groundY"] = groundY;
+      changed = true;
+    }
+    float radius = p.value("radius", 0.32f);
+    if (ImGui::DragFloat("radius", &radius, 0.01f, 0.05f, 4.0f)) {
+      p["radius"] = radius;
+      changed = true;
+    }
+    std::string impactPath = p.value("impactJsonPath", std::string{});
+    changed |= ImGui::InputString("impactJsonPath", impactPath);
+    if (changed) {
+      p["impactJsonPath"] = impactPath;
     }
     return changed;
   }
