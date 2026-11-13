@@ -7,6 +7,7 @@
 #include "System/Entity/Components/CmpEditorTextureBillboard.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
+#include "System/Entity/Components/CmpBillboardInstancedGrid.h"
 #include "System/Entity/Components/CmpBounceBall.h"
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
@@ -44,6 +45,9 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpMeshSphere") {
       return entity.HasDrawCmp<CmpMeshSphere>();
     }
+    if (slot.typeName == "CmpBillboardInstancedGrid") {
+      return entity.HasDrawCmp<CmpBillboardInstancedGrid>();
+    }
     if (slot.typeName == "CmpDrawHitSphere") {
       return entity.HasDrawCmp<CmpDrawHitSphere>();
     }
@@ -79,6 +83,11 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
 bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   if (slot.typeName == "CmpMeshSphere" && slot.kind == ComponentSlotKind::Draw) {
     entity.AddDrawCmp<CmpMeshSphere>();
+    return true;
+  }
+  if (slot.typeName == "CmpBillboardInstancedGrid" &&
+      slot.kind == ComponentSlotKind::Draw) {
+    entity.AddDrawCmp<CmpBillboardInstancedGrid>();
     return true;
   }
   if (slot.typeName == "CmpDrawHitSphere" &&
@@ -149,6 +158,22 @@ void ApplySlotExecutionOrder(Entity &entity, const ComponentSlot &slot) {
 
 void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
   const nlohmann::json &p = slot.params;
+
+  if (slot.typeName == "CmpBillboardInstancedGrid") {
+    if (!entity.HasDrawCmp<CmpBillboardInstancedGrid>()) {
+      return;
+    }
+    CmpBillboardInstancedGrid *cmp =
+        entity.GetDrawCmp<CmpBillboardInstancedGrid>();
+    cmp->SetTextureFilePath(p.value("textureFilePath", std::string{}));
+    cmp->SetGridCountX(p.value("gridCountX", 10));
+    cmp->SetGridCountY(p.value("gridCountY", 10));
+    cmp->SetSpacing(p.value("spacing", 1.15f));
+    cmp->SetBillboardWidth(p.value("billboardWidth", 0.85f));
+    cmp->SetBillboardHeight(p.value("billboardHeight", 0.85f));
+    cmp->SetBaseColor(p.value("baseColor", Math::Vector4::White()));
+    return;
+  }
 
   if (slot.typeName == "CmpMeshSphere") {
     if (!entity.HasDrawCmp<CmpMeshSphere>()) {

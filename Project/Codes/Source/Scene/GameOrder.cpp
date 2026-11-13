@@ -1,6 +1,9 @@
 #include "Scene/GameOrder.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
+#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
+#include "Scene/SceneReleaseCarousel.h"
+#endif
 #include <chrono>
 
 namespace Atrum {

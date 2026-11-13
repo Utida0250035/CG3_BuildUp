@@ -59,11 +59,14 @@ namespace Atrum {
 			Scene* sceneNow = commandScene_->GetSceneNow();
 
 			if (!commandChangeScene_->GetIsExecute()) {
-				// シーン遷移の処理中でなければ
-
-				// 現在シーンの更新処理
+#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
+				if (!Atrum::SceneFlow::SceneReleaseCarousel::Instance()
+				        .TryAdvanceOnSubmit()) {
+					sceneNow->Update();
+				}
+#else
 				sceneNow->Update();
-
+#endif
 			}
 
 			// シーン遷移の更新処理（遷移先が非シングルトンの場合、直前の scene は破棄される）

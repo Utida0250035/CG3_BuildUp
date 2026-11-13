@@ -1,0 +1,34 @@
+{
+  "sceneName": "BillboardInstancing100",
+  "tagCatalog": ["DEMO"],
+  "entities": [
+    {
+      "instanceName": "BillboardGrid",
+      "parentIndex": -1,
+      "definition": {
+        "entityName": "BillboardGrid",
+        "tags": ["DEMO"],
+        "initialTransform": {
+          "translate": { "x": 0.0, "y": 0.5, "z": 0.0 },
+          "scale": { "x": 1.0, "y": 1.0, "z": 1.0 },
+          "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 }
+        },
+        "components": [
+          {
+            "kind": 1,
+            "typeName": "CmpBillboardInstancedGrid",
+            "params": {
+              "textureFilePath": "./Assets/Images/white4x4.png",
+              "gridCountX": 10,
+              "gridCountY": 10,
+              "spacing": 1.15,
+              "billboardWidth": 0.85,
+              "billboardHeight": 0.85,
+              "baseColor": { "x": 0.95, "y": 0.98, "z": 1.0, "w": 1.0 }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

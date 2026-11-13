@@ -37,6 +37,7 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpCamera", ComponentSlotKind::Upd},
     {"CmpParticleEmitter", ComponentSlotKind::Upd},
     {"CmpBounceBall", ComponentSlotKind::Upd},
+    {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,
@@ -202,6 +203,42 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["scrollSpeed"] = speed;
       changed = true;
     }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpBillboardInstancedGrid") {
+    std::string tex = p.value("textureFilePath", std::string{});
+    changed |= ImGui::InputString("textureFilePath", tex);
+    if (changed) {
+      p["textureFilePath"] = tex;
+    }
+    int gridX = p.value("gridCountX", 10);
+    if (ImGui::DragInt("gridCountX", &gridX, 1, 1, 32)) {
+      p["gridCountX"] = gridX;
+      changed = true;
+    }
+    int gridY = p.value("gridCountY", 10);
+    if (ImGui::DragInt("gridCountY", &gridY, 1, 1, 32)) {
+      p["gridCountY"] = gridY;
+      changed = true;
+    }
+    float spacing = p.value("spacing", 1.15f);
+    if (ImGui::DragFloat("spacing", &spacing, 0.01f, 0.1f, 8.0f)) {
+      p["spacing"] = spacing;
+      changed = true;
+    }
+    float w = p.value("billboardWidth", 0.85f);
+    if (ImGui::DragFloat("billboardWidth", &w, 0.01f, 0.05f, 8.0f)) {
+      p["billboardWidth"] = w;
+      changed = true;
+    }
+    float h = p.value("billboardHeight", 0.85f);
+    if (ImGui::DragFloat("billboardHeight", &h, 0.01f, 0.05f, 8.0f)) {
+      p["billboardHeight"] = h;
+      changed = true;
+    }
+    changed |= DrawVector4ColorParam("baseColor", p, "baseColor",
+                                     Math::Vector4::White());
     return changed;
   }
 

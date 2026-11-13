@@ -1771,3 +1771,10 @@
 - **シーン:** `EditorAssets/Scenes/ParticleDemo.json`（Showreel / Ball / 壁エンティティ）
 - **起動:** F3 → 既存 `SceneBuildUp` で上記 JSON を実行
 - **推測した用途:** レベル制作データとしてパーティクル演出を試す、コンポーネント再利用、エディタで配置・調整
+
+## ビルボード100枚インスタンス＋Releaseシーン巡回
+
+- **CmpBillboardInstancedGrid** … 10×10=100 枚を `DrawBillboardParticlesInstanced` で描画
+- **シーン:** `EditorAssets/Scenes/BillboardInstancing100.json`
+- **Release:** `release_scene_carousel.json` + `SceneReleaseCarousel`（Space / パッド A で Title→Game→Result→Scene_0→Billboard→… ループ）
+- **推測した用途:** GPU インスタンシング確認、配布ビルドのシーン一覧スモーク、デモ・検証ループ

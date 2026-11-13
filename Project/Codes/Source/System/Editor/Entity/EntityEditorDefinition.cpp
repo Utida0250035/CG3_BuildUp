@@ -18,12 +18,14 @@ bool IsKnownEntityEditorComponent(const std::string &typeName) {
   return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
          typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
-         typeName == "CmpCamera" || typeName == "CmpParticleEmitter" ||
-         typeName == "CmpBounceBall";
+         typeName == "CmpCamera" ||          typeName == "CmpParticleEmitter" ||
+         typeName == "CmpBounceBall" ||
+         typeName == "CmpBillboardInstancedGrid";
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
-  if (typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere") {
+  if (typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
+      typeName == "CmpBillboardInstancedGrid") {
     return ComponentSlotKind::Draw;
   }
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
@@ -78,6 +80,15 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"autoCarousel", false},
             {"carouselIntervalSeconds", 5.0f},
             {"followOwnerTransform", true}};
+  }
+  if (typeName == "CmpBillboardInstancedGrid") {
+    return {{"textureFilePath", "./Assets/Images/white4x4.png"},
+            {"gridCountX", 10},
+            {"gridCountY", 10},
+            {"spacing", 1.15f},
+            {"billboardWidth", 0.85f},
+            {"billboardHeight", 0.85f},
+            {"baseColor", Math::Vector4::White()}};
   }
   if (typeName == "CmpBounceBall") {
     return {{"velocity", Math::Vector3{7.0f, 5.5f, 0.0f}},

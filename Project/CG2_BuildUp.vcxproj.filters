@@ -235,6 +235,12 @@
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp">
+      <Filter>Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp">
+      <Filter>Source\System\Entity\Components</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp">
       <Filter>Source\System\Entity\Components</Filter>
     </ClCompile>
@@ -773,6 +779,12 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h">
       <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h">
+      <Filter>Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h">
+      <Filter>Include\System\Entity\Components</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h">
       <Filter>Include\System\Entity\Components</Filter>
