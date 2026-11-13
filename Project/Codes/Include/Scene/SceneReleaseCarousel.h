@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 
 namespace Atrum {
@@ -19,6 +20,9 @@ public:
   bool TryAdvanceOnSubmit();
 
   void SyncIndexFromActiveScene(Scene *sceneNow);
+
+  /// 巡回リストに登録された BuildUp シーン JSON か
+  bool HasBuildUpEntry(const std::string &sceneJsonPath) const;
 
 private:
   SceneReleaseCarousel();

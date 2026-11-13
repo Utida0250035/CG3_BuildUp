@@ -13,6 +13,11 @@
 
 #include <algorithm>
 
+#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
+#include "Scene/SceneReleaseCarousel.h"
+#include "Scene/SceneScreenUi.h"
+#endif
+
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/ImGui.h"
 #include "System/Editor/EditorFrame.h"
@@ -112,6 +117,15 @@ void SceneBuildUp::EnterScene() {
   entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
   SetupStageViewCamera();
 
+#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
+  showsNextSceneHint_ =
+      SceneFlow::SceneReleaseCarousel::Instance().HasBuildUpEntry(
+          sceneJsonPath_);
+  if (showsNextSceneHint_) {
+    SceneScreenUi::PreloadReleaseCarouselUiTextures();
+  }
+#endif
+
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   Editor::EditorFrame::Instance().SetSceneViewTab(Editor::SceneViewTab::Runtime);
 #endif
@@ -176,6 +190,12 @@ void SceneBuildUp::DrawScene() {
   engine->SetCamera(GetCamera());
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
+
+#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
+  if (showsNextSceneHint_) {
+    SceneScreenUi::DrawReleaseCarouselHowToNextSceneUi(engine, GetCamera());
+  }
+#endif
 #endif
 }
 

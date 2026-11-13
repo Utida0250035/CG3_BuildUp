@@ -152,6 +152,16 @@ void SceneReleaseCarousel::SyncIndexFromActiveScene(Scene *sceneNow) {
   activeIndex_ = FindIndexForScene(sceneNow);
 }
 
+bool SceneReleaseCarousel::HasBuildUpEntry(
+    const std::string &sceneJsonPath) const {
+  const std::string key = NormalizePathKey(sceneJsonPath);
+  return std::any_of(entries_.begin(), entries_.end(),
+                     [&key](const Entry &entry) {
+                       return entry.kind == EntryKind::BuildUp &&
+                              entry.buildUpPath == key;
+                     });
+}
+
 Scene *SceneReleaseCarousel::ResolveSceneForIndex(const int index) const {
   if (entries_.empty()) {
     return SceneTitle::Instance();

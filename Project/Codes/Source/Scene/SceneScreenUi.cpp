@@ -20,6 +20,7 @@ struct UiTextures {
   uint32_t howToNext = UINT32_MAX;
   uint32_t howToPlay = UINT32_MAX;
   uint32_t clear = UINT32_MAX;
+  uint32_t howToNextScene = UINT32_MAX;
 };
 
 UiTextures uiTextures_{};
@@ -162,6 +163,11 @@ void PreloadGameSceneUiTextures() {
       LoadTextureFromFileNames({"howToPlay.png"});
 }
 
+void PreloadReleaseCarouselUiTextures() {
+  uiTextures_.howToNextScene =
+      LoadTextureFromFileNames({"howToNextScene.png"});
+}
+
 void PrepareDraw(AtrumEngine *engine, Camera *camera) {
   if (engine == nullptr || camera == nullptr) {
     return;
@@ -254,6 +260,17 @@ void DrawGameHowToPlayUi(AtrumEngine *engine, Camera *camera) {
 
   DrawTextureTopLeft(engine, uiTextures_.howToPlay, left, top,
                      {1.0f, 1.0f, 1.0f, 1.0f}, kHowToPlayDisplayScale);
+}
+
+void DrawReleaseCarouselHowToNextSceneUi(AtrumEngine *engine, Camera *camera) {
+  if (uiTextures_.howToNextScene == UINT32_MAX) {
+    return;
+  }
+
+  PrepareDraw(engine, camera);
+
+  constexpr float kMargin = 16.0f;
+  DrawTextureTopLeft(engine, uiTextures_.howToNextScene, kMargin, kMargin);
 }
 
 } // namespace Atrum::SceneScreenUi

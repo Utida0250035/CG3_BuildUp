@@ -1930,3 +1930,26 @@
   - 用途: ランタイムのゲームプレイ演出（ヒット・衝突エフェクトの one-shot と常駐エフェクトの同時表示）、エディタでの複数エミッタ・多レイヤーのプレビュー
   - 使用場面: ランタイムのゲームプレイ、レベル／アセット制作
   - 用途から決めた仕様: 毎フレーム呼ばれるためメモリ確保なしの前詰め書き込み（既存アップロードバッファを再利用）、上限はフレーム合計で管理し超過時はクラッシュさせず切り詰め
+
+## セッション 2026-11-13 19:12（Release シーン巡回の左上に howToNextScene.png を表示）
+
+ブランチ: `feature/release-carousel-next-scene-hint`
+
+### 1. 実施内容
+
+- `SceneScreenUi` に `PreloadReleaseCarouselUiTextures` / `DrawReleaseCarouselHowToNextSceneUi` を追加（`howToNextScene.png` を左上、余白 16px に等倍スプライト描画）
+- `SceneReleaseCarousel::HasBuildUpEntry` を追加（巡回リストに登録された BuildUp シーン JSON か判定）
+- `SceneBuildUp`: Release 構成（`!DEVELOPMENT && !USE_IMGUI`）でのみ、`EnterScene` で巡回対象か判定してテクスチャを事前読み込みし、`DrawScene` のパーティクル描画後に描画。フェードより前に描くため遷移時は一緒に暗転する
+- 対象は `release_scene_carousel.json` に載っている ParticleDemo と BillboardInstancing100（両シーンで同じ位置）
+- Release|x64・Development|x64 ビルド成功（実機での見た目確認は未実施）
+
+### 2. 課題・設計上の選択肢
+
+- **既存実装の課題点:** `SceneScreenUi` の UI 座標は `Window::kDefaultClientWidth/Height` 固定で、ウィンドウサイズ変更や解像度差に追従しない（左上配置の今回は影響なし）
+
+## 推測した用途（§6.4）
+
+- **シーン巡回の操作案内スプライト**
+  - 用途: 配布ビルドでのデモ・展示時に、初見のプレイヤーへ「Space で次のシーンへ進める」ことを常時示す
+  - 使用場面: ビルド・配布（Release のみ）。エディタ／Development の表示には出さない
+  - 用途から決めた仕様: 巡回リストに載ったシーンだけに出す（リストを変えれば表示対象も追従）、テクスチャは描画中でなく EnterScene で読み込み、案内画像は差し替えやすいよう PNG ファイル名で指定
