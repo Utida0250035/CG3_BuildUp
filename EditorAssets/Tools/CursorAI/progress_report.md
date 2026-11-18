@@ -2924,3 +2924,46 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | 開始時プリロード | 有効 | オーディオ |
+
+---
+
+## セッション 2026-11-18 17:00（/loop 15m・roadmap tick 19）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/SceneBgmShortVoiceRelease`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-008`
+- `PlaySceneBgm` 短尺フォールバック再試行から `ReleaseWaitingShortVoices` を除去。シーン BGM スロットのみ `StopAllLoopingShortVoices`
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- プールが完全に埋まった場合の奪取は従来の `PlayShort` 探索に委ねる
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `ストリーム BGM 停止は XAudio Stop`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- BGM 短尺フォールバック時の解放範囲（`GAP-Audio-AudioManager-008`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **シーン遷移直後の SE 保護**
+  - 用途: 短尺 BGM 開始失敗時の再試行で Waiting ワンショット SE を切らない
+  - 使用場面: 遷移直後の戦闘 SE
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| 短音解放範囲 | 有効 | プレイ SE 優先 |

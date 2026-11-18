@@ -67,7 +67,7 @@
 - [x] Paused ストリームは Update をスキップ（gap: `GAP-Audio-AudioManager-005`）
 - [x] Handle と voice の playId がずれる（gap: `GAP-Audio-AudioManager-007`）
 - [x] Start 後に Refill を 1 回だけ（gap: `GAP-Audio-AudioManager-009`）
-- [ ] BGM フォールバックで短音ボイス解放
+- [x] BGM フォールバックで短音ボイス解放（gap: `GAP-Audio-AudioManager-008`）
 - [ ] ストリーム BGM 停止は XAudio Stop
 - [x] Resume は Start 後 Refill なし（gap: §6.2・`PrefillStreamingQueueAfterStart`）
 - [ ] 再生位置計算が 44100 固定

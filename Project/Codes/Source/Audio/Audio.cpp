@@ -787,7 +787,6 @@ float ClampVolume(const float volume) {
 			return handle;
 		}
 
-		ReleaseWaitingShortVoices();
 		StopAllLoopingShortVoices();
 		handle = PlayShort(soundIndex, true);
 		if (handle.isSuccess && handle.voiceIndex < sourceVoicePool_.size()) {
