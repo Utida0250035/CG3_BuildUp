@@ -721,7 +721,14 @@ float ClampVolume(const float volume) {
 			    kBgmStreamingVoiceIndex, soundIndex, true, 0);
 
 			if (!isSuccess) {
-				streamingVoice.playId = 65536;
+				ResetStreamingVoice(streamingVoice);
+				return AudioHandle{
+				    .soundIndex = soundIndex,
+				    .voiceIndex = kBgmStreamingVoiceIndex,
+				    .isStreaming = true,
+				    .playId = streamingVoice.playId,
+				    .isSuccess = false,
+				};
 			}
 
 			return AudioHandle{
@@ -729,7 +736,7 @@ float ClampVolume(const float volume) {
 			    .voiceIndex = kBgmStreamingVoiceIndex,
 			    .isStreaming = true,
 			    .playId = currentPlayId,
-			    .isSuccess = isSuccess,
+			    .isSuccess = true,
 			};
 		}
 

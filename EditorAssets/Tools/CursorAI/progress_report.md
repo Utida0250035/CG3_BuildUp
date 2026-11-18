@@ -2404,3 +2404,47 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | PlaySceneBgm 停止範囲縮小 | 有効 | 基本機能オーディオの本編利用 |
+
+---
+
+## セッション 2026-11-18 14:00（/loop 15m・roadmap tick 7）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/PlaySceneBgmInitPlayIdRollback`
+- **roadmap:** Audio › PlaySceneBgm — `GAP-Audio-PlaySceneBgm-002`
+- `InitializeStreaming` 失敗時は `ResetStreamingVoice` し、返却 `AudioHandle.playId` をボイス側（65536）と一致させる
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- `PlayStreaming` 側の同種不整合は別 GAP（roadmap 76 行付近）
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `PlayBgmLoop 失敗時に PlaySceneBgm を再実行`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- PlaySceneBgm Init 失敗時ハンドル整合（`GAP-Audio-PlaySceneBgm-002`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BGM 開始失敗の復帰**
+  - 用途: デコーダ不調時に `PlayBgmLoop` 再試行・`StopBgmLoop` が正しい playId で動く
+  - 使用場面: シーン入場・MaintainSceneBgmIfNeeded
+  - 仕様: 失敗ハンドルは無効 playId と一致
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| PlaySceneBgm 失敗ハンドル | 有効 | プ

@@ -45,7 +45,7 @@
 
 ### PlaySceneBgm
 - [x] PlaySceneBgm 開始時に全ボイスを一括停止（gap: `GAP-Audio-PlaySceneBgm-001`）
-- [ ] Init 失敗で voice playId だけ巻き戻し
+- [x] Init 失敗で voice playId だけ巻き戻し（gap: `GAP-Audio-PlaySceneBgm-002`）
 
 ### PlayBgmLoop
 - [ ] PlayBgmLoop 失敗時に PlaySceneBgm を再実行
