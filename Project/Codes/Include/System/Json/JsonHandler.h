@@ -46,13 +46,63 @@ public:
   }
 
   /// <summary>
-  /// jsonファイルへの出力
+  /// binaryファイルからの読み込み
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  /// <param name="fileName"></param>
-  /// <param name="data"></param>
+  /// <param name="filePath"></param>
+  /// <returns></returns>
+  template <typename T> static T LoadFromBin(const std::string &filePath) {
+
+    std::ifstream file(filePath);
+    if (!file.is_open()) {
+      throw std::runtime_error("nlohmann: Json file not found");
+    }
+
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<uint8_t> binaryData(size);
+    if (file.read(reinterpret_cast<char *>(binaryData.data(), size))) {
+
+      nlohmann::json j = nlohmann::json::from_msgpack(binaryData);
+    }
+
+    file.close();
+
+    return j.get<T>();
+  }
+
+  /// <summary>
+  /// jsonファイルへの出力
+  /// </summary>
+  /// <typeparam name="T"> データ型 </typeparam>
+  /// <param name="fileName"> ファイルパス </param>
+  /// <param name="data"> 実データ </param>
   template <typename T>
   static void SaveToFile(const std::string &filePath, const T &data) {
+
+    std::filesystem::path path(filePath);
+
+    std::filesystem::create_directories(path.parent_path());
+
+    std::ofstream file(path);
+    if (!file.is_open()) {
+      throw std::runtime_error("nlohmann: Json file could not open");
+    }
+
+    json j = data;
+    file << j.dump(4);
+    file.close();
+  }
+
+  /// <summary>
+  /// binaryファイルへの出力
+  /// </summary>
+  /// <typeparam name="T"> データ型 </typeparam>
+  /// <param name="filePath"> ファイルパス </param>
+  /// <param name="data"> 実データ </param>
+  template <typename T>
+  static void SaveToBin(const std::string &filePath, const T &data) {
 
     std::filesystem::path path(filePath);
 
