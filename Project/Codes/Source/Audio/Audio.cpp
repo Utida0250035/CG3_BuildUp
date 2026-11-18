@@ -567,6 +567,17 @@ float ClampVolume(const float volume) {
 
 	}
 
+	void AudioManager::PrefillStreamingQueueAfterStart(StreamingSourceVoice& voice) {
+
+		for (size_t bufferIndex = 1;
+		     bufferIndex < StreamingSourceVoice::kBufferCount; ++bufferIndex) {
+			if (!RefillBuffer(voice)) {
+				break;
+			}
+		}
+
+	}
+
 	bool AudioManager::InitializeStreaming(const size_t voiceIndex, const size_t soundIndex, const bool isLoop, const long long startTime100ns) {
 
 		auto& voice = *streamingSourceVoicePool_[voiceIndex];
@@ -581,9 +592,7 @@ float ClampVolume(const float volume) {
 		if (SubmitInitialBuffer(voice, isLoop)) {
 
 			StartStreaming(voice);
-
-			// 次のバッファの用意
-			RefillBuffer(voice);
+			PrefillStreamingQueueAfterStart(voice);
 
 			return true;
 
@@ -955,7 +964,7 @@ float ClampVolume(const float volume) {
 			voice.pVoice->SetFrequencyRatio(ClampFrequencyRatio(voice.frequencyRatio));
 			voice.pVoice->SetVolume(ClampVolume(voice.volume));
 			voice.state = VoiceState::Playing;
-			RefillBuffer(voice);
+			PrefillStreamingQueueAfterStart(voice);
 			return;
 		}
 
@@ -1008,7 +1017,7 @@ float ClampVolume(const float volume) {
 
 		if (resumeAfterSeek) {
 			StartStreaming(voice);
-			RefillBuffer(voice);
+			PrefillStreamingQueueAfterStart(voice);
 		} else if (previousState == VoiceState::Paused) {
 			voice.state = VoiceState::Paused;
 		}

@@ -2880,3 +2880,47 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | playId 契約 | 有効 | オーディオ API |
+
+---
+
+## セッション 2026-11-18 16:45（/loop 15m・roadmap tick 18）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/StreamingStartSingleRefill`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-009`（併せ roadmap 72 行 §6.2）
+- `PrefillStreamingQueueAfterStart` で `kBufferCount-1` 回 Refill。`InitializeStreaming` / `ResumeSceneBgm` / シーク復帰で使用
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- Refill 失敗時は途中までのプリロードで継続
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `BGM フォールバックで短音ボイス解放`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ストリーム開始プリロード（`GAP-Audio-AudioManager-009`）
+- Resume 後 Refill（§6.2）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **ストリーム BGM/SE 開始**
+  - 用途: 再生開始直後のアンダーランを減らす
+  - 使用場面: トリプルバッファ前提のストリーミング
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| 開始時プリロード | 有効 | オーディオ |

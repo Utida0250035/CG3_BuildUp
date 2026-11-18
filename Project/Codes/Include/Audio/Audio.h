@@ -94,6 +94,8 @@ namespace Atrum::Audio {
 
 		void StartStreaming(StreamingSourceVoice& voice);
 
+		void PrefillStreamingQueueAfterStart(StreamingSourceVoice& voice);
+
 		bool InitializeStreaming(const size_t voiceIndex, const size_t soundIndex, const bool isLoop, const long long startTime100ns);
 
 
