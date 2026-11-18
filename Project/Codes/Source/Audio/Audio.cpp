@@ -902,12 +902,13 @@ float ClampVolume(const float volume) {
 				return;
 			}
 
-			const VoiceState state = voice.state;
+			const VoiceState state = voice.state.load();
 			if (state != VoiceState::Playing && state != VoiceState::Streaming) {
 				return;
 			}
 
-			voice.pVoice->Stop();
+			voice.isStreaming.store(false);
+			voice.pVoice->Stop(0, XAUDIO2_COMMIT_NOW);
 			voice.state = VoiceState::Paused;
 			return;
 		}
@@ -921,11 +922,11 @@ float ClampVolume(const float volume) {
 			return;
 		}
 
-		if (voice.state != VoiceState::Playing) {
+		if (voice.state.load() != VoiceState::Playing) {
 			return;
 		}
 
-		voice.pVoice->Stop();
+		voice.pVoice->Stop(0, XAUDIO2_COMMIT_NOW);
 		voice.state = VoiceState::Paused;
 	}
 

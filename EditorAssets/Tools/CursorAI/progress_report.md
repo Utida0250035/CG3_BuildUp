@@ -2967,3 +2967,46 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | 短音解放範囲 | 有効 | プレイ SE 優先 |
+
+---
+
+## セッション 2026-11-18 17:15（/loop 15m・roadmap tick 20）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/StreamBgmXaudioStop`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-010`
+- `PauseSceneBgm` でストリーム BGM 一時停止時に `isStreaming` を落とし、`Stop(0, XAUDIO2_COMMIT_NOW)` で即時停止。デコーダは維持（tick16 Refill と Resume 再構築と連携）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 完全停止は従来 `ResetStreamingVoice` / `Stop(handle)` 経路
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `再生位置計算が 44100 固定`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ストリーム BGM ソフトポーズ（`GAP-Audio-AudioManager-010`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **フェード用 Pause**
+  - 用途: XAudio 停止のみでスロットを保持し、復帰時のクリック低減
+  - 使用場面: ChangeSceneFade 同期
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| BGM ソフト Pause | 有効 | 本編オーディオ |
