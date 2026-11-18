@@ -57,7 +57,7 @@
 - [x] SetBgmLoopVolume が未使用（gap: `GAP-Audio-SetBgmLoopVolume-001`、§6.2 コード確認）
 
 ### PlaySeLoop
-- [ ] PlaySeLoop がコードベースで未呼び出し
+- [x] PlaySeLoop がコードベースで未呼び出し（gap: `GAP-Audio-PlaySeLoop-001`）
 
 ### AudioManager
 - [ ] 空き無しで全汎用ストリームをリセット

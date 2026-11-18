@@ -102,6 +102,18 @@ inline Audio::Handle PlaySeLoop(const std::string &path) {
   return ::Atrum::EngineAudioManager()->Play(index, true);
 }
 
+/// 候補パスのうち存在するループ SE を再生（BGM とは別ボイス）
+inline Audio::Handle PlaySeLoopCandidates(
+    const std::initializer_list<const char *> candidatePaths) {
+  const std::string path =
+      PlaySeDetail::ResolveExistingSePath(candidatePaths);
+  if (path.empty()) {
+    return {};
+  }
+
+  return PlaySeLoop(path);
+}
+
 inline void StopSe(const Audio::Handle &handle) {
   // PlayShort 以前は isSuccess が未設定でも playId で停止できるようにする
   if (!handle.isSuccess && handle.playId == 0) {

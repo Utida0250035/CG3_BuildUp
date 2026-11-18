@@ -33,6 +33,7 @@ protected:
 
 private:
   Atrum::Audio::Handle sceneBgmHandle_{};
+  Atrum::Audio::Handle sceneAmbientLoopSeHandle_{};
   std::unique_ptr<Atrum::Entity> skyDome_;
   std::vector<std::unique_ptr<Atrum::Entity>> backgrounds_;
   std::vector<std::unique_ptr<Atrum::Entity>> foregroundGroundClouds_;
