@@ -41,7 +41,7 @@
 - [x] Pause/Resume/Volume 付き BGM API がシーンから未使用（gap: `GAP-Audio-PauseBgmLoop-001`）
 
 ### StopBgmLoop
-- [ ] StopBgmLoop がシーン BGM 以外のストリーミングも停止
+- [x] StopBgmLoop がシーン BGM 以外のストリーミングも停止（gap: `GAP-Audio-StopBgmLoop-001`）
 
 ### PlaySceneBgm
 - [ ] PlaySceneBgm 開始時に全ボイスを一括停止

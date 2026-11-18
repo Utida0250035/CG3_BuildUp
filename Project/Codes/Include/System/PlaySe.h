@@ -111,11 +111,13 @@ inline void StopSe(const Audio::Handle &handle) {
   ::Atrum::EngineAudioManager()->Stop(handle);
 }
 
-/// シーン BGM を停止（ハンドル不一致で残ったストリーミングボイスも解放）
+/// シーン BGM を停止（汎用ストリーミング SE は巻き添えしない）
 inline void StopBgmLoop(const Audio::Handle &handle) {
   StopSe(handle);
-  ::Atrum::EngineAudioManager()->StopAllStreamingVoices();
-  ::Atrum::EngineAudioManager()->StopAllLoopingShortVoices();
+
+  if (!handle.isSuccess && handle.playId == 0) {
+    ::Atrum::EngineAudioManager()->StopDedicatedSceneBgmVoice();
+  }
 }
 
 inline void PauseBgmLoop(const Audio::Handle &handle) {

@@ -2315,3 +2315,47 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | BGM Pause/Resume/Volume 配線 | 有効 | プレイ中オーディオ管理。エンジン基本機能のシーン側利用 |
+
+---
+
+## セッション 2026-11-18 13:30（/loop 15m・roadmap tick 5）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/StopBgmLoopStreamingScope`
+- **roadmap:** Audio › StopBgmLoop — `GAP-Audio-StopBgmLoop-001`
+- `StopBgmLoop` から `StopAllStreamingVoices` / `StopAllLoopingShortVoices` を除去し、ハンドル指定の `StopSe` のみ。ハンドル空のときは `StopDedicatedSceneBgmVoice`（ボイス 0 のみ）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- `PlaySceneBgm` 開始時の全停止は別 GAP（roadmap 次項）
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `PlaySceneBgm 開始時に全ボイスを一括停止`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- StopBgmLoop の停止範囲（`GAP-Audio-StopBgmLoop-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **選択的 BGM 停止**
+  - 用途: シーン Exit で BGM だけ止め、同時再生中のストリーミング SE／ボイスは維持
+  - 使用場面: Title/Game/Result の `ExitScene`
+  - 仕様: 専用ボイス 0 のみフォールバック解放
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| StopBgmLoop スコープ縮小 | 有効 | オーディオマネージャー利用の本編プレイ |

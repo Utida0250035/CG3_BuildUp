@@ -415,6 +415,20 @@ float ClampVolume(const float volume) {
 
 	}
 
+	void AudioManager::StopDedicatedSceneBgmVoice() {
+
+		if (kBgmStreamingVoiceIndex >= streamingSourceVoicePool_.size()) {
+			return;
+		}
+
+		const std::unique_ptr<StreamingSourceVoice> &streamingVoice =
+		    streamingSourceVoicePool_[kBgmStreamingVoiceIndex];
+		if (streamingVoice != nullptr) {
+			ResetStreamingVoice(*streamingVoice);
+		}
+
+	}
+
 	size_t AudioManager::AcquireStreamingVoiceIndex() {
 
 		const size_t poolSize = streamingSourceVoicePool_.size();

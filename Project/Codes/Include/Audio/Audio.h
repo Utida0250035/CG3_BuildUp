@@ -149,6 +149,9 @@ namespace Atrum::Audio {
 		/// ストリーミング BGM 用ボイスをすべて停止（シーン切替・プール枯渇対策）
 		void StopAllStreamingVoices();
 
+		/// シーン BGM 専用ストリーミングボイス（インデックス 0）だけ停止
+		void StopDedicatedSceneBgmVoice();
+
 		/// 短尺ループ（5MB 未満 BGM 等）の占有を解放
 		void StopAllLoopingShortVoices();
 
