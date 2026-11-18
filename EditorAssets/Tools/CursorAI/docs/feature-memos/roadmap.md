@@ -64,7 +64,7 @@
 - [x] BGM 一時停止中は復帰判定が誤る（gap: `GAP-Audio-AudioManager-001`）
 - [x] Resume は Start のみでデコード再開なし（gap: `GAP-Audio-AudioManager-004`）
 - [x] StopAll は BGM 系ループのみ（gap: `GAP-Audio-AudioManager-002`）
-- [ ] Paused ストリームは Update をスキップ
+- [x] Paused ストリームは Update をスキップ（gap: `GAP-Audio-AudioManager-005`）
 - [ ] Handle と voice の playId がずれる
 - [ ] Start 後に Refill を 1 回だけ
 - [ ] BGM フォールバックで短音ボイス解放

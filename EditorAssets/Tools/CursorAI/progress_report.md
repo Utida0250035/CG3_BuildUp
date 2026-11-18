@@ -2794,3 +2794,46 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | StopAll BGM 限定 | 有効 | プレイオーディオ |
+
+---
+
+## セッション 2026-11-18 16:15（/loop 15m・roadmap tick 16）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/StreamingPausedUpdateSkip`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-005`
+- 一時停止中のループストリームでも `AudioManager::Update` が `RefillBuffer` を実行しキューを枯らさない（再生／Waiting 処理は従来どおりスキップ）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 非ループ一時停止は対象外（短尺ワンショット）
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `Handle と voice の playId がずれる`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- Paused ストリームのバッファ補充（`GAP-Audio-AudioManager-005`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BGM ポーズ中キュー維持**
+  - 用途: フェード Pause 中もデコード先を溜め、Resume と組み合わせて無音化を防ぐ
+  - 使用場面: シーン BGM ストリーミング
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| Paused 時 Refill | 有効 | オーディオ基本機能 |

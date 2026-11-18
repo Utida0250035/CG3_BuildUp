@@ -79,11 +79,16 @@ float ClampVolume(const float volume) {
 
 		for (auto& streamingVoice : streamingSourceVoicePool_) {
 
-			if (streamingVoice->state == VoiceState::Paused) {
+			const VoiceState streamState = streamingVoice->state.load();
+
+			if (streamState == VoiceState::Paused) {
+				if (streamingVoice->isLoop && streamingVoice->pVoice != nullptr) {
+					RefillBuffer(*streamingVoice);
+				}
 				continue;
 			}
 
-			if (streamingVoice->state == VoiceState::Streaming) {
+			if (streamState == VoiceState::Streaming) {
 
 				if (RefillBuffer(*streamingVoice)) {
 
@@ -97,7 +102,7 @@ float ClampVolume(const float volume) {
 
 			}
 
-			if (streamingVoice->state == VoiceState::Waiting) {
+			if (streamingVoice->state.load() == VoiceState::Waiting) {
 
 				if (streamingVoice->isLoop &&
 				    TryRecoverLoopingStreamingVoice(*streamingVoice)) {
