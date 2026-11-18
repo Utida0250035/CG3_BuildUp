@@ -275,6 +275,7 @@ float ClampVolume(const float volume) {
 		voice.state = VoiceState::Stopped;
 		voice.playId = 0;
 		voice.isLoopPlayback = false;
+		voice.isSceneBgmSlot = false;
 		voice.loopSoundIndex = static_cast<size_t>(-1);
 
 	}
@@ -296,7 +297,8 @@ float ClampVolume(const float volume) {
 
 		for (std::unique_ptr<SourceVoice> &sourceVoice : sourceVoicePool_) {
 
-			if (sourceVoice != nullptr && sourceVoice->isLoopPlayback) {
+			if (sourceVoice != nullptr && sourceVoice->isLoopPlayback &&
+			    sourceVoice->isSceneBgmSlot) {
 				ResetShortVoice(*sourceVoice);
 			}
 
@@ -756,12 +758,25 @@ float ClampVolume(const float volume) {
 
 		AudioHandle handle = PlayShort(soundIndex, true);
 		if (handle.isSuccess) {
+			if (handle.voiceIndex < sourceVoicePool_.size()) {
+				auto &voice = sourceVoicePool_[handle.voiceIndex];
+				if (voice != nullptr) {
+					voice->isSceneBgmSlot = true;
+				}
+			}
 			return handle;
 		}
 
 		ReleaseWaitingShortVoices();
 		StopAllLoopingShortVoices();
-		return PlayShort(soundIndex, true);
+		handle = PlayShort(soundIndex, true);
+		if (handle.isSuccess && handle.voiceIndex < sourceVoicePool_.size()) {
+			auto &voice = sourceVoicePool_[handle.voiceIndex];
+			if (voice != nullptr) {
+				voice->isSceneBgmSlot = true;
+			}
+		}
+		return handle;
 
 	}
 

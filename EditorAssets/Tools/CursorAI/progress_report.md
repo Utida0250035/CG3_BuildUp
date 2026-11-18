@@ -2751,3 +2751,46 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | ResumeSceneBgm Refill | 有効 | オーディオ基本機能 |
+
+---
+
+## セッション 2026-11-18 16:00（/loop 15m・roadmap tick 15）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/StopAllBgmLoopsOnly`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-002`
+- `SourceVoice::isSceneBgmSlot` を追加。`PlaySceneBgm` 短尺経路のみフラグ。`StopAllLoopingShortVoices` は当該スロットのみ解放
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- シーン Exit で戦闘ワンショット SE を一括停止する API は未追加（別 GAP）
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `Paused ストリームは Update をスキップ`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- StopAll 相当の BGM 限定化（`GAP-Audio-AudioManager-002`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **短尺 BGM と環境ループ SE 分離**
+  - 用途: PlaySceneBgm 逼迫時にタイトル環境 `PlaySeLoop` を止めない
+  - 使用場面: 短尺 BGM フォールバック・プール解放
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| StopAll BGM 限定 | 有効 | プレイオーディオ |

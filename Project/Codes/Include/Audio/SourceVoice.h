@@ -21,6 +21,8 @@ namespace Atrum::Audio {
 
 		/// PlayShort(..., isLoop=true) 時のみ使用（BGM 停止・占有解放用）
 		bool isLoopPlayback = false;
+		/// PlaySceneBgm の短尺ループ占有（環境ループ SE 等と区別）
+		bool isSceneBgmSlot = false;
 		size_t loopSoundIndex = static_cast<size_t>(-1);
 
 		float frequencyRatio = 1.0f;

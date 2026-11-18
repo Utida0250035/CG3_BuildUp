@@ -152,7 +152,7 @@ namespace Atrum::Audio {
 		/// シーン BGM 専用ストリーミングボイス（インデックス 0）だけ停止
 		void StopDedicatedSceneBgmVoice();
 
-		/// 短尺ループ（5MB 未満 BGM 等）の占有を解放
+		/// シーン BGM 用の短尺ループ占有のみ解放（汎用 PlaySeLoop 等は対象外）
 		void StopAllLoopingShortVoices();
 
 		bool IsPlaying(const AudioHandle& handle);

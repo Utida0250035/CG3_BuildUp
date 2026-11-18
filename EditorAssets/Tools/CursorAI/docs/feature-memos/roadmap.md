@@ -63,7 +63,7 @@
 - [x] 空き無しで全汎用ストリームをリセット（gap: `GAP-Audio-AudioManager-003`）
 - [x] BGM 一時停止中は復帰判定が誤る（gap: `GAP-Audio-AudioManager-001`）
 - [x] Resume は Start のみでデコード再開なし（gap: `GAP-Audio-AudioManager-004`）
-- [ ] StopAll は BGM 系ループのみ
+- [x] StopAll は BGM 系ループのみ（gap: `GAP-Audio-AudioManager-002`）
 - [ ] Paused ストリームは Update をスキップ
 - [ ] Handle と voice の playId がずれる
 - [ ] Start 後に Refill を 1 回だけ
