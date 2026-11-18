@@ -1,6 +1,7 @@
 ﻿#include "Audio/Audio.h"
 #include "Audio/AudioDecoder.h"
 #include "Audio/PlaybackPosition.h"
+#include "Audio/ShortVoicePoolExhaust.h"
 #include "Audio/StreamingSourceVoice.h"
 #include "Audio/StreamingVoiceCallBack.h"
 #include "File/FileSize.h"
@@ -389,9 +390,7 @@ float ClampVolume(const float volume) {
 			return handle;
 		}
 
-		assert(false && "no empty sourceVoice");
-
-		return {};
+		return MakeUnavailableShortVoiceHandle();
 
 	}
 

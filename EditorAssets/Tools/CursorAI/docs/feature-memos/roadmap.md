@@ -72,7 +72,7 @@
 - [x] Resume は Start 後 Refill なし（gap: §6.2・`PrefillStreamingQueueAfterStart`）
 - [x] 再生位置計算が 44100 固定
 - [x] Waiting 非ループは Stop で終了
-- [ ] ボイス枯渇で assert
+- [x] ボイス枯渇で assert
 - [ ] Init 失敗で playId 不一致
 - [ ] ストリーム PCM を 44.1k 固定
 - [ ] SetupStreaming が 44.1kHz 固定
