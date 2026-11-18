@@ -2663,3 +2663,48 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | ストリーム退避方針 | 有効 | オーディオ基本機能 |
+
+---
+
+## セッション 2026-11-18 15:30（/loop 15m・roadmap tick 13）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/BgmPausedResumeJudgement`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-001`
+- `IsSceneBgmAudible` / `IsSceneBgmSlotHeld` を追加。`MaintainSceneBgmIfNeeded` で一時停止を検知し、遷移演出外なら `ResumeBgmLoop` + 音量復帰
+- `IsSceneBgmPaused` で `state.load()` を使用
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 遷移中の一時停止は `CommandChangeScene::GetIsExecute` で Resume を抑制（`Sync` と役割分担）
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `Resume は Start のみでデコード再開なし`（`GAP-Audio-AudioManager-004`）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- BGM 一時停止時の維持判定（`GAP-Audio-AudioManager-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BGM 復帰**
+  - 用途: フェード以外で Pause された BGM を本編 Update で再開
+  - 使用場面: SceneGame
+  - 仕様: 無音のまま `IsPlaying` だけ true になる状態を解消
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| BGM 復帰判定 | 有効 | 本編プレイ音

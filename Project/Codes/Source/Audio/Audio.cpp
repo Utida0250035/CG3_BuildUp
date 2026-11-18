@@ -1278,7 +1278,7 @@ float ClampVolume(const float volume) {
 
 			const auto& voice = *streamingSourceVoicePool_[handle.voiceIndex];
 			return voice.playId == handle.playId &&
-			       voice.state == VoiceState::Paused;
+			       voice.state.load() == VoiceState::Paused;
 		}
 
 		if (handle.voiceIndex >= sourceVoicePool_.size()) {
@@ -1287,7 +1287,7 @@ float ClampVolume(const float volume) {
 
 		const auto& voice = *sourceVoicePool_[handle.voiceIndex];
 		return voice.playId == handle.playId &&
-		       voice.state == VoiceState::Paused;
+		       voice.state.load() == VoiceState::Paused;
 	}
 
 #if defined(DEVELOPMENT)

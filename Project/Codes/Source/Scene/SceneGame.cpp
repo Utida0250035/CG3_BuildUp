@@ -238,9 +238,16 @@ namespace Atrum {
 
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 
-		Atrum::Audio::AudioManager* audio = ::Atrum::EngineAudioManager();
+		if (sceneBgmHandle_.isSuccess && Atrum::IsBgmLoopPaused(sceneBgmHandle_)) {
+			if (!Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+				Atrum::ResumeBgmLoop(sceneBgmHandle_);
+				Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
+			}
+			return;
+		}
+
 		if (sceneBgmHandle_.isSuccess &&
-			audio->IsPlaying(sceneBgmHandle_)) {
+			Atrum::IsSceneBgmAudible(sceneBgmHandle_)) {
 			return;
 		}
 

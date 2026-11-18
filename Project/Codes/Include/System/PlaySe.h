@@ -150,6 +150,19 @@ inline bool IsBgmLoopPaused(const Audio::Handle &handle) {
   return ::Atrum::EngineAudioManager()->IsSceneBgmPaused(handle);
 }
 
+/// スロット占有（一時停止中含む）
+inline bool IsSceneBgmSlotHeld(const Audio::Handle &handle) {
+  if (!handle.isSuccess) {
+    return false;
+  }
+  return ::Atrum::EngineAudioManager()->IsPlaying(handle);
+}
+
+/// 実際に音が出ている BGM
+inline bool IsSceneBgmAudible(const Audio::Handle &handle) {
+  return IsSceneBgmSlotHeld(handle) && !IsBgmLoopPaused(handle);
+}
+
 /// 失敗時は負値
 inline float GetBgmLoopPlaybackSeconds(const Audio::Handle &handle) {
   float seconds = -1.0f;
