@@ -73,7 +73,7 @@
 - [x] 再生位置計算が 44100 固定
 - [x] Waiting 非ループは Stop で終了
 - [x] ボイス枯渇で assert
-- [ ] Init 失敗で playId 不一致
+- [x] Init 失敗で playId 不一致
 - [ ] ストリーム PCM を 44.1k 固定
 - [ ] SetupStreaming が 44.1kHz 固定
 - [ ] Load ヒットで再判定なし
