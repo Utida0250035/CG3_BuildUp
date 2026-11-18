@@ -72,6 +72,14 @@ inline void PlaySubmitSe() {
                     "./Resources/seSubmit.mp3"});
 }
 
+/// シーン遷移フェードイン開始時の SE（専用ファイルが無ければ submit へフォールバック）
+inline void PlaySceneTransitionSe() {
+  PlaySeCandidates({"./Assets/Audios/seSceneTransition.mp3",
+                    "./Resources/seSceneTransition.mp3",
+                    "./Assets/Audios/seSubmit.mp3",
+                    "./Resources/seSubmit.mp3"});
+}
+
 /// 自機ジャンプ
 inline void PlayPlayerJumpSe() {
   PlaySeCandidates({"./Assets/Audios/sePlayerJump.mp3",

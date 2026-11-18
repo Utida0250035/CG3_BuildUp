@@ -7,6 +7,7 @@
 #include "Math/Vector2.h"
 #include "Math/Vector4.h"
 #include "System/DeltaTime.h"
+#include "System/PlaySe.h"
 
 namespace Atrum {
 
@@ -33,8 +34,8 @@ void ChangeSceneFade::Update() {
 		if (waitCount_ >= 0.25f) {
 
 			if (!isSeOpenTrigger_) {
-
 				isSeOpenTrigger_ = true;
+				PlaySceneTransitionSe();
 			}
 
 			waitCount_ = 1.0f;

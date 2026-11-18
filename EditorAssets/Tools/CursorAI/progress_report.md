@@ -2133,3 +2133,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 - Loader: 1
 
 配置は記号の役割で既存の大見出しへ寄せた。Authoring の制作作業は Editor、プレイ中のシーン挙動は Scene、BGM／SE は Audio、ライトは Lighting、ビルドと配布は Repository。
+
+---
+
+## セッション 2026-11-18 12:56（/loop 15m・roadmap tick）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/ChangeSceneFadeTransitionSe`
+- **roadmap:** Audio › ChangeSceneFade — `GAP-Scene-ChangeSceneFade-001`（フェードイン開始時の遷移 SE）
+- `PlaySceneTransitionSe()` を追加（`seSceneTransition` → 無ければ `seSubmit` にフォールバック）
+- `ChangeSceneFade::Update` でフェードイン開始時に1回だけ再生
+- **ビルド:** Cloud VM（Linux）のため `buildDevelopment.cmd` は未実行（Windows/MSBuild 前提）
+
+### 2. 課題・設計上の選択肢
+
+- BGM クロスフェード／継続は未着手（親トピック「シーン遷移時の BGM／SE…」は展開済み行のまま）
+
+### 3. 次に実行すべきステップ
+
+- roadmap Audio › ChangeSceneFade の次行: `timeRatio 満了で即 isSceneChange…`（`GAP-Scene-ChangeSceneFade-002` 相当）
+- Windows 環境で Development ビルド確認後、`loopMergeTickToDevelop.ps1` で develop 統合
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ChangeSceneFade フェードイン開始時の遷移 SE 再生（`GAP-Scene-ChangeSceneFade-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **遷移フェード SE**
+  - 用途: ランタイムのシーン切替で音の手応えを付け、無音フェードの違和感を減らす
+  - 使用場面: プレイ（Title/Game/Result/BuildUp 間の `ChangeSceneFade` 経由遷移すべて）
+  - 仕様: 専用 `seSceneTransition` が無くても既存 submit SE でフォールバックし、欠損時は `PlaySeCandidates` 同様に無音
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| ChangeSceneFade 遷移 SE | 有効 | 本編プレイの遷移体感向上。コア API 破壊なし |
