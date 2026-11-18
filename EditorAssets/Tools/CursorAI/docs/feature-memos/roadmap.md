@@ -51,7 +51,7 @@
 - [x] PlayBgmLoop 失敗時に PlaySceneBgm を再実行（gap: `GAP-Audio-PlayBgmLoop-001`）
 
 ### ResumeBgmLoop
-- [ ] ResumeBgmLoop がシーンから呼ばれない
+- [x] ResumeBgmLoop がシーンから呼ばれない（gap: `GAP-Audio-ResumeBgmLoop-001`、§6.2 コード確認）
 
 ### SetBgmLoopVolume
 - [ ] SetBgmLoopVolume が未使用

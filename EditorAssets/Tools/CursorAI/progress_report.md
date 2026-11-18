@@ -2492,3 +2492,45 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | PlayBgmLoop 再試行整理 | 有効 | オーディオ本編プレイ |
+
+---
+
+## セッション 2026-11-18 14:30（/loop 15m・roadmap tick 9）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/ResumeBgmLoopSceneCall`
+- **roadmap:** Audio › ResumeBgmLoop — `GAP-Audio-ResumeBgmLoop-001`
+- **§6.2 コード確認:** tick 4 で追加した `SyncSceneBgmForChangeSceneFade` が `ResumeBgmLoop` を呼び、`SceneTitle` / `SceneGame` / `SceneResult` の `Update` から参照済み。新規 diff なし
+- **ビルド:** 不要（ドキュメントのみ）
+
+### 2. 課題・設計上の選択項
+
+- なし
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `SetBgmLoopVolume が未使用`（同様に Sync 経由で確認）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ResumeBgmLoop のシーン経由配線（`GAP-Audio-ResumeBgmLoop-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **フェード後 BGM 復帰**（tick 4 と同旨）
+  - 使用場面: ChangeSceneFade 終了後、通常 Update で音量・再生再開
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| ResumeBgmLoop 配線確認 | 有効 | 本編シーン遷移オーディオ |
