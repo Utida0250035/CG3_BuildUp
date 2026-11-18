@@ -3010,3 +3010,12 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | BGM ソフト Pause | 有効 | 本編オーディオ |
+
+---
+
+## セッション 2026-11-18 17:18（ループ停止・ユーザー指示）
+
+- **ループ:** `loop-roadmap-execute`（15 分間隔）を **停止**（timer `sub_b2a62ebd-a8f8-431f-a93f-ae669a992400` unsubscribe 済み）
+- **直前:** roadmap tick 20 完了（`develop` `dbff9f9`）。Audio セクションの未完了 `- [ ]` は継続あり
+- **次の再開時:** roadmap 先頭の `- [ ]`（例: `再生位置計算が 44100 固定`）。作業ブランチ `fix/StreamBgmSampleRateFix` は空のまま push 済み
+- **状態:** 半自律ロードマップループ終了。新規 tick は行わない
