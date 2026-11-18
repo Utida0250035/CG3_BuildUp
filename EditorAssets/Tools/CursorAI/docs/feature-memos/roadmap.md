@@ -61,7 +61,7 @@
 
 ### AudioManager
 - [x] 空き無しで全汎用ストリームをリセット（gap: `GAP-Audio-AudioManager-003`）
-- [ ] BGM 一時停止中は復帰判定が誤る
+- [x] BGM 一時停止中は復帰判定が誤る（gap: `GAP-Audio-AudioManager-001`）
 - [ ] Resume は Start のみでデコード再開なし
 - [ ] StopAll は BGM 系ループのみ
 - [ ] Paused ストリームは Update をスキップ
