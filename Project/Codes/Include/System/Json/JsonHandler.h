@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <vector>
+#include <cstdint>
 
 #define DEFINE_JSON NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE
 
@@ -34,7 +36,7 @@ public:
 
     std::ifstream file(filePath);
     if (!file.is_open()) {
-      throw std::runtime_error("nlohmann: Json file not found");
+      throw std::runtime_error("nlohmann: Json file " + filePath + " not found");
     }
 
     json j;
@@ -53,18 +55,31 @@ public:
   /// <returns></returns>
   template <typename T> static T LoadFromBin(const std::string &filePath) {
 
-    std::ifstream file(filePath);
+    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+    
     if (!file.is_open()) {
-      throw std::runtime_error("nlohmann: Json file not found");
+      throw std::runtime_error("nlohmann: Json file " + filePath + " not found");
     }
 
     std::streamsize size = file.tellg();
+
+    if (size == 0) {
+        return {};
+    }
+
     file.seekg(0, std::ios::beg);
 
     std::vector<uint8_t> binaryData(size);
-    if (file.read(reinterpret_cast<char *>(binaryData.data(), size))) {
 
-      nlohmann::json j = nlohmann::json::from_msgpack(binaryData);
+    nlohmann::json j{};
+
+    try {
+
+        if (file.read(reinterpret_cast<char*>(binaryData.data()), size)) {
+            j = nlohmann::json::from_msgpack(binaryData);
+        }
+    } catch (const std::exception& e) {
+        throw std::runtime_error(("nlohmann: Json file " + filePath + "couldn't read\n") + e.what());
     }
 
     file.close();
@@ -87,7 +102,7 @@ public:
 
     std::ofstream file(path);
     if (!file.is_open()) {
-      throw std::runtime_error("nlohmann: Json file could not open");
+      throw std::runtime_error("nlohmann: Json file " + filePath + " could not open");
     }
 
     json j = data;
@@ -108,14 +123,17 @@ public:
 
     std::filesystem::create_directories(path.parent_path());
 
-    std::ofstream file(path);
+    std::ofstream file(path, std::ios::binary);
+
     if (!file.is_open()) {
-      throw std::runtime_error("nlohmann: Json file could not open");
+      throw std::runtime_error("nlohmann: Json file" + filePath + " could not open");
     }
 
     json j = data;
-    file << j.dump(4);
-    file.flush();
+
+    std::vector<uint8_t> binaryData = nlohmann::json::to_msgpack(j);
+
+    file.write(reinterpret_cast<const char*>(binaryData.data()), static_cast<std::streamsize>(binaryData.size()));
 
     file.close();
   }
