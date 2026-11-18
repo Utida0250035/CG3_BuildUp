@@ -454,6 +454,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Audio\AudioStreamingDebugStats.h" />
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
     <ClInclude Include="Codes\Include\Audio\PlaybackPosition.h" />
+    <ClInclude Include="Codes\Include\Audio\NonLoopStreamWait.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
     <ClInclude Include="Codes\Include\Audio\SourceVoice.h" />
     <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h" />

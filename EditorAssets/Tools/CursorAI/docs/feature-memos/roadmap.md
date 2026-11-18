@@ -71,7 +71,7 @@
 - [x] ストリーム BGM 停止は XAudio Stop（gap: `GAP-Audio-AudioManager-010`）
 - [x] Resume は Start 後 Refill なし（gap: §6.2・`PrefillStreamingQueueAfterStart`）
 - [x] 再生位置計算が 44100 固定
-- [ ] Waiting 非ループは Stop で終了
+- [x] Waiting 非ループは Stop で終了
 - [ ] ボイス枯渇で assert
 - [ ] Init 失敗で playId 不一致
 - [ ] ストリーム PCM を 44.1k 固定

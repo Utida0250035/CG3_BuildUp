@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/NonLoopStreamWait.h"
 #include "Audio/VoiceState.h"
 #include "Audio/StreamingVoiceCallBack.h"
 
@@ -49,6 +50,9 @@ namespace Atrum::Audio {
 		size_t soundIndex = 0;
 
 		bool isLoop = false;
+
+		// 非ループが Waiting のとき、空キューの再読込失敗回数。
+		NonLoopStreamWait nonLoopWait{};
 
 		long long startTime100ns = 0;
 

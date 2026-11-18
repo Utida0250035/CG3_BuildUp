@@ -497,6 +497,9 @@
     <ClInclude Include="Codes\Include\Audio\PlaybackPosition.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\NonLoopStreamWait.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>

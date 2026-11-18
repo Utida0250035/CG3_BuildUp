@@ -113,6 +113,9 @@ namespace Atrum::Audio {
 
 		bool TryRecoverLoopingStreamingVoice(StreamingSourceVoice &voice);
 
+		// 非ループの Waiting を即 Stop しない。継続できるなら true。
+		bool TryContinueNonLoopStreamingVoice(StreamingSourceVoice &voice);
+
 		bool SeekSceneBgmStreamingVoice(StreamingSourceVoice& voice, float seconds);
 
 	public:

@@ -93,6 +93,7 @@ float ClampVolume(const float volume) {
 
 				if (RefillBuffer(*streamingVoice)) {
 
+					streamingVoice->nonLoopWait.NoteReadSucceeded();
 					streamingVoice->state = VoiceState::Playing;
 
 				} else {
@@ -107,6 +108,10 @@ float ClampVolume(const float volume) {
 
 				if (streamingVoice->isLoop &&
 				    TryRecoverLoopingStreamingVoice(*streamingVoice)) {
+					continue;
+				}
+
+				if (TryContinueNonLoopStreamingVoice(*streamingVoice)) {
 					continue;
 				}
 
@@ -404,6 +409,7 @@ float ClampVolume(const float volume) {
 		voice.state = VoiceState::Stopped;
 		voice.playId = 65536;
 		voice.isLoop = false;
+		voice.nonLoopWait.Reset();
 		voice.nextBufferIndex = 0;
 		voice.frequencyRatio = 1.0f;
 		voice.volume = 1.0f;
@@ -703,6 +709,41 @@ float ClampVolume(const float volume) {
 			return false;
 
 		}
+
+	}
+
+	bool AudioManager::TryContinueNonLoopStreamingVoice(StreamingSourceVoice &voice) {
+
+		if (voice.isLoop || voice.pVoice == nullptr) {
+			return false;
+		}
+
+		XAUDIO2_VOICE_STATE xaState{};
+		voice.pVoice->GetState(&xaState);
+
+		// キューが残っている間は Flush しない。次の OnBufferEnd で再補充する。
+		if (xaState.BuffersQueued > 0) {
+			voice.nonLoopWait.NoteBuffersRemain();
+			voice.state = VoiceState::Playing;
+			return true;
+		}
+
+		if (RefillBuffer(voice)) {
+			voice.nonLoopWait.NoteReadSucceeded();
+			const HRESULT hr = voice.pVoice->Start();
+			if (FAILED(hr)) {
+				return false;
+			}
+			voice.state = VoiceState::Playing;
+			return true;
+		}
+
+		if (voice.nonLoopWait.NoteEmptyReadFailed()) {
+			return false;
+		}
+
+		// 空キューの失敗が閾値未満なら Waiting のまま次フレームで再読込する。
+		return true;
 
 	}
 
