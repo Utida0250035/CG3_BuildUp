@@ -2102,3 +2102,34 @@
 ## セッション 2026-11-18 12:07
 
 ループ手動停止。gap-to-rough（10 分間隔でギャップを roadmap_rough.md へ追記）を終了。
+
+## セッション 2026-11-18 12:24
+
+roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出しは追加しない）。取り込み後、下書きは roadmap_rough_old.md へ退避し、テンプレで roadmap_rough.md を再生成した。
+
+- 追加: 256 件
+- 既存と一致のため未追加: 42 件
+- 在庫のまとめ行（`- [ ]` かつ「在庫」）は個別項目へ展開済みの注記に変えた
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+| roadmap の文言 | 根拠（パス・シーン・API） | 判定（万全／一部要確認） |
+|----------------|------------------------------|--------------------------|
+| PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない | `Project/CG2_BuildUp.vcxproj` の Debug / Release / Development の PostBuild が EditorAssets を xcopy | 万全 |
+| EditorScenePlayRequest がどこからも Set されない | `EditorSceneAsset.cpp` `TrySetRepositoryStartupScene` が `EditorScenePlayRequest::Set` を呼ぶ | 万全 |
+| decoderBacklog01 のクランプで remaining 肥大が見えない | 既存の `- [x]` のまま。診断表が remaining バイトと 1 超の倍率を表示（`AudioStreamingDebugImGui.cpp`） | 万全 |
+
+## 追加した節
+
+- Camera: 6
+- Editor: 78
+- UX: 9
+- System: 7
+- Lighting: 2
+- Debug: 59
+- Repository: 6
+- Scene: 41
+- Audio: 47
+- Loader: 1
+
+配置は記号の役割で既存の大見出しへ寄せた。Authoring の制作作業は Editor、プレイ中のシーン挙動は Scene、BGM／SE は Audio、ライトは Lighting、ビルドと配布は Repository。
