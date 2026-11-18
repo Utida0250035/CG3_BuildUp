@@ -2447,4 +2447,4 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 | タスク | 判定 | 根拠 |
 |------|------|------|
-| PlaySceneBgm 失敗ハンドル | 有効 | プ
+| PlaySceneBgm 失敗ハンドル | 有効 | プレイ中 BGM 継続。矛盾なし |
