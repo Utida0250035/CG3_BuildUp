@@ -11,6 +11,16 @@
 
 namespace Atrum {
 
+namespace {
+
+constexpr float kFadeOutSeconds = 0.5f;
+/// 暗転完了後、シーン入替えまで画面を真っ黒で留める（中間フレームでの EnterScene を避ける）
+constexpr float kFullBlackHoldBeforeSceneChangeSeconds = 0.08f;
+constexpr float kFadeInDelaySeconds = 0.25f;
+constexpr float kFadeInSeconds = 0.25f;
+
+} // namespace
+
 ChangeSceneFade::ChangeSceneFade() {
 
 	timeRatio_ = 0.0f;
@@ -31,16 +41,17 @@ void ChangeSceneFade::Update() {
 
 		waitCount_ += ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 
-		if (waitCount_ >= 0.25f) {
+		if (waitCount_ >= kFadeInDelaySeconds) {
 
 			if (!isSeOpenTrigger_) {
 				isSeOpenTrigger_ = true;
 				PlaySceneTransitionSe();
 			}
 
-			waitCount_ = 1.0f;
+			waitCount_ = kFadeInDelaySeconds;
 
-			timeRatio_ -= 1.0f / 0.25f * ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
+			timeRatio_ -= 1.0f / kFadeInSeconds *
+			              ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
 
 			if (timeRatio_ <= 0.0f) {
 
@@ -50,13 +61,16 @@ void ChangeSceneFade::Update() {
 
 	} else {
 
-		timeRatio_ += 1.0f / 0.5f * ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
+		const float deltaTime = ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
+		timeRatio_ += 1.0f / kFadeOutSeconds * deltaTime;
 
 		if (timeRatio_ >= 1.0f) {
-
 			timeRatio_ = 1.0f;
-
-			isSceneChange_ = true;
+			waitCount_ += deltaTime;
+			if (waitCount_ >= kFullBlackHoldBeforeSceneChangeSeconds) {
+				isSceneChange_ = true;
+				waitCount_ = 0.0f;
+			}
 		}
 	}
 }

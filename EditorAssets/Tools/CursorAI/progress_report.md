@@ -2179,3 +2179,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | ChangeSceneFade 遷移 SE | 有効 | 本編プレイの遷移体感向上。コア API 破壊なし |
+
+---
+
+## セッション 2026-11-18 13:01（/loop 15m・roadmap tick 2）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/ChangeSceneFadeFullBlackHold`（前 tick の `fix/ChangeSceneFadeTransitionSe` は develop へ fast-forward 済み）
+- **roadmap:** Audio › ChangeSceneFade — `GAP-Scene-ChangeSceneFade-002`
+- フェードアウト完了後 **0.08s** 真っ黒を維持してから `isSceneChange_` を立て、`EnterScene` を中間フレーム寄りからずらす
+- フェード時間を名前付き定数に整理（挙動は従来の 0.5s / 0.25s 待ち / 0.25s イン）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 保持 0.08s は体感調整用。長くするとロード感が増える
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `フェード中盤で次 BGM が始まる`
+- Windows で Development ビルド後に develop 統合
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ChangeSceneFade のシーン入替タイミング（`GAP-Scene-ChangeSceneFade-002`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **暗転ホールド**
+  - 用途: プレイ中シーン遷移で、画面が完全に暗くなってから次シーンへ切り替え、チラつきを減らす
+  - 使用場面: 全 `ChangeSceneFade` 遷移
+  - 仕様: フェードアウト比率 1.0 到達だけでは切替せず短いホールドを挟む
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| ChangeSceneFade 入替タイミング | 有効 | プレイ UX。リスク低 |
