@@ -2,6 +2,7 @@
 #include "Audio/AudioDecoder.h"
 #include "Audio/PlaybackPosition.h"
 #include "Audio/ShortVoicePoolExhaust.h"
+#include "Audio/StreamPcmFormat.h"
 #include "Audio/StreamingSourceVoice.h"
 #include "Audio/StreamingVoiceCallBack.h"
 #include "File/FileSize.h"
@@ -515,19 +516,25 @@ float ClampVolume(const float volume) {
 			return false;
 		}
 
+		ComPtr<IMFMediaType> nativeType;
+		hr = voice.pReader->GetCurrentMediaType(
+		    static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), &nativeType);
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		const StreamPcmFormat pcmFormat = BuildStreamPcmFormat(nativeType.Get());
+		if (!pcmFormat.valid) {
+			return false;
+		}
+
 		ComPtr<IMFMediaType> pPCMType;
 		hr = MFCreateMediaType(&pPCMType);
 		if (FAILED(hr)) {
 			return false;
 		}
 
-		pPCMType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
-		pPCMType->SetGUID(MF_MT_SUBTYPE, MFAudioFormat_PCM);
-		pPCMType->SetUINT32(MF_MT_AUDIO_NUM_CHANNELS, 2);
-		pPCMType->SetUINT32(MF_MT_AUDIO_SAMPLES_PER_SECOND, 44100);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BITS_PER_SAMPLE, 16);
-		pPCMType->SetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, 4);
-		pPCMType->SetUINT32(MF_MT_AUDIO_AVG_BYTES_PER_SECOND, 44100 * 4);
+		ApplyStreamPcmMediaType(pPCMType.Get(), pcmFormat.wf);
 		hr = voice.pReader->SetCurrentMediaType(
 		    static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), nullptr,
 		    pPCMType.Get());
@@ -535,9 +542,33 @@ float ClampVolume(const float volume) {
 			return false;
 		}
 
+		if (!RecreateStreamingSourceVoice(voice, pcmFormat.wf)) {
+			return false;
+		}
+
+		// 再生秒はボイスに載せた PCM レートを見る。SetupStreaming の初期値はここで置き換わる。
+		soundDataStorage_[soundIndex]->wfEx = pcmFormat.wf;
+
 		voice.startTime100ns = startTime100ns;
 
 		return AudioDecoder::Seek(voice, startTime100ns);
+
+	}
+
+	bool AudioManager::RecreateStreamingSourceVoice(StreamingSourceVoice& voice, const WAVEFORMATEX& format) {
+
+		if (voice.pVoice != nullptr) {
+			voice.pVoice->DestroyVoice();
+			voice.pVoice = nullptr;
+		}
+
+		if (xAudio2_ == nullptr || voice.pCallBack == nullptr) {
+			return false;
+		}
+
+		const HRESULT hr = xAudio2_->CreateSourceVoice(
+		    &voice.pVoice, &format, 0, 2.0f, voice.pCallBack.get());
+		return SUCCEEDED(hr);
 
 	}
 

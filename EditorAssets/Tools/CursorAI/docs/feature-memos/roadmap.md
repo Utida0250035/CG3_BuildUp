@@ -74,7 +74,7 @@
 - [x] Waiting 非ループは Stop で終了
 - [x] ボイス枯渇で assert
 - [x] Init 失敗で playId 不一致
-- [ ] ストリーム PCM を 44.1k 固定
+- [x] ストリーム PCM を 44.1k 固定
 - [ ] SetupStreaming が 44.1kHz 固定
 - [ ] Load ヒットで再判定なし
 - [ ] 不足バイトを 0 でパディング

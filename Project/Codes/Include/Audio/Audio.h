@@ -90,6 +90,9 @@ namespace Atrum::Audio {
 
 		bool PrepareStreamingDecoder(StreamingSourceVoice& voice, const size_t soundIndex, const long long startTime100ns);
 
+		// 出力 PCM に合わせて SourceVoice を作り直す。
+		bool RecreateStreamingSourceVoice(StreamingSourceVoice& voice, const WAVEFORMATEX& format);
+
 		bool SubmitInitialBuffer(StreamingSourceVoice& voice, const bool isLoop);
 
 		void StartStreaming(StreamingSourceVoice& voice);

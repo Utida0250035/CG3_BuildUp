@@ -1,6 +1,6 @@
 ﻿# 半自律稼働 progress report
 
-**最新サマリー:** 2026-11-18 — Init 失敗の playId はボイスと一致済み。次は `ストリーム PCM を 44.1k 固定`
+**最新サマリー:** 2026-11-18 — ストリーム PCM は音源のサンプルレート。次は `SetupStreaming が 44.1kHz 固定`
 
 **更新日時:** 2026-11-08（BGM 一時停止・再開完了）  
 **ブランチ:** `feature/SemiAutoDevelopFlow`  
@@ -3213,3 +3213,52 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | Init 失敗で playId 不一致 | 有効 | ・サイズが大きい音源ファイルについてストリーミング再生ができる |
 
 - §6.1: 失敗 Handle とボイスの playId は既に一致しているため実装せず `[x]`
+
+---
+
+## セッション 2026-11-18 20:15（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **着手ブランチ:** `fix/StreamPcmSampleRate`（前 tick のマージで develop から作成済み）
+- **roadmap:** Audio › AudioManager — `ストリーム PCM を 44.1k 固定`
+- `BuildStreamPcmFormat` が音源の `MF_MT_AUDIO_SAMPLES_PER_SECOND` でステレオ 16bit PCM を組む。`PrepareStreamingDecoder` はそのレートでデコードし、`RecreateStreamingSourceVoice` で SourceVoice を合わせる。`SoundData::wfEx` もその PCM に更新する
+- チャンネル数とビット深度はステレオ 16bit のまま。レートが取れない音源はストリーム開始を失敗にする
+- **ビルド:** `buildDevelopment.cmd`（Development | x64）成功。ランタイムでの 48kHz 再生確認は未実施
+
+### 2. 発生した課題または設計上の選択肢
+
+- `SetupStreaming` が最初に置く 44.1kHz は、デコーダを開いたときに上書きする。初期値そのものは次の行
+- 短尺 `AudioDecoder::LoadAudio` の 44.1kHz 固定はこの行の対象外
+
+### 3. 次に実行すべきステップの提案
+
+- roadmap 次行: `SetupStreaming が 44.1kHz 固定`（次ブランチ `fix/SetupStreamingSampleRate`）
+- ループは 15 分間隔のまま
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **ストリーム PCM を 44.1k 固定**
+  - 用途: 44.1kHz 以外の BGM や長い効果音を、音程を変えずにストリーミング再生する
+  - 使用場面: ランタイム
+  - 用途から決めた仕様: サンプルレートだけ音源に合わせ、ボイスも同じ PCM で作り直す。形はステレオ 16bit
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| ストリーム PCM を 44.1k 固定 | 有効 | ・サイズが大きい音源ファイルについてストリーミング再生ができる / ・mp4やwavなど代表的な拡張子の音源ファイルを読み込める |
+
+- §6.1: デコーダ出力と SourceVoice のサンプルレートを音源の値にする。SetupStreaming の初期代入は別行
