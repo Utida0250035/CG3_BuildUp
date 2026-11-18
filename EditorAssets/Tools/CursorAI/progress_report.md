@@ -2087,3 +2087,18 @@
 
 - 対象: 完成形の説明「機能として成り立つ最小単位の部品がそれぞれクラスに分けられ整理されている」
 - 追加: GAP-Runtime-CmpBounceBall-001（運動・壁床バウンス・衝突演出が CmpBounceBall 1クラスに同居）
+---
+
+## セッション 2026-11-18 12:05
+
+ギャップスキャンの未掲載分を roadmap_rough.md へ追記（重複する小見出しは追加しない）。
+
+- 追加: 146（Authoring 51 / Debug 47 / Play 48 / Ship 0）
+- 既存の小見出しと文言が一致したため未追加: 153
+- 既存の中見出しへ 86 件、新しい中見出し 29 個
+- 正本: implementation_gaps_index.json の open / investigating
+- ループ: gap-to-rough、10 分間隔。次 tick も同じ基準
+
+## セッション 2026-11-18 12:07
+
+ループ手動停止。gap-to-rough（10 分間隔でギャップを roadmap_rough.md へ追記）を終了。
