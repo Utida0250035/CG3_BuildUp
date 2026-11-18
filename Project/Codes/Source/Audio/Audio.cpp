@@ -696,8 +696,7 @@ float ClampVolume(const float volume) {
 
 	AudioHandle AudioManager::PlaySceneBgm(const size_t soundIndex) {
 
-		StopAllStreamingVoices();
-		StopAllLoopingShortVoices();
+		StopDedicatedSceneBgmVoice();
 
 		if (soundIndex >= soundDataStorage_.size()) {
 			return {};

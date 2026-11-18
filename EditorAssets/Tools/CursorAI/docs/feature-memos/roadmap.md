@@ -44,7 +44,7 @@
 - [x] StopBgmLoop がシーン BGM 以外のストリーミングも停止（gap: `GAP-Audio-StopBgmLoop-001`）
 
 ### PlaySceneBgm
-- [ ] PlaySceneBgm 開始時に全ボイスを一括停止
+- [x] PlaySceneBgm 開始時に全ボイスを一括停止（gap: `GAP-Audio-PlaySceneBgm-001`）
 - [ ] Init 失敗で voice playId だけ巻き戻し
 
 ### PlayBgmLoop

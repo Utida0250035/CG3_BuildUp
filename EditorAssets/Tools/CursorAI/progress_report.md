@@ -2359,3 +2359,48 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | StopBgmLoop スコープ縮小 | 有効 | オーディオマネージャー利用の本編プレイ |
+
+---
+
+## セッション 2026-11-18 13:45（/loop 15m・roadmap tick 6）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/PlaySceneBgmStopAllVoices`
+- **roadmap:** Audio › PlaySceneBgm — `GAP-Audio-PlaySceneBgm-001`
+- `PlaySceneBgm` 先頭の `StopAllStreamingVoices` / `StopAllLoopingShortVoices` をやめ、専用スロットの `StopDedicatedSceneBgmVoice` のみ（tick5 と同方針）
+- ストリーミング BGM は従来どおりボイス 0 を `ResetStreamingVoice` してから開始
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 短尺 BGM フォールバック失敗時の `StopAllLoopingShortVoices` は維持（プール逼迫時のみ）
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `Init 失敗で voice playId だけ巻き戻し`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- PlaySceneBgm 開始時の停止範囲（`GAP-Audio-PlaySceneBgm-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BGM 再開と SE 共存**
+  - 用途: `MaintainSceneBgmIfNeeded` 等で BGM だけ差し替え／再開し、弾幕・ヒット等のストリーミング SE を切らない
+  - 使用場面: 本編 `SceneGame` プレイ中
+  - 仕様: シーン BGM スロットのみ事前解放
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| PlaySceneBgm 停止範囲縮小 | 有効 | 基本機能オーディオの本編利用 |
