@@ -2270,3 +2270,48 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | ChangeSceneFade BGM 同期 | 有効 | PLY-Audio-001。音声レイヤのみ |
+
+---
+
+## セッション 2026-11-18 13:15（/loop 15m・roadmap tick 4）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/SceneBgmStatusApiUnused`
+- **roadmap:** Audio › PauseBgmLoop — `GAP-Audio-PauseBgmLoop-001`
+- `SyncSceneBgmForChangeSceneFade`（`PlaySe.h`）を追加し、演出中は `SetBgmLoopVolume` + `PauseBgmLoop`、通常時は `ResumeBgmLoop` + フル音量復帰
+- Title / Result / Game の `Update` から呼び出し（Game は遷移早期 return 前）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- ダック音量 0.12 は遷移 SE を前面に出す暫定値。クロスフェード本格化は別タスク
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `StopBgmLoop がシーン BGM 以外のストリーミングも停止`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- Pause/Resume/Volume BGM API のシーン配線（`GAP-Audio-PauseBgmLoop-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **遷移中 BGM ダック**
+  - 用途: `ChangeSceneFade` 中に旧シーン BGM を下げつつ停止し、遷移 SE と次 BGM 開始がぶつかりにくくする
+  - 使用場面: Title・Game・Result の演出付きシーン切替
+  - 仕様: 演出指令 `GetIsExecute` と同期
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| BGM Pause/Resume/Volume 配線 | 有効 | プレイ中オーディオ管理。エンジン基本機能のシーン側利用 |

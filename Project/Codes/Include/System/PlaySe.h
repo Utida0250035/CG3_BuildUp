@@ -233,4 +233,26 @@ inline void AssignPendingFadeSyncedSceneBgm(Audio::Handle &slot) {
   }
 }
 
+/// ChangeSceneFade 実行中は BGM をダック＋一時停止し、通常時はフル音量へ戻す
+inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
+  if (!handle.isSuccess) {
+    return;
+  }
+
+  constexpr float kFadeDuckVolume = 0.12f;
+
+  if (CommandChangeScene::Instance()->GetIsExecute()) {
+    SetBgmLoopVolume(handle, kFadeDuckVolume);
+    if (!IsBgmLoopPaused(handle)) {
+      PauseBgmLoop(handle);
+    }
+    return;
+  }
+
+  if (IsBgmLoopPaused(handle)) {
+    ResumeBgmLoop(handle);
+  }
+  SetBgmLoopVolume(handle, 1.0f);
+}
+
 } // namespace Atrum

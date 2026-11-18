@@ -156,6 +156,9 @@ namespace Atrum {
 			return;
 		}
 
+		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
+		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
+
 		if (Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
 			return;
 		}

@@ -40,6 +40,7 @@ void SceneResult::EnterScene() {
 
 void SceneResult::Update() {
   Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
+  Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
   UpdateBackgrounds();
 
   if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
