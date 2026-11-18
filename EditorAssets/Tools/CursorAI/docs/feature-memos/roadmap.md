@@ -54,7 +54,7 @@
 - [x] ResumeBgmLoop がシーンから呼ばれない（gap: `GAP-Audio-ResumeBgmLoop-001`、§6.2 コード確認）
 
 ### SetBgmLoopVolume
-- [ ] SetBgmLoopVolume が未使用
+- [x] SetBgmLoopVolume が未使用（gap: `GAP-Audio-SetBgmLoopVolume-001`、§6.2 コード確認）
 
 ### PlaySeLoop
 - [ ] PlaySeLoop がコードベースで未呼び出し

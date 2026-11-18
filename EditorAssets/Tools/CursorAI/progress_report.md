@@ -2534,3 +2534,44 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | ResumeBgmLoop 配線確認 | 有効 | 本編シーン遷移オーディオ |
+
+---
+
+## セッション 2026-11-18 14:45（/loop 15m・roadmap tick 10）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/SetBgmLoopVolumeUnused`
+- **roadmap:** Audio › SetBgmLoopVolume — `GAP-Audio-SetBgmLoopVolume-001`
+- **§6.2 コード確認:** `SyncSceneBgmForChangeSceneFade` が遷移中に `SetBgmLoopVolume(0.12)`、通常時に `1.0f` を設定。Title / Game / Result の `Update` から呼び出し済み。新規 diff なし
+- **ビルド:** 不要
+
+### 2. 課題・設計上の選択項
+
+- なし
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `PlaySeLoop がコードベースで未呼び出し`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- SetBgmLoopVolume のシーン経由利用（`GAP-Audio-SetBgmLoopVolume-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **フェード中 BGM ダック音量**（tick 4 と同旨）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| SetBgmLoopVolume 配線確認 | 有効 | 遷移オーディオ |
