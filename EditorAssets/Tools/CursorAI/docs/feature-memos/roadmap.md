@@ -60,7 +60,7 @@
 - [x] PlaySeLoop がコードベースで未呼び出し（gap: `GAP-Audio-PlaySeLoop-001`）
 
 ### AudioManager
-- [ ] 空き無しで全汎用ストリームをリセット
+- [x] 空き無しで全汎用ストリームをリセット（gap: `GAP-Audio-AudioManager-003`）
 - [ ] BGM 一時停止中は復帰判定が誤る
 - [ ] Resume は Start のみでデコード再開なし
 - [ ] StopAll は BGM 系ループのみ

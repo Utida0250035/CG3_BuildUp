@@ -460,17 +460,28 @@ float ClampVolume(const float volume) {
 			return voiceIndex;
 		}
 
+		// 満杯時は最古 playId の汎用ボイス 1 本だけ退避（BGM 用 index 0 は対象外）
+		size_t victimVoiceIndex = static_cast<size_t>(-1);
+		uint64_t oldestPlayId = UINT64_MAX;
 		for (size_t voiceIndex = kFirstGeneralStreamingVoiceIndex;
 		     voiceIndex < poolSize; ++voiceIndex) {
-			if (streamingSourceVoicePool_[voiceIndex] != nullptr) {
-				ResetStreamingVoice(*streamingSourceVoicePool_[voiceIndex]);
+			const std::unique_ptr<StreamingSourceVoice> &streamingVoice =
+			    streamingSourceVoicePool_[voiceIndex];
+			if (streamingVoice == nullptr) {
+				continue;
+			}
+			if (streamingVoice->state.load() == VoiceState::Stopped) {
+				return voiceIndex;
+			}
+			if (streamingVoice->playId < oldestPlayId) {
+				oldestPlayId = streamingVoice->playId;
+				victimVoiceIndex = voiceIndex;
 			}
 		}
 
-		if (const size_t voiceIndex = findStoppedVoice(
-		        kFirstGeneralStreamingVoiceIndex, poolSize);
-		    voiceIndex != static_cast<size_t>(-1)) {
-			return voiceIndex;
+		if (victimVoiceIndex != static_cast<size_t>(-1)) {
+			ResetStreamingVoice(*streamingSourceVoicePool_[victimVoiceIndex]);
+			return victimVoiceIndex;
 		}
 
 		assert(false && "Streaming voice pool is full");
