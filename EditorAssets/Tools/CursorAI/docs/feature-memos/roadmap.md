@@ -48,7 +48,7 @@
 - [x] Init 失敗で voice playId だけ巻き戻し（gap: `GAP-Audio-PlaySceneBgm-002`）
 
 ### PlayBgmLoop
-- [ ] PlayBgmLoop 失敗時に PlaySceneBgm を再実行
+- [x] PlayBgmLoop 失敗時に PlaySceneBgm を再実行（gap: `GAP-Audio-PlayBgmLoop-001`）
 
 ### ResumeBgmLoop
 - [ ] ResumeBgmLoop がシーンから呼ばれない

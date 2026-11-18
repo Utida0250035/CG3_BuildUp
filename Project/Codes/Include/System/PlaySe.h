@@ -190,13 +190,7 @@ inline Audio::Handle PlayBgmLoopCore(
     return {};
   }
 
-  Audio::AudioManager *audio = ::Atrum::EngineAudioManager();
-  Audio::Handle handle = audio->PlaySceneBgm(index);
-  if (!handle.isSuccess) {
-    // デコーダ／ボイス状態の不整合時に 1 度だけ再試行
-    handle = audio->PlaySceneBgm(index);
-  }
-  return handle;
+  return ::Atrum::EngineAudioManager()->PlaySceneBgm(index);
 }
 
 /// フェードイン完了後（CommandChangeScene から）のみ呼ぶ

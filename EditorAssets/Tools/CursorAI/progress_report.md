@@ -2448,3 +2448,47 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | PlaySceneBgm 失敗ハンドル | 有効 | プレイ中 BGM 継続。矛盾なし |
+
+---
+
+## セッション 2026-11-18 14:15（/loop 15m・roadmap tick 8）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/PlayBgmLoopRetrySceneBgm`
+- **roadmap:** Audio › PlayBgmLoop — `GAP-Audio-PlayBgmLoop-001`
+- `PlayBgmLoopCore` から二重 `PlaySceneBgm` を削除。再試行は `PlaySceneBgm` 内で `InitializeStreaming` を最大 2 回（専用ボイス再セットのみ）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 二重呼び出し時の `StopDedicatedSceneBgmVoice` 連打を避け、他 SE との共存を改善
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `ResumeBgmLoop がシーンから呼ばれない`（tick4 で Sync に配線済みか要確認）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- PlayBgmLoop の二重 PlaySceneBgm（`GAP-Audio-PlayBgmLoop-001`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BGM 再開試行**
+  - 用途: MaintainSceneBgmIfNeeded 経由の再開で戦闘ストリーム SE を二重切断しない
+  - 使用場面: SceneGame プレイ中
+  - 仕様: 1 回の PlaySceneBgm 呼び出し内で完結する再試行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| PlayBgmLoop 再試行整理 | 有効 | オーディオ本編プレイ |

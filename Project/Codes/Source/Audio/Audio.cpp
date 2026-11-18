@@ -711,32 +711,35 @@ float ClampVolume(const float volume) {
 			}
 
 			auto &streamingVoice = *streamingSourceVoicePool_[kBgmStreamingVoiceIndex];
-			ResetStreamingVoice(streamingVoice);
 
-			const uint64_t currentPlayId = nextPlayId_++;
-			streamingVoice.playId = currentPlayId;
-			streamingVoice.soundIndex = soundIndex;
-
-			const bool isSuccess = InitializeStreaming(
-			    kBgmStreamingVoiceIndex, soundIndex, true, 0);
-
-			if (!isSuccess) {
+			for (int attempt = 0; attempt < 2; ++attempt) {
 				ResetStreamingVoice(streamingVoice);
-				return AudioHandle{
-				    .soundIndex = soundIndex,
-				    .voiceIndex = kBgmStreamingVoiceIndex,
-				    .isStreaming = true,
-				    .playId = streamingVoice.playId,
-				    .isSuccess = false,
-				};
+
+				const uint64_t currentPlayId = nextPlayId_++;
+				streamingVoice.playId = currentPlayId;
+				streamingVoice.soundIndex = soundIndex;
+
+				const bool isSuccess = InitializeStreaming(
+				    kBgmStreamingVoiceIndex, soundIndex, true, 0);
+
+				if (isSuccess) {
+					return AudioHandle{
+					    .soundIndex = soundIndex,
+					    .voiceIndex = kBgmStreamingVoiceIndex,
+					    .isStreaming = true,
+					    .playId = currentPlayId,
+					    .isSuccess = true,
+					};
+				}
 			}
 
+			ResetStreamingVoice(streamingVoice);
 			return AudioHandle{
 			    .soundIndex = soundIndex,
 			    .voiceIndex = kBgmStreamingVoiceIndex,
 			    .isStreaming = true,
-			    .playId = currentPlayId,
-			    .isSuccess = true,
+			    .playId = streamingVoice.playId,
+			    .isSuccess = false,
 			};
 		}
 
