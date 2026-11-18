@@ -10,6 +10,9 @@
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Audio\PlaybackPosition.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
@@ -489,6 +492,9 @@
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\PlaybackPosition.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h">

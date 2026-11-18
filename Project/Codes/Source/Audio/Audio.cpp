@@ -1,5 +1,6 @@
 ﻿#include "Audio/Audio.h"
 #include "Audio/AudioDecoder.h"
+#include "Audio/PlaybackPosition.h"
 #include "Audio/StreamingSourceVoice.h"
 #include "Audio/StreamingVoiceCallBack.h"
 #include "File/FileSize.h"
@@ -1047,12 +1048,19 @@ float ClampVolume(const float volume) {
 			XAUDIO2_VOICE_STATE state{};
 			voice.pVoice->GetState(&state);
 
-			constexpr float kStreamSampleRate = 44100.0f;
-			const float sinceVoiceStart =
-			    static_cast<float>(state.SamplesPlayed) / kStreamSampleRate;
-			outSeconds = static_cast<float>(voice.startTime100ns) / 10000000.0f +
-			             sinceVoiceStart;
-			return true;
+			if (voice.soundIndex >= soundDataStorage_.size() ||
+			    soundDataStorage_[voice.soundIndex] == nullptr) {
+				return false;
+			}
+
+			// ストリーミング SoundData::wfEx は SourceVoice 作成時の PCM レート。
+			const UINT sampleRate =
+			    soundDataStorage_[voice.soundIndex]->wfEx.nSamplesPerSec;
+			return TryPlaybackSecondsFromSamples(
+			    state.SamplesPlayed,
+			    sampleRate,
+			    voice.startTime100ns,
+			    outSeconds);
 		}
 
 		if (handle.voiceIndex >= sourceVoicePool_.size() ||
@@ -1389,22 +1397,21 @@ float ClampVolume(const float volume) {
 				        static_cast<float>(StreamingSourceVoice::kBufferCount),
 				    0.0f, 1.0f);
 
-				UINT sampleRate = 44100;
+				UINT sampleRate = 0;
 				if (voice.soundIndex < soundDataStorage_.size() &&
 				    soundDataStorage_[voice.soundIndex] != nullptr) {
 					sampleRate = soundDataStorage_[voice.soundIndex]->wfEx.nSamplesPerSec;
 				}
-				if (sampleRate == 0) {
-					sampleRate = 44100;
-				}
 
-				const float sinceStart =
-				    static_cast<float>(row.samplesPlayed) /
-				    static_cast<float>(sampleRate);
-				row.playbackSeconds =
-				    static_cast<float>(voice.startTime100ns) / 10000000.0f +
-				    sinceStart;
-				row.hasPlaybackTime = true;
+				float playbackSeconds = 0.0f;
+				if (TryPlaybackSecondsFromSamples(
+				        row.samplesPlayed,
+				        sampleRate,
+				        voice.startTime100ns,
+				        playbackSeconds)) {
+					row.playbackSeconds = playbackSeconds;
+					row.hasPlaybackTime = true;
+				}
 			}
 
 			outSnapshot.streamingBufferBytesTotal += row.streamingBufferBytes;

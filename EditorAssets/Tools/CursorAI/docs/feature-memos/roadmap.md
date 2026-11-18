@@ -70,7 +70,7 @@
 - [x] BGM フォールバックで短音ボイス解放（gap: `GAP-Audio-AudioManager-008`）
 - [x] ストリーム BGM 停止は XAudio Stop（gap: `GAP-Audio-AudioManager-010`）
 - [x] Resume は Start 後 Refill なし（gap: §6.2・`PrefillStreamingQueueAfterStart`）
-- [ ] 再生位置計算が 44100 固定
+- [x] 再生位置計算が 44100 固定
 - [ ] Waiting 非ループは Stop で終了
 - [ ] ボイス枯渇で assert
 - [ ] Init 失敗で playId 不一致

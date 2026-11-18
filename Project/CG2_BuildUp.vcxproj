@@ -202,6 +202,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Application\main.cpp" />
     <ClCompile Include="Codes\Source\Audio\Audio.cpp" />
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
+    <ClCompile Include="Codes\Source\Audio\PlaybackPosition.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraFlipHorizontal.cpp" />
@@ -452,6 +453,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Audio\Audio.h" />
     <ClInclude Include="Codes\Include\Audio\AudioStreamingDebugStats.h" />
     <ClInclude Include="Codes\Include\Audio\AudioDecoder.h" />
+    <ClInclude Include="Codes\Include\Audio\PlaybackPosition.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
     <ClInclude Include="Codes\Include\Audio\SourceVoice.h" />
     <ClInclude Include="Codes\Include\Audio\StreamingSourceVoice.h" />
