@@ -2708,3 +2708,46 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | BGM 復帰判定 | 有効 | 本編プレイ音声 |
+
+---
+
+## セッション 2026-11-18 15:45（/loop 15m・roadmap tick 14）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/ResumeSceneBgmRefill`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-004`
+- ストリーム BGM の `ResumeSceneBgm` で `FlushSourceBuffers` → `SubmitInitialBuffer` → `Start` → `RefillBuffer`（シーク復帰と同系）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 短尺 BGM（非ストリーム）は従来どおり Start のみ
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `StopAll は BGM 系ループのみ`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ResumeSceneBgm のデコード再開（`GAP-Audio-AudioManager-004`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **フェード／ポーズ後 BGM 再開**
+  - 用途: Pause 後の Resume でストリームキューを再構築し無音化を防ぐ
+  - 使用場面: ChangeSceneFade 同期・Maintain 復帰
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| ResumeSceneBgm Refill | 有効 | オーディオ基本機能 |

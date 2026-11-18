@@ -911,7 +911,13 @@ float ClampVolume(const float volume) {
 				return;
 			}
 
-			if (voice.state != VoiceState::Paused) {
+			if (voice.state.load() != VoiceState::Paused) {
+				return;
+			}
+
+			voice.pVoice->FlushSourceBuffers();
+
+			if (!SubmitInitialBuffer(voice, voice.isLoop)) {
 				return;
 			}
 
@@ -920,7 +926,10 @@ float ClampVolume(const float volume) {
 				return;
 			}
 
+			voice.pVoice->SetFrequencyRatio(ClampFrequencyRatio(voice.frequencyRatio));
+			voice.pVoice->SetVolume(ClampVolume(voice.volume));
 			voice.state = VoiceState::Playing;
+			RefillBuffer(voice);
 			return;
 		}
 
@@ -933,7 +942,7 @@ float ClampVolume(const float volume) {
 			return;
 		}
 
-		if (voice.state != VoiceState::Paused) {
+		if (voice.state.load() != VoiceState::Paused) {
 			return;
 		}
 
