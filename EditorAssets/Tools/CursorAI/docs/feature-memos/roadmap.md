@@ -35,7 +35,7 @@
 ### ChangeSceneFade
 - [x] フェードイン開始時に遷移 SE が未再生（フラグのみ立つ）（gap: `GAP-Scene-ChangeSceneFade-001`）
 - [x] timeRatio 満了で即 isSceneChange となり中間で EnterScene（gap: `GAP-Scene-ChangeSceneFade-002`）
-- [ ] フェード中盤で次 BGM が始まる
+- [x] フェード中盤で次 BGM が始まる（gap: `GAP-Scene-ChangeSceneFade-003`）
 
 ### PauseBgmLoop
 - [ ] Pause/Resume/Volume 付き BGM API がシーンから未使用

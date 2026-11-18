@@ -39,6 +39,7 @@ namespace Atrum {
 	}
 
 	void SceneTitle::Update() {
+		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 		UpdateBackgrounds();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

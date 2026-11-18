@@ -2225,3 +2225,48 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | ChangeSceneFade 入替タイミング | 有効 | プレイ UX。リスク低 |
+
+---
+
+## セッション 2026-11-18 13:16（/loop 15m・roadmap tick 3）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/ChangeSceneFadeBgmEarlyStart`
+- **roadmap:** Audio › ChangeSceneFade — `GAP-Scene-ChangeSceneFade-003`
+- `CommandChangeScene` + `PlayBgmLoop` で、演出付き遷移時は EnterScene の BGM を登録のみ行い、フェードイン完了（演出破棄）後に `PlaySceneBgm` を開始
+- Title / Result / Game で `AssignPendingFadeSyncedSceneBgm` によりハンドルを同期
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- 演出なし即時遷移は従来どおり EnterScene で即 BGM 開始
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `Pause/Resume/Volume 付き BGM API がシーンから未使用`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- ChangeSceneFade 遷移中の BGM 開始タイミング（`GAP-Scene-ChangeSceneFade-003`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **フェード同期 BGM**
+  - 用途: 本編シーン遷移で、暗転フェードインが明けるタイミングと次 BGM の頭を揃え、暗転中の不自然な先行再生を避ける
+  - 使用場面: `ChangeSceneFade` 経由の Title↔Game↔Result
+  - 仕様: 遷移演出終了時に保留パスへ `PlaySceneBgm`
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| ChangeSceneFade BGM 同期 | 有効 | PLY-Audio-001。音声レイヤのみ |

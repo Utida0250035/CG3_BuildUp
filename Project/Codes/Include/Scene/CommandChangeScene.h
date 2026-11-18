@@ -1,10 +1,14 @@
 #pragma once
 
+#include "Audio/AudioHandle.h"
 #include "CommandScene.h"
 #include "ChangeScene.h"
 #include "Scene.h"
 #include <cassert>
+#include <initializer_list>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace Atrum {
 
@@ -36,6 +40,17 @@ namespace Atrum {
 		/// 実行フラグ
 		/// </summary>
 		bool isExecute_;
+
+		/// <summary>
+		/// ChangeScene 演出中は EnterScene の BGM 開始をフェードイン完了まで遅らせる
+		/// </summary>
+		bool deferEnterSceneBgmUntilFadeEnds_ = false;
+
+		std::vector<std::string> deferredEnterSceneBgmCandidates_;
+
+		Audio::Handle pendingEnterSceneBgmHandle_{};
+
+		void OnSceneTransitionEffectFinished();
 
 		/// <summary>
 		/// コンストラクタ
@@ -125,6 +140,8 @@ namespace Atrum {
 							// エフェクトを破棄する
 							changeSceneEffect_.reset();
 
+							OnSceneTransitionEffectFinished();
+
 							// 処理中フラグを折る
 							isExecute_ = false;
 
@@ -168,6 +185,15 @@ namespace Atrum {
 
 		}
 
+		bool ShouldDeferEnterSceneBgm() const {
+			return deferEnterSceneBgmUntilFadeEnds_;
+		}
+
+		void RegisterDeferredEnterSceneBgm(
+			const std::initializer_list<const char *> candidatePaths);
+
+		Audio::Handle TryTakePendingEnterSceneBgmHandle();
+
 		/// <summary>
 		/// シーン遷移の設定 (注: 各シーンの更新処理でのみ実行すること)
 		/// </summary>
@@ -184,6 +210,14 @@ namespace Atrum {
 					// 遷移エフェクトを設定
 					changeSceneEffect_.reset(newEffect);
 
+					deferEnterSceneBgmUntilFadeEnds_ = true;
+					deferredEnterSceneBgmCandidates_.clear();
+					pendingEnterSceneBgmHandle_ = {};
+
+				} else {
+					deferEnterSceneBgmUntilFadeEnds_ = false;
+					deferredEnterSceneBgmCandidates_.clear();
+					pendingEnterSceneBgmHandle_ = {};
 				}
 
 				// 次のシーンを設定

@@ -176,8 +176,7 @@ inline bool SetBgmLoopVolume(const Audio::Handle &handle, float volume) {
   return SetSeVolume(handle, volume);
 }
 
-/// BGM をループ再生（候補パスのうち存在するファイルを使用）
-inline Audio::Handle PlayBgmLoop(
+inline Audio::Handle PlayBgmLoopCore(
     const std::initializer_list<const char *> candidatePaths) {
   const std::string path = PlaySeDetail::ResolveExistingSePath(candidatePaths);
   if (path.empty()) {
@@ -196,6 +195,42 @@ inline Audio::Handle PlayBgmLoop(
     handle = audio->PlaySceneBgm(index);
   }
   return handle;
+}
+
+/// フェードイン完了後（CommandChangeScene から）のみ呼ぶ
+inline Audio::Handle PlayBgmLoopAfterSceneFade(
+    const std::initializer_list<const char *> candidatePaths) {
+  return PlayBgmLoopCore(candidatePaths);
+}
+
+/// BGM をループ再生（候補パスのうち存在するファイルを使用）
+inline Audio::Handle PlayBgmLoop(
+    const std::initializer_list<const char *> candidatePaths);
+
+inline void AssignPendingFadeSyncedSceneBgm(Audio::Handle &slot);
+
+} // namespace Atrum
+
+#include "Scene/CommandChangeScene.h"
+
+namespace Atrum {
+
+/// BGM をループ再生（候補パスのうち存在するファイルを使用）
+inline Audio::Handle PlayBgmLoop(
+    const std::initializer_list<const char *> candidatePaths) {
+  if (CommandChangeScene::Instance()->ShouldDeferEnterSceneBgm()) {
+    CommandChangeScene::Instance()->RegisterDeferredEnterSceneBgm(
+        candidatePaths);
+    return {};
+  }
+
+  return PlayBgmLoopCore(candidatePaths);
+}
+
+inline void AssignPendingFadeSyncedSceneBgm(Audio::Handle &slot) {
+  if (!slot.isSuccess) {
+    slot = CommandChangeScene::Instance()->TryTakePendingEnterSceneBgmHandle();
+  }
 }
 
 } // namespace Atrum
