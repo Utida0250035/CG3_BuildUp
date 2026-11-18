@@ -27,9 +27,17 @@
     "DBG-PlayArea-001": 1,
     "DBG-Profiler-001": 1,
     "DBG-RenderDiag-001": 1,
-    "DBG-Streaming-001": 1
+    "DBG-Streaming-001": 1,
+    "UG-G-a668342c": 1,
+    "UG-G-274394f0": 1,
+    "UG-G-9c2c9771": 1,
+    "UG-G-1fe965f0": 1,
+    "UG-G-088fd113": 1,
+    "UG-G-3f038476": 1,
+    "UG-G-b9f501e7": 1
   },
-  "lastCompletedScanId": "SCAN-20261111-063020",
+  "lastCompletedScanId": "SCAN-20261118-080410",
   "currentPlannedScanId": "",
-  "totalTicksCompleted": 97
+  "totalTicksCompleted": 104,
+  "selection": "ultimateGoal"
 }

@@ -1,10 +1,10 @@
-# 用途シナリオ正本（ギャップスキャン入力）
+# 用途シナリオ（旧・ギャップスキャンの選定には使わない）
 
-実装ギャップスキャンでは、**先に UseCase を 1 つ選び**、ここに列挙したシナリオごとに「その用途でできないこと」を洗い出す。
+ギャップスキャンの対象は **`ultimateGoal.md`** の `・` 行である。このファイルは UseCase ラベルの参照として残し、`planGapScanTick.py` は読まない。
 
-- **正本:** 本ファイル（シナリオ文言・ID）
+- **選定の正本:** `ultimateGoal.md`（「完成形の説明」の `・` 行を先に一巡し、その後「エンジンとしての前提」）
 - **不足の蓄積:** `implementation_gaps.md` / `implementation_gaps_index.json`
-- **用途 ID:** `UC-Play` / `UC-Authoring` / `UC-Debug` / `UC-Ship`
+- **用途 ID:** `UC-Play` / `UC-Authoring` / `UC-Debug` / `UC-Ship`（ギャップの summary ラベル。選定順ではない）
 
 ## 書式
 

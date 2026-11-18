@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""Select exactly one gap-scan scope (1 tick) by priority. Writes gap_scan_tick.json."""
+"""Select exactly one gap-scan scope (1 tick) from ultimateGoal.md.
+
+「完成形の説明」の `・` 行をファイル順に一巡し、その後だけ「エンジンとしての前提」を見る。
+"""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import sys
@@ -12,19 +16,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 DOCS = ROOT / "docs"
-SCENARIOS_MD = DOCS / "use_case_scenarios.md"
+GOAL_MD = DOCS / "ultimateGoal.md"
 INDEX_JSON = DOCS / "implementation_gaps_index.json"
 STATE_JSON = ROOT / "gap_scan_state.json"
 TICK_JSON = ROOT / "gap_scan_tick.json"
 
 JST = timezone(timedelta(hours=9))
 
-USE_CASE_WEIGHT = {
-    "UC-Play": 1000,
-    "UC-Authoring": 950,
-    "UC-Ship": 900,
-    "UC-Debug": 850,
-}
+GOAL_SECTION = "完成形の説明"
+BASE_SECTION = "エンジンとしての前提"
+
+BR_TAG = re.compile(r"</?br\s*/?>", re.IGNORECASE)
 
 USE_CASE_LABEL = {
     "UC-Play": "Play",
@@ -33,77 +35,61 @@ USE_CASE_LABEL = {
     "UC-Ship": "Ship",
 }
 
-# scenarioId prefix / spec path -> suggested code search scope (no Codes edits from this script)
-PREFIX_AREA: list[tuple[str, str]] = [
-    ("DBG-Streaming", "Streaming"),
-    ("DBG-Render", "Render"),
-    ("DBG-FeatureScene", "Scene"),
-    ("DBG-PlayArea", "Editor"),
-    ("PLY-Audio", "Streaming"),
-    ("PLY-Scene", "Scene"),
-    ("PLY-Camera", "UX"),
-    ("PLY-Visual", "Render"),
-    ("PLY-Movie", "Runtime"),
-    ("AUT-Editor", "Editor"),
-    ("AUT-Guidance", "UX"),
-    ("AUT-Component", "Editor"),
-    ("AUT-Visual", "Render"),
-    ("AUT-Asset", "Editor"),
-    ("SHP-DevBuild", "Infra"),
-    ("SHP-Release", "Infra"),
-    ("SHP-Asset", "Resource"),
-    ("SHP-Config", "Infra"),
-    ("SHP-Smoke", "Scene"),
-    ("DBG-Profiler", "Runtime"),
+# 先に一致した用途を summary ラベルに使う。選定順には使わない。
+USE_CASE_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
+    ("UC-Debug", ("デバッグ", "メモリ", "Gui", "GUI", "グラフ", "失敗")),
+    ("UC-Ship", ("配布", "同梱", "圧縮", "テンプレートexe", "exe化", "出力先", "垂直同期", "全画面")),
+    ("UC-Authoring", ("エディタ", "インスペクタ", "配置", "保存", "アセット", "json", "プレハブ")),
 ]
 
-SPEC_HINTS: dict[str, tuple[str, list[str]]] = {
-    "feature-memos/streaming_debug_imgui.md": (
-        "Streaming",
-        ["CollectStreamingMemoryDebug", "DrawAudioStreamingMemoryDebugWindow", "GameOrder"],
-    ),
-    "feature-memos/debug_test_play_area.md": (
-        "Editor",
-        ["debug", "test", "play", "area"],
-    ),
-    "feature-memos/cloud_build_vcxproj_check.md": (
-        "Infra",
-        ["verify_vcxproj_coverage", "vcxproj", "CG2_BuildUp"],
-    ),
-    "feature-memos/operator_guidance_bubble.md": (
-        "UX",
-        ["OperatorGuidance", "operator_guidance"],
-    ),
-}
-
-SECTION_UC = re.compile(r"^## (UC-[A-Za-z]+)")
-SCENARIO_LINE = re.compile(
-    r"^- \*\*([A-Z]{3}-[A-Za-z0-9-]+)\*\* — (.+?)(?:（spec: `([^`]+)`）)?\s*$"
-)
+# 先に一致した Area を検索の足がかりにする。
+AREA_KEYWORDS: list[tuple[str, tuple[str, ...]]] = [
+    ("Streaming", ("ストリーミング",)),
+    ("Render", ("ライト", "Fog", "フォグ", "グラフィ", "描画", "マテリアル", "解像度", "垂直同期", "スプライト")),
+    ("Scene", ("シーン",)),
+    ("Resource", ("png", "obj", "gltf", "dds", "バイナリ", "圧縮", "リソース", "音源", "wav")),
+    ("Editor", ("エディタ", "インスペクタ", "Gui", "GUI")),
+    ("Infra", ("exe", "同梱", "vcxproj")),
+    ("UX", ("ヒント", "ナビ", "HUD", "吹き出し", "カメラ")),
+]
 
 
 @dataclass
-class Scenario:
-    scenario_id: str
-    use_case: str
+class GoalLine:
+    source: str
+    order: int
+    big: str
+    mid: str
     text: str
-    spec: str | None
+
+    @property
+    def scenario_id(self) -> str:
+        prefix = "UG-G" if self.source == "goal" else "UG-B"
+        raw = f"{self.big}\n{self.mid}\n{self.text}".encode("utf-8")
+        return f"{prefix}-{hashlib.sha1(raw).hexdigest()[:8]}"
+
+    def use_case(self) -> str:
+        blob = f"{self.big} {self.mid} {self.text}"
+        for uc, words in USE_CASE_KEYWORDS:
+            if any(word in blob for word in words):
+                return uc
+        return "UC-Play"
 
     def area_hint(self) -> str:
-        for prefix, area in PREFIX_AREA:
-            if self.scenario_id.startswith(prefix):
+        blob = f"{self.big} {self.mid} {self.text}"
+        for area, words in AREA_KEYWORDS:
+            if any(word in blob for word in words):
                 return area
-        if self.spec and self.spec in SPEC_HINTS:
-            return SPEC_HINTS[self.spec][0]
         return "Runtime"
 
     def search_hints(self) -> list[str]:
         hints: list[str] = []
-        if self.spec and self.spec in SPEC_HINTS:
-            hints.extend(SPEC_HINTS[self.spec][1])
-        token = self.scenario_id.split("-", 1)[-1].split("-")[0]
-        if token and token not in hints:
-            hints.append(token)
+        for token in re.findall(r"[A-Za-z][A-Za-z0-9_]{2,}", f"{self.big} {self.mid} {self.text}"):
+            if token not in hints:
+                hints.append(token)
+        for extra in (self.big, self.mid):
+            if extra and extra not in hints:
+                hints.append(extra)
         return hints[:8]
 
 
@@ -114,24 +100,51 @@ def load_json(path: Path, default: dict) -> dict:
         return json.load(f)
 
 
-def parse_scenarios(md_text: str) -> list[Scenario]:
-    current_uc = ""
-    out: list[Scenario] = []
-    for line in md_text.splitlines():
-        m_sec = SECTION_UC.match(line.strip())
-        if m_sec:
-            current_uc = m_sec.group(1)
+def clean_line(raw: str) -> str:
+    return BR_TAG.sub("", raw).strip()
+
+
+def parse_goal_lines(md_text: str) -> list[GoalLine]:
+    section = ""
+    big = ""
+    mid = ""
+    out: list[GoalLine] = []
+    for raw in md_text.splitlines():
+        line = clean_line(raw)
+        if line.startswith("## "):
+            title = line[3:].strip()
+            if title == GOAL_SECTION:
+                section = "goal"
+            elif title == BASE_SECTION:
+                section = "baseline"
+            else:
+                section = ""
+            big = ""
+            mid = ""
             continue
-        m = SCENARIO_LINE.match(line.strip())
-        if m and current_uc:
-            out.append(
-                Scenario(
-                    scenario_id=m.group(1),
-                    use_case=current_uc,
-                    text=m.group(2).strip(),
-                    spec=m.group(3),
-                )
+        if not section:
+            continue
+        if line.startswith("[") and line.endswith("]") and len(line) >= 2:
+            big = line[1:-1].strip()
+            mid = ""
+            continue
+        if line.startswith("〇"):
+            mid = line[1:].strip()
+            continue
+        if not line.startswith("・"):
+            continue
+        text = line[1:].strip()
+        if not text or text == "（未記入）":
+            continue
+        out.append(
+            GoalLine(
+                source=section,
+                order=len(out) + 1,
+                big=big,
+                mid=mid,
+                text=text,
             )
+        )
     return out
 
 
@@ -144,41 +157,35 @@ def scenario_ids_from_scans(index: dict) -> dict[str, int]:
     return counts
 
 
-def priority_score(
-    sc: Scenario,
-    scan_counts: dict[str, int],
-    rotation: list[str],
-    rotation_cursor: int,
-) -> tuple[int, list[str]]:
-    reasons: list[str] = []
-    score = USE_CASE_WEIGHT.get(sc.use_case, 500)
-    reasons.append(f"useCaseWeight={score}")
+def choose_line(lines: list[GoalLine], counts: dict[str, int]) -> tuple[GoalLine, list[str]]:
+    """完成形をファイル順に一巡してから、前提をファイル順に一巡する。"""
+    goals = [line for line in lines if line.source == "goal"]
+    bases = [line for line in lines if line.source == "baseline"]
+    if not goals:
+        raise RuntimeError("完成形の説明に・行が無い")
 
-    times = scan_counts.get(sc.scenario_id, 0)
-    if times == 0:
-        score += 500
-        reasons.append("neverScanned=+500")
-    else:
-        score += max(0, 120 - times * 40)
-        reasons.append(f"scanCount={times}")
+    def count_of(line: GoalLine) -> int:
+        return counts.get(line.scenario_id, 0)
 
-    try:
-        uc_index = rotation.index(sc.use_case)
-    except ValueError:
-        uc_index = 0
-    dist = (uc_index - rotation_cursor) % len(rotation)
-    rot_bonus = max(0, 80 - dist * 20)
-    score += rot_bonus
-    reasons.append(f"rotationBonus=+{rot_bonus}")
+    pending_goal = [line for line in goals if count_of(line) == 0]
+    if pending_goal:
+        return pending_goal[0], ["source=goal", "pass=初回", "fileOrder"]
 
-    if sc.spec and "streaming" in sc.spec.lower():
-        score += 150
-        reasons.append("streamingSpec=+150")
-    if sc.scenario_id.startswith("DBG-FeatureScene"):
-        score += 120
-        reasons.append("featureSceneScenario=+120")
+    pending_base = [line for line in bases if count_of(line) == 0]
+    if pending_base:
+        return pending_base[0], ["source=baseline", "goalPass=完了", "fileOrder"]
 
-    return score, reasons
+    min_goal = min(count_of(line) for line in goals)
+    if any(count_of(line) != min_goal for line in goals):
+        pending = [line for line in goals if count_of(line) == min_goal]
+        return pending[0], ["source=goal", f"scanCount={min_goal}", "fileOrder"]
+
+    behind_base = [line for line in bases if count_of(line) < min_goal]
+    if behind_base:
+        return behind_base[0], ["source=baseline", f"catchUpTo={min_goal}", "fileOrder"]
+
+    pending = [line for line in goals if count_of(line) == min_goal]
+    return pending[0], ["source=goal", f"nextPass={min_goal + 1}", "fileOrder"]
 
 
 def make_scan_id() -> str:
@@ -191,7 +198,7 @@ def main() -> int:
         STATE_JSON,
         {
             "schemaVersion": 1,
-            "useCaseRotation": list(USE_CASE_WEIGHT.keys()),
+            "useCaseRotation": ["UC-Play", "UC-Authoring", "UC-Debug", "UC-Ship"],
             "rotationCursor": 0,
             "scenarioScanCounts": {},
             "lastCompletedScanId": "",
@@ -207,61 +214,62 @@ def main() -> int:
             print(json.dumps({"reused": True, "tick": existing}, ensure_ascii=False, indent=2))
             return 0
 
-    if not SCENARIOS_MD.is_file():
-        print("missing use_case_scenarios.md", file=sys.stderr)
+    if not GOAL_MD.is_file():
+        print("missing ultimateGoal.md", file=sys.stderr)
         return 1
 
-    scenarios = parse_scenarios(SCENARIOS_MD.read_text(encoding="utf-8"))
-    if not scenarios:
-        print("no scenarios parsed", file=sys.stderr)
+    lines = parse_goal_lines(GOAL_MD.read_text(encoding="utf-8"))
+    if not any(line.source == "goal" for line in lines):
+        print("no goal lines parsed", file=sys.stderr)
         return 1
 
-    rotation = state.get("useCaseRotation") or list(USE_CASE_WEIGHT.keys())
-    rotation_cursor = int(state.get("rotationCursor", 0)) % max(1, len(rotation))
     scan_counts = scenario_ids_from_scans(index)
     state_counts = state.get("scenarioScanCounts") or {}
-    for k, v in state_counts.items():
-        scan_counts[k] = max(scan_counts.get(k, 0), int(v))
+    for key, value in state_counts.items():
+        scan_counts[key] = max(scan_counts.get(key, 0), int(value))
 
-    ranked: list[tuple[int, Scenario, list[str]]] = []
-    for sc in scenarios:
-        score, reasons = priority_score(sc, scan_counts, rotation, rotation_cursor)
-        ranked.append((score, sc, reasons))
-    ranked.sort(key=lambda t: (-t[0], t[1].scenario_id))
-
-    _, chosen, reason_parts = ranked[0]
+    chosen, reason_parts = choose_line(lines, scan_counts)
+    same_source = [line for line in lines if line.source == chosen.source and line.scenario_id != chosen.scenario_id]
     scan_id = make_scan_id()
+    use_case = chosen.use_case()
 
     tick = {
-        "schemaVersion": 1,
+        "schemaVersion": 2,
         "status": "in_progress",
         "scanId": scan_id,
         "keyword": "ギャップスキャンを実行して",
-        "primaryUseCase": chosen.use_case,
-        "useCaseLabel": USE_CASE_LABEL.get(chosen.use_case, chosen.use_case),
+        "source": chosen.source,
+        "sourceLabel": "完成形の説明" if chosen.source == "goal" else "エンジンとしての前提",
+        "order": chosen.order,
+        "headingBig": chosen.big,
+        "headingMid": chosen.mid,
+        "primaryUseCase": use_case,
+        "useCaseLabel": USE_CASE_LABEL.get(use_case, use_case),
         "scenarioId": chosen.scenario_id,
         "scenarioText": chosen.text,
-        "spec": chosen.spec,
+        "spec": "docs/ultimateGoal.md",
         "areaHint": chosen.area_hint(),
         "searchHints": chosen.search_hints(),
-        "priorityScore": ranked[0][0],
+        "priorityScore": 1000 if chosen.source == "goal" else 100,
         "priorityReasons": reason_parts,
         "plannedAt": datetime.now(JST).isoformat(),
         "tickInstructions": [
-            "cursorInstructions.md §6.6 に従い、上記 scenario 1 件のみを対象にコード／仕様を突合する。",
+            "cursorInstructions.md §6.6 に従い、scenarioText の・行 1 件だけをコードと突合する。",
+            "[] と 〇 は対象にしない。source が baseline のときも、その 1 行だけを見る。",
             "新規 GAP は implementation_gaps_index.json の scopeToId で重複禁止。",
             "完了後: recordGapScanTick.py を実行し、必要なら syncImplementationGapsMd.py。",
-            "progress_report.md に scanId・useCase・newIds 件数を追記。",
+            "progress_report.md に scanId・source・scenarioId・newIds 件数を追記。",
             "本 tick はビルド不要。Git 作業ブランチ不要（ドキュメントのみ）。",
         ],
         "alternates": [
-            {"scenarioId": s.scenario_id, "score": sc}
-            for sc, s, _ in ranked[1:4]
+            {"scenarioId": line.scenario_id, "source": line.source, "order": line.order}
+            for line in same_source[:3]
         ],
     }
 
     TICK_JSON.write_text(json.dumps(tick, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    state["selection"] = "ultimateGoal"
     state["currentPlannedScanId"] = scan_id
     STATE_JSON.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 

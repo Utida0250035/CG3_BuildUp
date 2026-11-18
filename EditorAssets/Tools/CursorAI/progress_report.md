@@ -2012,3 +2012,78 @@
   - 用途: ヒットや着弾で、閃光・火花・煙を別々の寿命と見た目で同時に出す
   - 使用場面: ランタイムのゲームプレイ、レベル／アセット制作（パーティクルエディタと ParticleDemo で見比べる）
   - 用途から決めた仕様: 広がりはデモの枠に収まる程度に抑え、層ごとに `BURST`/`CONTINUOUS` と `BUILTIN_SPHERE`/`BILLBOARD` を分ける
+
+
+---
+
+## セッション 2026-11-18 07:06
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-070405 / source: goal / scenarioId: UG-G-a668342c / newIds: 3
+
+- 対象: 完成形の説明「ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている」
+- 追加: GAP-Editor-EditorSceneAsset-004（シーン JSON の改名が無い）、GAP-Editor-PrefabAsset-007（プレハブ JSON の削除と改名が無い）、GAP-Editor-EditorImportedAsset-005（取り込みファイルの削除と改名が無い）
+
+
+---
+
+## セッション 2026-11-18 07:15
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-071408 / source: goal / scenarioId: UG-G-274394f0 / newIds: 2 / updatedIds: 1
+
+- 対象: 完成形の説明「jsonなどインスペクタで簡易的に内部の編集が可能なファイルには自作エディタのインスペクタを使用する」
+- 追加: GAP-Editor-EntityTagRegistry-001（tagRegistry.json は読込専用）、GAP-UX-OperatorGuidanceSystem-007（operator_guidance.json にインスペクタが無い）
+- 更新: GAP-Editor-StageViewCameraTuning-001（カメラ tuning JSON もインスペクタ未接続のまま）
+
+
+---
+
+## セッション 2026-11-18 07:25
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-072411 / source: goal / scenarioId: UG-G-9c2c9771 / newIds: 1
+
+- 対象: 完成形の説明「png・obj・gltf のファイル内部の編集は外部ツールを使う」
+- インスペクタはパスとプレビューだけで、画素や頂点は編集していない
+- 追加: GAP-Editor-EntityEditorUi-032（png・obj・gltf を外部ツールで開く操作が無い）
+
+
+---
+
+## セッション 2026-11-18 07:35
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-073408 / source: goal / scenarioId: UG-G-1fe965f0 / newIds: 1
+
+- 対象: 完成形の説明「md や Lua などコード・テキストの本文は VS Code などの外部エディタで編集する」
+- 自作エディタに複数行の本文編集は無い。Lua はテンプレート生成のみ
+- 追加: GAP-Editor-EditorLuaScriptScaffold-001（生成した Lua や md を外部テキストエディタで開く操作が無い）
+
+
+---
+
+## セッション 2026-11-18 07:45
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-074422 / source: goal / scenarioId: UG-G-088fd113 / newIds: 1
+
+- 対象: 完成形の説明「シーン、オーディオ、入力、描画、物理（形状データを除く）が基本機能として独立している」
+- CommandScene、AudioManager、PlayInput、AtrumEngine は独立した型がある
+- 追加: GAP-Runtime-CmpLhRigidBody-001（物理演算が CmpLhRigidBody::Update に閉じ、共通の物理エンジンが無い）
+
+
+---
+
+## セッション 2026-11-18 07:55
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-075408 / source: goal / scenarioId: UG-G-3f038476 / newIds: 1
+
+- 対象: 完成形の説明「基本機能に外部クラスからアクセスできるようになっている」
+- 時間・入力・オーディオ・テクスチャと CommandScene は外部から届く
+- 追加: GAP-Engine-EngineAccess-001（描画は EngineInstance 経由で、EngineAccess に入り口が無い）
+
+
+---
+
+## セッション 2026-11-18 08:05
+
+ギャップスキャン 1 tick。scanId: SCAN-20261118-080410 / source: goal / scenarioId: UG-G-b9f501e7 / newIds: 1
+
+- 対象: 完成形の説明「機能として成り立つ最小単位の部品がそれぞれクラスに分けられ整理されている」
+- 追加: GAP-Runtime-CmpBounceBall-001（運動・壁床バウンス・衝突演出が CmpBounceBall 1クラスに同居）

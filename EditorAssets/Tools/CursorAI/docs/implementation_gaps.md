@@ -8,14 +8,14 @@
 
 - **schemaVersion:** 2
 - **lastFullScanAt:** （未実施）
-- **lastIncrementalScanAt:** 2026-11-11T06:20:43.604694+09:00
-- **関連:** `use_case_scenarios.md`（シナリオ正本） / `implementation_gaps_index.json`
+- **lastIncrementalScanAt:** 2026-11-18T08:05:05.521913+09:00
+- **関連:** `ultimateGoal.md`（スキャン正本。「完成形の説明」を先に一巡し、その後「エンジンとしての前提」） / `implementation_gaps_index.json`
 
 ## 運用（エージェント向け要約）
 
 **キーワード:** `ギャップスキャンを実行して`（1 回 = 1 tick）
 
-1. `planGapScanTick.py` で **`gap_scan_tick.json`** の範囲（シナリオ 1 件）を取得する。
+1. `planGapScanTick.py` で **`gap_scan_tick.json`** の範囲（`ultimateGoal.md` の `・` 行 1 件）を取得する。
 2. スキャン前に **`implementation_gaps_index.json`** を Read する。
 3. 計画されたシナリオについてのみ、「その用途でできないこと」だけを GAP 化する。
 3. **用途が推測できない候補は GAP にしない**（下記 §用途不明（確認待ち）へ `PENDING-UC-*` のみ）。
@@ -90,10 +90,31 @@
 - evidence:
   - odyssey_style_stage_camera.md に「未実装（次）: JSON ホットリード or ImGui スライダー→即プレビュー」（32-33 行）
   - 調整は preview_poses.py の外部 CLI のみ（StageViewCameraTuning/README）
+  - UG-G-274394f0 再確認: 自作エディタのインスペクタから stage_view_camera_tuning.json を編集する UI は無い
 - suggestedUse: 制作: カメラパラメータを編集しながらエディタで結果を見る
 - roadmapLink: feature-memos/odyssey_style_stage_camera.md
 - firstSeenAt: 2026-11-10T01:11:00+09:00
-- lastSeenAt: 2026-11-10T01:11:00+09:00
+- lastSeenAt: 2026-11-18T07:15:00+09:00
+
+### GAP-Editor-EditorSceneAsset-004
+
+- status: open
+- tier: P1
+- score: 810
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-a668342c
+- frequency: high
+- frequencyBasis: シーンファイルをエディタで作って消せるが、ファイル名の変更ができないと一覧と起動シーンのパスが手作業になる
+- scope: UC-Authoring|Editor|EditorSceneAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:524
+- primary: `EditorSceneAsset`
+- summary: 【Authoring】シーン JSON は新規作成と削除だけで、ファイル名の変更が無い
+- scenarioText: ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている
+- evidence:
+  - DrawProjectPanel は「新規シーン」と「シーンを削除」のみ（EntityEditorUi.cpp:524-594）
+  - TryDeleteSceneJsonFile はあるが fs::rename やシーンファイル改名 API は Editor 配下に無い
+- suggestedUse: 制作: シーンファイルの中身を開かずに名前だけ変える
+- firstSeenAt: 2026-11-18T07:05:00+09:00
+- lastSeenAt: 2026-11-18T07:05:00+09:00
 
 ### GAP-Editor-EntityEditor-002
 
@@ -114,6 +135,66 @@
 - suggestedUse: 制作: 配置後に別シーンを開いてもデータを失わない
 - firstSeenAt: 2026-11-10T00:31:00+09:00
 - lastSeenAt: 2026-11-10T00:31:00+09:00
+
+### GAP-Editor-EntityTagRegistry-001
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-274394f0
+- frequency: high
+- frequencyBasis: 役割タグは tagRegistry.json が正本だが、インスペクタの変更はシーン JSON にしか残らない
+- scope: UC-Authoring|Editor|EntityTagRegistry|MissingUI|Project/Codes/Include/System/Entity/EntityTagRegistry.h:24
+- primary: `EntityTagRegistry`
+- summary: 【Authoring】tagRegistry.json は読み込み専用で、インスペクタから保存できない
+- scenarioText: jsonなどインスペクタで簡易的に内部の編集が可能なファイルには自作エディタのインスペクタを使用する
+- evidence:
+  - EntityTagRegistry は EnsureLoaded と ReloadFromJsonPath のみで保存 API が無い（EntityTagRegistry.h:22-24）
+  - タグパネルの追加・改名はシーン document だけを更新する（EntityEditorUi.cpp:926-965）
+- suggestedUse: 制作: 役割タグの一覧をインスペクタで直し、tagRegistry.json に残す
+- firstSeenAt: 2026-11-18T07:15:00+09:00
+- lastSeenAt: 2026-11-18T07:15:00+09:00
+
+### GAP-Editor-PrefabAsset-007
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-a668342c
+- frequency: high
+- frequencyBasis: プレハブ JSON を出力したあと、ファイルの削除や改名をエディタから行えない
+- scope: UC-Authoring|Editor|PrefabAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:631
+- primary: `PrefabAsset`
+- summary: 【Authoring】プレハブ JSON は新規出力だけで、削除と名前変更が無い
+- scenarioText: ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている
+- evidence:
+  - プレハブ一覧の操作は「シーンへ追加」のみ（EntityEditorUi.cpp:631-634）
+  - PrefabAsset.h は List と MakeUniquePrefabFilePath だけで削除・改名が無い
+- suggestedUse: 制作: プレハブファイルを中身の編集と分けて削除・改名する
+- firstSeenAt: 2026-11-18T07:05:00+09:00
+- lastSeenAt: 2026-11-18T07:05:00+09:00
+
+### GAP-Editor-EditorImportedAsset-005
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-a668342c
+- frequency: high
+- frequencyBasis: ドロップで取り込んだ obj や png を、エディタから消せない・改名できない
+- scope: UC-Authoring|Editor|EditorImportedAsset|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:554
+- primary: `EditorImportedAsset`
+- summary: 【Authoring】取り込みファイルはドロップコピーだけで、削除と名前変更が無い
+- scenarioText: ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている
+- evidence:
+  - プロジェクトパネルはドロップ先の表示だけで削除・改名ボタンが無い（EntityEditorUi.cpp:554-562）
+  - EditorImportedAsset は EnsureImportedAssetsDirectoryExists と CopyFileIntoImportedAssets のみ
+- suggestedUse: 制作: 取り込んだ画像やモデルを、中身の編集ツールとは別にファイル操作する
+- firstSeenAt: 2026-11-18T07:05:00+09:00
+- lastSeenAt: 2026-11-18T07:05:00+09:00
 
 ### GAP-Editor-EditorSceneRuntime-002
 
@@ -157,6 +238,26 @@
 - firstSeenAt: 2026-11-10T03:51:00+09:00
 - lastSeenAt: 2026-11-10T03:51:00+09:00
 
+### GAP-UX-OperatorGuidanceSystem-007
+
+- status: open
+- tier: P1
+- score: 790
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-274394f0
+- frequency: medium
+- frequencyBasis: ヒント文言は operator_guidance.json の単純な項目だが、編集 UI が無くファイルを直接開くことになる
+- scope: UC-Authoring|UX|OperatorGuidanceSystem|MissingUI|Project/Codes/Source/UX/OperatorGuidanceSystem.cpp:54
+- primary: `OperatorGuidanceSystem`
+- summary: 【Authoring】operator_guidance.json をインスペクタで編集できない
+- scenarioText: jsonなどインスペクタで簡易的に内部の編集が可能なファイルには自作エディタのインスペクタを使用する
+- evidence:
+  - System::LoadFromJsonFile は読込のみ（OperatorGuidanceSystem.cpp:54-62）
+  - 呼び出しは SceneGame の起動時ロードだけで、Editor 配下に案内 JSON の ImGui が無い
+- suggestedUse: 制作: ヒント文や吹き出し設定をインスペクタで直す
+- firstSeenAt: 2026-11-18T07:15:00+09:00
+- lastSeenAt: 2026-11-18T07:15:00+09:00
+
 ### GAP-Editor-AtrumEngineVisual-001
 
 - status: open
@@ -198,6 +299,47 @@
 - suggestedUse: 制作: レベル内の複製配置を 1 クリックで回す
 - firstSeenAt: 2026-11-09T23:41:00+09:00
 - lastSeenAt: 2026-11-09T23:41:00+09:00
+
+### GAP-Editor-EntityEditorUi-032
+
+- status: open
+- tier: P1
+- score: 780
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-9c2c9771
+- frequency: medium
+- frequencyBasis: 画像やモデルのパスはインスペクタに出るが、その場から外部ツールへ渡せない
+- scope: UC-Authoring|Editor|EntityEditorUi|MissingUI|Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp:119
+- primary: `EntityEditorUi`
+- summary: 【Authoring】png・obj・gltf を外部ツールで開く操作がエディタに無い
+- scenarioText: png含む画像や、objやgltf含む3Dモデルデータなど便利な既存の外部ツールがありインスペクタでの編集の優先度が低いファイル内部の編集には外部ツールを使用する
+- evidence:
+  - CmpEditorAssetPath のインスペクタはパスとプレビュー用フラグだけで、外部ツール起動が無い（EntityEditorUi.cpp:117-145）
+  - Project/Codes から OpenInShell や ShellExecute の呼び出しは無い
+  - プレビュー読込は .obj と png/jpg のみで、中身の編集はしていない（EditorSceneRuntime.cpp:348-367）
+- suggestedUse: 制作: 画像やモデルの中身は外部ツールで直し、エディタではパス参照とプレビューに留める
+- firstSeenAt: 2026-11-18T07:25:00+09:00
+- lastSeenAt: 2026-11-18T07:25:00+09:00
+
+### GAP-Editor-EditorLuaScriptScaffold-001
+
+- status: open
+- tier: P1
+- score: 770
+- primaryUseCase: UC-Authoring
+- scenarioId: UG-G-1fe965f0
+- frequency: medium
+- frequencyBasis: Lua はエディタから生成できるが、生成直後に VS Code などへ渡せず本文編集に進めない
+- scope: UC-Authoring|Editor|EditorLuaScriptScaffold|MissingUI|Project/Codes/Source/System/Editor/EditorLuaScriptScaffold.cpp:305
+- primary: `EditorLuaScriptScaffold`
+- summary: 【Authoring】生成した Lua や md を外部テキストエディタで開く操作が無い
+- scenarioText: mdファイルやluaファイルなどコード類、テキスト類のファイル内部の編集にはVsCodeなど外部のテキストエディタを使用する
+- evidence:
+  - スクリプトパネルはテンプレート生成とパス表示だけで、外部エディタ起動が無い（EditorLuaScriptScaffold.cpp:305-324）
+  - Project/Codes に InputTextMultiline は無く、Lua や md の本文は自作エディタ内で編集していない
+- suggestedUse: 制作: コードとテキストの本文は VS Code などで直し、自作エディタは生成と参照に留める
+- firstSeenAt: 2026-11-18T07:35:00+09:00
+- lastSeenAt: 2026-11-18T07:35:00+09:00
 
 ### GAP-Editor-EditorSceneRuntime-003
 
@@ -3810,6 +3952,49 @@
 - firstSeenAt: 2026-11-10T00:21:00+09:00
 - lastSeenAt: 2026-11-10T00:21:00+09:00
 
+### GAP-Runtime-CmpLhRigidBody-001
+
+- status: open
+- tier: P1
+- score: 830
+- primaryUseCase: UC-Play
+- scenarioId: UG-G-088fd113
+- frequency: high
+- frequencyBasis: 重力や反発がコンポーネント内に閉じていると、形状を持たない共通の物理ステップを他のエンティティから使えない
+- scope: UC-Play|Runtime|CmpLhRigidBody|Incomplete|Project/Codes/Include/System/Entity/Components/CmpLhRigidBody.h:35
+- primary: `CmpLhRigidBody`
+- summary: 【Play】物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている
+- scenarioText: シーンマネージャーやオーディオマネージャー、入力マネージャー、描画エンジンや物理エンジン(形状データを除く)などの1つしか存在しない仕組みや状態をもたない計算処理が基本機能として独立している
+- evidence:
+  - CommandScene、AudioManager、PlayInput、AtrumEngine は独立した型としてある
+  - 重力と速度の積分は CmpLhRigidBody::Update のみ（CmpLhRigidBody.h:35）
+  - HitJudge は球の登録一覧で、衝突応答は CmpBounceBall や CmpReflectAbleBullet に分散している
+  - HitMesh は形状データであり、形状を除いた物理エンジンの型は無い
+- suggestedUse: ランタイム: 形状データと切り離した物理ステップを、どのエンティティからも同じ基本機能として使う
+- firstSeenAt: 2026-11-18T07:45:00+09:00
+- lastSeenAt: 2026-11-18T07:45:00+09:00
+
+### GAP-Engine-EngineAccess-001
+
+- status: open
+- tier: P1
+- score: 800
+- primaryUseCase: UC-Play
+- scenarioId: UG-G-3f038476
+- frequency: high
+- frequencyBasis: シーンがライトやモデルを触るたびに AtrumEngine 本体のヘッダが必要になる
+- scope: UC-Play|Engine|EngineAccess|Incomplete|Project/Codes/Include/Engine/EngineAccess.h:25
+- primary: `EngineAccess`
+- summary: 【Play】描画への外部アクセスが EngineAccess に無く、AtrumEngine 経由になる
+- scenarioText: 基本機能に外部クラスからアクセスできるようになっている
+- evidence:
+  - EngineAccess は時間・入力・オーディオ・テクスチャまで（EngineAccess.h:22-25、AtrumEngine.cpp:108-121）
+  - シーンは EngineInstance()->SetDirectionalLightData でライトを設定している（SceneBuildUp.cpp:85）
+  - GetModel も AtrumEngine のメンバのまま（AtrumEngine.h:531）
+- suggestedUse: ランタイム: コンポーネントやシーンが、描画エンジン本体のヘッダを含めずに基本機能へ届く
+- firstSeenAt: 2026-11-18T07:55:00+09:00
+- lastSeenAt: 2026-11-18T07:55:00+09:00
+
 ### GAP-Editor-EditorSceneRuntime-006
 
 - status: open
@@ -3852,6 +4037,27 @@
 - roadmapLink: feature-memos/scene_movie.md
 - firstSeenAt: 2026-11-10T03:41:00+09:00
 - lastSeenAt: 2026-11-10T03:41:00+09:00
+
+### GAP-Runtime-CmpBounceBall-001
+
+- status: open
+- tier: P1
+- score: 760
+- primaryUseCase: UC-Play
+- scenarioId: UG-G-b9f501e7
+- frequency: medium
+- frequencyBasis: 運動、衝突応答、演出発生が1コンポーネントだと、どれかだけを別のエンティティへ移せない
+- scope: UC-Play|Runtime|CmpBounceBall|Incomplete|Project/Codes/Include/System/Entity/Components/CmpBounceBall.h:10
+- primary: `CmpBounceBall`
+- summary: 【Play】ボールの運動・壁床バウンス・衝突演出が1クラスに同居している
+- scenarioText: 機能として成り立つ最小単位の部品がそれぞれクラスに分けられ整理されている
+- evidence:
+  - クラスコメントが「簡易ボール運動＋壁／床バウンス、衝突点でワンショットパーティクル」（CmpBounceBall.h:9-10）
+  - 反発の設定と SpawnImpactAt が同じクラスにある（CmpBounceBall.h:27-35）
+  - 重力と速度の積分は別クラス CmpLhRigidBody にある一方、このボールは独自に運動を持っている
+- suggestedUse: ランタイム: 移動、衝突応答、演出発生を別クラスに分け、必要な部品だけをエンティティへ付ける
+- firstSeenAt: 2026-11-18T08:05:00+09:00
+- lastSeenAt: 2026-11-18T08:05:00+09:00
 
 ### GAP-Camera-StageBounds-001
 
@@ -6207,14 +6413,6 @@
 
 ## スキャン履歴（直近）
 
-- scanId: SCAN-20261111-040020 | at: 2026-11-11T04:00:54.388539+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-041012 | at: 2026-11-11T04:10:35.991951+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-042015 | at: 2026-11-11T04:21:02.733755+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-043006 | at: 2026-11-11T04:30:30.823712+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-044011 | at: 2026-11-11T04:40:29.023350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-045006 | at: 2026-11-11T04:50:25.719805+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-050017 | at: 2026-11-11T05:00:33.872874+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
-- scanId: SCAN-20261111-051011 | at: 2026-11-11T05:10:49.097514+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-052010 | at: 2026-11-11T05:20:27.571439+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-053014 | at: 2026-11-11T05:30:54.455417+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-054008 | at: 2026-11-11T05:40:40.897350+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
@@ -6222,6 +6420,14 @@
 - scanId: SCAN-20261111-060023 | at: 2026-11-11T06:01:00.247216+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-061024 | at: 2026-11-11T06:11:05.731943+09:00 | scenario: PLY-Audio-001 | new: 3 | updated: 0
 - scanId: SCAN-20261111-062020 | at: 2026-11-11T06:20:43.604694+09:00 | scenario: AUT-AssetLoop-001 | new: 3 | updated: 0
+- scanId: SCAN-20261111-063020 | at: 2026-11-11T06:30:44.449545+09:00 | scenario: DBG-FeatureScene-001 | new: 3 | updated: 0
+- scanId: SCAN-20261118-070405 | at: 2026-11-18T07:06:31.686079+09:00 | scenario: UG-G-a668342c | new: 3 | updated: 0
+- scanId: SCAN-20261118-071408 | at: 2026-11-18T07:15:55.017485+09:00 | scenario: UG-G-274394f0 | new: 2 | updated: 1
+- scanId: SCAN-20261118-072411 | at: 2026-11-18T07:25:44.022706+09:00 | scenario: UG-G-9c2c9771 | new: 1 | updated: 0
+- scanId: SCAN-20261118-073408 | at: 2026-11-18T07:34:54.503676+09:00 | scenario: UG-G-1fe965f0 | new: 1 | updated: 0
+- scanId: SCAN-20261118-074422 | at: 2026-11-18T07:45:36.281967+09:00 | scenario: UG-G-088fd113 | new: 1 | updated: 0
+- scanId: SCAN-20261118-075408 | at: 2026-11-18T07:55:09.163630+09:00 | scenario: UG-G-3f038476 | new: 1 | updated: 0
+- scanId: SCAN-20261118-080410 | at: 2026-11-18T08:05:05.521913+09:00 | scenario: UG-G-b9f501e7 | new: 1 | updated: 0
 
 ---
 

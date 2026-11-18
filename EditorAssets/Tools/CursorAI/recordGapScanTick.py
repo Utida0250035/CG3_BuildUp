@@ -71,10 +71,12 @@ def main() -> int:
     counts = state.setdefault("scenarioScanCounts", {})
     counts[scenario_id] = int(counts.get(scenario_id, 0)) + 1
 
-    rotation = state.get("useCaseRotation") or ["UC-Play", "UC-Authoring", "UC-Debug", "UC-Ship"]
-    uc = tick.get("primaryUseCase")
-    if uc in rotation:
-        state["rotationCursor"] = (rotation.index(uc) + 1) % len(rotation)
+    # 選定は ultimateGoal.md の・行。UseCase ローテーションは旧 tick の記録にだけ残す。
+    if tick.get("source") not in ("goal", "baseline"):
+        rotation = state.get("useCaseRotation") or ["UC-Play", "UC-Authoring", "UC-Debug", "UC-Ship"]
+        uc = tick.get("primaryUseCase")
+        if uc in rotation:
+            state["rotationCursor"] = (rotation.index(uc) + 1) % len(rotation)
 
     state["lastCompletedScanId"] = tick["scanId"]
     state["currentPlannedScanId"] = ""

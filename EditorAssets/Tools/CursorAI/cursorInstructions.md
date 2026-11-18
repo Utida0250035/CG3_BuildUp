@@ -246,16 +246,17 @@
 |----------|------|
 | `EditorAssets/Tools/CursorAI/docs/implementation_gaps.md` | 人間が読む一覧（用途別不足） |
 | `EditorAssets/Tools/CursorAI/docs/implementation_gaps_index.json` | ID・`scopeKey`・重複禁止の機械正本 |
-| `EditorAssets/Tools/CursorAI/docs/use_case_scenarios.md` | UseCase ごとの「できるべきこと」シナリオ |
+| `EditorAssets/Tools/CursorAI/docs/ultimateGoal.md` | スキャン対象。先に「完成形の説明」の `・` 行、一巡後に「エンジンとしての前提」の `・` 行 |
+| `EditorAssets/Tools/CursorAI/docs/use_case_scenarios.md` | 旧シナリオ。選定には使わない |
 
 **tick 計画（優先順位・範囲はスクリプトが 1 件だけ選定）**
 
 | ファイル | 役割 |
 |----------|------|
-| `planGapScanTick.py` | 未スキャン優先・UseCase ローテーションで **シナリオ 1 件** を選び `gap_scan_tick.json` へ出力 |
+| `planGapScanTick.py` | 「完成形の説明」の未スキャン `・` 行をファイル順に 1 件。全部見終わったあとだけ「エンジンとしての前提」を 1 件。`gap_scan_tick.json` へ出力 |
 | `gap_scan_tick.json` | 当該 tick の範囲（`scanId`・`scenarioId`・`areaHint`・`searchHints`） |
-| `gap_scan_state.json` | ローテーション・シナリオスキャン回数 |
-| `recordGapScanTick.py` | tick 完了記録（`scans` 追記・ローテーション進行） |
+| `gap_scan_state.json` | `・` 行ごとのスキャン回数 |
+| `recordGapScanTick.py` | tick 完了記録（`scans` 追記・対象行の回数） |
 | `syncImplementationGapsMd.py` | index から `implementation_gaps.md` の一覧・履歴を再同期 |
 
 `progress_report.md` はセッション報告のみ（ギャップ本文を正本にしない）。
@@ -264,13 +265,13 @@
 
 1. `python3 EditorAssets/Tools/CursorAI/planGapScanTick.py` を実行し **`gap_scan_tick.json` を Read**（`status: in_progress` の計画に厳守。自前で範囲を広げない）。
 2. `implementation_gaps_index.json` を Read。
-3. 計画の `scenarioId` / `scenarioText` / `areaHint` / `searchHints` のみを対象に、**「その用途でできないこと」** をコード・仕様（`spec` md）と突合。
+3. 計画の `scenarioId` / `scenarioText` / `source` / `areaHint` / `searchHints` のみを対象に、**その `・` 行の状態がコードでできないこと** を突合する。`[]` と `〇` は突合しない。`source` が `baseline` の tick では前提の 1 行だけを見る。
 4. 各候補に `scopeKey` = `primaryUseCase | Area | PrimarySymbol | Kind | Anchor` を付与。`scopeToId` にあれば **同一 ID を更新**（新規 ID 禁止）。
 5. 新規のみ `GAP-<Area>-<Subject>-<NNN>` を採番（`nextSequence` を index で管理可）。`summary` は `【Play|Authoring|Debug|Ship】…` 型を守る。
 6. **用途が推測できない** 候補は GAP 化せず、`pendings` に `PENDING-UC-*` のみ。
 7. `syncImplementationGapsMd.py` を実行。
 8. `recordGapScanTick.py --new-ids … --updated-ids …` を実行。
-9. `progress_report.md` に **`scanId`・`primaryUseCase`・`newIds` 件数** を追記。
+9. `progress_report.md` に **`scanId`・`source`・`scenarioId`・`newIds` 件数** を追記。
 
 **コード変更**
 
@@ -322,7 +323,7 @@
 - **起動:** `EditorAssets/Tools/CursorAI/loopGapScanDev.ps1`（`progress_report` 200kB 監視は `loopReportGuard.ps1` と同様）。
 - **間隔:** `-IntervalMinutes`（既定 90）。各周期のプロンプトは **「ギャップスキャンを実行して」** を含む（§6.6 参照）。
 - **1 tick:** `planGapScanTick.py` → スキャン → `syncImplementationGapsMd.py` → `recordGapScanTick.py`。**ビルドしない**。**`loopMergeTickToDevelop.ps1` 不要**（Git マージなし tick でよい）。
-- **停止:** ユーザー「ループ停止」、`progress_report` 肥大化（§7.1）、または `use_case_scenarios.md` の全シナリオが十分回った後の手動停止。
+- **停止:** ユーザー「ループ停止」、`progress_report` 肥大化（§7.1）、または「完成形の説明」と「エンジンとしての前提」の `・` 行を一巡したあとの手動停止。
 - **蓄積:** 正本は `implementation_gaps_index.json` / `implementation_gaps.md`。`progress_report` には scan 要約のみ追記。
 
 #### 7.1.5 ループ占有宣言（`Control/lease.md`）
