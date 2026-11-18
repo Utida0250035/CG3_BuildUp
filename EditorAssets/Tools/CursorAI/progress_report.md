@@ -2837,3 +2837,46 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |------|------|------|
 | Paused 時 Refill | 有効 | オーディオ基本機能 |
+
+---
+
+## セッション 2026-11-18 16:30（/loop 15m・roadmap tick 17）
+
+### 1. 実施内容
+
+- **着手ブランチ:** `fix/AudioHandlePlayIdMismatch`
+- **roadmap:** Audio › AudioManager — `GAP-Audio-AudioManager-007`
+- `PlayStreaming` の Init 失敗時に `ResetStreamingVoice` し、返却 `playId` をボイスと一致（`PlaySceneBgm-002` と同方針）
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 課題・設計上の選択項
+
+- なし
+
+### 3. 次に実行すべきステップ
+
+- roadmap 次行: `Start 後に Refill を 1 回だけ`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- PlayStreaming 失敗ハンドル（`GAP-Audio-AudioManager-007`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **長尺ストリーム SE**
+  - 用途: Init 失敗後の Stop/IsPlaying が空振りにならない
+  - 使用場面: 戦闘等の `PlayStreaming`
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|------|------|------|
+| playId 契約 | 有効 | オーディオ API |

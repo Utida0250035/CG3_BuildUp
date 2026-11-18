@@ -617,16 +617,22 @@ float ClampVolume(const float volume) {
 		bool isSuccess = InitializeStreaming(voiceIndex, soundIndex, isLoop, startTime100ns);
 
 		if (!isSuccess) {
-			streamingVoice->playId = 65536;
+			ResetStreamingVoice(*streamingVoice);
+			return AudioHandle{
+			    .soundIndex = soundIndex,
+			    .voiceIndex = voiceIndex,
+			    .isStreaming = true,
+			    .playId = streamingVoice->playId,
+			    .isSuccess = false,
+			};
 		}
 
-		// 5. ハンドルを返す
 		return AudioHandle{
 			.soundIndex = soundIndex,
 			.voiceIndex = voiceIndex,
 			.isStreaming = true,
 			.playId = currentPlayId,
-			.isSuccess = isSuccess
+			.isSuccess = true
 		};
 	}
 

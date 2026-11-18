@@ -65,7 +65,7 @@
 - [x] Resume は Start のみでデコード再開なし（gap: `GAP-Audio-AudioManager-004`）
 - [x] StopAll は BGM 系ループのみ（gap: `GAP-Audio-AudioManager-002`）
 - [x] Paused ストリームは Update をスキップ（gap: `GAP-Audio-AudioManager-005`）
-- [ ] Handle と voice の playId がずれる
+- [x] Handle と voice の playId がずれる（gap: `GAP-Audio-AudioManager-007`）
 - [ ] Start 後に Refill を 1 回だけ
 - [ ] BGM フォールバックで短音ボイス解放
 - [ ] ストリーム BGM 停止は XAudio Stop
