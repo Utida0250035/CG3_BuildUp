@@ -91,7 +91,7 @@
 - [x] 4 バイト揃えで端数を次回へ（gap: `GAP-Audio-AudioDecoder-001`）
 
 ### IsBgmLoopPaused
-- [ ] IsBgmLoopPaused がシーンから未使用
+- [x] IsBgmLoopPaused がシーンから未使用（gap: `GAP-Audio-IsBgmLoopPaused-001`）
 
 ### IsSuitableStreaming
 - [ ] ファイルサイズだけでストリーム判定

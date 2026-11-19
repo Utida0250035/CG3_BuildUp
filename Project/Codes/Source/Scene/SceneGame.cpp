@@ -238,11 +238,7 @@ namespace Atrum {
 
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 
-		if (sceneBgmHandle_.isSuccess && Atrum::IsBgmLoopPaused(sceneBgmHandle_)) {
-			if (!Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
-				Atrum::ResumeBgmLoop(sceneBgmHandle_);
-				Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
-			}
+		if (Atrum::TryResumeSceneBgmAfterChangeSceneFade(sceneBgmHandle_)) {
 			return;
 		}
 

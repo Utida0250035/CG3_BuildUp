@@ -254,6 +254,27 @@ inline void AssignPendingFadeSyncedSceneBgm(Audio::Handle &slot) {
   }
 }
 
+/// フェード中の一時停止を維持すべきか（シーン BGM スロットの再 Play を避ける）
+inline bool IsSceneBgmPausedForChangeSceneFade(const Audio::Handle &handle) {
+  if (!handle.isSuccess || !IsBgmLoopPaused(handle)) {
+    return false;
+  }
+  return CommandChangeScene::Instance()->GetIsExecute();
+}
+
+/// フェード完了後、一時停止のまま残ったシーン BGM を再開する
+inline bool TryResumeSceneBgmAfterChangeSceneFade(Audio::Handle &handle) {
+  if (!handle.isSuccess || !IsBgmLoopPaused(handle)) {
+    return false;
+  }
+  if (CommandChangeScene::Instance()->GetIsExecute()) {
+    return true;
+  }
+  ResumeBgmLoop(handle);
+  SetBgmLoopVolume(handle, 1.0f);
+  return true;
+}
+
 /// ChangeSceneFade 実行中は BGM をダック＋一時停止し、通常時はフル音量へ戻す
 inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
   if (!handle.isSuccess) {
@@ -270,8 +291,8 @@ inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
     return;
   }
 
-  if (IsBgmLoopPaused(handle)) {
-    ResumeBgmLoop(handle);
+  if (TryResumeSceneBgmAfterChangeSceneFade(handle)) {
+    return;
   }
   SetBgmLoopVolume(handle, 1.0f);
 }
