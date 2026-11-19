@@ -5230,3 +5230,50 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | CommandScene 起動 | 有効 | ・開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる |
+
+---
+
+## セッション 2026-11-20 05:00（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/SceneMovieTrackPath`
+- **roadmap:** movie トラックパス EditorAssets 解決（GAP-Scene-SceneMovie-006）
+- `ResolveMovieCameraTrackJsonPath` + `EditorAssets::kMovieCameraTracksDirectory`
+- `MovieCameraController::TryBeginFromJsonFile` で解決後ロード
+- `GameAssets::kTitleIntroMovieTrack` を EditorAssets 定数に委譲
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- ファイル名のみ・`Camera/` 相対も候補探索
+
+### 3. 次に実行すべきステップの提案
+
+- トラック読込失敗時の UX（roadmap 次行）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **ムービートラックパス**
+  - 用途: カットシーン JSON を作業ディレクトリ非依存で読む
+  - 使用場面: タイトルイントロ、SceneMovie Launch
+  - 用途から決めた仕様: 存在確認して最初に見つかったパスを採用
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| トラックパス | 有効 | ・シーン内ムービー／カットシーンが再生完了まで破綻しない |

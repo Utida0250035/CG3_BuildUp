@@ -216,6 +216,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Camera\CameraController\MovieCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\MovieCameraTrackLoader.cpp" />
+    <ClCompile Include="Codes\Source\Camera\MovieCameraTrackPathResolve.cpp" />
     <ClCompile Include="Codes\Source\Camera\ActiveCameraSystem.cpp" />
     <ClCompile Include="Codes\Source\Camera\CombatCameraShake.cpp" />
     <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp" />
@@ -493,6 +494,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Camera\CameraController\MovieCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\MovieCameraTrackLoader.h" />
+    <ClInclude Include="Codes\Include\Camera\MovieCameraTrackPathResolve.h" />
     <ClInclude Include="Codes\Include\Camera\ActiveCameraSystem.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewDesignViewport.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewFramingBounds.h" />

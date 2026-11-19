@@ -1,5 +1,7 @@
 #pragma once
 
+#include "System/Editor/EditorAssetsPaths.h"
+
 namespace Atrum::GameAssets {
 
 /// ランタイムが参照するデータは Project/Assets 以下（開発時 cwd = Project）
@@ -23,7 +25,6 @@ constexpr const char *kOperatorGuidanceJson =
     "./Assets/UX/operator_guidance.json";
 
 /// タイトル→本編の間に再生するサンプルカメラトラック
-constexpr const char *kTitleIntroMovieTrack =
-    "../EditorAssets/Camera/sample_movie_track.json";
+constexpr const char *kTitleIntroMovieTrack = EditorAssets::kSampleMovieTrackJson;
 
 } // namespace Atrum::GameAssets

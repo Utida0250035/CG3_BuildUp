@@ -8,6 +8,9 @@ constexpr const char *kEntitiesPrefabDirectory = "../EditorAssets/Entities";
 constexpr const char *kParticlesDirectory = "../EditorAssets/Particles";
 constexpr const char *kStageViewCameraTuningJson =
     "../EditorAssets/Camera/stage_view_camera_tuning.json";
+constexpr const char *kMovieCameraTracksDirectory = "../EditorAssets/Camera";
+constexpr const char *kSampleMovieTrackJson =
+    "../EditorAssets/Camera/sample_movie_track.json";
 constexpr const char *kDebugPlayAreaDirectory = "../EditorAssets/DebugPlayArea";
 constexpr const char *kDebugPlayAreaTemplateScene =
     "../EditorAssets/DebugPlayArea/template_test_play_area.scene.json";
