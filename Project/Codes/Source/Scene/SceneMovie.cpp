@@ -1,5 +1,7 @@
 #include "Scene/SceneMovie.h"
 
+#include "Scene/SceneMovieReturnTarget.h"
+
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Resource/LightData.h"
@@ -71,13 +73,14 @@ void SceneMovie::SpawnVisuals() {
 }
 
 void SceneMovie::RequestReturnToCaller() {
-  if (hasPendingSceneChange_ || returnScene_ == nullptr) {
+  if (hasPendingSceneChange_) {
     return;
   }
 
+  Scene *const target = ResolveSceneMovieReturnTarget(returnScene_);
   hasPendingSceneChange_ = true;
   CommandChangeScene::Instance()->Set(
-      returnScene_, std::make_unique<ChangeSceneFade>().release());
+      target, std::make_unique<ChangeSceneFade>().release());
 }
 
 void SceneMovie::EnterScene() {
@@ -103,8 +106,7 @@ void SceneMovie::Update() {
     return;
   }
 
-  if (returnScene_ != nullptr &&
-      ::Atrum::EnginePlayInput()->IsKeyTrigger(Input::Key::ESCAPE)) {
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Input::Key::ESCAPE)) {
     RequestReturnToCaller();
     return;
   }

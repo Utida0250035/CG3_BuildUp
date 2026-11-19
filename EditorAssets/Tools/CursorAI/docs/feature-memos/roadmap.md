@@ -269,7 +269,7 @@
 ### ギャップスキャン追補（P0/P1）
 - [x] ムービーシーン起動がゲームプレイ経路に未接続（gap: `GAP-Scene-SceneMovieRegistry-001`・Play・P1）
 - [x] 最小ランタイム検証シーン起動がエディタから未配線（gap: `GAP-Scene-SceneBuildUpRegistry-001`・Debug・P1）
-- [ ] returnScene が null だとムービー終了／失敗後もシーンが抜けられない（gap: `GAP-Scene-SceneMovie-004`・Play・P1）
+- [x] returnScene が null だとムービー終了／失敗後もシーンが抜けられない（gap: `GAP-Scene-SceneMovie-004`・Play・P1）
 - [ ] 遷移演出中はシーン Update が全面停止（gap: `GAP-Scene-GameOrder-001`・Play・P1）
 - [ ] FindPrimaryCmpCamera が rig 配列のみ走査（gap: `GAP-Scene-SceneCameraRig-001`・Debug・P1）
 - [ ] entities_ と GetCamera の cameraRig が未接続（gap: `GAP-Scene-SceneBuildUp-009`・Debug・P1）
