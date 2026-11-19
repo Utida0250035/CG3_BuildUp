@@ -5596,3 +5596,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | GameOrder 音声 | 有効 | ・プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |
+
+---
+
+## セッション 2026-11-20 07:00（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **着手ブランチ:** `fix/SceneGameLightingData`
+- **roadmap:** GAP Render SceneGame 見た目パラメータのデータ化
+- `game_scene_lighting.json`（Assets / EditorAssets）
+- `ApplySceneGameLightingFromProfile` で JSON をエンジンへ反映
+- `SceneGame::DrawScene` から直書き `SetupGameLighting` を除去
+
+### 7. 推測した用途（§6.4）
+
+- **本編見た目プロファイル**
+  - 用途: レベル制作でフォグ・リム・影を JSON 差し替え
+  - 使用場面: 本編 SceneGame の毎フレーム描画前
+  - 仕様: 読込失敗時は従来リテラル相当のデフォルトへフォールバック
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| SceneGame 見た目データ | 有効 | ・ランタイムでライト・フォグ等の見た目がデータどおり反映される |

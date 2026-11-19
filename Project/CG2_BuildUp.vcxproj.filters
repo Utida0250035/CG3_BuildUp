@@ -277,6 +277,9 @@
     <ClCompile Include="Codes\Source\Scene\SceneMoviePendingTransitionUpdate.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneGameLightingProfile.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneMovieStageLighting.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -907,6 +910,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneMoviePendingTransitionUpdate.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneGameLightingProfile.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneMovieStageLighting.h">

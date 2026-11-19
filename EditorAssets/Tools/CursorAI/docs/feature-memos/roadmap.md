@@ -293,7 +293,7 @@
 - [x] フレームループが音声を管理しない
 
 ### SceneGame
-- [ ] 見た目パラメータがデータではなく SetupGameLighting 直書き（spec: feature-memos/volumetric_fog.md）
+- [x] 見た目パラメータがデータではなく SetupGameLighting 直書き（spec: feature-memos/volumetric_fog.md）
 - [ ] OnBossDefeated で BGM を演出完了前に停止
 - [ ] シーン入場時の operator_guidance 読込失敗を検知・代替しない
 - [ ] EnterScene が本編見た目プリセットを適用しない（spec: feature-memos/rim_light.md）

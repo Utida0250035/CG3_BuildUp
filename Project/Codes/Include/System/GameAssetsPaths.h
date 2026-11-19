@@ -24,6 +24,10 @@ constexpr const char *kReleaseSceneCarouselPath =
 constexpr const char *kOperatorGuidanceJson =
     "./Assets/UX/operator_guidance.json";
 
+/// 本編 SceneGame のライト／フォグ／ゴッドレイ／影（Release 配布物）
+constexpr const char *kGameSceneLightingProfileJson =
+    "./Assets/Visual/game_scene_lighting.json";
+
 /// タイトル→本編の間に再生するサンプルカメラトラック
 constexpr const char *kTitleIntroMovieTrack = EditorAssets::kSampleMovieTrackJson;
 

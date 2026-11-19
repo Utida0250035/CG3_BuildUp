@@ -13,7 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
-#include "Engine/Resource/LightData.h"
+#include "Scene/SceneGameLightingProfile.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneResult.h"
@@ -33,53 +33,6 @@
 #include "System/PlaySe.h"
 
 #include <cmath>
-
-namespace {
-
-	using Atrum::Engine;
-
-	void SetupGameLighting() {
-		Atrum::Math::Vector3 lightDirection{ -0.4f, -0.85f, 0.15f };
-		lightDirection.Normalize();
-		const Atrum::DirectionalLightData directionalLight{
-			.color = Atrum::Math::Vector3{ 1.0f, 1.0f, 1.0f },
-			.direction = lightDirection,
-			.intensity = 8.0f,
-			.lightModel = Atrum::LightModel::HalfLambert,
-			.rimColor = Atrum::Math::Vector3{ 0.75f, 0.85f, 1.0f },
-			.rimIntensity = 0.35f,
-			.rimPower = 3.0f,
-			.rimEnabled = 1u,
-		};
-		::Atrum::EngineSetDirectionalLightData(directionalLight);
-
-		Atrum::Visual::VolumetricFogSettings gameFog{};
-		gameFog.enabled = 1u;
-		gameFog.density = 0.022f;
-		gameFog.heightFalloff = 0.28f;
-		gameFog.heightOffset = 0.0f;
-		gameFog.maxDistance = 90.0f;
-		gameFog.inScatterIntensity = 0.18f;
-		Engine::Instance()->RefVolumetricFog().SetSettings(gameFog);
-
-		Atrum::Visual::GodRaySettings gameGodRays{};
-		gameGodRays.enabled = 1u;
-		gameGodRays.intensity = 0.12f;
-		gameGodRays.angularPower = 8.0f;
-		gameGodRays.fogCoupling = 0.9f;
-		Engine::Instance()->RefGodRays().SetSettings(gameGodRays);
-
-		Atrum::Visual::DirectionalShadowSettings gameShadow{};
-		gameShadow.shadeEnabled = 1u;
-		gameShadow.shadeDarkness = 0.42f;
-		gameShadow.groundPlaneY = 0.0f;
-		gameShadow.contactHeight = 3.0f;
-		gameShadow.planarEnabled = 1u;
-		gameShadow.planarAlpha = 0.32f;
-		Engine::Instance()->RefDirectionalShadow().SetSettings(gameShadow);
-	}
-
-} // namespace
 
 namespace Atrum {
 
@@ -272,7 +225,7 @@ namespace Atrum {
 	}
 
 	void SceneGame::DrawScene() {
-		SetupGameLighting();
+		ApplySceneGameLightingFromProfile();
 		DrawEntities();
 		Atrum::Particle::Combat::DrawCombatParticleEffects();
 		DrawBattleHud();
