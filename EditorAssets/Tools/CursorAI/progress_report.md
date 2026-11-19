@@ -3451,3 +3451,50 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
 |--------|----------------------------------------|------------------------------|
 | PlaySe が Play の Handle を捨てる | 有効 | ・bgmとしてのループ再生ができる（効果音・BGM の音量割合をプレイヤーが設定し保存反映 — Handle 経由の制御の前提） |
+
+---
+
+## セッション 2026-11-19 19:30（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/StreamingCallbackOnStreamEnd`
+- **roadmap:** Audio › StreamingVoiceCallback — `OnStreamEnd が Waiting のみセット`
+- `OnStreamEnd` で `VoiceState::Waiting` 固定をやめ、`Streaming` に遷移。`Update` の `RefillBuffer`（ループは Seek 再読込）を同 tick で走らせ、ループ BGM の 1 フレーム途切れを軽減。非ループは従来どおり Refill 失敗後 `Waiting` → `TryContinueNonLoopStreamingVoice` → 停止
+- **ビルド:** Cloud VM 上では未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- コールバック内では Refill せず state のみ（次行 `OnBufferEnd` と線を分ける）
+- `nullptr` 親ボイスは無視
+
+### 3. 次に実行すべきステップの提案
+
+- roadmap 次行: `OnBufferEnd が Streaming へ遷移`（次ブランチ `fix/StreamingCallbackOnBufferEnd`）
+- ループ BGM 終端の手動確認（任意）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **OnStreamEnd が Waiting のみセット**
+  - 用途: ストリーム BGM ループと長尺 SE の終端で、無音フレームなく次チャンクまたは自然終了へつなぐ
+  - 使用場面: ランタイム（シーン BGM、ストリーミング SE）
+  - 用途から決めた仕様: 終端通知は「補充が必要」の `Streaming` とし、`Update` の既存 Refill／非ループ継続ロジックに委譲
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| OnStreamEnd が Waiting のみセット | 有効 | ・bgmとしてのループ再生ができる / ・サイズが大きい音源ファイルについてストリーミング再生ができる |

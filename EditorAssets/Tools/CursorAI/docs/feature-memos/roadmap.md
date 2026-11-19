@@ -83,7 +83,7 @@
 - [x] PlaySe が Play の Handle を捨てる（gap: `GAP-Audio-PlaySe-001`）
 
 ### StreamingVoiceCallback
-- [ ] OnStreamEnd が Waiting のみセット
+- [x] OnStreamEnd が Waiting のみセット（gap: `GAP-Audio-StreamingVoiceCallback-001`）
 - [ ] OnBufferEnd が Streaming へ遷移
 
 ### AudioDecoder
