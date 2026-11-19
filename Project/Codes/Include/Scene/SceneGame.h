@@ -74,7 +74,8 @@ private:
   void DrawIntroScreenUi();
   void DrawHowToPlayUi();
   void DrawOperatorGuidanceUi();
-  void MaintainSceneBgmIfNeeded();
+  /// allowRestartPlay が false のときはフェード同期／再開のみ（イントロ中等）
+  void MaintainSceneBgmIfNeeded(bool allowRestartPlay = true);
 
   void CheckRoundEnd();
   void RequestTransitionToResult();

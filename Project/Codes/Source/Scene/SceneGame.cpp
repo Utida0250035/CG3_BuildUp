@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameIntroBgmPolicy.h"
 #include "Scene/SceneGameIntroBarrageAudio.h"
 #include "Scene/SceneGameDefeatAudioPolicy.h"
 #include "Scene/SceneGameDefeatPresentationBgm.h"
@@ -191,9 +192,12 @@ namespace Atrum {
 			return;
 		}
 
-		MaintainSceneBgmIfNeeded();
+		const bool introPresentationActive =
+			Atrum::ShouldDeferSceneBgmRestartDuringIntro(
+				introCameraController_.get());
+		MaintainSceneBgmIfNeeded(!introPresentationActive);
 
-		if (introCameraController_ && !introCameraController_->IsFinished()) {
+		if (introPresentationActive) {
 			if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
 				introCameraController_->SkipIntro();
 			} else {
@@ -264,7 +268,7 @@ namespace Atrum {
 		Atrum::SceneScreenUi::DrawGameIntroHowToNextUi(engine, GetCamera());
 	}
 
-	void SceneGame::MaintainSceneBgmIfNeeded() {
+	void SceneGame::MaintainSceneBgmIfNeeded(const bool allowRestartPlay) {
 		if (pendingDefeat_ == DefeatKind::Player) {
 			return;
 		}
@@ -277,6 +281,10 @@ namespace Atrum {
 
 		if (sceneBgmHandle_.isSuccess &&
 			Atrum::IsSceneBgmAudible(sceneBgmHandle_)) {
+			return;
+		}
+
+		if (!allowRestartPlay) {
 			return;
 		}
 
