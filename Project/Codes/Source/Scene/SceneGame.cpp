@@ -56,7 +56,8 @@ namespace Atrum {
 		bossDeathCameraController_.reset();
 		playerDeathPresentation_.reset();
 		playerDeathRestartTransitionRequested_ = false;
-		SpawnEntities();
+		ClearEntities();
+		SpawnCombatEntities();
 
 		introCameraController_ =
 			std::make_unique<Atrum::CameraGameIntroController>();
@@ -67,6 +68,8 @@ namespace Atrum {
 		} else {
 			SetupStageViewCamera();
 		}
+
+		SpawnEnvironmentEntities();
 
 		Atrum::Particle::Combat::SetEffectCamera(GetCamera());
 		Atrum::CombatCameraShake::Instance().Reset();
@@ -338,14 +341,15 @@ namespace Atrum {
 			bossHealth->GetInitialHealthCount(), bossHpBarReveal);
 	}
 
-	void SceneGame::SpawnEntities() {
-		ClearEntities();
+	void SceneGame::SpawnCombatEntities() {
+		player_ = Atrum::EntityFactory::PlayerParry();
+		boss_ = Atrum::EntityFactory::EnemyAstro(player_.get());
+	}
 
+	void SceneGame::SpawnEnvironmentEntities() {
 		skyDome_ = Atrum::EntityFactory::SkyDome(GetCamera());
 		backgrounds_ = Atrum::EntityFactory::ScrollSpheres();
 		foregroundGroundClouds_ = Atrum::EntityFactory::ForegroundGroundClouds();
-		player_ = Atrum::EntityFactory::PlayerParry();
-		boss_ = Atrum::EntityFactory::EnemyAstro(player_.get());
 	}
 
 	void SceneGame::ClearEntities() {
