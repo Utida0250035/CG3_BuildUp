@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameDefeatPresentationBgm.h"
 #include "Scene/SceneGameEnterVisualPreset.h"
 #include "Scene/SceneGameLightingProfile.h"
 #include "Scene/ChangeSceneFade.h"
@@ -262,7 +263,7 @@ namespace Atrum {
 	}
 
 	void SceneGame::MaintainSceneBgmIfNeeded() {
-		if (pendingDefeat_ != DefeatKind::None) {
+		if (pendingDefeat_ == DefeatKind::Player) {
 			return;
 		}
 
@@ -424,6 +425,8 @@ namespace Atrum {
 		if (!bossDeathPresentation_) {
 			return;
 		}
+
+		SyncSceneBgmDuringBossDeathPresentation(sceneBgmHandle_);
 
 		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {

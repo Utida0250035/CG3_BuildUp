@@ -298,7 +298,7 @@
 - [x] シーン入場時の operator_guidance 読込失敗を検知・代替しない
 - [x] EnterScene が本編見た目プリセットを適用しない（spec: feature-memos/rim_light.md）
 - [x] SpawnEntities がイントロカメラ設定より先に実行される
-- [ ] 撃破演出中は MaintainSceneBgmIfNeeded が無効
+- [x] 撃破演出中は MaintainSceneBgmIfNeeded が無効
 - [ ] OnPlayerDefeated は BGM を止めず撃破は即停止
 - [ ] イントロ中の Update 早期 return で弾幕 SE 無音
 - [ ] イントロ中に Maintain が PlaySceneBgm
