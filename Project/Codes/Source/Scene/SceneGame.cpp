@@ -121,6 +121,8 @@ namespace Atrum {
 			if (bossDeathPresentation_) {
 				UpdateBossDeathPresentation();
 			} else if (!bossDeathResultTransitionRequested_) {
+				Atrum::StopBgmLoop(sceneBgmHandle_);
+				sceneBgmHandle_ = {};
 				bossDeathResultTransitionRequested_ = true;
 				RequestTransitionToResult();
 			}
@@ -431,6 +433,8 @@ namespace Atrum {
 
 		if (bossDeathPresentation_->IsFinished() &&
 			!bossDeathResultTransitionRequested_) {
+			Atrum::StopBgmLoop(sceneBgmHandle_);
+			sceneBgmHandle_ = {};
 			bossDeathResultTransitionRequested_ = true;
 			RequestTransitionToResult();
 		}
@@ -529,10 +533,9 @@ namespace Atrum {
 	}
 
 	void SceneGame::OnBossDefeated() {
-		Atrum::StopBgmLoop(sceneBgmHandle_);
-		sceneBgmHandle_ = {};
-
 		if (!boss_) {
+			Atrum::StopBgmLoop(sceneBgmHandle_);
+			sceneBgmHandle_ = {};
 			RequestTransitionToResult();
 			return;
 		}
