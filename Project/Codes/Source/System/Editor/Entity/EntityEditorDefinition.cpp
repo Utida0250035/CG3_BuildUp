@@ -20,7 +20,9 @@ bool IsKnownEntityEditorComponent(const std::string &typeName) {
          typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
          typeName == "CmpRuntimeTexturePath" || typeName == "CmpColliderAabb" ||
          typeName == "CmpCamera" ||          typeName == "CmpParticleEmitter" ||
-         typeName == "CmpBounceBall" ||
+         typeName == "CmpBounceBall" || typeName == "CmpBallKinematics" ||
+         typeName == "CmpBallAxisAlignedBounce" ||
+         typeName == "CmpBallBounceImpactFx" ||
          typeName == "CmpBillboardInstancedGrid";
 }
 
@@ -31,7 +33,10 @@ ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
   }
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
       typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
-      typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall") {
+      typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall" ||
+      typeName == "CmpBallKinematics" ||
+      typeName == "CmpBallAxisAlignedBounce" ||
+      typeName == "CmpBallBounceImpactFx") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||
@@ -123,6 +128,21 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"wallRestitution", 0.94f},
             {"floorRestitution", 0.88f},
             {"impactJsonPath", "demos/ball_wall_shockwave.json"},
+            {"impactCooldownSeconds", 0.12f}};
+  }
+  if (typeName == "CmpBallKinematics") {
+    return {{"velocity", Math::Vector3{7.0f, 5.5f, 0.0f}}, {"gravity", -14.0f}};
+  }
+  if (typeName == "CmpBallAxisAlignedBounce") {
+    return {{"leftWallX", -5.0f},
+            {"rightWallX", 5.0f},
+            {"groundY", -3.68f},
+            {"radius", 0.32f},
+            {"wallRestitution", 0.94f},
+            {"floorRestitution", 0.88f}};
+  }
+  if (typeName == "CmpBallBounceImpactFx") {
+    return {{"impactJsonPath", "demos/ball_wall_shockwave.json"},
             {"impactCooldownSeconds", 0.12f}};
   }
   return nlohmann::json::object();

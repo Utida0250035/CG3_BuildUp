@@ -331,6 +331,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallAxisAlignedBounce.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallBounceImpactFx.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallKinematics.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp" />
@@ -587,6 +590,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallAxisAlignedBounce.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallBounceImpactFx.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallKinematics.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h" />
     <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h" />

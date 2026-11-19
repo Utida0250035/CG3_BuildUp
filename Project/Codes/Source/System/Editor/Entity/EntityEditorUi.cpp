@@ -43,6 +43,9 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpCamera", ComponentSlotKind::Upd},
     {"CmpParticleEmitter", ComponentSlotKind::Upd},
     {"CmpBounceBall", ComponentSlotKind::Upd},
+    {"CmpBallKinematics", ComponentSlotKind::Upd},
+    {"CmpBallAxisAlignedBounce", ComponentSlotKind::Upd},
+    {"CmpBallBounceImpactFx", ComponentSlotKind::Upd},
     {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
 };
 

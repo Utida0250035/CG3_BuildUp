@@ -10,6 +10,9 @@
 #include "System/Entity/Components/CmpMesh.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpBillboardInstancedGrid.h"
+#include "System/Entity/Components/CmpBallAxisAlignedBounce.h"
+#include "System/Entity/Components/CmpBallBounceImpactFx.h"
+#include "System/Entity/Components/CmpBallKinematics.h"
 #include "System/Entity/Components/CmpBounceBall.h"
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
@@ -73,6 +76,15 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpBounceBall") {
       return entity.HasUpdCmp<CmpBounceBall>();
     }
+    if (slot.typeName == "CmpBallKinematics") {
+      return entity.HasUpdCmp<CmpBallKinematics>();
+    }
+    if (slot.typeName == "CmpBallAxisAlignedBounce") {
+      return entity.HasUpdCmp<CmpBallAxisAlignedBounce>();
+    }
+    if (slot.typeName == "CmpBallBounceImpactFx") {
+      return entity.HasUpdCmp<CmpBallBounceImpactFx>();
+    }
   }
   if (slot.kind == ComponentSlotKind::Data) {
     if (slot.typeName == "CmpEditorAssetPath") {
@@ -126,6 +138,20 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   }
   if (slot.typeName == "CmpBounceBall" && slot.kind == ComponentSlotKind::Upd) {
     entity.AddUpdCmp<CmpBounceBall>();
+    return true;
+  }
+  if (slot.typeName == "CmpBallKinematics" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpBallKinematics>();
+    return true;
+  }
+  if (slot.typeName == "CmpBallAxisAlignedBounce" &&
+      slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpBallAxisAlignedBounce>();
+    return true;
+  }
+  if (slot.typeName == "CmpBallBounceImpactFx" &&
+      slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpBallBounceImpactFx>();
     return true;
   }
   if (slot.typeName == "CmpEditorAssetPath" &&
@@ -346,6 +372,43 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetRadius(p.value("radius", 0.32f));
     cmp->SetWallRestitution(p.value("wallRestitution", 0.94f));
     cmp->SetFloorRestitution(p.value("floorRestitution", 0.88f));
+    cmp->SetImpactJsonPath(
+        p.value("impactJsonPath", std::string{"demos/ball_wall_shockwave.json"}));
+    cmp->SetImpactCooldownSeconds(p.value("impactCooldownSeconds", 0.12f));
+    cmp->EnsureAndSyncChildComponents();
+    return;
+  }
+
+  if (slot.typeName == "CmpBallKinematics") {
+    if (!entity.HasUpdCmp<CmpBallKinematics>()) {
+      return;
+    }
+    CmpBallKinematics *cmp = entity.GetUpdCmp<CmpBallKinematics>();
+    cmp->SetInitialVelocity(p.value("velocity", Math::Vector3{7.0f, 5.5f, 0.0f}));
+    cmp->SetGravity(p.value("gravity", -14.0f));
+    return;
+  }
+
+  if (slot.typeName == "CmpBallAxisAlignedBounce") {
+    if (!entity.HasUpdCmp<CmpBallAxisAlignedBounce>()) {
+      return;
+    }
+    CmpBallAxisAlignedBounce *cmp =
+        entity.GetUpdCmp<CmpBallAxisAlignedBounce>();
+    cmp->SetLeftWallX(p.value("leftWallX", -5.0f));
+    cmp->SetRightWallX(p.value("rightWallX", 5.0f));
+    cmp->SetGroundY(p.value("groundY", -3.68f));
+    cmp->SetRadius(p.value("radius", 0.32f));
+    cmp->SetWallRestitution(p.value("wallRestitution", 0.94f));
+    cmp->SetFloorRestitution(p.value("floorRestitution", 0.88f));
+    return;
+  }
+
+  if (slot.typeName == "CmpBallBounceImpactFx") {
+    if (!entity.HasUpdCmp<CmpBallBounceImpactFx>()) {
+      return;
+    }
+    CmpBallBounceImpactFx *cmp = entity.GetUpdCmp<CmpBallBounceImpactFx>();
     cmp->SetImpactJsonPath(
         p.value("impactJsonPath", std::string{"demos/ball_wall_shockwave.json"}));
     cmp->SetImpactCooldownSeconds(p.value("impactCooldownSeconds", 0.12f));
