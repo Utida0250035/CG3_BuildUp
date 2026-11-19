@@ -5141,3 +5141,45 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | primary 解決 | 有効 | ・開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる |
+
+---
+
+## セッション 2026-11-20 04:30（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/SceneBuildUpCameraConnect`
+- **roadmap:** `GAP-Scene-SceneBuildUp-009`（§6.2 即時完了）
+- 前 tick の `GetSupplementalCameraEntities` + `Scene::GetCamera(this)` で要件充足を確認
+- **ビルド:** 変更なしのためスキップ
+
+### 2. 発生した課題または設計上の選択肢
+
+- なし
+
+### 3. 次に実行すべきステップの提案
+
+- `CommandScene 遷移要求・Development 起動シーン不一致`
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- **entities_ と GetCamera の接続**（`SceneBuildUp::GetSupplementalCameraEntities`・`ScenePrimaryCameraResolve`・develop `6f1196a`）
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- なし（確認のみ tick）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| BuildUp カメラ接続 | 有効（実装済み） | ・開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる |

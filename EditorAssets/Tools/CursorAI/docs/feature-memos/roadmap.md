@@ -272,7 +272,7 @@
 - [x] returnScene が null だとムービー終了／失敗後もシーンが抜けられない（gap: `GAP-Scene-SceneMovie-004`・Play・P1）
 - [x] 遷移演出中はシーン Update が全面停止（gap: `GAP-Scene-GameOrder-001`・Play・P1）
 - [x] FindPrimaryCmpCamera が rig 配列のみ走査（gap: `GAP-Scene-SceneCameraRig-001`・Debug・P1）
-- [ ] entities_ と GetCamera の cameraRig が未接続（gap: `GAP-Scene-SceneBuildUp-009`・Debug・P1）
+- [x] entities_ と GetCamera の cameraRig が未接続（gap: `GAP-Scene-SceneBuildUp-009`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: SceneBuildUp 検証経路・レジストリ・cameraRig 接続の細部（在庫 65件）
