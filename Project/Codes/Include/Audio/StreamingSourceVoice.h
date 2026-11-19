@@ -35,6 +35,9 @@ namespace Atrum::Audio {
 		// 読み込みと再生の状態管理
 		std::atomic<bool> isStreaming{ false };
 
+		// MF の ENDOFSTREAM を検出（非ループ終端判定。Seek / Reset でクリア）
+		std::atomic<bool> atEndOfStream{ false };
+
 		std::vector<BYTE> remainingData;
 
 		// ストリーミング用にバッファを複数持つ（ダブルバッファリング）

@@ -471,6 +471,7 @@ float ClampVolume(const float volume) {
 
 		voice.pReader.Reset();
 		voice.remainingData.clear();
+		voice.atEndOfStream = false;
 		voice.state = VoiceState::Stopped;
 		voice.playId = 65536;
 		voice.isLoop = false;
@@ -819,6 +820,14 @@ float ClampVolume(const float volume) {
 
 		if (voice.isLoop || voice.pVoice == nullptr) {
 			return false;
+		}
+
+		if (voice.atEndOfStream.load()) {
+			XAUDIO2_VOICE_STATE xaState{};
+			voice.pVoice->GetState(&xaState);
+			if (xaState.BuffersQueued == 0) {
+				return false;
+			}
 		}
 
 		XAUDIO2_VOICE_STATE xaState{};

@@ -87,7 +87,7 @@
 - [x] OnBufferEnd が Streaming へ遷移（gap: `GAP-Audio-StreamingVoiceCallback-002`）
 
 ### AudioDecoder
-- [ ] EOF で break のみ
+- [x] EOF で break のみ（gap: `GAP-Audio-AudioDecoder-002`）
 - [ ] 4 バイト揃えで端数を次回へ
 
 ### IsBgmLoopPaused

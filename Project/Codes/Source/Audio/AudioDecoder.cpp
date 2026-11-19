@@ -98,8 +98,22 @@ namespace Atrum::Audio {
 			flags = 0;
 			ComPtr<IMFSample> pSample;
 
-			HRESULT hr = voice.pReader->ReadSample(static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, nullptr, &flags, nullptr, &pSample);
-			if (FAILED(hr) || pSample == nullptr || (flags & MF_SOURCE_READERF_ENDOFSTREAM)) break;
+			HRESULT hr = voice.pReader->ReadSample(
+			    static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), 0, nullptr,
+			    &flags, nullptr, &pSample);
+			if (FAILED(hr) || pSample == nullptr) {
+				break;
+			}
+
+			if (flags & MF_SOURCE_READERF_ENDOFSTREAM) {
+				if (voice.isLoop && cbTotalRead < bufferSize) {
+					if (Seek(voice, voice.startTime100ns)) {
+						continue;
+					}
+				}
+				voice.atEndOfStream.store(true);
+				break;
+			}
 
 			ComPtr<IMFMediaBuffer> pBufferRaw;
 			pSample->ConvertToContiguousBuffer(&pBufferRaw);
@@ -148,6 +162,7 @@ namespace Atrum::Audio {
 	bool AudioDecoder::Seek(StreamingSourceVoice& voice, LONGLONG targetPos100ns) {
 
 		voice.remainingData.clear();
+		voice.atEndOfStream = false;
 
 		// 1. ストリームをターゲット位置へ移動
 		// PROPVARIANT で時間を指定 (100ナノ秒単位)
