@@ -764,11 +764,6 @@ float ClampVolume(const float volume) {
 			// pContext には parentVoice 自身を入れておくことが一般的
 			buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
 
-			if (bytesRead < StreamingSourceVoice::kBufferSize) {
-				std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
-					voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
-			}
-
 			voice.pVoice->SubmitSourceBuffer(&buf);
 
 			return true;
@@ -786,11 +781,6 @@ float ClampVolume(const float volume) {
 					buf.AudioBytes = bytesRead;
 					buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
 					buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
-
-					if (bytesRead < StreamingSourceVoice::kBufferSize) {
-						std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
-							voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
-					}
 
 					voice.pVoice->SubmitSourceBuffer(&buf);
 
