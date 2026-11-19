@@ -43,4 +43,7 @@ std::shared_ptr<AssetModel> EngineGetModel(const std::string &directoryPathObj,
                                          const std::string &mtlFileName);
 void EngineSetDirectionalLightData(const DirectionalLightData &data);
 
+/// ウィンドウのクライアントサイズ（StageView アスペクト等）。取得できないとき false。
+bool EngineTryGetClientViewportSize(int32_t &outWidth, int32_t &outHeight);
+
 } // namespace Atrum

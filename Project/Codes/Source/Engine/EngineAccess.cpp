@@ -21,4 +21,11 @@ void EngineSetDirectionalLightData(const DirectionalLightData &data) {
   AtrumEngine::Instance()->SetDirectionalLightData(data);
 }
 
+bool EngineTryGetClientViewportSize(int32_t &outWidth, int32_t &outHeight) {
+  if (AtrumEngine *engine = AtrumEngine::Instance()) {
+    return engine->TryGetClientViewportSize(outWidth, outHeight);
+  }
+  return false;
+}
+
 } // namespace Atrum

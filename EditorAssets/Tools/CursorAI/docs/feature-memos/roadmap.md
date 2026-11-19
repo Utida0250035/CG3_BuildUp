@@ -251,7 +251,7 @@
 - [x] tuning JSON の client 解像度が参照されない（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### StageViewCamera
-- [ ] ステージカメラのアスペクトが既定解像度固定
+- [x] ステージカメラのアスペクトが既定解像度固定
 
 ### verify_camera_policy
 - [ ] カメラ方針静的検証が CI／ビルド手順に未組み込み

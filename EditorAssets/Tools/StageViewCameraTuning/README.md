@@ -42,5 +42,9 @@ CI: `BuildCoverageCheck` が `verify_stage_view_tuning_sync.py` を実行。
 
 ## ランタイム参照（DEVELOPMENT）
 
-`GetStageViewDesignAspectRatio()` が tuning JSON の `clientWidth` / `clientHeight` を読み込み、
-`ComputeStageBattleViewPose` のアスペクト計算に使用する（Release は `Window` 既定値）。
+`GetStageViewDesignAspectRatio()` の優先順:
+
+1. JSON プレビュー ON 時 … tuning の client 解像度
+2. 実行中ウィンドウのクライアントサイズ（`EngineTryGetClientViewportSize`）
+3. DEVELOPMENT … tuning JSON（遅延読込）
+4. `Window` 既定値

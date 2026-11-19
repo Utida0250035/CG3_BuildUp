@@ -705,6 +705,16 @@ void AtrumEngine::RebindObject3dDrawBindings() {
       3, directionalLightBuffer_->GetGpuVirtualAddress());
 }
 
+bool AtrumEngine::TryGetClientViewportSize(int32_t &outWidth,
+                                           int32_t &outHeight) const {
+  if (window_ == nullptr) {
+    return false;
+  }
+  outWidth = window_->GetClientWidth();
+  outHeight = window_->GetClientHeight();
+  return outHeight > 0;
+}
+
 void AtrumEngine::SetSubViewport(const int x, const int y, const int width,
                                  const int height) {
   if (width <= 0 || height <= 0) {
