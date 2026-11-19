@@ -351,6 +351,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneMovieVisualSetup.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMoviePendingTransitionUpdate.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameDefeatAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameDefeatPresentationBgm.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameEnterVisualPreset.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameLightingProfile.cpp" />
@@ -628,6 +629,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneMovieVisualSetup.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMoviePendingTransitionUpdate.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameDefeatAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameDefeatPresentationBgm.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameEnterVisualPreset.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameLightingProfile.h" />

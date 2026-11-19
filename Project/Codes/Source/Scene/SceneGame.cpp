@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameDefeatAudioPolicy.h"
 #include "Scene/SceneGameDefeatPresentationBgm.h"
 #include "Scene/SceneGameEnterVisualPreset.h"
 #include "Scene/SceneGameLightingProfile.h"
@@ -126,8 +127,7 @@ namespace Atrum {
 			if (bossDeathPresentation_) {
 				UpdateBossDeathPresentation();
 			} else if (!bossDeathResultTransitionRequested_) {
-				Atrum::StopBgmLoop(sceneBgmHandle_);
-				sceneBgmHandle_ = {};
+				Atrum::StopSceneBgmAfterBossVictoryPresentation(sceneBgmHandle_);
 				bossDeathResultTransitionRequested_ = true;
 				RequestTransitionToResult();
 			}
@@ -448,8 +448,7 @@ namespace Atrum {
 
 		if (bossDeathPresentation_->IsFinished() &&
 			!bossDeathResultTransitionRequested_) {
-			Atrum::StopBgmLoop(sceneBgmHandle_);
-			sceneBgmHandle_ = {};
+			Atrum::StopSceneBgmAfterBossVictoryPresentation(sceneBgmHandle_);
 			bossDeathResultTransitionRequested_ = true;
 			RequestTransitionToResult();
 		}
@@ -549,11 +548,12 @@ namespace Atrum {
 
 	void SceneGame::OnBossDefeated() {
 		if (!boss_) {
-			Atrum::StopBgmLoop(sceneBgmHandle_);
-			sceneBgmHandle_ = {};
+			Atrum::StopSceneBgmAfterBossVictoryPresentation(sceneBgmHandle_);
 			RequestTransitionToResult();
 			return;
 		}
+
+		Atrum::BeginBossDefeatSceneBgmPolicy(sceneBgmHandle_);
 
 		bossDeathCameraController_ =
 			std::make_unique<Atrum::CameraFocusPushController>();
@@ -573,14 +573,7 @@ namespace Atrum {
 		playerDeathPresentation_ = std::make_unique<Atrum::PlayerDeathPresentation>();
 		playerDeathPresentation_->Begin(player_.get());
 
-		if (sceneBgmHandle_.isSuccess) {
-			constexpr float kDefeatSlowPitch = 0.82f;
-			float pitchRatio = 1.0f;
-			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
-			    pitchRatio > kDefeatSlowPitch + 0.02f) {
-				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, kDefeatSlowPitch);
-			}
-		}
+		Atrum::BeginPlayerDefeatSceneBgmPolicy(sceneBgmHandle_);
 	}
 
 } // namespace Atrum
