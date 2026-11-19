@@ -28,6 +28,9 @@ public:
   bool ReloadFromDisk();
   void PollHotReload();
 
+  /// JSON の clientWidth/Height をランタイム計算に使うため、未読込なら既定パスから読む
+  void EnsureDesignBaselineLoaded();
+
   bool IsLoaded() const { return loaded_; }
   const std::string &LastLoadMessage() const { return lastLoadMessage_; }
 
@@ -36,6 +39,8 @@ public:
 
   float PerspectiveFovY() const { return perspectiveFovY_; }
   float AspectRatio() const { return aspectRatio_; }
+  int DesignClientWidth() const { return designClientWidth_; }
+  int DesignClientHeight() const { return designClientHeight_; }
 
 private:
   StageViewCameraTuning() = default;
@@ -48,6 +53,8 @@ private:
 
   float perspectiveFovY_ = 0.5f;
   float aspectRatio_ = 1280.0f / 720.0f;
+  int designClientWidth_ = 1280;
+  int designClientHeight_ = 720;
   float battleDistanceScale_ = 1.15f;
   float battleEyeHeightAbovePivotY_ = 3.6f;
   float battleEyeSideOffsetX_ = -2.25f;

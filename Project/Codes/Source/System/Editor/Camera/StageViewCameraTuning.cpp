@@ -59,6 +59,16 @@ void StageViewCameraTuning::SetJsonPath(std::string path) {
   ReloadFromDisk();
 }
 
+void StageViewCameraTuning::EnsureDesignBaselineLoaded() {
+  if (loaded_) {
+    return;
+  }
+  if (jsonPath_.empty()) {
+    jsonPath_ = EditorAssets::kStageViewCameraTuningJson;
+  }
+  TryParseFile(jsonPath_);
+}
+
 bool StageViewCameraTuning::ReloadFromDisk() {
   if (jsonPath_.empty()) {
     jsonPath_ = EditorAssets::kStageViewCameraTuningJson;
@@ -108,10 +118,11 @@ bool StageViewCameraTuning::TryParseFile(const std::string &path) {
   }
 
   perspectiveFovY_ = root.value("perspectiveFovY", perspectiveFovY_);
-  const int clientWidth = root.value("clientWidth", 1280);
-  const int clientHeight = root.value("clientHeight", 720);
-  aspectRatio_ = static_cast<float>(clientWidth) /
-                 static_cast<float>(std::max(clientHeight, 1));
+  designClientWidth_ = root.value("clientWidth", designClientWidth_);
+  designClientHeight_ = root.value("clientHeight", designClientHeight_);
+  aspectRatio_ =
+      static_cast<float>(designClientWidth_) /
+      static_cast<float>(std::max(designClientHeight_, 1));
 
   if (root.contains("stageBattle") && root.at("stageBattle").is_object()) {
     const nlohmann::json &battle = root.at("stageBattle");

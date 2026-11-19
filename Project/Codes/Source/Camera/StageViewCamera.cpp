@@ -3,7 +3,7 @@
 #include "Camera/Camera.h"
 #include "Camera/CameraFlipHorizontal.h"
 #include "Camera/CameraFlipVertical.h"
-#include "Engine/Platform/Window/Window.h"
+#include "Camera/StageViewDesignViewport.h"
 #include "Math/Lerp.h"
 #include <algorithm>
 #include <cmath>
@@ -14,10 +14,7 @@ namespace {
 
 constexpr float kPerspectiveFovY = 0.5f;
 
-float GetAspectRatio() {
-  return static_cast<float>(Window::kDefaultClientWidth) /
-         static_cast<float>(Window::kDefaultClientHeight);
-}
+float GetAspectRatio() { return GetStageViewDesignAspectRatio(); }
 
 StageViewCameraPose ComputeViewPose(const Math::Vector3 &pivot, float viewHalfHeight,
                                     float viewHalfWidth, float distanceScale,

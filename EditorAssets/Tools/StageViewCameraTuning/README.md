@@ -39,3 +39,8 @@ CI: `BuildCoverageCheck` が `verify_stage_view_tuning_sync.py` を実行。
 - **Auto hot-reload** でファイル保存を検知して再読込
 
 パス定数: `EditorAssetsPaths::kStageViewCameraTuningJson`
+
+## ランタイム参照（DEVELOPMENT）
+
+`GetStageViewDesignAspectRatio()` が tuning JSON の `clientWidth` / `clientHeight` を読み込み、
+`ComputeStageBattleViewPose` のアスペクト計算に使用する（Release は `Window` 既定値）。
