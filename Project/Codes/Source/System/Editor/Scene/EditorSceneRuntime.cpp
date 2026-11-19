@@ -300,6 +300,17 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     return;
   }
 
+  if (slot.typeName == "CmpCamera") {
+    if (!entity.HasUpdCmp<CmpCamera>()) {
+      return;
+    }
+    CmpCamera *cmp = entity.GetUpdCmp<CmpCamera>();
+    cmp->SetPerspectiveParams(p.value("perspectiveFovY", 0.5f),
+                              p.value("nearClip", 0.125f),
+                              p.value("farClip", 128.0f));
+    return;
+  }
+
   if (slot.typeName == "CmpParticleEmitter") {
     if (!entity.HasUpdCmp<CmpParticleEmitter>()) {
       return;

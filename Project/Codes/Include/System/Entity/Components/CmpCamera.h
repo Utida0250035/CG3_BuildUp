@@ -15,6 +15,8 @@ public:
 
   void Initialize() override;
 
+  void SetPerspectiveParams(float fovY, float nearClip, float farClip);
+
   /// GameOrder 描画直前に Scene から呼ぶ（通常の Entity::Update では行わない）
   void PrepareBeforeDraw(bool stageViewLocked, bool allowDebugControl);
 
@@ -22,7 +24,12 @@ public:
   const Camera *GetCamera() const { return camera_.get(); }
 
 private:
+  void ApplyDefaultProjectionMatrices();
+
   std::unique_ptr<Camera> camera_;
+  float perspectiveFovY_ = 0.5f;
+  float nearClip_ = 0.125f;
+  float farClip_ = 128.0f;
 };
 
 } // namespace Atrum

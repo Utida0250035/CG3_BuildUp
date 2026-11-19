@@ -187,7 +187,7 @@
 - [x] コンポーネント登録の三箇所同期を検証する自動化が無い（gap: `GAP-Infra-component_split_verify-001`）
 
 ### CmpCamera
-- [ ] Initialize が Orthographic を既定生成（spec: feature-memos/entity_camera_components.md）
+- [x] Initialize が Orthographic を既定生成（gap: `GAP-Entity-CmpCamera-001`）
 
 ### CmpLhRigidBody
 - [ ] 物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている

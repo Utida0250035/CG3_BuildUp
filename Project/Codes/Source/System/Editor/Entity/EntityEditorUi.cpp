@@ -321,6 +321,25 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
     return changed;
   }
 
+  if (slot.typeName == "CmpCamera") {
+    float fovY = p.value("perspectiveFovY", 0.5f);
+    if (ImGui::DragFloat("perspectiveFovY", &fovY, 0.01f, 0.1f, 2.5f)) {
+      p["perspectiveFovY"] = fovY;
+      changed = true;
+    }
+    float nearClip = p.value("nearClip", 0.125f);
+    if (ImGui::DragFloat("nearClip", &nearClip, 0.01f, 0.01f, 8.0f)) {
+      p["nearClip"] = nearClip;
+      changed = true;
+    }
+    float farClip = p.value("farClip", 128.0f);
+    if (ImGui::DragFloat("farClip", &farClip, 1.0f, 1.0f, 512.0f)) {
+      p["farClip"] = farClip;
+      changed = true;
+    }
+    return changed;
+  }
+
   if (slot.typeName == "CmpBounceBall") {
     changed |= DrawVector3Param("velocity", p, "velocity", {7.0f, 5.5f, 0.0f});
     float gravity = p.value("gravity", -14.0f);

@@ -83,6 +83,11 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"halfExtents", Math::Vector3{0.5f, 0.5f, 0.5f}},
             {"isTrigger", false}};
   }
+  if (typeName == "CmpCamera") {
+    return {{"perspectiveFovY", 0.5f},
+            {"nearClip", 0.125f},
+            {"farClip", 128.0f}};
+  }
   if (typeName == "CmpParticleEmitter") {
     return {{"emitterName", ""},
             {"jsonFilePath", "samples/01_burst_directional_fountain.json"},
