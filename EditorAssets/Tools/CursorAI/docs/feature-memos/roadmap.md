@@ -178,7 +178,7 @@
 
 
 ### UiState
-- [ ] 複数選択が無く一括調整できない
+- [x] 複数選択が無く一括調整できない（gap: `GAP-Editor-UiState-001`）
 
 ### component_split_next
 - [ ] ランタイム用 Data／Collider 分割候補のエディタ登録が未着手（spec: feature-memos/component_split_guidelines.md）

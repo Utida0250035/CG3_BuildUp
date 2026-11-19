@@ -23,6 +23,8 @@ struct UiState {
   /// プロジェクトパネルで選択中のシーンファイル
   std::string selectedScenePath{};
   int selectedInstanceIndex = 0;
+  /// ヒエラルキー複数選択（空のときは selectedInstanceIndex のみ）
+  std::vector<int> selectedInstanceIndices{};
   std::string selectedPrefabPath{};
   ComponentSlotKind selectedComponentKind = ComponentSlotKind::Draw;
   int selectedComponentIndex = 0;

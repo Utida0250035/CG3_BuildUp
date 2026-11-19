@@ -436,6 +436,107 @@ void CollectKnownPresetIndicesForKind(const ComponentSlotKind kind,
   }
 }
 
+bool IsInstanceIndexSelected(const UiState &ui, const int index) {
+  if (ui.selectedInstanceIndices.empty()) {
+    return ui.selectedInstanceIndex == index;
+  }
+  return std::find(ui.selectedInstanceIndices.begin(),
+                   ui.selectedInstanceIndices.end(),
+                   index) != ui.selectedInstanceIndices.end();
+}
+
+void SetSingleInstanceSelection(UiState &ui, const int index) {
+  ui.selectedInstanceIndex = index;
+  ui.selectedInstanceIndices = {index};
+}
+
+void ToggleInstanceSelection(UiState &ui, const int index) {
+  if (ui.selectedInstanceIndices.empty()) {
+    ui.selectedInstanceIndices = {ui.selectedInstanceIndex};
+  }
+  const auto found = std::find(ui.selectedInstanceIndices.begin(),
+                               ui.selectedInstanceIndices.end(), index);
+  if (found != ui.selectedInstanceIndices.end()) {
+    if (ui.selectedInstanceIndices.size() <= 1) {
+      return;
+    }
+    ui.selectedInstanceIndices.erase(found);
+    ui.selectedInstanceIndex = ui.selectedInstanceIndices.front();
+    return;
+  }
+  ui.selectedInstanceIndices.push_back(index);
+  std::sort(ui.selectedInstanceIndices.begin(),
+            ui.selectedInstanceIndices.end());
+  ui.selectedInstanceIndex = index;
+}
+
+void DrawMultiInstanceBatchPanel(EntityEditor &editor,
+                                 const std::vector<int> &selection,
+                                 bool &changed) {
+  EditorSceneDocument &scene = editor.SceneDocument();
+  UiState &ui = editor.Ui();
+
+  ImGui::Text("複数選択: %zu 件", selection.size());
+  ImGui::TextDisabled("Ctrl+クリックで選択を追加/解除");
+
+  static float batchScaleFactor = 1.0f;
+  ImGui::InputFloat("スケール倍率", &batchScaleFactor, 0.01f, 0.1f, "%.3f");
+  if (ImGui::Button("スケール一括適用")) {
+    for (const int index : selection) {
+      if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
+        continue;
+      }
+      Math::Vector3 &scale =
+          scene.instances[static_cast<size_t>(index)]
+              .definition.initialTransform.scale;
+      scale.x *= batchScaleFactor;
+      scale.y *= batchScaleFactor;
+      scale.z *= batchScaleFactor;
+    }
+    changed = true;
+    batchScaleFactor = 1.0f;
+  }
+
+  static float positionOffset[3] = {0.0f, 0.0f, 0.0f};
+  ImGui::InputFloat3("位置オフセット", positionOffset);
+  if (ImGui::Button("位置オフセット一括適用")) {
+    for (const int index : selection) {
+      if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
+        continue;
+      }
+      Math::Vector3 &translate =
+          scene.instances[static_cast<size_t>(index)]
+              .definition.initialTransform.translate;
+      translate.x += positionOffset[0];
+      translate.y += positionOffset[1];
+      translate.z += positionOffset[2];
+    }
+    changed = true;
+    positionOffset[0] = 0.0f;
+    positionOffset[1] = 0.0f;
+    positionOffset[2] = 0.0f;
+  }
+
+  ImGui::Separator();
+  ImGui::InputString("一括付与タグ", ui.newEntityTagName);
+  ImGui::SameLine();
+  if (ImGui::Button("タグを一括付与")) {
+    if (!ui.newEntityTagName.empty()) {
+      for (const int index : selection) {
+        if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
+          continue;
+        }
+        AddTagToCatalog(scene, ui.newEntityTagName);
+        AddTagToEntityDefinition(
+            scene.instances[static_cast<size_t>(index)].definition,
+            ui.newEntityTagName);
+      }
+      ui.newEntityTagName.clear();
+      changed = true;
+    }
+  }
+}
+
 void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
   EditorSceneDocument &scene = editor.SceneDocument();
   UiState &ui = editor.Ui();
@@ -445,10 +546,14 @@ void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
   }
   SceneEntityInstance &instance =
       scene.instances[static_cast<size_t>(nodeIndex)];
-  const bool selected = ui.selectedInstanceIndex == nodeIndex;
+  const bool selected = IsInstanceIndexSelected(ui, nodeIndex);
   ImGui::PushID(nodeIndex);
   if (ImGui::Selectable(instance.instanceName.c_str(), selected)) {
-    ui.selectedInstanceIndex = nodeIndex;
+    if (ImGui::GetIO().KeyCtrl) {
+      ToggleInstanceSelection(ui, nodeIndex);
+    } else {
+      SetSingleInstanceSelection(ui, nodeIndex);
+    }
   }
   ImGui::PopID();
 
@@ -637,6 +742,16 @@ void EntityEditor::DrawProjectPanel() {
 void EntityEditor::DrawInspectorPanel() {
   if (scene_.instances.empty()) {
     ImGui::TextUnformatted("シーンにオブジェクトがありません");
+    return;
+  }
+
+  ClampSelectedInstanceIndex();
+  if (ui_.selectedInstanceIndices.size() > 1) {
+    bool batchChanged = false;
+    DrawMultiInstanceBatchPanel(*this, ui_.selectedInstanceIndices, batchChanged);
+    if (batchChanged) {
+      ui_.requestApplyPreview = true;
+    }
     return;
   }
 

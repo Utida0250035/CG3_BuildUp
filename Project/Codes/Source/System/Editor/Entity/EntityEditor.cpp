@@ -36,11 +36,32 @@ const SceneEntityInstance &EntityEditor::SelectedInstance() const {
 void EntityEditor::ClampSelectedInstanceIndex() {
   if (scene_.instances.empty()) {
     ui_.selectedInstanceIndex = 0;
+    ui_.selectedInstanceIndices.clear();
     return;
   }
-  ui_.selectedInstanceIndex = std::clamp(
-      ui_.selectedInstanceIndex, 0,
-      static_cast<int>(scene_.instances.size()) - 1);
+  const int maxIndex = static_cast<int>(scene_.instances.size()) - 1;
+  ui_.selectedInstanceIndex =
+      std::clamp(ui_.selectedInstanceIndex, 0, maxIndex);
+  if (ui_.selectedInstanceIndices.empty()) {
+    ui_.selectedInstanceIndices.push_back(ui_.selectedInstanceIndex);
+  }
+  ui_.selectedInstanceIndices.erase(
+      std::remove_if(ui_.selectedInstanceIndices.begin(),
+                     ui_.selectedInstanceIndices.end(),
+                     [maxIndex](const int index) {
+                       return index < 0 || index > maxIndex;
+                     }),
+      ui_.selectedInstanceIndices.end());
+  if (ui_.selectedInstanceIndices.empty()) {
+    ui_.selectedInstanceIndices.push_back(ui_.selectedInstanceIndex);
+  }
+  std::sort(ui_.selectedInstanceIndices.begin(),
+            ui_.selectedInstanceIndices.end());
+  ui_.selectedInstanceIndices.erase(
+      std::unique(ui_.selectedInstanceIndices.begin(),
+                  ui_.selectedInstanceIndices.end()),
+      ui_.selectedInstanceIndices.end());
+  ui_.selectedInstanceIndex = ui_.selectedInstanceIndices.front();
 }
 
 void EntityEditor::AddEmptyInstance() {
@@ -52,6 +73,7 @@ void EntityEditor::AddEmptyInstance() {
   scene_.instances.push_back(std::move(instance));
   ui_.selectedInstanceIndex =
       static_cast<int>(scene_.instances.size()) - 1;
+  ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
   ui_.requestApplyPreview = true;
 }
 
@@ -66,6 +88,15 @@ void EntityEditor::RemoveSelectedInstance() {
       instance.parentIndex = -1;
     } else if (instance.parentIndex > removeIndex) {
       --instance.parentIndex;
+    }
+  }
+  ui_.selectedInstanceIndices.erase(
+      std::remove(ui_.selectedInstanceIndices.begin(),
+                  ui_.selectedInstanceIndices.end(), removeIndex),
+      ui_.selectedInstanceIndices.end());
+  for (int &selectedIndex : ui_.selectedInstanceIndices) {
+    if (selectedIndex > removeIndex) {
+      --selectedIndex;
     }
   }
   ClampSelectedInstanceIndex();
@@ -120,6 +151,7 @@ bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
   scene_.instances.push_back(std::move(instance));
   ui_.selectedInstanceIndex =
       static_cast<int>(scene_.instances.size()) - 1;
+  ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
   ui_.requestApplyPreview = true;
   return true;
 }
@@ -134,6 +166,7 @@ void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
     instance.definition = MakeDefaultEntityDefinition("Entity_0");
     scene_.instances = {std::move(instance)};
     ui_.selectedInstanceIndex = 0;
+    ui_.selectedInstanceIndices = {0};
     ui_.selectedComponentKind = ComponentSlotKind::Draw;
     ui_.selectedComponentIndex = 0;
     return;
@@ -161,6 +194,7 @@ void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
   }
 
   ui_.selectedInstanceIndex = 0;
+  ui_.selectedInstanceIndices = {0};
   ui_.selectedComponentIndex = 0;
   if (!SelectedDefinition().components.empty()) {
     ui_.selectedComponentKind =
@@ -224,6 +258,7 @@ void EntityEditor::CreateNewSceneFile() {
   ui_.jsonFilePath = path;
   ui_.selectedScenePath = path;
   ui_.selectedInstanceIndex = 0;
+  ui_.selectedInstanceIndices = {0};
   ui_.selectedComponentKind = ComponentSlotKind::Draw;
   ui_.selectedComponentIndex = 0;
   ui_.requestApplyPreview = true;
