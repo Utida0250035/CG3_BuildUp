@@ -39,7 +39,11 @@ namespace Atrum {
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmTitle.mp3",
 											  "./Resources/bgmTitle.mp3" });
 		if (sceneBgmHandle_.isSuccess) {
-			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+			float pitchRatio = 1.0f;
+			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+			    pitchRatio < 0.99f) {
+				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+			}
 		}
 		sceneAmbientLoopSeHandle_ = Atrum::PlaySeLoopCandidates(
 			{"./Assets/Audios/seTitleAmbientLoop.mp3",
@@ -52,6 +56,14 @@ namespace Atrum {
 	void SceneTitle::Update() {
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
+		if (sceneBgmHandle_.isSuccess &&
+		    !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+			float pitchRatio = 1.0f;
+			if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
+			    pitchRatio < 0.99f) {
+				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+			}
+		}
 		if (sceneAmbientLoopSeHandle_.isSuccess) {
 			const float targetVolume =
 				Atrum::CommandChangeScene::Instance()->GetIsExecute() ? 0.1f

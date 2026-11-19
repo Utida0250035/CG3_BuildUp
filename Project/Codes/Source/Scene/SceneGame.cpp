@@ -129,7 +129,11 @@ namespace Atrum {
 		}
 
 		if (sceneBgmHandle_.isSuccess) {
-			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+			float pitchRatio = 1.0f;
+			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+			    pitchRatio < 0.99f) {
+				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+			}
 			float volume = 0.0f;
 			if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
 				Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
@@ -197,6 +201,15 @@ namespace Atrum {
 			} else if (currentVolume >= kDamageDuckVolume - 0.02f &&
 			           currentVolume <= kDamageDuckVolume + 0.02f) {
 				Atrum::SetSeVolume(sceneBgmHandle_, 1.0f);
+			}
+
+			constexpr float kDefeatSlowPitch = 0.82f;
+			float pitchRatio = 1.0f;
+			if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
+			    !Atrum::PlayerDamageScreenVignette::Instance().IsShowing() &&
+			    pitchRatio >= kDefeatSlowPitch - 0.02f &&
+			    pitchRatio <= kDefeatSlowPitch + 0.02f) {
+				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
 			}
 		}
 
@@ -576,7 +589,12 @@ namespace Atrum {
 		playerDeathPresentation_->Begin(player_.get());
 
 		if (sceneBgmHandle_.isSuccess) {
-			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 0.82f);
+			constexpr float kDefeatSlowPitch = 0.82f;
+			float pitchRatio = 1.0f;
+			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+			    pitchRatio > kDefeatSlowPitch + 0.02f) {
+				Atrum::SetBgmLoopPitch(sceneBgmHandle_, kDefeatSlowPitch);
+			}
 		}
 	}
 

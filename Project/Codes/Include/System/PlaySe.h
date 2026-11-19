@@ -269,7 +269,11 @@ inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
 
   if (CommandChangeScene::Instance()->GetIsExecute()) {
     SetBgmLoopVolume(handle, kFadeDuckVolume);
-    SetBgmLoopPitch(handle, kFadeDuckPitch);
+    float pitchRatio = 1.0f;
+    if (!GetSeFrequencyRatio(handle, pitchRatio) ||
+        pitchRatio > kFadeDuckPitch + 0.02f) {
+      SetBgmLoopPitch(handle, kFadeDuckPitch);
+    }
     if (!IsBgmLoopPaused(handle)) {
       PauseBgmLoop(handle);
     }
@@ -280,7 +284,10 @@ inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
     return;
   }
   SetBgmLoopVolume(handle, 1.0f);
-  SetBgmLoopPitch(handle, 1.0f);
+  float pitchRatio = 1.0f;
+  if (!GetSeFrequencyRatio(handle, pitchRatio) || pitchRatio < 0.99f) {
+    SetBgmLoopPitch(handle, 1.0f);
+  }
 }
 
 } // namespace Atrum

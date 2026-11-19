@@ -120,7 +120,7 @@
 - [x] GetSeVolume がシーンから未呼び出し（gap: `GAP-Audio-GetSeVolume-001`）
 
 ### GetSeFrequencyRatio
-- [ ] GetSeFrequencyRatio が未使用
+- [x] GetSeFrequencyRatio が未使用（gap: `GAP-Audio-GetSeFrequencyRatio-001`）
 
 ### SetSeFrequencyRatio
 - [ ] SetSeFrequencyRatio がゲームから未使用

@@ -37,7 +37,11 @@ void SceneResult::EnterScene() {
   sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmResult.mp3",
                                         "./Resources/bgmResult.mp3"});
   if (sceneBgmHandle_.isSuccess) {
-    Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+    float pitchRatio = 1.0f;
+    if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+        pitchRatio < 0.99f) {
+      Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+    }
     float volume = 0.0f;
     if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
       Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
@@ -50,6 +54,11 @@ void SceneResult::Update() {
   Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
   if (sceneBgmHandle_.isSuccess &&
       !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+    float pitchRatio = 1.0f;
+    if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
+        pitchRatio < 0.99f) {
+      Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+    }
     float volume = 0.0f;
     if (Atrum::GetSeVolume(sceneBgmHandle_, volume) && volume < 0.99f) {
       Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
