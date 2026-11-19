@@ -268,6 +268,9 @@
     <ClCompile Include="Codes\Source\Scene\SceneMovieVisualSetup.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneMovieAudioPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\ScenePrimaryCameraResolve.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -886,6 +889,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneMovieVisualSetup.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneMovieAudioPolicy.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\ScenePrimaryCameraResolve.h">

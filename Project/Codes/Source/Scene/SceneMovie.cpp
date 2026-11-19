@@ -3,6 +3,7 @@
 #include "Scene/SceneMovieReturnTarget.h"
 #include "Scene/SceneMovieTrackFailure.h"
 #include "Scene/SceneMovieVisualSetup.h"
+#include "Scene/SceneMovieAudioPolicy.h"
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "imgui.h"
@@ -84,6 +85,7 @@ void SceneMovie::RequestReturnToCaller() {
   }
 
   Scene *const target = ResolveSceneMovieReturnTarget(returnScene_);
+  SceneMovieAudioPolicy::PrepareReturnSceneBgmBeforeFade(target);
   hasPendingSceneChange_ = true;
   CommandChangeScene::Instance()->Set(
       target, std::make_unique<ChangeSceneFade>().release());
@@ -98,6 +100,7 @@ void SceneMovie::EnterScene() {
   trackLoadFailureMessage_.clear();
 
   SetupStageLighting();
+  SceneMovieAudioPolicy::OnEnterScene();
 
   movieCamera_.Initialize();
   movieCamera_.SetCamera(GetCamera());
@@ -114,6 +117,7 @@ void SceneMovie::EnterScene() {
 }
 
 void SceneMovie::Update() {
+  SceneMovieAudioPolicy::TickDuringMovie(hasPendingSceneChange_);
   if (hasPendingSceneChange_) {
     return;
   }
@@ -167,6 +171,7 @@ void SceneMovie::DrawScene() {
 }
 
 void SceneMovie::ExitScene() {
+  SceneMovieAudioPolicy::OnExitScene();
   ClearVisuals();
   movieCamera_.Finalize();
   SceneMovieRegistry::Instance().OnSceneExited(this);

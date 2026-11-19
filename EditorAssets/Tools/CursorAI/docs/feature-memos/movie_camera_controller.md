@@ -51,5 +51,6 @@ CommandChangeScene::Instance()->Set(movie, std::make_unique<ChangeSceneFade>().r
 
 - `IsStageViewCameraLocked() == true`
 - カメラは `MovieCameraController` のみ（失敗時は即 return へ）
+- オーディオ: `SceneMovieAudioPolicy`（Enter でループ BGM 無し、復帰フェード前に returnScene 向け遅延 BGM 登録）
 
 > `scene_movie.md` は GAP／roadmap リンク互換用スタブ（本文は本節）。
