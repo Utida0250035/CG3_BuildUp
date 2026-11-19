@@ -5658,3 +5658,18 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | operator_guidance 入場 | 有効 | 初回利用者がオペレータ案内に沿って主要操作を完了できる（JSON 欠落時は本編のみ継続） |
+
+---
+
+## セッション 2026-11-20 07:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ApplySceneGameVisualPresetOnEnter` を `EnterScene` 先頭で呼び出し
+- プロファイル適用後に `FlushDirectionalLightConstantBuffer` で初回描画前に CB 同期
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Enter 見た目 | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |

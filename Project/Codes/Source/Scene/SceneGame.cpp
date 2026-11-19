@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameEnterVisualPreset.h"
 #include "Scene/SceneGameLightingProfile.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
@@ -48,6 +49,7 @@ namespace Atrum {
 
 	void SceneGame::EnterScene() {
 		EnsureCommonResources();
+		ApplySceneGameVisualPresetOnEnter();
 		pendingDefeat_ = DefeatKind::None;
 		bossDeathResultTransitionRequested_ = false;
 		bossDeathPresentation_.reset();
