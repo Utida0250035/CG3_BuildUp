@@ -118,6 +118,13 @@ namespace Atrum {
 		operatorBattleReadyNotified_ = false;
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmGame.mp3",
 											  "./Resources/bgmGame.mp3" });
+
+		if (resumeGameBgmPlaybackSeconds_ >= 0.0f && sceneBgmHandle_.isSuccess) {
+			if (Atrum::SetBgmLoopPlaybackSeconds(sceneBgmHandle_,
+			                                    resumeGameBgmPlaybackSeconds_)) {
+				resumeGameBgmPlaybackSeconds_ = -1.0f;
+			}
+		}
 	}
 
 	void SceneGame::ExitScene() {
