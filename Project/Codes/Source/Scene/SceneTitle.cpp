@@ -11,6 +11,8 @@
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
+#include <cmath>
+
 namespace {
 
 	void SetupStageLighting() {
@@ -51,10 +53,14 @@ namespace Atrum {
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
 		if (sceneAmbientLoopSeHandle_.isSuccess) {
-			const float ambientVolume =
+			const float targetVolume =
 				Atrum::CommandChangeScene::Instance()->GetIsExecute() ? 0.1f
 				                                                      : 0.42f;
-			Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, ambientVolume);
+			float currentVolume = targetVolume;
+			if (!Atrum::GetSeVolume(sceneAmbientLoopSeHandle_, currentVolume) ||
+				std::abs(currentVolume - targetVolume) > 0.02f) {
+				Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, targetVolume);
+			}
 		}
 		UpdateBackgrounds();
 

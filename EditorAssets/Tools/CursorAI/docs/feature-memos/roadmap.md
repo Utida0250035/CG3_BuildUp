@@ -117,7 +117,7 @@
 - [x] SetSeVolume がゲームロジックから未使用（gap: `GAP-Audio-SetSeVolume-001`）
 
 ### GetSeVolume
-- [ ] GetSeVolume がシーンから未呼び出し
+- [x] GetSeVolume がシーンから未呼び出し（gap: `GAP-Audio-GetSeVolume-001`）
 
 ### GetSeFrequencyRatio
 - [ ] GetSeFrequencyRatio が未使用

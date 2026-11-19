@@ -30,6 +30,8 @@
 #include "System/GameAssetsPaths.h"
 #include "System/PlaySe.h"
 
+#include <cmath>
+
 namespace {
 
 	using Atrum::Engine;
@@ -128,6 +130,10 @@ namespace Atrum {
 
 		if (sceneBgmHandle_.isSuccess) {
 			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+			float volume = 0.0f;
+			if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
+				Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
+			}
 		}
 	}
 
@@ -180,9 +186,18 @@ namespace Atrum {
 		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
 
 		if (sceneBgmHandle_.isSuccess &&
-		    !Atrum::CommandChangeScene::Instance()->GetIsExecute() &&
-		    Atrum::PlayerDamageScreenVignette::Instance().IsShowing()) {
-			Atrum::SetSeVolume(sceneBgmHandle_, 0.58f);
+		    !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+			constexpr float kDamageDuckVolume = 0.58f;
+			float currentVolume = 1.0f;
+			Atrum::GetSeVolume(sceneBgmHandle_, currentVolume);
+			if (Atrum::PlayerDamageScreenVignette::Instance().IsShowing()) {
+				if (currentVolume > kDamageDuckVolume + 0.02f) {
+					Atrum::SetSeVolume(sceneBgmHandle_, kDamageDuckVolume);
+				}
+			} else if (currentVolume >= kDamageDuckVolume - 0.02f &&
+			           currentVolume <= kDamageDuckVolume + 0.02f) {
+				Atrum::SetSeVolume(sceneBgmHandle_, 1.0f);
+			}
 		}
 
 		if (Atrum::CommandChangeScene::Instance()->GetIsExecute()) {

@@ -38,12 +38,23 @@ void SceneResult::EnterScene() {
                                         "./Resources/bgmResult.mp3"});
   if (sceneBgmHandle_.isSuccess) {
     Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+    float volume = 0.0f;
+    if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
+      Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
+    }
   }
 }
 
 void SceneResult::Update() {
   Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
   Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
+  if (sceneBgmHandle_.isSuccess &&
+      !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+    float volume = 0.0f;
+    if (Atrum::GetSeVolume(sceneBgmHandle_, volume) && volume < 0.99f) {
+      Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
+    }
+  }
   UpdateBackgrounds();
 
   if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
