@@ -185,6 +185,9 @@ namespace Atrum {
 
 		}
 
+		/// フェードアウト中（未切替）は false。フェードイン中は現シーンの Update を許可する。
+		bool AllowsCurrentSceneUpdate() const;
+
 		bool ShouldDeferEnterSceneBgm() const {
 			return deferEnterSceneBgmUntilFadeEnds_;
 		}

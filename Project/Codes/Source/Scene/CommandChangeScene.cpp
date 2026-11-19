@@ -54,4 +54,14 @@ namespace Atrum {
 		deferredEnterSceneBgmCandidates_.clear();
 	}
 
+	bool CommandChangeScene::AllowsCurrentSceneUpdate() const {
+		if (!isExecute_) {
+			return true;
+		}
+		if (changeSceneEffect_ == nullptr) {
+			return true;
+		}
+		return changeSceneEffect_->GetIsSceneChange();
+	}
+
 }
