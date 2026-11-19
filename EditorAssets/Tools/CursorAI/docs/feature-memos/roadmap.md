@@ -190,7 +190,7 @@
 - [x] Initialize が Orthographic を既定生成（gap: `GAP-Entity-CmpCamera-001`）
 
 ### CmpLhRigidBody
-- [ ] 物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている
+- [x] 物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている（gap: `GAP-Runtime-CmpLhRigidBody-001`）
 
 ### EngineAccess
 - [ ] 描画への外部アクセスが EngineAccess に無く、AtrumEngine 経由になる

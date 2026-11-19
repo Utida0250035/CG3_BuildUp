@@ -19,6 +19,7 @@
 #include "Geometry/Plane.h"
 #include "Input/DirectInput.h"
 #include "Input/PlayInput.h"
+#include "Physics/PhysicsManager.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Vector4.h"
 #include "String/ConvertString.h"
@@ -115,6 +116,10 @@ Input::PlayInput *EnginePlayInput() {
 
 Audio::AudioManager *EngineAudioManager() {
 	return AtrumEngine::Instance()->GetAudioManager();
+}
+
+Physics::PhysicsManager *EnginePhysicsManager() {
+	return &Physics::PhysicsManager::Instance();
 }
 
 TextureStorage *EngineTextureStorage() {

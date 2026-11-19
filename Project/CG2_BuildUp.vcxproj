@@ -300,6 +300,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\AbstractInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
+    <ClCompile Include="Codes\Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Codes\Source\Input\XInputController.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
@@ -553,6 +554,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Input\AbstractInput.h" />
     <ClInclude Include="Codes\Include\Input\XInputController.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
+    <ClInclude Include="Codes\Include\Physics\PhysicsManager.h" />
     <ClInclude Include="Codes\Include\Math\Easing.h" />
     <ClInclude Include="Codes\Include\Math\Lerp.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />

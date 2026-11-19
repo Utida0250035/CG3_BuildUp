@@ -178,6 +178,9 @@
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp">
       <Filter>Codes\Source\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Physics\PhysicsManager.cpp">
+      <Filter>Codes\Source\Physics</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp">
       <Filter>Codes\Source\Input</Filter>
     </ClCompile>
@@ -762,6 +765,9 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\Input\DirectInput.h">
       <Filter>Codes\Include\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Physics\PhysicsManager.h">
+      <Filter>Codes\Include\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Input\PlayInput.h">
       <Filter>Codes\Include\Input</Filter>
