@@ -114,9 +114,6 @@ inline Audio::Handle PlaySeLoopCandidates(
   return PlaySeLoop(path);
 }
 
-/// ループ SE を Handle 単位で停止（PlaySeLoop / PlaySeLoopCandidates 用）
-inline void StopSeLoop(const Audio::Handle &handle) { StopSe(handle); }
-
 inline void StopSe(const Audio::Handle &handle) {
   // PlayShort 以前は isSuccess が未設定でも playId で停止できるようにする
   if (!handle.isSuccess && handle.playId == 0) {
@@ -125,6 +122,9 @@ inline void StopSe(const Audio::Handle &handle) {
 
   ::Atrum::EngineAudioManager()->Stop(handle);
 }
+
+/// ループ SE を Handle 単位で停止（PlaySeLoop / PlaySeLoopCandidates 用）
+inline void StopSeLoop(const Audio::Handle &handle) { StopSe(handle); }
 
 /// シーン BGM を停止（汎用ストリーミング SE は巻き添えしない）
 inline void StopBgmLoop(const Audio::Handle &handle) {
