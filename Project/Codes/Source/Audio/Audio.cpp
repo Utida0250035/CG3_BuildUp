@@ -52,6 +52,18 @@ float ClampVolume(const float volume) {
 
 	}
 
+	void AudioManager::SetStreamingLoadThresholdBytes(const size_t bytes) {
+
+		StreamLoadPolicy::SetThresholdBytes(bytes);
+
+	}
+
+	size_t AudioManager::GetStreamingLoadThresholdBytes() const {
+
+		return StreamLoadPolicy::ThresholdBytes();
+
+	}
+
 	void AudioManager::Initialize() {
 
 		HRESULT hr = XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);

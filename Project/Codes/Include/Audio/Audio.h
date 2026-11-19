@@ -67,7 +67,6 @@ namespace Atrum::Audio {
 
 		inline static constexpr size_t kSourceVoiceMax = 64;
 		inline static constexpr size_t kStreamSourceVoiceMax = 8;
-		inline static constexpr size_t kFileSizeThreshold = 5 * 1024 * 1024;
 
 		WAVEFORMATEX StandardWaveFormatEx();
 
@@ -138,6 +137,9 @@ namespace Atrum::Audio {
 		void Initialize();
 
 		void Update();
+
+		void SetStreamingLoadThresholdBytes(size_t bytes);
+		size_t GetStreamingLoadThresholdBytes() const;
 
 		// OnBufferEnd から即座にキューへ Submit する（Update 待ちによる枯渇を避ける）
 		void RefillStreamingVoiceAfterBufferEnd(StreamingSourceVoice& voice);

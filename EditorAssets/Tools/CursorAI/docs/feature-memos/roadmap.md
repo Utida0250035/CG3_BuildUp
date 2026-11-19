@@ -95,7 +95,7 @@
 
 ### IsSuitableStreaming
 - [x] ファイルサイズだけでストリーム判定（gap: `GAP-Audio-IsSuitableStreaming-001`）
-- [ ] 閾値 5MB がハードコード
+- [x] 閾値 5MB がハードコード（gap: `GAP-Audio-IsSuitableStreaming-002`）
 
 ### GetBgmLoopPlaybackSeconds
 - [ ] 再生秒取得がゲームシーン未使用
