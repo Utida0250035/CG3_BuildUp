@@ -184,7 +184,7 @@
 - [x] ランタイム用 Data／Collider 分割候補のエディタ登録が未着手（gap: `GAP-Authoring-component_split_next-001`）
 
 ### component_split_verify
-- [ ] コンポーネント登録の三箇所同期を検証する自動化が無い（spec: feature-memos/component_split_guidelines.md）
+- [x] コンポーネント登録の三箇所同期を検証する自動化が無い（gap: `GAP-Infra-component_split_verify-001`）
 
 ### CmpCamera
 - [ ] Initialize が Orthographic を既定生成（spec: feature-memos/entity_camera_components.md）

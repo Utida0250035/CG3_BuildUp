@@ -9,6 +9,7 @@
 
 ```bash
 python3 EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py
+python3 EditorAssets/Tools/CursorAI/verify_editor_component_registration.py
 ```
 
 ## GitHub Actions
