@@ -282,7 +282,7 @@
 
 ### SceneMovie
 - [x] movie トラックパスを EditorAssets 基準に解決していない（spec: feature-memos/movie_camera_controller.md）
-- [ ] トラック読込失敗時に初回 Update で即戻り（エラー表示なし）
+- [x] トラック読込失敗時に初回 Update で即戻り（エラー表示なし）
 - [ ] SkyDome がトラック先頭姿勢前のカメラに紐づく（spec: feature-memos/scene_movie.md）
 - [ ] トラック開始失敗時に SetupStageViewCamera を呼ぶ（spec: feature-memos/scene_movie.md）
 - [ ] ムービーシーンに BGM/トラック音声の再生・復帰ポリシーがコード上見えない（spec: feature-memos/scene_movie.md）

@@ -262,6 +262,9 @@
     <ClCompile Include="Codes\Source\Scene\SceneMovieReturnTarget.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneMovieTrackFailure.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\ScenePrimaryCameraResolve.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -874,6 +877,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneMovieReturnTarget.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneMovieTrackFailure.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\ScenePrimaryCameraResolve.h">

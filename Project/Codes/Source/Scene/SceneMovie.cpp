@@ -1,6 +1,11 @@
 #include "Scene/SceneMovie.h"
 
 #include "Scene/SceneMovieReturnTarget.h"
+#include "Scene/SceneMovieTrackFailure.h"
+#include "System/DeltaTime.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "imgui.h"
+#endif
 
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
@@ -87,6 +92,9 @@ void SceneMovie::EnterScene() {
   EnsureCommonResources();
   hasPendingSceneChange_ = false;
   trackPlaybackStarted_ = false;
+  trackLoadFailed_ = false;
+  trackLoadFailureElapsedSeconds_ = 0.0f;
+  trackLoadFailureMessage_.clear();
 
   SpawnVisuals();
   SetupStageLighting();
@@ -97,6 +105,9 @@ void SceneMovie::EnterScene() {
       movieCamera_.TryBeginFromJsonFile(trackJsonPath_);
 
   if (!trackPlaybackStarted_) {
+    trackLoadFailed_ = true;
+    trackLoadFailureMessage_ =
+        BuildSceneMovieTrackLoadFailureMessage(trackJsonPath_);
     SetupStageViewCamera();
   }
 }
@@ -111,8 +122,13 @@ void SceneMovie::Update() {
     return;
   }
 
-  if (!trackPlaybackStarted_) {
-    RequestReturnToCaller();
+  if (trackLoadFailed_) {
+    trackLoadFailureElapsedSeconds_ +=
+        ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
+    if (trackLoadFailureElapsedSeconds_ >=
+        kSceneMovieTrackLoadFailureHoldSeconds) {
+      RequestReturnToCaller();
+    }
     return;
   }
 
@@ -131,6 +147,22 @@ void SceneMovie::DrawScene() {
   if (skyDome_) {
     skyDome_->Draw();
   }
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (trackLoadFailed_ && !trackLoadFailureMessage_.empty()) {
+    ImGui::SetNextWindowPos(ImVec2(24.0f, 24.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(520.0f, 180.0f), ImGuiCond_FirstUseEver);
+    if (ImGui::Begin("ムービートラック（読込失敗）", nullptr,
+                     ImGuiWindowFlags_NoCollapse)) {
+      ImGui::TextWrapped("%s", trackLoadFailureMessage_.c_str());
+      const float remaining =
+          kSceneMovieTrackLoadFailureHoldSeconds -
+          trackLoadFailureElapsedSeconds_;
+      ImGui::TextDisabled("自動復帰まで: %.1f 秒", std::max(0.0f, remaining));
+    }
+    ImGui::End();
+  }
+#endif
 }
 
 void SceneMovie::ExitScene() {

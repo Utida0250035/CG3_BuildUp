@@ -346,6 +346,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovie.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieReturnTarget.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieTrackFailure.cpp" />
     <ClCompile Include="Codes\Source\Scene\ScenePrimaryCameraResolve.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
@@ -613,6 +614,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovie.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieReturnTarget.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieTrackFailure.h" />
     <ClInclude Include="Codes\Include\Scene\ScenePrimaryCameraResolve.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
