@@ -3498,3 +3498,51 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
 |--------|----------------------------------------|------------------------------|
 | OnStreamEnd が Waiting のみセット | 有効 | ・bgmとしてのループ再生ができる / ・サイズが大きい音源ファイルについてストリーミング再生ができる |
+
+---
+
+## セッション 2026-11-19 19:45（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/StreamingCallbackOnBufferEnd`
+- **roadmap:** Audio › StreamingVoiceCallback — `OnBufferEnd が Streaming へ遷移`
+- `OnBufferEnd` で `VoiceState::Streaming` のみ設定していたのをやめ、`AudioManager::RefillStreamingVoiceAfterBufferEnd` で `RefillBuffer` を即 Submit。コールバックに `AudioManager*` を渡す（`CreateVoicePool`）
+- 失敗時は `Streaming` に戻し、従来どおり `Update` が再試行。一時停止・停止・Waiting はスキップ
+- **ビルド:** Cloud VM 上では未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- XAudio コールバックスレッドから `RefillBuffer` を呼ぶため、`Update` と同時実行の可能性はある（現行は state が atomic）
+- 高負荷時の完全保証は未検証
+
+### 3. 次に実行すべきステップの提案
+
+- roadmap 次行: `EOF で break のみ`（次ブランチ `fix/AudioDecoderEofBreak`）
+- ストリーム BGM の連続再生手動確認（任意）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **OnBufferEnd が Streaming へ遷移**
+  - 用途: バッファ再生終了直後にキューを補充し、BGM／長尺 SE のクリックや無音を防ぐ
+  - 使用場面: ランタイム（高負荷フレームでもストリーミング再生）
+  - 用途から決めた仕様: state 更新だけにせず、コールバック内で `RefillBuffer` まで実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| OnBufferEnd が Streaming へ遷移 | 有効 | ・サイズが大きい音源ファイルについてストリーミング再生ができる / ・bgmとしてのループ再生ができる |

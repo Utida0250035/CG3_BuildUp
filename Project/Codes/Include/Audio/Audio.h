@@ -139,6 +139,9 @@ namespace Atrum::Audio {
 
 		void Update();
 
+		// OnBufferEnd から即座にキューへ Submit する（Update 待ちによる枯渇を避ける）
+		void RefillStreamingVoiceAfterBufferEnd(StreamingSourceVoice& voice);
+
 		/// <summary>
 		/// 音源の読み込み
 		/// </summary>

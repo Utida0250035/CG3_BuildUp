@@ -84,7 +84,7 @@
 
 ### StreamingVoiceCallback
 - [x] OnStreamEnd が Waiting のみセット（gap: `GAP-Audio-StreamingVoiceCallback-001`）
-- [ ] OnBufferEnd が Streaming へ遷移
+- [x] OnBufferEnd が Streaming へ遷移（gap: `GAP-Audio-StreamingVoiceCallback-002`）
 
 ### AudioDecoder
 - [ ] EOF で break のみ

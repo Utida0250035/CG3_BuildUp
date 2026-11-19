@@ -1,12 +1,16 @@
+#include "Audio/Audio.h"
 #include "Audio/StreamingVoiceCallBack.h"
 #include "Audio/StreamingSourceVoice.h"
-#include "Audio/AudioDecoder.h"
 
 namespace Atrum::Audio {
 
 	void STDMETHODCALLTYPE StreamingVoiceCallback::OnBufferEnd(void*) {
 
-		parentVoice->state = VoiceState::Streaming;
+		if (parentVoice == nullptr || owner_ == nullptr) {
+			return;
+		}
+
+		owner_->RefillStreamingVoiceAfterBufferEnd(*parentVoice);
 
 	}
 

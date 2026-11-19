@@ -150,7 +150,8 @@ float ClampVolume(const float volume) {
 			streamingSourceVoicePool_.emplace_back();
 			auto& pStrmSourceVoice = streamingSourceVoicePool_.back();
 			pStrmSourceVoice = std::make_unique<StreamingSourceVoice>();
-			pStrmSourceVoice->pCallBack = std::make_unique<StreamingVoiceCallback>(pStrmSourceVoice.get());
+			pStrmSourceVoice->pCallBack =
+			    std::make_unique<StreamingVoiceCallback>(this, pStrmSourceVoice.get());
 
 			[[maybe_unused]] HRESULT hr = xAudio2_->CreateSourceVoice(&pStrmSourceVoice->pVoice, &standardWfEx, 0, 2.0f, pStrmSourceVoice->pCallBack.get());
 			assert(SUCCEEDED(hr));
@@ -744,6 +745,24 @@ float ClampVolume(const float volume) {
 			.playId = currentPlayId,
 			.isSuccess = true
 		};
+	}
+
+	void AudioManager::RefillStreamingVoiceAfterBufferEnd(StreamingSourceVoice& voice) {
+
+		const VoiceState prior = voice.state.load();
+		if (prior == VoiceState::Stopped || prior == VoiceState::Paused ||
+		    prior == VoiceState::Waiting) {
+			return;
+		}
+
+		if (RefillBuffer(voice)) {
+			voice.nonLoopWait.NoteReadSucceeded();
+			voice.state = VoiceState::Playing;
+			return;
+		}
+
+		voice.state = VoiceState::Streaming;
+
 	}
 
 	bool AudioManager::RefillBuffer(StreamingSourceVoice& voice) {
