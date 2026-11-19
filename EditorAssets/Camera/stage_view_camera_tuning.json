@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "comment": "StageViewCamera 調整。正本は実行時 StageViewCamera.h と同期すること。",
+  "comment": "StageViewCamera 調整。数値正本は C++。ズレたら sync_stage_view_tuning_json.py --write",
   "perspectiveFovY": 0.5,
   "clientWidth": 1280,
   "clientHeight": 720,

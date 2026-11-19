@@ -24,3 +24,6 @@ jobs:
 
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
+
+      - name: Verify StageView tuning JSON matches C++
+        run: python3 EditorAssets/Tools/StageViewCameraTuning/verify_stage_view_tuning_sync.py

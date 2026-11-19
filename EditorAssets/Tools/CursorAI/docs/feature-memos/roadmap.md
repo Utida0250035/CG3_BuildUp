@@ -247,7 +247,7 @@
 - [x] カメラ tuning JSON のエディタ内プレビュー／ホットリロードが未実装（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### stage_view_camera_tuning
-- [ ] tuning.json と StageViewCamera 定数の自動同期が無い
+- [x] tuning.json と StageViewCamera 定数の自動同期が無い（gap: `GAP-Infra-stage_view_camera_tuning-001`）
 - [ ] tuning JSON の client 解像度が参照されない（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### StageViewCamera

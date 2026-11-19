@@ -18,6 +18,18 @@ python3 preview_poses.py --focus 0 2 0 --focus-half 1.2 1.2
 python3 verify_camera_policy.py
 ```
 
+## C++ 定数との同期
+
+数値の正本は C++（`StageViewCamera.h` / `.cpp`・`StageBounds.h`・`Window.h`）。  
+JSON は制作プレビュー用コピー。
+
+```bash
+python3 verify_stage_view_tuning_sync.py
+python3 sync_stage_view_tuning_json.py --write   # C++ 変更後に JSON を更新
+```
+
+CI: `BuildCoverageCheck` が `verify_stage_view_tuning_sync.py` を実行。
+
 ## Development エディタ内プレビュー
 
 エンティティエディタの **Stage camera tuning** ドック:

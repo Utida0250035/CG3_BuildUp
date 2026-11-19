@@ -4729,3 +4729,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | tuning プレビュー | 有効 | ・各エンティティのコンポーネント構成や…jsonデータとして…編集（制作ワークフローでカメラ調整をエディタ内で行う） |
+
+---
+
+## セッション 2026-11-20 02:15（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/StageViewTuningJsonSync`
+- **roadmap:** tuning.json と C++ 定数の自動同期（`GAP-Infra-stage_view_camera_tuning-001`）
+- `stage_view_tuning_contract.py` / `verify_stage_view_tuning_sync.py` / `sync_stage_view_tuning_json.py`
+- `BuildCoverageCheck.yml` に verify を追加
+- **ビルド:** Cloud VM で verify OK（MSBuild 未実行）
+
+### 2. 発生した課題または設計上の選択肢
+
+- 同期は CI 検証＋JSON 書戻しスクリプト（C++ が正本）
+
+### 3. 次に実行すべきステップの提案
+
+- tuning JSON の client 解像度をランタイム参照（次 roadmap 行）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **tuning 同期**
+  - 用途: カメラ調整 JSON とゲーム内定数のズレを配布前に検知
+  - 使用場面: C++ 定数変更後の `sync --write`、PR の BuildCoverageCheck
+  - 用途から決めた仕様: 全スカラー1対1契約（bounds・focus 係数含む）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| tuning 同期 | 有効 | ・エディタとランタイム環境上でのプレイ（カメラ方針の一貫性） |
