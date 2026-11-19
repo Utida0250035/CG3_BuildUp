@@ -104,7 +104,7 @@
 - [x] ループ SE ハンドルの個別停止が無い（gap: `GAP-Audio-StopSe-001`）
 
 ### PlaySeDetail
-- [ ] キャッシュ命中で再 Load しない
+- [x] キャッシュ命中で再 Load しない（gap: `GAP-Audio-PlaySeDetail-002`）
 - [ ] static cache がアンロードされない
 
 ### SetBgmLoopPlaybackSeconds

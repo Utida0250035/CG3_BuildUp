@@ -19,17 +19,14 @@ inline size_t GetOrLoadSeIndex(const std::string &path) {
   static std::unordered_map<std::string, size_t> cache;
   Audio::AudioManager *audio = ::Atrum::EngineAudioManager();
 
-  const auto found = cache.find(path);
-  if (found == cache.end()) {
-    const size_t index = audio->Load(path);
-    if (index == static_cast<size_t>(-1)) {
-      return static_cast<size_t>(-1);
-    }
-    cache.emplace(path, index);
-    return index;
+  const size_t index = audio->Load(path);
+  if (index == static_cast<size_t>(-1)) {
+    cache.erase(path);
+    return static_cast<size_t>(-1);
   }
 
-  return found->second;
+  cache[path] = index;
+  return index;
 }
 
 inline std::string ResolveExistingSePath(
