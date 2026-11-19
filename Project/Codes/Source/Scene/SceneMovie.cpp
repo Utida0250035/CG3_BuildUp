@@ -4,6 +4,7 @@
 #include "Scene/SceneMovieTrackFailure.h"
 #include "Scene/SceneMovieVisualSetup.h"
 #include "Scene/SceneMovieAudioPolicy.h"
+#include "Scene/SceneMoviePendingTransitionUpdate.h"
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "imgui.h"
@@ -119,6 +120,8 @@ void SceneMovie::EnterScene() {
 void SceneMovie::Update() {
   SceneMovieAudioPolicy::TickDuringMovie(hasPendingSceneChange_);
   if (hasPendingSceneChange_) {
+    TickSceneMovieVisualsDuringPendingTransition(
+        trackPlaybackStarted_, movieCamera_, skyDome_.get());
     return;
   }
 

@@ -286,7 +286,7 @@
 - [x] SkyDome がトラック先頭姿勢前のカメラに紐づく（spec: feature-memos/scene_movie.md）
 - [x] トラック開始失敗時に SetupStageViewCamera を呼ぶ（spec: feature-memos/scene_movie.md）
 - [x] ムービーシーンに BGM/トラック音声の再生・復帰ポリシーがコード上見えない（spec: feature-memos/scene_movie.md）
-- [ ] 遷移予約後はカメラ／SkyDome 更新が停止（spec: feature-memos/scene_movie.md）
+- [x] 遷移予約後はカメラ／SkyDome 更新が停止（spec: feature-memos/scene_movie.md）
 - [ ] SceneMovie のライティングにリム・ボリュームフォグが無い（spec: feature-memos/rim_light.md）
 
 ### GameOrder
