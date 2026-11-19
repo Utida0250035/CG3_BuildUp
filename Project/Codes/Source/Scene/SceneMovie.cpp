@@ -108,7 +108,6 @@ void SceneMovie::EnterScene() {
     trackLoadFailed_ = true;
     trackLoadFailureMessage_ =
         BuildSceneMovieTrackLoadFailureMessage(trackJsonPath_);
-    SetupStageViewCamera();
   }
 
   SpawnVisuals();
