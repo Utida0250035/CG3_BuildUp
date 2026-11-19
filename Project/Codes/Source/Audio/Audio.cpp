@@ -475,6 +475,7 @@ float ClampVolume(const float volume) {
 		voice.state = VoiceState::Stopped;
 		voice.playId = 65536;
 		voice.isLoop = false;
+		voice.pcmBlockAlign = 4;
 		voice.nonLoopWait.Reset();
 		voice.nextBufferIndex = 0;
 		voice.frequencyRatio = 1.0f;
@@ -614,6 +615,9 @@ float ClampVolume(const float volume) {
 
 		// 再生秒はボイスに載せた PCM レートを見る。SetupStreaming の初期値はここで置き換わる。
 		soundDataStorage_[soundIndex]->wfEx = pcmFormat.wf;
+
+		voice.pcmBlockAlign =
+		    pcmFormat.wf.nBlockAlign != 0 ? pcmFormat.wf.nBlockAlign : 4;
 
 		voice.startTime100ns = startTime100ns;
 

@@ -54,6 +54,8 @@ namespace Atrum::Audio {
 
 		bool isLoop = false;
 
+		uint32_t pcmBlockAlign = 4;
+
 		// 非ループが Waiting のとき、空キューの再読込失敗回数。
 		NonLoopStreamWait nonLoopWait{};
 

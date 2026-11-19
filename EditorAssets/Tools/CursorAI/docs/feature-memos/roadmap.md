@@ -88,7 +88,7 @@
 
 ### AudioDecoder
 - [x] EOF で break のみ（gap: `GAP-Audio-AudioDecoder-002`）
-- [ ] 4 バイト揃えで端数を次回へ
+- [x] 4 バイト揃えで端数を次回へ（gap: `GAP-Audio-AudioDecoder-001`）
 
 ### IsBgmLoopPaused
 - [ ] IsBgmLoopPaused がシーンから未使用

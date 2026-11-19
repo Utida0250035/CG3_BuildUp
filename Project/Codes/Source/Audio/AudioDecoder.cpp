@@ -2,6 +2,8 @@
 #include "Audio/AudioDecoder.h"
 #include "Audio/Streamingsourcevoice.h"
 
+#include <cstring>
+
 namespace Atrum::Audio {
 
 	bool AudioDecoder::LoadAudio(const std::wstring& filePath, std::vector<uint8_t>& outData, WAVEFORMATEX** outFormat) {
@@ -135,25 +137,43 @@ namespace Atrum::Audio {
 			pBufferRaw->Unlock();
 		}
 
-		DWORD alignment = 4;
-		DWORD remainder = cbTotalRead % alignment;
+		const DWORD alignment = voice.pcmBlockAlign != 0 ? voice.pcmBlockAlign : 4;
+		const DWORD remainder = cbTotalRead % alignment;
 
 		if (remainder != 0) {
-			DWORD validBytes = cbTotalRead - remainder;
 
-			// 端数分を退避
-			std::vector<BYTE> newRemaining(pBuffer + validBytes, pBuffer + cbTotalRead);
+			if (voice.atEndOfStream.load() && cbTotalRead < bufferSize) {
+				memset(pBuffer + cbTotalRead, 0, alignment - remainder);
+				cbTotalRead += alignment - remainder;
+				*pBytesRead = cbTotalRead;
+			} else {
+				const DWORD validBytes = cbTotalRead - remainder;
 
-			// 元々あった remainingData と結合
-			std::vector<BYTE> combined;
-			combined.reserve(voice.remainingData.size() + newRemaining.size());
-			combined.insert(combined.end(), voice.remainingData.begin(), voice.remainingData.end());
-			combined.insert(combined.end(), newRemaining.begin(), newRemaining.end());
-			voice.remainingData = std::move(combined);
+				std::vector<BYTE> newRemaining(pBuffer + validBytes, pBuffer + cbTotalRead);
 
-			*pBytesRead = validBytes;
+				// 端数は次チャンク先頭で続きを再生する（時系列順を維持）
+				std::vector<BYTE> combined;
+				combined.reserve(newRemaining.size() + voice.remainingData.size());
+				combined.insert(combined.end(), newRemaining.begin(), newRemaining.end());
+				combined.insert(combined.end(), voice.remainingData.begin(),
+				                voice.remainingData.end());
+				voice.remainingData = std::move(combined);
+
+				*pBytesRead = validBytes;
+			}
+
 		} else {
 			*pBytesRead = cbTotalRead;
+		}
+
+		if (*pBytesRead == 0 && voice.atEndOfStream.load() &&
+		    !voice.remainingData.empty()) {
+			const DWORD toCopy = static_cast<DWORD>(std::min(
+			    voice.remainingData.size(), static_cast<size_t>(bufferSize)));
+			memcpy(pBuffer, voice.remainingData.data(), toCopy);
+			voice.remainingData.erase(voice.remainingData.begin(),
+			                          voice.remainingData.begin() + toCopy);
+			*pBytesRead = toCopy;
 		}
 
 		return *pBytesRead > 0;
