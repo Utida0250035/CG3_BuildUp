@@ -290,7 +290,7 @@
 - [x] SceneMovie のライティングにリム・ボリュームフォグが無い（spec: feature-memos/rim_light.md）
 
 ### GameOrder
-- [ ] フレームループが音声を管理しない
+- [x] フレームループが音声を管理しない
 
 ### SceneGame
 - [ ] 見た目パラメータがデータではなく SetupGameLighting 直書き（spec: feature-memos/volumetric_fog.md）

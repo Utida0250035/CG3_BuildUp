@@ -5,6 +5,7 @@
 #include "Scene/CommandScene.h"
 #include "Audio/Audio.h"
 #include "Scene/CommandChangeScene.h"
+#include "Scene/GameOrderAudioPolicy.h"
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/AudioStreamingDebugImGui.h"
@@ -76,6 +77,8 @@ namespace Atrum {
 			commandChangeScene_->Update();
 
 			sceneNow = commandScene_->GetSceneNow();
+
+			TickGameOrderFrameAudio(audio_, commandChangeScene_);
 
 			ActiveCameraSystem::Instance().PrepareSceneAndBindEngine(
 			    sceneNow, Engine::Instance());

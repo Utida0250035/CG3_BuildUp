@@ -244,6 +244,9 @@
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\GameOrderAudioPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\PlayerDeathPresentation.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -874,6 +877,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\GameOrder.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\GameOrderAudioPolicy.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\PlayerDeathPresentation.h">

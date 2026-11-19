@@ -565,8 +565,6 @@ bool AtrumEngine::Process() {
 
   directInput_->Update();
 
-  audioManager_->Update();
-
   frameDeltaTime_->CalcDeltaTime();
 
   return true;
