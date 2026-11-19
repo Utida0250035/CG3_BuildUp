@@ -86,6 +86,10 @@ SceneEntityEditor *SceneEntityEditor::Instance() {
   return &instance;
 }
 
+void SceneEntityEditor::SetBootJsonPath(const std::string &jsonFilePath) {
+  pendingBootJsonPath_ = jsonFilePath;
+}
+
 bool SceneEntityEditor::AllowDebugCameraControl() const {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   // DebugCamera の入力は Layout 後の Draw 内で行う（ホバー矩形が確定してから）
@@ -119,6 +123,10 @@ void SceneEntityEditor::EnterScene() {
   EnsureCommonResources();
   SetupPreviewCamera();
   if (editor_) {
+    if (!pendingBootJsonPath_.empty()) {
+      editor_->Ui().jsonFilePath = pendingBootJsonPath_;
+      pendingBootJsonPath_.clear();
+    }
     editor_->LoadFromJsonPath(editor_->Ui().jsonFilePath);
     RebuildPreviewScene();
   }

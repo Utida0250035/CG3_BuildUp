@@ -29,6 +29,9 @@ public:
 
   static SceneEntityEditor *Instance();
 
+  /// CommandScene 起動時に編集対象 JSON を先に指定する
+  void SetBootJsonPath(const std::string &jsonFilePath);
+
   bool IsStageViewCameraLocked() const override { return false; }
 
   /// GameOrder では更新しない。エディットビュー上は Draw 内で DebugCamera を操作する。
@@ -40,6 +43,7 @@ protected:
 private:
   std::unique_ptr<EntityEditor::EntityEditor> editor_{};
   std::vector<std::unique_ptr<Entity>> previewEntities_{};
+  std::string pendingBootJsonPath_{};
 
   void SetupPreviewCamera();
   void RebuildPreviewScene();

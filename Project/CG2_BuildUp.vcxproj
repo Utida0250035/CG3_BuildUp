@@ -320,6 +320,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\ChangeSceneFade.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandChangeScene.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandScene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBoot.cpp" />
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp" />
     <ClCompile Include="Codes\Source\Scene\Scene.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneCameraRig.cpp" />
@@ -585,6 +586,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\ChangeSceneFade.h" />
     <ClInclude Include="Codes\Include\Scene\CommandChangeScene.h" />
     <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBoot.h" />
     <ClInclude Include="Codes\Include\Scene\GameOrder.h" />
     <ClInclude Include="Codes\Include\Scene\Scene.h" />
     <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h" />

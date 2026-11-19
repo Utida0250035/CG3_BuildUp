@@ -276,7 +276,7 @@
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: SceneBuildUp 検証経路・レジストリ・cameraRig 接続の細部（在庫 65件）
-- [ ] CommandScene 遷移要求・Development 起動シーン不一致
+- [x] CommandScene 遷移要求・Development 起動シーン不一致
   - 正本: `../implementation_gaps.md`（Area=Scene）
 
 

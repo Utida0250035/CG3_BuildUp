@@ -235,6 +235,9 @@
     <ClCompile Include="Codes\Source\Scene\CommandScene.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBoot.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -844,6 +847,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\CommandScene.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBoot.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\GameOrder.h">

@@ -5183,3 +5183,50 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | BuildUp カメラ接続 | 有効（実装済み） | ・開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる |
+
+---
+
+## セッション 2026-11-20 04:45（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/CommandSceneDevStartup`
+- **roadmap:** CommandScene と Development 起動／PlayRequest の整合
+- `ResolveDevelopmentBootTarget`（PlayRequest → launch_config、JSON 検証、Clear）
+- DebugPlayArea は BuildUp 直起動、他は EntityEditor に boot JSON
+- Release: 起動 JSON 検証、未設定時 DebugPlayArea テンプレへフォールバック
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- 通常シーン JSON はエディタ起動＋パス反映、機能検証は BuildUp
+
+### 3. 次に実行すべきステップの提案
+
+- SceneMovie トラックパス EditorAssets 解決
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **起動シーン配線**
+  - 用途: 起動シーン設定と実際の初回シーンを一致させる
+  - 使用場面: DebugPlayArea 試験、launch_config 共有
+  - 用途から決めた仕様: PlayRequest 優先、消費後 Clear
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| CommandScene 起動 | 有効 | ・開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる |
