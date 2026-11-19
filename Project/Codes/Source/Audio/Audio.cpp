@@ -2,6 +2,7 @@
 #include "Audio/AudioDecoder.h"
 #include "Audio/PlaybackPosition.h"
 #include "Audio/ShortVoicePoolExhaust.h"
+#include "Audio/StreamLoadPolicy.h"
 #include "Audio/StreamPcmFormat.h"
 #include "Audio/StreamingSourceVoice.h"
 #include "Audio/StreamingVoiceCallBack.h"
@@ -204,7 +205,7 @@ float ClampVolume(const float volume) {
 
 	bool AudioManager::IsSuitableStreaming(const std::string& filePath) {
 
-		return (File::GetFileSize(filePath) > kFileSizeThreshold);
+		return IsSuitableStreamingLoad(filePath);
 
 	}
 

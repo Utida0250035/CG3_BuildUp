@@ -94,7 +94,7 @@
 - [x] IsBgmLoopPaused がシーンから未使用（gap: `GAP-Audio-IsBgmLoopPaused-001`）
 
 ### IsSuitableStreaming
-- [ ] ファイルサイズだけでストリーム判定
+- [x] ファイルサイズだけでストリーム判定（gap: `GAP-Audio-IsSuitableStreaming-001`）
 - [ ] 閾値 5MB がハードコード
 
 ### GetBgmLoopPlaybackSeconds

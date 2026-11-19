@@ -203,6 +203,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Audio\Audio.cpp" />
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\Audio\PlaybackPosition.cpp" />
+    <ClCompile Include="Codes\Source\Audio\StreamLoadPolicy.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamPcmFormat.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp" />
@@ -457,6 +458,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Audio\PlaybackPosition.h" />
     <ClInclude Include="Codes\Include\Audio\NonLoopStreamWait.h" />
     <ClInclude Include="Codes\Include\Audio\ShortVoicePoolExhaust.h" />
+    <ClInclude Include="Codes\Include\Audio\StreamLoadPolicy.h" />
     <ClInclude Include="Codes\Include\Audio\StreamPcmFormat.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
     <ClInclude Include="Codes\Include\Audio\SourceVoice.h" />

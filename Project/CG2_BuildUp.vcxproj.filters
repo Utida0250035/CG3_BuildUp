@@ -13,6 +13,9 @@
     <ClCompile Include="Codes\Source\Audio\PlaybackPosition.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Audio\StreamLoadPolicy.cpp">
+      <Filter>Codes\Source\Audio</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Audio\StreamPcmFormat.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>
@@ -504,6 +507,9 @@
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\ShortVoicePoolExhaust.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Audio\StreamLoadPolicy.h">
       <Filter>Codes\Include\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Audio\StreamPcmFormat.h">
