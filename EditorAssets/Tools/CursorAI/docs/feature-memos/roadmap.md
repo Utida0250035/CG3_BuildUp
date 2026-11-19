@@ -80,7 +80,7 @@
 - [x] 不足バイトを 0 でパディング（gap: `GAP-Audio-AudioManager-015`）
 
 ### PlaySe
-- [ ] PlaySe が Play の Handle を捨てる
+- [x] PlaySe が Play の Handle を捨てる（gap: `GAP-Audio-PlaySe-001`）
 
 ### StreamingVoiceCallback
 - [ ] OnStreamEnd が Waiting のみセット

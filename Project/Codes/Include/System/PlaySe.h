@@ -45,25 +45,25 @@ inline std::string ResolveExistingSePath(
 } // namespace PlaySeDetail
 
 // ファイルが無い効果音は鳴らさない。同じパスは一度だけ読む
-inline void PlaySe(const std::string &path) {
+inline Audio::Handle PlaySe(const std::string &path) {
   const size_t index = PlaySeDetail::GetOrLoadSeIndex(path);
   if (index == static_cast<size_t>(-1)) {
-    return;
+    return {};
   }
 
-  ::Atrum::EngineAudioManager()->Play(index);
+  return ::Atrum::EngineAudioManager()->Play(index);
 }
 
 /// Assets / Resources など複数候補から存在する SE を再生
-inline void PlaySeCandidates(
+inline Audio::Handle PlaySeCandidates(
     const std::initializer_list<const char *> candidatePaths) {
   const std::string path =
       PlaySeDetail::ResolveExistingSePath(candidatePaths);
   if (path.empty()) {
-    return;
+    return {};
   }
 
-  PlaySe(path);
+  return PlaySe(path);
 }
 
 /// 決定・スキップ（Submit）用 SE
