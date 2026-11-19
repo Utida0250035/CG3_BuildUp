@@ -42,11 +42,20 @@ namespace Atrum {
 		sceneAmbientLoopSeHandle_ = Atrum::PlaySeLoopCandidates(
 			{"./Assets/Audios/seTitleAmbientLoop.mp3",
 			 "./Resources/seTitleAmbientLoop.mp3"});
+		if (sceneAmbientLoopSeHandle_.isSuccess) {
+			Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, 0.42f);
+		}
 	}
 
 	void SceneTitle::Update() {
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
+		if (sceneAmbientLoopSeHandle_.isSuccess) {
+			const float ambientVolume =
+				Atrum::CommandChangeScene::Instance()->GetIsExecute() ? 0.1f
+				                                                      : 0.42f;
+			Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, ambientVolume);
+		}
 		UpdateBackgrounds();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

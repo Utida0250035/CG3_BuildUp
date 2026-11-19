@@ -114,7 +114,7 @@
 - [x] SetBgmLoopPitch がシーンから未呼び出し（gap: `GAP-Audio-SetBgmLoopPitch-001`）
 
 ### SetSeVolume
-- [ ] SetSeVolume がゲームロジックから未使用
+- [x] SetSeVolume がゲームロジックから未使用（gap: `GAP-Audio-SetSeVolume-001`）
 
 ### GetSeVolume
 - [ ] GetSeVolume がシーンから未呼び出し

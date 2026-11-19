@@ -179,6 +179,12 @@ namespace Atrum {
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
 
+		if (sceneBgmHandle_.isSuccess &&
+		    !Atrum::CommandChangeScene::Instance()->GetIsExecute() &&
+		    Atrum::PlayerDamageScreenVignette::Instance().IsShowing()) {
+			Atrum::SetSeVolume(sceneBgmHandle_, 0.58f);
+		}
+
 		if (Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
 			return;
 		}
