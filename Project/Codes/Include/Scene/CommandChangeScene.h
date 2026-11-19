@@ -194,6 +194,8 @@ namespace Atrum {
 
 		Audio::Handle TryTakePendingEnterSceneBgmHandle();
 
+		Scene* GetPendingNextScene() const { return nextScene_; }
+
 		/// <summary>
 		/// シーン遷移の設定 (注: 各シーンの更新処理でのみ実行すること)
 		/// </summary>

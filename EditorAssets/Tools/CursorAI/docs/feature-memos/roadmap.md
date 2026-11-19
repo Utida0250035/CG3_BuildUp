@@ -98,7 +98,7 @@
 - [x] 閾値 5MB がハードコード（gap: `GAP-Audio-IsSuitableStreaming-002`）
 
 ### GetBgmLoopPlaybackSeconds
-- [ ] 再生秒取得がゲームシーン未使用
+- [x] 再生秒取得がゲームシーン未使用（gap: `GAP-Audio-GetBgmLoopPlaybackSeconds-001`）
 
 ### StopSe
 - [ ] ループ SE ハンドルの個別停止が無い

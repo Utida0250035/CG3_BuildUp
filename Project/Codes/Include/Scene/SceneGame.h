@@ -54,6 +54,9 @@ private:
 
   bool operatorBattleReadyNotified_ = false;
 
+  // Game→Game 再開時に BGM 位置を戻す（Exit で Get、次 Enter で Set）
+  float resumeGameBgmPlaybackSeconds_ = -1.0f;
+
   void SpawnEntities();
   void ClearEntities();
   void UpdateBackgrounds();

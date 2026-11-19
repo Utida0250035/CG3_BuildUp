@@ -121,6 +121,15 @@ namespace Atrum {
 	}
 
 	void SceneGame::ExitScene() {
+
+		if (sceneBgmHandle_.isSuccess &&
+		    Atrum::CommandChangeScene::Instance()->GetPendingNextScene() == Instance()) {
+			const float seconds = Atrum::GetBgmLoopPlaybackSeconds(sceneBgmHandle_);
+			if (seconds >= 0.0f) {
+				resumeGameBgmPlaybackSeconds_ = seconds;
+			}
+		}
+
 		ReleaseCommonResources();
 		Atrum::StopBgmLoop(sceneBgmHandle_);
 		sceneBgmHandle_ = {};
