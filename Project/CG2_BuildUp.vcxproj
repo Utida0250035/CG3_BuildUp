@@ -225,6 +225,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp" />
     <ClCompile Include="Codes\Source\Collision\SAT.cpp" />
+    <ClCompile Include="Codes\Source\Engine\EngineAccess.cpp" />
     <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>

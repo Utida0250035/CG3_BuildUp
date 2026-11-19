@@ -2,6 +2,7 @@
 
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
@@ -35,7 +36,7 @@ void SetupEditorLighting() {
       .intensity = 6.0f,
       .lightModel = Atrum::LightModel::HalfLambert,
   };
-  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineSetDirectionalLightData(directionalLight);
 }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)

@@ -1,6 +1,7 @@
 #include "Scene/SceneMovie.h"
 
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"
 #include "Input/PlayInput.h"
@@ -54,7 +55,7 @@ void SceneMovie::SetupStageLighting() {
       .intensity = 8.0f,
       .lightModel = LightModel::HalfLambert,
   };
-  Engine::Instance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineSetDirectionalLightData(directionalLight);
 }
 
 void SceneMovie::ClearVisuals() {

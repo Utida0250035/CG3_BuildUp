@@ -193,7 +193,7 @@
 - [x] 物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている（gap: `GAP-Runtime-CmpLhRigidBody-001`）
 
 ### EngineAccess
-- [ ] 描画への外部アクセスが EngineAccess に無く、AtrumEngine 経由になる
+- [x] 描画への外部アクセスが EngineAccess に無く、AtrumEngine 経由になる（gap: `GAP-Engine-EngineAccess-001`）
 
 ### CmpBounceBall
 - [ ] ボールの運動・壁床バウンス・衝突演出が1クラスに同居している

@@ -1,6 +1,7 @@
 #include "Scene/SceneTitle.h"
 
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"
 #include "Scene/ChangeSceneFade.h"
@@ -24,7 +25,7 @@ namespace {
 			.intensity = 8.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
-		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineSetDirectionalLightData(directionalLight);
 	}
 
 } // namespace

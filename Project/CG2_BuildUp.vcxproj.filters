@@ -79,6 +79,9 @@
     <ClCompile Include="Codes\Source\Collision\SAT.cpp">
       <Filter>Codes\Source\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\EngineAccess.cpp">
+      <Filter>Codes\Source\Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
       <Filter>Codes\Source\Engine</Filter>
     </ClCompile>

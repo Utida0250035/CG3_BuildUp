@@ -11,6 +11,7 @@
 #include "Visual/PlayerTerrainSilhouette.h"
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Resource/LightData.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
@@ -49,7 +50,7 @@ namespace {
 			.rimPower = 3.0f,
 			.rimEnabled = 1u,
 		};
-		Engine::Instance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineSetDirectionalLightData(directionalLight);
 
 		Atrum::Visual::VolumetricFogSettings gameFog{};
 		gameFog.enabled = 1u;

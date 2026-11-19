@@ -2,6 +2,7 @@
 
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "System/Entity/Entity.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
@@ -44,7 +45,7 @@ namespace {
 			.intensity = 6.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
-		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineSetDirectionalLightData(directionalLight);
 	}
 
 	Atrum::Particle::Emitter::EmitterManager *EditorEmitterManager() {

@@ -1,6 +1,7 @@
 #include "Scene/SceneBuildUp.h"
 
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
@@ -82,7 +83,7 @@ void SceneBuildUp::SetupRuntimeLighting() {
       .intensity = 6.0f,
       .lightModel = Atrum::LightModel::HalfLambert,
   };
-  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
+  ::Atrum::EngineSetDirectionalLightData(directionalLight);
 }
 
 void SceneBuildUp::DrawRuntimeEntities() {
