@@ -29,7 +29,7 @@
 - **Draw:** 描画のみ（ライト・マテリアルはコンポーネント内パラメータ）
 - **Data:** パス・設定の保持（毎フレーム処理なし）
 
-## 次の分割候補（未着手）
+## 次の分割候補（エディタ登録済み・ランタイム配線は別タスク）
 
-- ランタイム用テクスチャ参照（`CmpEditorAssetPath` とは別 Data）
-- Collider AABB（設計確定後）
+- **Data:** `CmpRuntimeTexturePath`（`texturePath` のみ。プレビュー用ロードは `CmpEditorAssetPath` 経路）
+- **Data:** `CmpColliderAabb`（`localCenter` / `halfExtents` / `isTrigger`。当たり描画は `CmpDrawHitSphere` 等と併用）

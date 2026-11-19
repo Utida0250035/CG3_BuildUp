@@ -181,7 +181,7 @@
 - [x] 複数選択が無く一括調整できない（gap: `GAP-Editor-UiState-001`）
 
 ### component_split_next
-- [ ] ランタイム用 Data／Collider 分割候補のエディタ登録が未着手（spec: feature-memos/component_split_guidelines.md）
+- [x] ランタイム用 Data／Collider 分割候補のエディタ登録が未着手（gap: `GAP-Authoring-component_split_next-001`）
 
 ### component_split_verify
 - [ ] コンポーネント登録の三箇所同期を検証する自動化が無い（spec: feature-memos/component_split_guidelines.md）

@@ -490,7 +490,9 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpColliderAabb.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorAssetPath.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpRuntimeTexturePath.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorTextureBillboard.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
     <ClCompile Include="Codes\Source\Visual\PlayerTerrainSilhouette.cpp" />
@@ -1156,7 +1158,9 @@
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpColliderAabb.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorAssetPath.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpRuntimeTexturePath.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorTextureBillboard.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h" />
     <ClInclude Include="Codes\Include\System\GameAssetsPaths.h" />

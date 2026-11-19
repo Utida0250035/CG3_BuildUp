@@ -18,6 +18,7 @@ bool IsKnownEntityEditorComponent(const std::string &typeName) {
   return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
          typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
+         typeName == "CmpRuntimeTexturePath" || typeName == "CmpColliderAabb" ||
          typeName == "CmpCamera" ||          typeName == "CmpParticleEmitter" ||
          typeName == "CmpBounceBall" ||
          typeName == "CmpBillboardInstancedGrid";
@@ -33,7 +34,8 @@ ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
       typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall") {
     return ComponentSlotKind::Upd;
   }
-  if (typeName == "CmpEditorAssetPath") {
+  if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||
+      typeName == "CmpColliderAabb") {
     return ComponentSlotKind::Data;
   }
   return ComponentSlotKind::Draw;
@@ -72,6 +74,14 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"loadImageAsBillboard", true},
             {"billboardWidth", 1.0f},
             {"billboardHeight", 1.0f}};
+  }
+  if (typeName == "CmpRuntimeTexturePath") {
+    return {{"texturePath", "./Assets/Images/white4x4.png"}};
+  }
+  if (typeName == "CmpColliderAabb") {
+    return {{"localCenter", Math::Vector3::Zero()},
+            {"halfExtents", Math::Vector3{0.5f, 0.5f, 0.5f}},
+            {"isTrigger", false}};
   }
   if (typeName == "CmpParticleEmitter") {
     return {{"emitterName", ""},

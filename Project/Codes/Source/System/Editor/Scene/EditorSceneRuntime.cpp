@@ -2,7 +2,9 @@
 
 #include "Engine/AtrumEngine.h"
 #include "System/Entity/Components/CmpDrawHitSphere.h"
+#include "System/Entity/Components/CmpColliderAabb.h"
 #include "System/Entity/Components/CmpEditorAssetPath.h"
+#include "System/Entity/Components/CmpRuntimeTexturePath.h"
 #include "System/Entity/Components/CmpHitSphere.h" // HitSphere
 #include "System/Entity/Components/CmpEditorTextureBillboard.h"
 #include "System/Entity/Components/CmpMesh.h"
@@ -76,6 +78,12 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpEditorAssetPath") {
       return entity.HasDataCmp<CmpEditorAssetPath>();
     }
+    if (slot.typeName == "CmpRuntimeTexturePath") {
+      return entity.HasDataCmp<CmpRuntimeTexturePath>();
+    }
+    if (slot.typeName == "CmpColliderAabb") {
+      return entity.HasDataCmp<CmpColliderAabb>();
+    }
   }
   return false;
 }
@@ -123,6 +131,16 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   if (slot.typeName == "CmpEditorAssetPath" &&
       slot.kind == ComponentSlotKind::Data) {
     entity.AddDataCmp<CmpEditorAssetPath>();
+    return true;
+  }
+  if (slot.typeName == "CmpRuntimeTexturePath" &&
+      slot.kind == ComponentSlotKind::Data) {
+    entity.AddDataCmp<CmpRuntimeTexturePath>();
+    return true;
+  }
+  if (slot.typeName == "CmpColliderAabb" &&
+      slot.kind == ComponentSlotKind::Data) {
+    entity.AddDataCmp<CmpColliderAabb>();
     return true;
   }
   return false;
@@ -258,6 +276,27 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetLoadImageAsBillboard(p.value("loadImageAsBillboard", true));
     cmp->SetBillboardSize(p.value("billboardWidth", 1.0f),
                           p.value("billboardHeight", 1.0f));
+    return;
+  }
+
+  if (slot.typeName == "CmpRuntimeTexturePath") {
+    if (!entity.HasDataCmp<CmpRuntimeTexturePath>()) {
+      return;
+    }
+    CmpRuntimeTexturePath *cmp = entity.GetDataCmp<CmpRuntimeTexturePath>();
+    cmp->SetTexturePath(p.value("texturePath", std::string{}));
+    return;
+  }
+
+  if (slot.typeName == "CmpColliderAabb") {
+    if (!entity.HasDataCmp<CmpColliderAabb>()) {
+      return;
+    }
+    CmpColliderAabb *cmp = entity.GetDataCmp<CmpColliderAabb>();
+    cmp->SetLocalCenter(p.value("localCenter", Math::Vector3::Zero()));
+    cmp->SetHalfExtents(
+        p.value("halfExtents", Math::Vector3{0.5f, 0.5f, 0.5f}));
+    cmp->SetTrigger(p.value("isTrigger", false));
     return;
   }
 

@@ -35,6 +35,8 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpMeshSphere", ComponentSlotKind::Draw},
     {"CmpDrawHitSphere", ComponentSlotKind::Draw},
     {"CmpEditorAssetPath", ComponentSlotKind::Data},
+    {"CmpRuntimeTexturePath", ComponentSlotKind::Data},
+    {"CmpColliderAabb", ComponentSlotKind::Data},
     {"CmpRotator", ComponentSlotKind::Upd},
     {"CmpScroll", ComponentSlotKind::Upd},
     {"CmpHitSphere", ComponentSlotKind::Upd},
@@ -113,6 +115,40 @@ void DrawDeleteSceneConfirmPopup(EntityEditor &editor) {
 bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
   nlohmann::json &p = slot.params;
   bool changed = false;
+
+  if (slot.typeName == "CmpRuntimeTexturePath") {
+    std::string texturePath = p.value("texturePath", std::string{});
+    changed |= ImGui::InputString("texturePath", texturePath);
+    if (changed) {
+      p["texturePath"] = texturePath;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを texturePath に適用")) {
+      p["texturePath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpColliderAabb") {
+    Math::Vector3 center = p.value("localCenter", Math::Vector3::Zero());
+    if (ImGui::DragFloat3("localCenter", &center.x, 0.02f)) {
+      p["localCenter"] = center;
+      changed = true;
+    }
+    Math::Vector3 halfExtents =
+        p.value("halfExtents", Math::Vector3{0.5f, 0.5f, 0.5f});
+    if (ImGui::DragFloat3("halfExtents", &halfExtents.x, 0.02f, 0.01f)) {
+      p["halfExtents"] = halfExtents;
+      changed = true;
+    }
+    bool isTrigger = p.value("isTrigger", false);
+    if (ImGui::Checkbox("isTrigger", &isTrigger)) {
+      p["isTrigger"] = isTrigger;
+      changed = true;
+    }
+    return changed;
+  }
 
   if (slot.typeName == "CmpEditorAssetPath") {
     std::string path = p.value("assetPath", std::string{});

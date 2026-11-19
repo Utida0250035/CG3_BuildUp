@@ -400,7 +400,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpHitSphere.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpColliderAabb.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorAssetPath.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpRuntimeTexturePath.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorTextureBillboard.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp" />
@@ -670,7 +672,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpDirection.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpHealthHit.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpHitSphere.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpColliderAabb.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorAssetPath.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpRuntimeTexturePath.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorTextureBillboard.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpLhRigidBody.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMesh.h" />
