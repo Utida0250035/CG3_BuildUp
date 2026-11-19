@@ -7,6 +7,8 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneGame.h"
+#include "Scene/SceneMovie.h"
+#include "System/GameAssetsPaths.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
 #include "Scene/SceneScreenUi.h"
@@ -92,8 +94,11 @@ namespace Atrum {
 		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
 		if (input.isSubmitTrigger) {
 			Atrum::PlaySubmitSe();
-			Atrum::CommandChangeScene::Instance()->Set(SceneGame::Instance(),
-				std::make_unique<ChangeSceneFade>().release());
+			Scene *const nextAfterMovie = SceneGame::Instance();
+			Scene *const introMovie = SceneMovieRegistry::Instance().Launch(
+			    Atrum::GameAssets::kTitleIntroMovieTrack, nextAfterMovie);
+			Atrum::CommandChangeScene::Instance()->Set(
+			    introMovie, std::make_unique<ChangeSceneFade>().release());
 		}
 #endif
 	}

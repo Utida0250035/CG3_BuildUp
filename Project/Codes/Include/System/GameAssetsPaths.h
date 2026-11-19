@@ -22,4 +22,8 @@ constexpr const char *kReleaseSceneCarouselPath =
 constexpr const char *kOperatorGuidanceJson =
     "./Assets/UX/operator_guidance.json";
 
+/// タイトル→本編の間に再生するサンプルカメラトラック
+constexpr const char *kTitleIntroMovieTrack =
+    "../EditorAssets/Camera/sample_movie_track.json";
+
 } // namespace Atrum::GameAssets
