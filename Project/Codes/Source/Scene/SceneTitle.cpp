@@ -36,6 +36,9 @@ namespace Atrum {
 		SpawnBackgrounds();
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmTitle.mp3",
 											  "./Resources/bgmTitle.mp3" });
+		if (sceneBgmHandle_.isSuccess) {
+			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+		}
 		sceneAmbientLoopSeHandle_ = Atrum::PlaySeLoopCandidates(
 			{"./Assets/Audios/seTitleAmbientLoop.mp3",
 			 "./Resources/seTitleAmbientLoop.mp3"});

@@ -254,6 +254,7 @@ inline bool TryResumeSceneBgmAfterChangeSceneFade(Audio::Handle &handle) {
   }
   ResumeBgmLoop(handle);
   SetBgmLoopVolume(handle, 1.0f);
+  SetBgmLoopPitch(handle, 1.0f);
   return true;
 }
 
@@ -264,9 +265,11 @@ inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
   }
 
   constexpr float kFadeDuckVolume = 0.12f;
+  constexpr float kFadeDuckPitch = 0.88f;
 
   if (CommandChangeScene::Instance()->GetIsExecute()) {
     SetBgmLoopVolume(handle, kFadeDuckVolume);
+    SetBgmLoopPitch(handle, kFadeDuckPitch);
     if (!IsBgmLoopPaused(handle)) {
       PauseBgmLoop(handle);
     }
@@ -277,6 +280,7 @@ inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
     return;
   }
   SetBgmLoopVolume(handle, 1.0f);
+  SetBgmLoopPitch(handle, 1.0f);
 }
 
 } // namespace Atrum

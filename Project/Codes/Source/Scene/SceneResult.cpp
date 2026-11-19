@@ -36,6 +36,9 @@ void SceneResult::EnterScene() {
   SpawnBackgrounds();
   sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmResult.mp3",
                                         "./Resources/bgmResult.mp3"});
+  if (sceneBgmHandle_.isSuccess) {
+    Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+  }
 }
 
 void SceneResult::Update() {

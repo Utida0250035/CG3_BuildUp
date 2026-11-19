@@ -125,6 +125,10 @@ namespace Atrum {
 				resumeGameBgmPlaybackSeconds_ = -1.0f;
 			}
 		}
+
+		if (sceneBgmHandle_.isSuccess) {
+			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+		}
 	}
 
 	void SceneGame::ExitScene() {
@@ -549,6 +553,10 @@ namespace Atrum {
 
 		playerDeathPresentation_ = std::make_unique<Atrum::PlayerDeathPresentation>();
 		playerDeathPresentation_->Begin(player_.get());
+
+		if (sceneBgmHandle_.isSuccess) {
+			Atrum::SetBgmLoopPitch(sceneBgmHandle_, 0.82f);
+		}
 	}
 
 } // namespace Atrum
