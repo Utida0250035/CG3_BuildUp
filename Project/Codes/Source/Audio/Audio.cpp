@@ -216,7 +216,10 @@ float ClampVolume(const float volume) {
 		soundData->filePath = StringToWString(filePath);
 		soundData->isSuitableStreaming = true;
 
-		soundData->wfEx = StandardWaveFormatEx();
+		const StreamPcmFormat probed =
+		    ProbeStreamPcmFormatFromUrl(soundData->filePath.c_str());
+		soundData->wfEx =
+		    probed.valid ? probed.wf : StandardWaveFormatEx();
 
 		const size_t index = soundDataStorage_.size() - 1;
 		soundIndexMap_.emplace(Hash64(filePath), index);

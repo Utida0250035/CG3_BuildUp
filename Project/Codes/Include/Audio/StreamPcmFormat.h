@@ -15,6 +15,9 @@ namespace Atrum::Audio {
 	// nativeType のサンプルレートで PCM を組む。レートが取れなければ valid は false。
 	StreamPcmFormat BuildStreamPcmFormat(IMFMediaType* nativeType);
 
+	// 音源 URL を開き、ネイティブのサンプルレートから wf を得る。失敗時は valid=false。
+	StreamPcmFormat ProbeStreamPcmFormatFromUrl(const wchar_t* url);
+
 	void ApplyStreamPcmMediaType(IMFMediaType* pcmType, const WAVEFORMATEX& format);
 
 }

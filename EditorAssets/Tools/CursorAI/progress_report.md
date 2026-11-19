@@ -3262,3 +3262,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | ストリーム PCM を 44.1k 固定 | 有効 | ・サイズが大きい音源ファイルについてストリーミング再生ができる / ・mp4やwavなど代表的な拡張子の音源ファイルを読み込める |
 
 - §6.1: デコーダ出力と SourceVoice のサンプルレートを音源の値にする。SetupStreaming の初期代入は別行
+---
+
+## セッション 2026-11-19 18:43（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m、`sub_3bea8bd0-499d-4cd6-8d1c-390c91ed130b`）継続
+- **着手ブランチ:** `fix/SetupStreamingSampleRate`（`develop` から新規）
+- **roadmap:** Audio › AudioManager — `SetupStreaming が 44.1kHz 固定`
+- `ProbeStreamPcmFormatFromUrl` で MF のネイティブサンプルレートを読み、`SetupStreaming` の `SoundData::wfEx` に反映。取得失敗時のみ `StandardWaveFormatEx()` にフォールバック（`PrepareStreamingDecoder` で再更新される）
+- **ビルド:** Cloud VM 上では `buildDevelopment.cmd` 未実行（Windows ツールチェーン必須）。CI で確認待ち
+
+### 2. 発生した課題または設計上の選択肢
+
+- プローブは `Load` 時の1回のみ。キャッシュヒットで再取得しない件は次行 `Load ヒットで再判定なし`
+- プローブ失敗時の 44.1kHz は大容量ファイルのロード遅延を避けるためのプレースホルダとして残す
+
+### 3. 次に実行すべきステップの提案
+
+- roadmap 次行: `Load ヒットで再判定なし`（次ブランチ `fix/LoadHitNoWfReprobe`）
+- Development ビルドと 48kHz ストリーム BGM の手動確認（任意）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **SetupStreaming が 44.1kHz 固定**
+  - 用途: 大きい BGM を `Load` 直後から、再生前の参照（インデックス・デバッグ表示・再生秒の仮レート）に実ファイルのレートを載せる
+  - 使用場面: ランタイムのストリーミングロード、シーン BGM の事前登録
+  - 用途から決めた仕様: MF を開いてネイティブレートだけ読む。フルデコーダは `Play` 時の `PrepareStreamingDecoder` に任せる
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| SetupStreaming が 44.1kHz 固定 | 有効 | ・サイズが大きい音源ファイルについてストリーミング再生ができる / ・mp4やwavなど代表的な拡張子の音源ファイルを読み込める |
