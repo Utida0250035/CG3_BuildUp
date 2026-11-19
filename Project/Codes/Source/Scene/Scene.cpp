@@ -44,10 +44,10 @@ Particle::Emitter::EmitterManager *Scene::GetParticleEmitterManager() {
   return particleEmitterManager_.get();
 }
 
-Atrum::Camera *Scene::GetCamera() { return cameraRig_.GetPrimaryCamera(); }
+Atrum::Camera *Scene::GetCamera() { return cameraRig_.GetPrimaryCamera(this); }
 
 const Atrum::Camera *Scene::GetCamera() const {
-  return cameraRig_.GetPrimaryCamera();
+  return cameraRig_.GetPrimaryCamera(this);
 }
 
 void Scene::PrepareCamerasForDraw() {

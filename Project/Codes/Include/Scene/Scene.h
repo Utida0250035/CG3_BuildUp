@@ -4,9 +4,11 @@
 #include "Scene/SceneCameraRig.h"
 #include "System/Particle/EmitterManager.h"
 #include <memory>
+#include <vector>
 
 namespace Atrum {
 
+class Entity;
 class Camera;
 
 /// <summary>
@@ -60,6 +62,12 @@ public:
 
   /// Update 完了後・Draw 直前（GameOrder / ActiveCameraSystem から呼ぶ）
   void PrepareCamerasForDraw();
+
+  /// JSON 実体など rig 外のカメラ候補（未使用シーンは nullptr）
+  virtual const std::vector<std::unique_ptr<Entity>> *
+  GetSupplementalCameraEntities() const {
+    return nullptr;
+  }
 
   /// <summary>
   /// true のとき DebugCamera の操作を行わず EnterScene で設定した戦闘カメラを維持する。

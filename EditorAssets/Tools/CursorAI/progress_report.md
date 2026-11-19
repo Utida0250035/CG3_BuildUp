@@ -5095,3 +5095,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | GameOrder Update | 有効 | ・プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する |
+
+---
+
+## セッション 2026-11-20 04:15（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/SceneCameraRigFindPrimary`
+- **roadmap:** `GAP-Scene-SceneCameraRig-001`
+- `ScenePrimaryCameraResolve` で rig + `GetSupplementalCameraEntities` を統合検索
+- `SceneBuildUp` が JSON 実体 `entities_` を supplemental として公開
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- rig 優先、未設定時は supplemental（JSON）を参照
+
+### 3. 次に実行すべきステップの提案
+
+- `GAP-Scene-SceneBuildUp-009` は supplemental 経由で解消済みの可能性（§6.2 確認）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BuildUp JSON カメラ**
+  - 用途: DebugPlayArea の `camera.main` を primary に
+  - 使用場面: SceneBuildUp フルランタイム検証
+  - 用途から決めた仕様: 自動スポーンは JSON にカメラ無しのときのみ
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| primary 解決 | 有効 | ・開発者がエディタ既定の機能検証シーンから、エディタ外ランタイム機能だけを最小構成で試せる |

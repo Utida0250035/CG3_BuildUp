@@ -29,6 +29,11 @@ public:
 
   bool IsStageViewCameraLocked() const override { return true; }
 
+  const std::vector<std::unique_ptr<Entity>> *
+  GetSupplementalCameraEntities() const override {
+    return &entities_;
+  }
+
   const std::string &SceneJsonPath() const { return sceneJsonPath_; }
 
 protected:

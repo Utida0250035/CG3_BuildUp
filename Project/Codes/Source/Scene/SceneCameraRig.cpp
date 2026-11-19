@@ -1,39 +1,12 @@
 #include "Scene/SceneCameraRig.h"
 
 #include "Scene/Scene.h"
+#include "Scene/ScenePrimaryCameraResolve.h"
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
-#include "System/Hash64.h"
 
 namespace Atrum {
-
-namespace {
-
-constexpr const char *kMainCameraTag = "camera.main";
-
-bool EntityHasMainCameraTag(const Entity &entity) {
-  return entity.HasTagHash(Hash64(kMainCameraTag));
-}
-
-const Entity *ResolvePrimaryCameraEntity(
-    const std::vector<std::unique_ptr<Entity>> &entities) {
-  const Entity *primaryEntity = nullptr;
-  for (const auto &entity : entities) {
-    if (!entity || !entity->HasUpdCmp<CmpCamera>()) {
-      continue;
-    }
-    if (EntityHasMainCameraTag(*entity)) {
-      return entity.get();
-    }
-    if (primaryEntity == nullptr) {
-      primaryEntity = entity.get();
-    }
-  }
-  return primaryEntity;
-}
-
-} // namespace
 
 SceneCameraRig::SceneCameraRig() = default;
 
@@ -43,13 +16,21 @@ SceneCameraRig::SceneCameraRig(SceneCameraRig &&) noexcept = default;
 
 SceneCameraRig &SceneCameraRig::operator=(SceneCameraRig &&) noexcept = default;
 
-void SceneCameraRig::EnsureAutoSpawnedCameras() {
-  if (autoSpawnAttempted_ && FindPrimaryCmpCamera() != nullptr) {
+const std::vector<std::unique_ptr<Entity>> *
+SupplementalEntitiesFromScene(const Scene *ownerScene) {
+  if (ownerScene == nullptr) {
+    return nullptr;
+  }
+  return ownerScene->GetSupplementalCameraEntities();
+}
+
+void SceneCameraRig::EnsureAutoSpawnedCameras(const Scene *ownerScene) {
+  if (autoSpawnAttempted_ && FindPrimaryCmpCamera(ownerScene) != nullptr) {
     return;
   }
   autoSpawnAttempted_ = true;
 
-  if (FindPrimaryCmpCamera() != nullptr) {
+  if (FindPrimaryCmpCamera(ownerScene) != nullptr) {
     return;
   }
 
@@ -73,52 +54,40 @@ void SceneCameraRig::Clear() {
   autoSpawnAttempted_ = false;
 }
 
-CmpCamera *SceneCameraRig::FindPrimaryCmpCamera() {
-  Entity *primaryEntity = nullptr;
-  for (const auto &entity : entities_) {
-    if (!entity || !entity->HasUpdCmp<CmpCamera>()) {
-      continue;
-    }
-    if (EntityHasMainCameraTag(*entity)) {
-      return entity->GetUpdCmp<CmpCamera>();
-    }
-    if (primaryEntity == nullptr) {
-      primaryEntity = entity.get();
-    }
-  }
-  return primaryEntity ? primaryEntity->GetUpdCmp<CmpCamera>() : nullptr;
+CmpCamera *SceneCameraRig::FindPrimaryCmpCamera(const Scene *ownerScene) {
+  return ResolvePrimaryCmpCamera(entities_,
+                                 SupplementalEntitiesFromScene(ownerScene));
 }
 
-const CmpCamera *SceneCameraRig::FindPrimaryCmpCamera() const {
-  const Entity *primaryEntity = ResolvePrimaryCameraEntity(entities_);
-  if (primaryEntity == nullptr) {
-    return nullptr;
-  }
-  return primaryEntity->GetUpdCmp<CmpCamera>();
+const CmpCamera *SceneCameraRig::FindPrimaryCmpCamera(
+    const Scene *ownerScene) const {
+  return ResolvePrimaryCmpCamera(entities_,
+                                 SupplementalEntitiesFromScene(ownerScene));
 }
 
-CmpCamera *SceneCameraRig::GetPrimaryCmpCamera() {
-  EnsureAutoSpawnedCameras();
-  return FindPrimaryCmpCamera();
+CmpCamera *SceneCameraRig::GetPrimaryCmpCamera(const Scene *ownerScene) {
+  EnsureAutoSpawnedCameras(ownerScene);
+  return FindPrimaryCmpCamera(ownerScene);
 }
 
-const CmpCamera *SceneCameraRig::GetPrimaryCmpCamera() const {
-  return FindPrimaryCmpCamera();
+const CmpCamera *SceneCameraRig::GetPrimaryCmpCamera(
+    const Scene *ownerScene) const {
+  return FindPrimaryCmpCamera(ownerScene);
 }
 
-Camera *SceneCameraRig::GetPrimaryCamera() {
-  CmpCamera *cmp = GetPrimaryCmpCamera();
+Camera *SceneCameraRig::GetPrimaryCamera(const Scene *ownerScene) {
+  CmpCamera *cmp = GetPrimaryCmpCamera(ownerScene);
   return cmp ? cmp->GetCamera() : nullptr;
 }
 
-const Camera *SceneCameraRig::GetPrimaryCamera() const {
-  const CmpCamera *cmp = FindPrimaryCmpCamera();
+const Camera *SceneCameraRig::GetPrimaryCamera(const Scene *ownerScene) const {
+  const CmpCamera *cmp = FindPrimaryCmpCamera(ownerScene);
   return cmp ? cmp->GetCamera() : nullptr;
 }
 
 void SceneCameraRig::PrepareActiveCameraBeforeDraw(const Scene &scene) {
-  EnsureAutoSpawnedCameras();
-  if (CmpCamera *cmp = FindPrimaryCmpCamera()) {
+  EnsureAutoSpawnedCameras(&scene);
+  if (CmpCamera *cmp = FindPrimaryCmpCamera(&scene)) {
     cmp->PrepareBeforeDraw(scene.IsStageViewCameraLocked(),
                            scene.AllowDebugCameraControl());
   }
