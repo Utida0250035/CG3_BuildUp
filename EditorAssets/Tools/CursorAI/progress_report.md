@@ -4589,3 +4589,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | CmpBounceBall 分割 | 有効 | ・機能として成り立つ最小単位の部品がそれぞれクラスに分けられ整理されている |
+
+---
+
+## セッション 2026-11-20 01:30（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `chore/BinaryConverterBatchCi`
+- **roadmap:** BinaryConverter バッチ／CI（`GAP-Infra-BinaryConverter-001`）
+- `batch_obj_to_amesh.py` / `.cmd`、`fixtures/minimal_triangle.obj`
+- `verify_binary_converter.py` を追加し `BuildCoverageCheck.yml` に組み込み
+- **ビルド:** Cloud VM で verify スクリプト成功（MSBuild 未実行）
+
+### 2. 発生した課題または設計上の選択肢
+
+- リポジトリ内実 OBJ は未同梱のため CI は専用フィクスチャのみ
+
+### 3. 次に実行すべきステップの提案
+
+- roadmap 次行: `GAP-Camera-StageBounds-001`（StageView と StageBounds）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **BinaryConverter バッチ／CI**
+  - 用途: 配布前パイプラインで OBJ 群を `.amesh` に一括変換し回帰を CI で検知
+  - 使用場面: アーティストのエクスポート更新、ビルド前アセット前処理
+  - 用途から決めた仕様: `--skip-up-to-date` による差分変換、ヘッダ検証スモーク
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| BinaryConverter CI | 有効 | ・ゲーム配布の際、pngやobj、jsonはddsやバイナリなどに圧縮して配布し、ゲーム中に読み込む |

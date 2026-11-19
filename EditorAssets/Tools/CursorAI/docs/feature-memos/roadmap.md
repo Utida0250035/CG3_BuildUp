@@ -212,7 +212,7 @@
 
 
 ### BinaryConverter
-- [ ] メッシュ変換パイプラインのバッチ／CI フックが未整備（spec: feature-memos/atr_mesh_binary_format.md）
+- [x] メッシュ変換パイプラインのバッチ／CI フックが未整備（spec: feature-memos/atr_mesh_binary_format.md）（gap: `GAP-Infra-BinaryConverter-001`）
 
 ## Math
 
