@@ -114,6 +114,9 @@ inline Audio::Handle PlaySeLoopCandidates(
   return PlaySeLoop(path);
 }
 
+/// ループ SE を Handle 単位で停止（PlaySeLoop / PlaySeLoopCandidates 用）
+inline void StopSeLoop(const Audio::Handle &handle) { StopSe(handle); }
+
 inline void StopSe(const Audio::Handle &handle) {
   // PlayShort 以前は isSuccess が未設定でも playId で停止できるようにする
   if (!handle.isSuccess && handle.playId == 0) {

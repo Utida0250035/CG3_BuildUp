@@ -72,7 +72,7 @@ namespace Atrum {
 		ReleaseCommonResources();
 		Atrum::StopBgmLoop(sceneBgmHandle_);
 		sceneBgmHandle_ = {};
-		Atrum::StopSe(sceneAmbientLoopSeHandle_);
+		Atrum::StopSeLoop(sceneAmbientLoopSeHandle_);
 		sceneAmbientLoopSeHandle_ = {};
 		ClearBackgrounds();
 	}
