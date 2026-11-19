@@ -3642,3 +3642,51 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
 |--------|----------------------------------------|------------------------------|
 | 4 バイト揃えで端数を次回へ | 有効 | ・サイズが大きい音源ファイルについてストリーミング再生ができる |
+
+---
+
+## セッション 2026-11-19 20:30（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/IsBgmLoopPausedUnused`
+- **roadmap:** Audio › IsBgmLoopPaused — `IsBgmLoopPaused がシーンから未使用`
+- `TryResumeSceneBgmAfterChangeSceneFade` / `IsSceneBgmPausedForChangeSceneFade` を `PlaySe.h` に追加（内部で `IsBgmLoopPaused`）。`SyncSceneBgmForChangeSceneFade` と `SceneGame::MaintainSceneBgmIfNeeded` から利用
+- Title／Result は従来どおり `SyncSceneBgmForChangeSceneFade` 経由で状態照会（Game は Maintain でも明示利用）
+- **ビルド:** Cloud VM 上では未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- ポーズメニュー UI 連携は未実装（将来は `IsSceneBgmPausedForChangeSceneFade` を参照可）
+- `IsSceneBgmAudible` と役割は重なるが、フェード中の再 Play 抑制が主目的
+
+### 3. 次に実行すべきステップの提案
+
+- roadmap 次行: `ファイルサイズだけでストリーム判定`（次ブランチ `fix/StreamByFileSizeOnly`）
+- シーン遷移中の BGM 手動確認（任意）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **IsBgmLoopPaused がシーンから未使用**
+  - 用途: ChangeSceneFade 中に BGM を止めたまま、フェード後に誤って別曲を差し込まない
+  - 使用場面: ゲーム／タイトル／リザルトのシーン Update
+  - 用途から決めた仕様: シーンが Handle を保持し、一時停止状態を API 経由で参照して再開タイミングを決める
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| IsBgmLoopPaused がシーンから未使用 | 有効 | ・bgmとしてのループ再生ができる / ・ゲーム中でマスターボリュームや効果音、bgmなどまとめて音量割合をプレイヤーが設定し、その設定を保存/反映できる |
