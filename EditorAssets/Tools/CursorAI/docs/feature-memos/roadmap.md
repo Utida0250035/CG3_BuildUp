@@ -76,7 +76,7 @@
 - [x] Init 失敗で playId 不一致
 - [x] ストリーム PCM を 44.1k 固定
 - [x] SetupStreaming が 44.1kHz 固定（gap: `GAP-Audio-AudioManager-011`）
-- [ ] Load ヒットで再判定なし
+- [x] Load ヒットで再判定なし（gap: `GAP-Audio-AudioManager-017`）
 - [ ] 不足バイトを 0 でパディング
 
 ### PlaySe

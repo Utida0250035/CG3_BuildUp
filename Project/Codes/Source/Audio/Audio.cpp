@@ -207,19 +207,79 @@ float ClampVolume(const float volume) {
 
 	}
 
+	void AudioManager::AssignStreamingSoundInPlace(SoundData& data, const std::string& filePath) {
+
+		data.pBuffer.clear();
+		data.bufferSize = 0;
+		data.filePath = StringToWString(filePath);
+		data.isSuitableStreaming = true;
+
+		const StreamPcmFormat probed = ProbeStreamPcmFormatFromUrl(data.filePath.c_str());
+		data.wfEx = probed.valid ? probed.wf : StandardWaveFormatEx();
+
+	}
+
+	bool AudioManager::TryReloadShortSoundInPlace(SoundData& data, const std::string& filePath) {
+
+		std::vector<uint8_t> pBuffer;
+		WAVEFORMATEX* wfEx = nullptr;
+
+		const bool result =
+		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
+		if (!result) {
+			CoTaskMemFree(wfEx);
+			return false;
+		}
+
+		data.wfEx = *wfEx;
+		data.pBuffer.assign(pBuffer.begin(), pBuffer.end());
+		data.bufferSize = static_cast<UINT>(data.pBuffer.size());
+		data.filePath = StringToWString(filePath);
+		data.isSuitableStreaming = false;
+
+		CoTaskMemFree(wfEx);
+		return true;
+
+	}
+
+	void AudioManager::RefreshSoundDataOnLoadCacheHit(const size_t soundIndex, const std::string& filePath) {
+
+		if (soundIndex >= soundDataStorage_.size() || soundDataStorage_[soundIndex] == nullptr) {
+			return;
+		}
+
+		SoundData& data = *soundDataStorage_[soundIndex];
+		const bool wantStream = IsSuitableStreaming(filePath);
+
+		if (wantStream != data.isSuitableStreaming) {
+
+			if (wantStream) {
+				AssignStreamingSoundInPlace(data, filePath);
+			} else {
+				TryReloadShortSoundInPlace(data, filePath);
+			}
+			return;
+
+		}
+
+		if (data.isSuitableStreaming) {
+
+			const StreamPcmFormat probed = ProbeStreamPcmFormatFromUrl(data.filePath.c_str());
+			if (probed.valid) {
+				data.wfEx = probed.wf;
+			}
+			return;
+
+		}
+
+		TryReloadShortSoundInPlace(data, filePath);
+
+	}
+
 	size_t AudioManager::SetupStreaming(const char* filePath) {
 
 		soundDataStorage_.emplace_back(std::make_unique<SoundData>());
-
-		auto& soundData = soundDataStorage_.back();
-
-		soundData->filePath = StringToWString(filePath);
-		soundData->isSuitableStreaming = true;
-
-		const StreamPcmFormat probed =
-		    ProbeStreamPcmFormatFromUrl(soundData->filePath.c_str());
-		soundData->wfEx =
-		    probed.valid ? probed.wf : StandardWaveFormatEx();
+		AssignStreamingSoundInPlace(*soundDataStorage_.back(), filePath);
 
 		const size_t index = soundDataStorage_.size() - 1;
 		soundIndexMap_.emplace(Hash64(filePath), index);
@@ -256,6 +316,7 @@ float ClampVolume(const float volume) {
 		const uint64_t pathHash = Hash64(filePath);
 		if (const auto found = soundIndexMap_.find(pathHash);
 		    found != soundIndexMap_.end()) {
+			RefreshSoundDataOnLoadCacheHit(found->second, filePath);
 			return found->second;
 		}
 

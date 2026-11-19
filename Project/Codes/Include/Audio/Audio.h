@@ -77,6 +77,12 @@ namespace Atrum::Audio {
 
 		bool IsSuitableStreaming(const std::string& filePath);
 
+		void AssignStreamingSoundInPlace(SoundData& data, const std::string& filePath);
+
+		bool TryReloadShortSoundInPlace(SoundData& data, const std::string& filePath);
+
+		void RefreshSoundDataOnLoadCacheHit(const size_t soundIndex, const std::string& filePath);
+
 		size_t SetupStreaming(const char* filePath);
 
 		size_t LoadShort(const char* filePath);
