@@ -132,7 +132,7 @@ namespace Atrum {
 			float pitchRatio = 1.0f;
 			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
 			    pitchRatio < 0.99f) {
-				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
 			}
 			float volume = 0.0f;
 			if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
@@ -194,22 +194,33 @@ namespace Atrum {
 			constexpr float kDamageDuckVolume = 0.58f;
 			float currentVolume = 1.0f;
 			Atrum::GetSeVolume(sceneBgmHandle_, currentVolume);
+			constexpr float kDamageDuckPitch = 0.94f;
+			float pitchRatio = 1.0f;
+			Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio);
 			if (Atrum::PlayerDamageScreenVignette::Instance().IsShowing()) {
 				if (currentVolume > kDamageDuckVolume + 0.02f) {
 					Atrum::SetSeVolume(sceneBgmHandle_, kDamageDuckVolume);
 				}
-			} else if (currentVolume >= kDamageDuckVolume - 0.02f &&
-			           currentVolume <= kDamageDuckVolume + 0.02f) {
-				Atrum::SetSeVolume(sceneBgmHandle_, 1.0f);
+				if (pitchRatio > kDamageDuckPitch + 0.02f) {
+					Atrum::SetSeFrequencyRatio(sceneBgmHandle_, kDamageDuckPitch);
+				}
+			} else {
+				if (currentVolume >= kDamageDuckVolume - 0.02f &&
+				    currentVolume <= kDamageDuckVolume + 0.02f) {
+					Atrum::SetSeVolume(sceneBgmHandle_, 1.0f);
+				}
+				if (pitchRatio >= kDamageDuckPitch - 0.02f &&
+				    pitchRatio <= kDamageDuckPitch + 0.02f) {
+					Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
+				}
 			}
 
 			constexpr float kDefeatSlowPitch = 0.82f;
-			float pitchRatio = 1.0f;
 			if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
 			    !Atrum::PlayerDamageScreenVignette::Instance().IsShowing() &&
 			    pitchRatio >= kDefeatSlowPitch - 0.02f &&
 			    pitchRatio <= kDefeatSlowPitch + 0.02f) {
-				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
 			}
 		}
 
@@ -593,7 +604,7 @@ namespace Atrum {
 			float pitchRatio = 1.0f;
 			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
 			    pitchRatio > kDefeatSlowPitch + 0.02f) {
-				Atrum::SetBgmLoopPitch(sceneBgmHandle_, kDefeatSlowPitch);
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, kDefeatSlowPitch);
 			}
 		}
 	}

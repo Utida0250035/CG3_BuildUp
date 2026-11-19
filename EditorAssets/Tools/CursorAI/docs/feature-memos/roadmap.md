@@ -123,7 +123,7 @@
 - [x] GetSeFrequencyRatio が未使用（gap: `GAP-Audio-GetSeFrequencyRatio-001`）
 
 ### SetSeFrequencyRatio
-- [ ] SetSeFrequencyRatio がゲームから未使用
+- [x] SetSeFrequencyRatio がゲームから未使用（gap: `GAP-Audio-SetSeFrequencyRatio-001`）
 
 ## System
 

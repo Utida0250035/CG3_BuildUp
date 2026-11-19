@@ -42,7 +42,7 @@ namespace Atrum {
 			float pitchRatio = 1.0f;
 			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
 			    pitchRatio < 0.99f) {
-				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
 			}
 		}
 		sceneAmbientLoopSeHandle_ = Atrum::PlaySeLoopCandidates(
@@ -50,6 +50,7 @@ namespace Atrum {
 			 "./Resources/seTitleAmbientLoop.mp3"});
 		if (sceneAmbientLoopSeHandle_.isSuccess) {
 			Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, 0.42f);
+			Atrum::SetSeFrequencyRatio(sceneAmbientLoopSeHandle_, 0.98f);
 		}
 	}
 
@@ -61,17 +62,24 @@ namespace Atrum {
 			float pitchRatio = 1.0f;
 			if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
 			    pitchRatio < 0.99f) {
-				Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
 			}
 		}
 		if (sceneAmbientLoopSeHandle_.isSuccess) {
-			const float targetVolume =
-				Atrum::CommandChangeScene::Instance()->GetIsExecute() ? 0.1f
-				                                                      : 0.42f;
+			const bool fading =
+				Atrum::CommandChangeScene::Instance()->GetIsExecute();
+			const float targetVolume = fading ? 0.1f : 0.42f;
+			const float targetPitch = fading ? 0.9f : 0.98f;
 			float currentVolume = targetVolume;
 			if (!Atrum::GetSeVolume(sceneAmbientLoopSeHandle_, currentVolume) ||
 				std::abs(currentVolume - targetVolume) > 0.02f) {
 				Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, targetVolume);
+			}
+			float currentPitch = targetPitch;
+			if (!Atrum::GetSeFrequencyRatio(sceneAmbientLoopSeHandle_,
+			                                currentPitch) ||
+				std::abs(currentPitch - targetPitch) > 0.02f) {
+				Atrum::SetSeFrequencyRatio(sceneAmbientLoopSeHandle_, targetPitch);
 			}
 		}
 		UpdateBackgrounds();

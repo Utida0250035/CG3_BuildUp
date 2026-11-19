@@ -157,6 +157,7 @@ void PlayBulletWarningSound() {
   const Audio::Handle handle = PlaySe(sePath);
   if (handle.isSuccess) {
     SetSeVolume(handle, 0.78f);
+    SetSeFrequencyRatio(handle, 0.92f);
   }
 }
 
@@ -171,6 +172,7 @@ void PlayBossMeleeWarnSound() {
   const Audio::Handle handle = PlaySe(sePath);
   if (handle.isSuccess) {
     SetSeVolume(handle, 0.78f);
+    SetSeFrequencyRatio(handle, 0.92f);
   }
 }
 

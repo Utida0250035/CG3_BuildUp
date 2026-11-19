@@ -40,7 +40,7 @@ void SceneResult::EnterScene() {
     float pitchRatio = 1.0f;
     if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
         pitchRatio < 0.99f) {
-      Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+      Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
     }
     float volume = 0.0f;
     if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
@@ -57,7 +57,7 @@ void SceneResult::Update() {
     float pitchRatio = 1.0f;
     if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
         pitchRatio < 0.99f) {
-      Atrum::SetBgmLoopPitch(sceneBgmHandle_, 1.0f);
+      Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
     }
     float volume = 0.0f;
     if (Atrum::GetSeVolume(sceneBgmHandle_, volume) && volume < 0.99f) {

@@ -21,7 +21,10 @@ void PlayPlayerDamageSe() {
 		return;
 	}
 
-	PlaySe(sePath);
+	const Audio::Handle handle = PlaySe(sePath);
+	if (handle.isSuccess) {
+		SetSeFrequencyRatio(handle, 0.93f);
+	}
 }
 
 EntityTagRegistry &Tags() {
