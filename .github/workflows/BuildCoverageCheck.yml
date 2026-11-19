@@ -27,3 +27,6 @@ jobs:
 
       - name: Verify StageView tuning JSON matches C++
         run: python3 EditorAssets/Tools/StageViewCameraTuning/verify_stage_view_tuning_sync.py
+
+      - name: Verify player-friendly camera policy
+        run: python3 EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py

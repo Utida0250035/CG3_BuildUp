@@ -4866,3 +4866,48 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | ライブアスペクト | 有効 | プレイ中カメラが地形・オブジェクトを見失わず操作に追従する（player_friendly_camera_policy） |
+
+---
+
+## セッション 2026-11-20 03:00（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `chore/CameraPolicyCiVerify`
+- **roadmap:** カメラ方針 CI + `AllowDebugCameraControl` 検査（2 行）
+- `verify_camera_policy.py` 拡張、`BuildCoverageCheck.yml` に追加
+- **ビルド:** Cloud VM で verify OK
+
+### 2. 発生した課題または設計上の選択肢
+
+- 本編シーンは `IsStageViewCameraLocked` が主ガード（ヘッダで `AllowDebug -> true` だけ禁止）
+
+### 3. 次に実行すべきステップの提案
+
+- `GAP-Scene-SceneMovieRegistry-001`（ムービーシーン起動配線）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **カメラ方針 CI**
+  - 用途: 新シーン追加時にプレイヤー向けカメラ固定を回帰で守る
+  - 使用場面: PR／Cloud Agent の BuildCoverageCheck
+  - 用途から決めた仕様: EntityEditor のデバッグ入力委譲パターンを静的検査
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| カメラ方針 CI | 有効 | プレイ中カメラは演出側が誘導（player_friendly_camera_policy） |

@@ -254,8 +254,8 @@
 - [x] ステージカメラのアスペクトが既定解像度固定
 
 ### verify_camera_policy
-- [ ] カメラ方針静的検証が CI／ビルド手順に未組み込み
-- [ ] verify_camera_policy が AllowDebugCameraControl を検査しない
+- [x] カメラ方針静的検証が CI／ビルド手順に未組み込み
+- [x] verify_camera_policy が AllowDebugCameraControl を検査しない
 
 ## Scene
 

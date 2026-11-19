@@ -18,6 +18,8 @@ python3 preview_poses.py --focus 0 2 0 --focus-half 1.2 1.2
 python3 verify_camera_policy.py
 ```
 
+`IsStageViewCameraLocked` に加え、`SceneEntityEditor` の `AllowDebugCameraControl`（ImGui 配下で `false`）と、本編シーンでの誤った `AllowDebugCameraControl -> true` を検査。CI: `BuildCoverageCheck`。
+
 ## C++ 定数との同期
 
 数値の正本は C++（`StageViewCamera.h` / `.cpp`・`StageBounds.h`・`Window.h`）。  
