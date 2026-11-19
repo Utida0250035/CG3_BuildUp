@@ -20,4 +20,8 @@ bool TryLoadSceneDocument(const std::string &jsonFilePath,
 std::vector<std::unique_ptr<Entity>>
 BuildEntitiesFromSceneDocument(const EditorSceneDocument &document);
 
+/// シーン JSON の明示 bounds・境界マーカー・既定 StageBounds からフレーミングを解決
+StageViewFramingBounds
+ResolveStageViewFramingBounds(const EditorSceneDocument &document);
+
 } // namespace Atrum::EntityEditor

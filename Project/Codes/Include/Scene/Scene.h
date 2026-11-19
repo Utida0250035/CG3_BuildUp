@@ -1,7 +1,8 @@
 #pragma once
 
-#include "System/Particle/EmitterManager.h"
+#include "Camera/StageViewFramingBounds.h"
 #include "Scene/SceneCameraRig.h"
+#include "System/Particle/EmitterManager.h"
 #include <memory>
 
 namespace Atrum {
@@ -15,6 +16,9 @@ class Scene {
 
 protected:
   SceneCameraRig cameraRig_{};
+
+  StageViewFramingBounds stageViewFramingBounds_{
+      StageViewFramingBounds::DefaultFromStageConstants()};
 
   /// このシーンに紐づくパーティクル（EnterScene で生成、ExitScene で解放）
   std::unique_ptr<Particle::Emitter::EmitterManager> particleEmitterManager_{};
@@ -63,6 +67,14 @@ public:
   /// （方針: EditorAssets/Tools/CursorAI/docs/feature-memos/player_friendly_camera_policy.md）
   /// </summary>
   virtual bool IsStageViewCameraLocked() const { return false; }
+
+  void SetStageViewFramingBounds(const StageViewFramingBounds &bounds) {
+    stageViewFramingBounds_ = bounds;
+  }
+
+  const StageViewFramingBounds &GetStageViewFramingBounds() const {
+    return stageViewFramingBounds_;
+  }
 
   /// <summary>
   /// false のとき DebugCamera は行列のみ更新（エディットビュー外など）。

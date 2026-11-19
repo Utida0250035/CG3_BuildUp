@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera/StageViewFramingBounds.h"
 #include "Math/Vector3.h"
 
 namespace Atrum {
@@ -30,6 +31,8 @@ inline constexpr float kStageBattleViewEyeSideOffsetX = -2.25f;
 inline constexpr float kStageBattleViewDistanceScale = 1.15f;
 
 /// 戦闘エリア全体が画面に収まるカメラ姿勢
+StageViewCameraPose ComputeStageBattleViewPose(
+    const StageViewFramingBounds &framingBounds);
 StageViewCameraPose ComputeStageBattleViewPose();
 
 /// 指定ワールド座標を画面中心に近づけるカメラ姿勢

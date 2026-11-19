@@ -1,6 +1,12 @@
 {
   "sceneName": "CombatBoundsSandbox",
   "tagCatalog": ["DEBUG", "PROP"],
+  "stageViewFramingBounds": {
+    "leftEndX": -10.0,
+    "rightEndX": 10.0,
+    "groundHeight": -3.5,
+    "barrageSpawnTopY": 8.0
+  },
   "entities": [
     {
       "instanceName": "LeftBoundMarker",

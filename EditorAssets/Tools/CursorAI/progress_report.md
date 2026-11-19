@@ -4635,3 +4635,51 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | BinaryConverter CI | 有効 | ・ゲーム配布の際、pngやobj、jsonはddsやバイナリなどに圧縮して配布し、ゲーム中に読み込む |
+
+---
+
+## セッション 2026-11-20 01:45（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/StageViewStageBounds`
+- **roadmap:** StageView がシーン毎フレーミングに追従（`GAP-Camera-StageBounds-001`）
+- `StageViewFramingBounds` + `ComputeStageBattleViewPose(bounds)`
+- シーン JSON の `stageViewFramingBounds` / 境界マーカー名から解決（`SceneBuildUp`）
+- `combat_bounds_sandbox.scene.json` にサンプル bounds を追記
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- `SceneGame` は既定 StageBounds のまま（本編 AABB と一致）
+- `stage_view_camera_tuning.json` の実行時読込は別 roadmap 行
+
+### 3. 次に実行すべきステップの提案
+
+- StageViewCameraTuning エディタプレビュー／ホットリロード
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **シーン単位 StageView フレーミング**
+  - 用途: JSON 試遊・デバッグプレイエリアでカメラがプレイ範囲に合わせて引き／寄りする
+  - 使用場面: BuildUp ランタイム、`DebugPlayArea` サンドボックス
+  - 用途から決めた仕様: 明示 JSON 優先、無ければ `*BoundMarker` エンティティ
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| StageView シーン bounds | 有効 | プレイ方針メモ: プレイ中カメラが地形・オブジェクトを見失わず操作に追従する（player_friendly_camera_policy と整合） |

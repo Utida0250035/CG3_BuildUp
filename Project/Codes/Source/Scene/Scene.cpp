@@ -58,7 +58,9 @@ void Scene::SetupStageViewCamera() {
     return;
   }
 
-  const StageViewCameraPose pose = ComputeStageBattleViewPose();
+  PublishStageViewFramingBounds(GetStageViewFramingBounds());
+  const StageViewCameraPose pose =
+      ComputeStageBattleViewPose(GetStageViewFramingBounds());
   ApplyStageViewCameraPose(camera, pose);
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)

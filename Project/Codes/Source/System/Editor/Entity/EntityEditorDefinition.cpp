@@ -244,12 +244,29 @@ void to_json(nlohmann::json &j, const EditorSceneDocument &document) {
   j = nlohmann::json{{"sceneName", document.sceneName},
                      {"tagCatalog", document.tagCatalog},
                      {"entities", document.instances}};
+  if (document.stageViewFramingBounds.has_value()) {
+    const StageViewFramingBounds &bounds = *document.stageViewFramingBounds;
+    j["stageViewFramingBounds"] =
+        nlohmann::json{{"leftEndX", bounds.leftEndX},
+                       {"rightEndX", bounds.rightEndX},
+                       {"groundHeight", bounds.groundHeight},
+                       {"barrageSpawnTopY", bounds.barrageSpawnTopY},
+                       {"pivotZ", bounds.pivotZ}};
+  }
 }
 
 void from_json(const nlohmann::json &j, EditorSceneDocument &document) {
   document.sceneName = j.value("sceneName", document.sceneName);
   document.tagCatalog = j.value("tagCatalog", document.tagCatalog);
   document.instances = j.value("entities", document.instances);
+  document.stageViewFramingBounds.reset();
+  if (j.contains("stageViewFramingBounds")) {
+    StageViewFramingBounds parsed{};
+    if (StageViewFramingBounds::TryParse(j.at("stageViewFramingBounds"),
+                                         parsed)) {
+      document.stageViewFramingBounds = parsed;
+    }
+  }
 }
 
 } // namespace Atrum::EntityEditor

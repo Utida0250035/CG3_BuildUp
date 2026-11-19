@@ -61,6 +61,9 @@
     <ClCompile Include="Codes\Source\Camera\ActiveCameraSystem.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\StageViewFramingBounds.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
@@ -581,6 +584,9 @@
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\PlayerDamageScreenVignette.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\StageViewFramingBounds.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\StageViewCamera.h">

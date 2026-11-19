@@ -1,5 +1,6 @@
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 
+#include "Camera/StageViewFramingBounds.h"
 #include "Engine/AtrumEngine.h"
 #include "System/Entity/Components/CmpDrawHitSphere.h"
 #include "System/Entity/Components/CmpColliderAabb.h"
@@ -586,6 +587,71 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document) {
   }
 
   return entities;
+}
+
+StageViewFramingBounds
+ResolveStageViewFramingBounds(const EditorSceneDocument &document) {
+  if (document.stageViewFramingBounds.has_value()) {
+    return *document.stageViewFramingBounds;
+  }
+
+  StageViewFramingBounds bounds =
+      StageViewFramingBounds::DefaultFromStageConstants();
+
+  bool hasLeft = false;
+  bool hasRight = false;
+  bool hasGround = false;
+  bool hasTop = false;
+  float leftX = bounds.leftEndX;
+  float rightX = bounds.rightEndX;
+  float groundY = bounds.groundHeight;
+  float topY = bounds.barrageSpawnTopY;
+
+  for (const SceneEntityInstance &instance : document.instances) {
+    const auto applyMarker = [&](const std::string &name) -> bool {
+      return instance.instanceName == name ||
+             instance.definition.entityName == name;
+    };
+
+    const float px = instance.definition.initialTransform.translate.x;
+    const float py = instance.definition.initialTransform.translate.y;
+
+    if (applyMarker("LeftBoundMarker")) {
+      leftX = px;
+      hasLeft = true;
+    }
+    if (applyMarker("RightBoundMarker")) {
+      rightX = px;
+      hasRight = true;
+    }
+    if (applyMarker("GroundBoundMarker")) {
+      groundY = py;
+      hasGround = true;
+    }
+    if (applyMarker("TopBoundMarker")) {
+      topY = py;
+      hasTop = true;
+    }
+  }
+
+  if (hasLeft && hasRight) {
+    bounds.leftEndX = std::min(leftX, rightX);
+    bounds.rightEndX = std::max(leftX, rightX);
+  }
+  if (hasGround) {
+    bounds.groundHeight = groundY;
+  }
+  if (hasTop) {
+    bounds.barrageSpawnTopY = topY;
+  }
+  if (hasTop && hasGround && bounds.barrageSpawnTopY <= bounds.groundHeight) {
+    return StageViewFramingBounds::DefaultFromStageConstants();
+  }
+  if (hasLeft && hasRight && bounds.rightEndX <= bounds.leftEndX) {
+    return StageViewFramingBounds::DefaultFromStageConstants();
+  }
+
+  return bounds;
 }
 
 } // namespace Atrum::EntityEditor

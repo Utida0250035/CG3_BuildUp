@@ -3,6 +3,7 @@
 #include "Camera/CameraController/CameraFocusPushController.h"
 #include "Camera/CameraController/CameraGameIntroController.h"
 #include "Camera/CombatCameraShake.h"
+#include "Camera/StageViewFramingBounds.h"
 #include "Camera/PlayerDamageScreenVignette.h"
 #include "Scene/BossDeathPresentation.h"
 #include "Scene/PlayerDeathPresentation.h"
@@ -257,6 +258,7 @@ namespace Atrum {
 			const float deltaTime = frameDeltaTime->GetDeltaTime();
 			cameraShake.Update(deltaTime);
 			Atrum::PlayerDamageScreenVignette::Instance().Update(deltaTime);
+			PublishStageViewFramingBounds(GetStageViewFramingBounds());
 			cameraShake.ApplyStageBattleView(GetCamera());
 		}
 

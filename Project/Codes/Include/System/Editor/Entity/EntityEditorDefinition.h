@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Camera/StageViewFramingBounds.h"
 #include "Math/Transform.h"
 #include <cstdint>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -44,6 +46,8 @@ struct EditorSceneDocument {
   std::string sceneName = "EditorScene";
   /// シーン全体で共有するタグ名一覧（エディタ検索・改名の基準）
   std::vector<std::string> tagCatalog{};
+  /// StageView カメラのフレーミング（未設定時は境界マーカーまたは既定 StageBounds）
+  std::optional<StageViewFramingBounds> stageViewFramingBounds{};
   std::vector<SceneEntityInstance> instances{};
 };
 

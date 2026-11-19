@@ -115,6 +115,8 @@ void SceneBuildUp::EnterScene() {
     sceneDisplayName_ = document.sceneName;
   }
 
+  SetStageViewFramingBounds(
+      EntityEditor::ResolveStageViewFramingBounds(document));
   entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
   SetupStageViewCamera();
 

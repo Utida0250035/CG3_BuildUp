@@ -236,7 +236,7 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] StageView カメラが StageBounds 定数のみ参照しシーン毎の範囲に追従しない（gap: `GAP-Camera-StageBounds-001`・Play・P1）
+- [x] StageView カメラが StageBounds 定数のみ参照しシーン毎の範囲に追従しない（gap: `GAP-Camera-StageBounds-001`・Play・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: tuning.json と StageViewCamera 定数の自動同期（在庫 1件）
