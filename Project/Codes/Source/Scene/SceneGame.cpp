@@ -20,6 +20,7 @@
 #include "System/BossCombatCleanup.h"
 #include "System/OrbiterChildUtils.h"
 #include "Visual/CmpSkyDome.h"
+#include "Scene/SceneGameOperatorGuidanceBoot.h"
 #include "UX/OperatorGuidanceSystem.h"
 #include "System/Entity/Components/CmpParry.h"
 #include "System/Entity/Components/CmpReflectAbleBullet.h"
@@ -69,9 +70,7 @@ namespace Atrum {
 		Atrum::CombatCameraShake::Instance().Reset();
 		Atrum::PlayerDamageScreenVignette::Instance().Reset();
 		Atrum::SceneScreenUi::PreloadGameSceneUiTextures();
-		Atrum::OperatorGuidance::System::Instance().LoadFromJsonFile(
-			Atrum::GameAssets::kOperatorGuidanceJson);
-		Atrum::OperatorGuidance::System::Instance().ResetSession();
+		operatorGuidanceDocumentLoaded_ = Atrum::BootSceneGameOperatorGuidance();
 		operatorBattleReadyNotified_ = false;
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmGame.mp3",
 											  "./Resources/bgmGame.mp3" });
@@ -198,7 +197,7 @@ namespace Atrum {
 			return;
 		}
 
-		if (!operatorBattleReadyNotified_ &&
+		if (operatorGuidanceDocumentLoaded_ && !operatorBattleReadyNotified_ &&
 			(introCameraController_ == nullptr ||
 			 introCameraController_->IsFinished())) {
 			operatorBattleReadyNotified_ = true;
@@ -219,9 +218,12 @@ namespace Atrum {
 
 		Atrum::Particle::Combat::SetEffectCamera(GetCamera());
 		Atrum::Particle::Combat::UpdateCombatParticleEffects();
-		if (Atrum::FrameDeltaTime *frameDeltaTime = ::Atrum::EngineFrameDeltaTime()) {
-			Atrum::OperatorGuidance::System::Instance().Update(
-				frameDeltaTime->GetDeltaTime());
+		if (operatorGuidanceDocumentLoaded_) {
+			if (Atrum::FrameDeltaTime *frameDeltaTime =
+			        ::Atrum::EngineFrameDeltaTime()) {
+				Atrum::OperatorGuidance::System::Instance().Update(
+					frameDeltaTime->GetDeltaTime());
+			}
 		}
 		CheckRoundEnd();
 	}
@@ -284,6 +286,10 @@ namespace Atrum {
 	}
 
 	void SceneGame::DrawOperatorGuidanceUi() {
+		if (!operatorGuidanceDocumentLoaded_) {
+			return;
+		}
+
 		if (introCameraController_ != nullptr &&
 			!introCameraController_->IsFinished()) {
 			return;

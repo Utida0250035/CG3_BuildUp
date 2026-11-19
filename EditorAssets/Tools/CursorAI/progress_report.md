@@ -5642,3 +5642,19 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 撃破 BGM | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |
+
+---
+
+## セッション 2026-11-20 07:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `BootSceneGameOperatorGuidance` で読込成否を保持
+- `LoadFromJsonFile` を try/catch 化し失敗時は状態をクリア（代替案内なし）
+- 読込失敗時は Update／Draw／OnBattleReady をスキップ
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| operator_guidance 入場 | 有効 | 初回利用者がオペレータ案内に沿って主要操作を完了できる（JSON 欠落時は本編のみ継続） |
