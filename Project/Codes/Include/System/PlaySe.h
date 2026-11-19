@@ -2,32 +2,14 @@
 
 #include "Audio/Audio.h"
 #include "Engine/AtrumEngine.h"
+#include "System/PlaySeDetailCache.h"
 #include <cstddef>
 #include <filesystem>
 #include <string>
-#include <unordered_map>
 
 namespace Atrum {
 
 namespace PlaySeDetail {
-
-inline size_t GetOrLoadSeIndex(const std::string &path) {
-  if (!std::filesystem::exists(path)) {
-    return static_cast<size_t>(-1);
-  }
-
-  static std::unordered_map<std::string, size_t> cache;
-  Audio::AudioManager *audio = ::Atrum::EngineAudioManager();
-
-  const size_t index = audio->Load(path);
-  if (index == static_cast<size_t>(-1)) {
-    cache.erase(path);
-    return static_cast<size_t>(-1);
-  }
-
-  cache[path] = index;
-  return index;
-}
 
 inline std::string ResolveExistingSePath(
     const std::initializer_list<const char *> candidatePaths) {

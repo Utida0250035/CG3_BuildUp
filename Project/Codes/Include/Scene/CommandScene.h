@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.h"
+#include "System/PlaySeDetailCache.h"
 
 namespace Atrum {
 
@@ -67,6 +68,8 @@ namespace Atrum {
 
 				// 現在シーンの退出処理
 				sceneNow_->ExitScene();
+
+				PlaySeDetail::ClearSeIndexPathCache();
 
 				// 現在シーンの変更
 				sceneNow_ = sceneNext;

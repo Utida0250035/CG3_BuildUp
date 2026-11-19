@@ -356,6 +356,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp" />
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\System\PlaySeDetailCache.cpp" />
     <ClCompile Include="Codes\Source\System\BehDodge.cpp" />
     <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp" />
     <ClCompile Include="Codes\Source\System\BehEnemyDepthRush.cpp" />
@@ -651,6 +652,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Playable\CmpInput.h" />
     <ClInclude Include="Codes\Include\System\Playable\CmpDrawPlayerParryField.h" />
     <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h" />
+    <ClInclude Include="Codes\Include\System\PlaySeDetailCache.h" />
     <ClInclude Include="Codes\Include\System\PlaySe.h" />
     <ClInclude Include="Codes\Include\System\StageBounds.h" />
     <ClInclude Include="Codes\Include\System\BulletDepthVisual.h" />

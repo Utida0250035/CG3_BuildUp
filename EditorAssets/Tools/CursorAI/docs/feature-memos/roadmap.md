@@ -105,7 +105,7 @@
 
 ### PlaySeDetail
 - [x] キャッシュ命中で再 Load しない（gap: `GAP-Audio-PlaySeDetail-002`）
-- [ ] static cache がアンロードされない
+- [x] static cache がアンロードされない（gap: `GAP-Audio-PlaySeDetail-001`）
 
 ### SetBgmLoopPlaybackSeconds
 - [x] 再生位置指定がゲームシーン未使用（gap: `GAP-Audio-SetBgmLoopPlaybackSeconds-001`）

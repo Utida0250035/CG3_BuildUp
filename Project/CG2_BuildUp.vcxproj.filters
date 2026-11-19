@@ -268,6 +268,9 @@
     <ClCompile Include="Codes\Source\System\AttackTelegraph\CmpDrawAttackTelegraph.cpp">
       <Filter>Codes\Source\System\AttackTelegraph</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\PlaySeDetailCache.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\BehDodge.cpp">
       <Filter>Codes\Source\System</Filter>
     </ClCompile>
@@ -1056,6 +1059,9 @@
       <Filter>Codes\Include\System\Playable</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\PlayerParryReach.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\PlaySeDetailCache.h">
       <Filter>Codes\Include\System</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\PlaySe.h">
