@@ -692,6 +692,12 @@ void EntityEditor::DrawProjectPanel() {
     ui_.requestSaveToDisk = true;
     ui_.requestPlayRuntimeScene = true;
   }
+  ImGui::SameLine();
+  if (ImGui::Button("SceneBuildUp")) {
+    ui_.requestSaveToDisk = true;
+    ui_.sceneBuildUpLaunchPath.clear();
+    ui_.requestLaunchSceneBuildUp = true;
+  }
   if (ImGui::Button("起動シーンに設定")) {
     const std::string targetPath = ui_.jsonFilePath.empty()
                                        ? ui_.selectedScenePath

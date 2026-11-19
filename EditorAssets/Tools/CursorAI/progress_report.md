@@ -4957,3 +4957,49 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠（完成形の説明の・行） |
 |--------|------|------------------------------|
 | SceneMovie 配線 | 有効 | シーン内ムービーが再生完了まで破綻しない（scene_movie.md） |
+
+---
+
+## セッション 2026-11-20 03:30（/loop 15m・roadmap tick）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ループ:** `loop-roadmap-execute`（15m）継続
+- **着手ブランチ:** `fix/SceneBuildUpEditorLaunch`
+- **roadmap:** エディタから SceneBuildUp 起動（`GAP-Scene-SceneBuildUpRegistry-001`）
+- メニュー／プロジェクトパネルに `SceneBuildUp で実行`、デバッグメニューに DebugPlayArea テンプレ
+- `EditorAssetsPaths::kDebugPlayAreaTemplateScene`
+- **ビルド:** Cloud VM（Linux）未実行
+
+### 2. 発生した課題または設計上の選択肢
+
+- エディタ内 Runtime タブ試行（`requestPlayRuntimeScene`）とフル遷移を分離
+
+### 3. 次に実行すべきステップの提案
+
+- `GAP-Scene-SceneMovie-004`（returnScene null 時の復帰）
+
+### 4. 実装済みと判断した項目（コード確認・即時 [x]）
+
+- なし
+
+### 5. 保留・着手見送り（§6.3）
+
+- なし
+
+### 6. 用途不明で確認待ち（§6.4）
+
+- なし
+
+### 7. 推測した用途（§6.4）
+
+- **SceneBuildUp エディタ配線**
+  - 用途: 本編外で JSON シーンをフルランタイム検証
+  - 使用場面: コンポーネント試験、DebugPlayArea テンプレのワンクリック起動
+  - 用途から決めた仕様: 戻り先は `SceneEntityEditor`
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（完成形の説明の・行） |
+|--------|------|------------------------------|
+| BuildUp エディタ起動 | 有効 | ・シーンの構成を保存し、エディタ上／ランタイム環境上でのプレイを可能に |

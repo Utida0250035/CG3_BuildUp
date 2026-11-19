@@ -145,6 +145,22 @@ void SceneEntityEditor::Update() {
 #endif
   }
 
+  if (editor_->Ui().requestLaunchSceneBuildUp) {
+    editor_->Ui().requestLaunchSceneBuildUp = false;
+    std::string scenePath = editor_->Ui().sceneBuildUpLaunchPath;
+    editor_->Ui().sceneBuildUpLaunchPath.clear();
+    if (scenePath.empty()) {
+      scenePath = editor_->Ui().jsonFilePath;
+    }
+    if (!scenePath.empty()) {
+      editor_->SaveToJsonPath(scenePath);
+      Atrum::CommandChangeScene::Instance()->Set(
+          SceneBuildUpRegistry::Instance().Launch(scenePath, Instance()),
+          std::make_unique<ChangeSceneFade>().release());
+      return;
+    }
+  }
+
   if (editor_->Ui().requestOpenParticleEditor) {
     editor_->Ui().requestOpenParticleEditor = false;
     Atrum::CommandChangeScene::Instance()->Set(

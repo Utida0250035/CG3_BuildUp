@@ -7,6 +7,7 @@
 #include "System/Editor/EditorLuaScriptScaffold.h"
 #include <imgui/imgui_internal.h>
 #include "System/Editor/Camera/StageViewCameraTuning.h"
+#include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
@@ -95,9 +96,13 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
       ui.pendingDeleteScenePath = deleteSceneTarget;
       ui.requestDeleteSceneConfirm = true;
     }
-    if (ImGui::MenuItem("シーンを実行")) {
+    if (ImGui::MenuItem("シーンを実行（エディタ内）")) {
       ui.requestSaveToDisk = true;
       ui.requestPlayRuntimeScene = true;
+    }
+    if (ImGui::MenuItem("SceneBuildUp で実行")) {
+      ui.requestSaveToDisk = true;
+      ui.requestLaunchSceneBuildUp = true;
     }
     if (ImGui::MenuItem("プレビューに適用")) {
       ui.requestApplyPreview = true;
@@ -144,6 +149,10 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     bool showStreamingMemory = Atrum::Debug::IsStreamingMemoryDebugVisible();
     if (ImGui::MenuItem("ストリーミングメモリ", nullptr, &showStreamingMemory)) {
       Atrum::Debug::SetStreamingMemoryDebugVisible(showStreamingMemory);
+    }
+    if (ImGui::MenuItem("機能検証シーン (DebugPlayArea テンプレ)")) {
+      ui.sceneBuildUpLaunchPath = EditorAssets::kDebugPlayAreaTemplateScene;
+      ui.requestLaunchSceneBuildUp = true;
     }
     ImGui::EndMenu();
   }

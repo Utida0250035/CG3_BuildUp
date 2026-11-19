@@ -36,8 +36,12 @@ struct UiState {
   bool previewSimulationEnabled = false;
   /// 現在の Document からプレビューを作り直す（初期状態へ戻す）
   bool requestResetPreview = false;
-  /// 保存後に SceneBuildUp へ遷移してシーンを実行する
+  /// 保存後にエディタ内 Runtime ビューでシミュレーションする
   bool requestPlayRuntimeScene = false;
+  /// SceneBuildUp へ遷移して JSON シーンをフルランタイム実行する
+  bool requestLaunchSceneBuildUp = false;
+  /// 空なら jsonFilePath を SceneBuildUp に渡す
+  std::string sceneBuildUpLaunchPath{};
   /// パーティクルエディタシーンへ遷移する
   bool requestOpenParticleEditor = false;
   /// シーン削除確認ポップアップを開く
