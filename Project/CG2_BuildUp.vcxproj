@@ -350,6 +350,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneMovieVisualSetup.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMoviePendingTransitionUpdate.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieStageLighting.cpp" />
     <ClCompile Include="Codes\Source\Scene\ScenePrimaryCameraResolve.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
@@ -621,6 +622,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneMovieVisualSetup.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMoviePendingTransitionUpdate.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieStageLighting.h" />
     <ClInclude Include="Codes\Include\Scene\ScenePrimaryCameraResolve.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />

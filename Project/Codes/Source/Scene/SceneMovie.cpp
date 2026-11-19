@@ -5,6 +5,7 @@
 #include "Scene/SceneMovieVisualSetup.h"
 #include "Scene/SceneMovieAudioPolicy.h"
 #include "Scene/SceneMoviePendingTransitionUpdate.h"
+#include "Scene/SceneMovieStageLighting.h"
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "imgui.h"
@@ -12,7 +13,6 @@
 
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
-#include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
@@ -56,18 +56,6 @@ void SceneMovieRegistry::OnSceneExited(SceneMovie *scene) {
       ownedScenes_.end());
 }
 
-void SceneMovie::SetupStageLighting() {
-  Math::Vector3 lightDirection{-0.4f, -0.85f, 0.15f};
-  lightDirection.Normalize();
-  const DirectionalLightData directionalLight{
-      .color = Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 8.0f,
-      .lightModel = LightModel::HalfLambert,
-  };
-  ::Atrum::EngineSetDirectionalLightData(directionalLight);
-}
-
 void SceneMovie::ClearVisuals() {
   if (skyDome_) {
     skyDome_->Finalize();
@@ -100,7 +88,7 @@ void SceneMovie::EnterScene() {
   trackLoadFailureElapsedSeconds_ = 0.0f;
   trackLoadFailureMessage_.clear();
 
-  SetupStageLighting();
+  ApplySceneMovieStageLighting();
   SceneMovieAudioPolicy::OnEnterScene();
 
   movieCamera_.Initialize();

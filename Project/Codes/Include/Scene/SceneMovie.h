@@ -41,7 +41,6 @@ private:
 
   void ClearVisuals();
   void SpawnVisuals();
-  void SetupStageLighting();
   void RequestReturnToCaller();
 };
 
