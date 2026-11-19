@@ -351,6 +351,8 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />
@@ -610,6 +612,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Camera\StageViewCameraTuning.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />

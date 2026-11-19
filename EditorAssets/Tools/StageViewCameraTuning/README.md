@@ -18,6 +18,12 @@ python3 preview_poses.py --focus 0 2 0 --focus-half 1.2 1.2
 python3 verify_camera_policy.py
 ```
 
-## 次のステップ
+## Development エディタ内プレビュー
 
-- Development ビルドで JSON を読み込み ImGui からスライダー調整
+エンティティエディタの **Stage camera tuning** ドック:
+
+- `stage_view_camera_tuning.json` を読み込み eye / pivot を表示
+- **JSON preview on Game view** で Game ビューの戦闘カメラに JSON を即反映
+- **Auto hot-reload** でファイル保存を検知して再読込
+
+パス定数: `EditorAssetsPaths::kStageViewCameraTuningJson`

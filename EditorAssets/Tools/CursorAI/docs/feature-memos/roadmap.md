@@ -244,7 +244,7 @@
 
 
 ### StageViewCameraTuning
-- [ ] カメラ tuning JSON のエディタ内プレビュー／ホットリロードが未実装（spec: feature-memos/odyssey_style_stage_camera.md）
+- [x] カメラ tuning JSON のエディタ内プレビュー／ホットリロードが未実装（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### stage_view_camera_tuning
 - [ ] tuning.json と StageViewCamera 定数の自動同期が無い

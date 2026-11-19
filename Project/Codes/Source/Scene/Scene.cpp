@@ -1,6 +1,10 @@
 #include "Scene/Scene.h"
 
 #include "Camera/StageViewCamera.h"
+#include "Math/Matrix4x4.h"
+#if defined(DEVELOPMENT)
+#include "System/Editor/Camera/StageViewCameraTuning.h"
+#endif
 #include "System/Entity/Entity.h"
 #include "Engine/AtrumEngine.h"
 #include "Scene/CommandChangeScene.h"
@@ -59,9 +63,27 @@ void Scene::SetupStageViewCamera() {
   }
 
   PublishStageViewFramingBounds(GetStageViewFramingBounds());
+#if defined(DEVELOPMENT)
+  const StageViewCameraPose pose =
+      Editor::StageViewCameraTuning::Instance().IsGameViewPreviewEnabled()
+          ? Editor::StageViewCameraTuning::Instance().ComputeBattlePose(
+                GetStageViewFramingBounds())
+          : ComputeStageBattleViewPose(GetStageViewFramingBounds());
+#else
   const StageViewCameraPose pose =
       ComputeStageBattleViewPose(GetStageViewFramingBounds());
+#endif
   ApplyStageViewCameraPose(camera, pose);
+#if defined(DEVELOPMENT)
+  Editor::StageViewCameraTuning &tuning =
+      Editor::StageViewCameraTuning::Instance();
+  if (tuning.IsGameViewPreviewEnabled() && tuning.IsLoaded()) {
+    camera->SetPerspectiveFovMatrix(
+        Math::Matrix4x4::PerspectiveFov(tuning.PerspectiveFovY(),
+                                        tuning.AspectRatio(), 0.125f, 128.0f));
+    camera->UpdateMatrix();
+  }
+#endif
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
   if (auto *debugCam = dynamic_cast<Debug::DebugCamera *>(camera)) {

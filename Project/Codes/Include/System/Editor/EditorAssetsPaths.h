@@ -6,6 +6,8 @@ namespace Atrum::EditorAssets {
 constexpr const char *kScenesDirectory = "../EditorAssets/Scenes";
 constexpr const char *kEntitiesPrefabDirectory = "../EditorAssets/Entities";
 constexpr const char *kParticlesDirectory = "../EditorAssets/Particles";
+constexpr const char *kStageViewCameraTuningJson =
+    "../EditorAssets/Camera/stage_view_camera_tuning.json";
 
 /// ゲーム用 Lua スクリプト（エディタのスクリプト雛形の出力先）
 constexpr const char *kScriptsDirectory = "Assets/Scripts";

@@ -6,6 +6,7 @@
 #include "ForDebug/AudioStreamingDebugImGui.h"
 #include "System/Editor/EditorLuaScriptScaffold.h"
 #include <imgui/imgui_internal.h>
+#include "System/Editor/Camera/StageViewCameraTuning.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
@@ -132,6 +133,9 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     }
     if (ImGui::MenuItem("スクリプト")) {
       ImGui::SetWindowFocus("スクリプト");
+    }
+    if (ImGui::MenuItem("Stage camera tuning")) {
+      ImGui::SetWindowFocus("Stage camera tuning");
     }
     ImGui::EndMenu();
   }
@@ -266,6 +270,7 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
     ImGui::DockBuilderDockWindow("プロジェクト", dockBottom);
     ImGui::DockBuilderDockWindow("タグ", dockBottom);
     ImGui::DockBuilderDockWindow("スクリプト", dockBottom);
+    ImGui::DockBuilderDockWindow("Stage camera tuning", dockBottom);
     ImGui::DockBuilderFinish(dockSpaceId);
   }
 
@@ -309,6 +314,8 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
     EditorLuaScriptScaffold::DrawImGuiPanel();
   }
   ImGui::End();
+
+  DrawStageViewCameraTuningPanel();
 
   ImGui::End();
 }
