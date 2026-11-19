@@ -2,6 +2,7 @@
 
 #include "Scene/SceneMovieReturnTarget.h"
 #include "Scene/SceneMovieTrackFailure.h"
+#include "Scene/SceneMovieVisualSetup.h"
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "imgui.h"
@@ -74,7 +75,7 @@ void SceneMovie::ClearVisuals() {
 
 void SceneMovie::SpawnVisuals() {
   ClearVisuals();
-  skyDome_ = EntityFactory::SkyDome(GetCamera());
+  skyDome_ = CreateSkyDomeBoundToCamera(GetCamera());
 }
 
 void SceneMovie::RequestReturnToCaller() {
@@ -96,7 +97,6 @@ void SceneMovie::EnterScene() {
   trackLoadFailureElapsedSeconds_ = 0.0f;
   trackLoadFailureMessage_.clear();
 
-  SpawnVisuals();
   SetupStageLighting();
 
   movieCamera_.Initialize();
@@ -110,6 +110,8 @@ void SceneMovie::EnterScene() {
         BuildSceneMovieTrackLoadFailureMessage(trackJsonPath_);
     SetupStageViewCamera();
   }
+
+  SpawnVisuals();
 }
 
 void SceneMovie::Update() {
