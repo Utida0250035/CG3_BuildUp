@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameIntroBarrageAudio.h"
 #include "Scene/SceneGameDefeatAudioPolicy.h"
 #include "Scene/SceneGameDefeatPresentationBgm.h"
 #include "Scene/SceneGameEnterVisualPreset.h"
@@ -200,6 +201,7 @@ namespace Atrum {
 			}
 			UpdateIntroPresentation();
 			Atrum::Particle::Combat::SetEffectCamera(GetCamera());
+			Atrum::Particle::Combat::UpdateCombatParticleEffects();
 			return;
 		}
 
@@ -456,10 +458,7 @@ namespace Atrum {
 
 	void SceneGame::UpdateIntroPresentation() {
 		UpdateBackgrounds();
-
-		if (boss_) {
-			Atrum::OrbiterChildUtils::UpdateBossOrbiterMovementOnly(*boss_);
-		}
+		Atrum::UpdateSceneGameIntroBarrageAudio(boss_.get());
 	}
 
 	void SceneGame::UpdateEntities() {

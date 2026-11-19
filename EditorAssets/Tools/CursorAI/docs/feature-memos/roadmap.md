@@ -300,7 +300,7 @@
 - [x] SpawnEntities がイントロカメラ設定より先に実行される
 - [x] 撃破演出中は MaintainSceneBgmIfNeeded が無効
 - [x] OnPlayerDefeated は BGM を止めず撃破は即停止
-- [ ] イントロ中の Update 早期 return で弾幕 SE 無音
+- [x] イントロ中の Update 早期 return で弾幕 SE 無音
 - [ ] イントロ中に Maintain が PlaySceneBgm
 - [ ] pendingDefeat 中は Maintain が return
 - [ ] フェード中も Exit で StopBgmLoop
