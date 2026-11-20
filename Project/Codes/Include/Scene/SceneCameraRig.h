@@ -32,6 +32,9 @@ public:
 
   void PrepareActiveCameraBeforeDraw(const Scene &scene);
 
+  /// rig 内の自動スポーン Entity（MainCamera 等）の Update
+  void TickSpawnedEntities();
+
 private:
   std::vector<std::unique_ptr<Entity>> entities_;
   bool autoSpawnAttempted_ = false;

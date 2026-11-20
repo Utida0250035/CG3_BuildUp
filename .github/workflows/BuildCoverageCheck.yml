@@ -135,3 +135,6 @@ jobs:
 
       - name: Verify SceneBuildUp load failure spawns no dummy entity
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_load_failure_no_dummy_entity.py
+
+      - name: Verify SceneBuildUp updates cameraRig entities
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_camera_rig_update.py

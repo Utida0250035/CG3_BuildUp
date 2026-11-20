@@ -64,6 +64,9 @@ public:
   /// Update 完了後・Draw 直前（GameOrder / ActiveCameraSystem から呼ぶ）
   void PrepareCamerasForDraw();
 
+  /// cameraRig 自動スポーン実体の Update（JSON entities_ とは別）
+  void TickCameraRigEntities();
+
   /// JSON 実体など rig 外のカメラ候補（未使用シーンは nullptr）
   virtual const std::vector<std::unique_ptr<Entity>> *
   GetSupplementalCameraEntities() const {

@@ -148,6 +148,8 @@ void SceneBuildUp::Update() {
       }
     }
 
+    TickCameraRigEntities();
+
     Particle::TickEmitterManagerForActiveScene(GetCamera());
   }
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);

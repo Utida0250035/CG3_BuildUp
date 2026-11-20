@@ -54,6 +54,10 @@ void Scene::PrepareCamerasForDraw() {
   cameraRig_.PrepareActiveCameraBeforeDraw(*this);
 }
 
+void Scene::TickCameraRigEntities() {
+  cameraRig_.TickSpawnedEntities();
+}
+
 void Scene::SetupStageViewCamera() {
   using namespace Atrum;
 

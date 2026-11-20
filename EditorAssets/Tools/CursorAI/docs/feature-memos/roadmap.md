@@ -439,7 +439,7 @@
 - [x] SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画（spec: feature-memos/debug_test_play_area.md）
 - [x] SceneBuildUp が EditorSceneRuntime を参照しない（spec: feature-memos/debug_test_play_area.md）
 - [x] ロード失敗時に空の Entity_0 を生成（spec: feature-memos/debug_test_play_area.md）
-- [ ] cameraRig 実体は Update されない（spec: feature-memos/entity_camera_components.md）
+- [x] cameraRig 実体は Update されない（spec: feature-memos/entity_camera_components.md）
 - [ ] ロード直後 SetupStageViewCamera を呼ぶ（spec: feature-memos/entity_camera_components.md）
 - [ ] DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera（spec: feature-memos/entity_camera_components.md）
 - [ ] IsStageViewCameraLocked が常時 true（spec: feature-memos/debug_test_play_area.md）

@@ -93,4 +93,12 @@ void SceneCameraRig::PrepareActiveCameraBeforeDraw(const Scene &scene) {
   }
 }
 
+void SceneCameraRig::TickSpawnedEntities() {
+  for (const std::unique_ptr<Entity> &entity : entities_) {
+    if (entity && entity->IsActive()) {
+      entity->Update();
+    }
+  }
+}
+
 } // namespace Atrum

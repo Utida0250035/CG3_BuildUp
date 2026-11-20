@@ -7022,7 +7022,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「cameraRig 実体は Update されない」（`fix/SceneBuildUpCameraRigUpdate` 予定）
+- SceneBuildUp「ロード直後 SetupStageViewCamera を呼ぶ」（`fix/SceneBuildUpEnterSetupStageCamera` 予定）
+
+---
+
+## セッション 2026-11-21 00:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneCameraRig::TickSpawnedEntities` と `Scene::TickCameraRigEntities` を追加
+- `SceneBuildUp::Update` で JSON `entities_` の後に rig 自動スポーン実体を Update
+- `verify_scene_build_up_camera_rig_update.py` を CI に追加
+- roadmap「cameraRig 実体は Update されない」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 既定 MainCamera プレハブの Upd Cmp が毎フレーム動き、Cmp 試験が本番ループに近づく
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| cameraRig Update | 有効 | カメラをエンティティ＋Cmp で組み立てる方針のランタイム更新 |
 
 ---
 
