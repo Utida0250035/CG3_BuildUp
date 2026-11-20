@@ -24,6 +24,9 @@ if %errorlevel%==0 (
 )
 if errorlevel 1 exit /b 1
 
+call "%~dp0restoreDevelopmentNuGetPackages.cmd" "%REPO_ROOT%"
+if errorlevel 1 exit /b 1
+
 set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 if not exist "%VSWHERE%" (
   echo vswhere not found.

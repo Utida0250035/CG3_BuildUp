@@ -22,9 +22,10 @@ python3 EditorAssets/Tools/CursorAI/verify_editor_component_registration.py
 `EditorAssets/Tools/CursorAI/buildDevelopment.cmd` は **CI `DevelopmentBuild.yml` と同じ手順** を踏む。
 
 1. `verify_vcxproj_coverage.py`（`vcxproj-coverage` ジョブ相当）
-2. `MSBuild Project/CG2_BuildUp.slnx`（`Configuration=Development` / `Platform=x64`）
+2. `restoreDevelopmentNuGetPackages.cmd`（ルート `packages.config` → `Project/packages`、SDL2 targets 確認）
+3. `MSBuild Project/CG2_BuildUp.slnx`（`Configuration=Development` / `Platform=x64`）
 
-NuGet 復元は別タスク（`buildDevelopment` + NuGet）。CI では `DevelopmentBuild` が packages 復元後に slnx をビルドする。
+CI の `DevelopmentBuild.yml` も同じ packages 復元後に slnx をビルドする。
 
 ## 許容リスト
 

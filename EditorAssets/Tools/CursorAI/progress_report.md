@@ -8247,3 +8247,37 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - `buildDevelopment.cmd` の NuGet 復元（`GAP-Infra-buildDevelopment-002`）
+
+---
+
+## セッション 2026-11-21 08:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `restoreDevelopmentNuGetPackages.cmd` … `packages.config` → `Project/packages`、SDL2 targets 存在確認
+- `buildDevelopment.cmd` から復元を呼び出し（`DevelopmentBuild.yml` と同序）
+- `verify_build_development_nuget_restore.py`、CI 追加、`cloud_build_vcxproj_check.md` 更新
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **半自律／制作:** クリーン clone 後も `buildDevelopment.cmd` 単体で SDL2 依存を揃えてビルド
+- **Ship:** ローカル手順と CI の前段を一致させる
+
+### 既存実装の課題点
+
+- `nuget.exe` が PATH に無い環境では手動インストールが必要（CI は setup-nuget）
+
+### ビルド
+
+- Cloud VM（Linux）のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| buildDevelopment NuGet | 有効 | エディターを exe（Development 配布）化するためのビルド手順の再現性 |
+
+### 次 tick 候補
+
+- Release 向け最小起動スモーク手順書（`GAP-Ship-smoke_runbook-001`）

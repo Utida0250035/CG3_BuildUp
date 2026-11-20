@@ -55,6 +55,9 @@ jobs:
       - name: Verify buildDevelopment.cmd matches CI Development entry
         run: python3 EditorAssets/Tools/CursorAI/verify_build_development_ci_parity.py
 
+      - name: Verify buildDevelopment NuGet restore step
+        run: python3 EditorAssets/Tools/CursorAI/verify_build_development_nuget_restore.py
+
       - name: Verify Release startup smoke CI wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_release_startup_smoke_ci.py
 

@@ -31,6 +31,8 @@ def main() -> int:
             errors.append("buildDevelopment.cmd must run verify_vcxproj_coverage.py")
         if "CG2_BuildUp.slnx" not in cmd:
             errors.append("buildDevelopment.cmd must build CG2_BuildUp.slnx")
+        if "restoreDevelopmentNuGetPackages.cmd" not in cmd:
+            errors.append("buildDevelopment.cmd must restore NuGet before MSBuild")
         if "CG2_BuildUp.vcxproj" in cmd and "CG2_BuildUp.slnx" not in cmd:
             errors.append("buildDevelopment.cmd must not use vcxproj-only entry")
 
