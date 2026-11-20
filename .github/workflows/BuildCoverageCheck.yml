@@ -144,3 +144,6 @@ jobs:
 
       - name: Verify SceneBuildUp runtime subview skips SetupStageViewCamera
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_draw_runtime_camera.py
+
+      - name: Verify SceneBuildUp StageView lock is not hardcoded true
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_stage_camera_lock_toggle.py

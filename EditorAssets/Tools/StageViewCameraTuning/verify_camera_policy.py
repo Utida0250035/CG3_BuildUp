@@ -135,6 +135,20 @@ def particle_editor_policy_limits_to_dev_imgui(path: Path) -> bool:
     )
 
 
+def buildup_lock_is_runtime_toggleable() -> bool:
+    header = header_path("SceneBuildUp.h")
+    cpp = SOURCE / "SceneBuildUp.cpp"
+    if not header.is_file() or not cpp.is_file():
+        return False
+    if has_locked_true(header):
+        return False
+    text = cpp.read_text(encoding="utf-8", errors="replace")
+    return (
+        "SceneBuildUp::IsStageViewCameraLocked" in text
+        and "stageViewCameraLocked_" in header.read_text(encoding="utf-8", errors="replace")
+    )
+
+
 def entity_editor_cpp_defers_debug_input(path: Path) -> bool:
     text = path.read_text(encoding="utf-8", errors="replace")
     if "AllowDebugCameraControl" not in text:
@@ -154,6 +168,13 @@ def main() -> int:
         path = header_path(name)
         if not path.is_file():
             errors.append(f"missing header: {name}")
+            continue
+        if name == "SceneBuildUp.h":
+            if not buildup_lock_is_runtime_toggleable():
+                errors.append(
+                    "SceneBuildUp: expected runtime toggleable StageView lock "
+                    "(default locked via stageViewCameraLocked_)"
+                )
             continue
         if not has_locked_true(path):
             errors.append(f"{name}: expected IsStageViewCameraLocked() -> true")

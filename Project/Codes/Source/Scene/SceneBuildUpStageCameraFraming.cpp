@@ -13,12 +13,16 @@ void ApplyFramingFromSceneDocument(
 
 void ApplyStageCameraAfterSceneLoad(Scene &scene) {
   PublishStageViewFramingBounds(scene.GetStageViewFramingBounds());
-  scene.SetupStageViewCamera();
+  if (scene.IsStageViewCameraLocked()) {
+    scene.SetupStageViewCamera();
+  }
 }
 
 void MaintainLockedStageCamera(Scene &scene) {
   PublishStageViewFramingBounds(scene.GetStageViewFramingBounds());
-  scene.SetupStageViewCamera();
+  if (scene.IsStageViewCameraLocked()) {
+    scene.SetupStageViewCamera();
+  }
   scene.PrepareCamerasForDraw();
 }
 

@@ -7022,7 +7022,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「IsStageViewCameraLocked が常時 true」（`fix/SceneBuildUpStageCameraLocked` 予定）
+- SceneBuildUp「遷移演出中 F1 復帰が処理されない」（`fix/SceneBuildUpF1DuringFade` 予定）
+
+---
+
+## セッション 2026-11-21 01:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `stageViewCameraLocked_` で `IsStageViewCameraLocked` をランタイム化（既定 true）
+- Development: **F5** で StageView ロック ON/OFF（`SceneBuildUpStageCameraLock`）
+- ロック OFF 時は `SetupStageViewCamera` をスキップ（CmpCamera 試験向け）
+- `verify_camera_policy.py` を BuildUp 切替対応に更新
+- `verify_scene_build_up_stage_camera_lock_toggle.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 本番同等のロック ON を既定にしつつ、Cmp 検証用に OFF へ切替
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| StageView ロック切替 | 有効 | エディタ上プレイとランタイム検証でカメラ／Cmp を試せる |
 
 ---
 

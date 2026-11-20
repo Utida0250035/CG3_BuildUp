@@ -28,7 +28,9 @@ public:
   void Draw() override;
   void ExitScene() override;
 
-  bool IsStageViewCameraLocked() const override { return true; }
+  bool IsStageViewCameraLocked() const override;
+
+  void SetStageViewCameraLocked(bool locked) { stageViewCameraLocked_ = locked; }
 
   const std::vector<std::unique_ptr<Entity>> *
   GetSupplementalCameraEntities() const override {
@@ -53,6 +55,7 @@ private:
   std::vector<std::unique_ptr<Entity>> entities_{};
   // Release シーン巡回の対象なら左上に「次のシーンへ」案内を描く
   bool showsNextSceneHint_ = false;
+  bool stageViewCameraLocked_ = true;
   bool sceneDocumentLoadFailed_ = false;
   std::string sceneLoadFailureMessage_{};
   Audio::Handle sceneBgmHandle_{};

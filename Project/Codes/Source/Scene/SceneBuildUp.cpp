@@ -9,6 +9,7 @@
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
 #include "Scene/SceneBuildUpLoadFailureEntities.h"
 #include "Scene/SceneBuildUpRuntimeSubviewDrawCamera.h"
+#include "Scene/SceneBuildUpStageCameraLock.h"
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
@@ -41,6 +42,10 @@ SceneBuildUp::SceneBuildUp(std::string sceneJsonPath, Scene *returnScene)
 }
 
 SceneBuildUp::~SceneBuildUp() = default;
+
+bool SceneBuildUp::IsStageViewCameraLocked() const {
+  return stageViewCameraLocked_;
+}
 
 SceneBuildUpRegistry::~SceneBuildUpRegistry() = default;
 
@@ -99,6 +104,7 @@ void SceneBuildUp::EnterScene() {
 
   sceneDocumentLoadFailed_ = false;
   sceneLoadFailureMessage_.clear();
+  stageViewCameraLocked_ = SceneBuildUpStageCameraLock::kDefaultLocked;
 
   EntityEditor::EditorSceneDocument document{};
   const bool loadSucceeded =
@@ -134,6 +140,11 @@ void SceneBuildUp::EnterScene() {
 }
 
 void SceneBuildUp::Update() {
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (SceneBuildUpStageCameraLock::TryToggleLockHotkey(*this)) {
+    return;
+  }
+#endif
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
     Scene *const returnTarget =
         ResolveSceneBuildUpReturnTarget(returnScene_);
