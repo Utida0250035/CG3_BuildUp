@@ -266,6 +266,9 @@ void SceneBuildUp::Draw() {
 }
 
 void SceneBuildUp::ExitScene() {
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  Editor::Scene::ClearStagedEditorPlayScenePath();
+#endif
   SceneBuildUpAudioPolicy::OnExitScene(*this);
   TeardownEntities();
   ReleaseCommonResources();

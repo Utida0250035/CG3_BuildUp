@@ -356,6 +356,7 @@ void SceneEntityEditor::DrawScene() {
 }
 
 void SceneEntityEditor::ExitScene() {
+  Atrum::Editor::Scene::ClearStagedEditorPlayScenePath();
   for (std::unique_ptr<Entity> &entity : previewEntities_) {
     if (entity) {
       entity->Finalize();

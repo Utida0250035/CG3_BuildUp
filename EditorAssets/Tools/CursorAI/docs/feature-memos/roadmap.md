@@ -402,7 +402,7 @@
 
 ### EditorScenePlayRequest
 - [x] EditorScenePlayRequest::Path が参照されない（spec: feature-memos/debug_test_play_area.md）
-- [ ] EditorScenePlayRequest::Clear が呼ばれない（spec: feature-memos/debug_test_play_area.md）
+- [x] EditorScenePlayRequest::Clear が呼ばれない（spec: feature-memos/debug_test_play_area.md）
 - [ ] Set 後に BuildUp 起動が無い（spec: feature-memos/debug_test_play_area.md）
 
 ### SceneEntityEditor

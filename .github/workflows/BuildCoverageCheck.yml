@@ -63,3 +63,6 @@ jobs:
 
       - name: Verify EditorScenePlayRequest Path wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_play_request_path.py
+
+      - name: Verify EditorScenePlayRequest Clear wiring
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_play_request_clear.py

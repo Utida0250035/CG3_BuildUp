@@ -60,4 +60,7 @@ void StageEditorPlayScenePath(const std::string &jsonFilePath);
 /// 保持中のパスを返し、非空なら Clear する（起動解決・BuildUp 起動で消費）。
 std::string TakePendingEditorPlayScenePath();
 
+/// 未消費の PlayRequest を破棄（シーン Exit 等）。
+void ClearStagedEditorPlayScenePath();
+
 } // namespace Atrum::Editor::Scene

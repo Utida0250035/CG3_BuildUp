@@ -6567,3 +6567,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | EditorScenePlayRequest::Path | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-20 18:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ClearStagedEditorPlayScenePath` で PlayRequest の明示破棄 API を追加
+- `TakePendingEditorPlayScenePath` 内の `Clear` は従来どおり消費時に実行
+- `SceneEntityEditor::ExitScene` と `SceneBuildUp::ExitScene` で未消費パスをリセット
+- `verify_editor_scene_play_request_clear.py` を CI に追加
+- roadmap「EditorScenePlayRequest::Clear が呼ばれない」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 検証シーン入退場で古い再生 JSON が次の起動や BuildUp に残らないようにする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| EditorScenePlayRequest::Clear | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |

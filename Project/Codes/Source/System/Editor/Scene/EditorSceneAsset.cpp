@@ -219,4 +219,8 @@ std::string TakePendingEditorPlayScenePath() {
   return pending;
 }
 
+void ClearStagedEditorPlayScenePath() {
+  EditorScenePlayRequest::Instance().Clear();
+}
+
 } // namespace Atrum::Editor::Scene
