@@ -616,6 +616,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeLightingPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeViewStatusText.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpDedicatedRuntimeViewWindow.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeEntityDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
@@ -1439,6 +1440,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeLightingPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeViewStatusText.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpDedicatedRuntimeViewWindow.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeEntityDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />

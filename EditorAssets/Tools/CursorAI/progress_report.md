@@ -7052,7 +7052,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「子付きインスタンスは親 Draw 任せ」（`fix/SceneBuildUpChildInstanceDraw` 予定）
+- SceneBuildUp「描画毎に半ランバート固定」（`fix/SceneBuildUpHalfLambertPerDraw` 予定）
+
+---
+
+## セッション 2026-11-21 03:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpRuntimeEntityDraw` で `DrawSceneDocumentEntities` に委譲（親描画＋非 Active 親の子フォールバック）
+- `verify_scene_build_up_child_instance_draw.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 階層付き JSON で子が親経由で描画される契約をランタイムでも再現する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 子 Draw 契約 | 有効 | シーン構成の保存とランタイムプレイでヒエラルキーを正しく見る |
 
 ---
 

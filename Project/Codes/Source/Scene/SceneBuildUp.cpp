@@ -14,6 +14,7 @@
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
 #include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
+#include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
 #endif
@@ -93,14 +94,7 @@ void SceneBuildUp::TeardownEntities() {
 }
 
 void SceneBuildUp::DrawRuntimeEntities() {
-  for (std::unique_ptr<Entity> &entity : entities_) {
-    if (!entity) {
-      continue;
-    }
-    if (entity->GetParent() == nullptr) {
-      entity->Draw();
-    }
-  }
+  SceneBuildUpRuntimeEntityDraw::Draw(entities_);
 }
 
 void SceneBuildUp::EnterScene() {

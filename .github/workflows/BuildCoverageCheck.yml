@@ -165,3 +165,6 @@ jobs:
 
       - name: Verify SceneBuildUp runtime view shows JSON path in header
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_runtime_view_window_text.py
+
+      - name: Verify SceneBuildUp child entities use document draw contract
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_child_instance_draw.py

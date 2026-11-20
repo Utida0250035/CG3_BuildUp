@@ -449,7 +449,7 @@
 - [x] ExitScene が SceneViewTab を戻さない（spec: feature-memos/debug_test_play_area.md）
 - [x] ビュー描画ごとに SetupRuntimeLighting
 - [x] 専用ランタイムウィンドウが汎用文言のみ（spec: feature-memos/debug_test_play_area.md）
-- [ ] 子付きインスタンスは親 Draw 任せ
+- [x] 子付きインスタンスは親 Draw 任せ
 - [ ] 描画毎に半ランバート固定
 - [ ] EnterScene が Runtime 固定
 - [ ] camera==nullptr で無言 return
