@@ -13,6 +13,7 @@
 #include "Input/PlayInput.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneEntityEditorDebugHotkeys.h"
+#include "Scene/SceneEntityEditorRuntimeTabFocus.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -153,13 +154,7 @@ void SceneEntityEditor::Update() {
     editor_->SaveToJsonPath(editor_->Ui().jsonFilePath);
     RebuildPreviewScene();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-    SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(
-        *this, editor_->SceneDocument());
-    Editor::EditorFrame::Instance().SetSceneViewTab(
-        Editor::SceneViewTab::Runtime);
-    editor_->Ui().previewSimulationEnabled = true;
-    editor_->Ui().runtimeFunctionalViewDraw = true;
-    editor_->Ui().requestFocusRuntimeSceneView = true;
+    EntityEditor::ApplyInEditorPlayRuntimeTabFocusOnly(editor_->Ui());
 #endif
   }
 

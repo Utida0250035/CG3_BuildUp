@@ -6668,3 +6668,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | F2 機能検証 BuildUp | 有効 | エディタ既定の機能検証シーンからエディタ外ランタイムを試す |
+
+---
+
+## セッション 2026-11-20 19:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ApplyInEditorPlayRuntimeTabFocusOnly` でエディタ内プレビュー後は Runtime タブ＋フォーカスのみ
+- 自動の `previewSimulationEnabled`／`runtimeFunctionalViewDraw`／ステージカメラ適用を削除
+- `verify_scene_entity_editor_runtime_tab_focus.py` を CI に追加
+- roadmap「シーン実行後は Runtime タブフォーカスのみ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- プレビュー表示だけ先に Runtime に切り、実行モードや機能試験描画はツールバーで明示 ON
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Runtime タブフォーカスのみ | 有効 | エディタ上でのプレイとランタイム検証の段階分け |
