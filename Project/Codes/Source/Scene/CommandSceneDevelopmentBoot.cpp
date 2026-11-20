@@ -3,6 +3,7 @@
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
+#include "System/GameAssetsPaths.h"
 
 #include <filesystem>
 
@@ -24,6 +25,12 @@ bool IsDebugPlayAreaScenePath(const std::string &sceneJsonPath) {
   return sceneJsonPath.find(EditorAssets::kDebugPlayAreaDirectory) !=
              std::string::npos ||
          sceneJsonPath.find("DebugPlayArea") != std::string::npos;
+}
+
+bool IsRuntimePlayScenePath(const std::string &sceneJsonPath) {
+  return sceneJsonPath.rfind(GameAssets::kScenesDirectory, 0) == 0 ||
+         sceneJsonPath.find("/Assets/Scenes/") != std::string::npos ||
+         sceneJsonPath.find("\\Assets\\Scenes\\") != std::string::npos;
 }
 
 } // namespace
@@ -53,6 +60,8 @@ DevelopmentBootTarget ResolveDevelopmentBootTarget() {
   target.sceneJsonPath = sceneJsonPath;
   if (IsDebugPlayAreaScenePath(sceneJsonPath)) {
     target.kind = DevelopmentBootKind::SceneBuildUp;
+  } else if (IsRuntimePlayScenePath(sceneJsonPath)) {
+    target.kind = DevelopmentBootKind::SceneBuildUpPlayRuntime;
   } else {
     target.kind = DevelopmentBootKind::EntityEditorWithJson;
   }

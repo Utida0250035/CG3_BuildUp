@@ -5843,3 +5843,22 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Title Exit BGM | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |
+
+---
+
+## セッション 2026-11-20 10:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `Assets/Scenes` 指定時は Development でも Release と同様 `SceneBuildUp` 起動（戻り先 Title）
+- DebugPlayArea / EditorAssets は従来どおり BuildUp+Editor または EntityEditor
+
+### 7. 推測した用途
+
+- launch_config の本番シーン JSON で開発ビルドからプレイ経路を再現
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Dev 起動経路 | 有効 | プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する |

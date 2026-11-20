@@ -307,7 +307,7 @@
 - [x] 遷移演出中は MaintainSceneBgm を呼ばない
 
 ### CommandScene
-- [ ] Development 起動の初期シーンがプレイ用シーンロード経路と一致しない
+- [x] Development 起動の初期シーンがプレイ用シーンロード経路と一致しない
 - [ ] シーン切替で BGM が瞬断し、クロスフェード／継続再生ポリシーが無い
 
 ### CommandChangeScene

@@ -4,6 +4,7 @@
 #include "Scene/CommandSceneDevelopmentBoot.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneEntityEditor.h"
+#include "Scene/SceneTitle.h"
 #else
 #include "Scene/CommandSceneDevelopmentBoot.h"
 #include "Scene/SceneBuildUp.h"
@@ -25,6 +26,9 @@ CommandScene::CommandScene() {
   if (bootTarget.kind == DevelopmentBootKind::SceneBuildUp) {
     sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
         bootTarget.sceneJsonPath, entityEditor);
+  } else if (bootTarget.kind == DevelopmentBootKind::SceneBuildUpPlayRuntime) {
+    sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
+        bootTarget.sceneJsonPath, SceneTitle::Instance());
   } else if (bootTarget.kind == DevelopmentBootKind::EntityEditorWithJson) {
     entityEditor->SetBootJsonPath(bootTarget.sceneJsonPath);
     sceneNow_ = entityEditor;
