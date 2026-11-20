@@ -1,5 +1,6 @@
 #include "Scene/SceneBuildUp.h"
 
+#include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -175,6 +176,7 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   engine->SetCamera(camera);
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
+  SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
 }
 
 #endif
@@ -193,6 +195,7 @@ void SceneBuildUp::DrawScene() {
   engine->SetCamera(GetCamera());
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
+  SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   if (showsNextSceneHint_) {

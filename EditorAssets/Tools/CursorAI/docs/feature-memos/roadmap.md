@@ -314,7 +314,7 @@
 - [x] 遷移実行中の Set は無視され次シーン要求が失われる
 
 ### SceneBuildUp
-- [ ] BuildUp 描画に地形越し自機シルエットが無い（spec: feature-memos/player_terrain_silhouette.md）
+- [x] BuildUp 描画に地形越し自機シルエットが無い（spec: feature-memos/player_terrain_silhouette.md）
 - [ ] BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い
 - [ ] BuildUp の sceneJsonPath_ を基準パス解決しない
 - [ ] SceneBuildUp のカメラがシーン JSON の境界情報を読まない
