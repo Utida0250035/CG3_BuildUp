@@ -43,13 +43,10 @@ def main() -> int:
 
     print(f"Wrote {out_path}")
     print(
-        "Next: open in Entity Editor project list (DebugPlayArea/), "
-        "then in-editor preview or 「シーンを実行」 (BuildUp). "
-        "Optional: set startup scene, or F2 for template BuildUp."
-    )
-    print(
-        "生成後: プロジェクト一覧で開く →「エディタ内プレビュー」または"
-        "「シーンを実行」(BuildUp)。起動シーン化は「起動シーンに設定」。F2 はテンプレ BuildUp。"
+        "ランタイムプレビュー: プロジェクト一覧で JSON を選択 →「シーンを実行」(BuildUp)。"
+        "生成直後は「作成して BuildUp」。エディタ内のみなら「作成してエディタ内プレビュー」。"
+        "F2=LoopTick13Demo 正本、F6=combat_bounds_sandbox。"
+        "起動シーン化は「起動シーンに設定」。"
     )
     return 0
 

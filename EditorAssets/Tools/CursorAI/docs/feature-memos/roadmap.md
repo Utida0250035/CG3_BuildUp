@@ -463,7 +463,7 @@
 - [x] combat_bounds_sandbox がコード／既定導線から参照されない（spec: feature-memos/debug_test_play_area.md）
 
 ### DebugPlayAreaGenerator
-- [ ] ランタイムプレビュー手順がコード断片のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] ランタイムプレビュー手順がコード断片のみ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorSceneRuntime
 - [ ] 親なしインスタンスだけ初期化

@@ -7655,3 +7655,35 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - DebugPlayAreaGenerator「ランタイムプレビュー手順がコード断片のみ」（`fix/DebugPlayAreaGeneratorRuntimePreview` 予定）
+
+---
+
+## セッション 2026-11-21 04:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `DebugPlayAreaRuntimePreviewGuidance`（`kStepsJa` / `kPanelHintJa`）を追加
+- プロジェクトパネルにランタイムプレビュー手順を常時表示
+- `DebugPlayAreaGenerator/README.md` から `Launch` 断片を除去しエディタ導線に差し替え
+- `scaffold_play_area.py` の完了メッセージを正本文言に統一
+- `verify_debug_play_area_generator_runtime_preview.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- コンポーネント試験: scaffold 後に README を見ずエディタ上の案内だけで BuildUp へ入る
+- 半自律／CI: 手順の正本をヘッダ＋検証で固定し、ドキュメントと UI のズレを防ぐ
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ランタイムプレビュー手順 | 有効 | エディタ上でのプレイとランタイム環境でのプレイを可能にする（BuildUp 導線のコード正本化） |
+
+### 次 tick 候補
+
+- EditorSceneRuntime「親なしインスタンスだけ初期化」（`fix/EditorSceneRuntimeParentOnly` 予定）

@@ -3,6 +3,7 @@
 #include "System/Editor/EditorDebugPlayAreaScaffold.h"
 
 #include "System/Editor/DebugPlayAreaScaffoldGuidance.h"
+#include "System/Editor/DebugPlayAreaRuntimePreviewGuidance.h"
 #include "System/Editor/DebugPlayAreaScaffoldPersonalize.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
@@ -111,6 +112,8 @@ void EditorDebugPlayAreaScaffold::DrawProjectPanelControls(
       editor.Ui().importStatusMessage = gen.message;
     }
   }
+  ImGui::TextWrapped("%s", DebugPlayAreaRuntimePreviewGuidance::kPanelHintJa);
+  ImGui::TextWrapped("%s", DebugPlayAreaRuntimePreviewGuidance::kStepsJa);
   ImGui::TextDisabled("(DebugPlayArea)");
 }
 

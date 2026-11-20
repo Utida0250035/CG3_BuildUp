@@ -115,6 +115,9 @@ jobs:
       - name: Verify scaffold post-generate guidance
         run: python3 EditorAssets/Tools/CursorAI/verify_scaffold_play_area_post_generate_hint.py
 
+      - name: Verify DebugPlayAreaGenerator runtime preview guidance
+        run: python3 EditorAssets/Tools/CursorAI/verify_debug_play_area_generator_runtime_preview.py
+
       - name: Verify scaffold personalizes instances not only sceneName
         run: python3 EditorAssets/Tools/CursorAI/verify_scaffold_play_area_personalize.py
 

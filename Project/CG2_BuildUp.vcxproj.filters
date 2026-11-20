@@ -1477,6 +1477,7 @@
     <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldGuidance.h" />
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaRuntimePreviewGuidance.h" />
     <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldPersonalize.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
