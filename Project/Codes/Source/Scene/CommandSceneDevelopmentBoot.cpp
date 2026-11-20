@@ -12,10 +12,9 @@ namespace Atrum {
 namespace {
 
 std::string ResolveConfiguredStartupScenePath() {
-  const std::string &playRequestPath =
-      Editor::Scene::EditorScenePlayRequest::Instance().Path();
+  const std::string playRequestPath =
+      Editor::Scene::TakePendingEditorPlayScenePath();
   if (!playRequestPath.empty()) {
-    Editor::Scene::EditorScenePlayRequest::Instance().Clear();
     return playRequestPath;
   }
   return Editor::Scene::ResolveStartupScenePath();

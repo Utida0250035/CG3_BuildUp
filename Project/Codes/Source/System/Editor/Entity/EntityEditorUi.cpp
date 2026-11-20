@@ -691,6 +691,12 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::SameLine();
   if (ImGui::Button("シーンを実行")) {
     ui_.requestSaveToDisk = true;
+    const std::string playPath = ui_.jsonFilePath.empty()
+                                     ? ui_.selectedScenePath
+                                     : ui_.jsonFilePath;
+    if (!playPath.empty()) {
+      Atrum::Editor::Scene::StageEditorPlayScenePath(playPath);
+    }
     ui_.requestPlayRuntimeScene = true;
   }
   ImGui::SameLine();

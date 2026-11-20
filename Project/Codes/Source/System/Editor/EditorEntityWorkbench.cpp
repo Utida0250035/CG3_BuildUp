@@ -9,6 +9,7 @@
 #include "System/Editor/Camera/StageViewCameraTuning.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/EditorFrame.h"
+#include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
 #include "System/Editor/Entity/EntityEditor.h"
@@ -98,6 +99,11 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     }
     if (ImGui::MenuItem("シーンを実行（エディタ内）")) {
       ui.requestSaveToDisk = true;
+      const std::string playPath = ui.jsonFilePath.empty() ? ui.selectedScenePath
+                                                           : ui.jsonFilePath;
+      if (!playPath.empty()) {
+        Atrum::Editor::Scene::StageEditorPlayScenePath(playPath);
+      }
       ui.requestPlayRuntimeScene = true;
     }
     if (ImGui::MenuItem("SceneBuildUp で実行")) {

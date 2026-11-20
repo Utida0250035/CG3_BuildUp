@@ -203,4 +203,20 @@ void EditorScenePlayRequest::Set(const std::string &jsonFilePath) {
 
 void EditorScenePlayRequest::Clear() { jsonFilePath_.clear(); }
 
+void StageEditorPlayScenePath(const std::string &jsonFilePath) {
+  if (jsonFilePath.empty()) {
+    return;
+  }
+  EditorScenePlayRequest::Instance().Set(jsonFilePath);
+}
+
+std::string TakePendingEditorPlayScenePath() {
+  const std::string &pending = EditorScenePlayRequest::Instance().Path();
+  if (pending.empty()) {
+    return {};
+  }
+  EditorScenePlayRequest::Instance().Clear();
+  return pending;
+}
+
 } // namespace Atrum::Editor::Scene

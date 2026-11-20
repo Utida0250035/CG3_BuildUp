@@ -6541,3 +6541,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Release 起動から BuildUp | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-20 17:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `StageEditorPlayScenePath` / `TakePendingEditorPlayScenePath` で PlayRequest の書き込み・消費を共通化
+- 「シーンを実行」時に PlayRequest へ JSON を載せ、次回起動解決と BuildUp 起動で `Path` を消費
+- `CommandSceneDevelopmentBoot` と `SceneEntityEditor` を新 API 経由に変更
+- roadmap「EditorScenePlayRequest::Path が参照されない」を `[x]`
+
+### 推測した用途（§6.4）
+
+- エディタで選んだシーン JSON を次の Development 起動や BuildUp に引き継ぐ
+- 起動シーン設定とワンショット実行の橋渡し
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| EditorScenePlayRequest::Path | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |

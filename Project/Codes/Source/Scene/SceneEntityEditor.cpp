@@ -12,6 +12,7 @@
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
+#include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneParticleEditor.h"
@@ -165,6 +166,9 @@ void SceneEntityEditor::Update() {
     editor_->Ui().requestLaunchSceneBuildUp = false;
     std::string scenePath = editor_->Ui().sceneBuildUpLaunchPath;
     editor_->Ui().sceneBuildUpLaunchPath.clear();
+    if (scenePath.empty()) {
+      scenePath = Atrum::Editor::Scene::TakePendingEditorPlayScenePath();
+    }
     if (scenePath.empty()) {
       scenePath = editor_->Ui().jsonFilePath;
     }
