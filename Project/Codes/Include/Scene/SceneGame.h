@@ -33,6 +33,10 @@ public:
 protected:
   void DrawScene() override;
 
+  void MaintainBgmDuringSceneTransitionEffect() {
+    MaintainSceneBgmIfNeeded(false);
+  }
+
 private:
   enum class DefeatKind : uint8_t { None, Boss, Player };
 

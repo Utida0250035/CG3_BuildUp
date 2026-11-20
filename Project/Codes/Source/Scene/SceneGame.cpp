@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameTransitionBgmPolicy.h"
 #include "Scene/SceneGameExitBgmPolicy.h"
 #include "Scene/SceneGamePendingDefeatBgmPolicy.h"
 #include "Scene/SceneGameIntroBgmPolicy.h"
@@ -190,6 +191,7 @@ namespace Atrum {
 		}
 
 		if (Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+			Atrum::MaintainSceneGameBgmDuringTransitionEffect(*this);
 			return;
 		}
 

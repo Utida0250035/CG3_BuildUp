@@ -304,7 +304,7 @@
 - [x] イントロ中に Maintain が PlaySceneBgm
 - [x] pendingDefeat 中は Maintain が return
 - [x] フェード中も Exit で StopBgmLoop
-- [ ] 遷移演出中は MaintainSceneBgm を呼ばない
+- [x] 遷移演出中は MaintainSceneBgm を呼ばない
 
 ### CommandScene
 - [ ] Development 起動の初期シーンがプレイ用シーンロード経路と一致しない
