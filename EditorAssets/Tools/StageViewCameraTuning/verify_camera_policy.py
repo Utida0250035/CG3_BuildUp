@@ -102,6 +102,39 @@ def scene_base_defaults_locked_true() -> bool:
     )
 
 
+def particle_editor_declares_debug_override(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return "AllowDebugCameraControl() const override" in text
+
+
+def particle_editor_cpp_scoped_debug_allow(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    if "AllowDebugCameraControl" not in text:
+        return False
+    return bool(
+        re.search(
+            r"bool\s+SceneParticleEditor::AllowDebugCameraControl\s*\(\)"
+            r"[\s\S]*?AllowDebugCameraControlInParticleEditorScene\s*\(",
+            text,
+        )
+    )
+
+
+def particle_editor_policy_limits_to_dev_imgui(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return bool(
+        re.search(
+            r"#if\s+defined\(DEVELOPMENT\)\s+&&\s+defined\(USE_IMGUI\)"
+            r"[\s\S]*?return\s+true"
+            r"[\s\S]*?#else"
+            r"[\s\S]*?return\s+false",
+            text,
+        )
+    )
+
+
 def entity_editor_cpp_defers_debug_input(path: Path) -> bool:
     text = path.read_text(encoding="utf-8", errors="replace")
     if "AllowDebugCameraControl" not in text:
@@ -151,6 +184,32 @@ def main() -> int:
     elif not entity_editor_cpp_defers_debug_input(entity_cpp):
         errors.append(
             "SceneEntityEditor.cpp: expected DEVELOPMENT+USE_IMGUI AllowDebugCameraControl -> false"
+        )
+
+    particle_header = header_path("SceneParticleEditor.h")
+    if particle_header.is_file() and not particle_editor_declares_debug_override(
+        particle_header
+    ):
+        errors.append(
+            "SceneParticleEditor.h: expected AllowDebugCameraControl() override"
+        )
+
+    particle_cpp = SOURCE / "SceneParticleEditor.cpp"
+    if not particle_cpp.is_file():
+        errors.append("missing SceneParticleEditor.cpp")
+    elif not particle_editor_cpp_scoped_debug_allow(particle_cpp):
+        errors.append(
+            "SceneParticleEditor.cpp: expected AllowDebugCameraControl via "
+            "AllowDebugCameraControlInParticleEditorScene"
+        )
+
+    particle_policy = SOURCE / "SceneParticleEditorAllowDebugPolicy.cpp"
+    if not particle_policy.is_file():
+        errors.append("missing SceneParticleEditorAllowDebugPolicy.cpp")
+    elif not particle_editor_policy_limits_to_dev_imgui(particle_policy):
+        errors.append(
+            "SceneParticleEditorAllowDebugPolicy.cpp: expected "
+            "DEVELOPMENT+USE_IMGUI -> true, else -> false"
         )
 
     if not scene_base_defaults_locked_true():

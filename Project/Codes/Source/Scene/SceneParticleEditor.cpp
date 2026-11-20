@@ -1,4 +1,5 @@
 #include "Scene/SceneParticleEditor.h"
+#include "Scene/SceneParticleEditorAllowDebugPolicy.h"
 
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
@@ -68,6 +69,10 @@ SceneParticleEditor::~SceneParticleEditor() = default;
 SceneParticleEditor* SceneParticleEditor::Instance() {
 	static SceneParticleEditor instance;
 	return &instance;
+}
+
+bool SceneParticleEditor::AllowDebugCameraControl() const {
+	return AllowDebugCameraControlInParticleEditorScene();
 }
 
 void SceneParticleEditor::SetupPreviewCamera() {

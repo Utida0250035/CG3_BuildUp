@@ -337,7 +337,7 @@
 - [x] 新規シーンのステージカメラロックはドキュメント依存（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### SceneParticleEditor
-- [ ] SceneParticleEditor が AllowDebugCameraControl を限定していない（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] SceneParticleEditor が AllowDebugCameraControl を限定していない（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### MovieCameraTrackLoader
 - [ ] キーフレーム 1 件の不正でトラック全体を拒否（spec: feature-memos/movie_camera_controller.md）

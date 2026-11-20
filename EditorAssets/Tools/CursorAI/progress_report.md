@@ -6182,3 +6182,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 新規シーン stage camera lock | 有効 | マリオオデッセイのように、プレイヤーがカメラを直接操作せずとも自動でカメラが動作し、見やすいカメラワークをとるようになっている |
+
+---
+
+## セッション 2026-11-20 14:18（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneParticleEditorAllowDebugPolicy` で Development+ImGui のみ `AllowDebugCameraControl` を true に限定
+- `SceneParticleEditor` がポリシー経由で override を宣言
+- `verify_camera_policy.py` に ParticleEditor 向け Allow 検査を追加
+
+### 推測した用途（§6.4）
+
+- パーティクル JSON 編集の 3D プレビューでデバッグカメラを回せる（制作・デバッグ）
+- Release／ImGui 無しでは基底既定どおり入力なし
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| ParticleEditor Allow 限定 | 有効 | エディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある（制作シーンのみ自由視点） |
