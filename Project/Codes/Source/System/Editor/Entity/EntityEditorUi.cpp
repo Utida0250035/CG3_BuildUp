@@ -10,6 +10,7 @@
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
+#include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
 #include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
@@ -691,6 +692,10 @@ void EntityEditor::DrawProjectPanel() {
   }
   ImGui::SameLine();
   if (ImGui::Button("シーンを実行")) {
+    QueueEditorScenePlayViaBuildUp(ui_);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("エディタ内プレビュー")) {
     ui_.requestSaveToDisk = true;
     const std::string playPath = ui_.jsonFilePath.empty()
                                      ? ui_.selectedScenePath

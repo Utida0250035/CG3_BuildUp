@@ -573,6 +573,7 @@
     <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />

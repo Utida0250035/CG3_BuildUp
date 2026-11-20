@@ -69,3 +69,6 @@ jobs:
 
       - name: Verify Set then BuildUp queue
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_play_request_buildup.py
+
+      - name: Verify scene play via BuildUp route
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_buildup_play.py

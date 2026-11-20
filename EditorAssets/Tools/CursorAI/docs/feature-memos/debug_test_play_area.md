@@ -16,7 +16,7 @@
 ## フロー
 
 1. `scaffold_play_area.py FeatureX` で JSON 生成
-2. エディタで編集 → `QueueFadeToBuildUp` またはプロジェクトパネル「SceneBuildUp」／「Release 起動で BuildUp」（`launch_config.json` の起動 JSON）
+2. エディタで編集 → プロジェクトパネル「シーンを実行」は `QueueFadeToBuildUp`（本番同等 BuildUp）。エディタ内だけ試すときは「エディタ内プレビュー」
 3. 問題なければ本編シーンへ Entity を移植
 
 ## 推測したゲーム開発での用途
