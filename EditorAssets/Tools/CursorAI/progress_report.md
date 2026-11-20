@@ -6967,3 +6967,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | テストシーン個別化 | 有効 | json でエンティティ構成を編集し検証に活かす |
+
+---
+
+## セッション 2026-11-20 22:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `CreateInitialSceneForDevelopmentBoot` で起動シーン種別を一本化
+- 起動パス未設定／不正時は DebugPlayArea テンプレ BuildUp へフォールバック
+- `CommandScene` から EntityEditor 直指定を削除
+- roadmap「起動時シーンが SceneEntityEditor に固定」を `[x]`
+
+### 推測した用途（§6.4）
+
+- Development 起動直後から機能検証 BuildUp に入れる
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 起動先の解決 | 有効 | エディタ上プレイと配布ランタイム検証の段階分けを支える |

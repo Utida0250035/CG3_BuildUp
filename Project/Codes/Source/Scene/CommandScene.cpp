@@ -2,10 +2,8 @@
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/CommandSceneDevelopmentBoot.h"
-#include "Scene/SceneBuildUp.h"
+#include "Scene/CommandSceneDevelopmentBootApply.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
-#include "Scene/SceneEntityEditor.h"
-#include "Scene/SceneTitle.h"
 #else
 #include "Scene/CommandSceneDevelopmentBoot.h"
 #include "Scene/SceneBuildUp.h"
@@ -23,20 +21,8 @@ namespace Atrum {
 CommandScene::CommandScene() {
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  SceneEntityEditor *const entityEditor = SceneEntityEditor::Instance();
   const DevelopmentBootTarget bootTarget = ResolveDevelopmentBootTarget();
-  if (bootTarget.kind == DevelopmentBootKind::SceneBuildUp) {
-    sceneNow_ = SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
-        bootTarget.sceneJsonPath, entityEditor);
-  } else if (bootTarget.kind == DevelopmentBootKind::SceneBuildUpPlayRuntime) {
-    sceneNow_ = SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
-        bootTarget.sceneJsonPath, SceneTitle::Instance());
-  } else if (bootTarget.kind == DevelopmentBootKind::EntityEditorWithJson) {
-    entityEditor->SetBootJsonPath(bootTarget.sceneJsonPath);
-    sceneNow_ = entityEditor;
-  } else {
-    sceneNow_ = entityEditor;
-  }
+  sceneNow_ = CreateInitialSceneForDevelopmentBoot(bootTarget);
 #else
   const std::string startupScene = Editor::Scene::ResolveStartupScenePath();
   if (!startupScene.empty() && IsValidBootSceneJsonPath(startupScene)) {

@@ -111,3 +111,6 @@ jobs:
 
       - name: Verify scaffold personalizes instances not only sceneName
         run: python3 EditorAssets/Tools/CursorAI/verify_scaffold_play_area_personalize.py
+
+      - name: Verify CommandScene development boot resolution
+        run: python3 EditorAssets/Tools/CursorAI/verify_command_scene_development_boot.py

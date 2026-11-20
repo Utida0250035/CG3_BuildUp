@@ -48,11 +48,19 @@ bool IsValidBootSceneJsonPath(const std::string &sceneJsonPath) {
 
 DevelopmentBootTarget ResolveDevelopmentBootTarget() {
   DevelopmentBootTarget target{};
-  const std::string sceneJsonPath = ResolveConfiguredStartupScenePath();
+  std::string sceneJsonPath = ResolveConfiguredStartupScenePath();
   if (sceneJsonPath.empty()) {
+    if (IsValidBootSceneJsonPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
+      target.kind = DevelopmentBootKind::SceneBuildUp;
+      target.sceneJsonPath = EditorAssets::kDebugPlayAreaTemplateScene;
+    }
     return target;
   }
   if (!IsValidBootSceneJsonPath(sceneJsonPath)) {
+    if (IsValidBootSceneJsonPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
+      target.kind = DevelopmentBootKind::SceneBuildUp;
+      target.sceneJsonPath = EditorAssets::kDebugPlayAreaTemplateScene;
+    }
     return target;
   }
 
