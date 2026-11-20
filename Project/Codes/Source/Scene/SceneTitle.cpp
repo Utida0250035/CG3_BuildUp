@@ -13,6 +13,7 @@
 #include "System/EntityFactory.h"
 #include "Scene/SceneGameExitBgmPolicy.h"
 #include "Scene/SceneTitleBgmMaintain.h"
+#include "Scene/SceneTitleSubmitTransition.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
@@ -21,6 +22,7 @@
 namespace Atrum {
 
 	void SceneTitle::EnterScene() {
+		titleSubmitTransitionConsumed_ = false;
 		EnsureCommonResources();
 		SetupStageViewCamera();
 		ApplySceneTitleVisualFromProfile();
@@ -70,15 +72,7 @@ namespace Atrum {
 		// エディタビルドの起動シーンは SceneEntityEditor（タイトル経由の遷移は無効）
 		return;
 #else
-		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
-		if (input.isSubmitTrigger) {
-			Atrum::PlaySubmitSe();
-			Scene *const nextAfterMovie = SceneGame::Instance();
-			Scene *const introMovie = SceneMovieRegistry::Instance().Launch(
-			    Atrum::GameAssets::kTitleIntroMovieTrack, nextAfterMovie);
-			Atrum::CommandChangeScene::Instance()->Set(
-			    introMovie, std::make_unique<ChangeSceneFade>().release());
-		}
+		(void)SceneTitleSubmitTransition::TryBeginOnSubmit(*this);
 #endif
 	}
 

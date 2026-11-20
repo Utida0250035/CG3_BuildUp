@@ -325,7 +325,7 @@
 - [x] Title の BGM 途切れを検知・再開する処理が無い
 - [x] SceneTitle のライティングにリム・フォグ・ゴッドレイが無い（spec: feature-memos/rim_light.md）
 - [x] ExitScene がフェード完了前に StopBgmLoop
-- [ ] Submit 直後にフェード遷移
+- [x] Submit 直後にフェード遷移
 
 ### SceneResult
 - [ ] SceneResult に BGM 維持・再開処理が無い
