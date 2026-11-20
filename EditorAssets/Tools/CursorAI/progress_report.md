@@ -7022,7 +7022,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera」（`fix/SceneBuildUpDrawRuntimeCamera` 予定）
+- SceneBuildUp「IsStageViewCameraLocked が常時 true」（`fix/SceneBuildUpStageCameraLocked` 予定）
+
+---
+
+## セッション 2026-11-21 01:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `BindAfterGameOrderPrepare`（`SceneBuildUpRuntimeSubviewDrawCamera`）を追加
+- `DrawRuntimeViewContent` から `MaintainLockedStageCamera` を除去（Prepare 後の二重 `SetupStageViewCamera` を防止）
+- `verify_scene_build_up_draw_runtime_camera.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 RT サブビュー: GameOrder のカメラ契約に合わせ、CmpCamera 行列をステージ固定ポーズで上書きしない
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| RT 描画カメラ | 有効 | ランタイムでカメラ／見た目が意図どおり維持される |
 
 ---
 

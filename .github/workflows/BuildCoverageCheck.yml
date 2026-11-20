@@ -141,3 +141,6 @@ jobs:
 
       - name: Verify SceneBuildUp Enter calls SetupStageViewCamera after load
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_enter_setup_stage_camera.py
+
+      - name: Verify SceneBuildUp runtime subview skips SetupStageViewCamera
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_draw_runtime_camera.py

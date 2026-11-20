@@ -8,6 +8,7 @@
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
 #include "Scene/SceneBuildUpLoadFailureEntities.h"
+#include "Scene/SceneBuildUpRuntimeSubviewDrawCamera.h"
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
@@ -176,12 +177,12 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   SetupRuntimeLighting();
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
 
-  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
-  Atrum::Camera *camera = GetCamera();
+  Atrum::Camera *const camera =
+      SceneBuildUpRuntimeSubviewDrawCamera::BindAfterGameOrderPrepare(
+          *this, width, height);
   if (camera == nullptr) {
     return;
   }
-  Editor::FitCameraPerspectiveToViewport(camera, width, height);
   engine->SetCamera(camera);
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
