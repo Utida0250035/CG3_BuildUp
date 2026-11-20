@@ -175,6 +175,16 @@ def main() -> int:
                     "SceneBuildUp: expected runtime toggleable StageView lock "
                     "(default locked via stageViewCameraLocked_)"
                 )
+            text = path.read_text(encoding="utf-8", errors="replace")
+            if "AllowDebugCameraControl() const override" in text:
+                errors.append(
+                    "SceneBuildUp: must not override AllowDebugCameraControl "
+                    "(inherit Scene default false)"
+                )
+            if gameplay_header_allows_debug_in_header(path):
+                errors.append(
+                    "SceneBuildUp: gameplay must not AllowDebugCameraControl() -> true"
+                )
             continue
         if not has_locked_true(path):
             errors.append(f"{name}: expected IsStageViewCameraLocked() -> true")

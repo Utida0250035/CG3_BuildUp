@@ -1429,6 +1429,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentLoad.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentTagCatalog.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAllowDebugCameraContract.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />

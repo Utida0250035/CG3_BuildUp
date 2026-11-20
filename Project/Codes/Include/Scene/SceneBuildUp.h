@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio/AudioHandle.h"
+#include "Scene/SceneBuildUpAllowDebugCameraContract.h"
 #include "Scene.h"
 #include <memory>
 #include <string>
@@ -29,6 +30,7 @@ public:
   void ExitScene() override;
 
   bool IsStageViewCameraLocked() const override;
+  // AllowDebugCameraControl は override しない（本番相当のカメラ契約）
 
   void SetStageViewCameraLocked(bool locked) { stageViewCameraLocked_ = locked; }
 

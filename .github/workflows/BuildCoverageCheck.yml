@@ -153,3 +153,6 @@ jobs:
 
       - name: Verify SceneBuildUp merges tagCatalog after JSON load
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_tag_catalog_merge.py
+
+      - name: Verify SceneBuildUp inherits AllowDebugCameraControl false
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_allow_debug_camera_contract.py
