@@ -1,6 +1,7 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
 #include "System/Editor/EditorEditableSceneJsonRoots.h"
+#include "System/Editor/EditorLaunchConfigStartupPathNormalize.h"
 #include "System/Editor/EditorLaunchConfigJsonDocument.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/EditorLaunchConfigSchema.h"
@@ -142,8 +143,12 @@ bool TrySaveLaunchConfig(const LaunchConfig &config) {
   std::error_code ec{};
   fs::create_directories(configPath.parent_path(), ec);
 
-  const nlohmann::json json =
-      LaunchConfigJsonDocument::BuildDocument(config);
+  LaunchConfig toSave = config;
+  toSave.startupScenePath =
+      LaunchConfigStartupPathNormalize::NormalizeForLaunchConfig(
+          config.startupScenePath);
+
+  const nlohmann::json json = LaunchConfigJsonDocument::BuildDocument(toSave);
 
   std::ofstream file(configPath);
   if (!file.is_open()) {
@@ -162,12 +167,14 @@ bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath) {
   if (!fs::exists(sceneJsonPath) || fs::path(sceneJsonPath).extension() != ".json") {
     return false;
   }
+  const std::string normalized =
+      LaunchConfigStartupPathNormalize::NormalizeForLaunchConfig(sceneJsonPath);
   LaunchConfig config{};
-  config.startupScenePath = sceneJsonPath;
+  config.startupScenePath = normalized;
   if (!TrySaveLaunchConfig(config)) {
     return false;
   }
-  EditorScenePlayRequest::Instance().Set(sceneJsonPath);
+  EditorScenePlayRequest::Instance().Set(normalized);
   return true;
 }
 

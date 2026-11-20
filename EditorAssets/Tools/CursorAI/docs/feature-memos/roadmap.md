@@ -477,7 +477,7 @@
 
 ### EditorSceneAsset
 - [x] ListSceneJson は単一 Dir
-- [ ] startupScenePath を生文字列で保存
+- [x] startupScenePath を生文字列で保存
 - [ ] PlayRequest がパスだけ保持
 
 ## Lighting

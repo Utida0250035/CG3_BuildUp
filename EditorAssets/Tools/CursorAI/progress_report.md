@@ -7905,3 +7905,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EditorSceneAsset「startupScenePath を生文字列で保存」（`fix/LaunchConfigStartupPathNormalize` 予定）
+
+---
+
+## セッション 2026-11-21 06:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorLaunchConfigStartupPathNormalize` を追加（lexically_normal + cwd 相対化）
+- `TrySaveLaunchConfig` / `TrySetRepositoryStartupScene` で保存前に正規化
+- `EditorScenePlayRequest::Set` も正規化済みパスを使用
+- `verify_launch_config_startup_path_normalize.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 起動シーン設定: 絶対パス入力や `\\` 混在でも launch_config を移植しやすい文字列に統一
+- チーム共有: リポジトリ相対の startupScenePath で差分を安定化
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| パス正規化 | 有効 | シーン構成の保存とランタイム試験（起動 JSON の移植性） |
+
+### 次 tick 候補
+
+- EditorSceneAsset「PlayRequest がパスだけ保持」（`fix/EditorScenePlayRequestMetadata` 予定）
