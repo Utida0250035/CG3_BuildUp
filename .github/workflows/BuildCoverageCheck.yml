@@ -81,3 +81,6 @@ jobs:
 
       - name: Verify editor preview camera from CmpCamera
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_preview_camera.py
+
+      - name: Verify Runtime tab keeps CmpCamera (no stage override)
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_stage_camera.py

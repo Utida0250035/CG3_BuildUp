@@ -6719,3 +6719,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | SetupPreviewCamera と CmpCamera | 有効 | エンティティのコンポーネント構成を json で編集し、プレイ検証に活かす |
+
+---
+
+## セッション 2026-11-20 19:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `PrepareSceneViewCameraForDraw` で Runtime タブは `CmpCamera` を維持（機能試験描画時は Update 側の StageView を `PrepareCamerasForDraw` のみ）
+- Game タブのみ `ApplyGameViewStageCameraForDraw`（戦闘ステージ相当の従来挙動）
+- Runtime 描画経路から `SetupStageViewCamera`＋DebugCamera 退避を除去
+- roadmap「Runtime タブで SetupStageViewCamera に差し替え」を `[x]`
+
+### 推測した用途（§6.4）
+
+- Runtime タブで JSON カメラコンポーネントの挙動を本編カメラ上書きなしで確認する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Runtime CmpCamera 検証 | 有効 | シーン構成の編集とエディタ上でのプレイ／ランタイム検証を分けて通せる |

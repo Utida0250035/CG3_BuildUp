@@ -15,6 +15,7 @@
 #include "Scene/SceneEntityEditorDebugHotkeys.h"
 #include "Scene/SceneEntityEditorRuntimeTabFocus.h"
 #include "Scene/SceneEntityEditorPreviewCameraSetup.h"
+#include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -111,6 +112,11 @@ bool SceneEntityEditor::AllowDebugCameraControl() const {
 const std::vector<std::unique_ptr<Entity>> *
 SceneEntityEditor::GetSupplementalCameraEntities() const {
   return &previewEntities_;
+}
+
+void SceneEntityEditor::ApplyGameViewStageCameraForDraw() {
+  SetupStageViewCamera();
+  PrepareCamerasForDraw();
 }
 
 void SceneEntityEditor::SetupPreviewCamera() {
@@ -284,6 +290,13 @@ void SceneEntityEditor::DrawSceneViewContent(
     return;
   }
 
+  if (viewTab == Editor::SceneViewTab::Runtime) {
+    const bool functionalDraw =
+        editor_ != nullptr && editor_->Ui().runtimeFunctionalViewDraw;
+    SceneEntityEditorRuntimeViewCameraDraw::PrepareSceneViewCameraForDraw(
+        *this, viewTab, previewEntities_, functionalDraw);
+  }
+
   Atrum::Camera *camera = GetCamera();
   if (camera == nullptr) {
     return;
@@ -292,18 +305,25 @@ void SceneEntityEditor::DrawSceneViewContent(
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
   auto *debugCamera = dynamic_cast<Atrum::Debug::DebugCamera *>(camera);
   SavedDebugCameraState savedCamera{};
-  if (!isEditViewPass && debugCamera != nullptr) {
-    savedCamera = CaptureDebugCamera(debugCamera);
-    SetupStageViewCamera();
+  if (viewTab == Editor::SceneViewTab::Game) {
+    if (debugCamera != nullptr) {
+      savedCamera = CaptureDebugCamera(debugCamera);
+    }
+    ApplyGameViewStageCameraForDraw();
     camera = GetCamera();
     debugCamera = dynamic_cast<Atrum::Debug::DebugCamera *>(camera);
+  }
+#elif defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (viewTab == Editor::SceneViewTab::Game) {
+    ApplyGameViewStageCameraForDraw();
+    camera = GetCamera();
   }
 #endif
 
   if (!isEditViewPass && editor_ != nullptr &&
       editor_->Ui().runtimeFunctionalViewDraw) {
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
-    if (!isEditViewPass && debugCamera != nullptr) {
+    if (viewTab == Editor::SceneViewTab::Game && debugCamera != nullptr) {
       RestoreDebugCamera(debugCamera, savedCamera);
       debugCamera = nullptr;
     }
@@ -330,7 +350,7 @@ void SceneEntityEditor::DrawSceneViewContent(
   }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
-  if (!isEditViewPass && debugCamera != nullptr) {
+  if (viewTab == Editor::SceneViewTab::Game && debugCamera != nullptr) {
     RestoreDebugCamera(debugCamera, savedCamera);
   }
 #endif

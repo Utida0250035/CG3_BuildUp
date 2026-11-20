@@ -40,6 +40,9 @@ public:
   const std::vector<std::unique_ptr<Entity>> *
   GetSupplementalCameraEntities() const override;
 
+  /// Game タブ描画前に戦闘ステージ相当のカメラを適用する。
+  void ApplyGameViewStageCameraForDraw();
+
 protected:
   void DrawScene() override;
 
