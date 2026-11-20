@@ -2,6 +2,7 @@
 
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
+#include "Scene/SceneBuildUpSceneDisplayNameResolve.h"
 #include "Scene/SceneBuildUpRegistryLaunchDedupe.h"
 #include "Scene/SceneBuildUpAudioPolicy.h"
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
@@ -45,8 +46,8 @@ namespace Atrum {
 
 SceneBuildUp::SceneBuildUp(std::string sceneJsonPath, Scene *returnScene)
     : sceneJsonPath_(std::move(sceneJsonPath)), returnScene_(returnScene) {
-  sceneDisplayName_ =
-      Editor::Scene::SceneDisplayNameFromPath(sceneJsonPath_);
+  sceneDisplayName_ = SceneBuildUpSceneDisplayNameResolve::ResolveInitialSceneDisplayName(
+      sceneJsonPath_);
 }
 
 SceneBuildUp::~SceneBuildUp() = default;

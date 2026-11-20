@@ -177,3 +177,6 @@ jobs:
 
       - name: Verify SceneBuildUp reports missing primary camera
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_camera_null_feedback.py
+
+      - name: Verify SceneBuildUp ctor resolves display name from JSON
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_display_name_resolve.py

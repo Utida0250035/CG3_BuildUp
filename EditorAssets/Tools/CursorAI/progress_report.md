@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「ctor で displayName を仮設定」（`fix/SceneBuildUpDisplayNameCtor` 予定）
+- SceneBuildUp「Draw で ChangeScene 常時描画」（`fix/SceneBuildUpDrawChangeSceneAlways` 予定）
+
+---
+
+## セッション 2026-11-21 04:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpSceneDisplayNameResolve` で ctor 時に JSON の `sceneName` を軽量読み取り
+- 失敗時のみパス stem へフォールバック（EnterScene 後も従来どおり document で上書き）
+- `verify_scene_build_up_display_name_resolve.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: フェード〜EnterScene 前の専用ウィンドウヘッダに実シーン名を出す
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| displayName 即反映 | 有効 | シーン構成 JSON の名称をランタイム試験 UI に正しく示す |
 
 ---
 
