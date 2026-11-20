@@ -1,5 +1,6 @@
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
+#include "Scene/SceneTransitionBgmPolicy.h"
 #include "System/PlaySe.h"
 
 namespace Atrum {
@@ -50,7 +51,8 @@ namespace Atrum {
 	}
 
 	void CommandChangeScene::OnSceneTransitionEffectFinished() {
-		if (exitingSceneBgmHandle_.isSuccess) {
+		if (SceneTransitionBgm::kUseFadeDuckInsteadOfInstantStop &&
+		    exitingSceneBgmHandle_.isSuccess) {
 			StopBgmLoop(exitingSceneBgmHandle_);
 			exitingSceneBgmHandle_ = {};
 		}

@@ -5862,3 +5862,23 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Dev 起動経路 | 有効 | プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する |
+
+---
+
+## セッション 2026-11-20 10:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneTransitionBgmPolicy` で Play 向け遷移 BGM 方針を文書化（ダック→Exit 引き継ぎ→完了時 Stop→deferred Enter）
+- `SceneResult::ExitScene` も `ReleaseSceneBgmOnExitDuringFade` に統一
+- CommandScene::ChangeScene にポリシー参照コメント
+
+### 既存実装の課題点
+
+- 二重トラックの音量クロスフェードは未実装（方針ヘッダに将来拡張を明記）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 遷移 BGM ポリシー | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |

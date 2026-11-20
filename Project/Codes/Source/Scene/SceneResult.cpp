@@ -9,6 +9,7 @@
 #include "Scene/SceneTitle.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
+#include "Scene/SceneGameExitBgmPolicy.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
@@ -85,8 +86,7 @@ void SceneResult::DrawScene() {
 
 void SceneResult::ExitScene() {
   ReleaseCommonResources();
-  Atrum::StopBgmLoop(sceneBgmHandle_);
-  sceneBgmHandle_ = {};
+  Atrum::ReleaseSceneBgmOnExitDuringFade(sceneBgmHandle_);
   ClearBackgrounds();
 }
 

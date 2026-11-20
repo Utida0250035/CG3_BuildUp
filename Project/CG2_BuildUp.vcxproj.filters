@@ -957,6 +957,9 @@
     <ClInclude Include="Codes\Include\Scene\SceneGameExitBgmPolicy.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneTransitionBgmPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneGameEnterVisualPreset.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>

@@ -66,6 +66,7 @@ namespace Atrum {
 
 			if (sceneNext != nullptr) {
 
+				// BGM: SceneTransitionBgmPolicy（Exit はフェード中に ReleaseSceneBgmOnExitDuringFade）
 				// 現在シーンの退出処理
 				sceneNow_->ExitScene();
 
