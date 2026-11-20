@@ -346,6 +346,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovie.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieReturnTarget.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieTrackFailure.cpp" />
@@ -629,6 +630,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovie.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieReturnTarget.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieTrackFailure.h" />

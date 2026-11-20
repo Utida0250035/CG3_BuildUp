@@ -1,10 +1,10 @@
 #include "Scene/SceneBuildUp.h"
 
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
+#include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
-#include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
@@ -76,15 +76,7 @@ void SceneBuildUp::TeardownEntities() {
 }
 
 void SceneBuildUp::SetupRuntimeLighting() {
-  Atrum::Math::Vector3 lightDirection{-0.35f, -0.9f, 0.2f};
-  lightDirection.Normalize();
-  const Atrum::DirectionalLightData directionalLight{
-      .color = Atrum::Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 6.0f,
-      .lightModel = Atrum::LightModel::HalfLambert,
-  };
-  ::Atrum::EngineSetDirectionalLightData(directionalLight);
+  ApplySceneBuildUpRuntimeVisualFromProfile();
 }
 
 void SceneBuildUp::DrawRuntimeEntities() {
@@ -120,6 +112,7 @@ void SceneBuildUp::EnterScene() {
       EntityEditor::ResolveStageViewFramingBounds(document));
   entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
   SetupStageViewCamera();
+  ApplySceneBuildUpRuntimeVisualFromProfile();
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   showsNextSceneHint_ =
