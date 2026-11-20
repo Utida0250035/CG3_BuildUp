@@ -6331,3 +6331,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Lighting と Engine のフォグ共有 | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |
+
+---
+
+## セッション 2026-11-20 15:48（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorFrameLightingDiagnostics` を追加し `EditorFrame` から描画診断メニューを公開
+- エンティティエディタ「デバッグ」メニューを EditorFrame 経由に変更
+- SceneBuildUp ランタイムビューに「描画診断」メニューバーを追加
+- `verify_editor_frame_lighting_panel.py` を CI に追加
+
+### 推測した用途（§6.4）
+
+- 開発時に実行ビュー／BuildUp でフォグ・ゴッドレイ・影を即時調整し、本編 JSON 反映を目視確認
+- EditorFrame を正本入口にし、エンジン診断 UI の置き場を統一
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| EditorFrame ライティング診断 | 有効 | エディタ上でのプレイとランタイム検証（デバッグ UI でライティング結果を確認） |

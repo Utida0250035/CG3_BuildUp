@@ -2,6 +2,8 @@
 
 #include "System/Editor/EditorFrame.h"
 
+#include "System/Editor/EditorFrameLightingDiagnostics.h"
+
 #include "Camera/Camera.h"
 #include "ForDebug/ImGui.h"
 #include <imgui/imgui_internal.h>
@@ -12,6 +14,14 @@ namespace Atrum::Editor {
 EditorFrame &EditorFrame::Instance() {
   static EditorFrame frame;
   return frame;
+}
+
+void EditorFrame::DrawRenderDiagnosticsMenuItems() {
+  EditorFrameLightingDiagnostics::DrawMenuItems();
+}
+
+void EditorFrame::DrawRenderDiagnosticsMainMenuBar() {
+  EditorFrameLightingDiagnostics::DrawMainMenuBar();
 }
 
 void EditorFrame::ResetPerFrame() {

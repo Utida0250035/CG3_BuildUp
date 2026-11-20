@@ -234,6 +234,7 @@ void SceneBuildUp::Draw() {
       Editor::kRuntimeSceneViewTitle, Editor::SceneViewTab::Runtime,
       "実行時ビュー — ランタイム（ステージカメラ・シミュレーション実行）",
       "F1: エンティティエディタへ戻る", true, runPhase);
+  Editor::EditorFrame::Instance().DrawRenderDiagnosticsMainMenuBar();
 #endif
 
   engine->PreDraw();

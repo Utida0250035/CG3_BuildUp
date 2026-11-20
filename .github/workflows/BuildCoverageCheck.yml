@@ -42,3 +42,6 @@ jobs:
 
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
+
+      - name: Verify EditorFrame lighting diagnostics panel
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_frame_lighting_panel.py

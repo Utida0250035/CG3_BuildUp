@@ -4,7 +4,6 @@
 
 #include "ForDebug/ImGui.h"
 #include "ForDebug/AudioStreamingDebugImGui.h"
-#include "ForDebug/LightingEffectsDebugImGui.h"
 #include "System/Editor/EditorLuaScriptScaffold.h"
 #include <imgui/imgui_internal.h>
 #include "System/Editor/Camera/StageViewCameraTuning.h"
@@ -151,11 +150,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     if (ImGui::MenuItem("ストリーミングメモリ", nullptr, &showStreamingMemory)) {
       Atrum::Debug::SetStreamingMemoryDebugVisible(showStreamingMemory);
     }
-    bool showLightingEffects = Atrum::Debug::IsLightingEffectsDebugVisible();
-    if (ImGui::MenuItem("ライティング効果 (Fog/GodRays/影)", nullptr,
-                        &showLightingEffects)) {
-      Atrum::Debug::SetLightingEffectsDebugVisible(showLightingEffects);
-    }
+    EditorFrame::Instance().DrawRenderDiagnosticsMenuItems();
     if (ImGui::MenuItem("機能検証シーン (DebugPlayArea テンプレ)")) {
       ui.sceneBuildUpLaunchPath = EditorAssets::kDebugPlayAreaTemplateScene;
       ui.requestLaunchSceneBuildUp = true;

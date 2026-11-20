@@ -586,6 +586,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
@@ -1367,6 +1368,7 @@
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameLightingDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />

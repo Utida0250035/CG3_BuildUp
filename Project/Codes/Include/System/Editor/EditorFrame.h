@@ -51,6 +51,12 @@ public:
 
   bool EditViewHovered() const { return editViewHovered_; }
 
+  /// 描画診断メニュー（実体は EditorFrameLightingDiagnostics）
+  void DrawRenderDiagnosticsMenuItems();
+
+  /// BuildUp ランタイムビュー等向けの最小メニューバー
+  void DrawRenderDiagnosticsMainMenuBar();
+
 private:
   SubViewportRect editView_{};
   SubViewportRect gameView_{};

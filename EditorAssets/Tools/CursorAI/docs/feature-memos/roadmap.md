@@ -381,7 +381,7 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] 描画診断用ライティングパネルが EditorFrame に無い（gap: `GAP-Engine-AtrumEngineLighting-001`・Debug・P1）
+- [x] 描画診断用ライティングパネルが EditorFrame に無い（gap: `GAP-Engine-AtrumEngineLighting-001`・Debug・P1）
 - [ ] 実行ビューがプレビュー Entity のみで機能単体試験にならない（gap: `GAP-Debug-SceneViewTab-001`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
