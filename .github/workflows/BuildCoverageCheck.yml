@@ -78,3 +78,6 @@ jobs:
 
       - name: Verify in-editor play Runtime tab focus only
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_tab_focus.py
+
+      - name: Verify editor preview camera from CmpCamera
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_preview_camera.py

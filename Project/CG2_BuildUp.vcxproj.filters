@@ -576,6 +576,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
@@ -1368,6 +1369,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorScenePlayBuildUpRoute.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorDebugHotkeys.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeTabFocus.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewCameraSetup.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />

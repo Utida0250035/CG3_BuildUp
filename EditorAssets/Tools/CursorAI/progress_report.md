@@ -6693,3 +6693,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Runtime タブフォーカスのみ | 有効 | エディタ上でのプレイとランタイム検証の段階分け |
+
+---
+
+## セッション 2026-11-20 19:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `GetSupplementalCameraEntities` でプレビュー Entity をカメラ解決に参加
+- `ApplyPrimaryFromPreviewEntities` で JSON の primary `CmpCamera` を `PrepareBeforeDraw`
+- プレビューにカメラが無いときのみ従来の rig 既定位置へフォールバック
+- `RebuildPreviewScene` 後に `SetupPreviewCamera` を呼ぶよう順序を修正
+- roadmap「SetupPreviewCamera が GetCamera のみ更新」を `[x]`
+
+### 推測した用途（§6.4）
+
+- シーン JSON のカメラ配置をエディタプレビューで早期に一致させる
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| SetupPreviewCamera と CmpCamera | 有効 | エンティティのコンポーネント構成を json で編集し、プレイ検証に活かす |

@@ -37,6 +37,9 @@ public:
   /// GameOrder では更新しない。エディットビュー上は Draw 内で DebugCamera を操作する。
   bool AllowDebugCameraControl() const override;
 
+  const std::vector<std::unique_ptr<Entity>> *
+  GetSupplementalCameraEntities() const override;
+
 protected:
   void DrawScene() override;
 

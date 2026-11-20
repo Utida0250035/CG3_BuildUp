@@ -14,6 +14,7 @@
 #include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneEntityEditorDebugHotkeys.h"
 #include "Scene/SceneEntityEditorRuntimeTabFocus.h"
+#include "Scene/SceneEntityEditorPreviewCameraSetup.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -107,7 +108,17 @@ bool SceneEntityEditor::AllowDebugCameraControl() const {
 #endif
 }
 
+const std::vector<std::unique_ptr<Entity>> *
+SceneEntityEditor::GetSupplementalCameraEntities() const {
+  return &previewEntities_;
+}
+
 void SceneEntityEditor::SetupPreviewCamera() {
+  cameraRig_.EnsureAutoSpawnedCameras(this);
+  if (SceneEntityEditorPreviewCameraSetup::ApplyPrimaryFromPreviewEntities(
+          previewEntities_, AllowDebugCameraControl())) {
+    return;
+  }
   if (Atrum::Camera *camera = GetCamera()) {
     camera->SetTranslate(Atrum::Math::Vector3{0.0f, 1.6f, -6.0f});
     camera->UpdateMatrix();
@@ -125,11 +136,11 @@ void SceneEntityEditor::RebuildPreviewScene() {
     return;
   }
   previewEntities_ = editor_->BuildPreviewScene();
+  SetupPreviewCamera();
 }
 
 void SceneEntityEditor::EnterScene() {
   EnsureCommonResources();
-  SetupPreviewCamera();
   if (editor_) {
     if (!pendingBootJsonPath_.empty()) {
       editor_->Ui().jsonFilePath = pendingBootJsonPath_;
@@ -137,6 +148,8 @@ void SceneEntityEditor::EnterScene() {
     }
     editor_->LoadFromJsonPath(editor_->Ui().jsonFilePath);
     RebuildPreviewScene();
+  } else {
+    SetupPreviewCamera();
   }
 }
 
