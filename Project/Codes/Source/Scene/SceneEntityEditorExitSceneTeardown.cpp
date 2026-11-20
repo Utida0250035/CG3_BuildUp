@@ -19,6 +19,14 @@ void ReleasePreviewEntities(
   previewEntities.clear();
 }
 
+void RestoreSceneViewTabAfterBuildUpExit(EntityEditor &editor) {
+  UiState &ui = editor.Ui();
+  ui.requestFocusRuntimeSceneView = false;
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  Editor::EditorFrame::Instance().SetSceneViewTab(Editor::SceneViewTab::Edit);
+#endif
+}
+
 void ResetEditorTransientPlayUi(EntityEditor &editor) {
   UiState &ui = editor.Ui();
   ui.requestPlayRuntimeScene = false;

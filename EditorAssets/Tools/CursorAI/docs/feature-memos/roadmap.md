@@ -446,7 +446,7 @@
 - [x] 遷移演出中 F1 復帰が処理されない（spec: feature-memos/debug_test_play_area.md）
 - [x] BuildUp が tagCatalog マージを飛ばす（spec: feature-memos/debug_test_play_area.md）
 - [x] AllowDebugCameraControl をオーバーライドしない（spec: feature-memos/entity_camera_components.md）
-- [ ] ExitScene が SceneViewTab を戻さない（spec: feature-memos/debug_test_play_area.md）
+- [x] ExitScene が SceneViewTab を戻さない（spec: feature-memos/debug_test_play_area.md）
 - [ ] ビュー描画ごとに SetupRuntimeLighting
 - [ ] 専用ランタイムウィンドウが汎用文言のみ（spec: feature-memos/debug_test_play_area.md）
 - [ ] 子付きインスタンスは親 Draw 任せ

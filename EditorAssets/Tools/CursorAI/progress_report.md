@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「ExitScene が SceneViewTab を戻さない」（`fix/SceneBuildUpExitSceneViewTab` 予定）
+- SceneBuildUp「ビュー描画ごとに SetupRuntimeLighting」（`fix/SceneBuildUpRuntimeLightingPerDraw` 予定）
+
+---
+
+## セッション 2026-11-21 02:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpExitSceneEditorUiRestore` で ExitScene 時に Edit タブへ復帰
+- `RestoreSceneViewTabAfterBuildUpExit` で `requestFocusRuntimeSceneView` を解除
+- `verify_scene_build_up_exit_scene_view_tab.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: F1／フェード復帰後にエディタのエディットビューへ戻り編集を続ける
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| ExitScene で Edit 復帰 | 有効 | エディタ上プレイとランタイム検証の往復後、編集フローを継続できる |
 
 ---
 

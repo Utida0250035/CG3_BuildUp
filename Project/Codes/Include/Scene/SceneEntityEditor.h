@@ -29,6 +29,9 @@ public:
 
   static SceneEntityEditor *Instance();
 
+  /// BuildUp から戻った直後にエディタのシーンビューを Edit へ戻す
+  static void RestoreUiAfterSceneBuildUpExit();
+
   /// CommandScene 起動時に編集対象 JSON を先に指定する
   void SetBootJsonPath(const std::string &jsonFilePath);
 

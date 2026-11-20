@@ -18,6 +18,9 @@ void ReleasePreviewEntities(std::vector<std::unique_ptr<Entity>> &previewEntitie
 
 void ResetEditorTransientPlayUi(EntityEditor &editor);
 
+/// BuildUp 終了後に Runtime タブ固定を解く（Edit へ戻す）
+void RestoreSceneViewTabAfterBuildUpExit(EntityEditor &editor);
+
 } // namespace SceneEntityEditorExitSceneTeardown
 
 } // namespace Atrum::EntityEditor

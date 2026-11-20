@@ -156,3 +156,6 @@ jobs:
 
       - name: Verify SceneBuildUp inherits AllowDebugCameraControl false
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_allow_debug_camera_contract.py
+
+      - name: Verify SceneBuildUp ExitScene restores SceneView Edit tab
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_exit_scene_view_tab.py

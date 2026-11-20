@@ -13,6 +13,7 @@
 #include "Scene/SceneBuildUpF1ReturnRequest.h"
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
+#include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -249,6 +250,7 @@ void SceneBuildUp::Draw() {
 void SceneBuildUp::ExitScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   Editor::Scene::ClearStagedEditorPlayScenePath();
+  SceneBuildUpExitSceneEditorUiRestore::ApplyOnExitScene();
 #endif
   SceneBuildUpAudioPolicy::OnExitScene(*this);
   TeardownEntities();
