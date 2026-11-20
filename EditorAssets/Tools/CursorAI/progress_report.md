@@ -6844,3 +6844,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 階層プレビュー描画 | 有効 | エンティティのコンポーネント構成を json で編集しプレイ検証に活かす |
+
+---
+
+## セッション 2026-11-20 20:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ReleasePreviewEntities` でプレビュー Entity の Finalize／clear
+- `ResetEditorTransientPlayUi` で Runtime／BuildUp 系リクエストと Edit タブへ復帰
+- `ExitScene` が上記を呼ぶよう配線
+- roadmap SceneEntityEditor 節の未完了行をすべて `[x]`（本 tick で Exit 行）
+
+### 推測した用途（§6.4）
+
+- BuildUp 往復後もエディタ UI が実行モードのまま残らないようにする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Exit 時 Ui 整合 | 有効 | シーン編集とエディタ上プレイ／ランタイム検証を安全に往復させる |

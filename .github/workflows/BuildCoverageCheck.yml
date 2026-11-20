@@ -96,3 +96,6 @@ jobs:
 
       - name: Verify preview draw uses scene document entity draw
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_draw_preview_roots.py
+
+      - name: Verify ExitScene releases preview and play Ui flags
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_exit_preview_release.py

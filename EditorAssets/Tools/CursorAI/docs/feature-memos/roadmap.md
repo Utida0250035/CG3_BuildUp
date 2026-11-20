@@ -415,7 +415,7 @@
 - [x] Edit ホバー時に Draw 内で camera->Update
 - [x] シーンビュー RT が GameOrder 後に SetCamera
 - [x] DrawPreview が親 root のみ
-- [ ] Exit はプレビュー解放のみ
+- [x] Exit はプレビュー解放のみ
 
 ### FrameDeltaTime
 - [ ] フレーム時間のオーバーレイ／ヒストグラムが無い

@@ -18,6 +18,7 @@
 #include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
 #include "Scene/SceneEntityEditorEditViewDebugCameraDraw.h"
 #include "Scene/SceneEntityEditorSceneViewRenderCameraBind.h"
+#include "Scene/SceneEntityEditorExitSceneTeardown.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -364,12 +365,12 @@ void SceneEntityEditor::DrawScene() {
 
 void SceneEntityEditor::ExitScene() {
   Atrum::Editor::Scene::ClearStagedEditorPlayScenePath();
-  for (std::unique_ptr<Entity> &entity : previewEntities_) {
-    if (entity) {
-      entity->Finalize();
-    }
+  EntityEditor::SceneEntityEditorExitSceneTeardown::ReleasePreviewEntities(
+      previewEntities_);
+  if (editor_) {
+    EntityEditor::SceneEntityEditorExitSceneTeardown::ResetEditorTransientPlayUi(
+        *editor_);
   }
-  previewEntities_.clear();
   ReleaseCommonResources();
 }
 
