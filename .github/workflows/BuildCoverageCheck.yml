@@ -48,3 +48,6 @@ jobs:
 
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
+
+      - name: Verify SceneBuildUp launch policy
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_launch_policy.py

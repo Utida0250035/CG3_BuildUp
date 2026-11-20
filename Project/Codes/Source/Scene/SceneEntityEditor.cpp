@@ -11,7 +11,7 @@
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
-#include "Scene/ChangeSceneFade.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneParticleEditor.h"
@@ -170,9 +170,8 @@ void SceneEntityEditor::Update() {
     }
     if (!scenePath.empty()) {
       editor_->SaveToJsonPath(scenePath);
-      Atrum::CommandChangeScene::Instance()->Set(
-          SceneBuildUpRegistry::Instance().Launch(scenePath, Instance()),
-          std::make_unique<ChangeSceneFade>().release());
+      Atrum::SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(scenePath,
+                                                           Instance());
       return;
     }
   }
@@ -195,9 +194,7 @@ void SceneEntityEditor::Update() {
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
     const std::string demoScene =
         std::string(Atrum::GameAssets::kScenesDirectory) + "/ParticleDemo.json";
-    Atrum::CommandChangeScene::Instance()->Set(
-        SceneBuildUpRegistry::Instance().Launch(demoScene, Instance()),
-        std::make_unique<ChangeSceneFade>().release());
+    Atrum::SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(demoScene, Instance());
     return;
   }
 

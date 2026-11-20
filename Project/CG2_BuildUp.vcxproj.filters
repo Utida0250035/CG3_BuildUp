@@ -576,6 +576,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLaunchPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
@@ -1359,6 +1360,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneJsonPathResolve.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLaunchPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h" />

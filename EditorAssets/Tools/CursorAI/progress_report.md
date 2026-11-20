@@ -6382,3 +6382,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 実行ビュー機能試験 | 有効 | シーンの構成を保存し、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-20 16:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpLaunchPolicy::QueueFadeToBuildUp` を追加（`Launch` + `CommandChangeScene::Set` + `ChangeSceneFade` を 1 API 化）
+- エンティティエディタ／パーティクルエディタの BuildUp 起動を同 API へ寄せた
+- `verify_scene_build_up_launch_policy.py` を CI（BuildCoverageCheck）に追加
+- roadmap「Launch は生成してポインタ返却のみ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- デバッグ用プレイエリア／F3 デモシーン起動で、毎回同じフェード遷移手順を書かずに済む
+- `SceneBuildUpRegistry::Launch` の責務（生成＋ポインタ返却）と遷移キュー投入を呼び手側で分離しやすくする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Launch は生成してポインタ返却のみ | 有効 | エディタ既定の機能検証シーンからエディタ外ランタイムを試す（debug プレイ導線の整理） |

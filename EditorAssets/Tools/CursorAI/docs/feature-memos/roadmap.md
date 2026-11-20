@@ -390,7 +390,7 @@
 
 
 ### SceneBuildUpRegistry
-- [ ] Launch は生成してポインタ返却のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] Launch は生成してポインタ返却のみ（spec: feature-memos/debug_test_play_area.md）
 - [ ] Launch は Scene 生成のみ
 - [ ] Launch が同一パス重複を防がない
 
