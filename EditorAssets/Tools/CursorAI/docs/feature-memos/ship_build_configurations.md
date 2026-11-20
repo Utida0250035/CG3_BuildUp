@@ -22,3 +22,15 @@
 ## 本番相当との差分
 
 Release では `DEVELOPMENT` / `USE_IMGUI` が無いため、エディタ UI・ForDebug 経路・多くの `#if defined(DEVELOPMENT)` ブロックが除外される。Development / Debug は同一機能フラグを共有するが、CRT（`MultiThreaded` vs `MultiThreadedDebug`）と `_DEBUG` の有無が異なる。
+
+## Release リンク除外（vcxproj）
+
+`CG2_BuildUp.vcxproj` の `ExcludedFromBuild` で **Release|x64** から外す TU:
+
+- `System/Editor/` 配下のエディタ UI・ツール（allowlist 以外）
+- `SceneEntityEditor*` / `SceneParticleEditor*`
+- `CommandSceneDevelopmentBoot*`
+
+**Release でもリンクする正本**（`editor_sources_release_link_allowlist.txt`）: シーン JSON 読込・BuildUp 用の `EditorSceneRuntime` など。
+
+検証: `verify_editor_sources_release_exclude.py`（CI）。vcxproj 更新: `apply_editor_release_exclusions_to_vcxproj.py`。

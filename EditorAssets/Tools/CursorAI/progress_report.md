@@ -8150,3 +8150,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる（`GAP-Ship-EditorSources-001`）
+
+---
+
+## セッション 2026-11-21 08:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- Release|x64 でエディタ TU を `ExcludedFromBuild`（allowlist 6 件は BuildUp 用に残す）
+- `editor_sources_release_link_allowlist.txt`・apply/verify スクリプト・`ship_build_configurations.md` 追記
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **配布:** Release バイナリからエディタ UI オブジェクトをリンク単位で除去
+- **保守:** vcxproj 追加時は verify が Release 除外漏れを検知
+
+### ビルド
+
+- Cloud VM のため未実行（Release リンク構成は CI ReleaseBuild で確認）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Editor Release 除外 | 有効 | エディター exe 化とゲーム配布のビルド分離 |
+
+### 次 tick 候補
+
+- 同梱アセットとランタイム参照パスの整合（`GAP-Infra-asset_pack_verify-001`）

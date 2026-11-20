@@ -1,0 +1,7 @@
+# Release|x64 でもリンクする System/Editor 系 .cpp（ランタイム BuildUp・シーン JSON）
+Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp
+Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp
+Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp
+Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp
+Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp
+Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp
