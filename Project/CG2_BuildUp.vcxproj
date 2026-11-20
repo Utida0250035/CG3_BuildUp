@@ -371,6 +371,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewRenderCameraBind.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAfterBuildUpExit.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorClearRuntimeFocusRequest.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
@@ -391,6 +392,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeViewStatusText.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpDedicatedRuntimeViewWindow.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeEntityDraw.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpEnterSceneEditorUiPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
@@ -728,6 +730,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeViewStatusText.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpDedicatedRuntimeViewWindow.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeEntityDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpEnterSceneEditorUiPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />

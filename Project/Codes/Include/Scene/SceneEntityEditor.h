@@ -32,6 +32,9 @@ public:
   /// BuildUp から戻った直後にエディタのシーンビューを Edit へ戻す
   static void RestoreUiAfterSceneBuildUpExit();
 
+  /// BuildUp 入場時: Runtime タブ固定はせず、残ったフォーカス要求だけ解除
+  static void ClearStaleRuntimeSceneViewFocusRequest();
+
   /// CommandScene 起動時に編集対象 JSON を先に指定する
   void SetBootJsonPath(const std::string &jsonFilePath);
 

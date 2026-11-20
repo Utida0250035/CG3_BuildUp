@@ -14,6 +14,7 @@
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
 #include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
+#include "Scene/SceneBuildUpEnterSceneEditorUiPolicy.h"
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
@@ -126,6 +127,7 @@ void SceneBuildUp::EnterScene() {
   SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
   SceneBuildUpRuntimeLightingPolicy::ApplyOnceOnEnterScene();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);
+  SceneBuildUpEnterSceneEditorUiPolicy::ApplyOnEnterScene();
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   showsNextSceneHint_ =

@@ -451,7 +451,7 @@
 - [x] 専用ランタイムウィンドウが汎用文言のみ（spec: feature-memos/debug_test_play_area.md）
 - [x] 子付きインスタンスは親 Draw 任せ
 - [x] 描画毎に半ランバート固定
-- [ ] EnterScene が Runtime 固定
+- [x] EnterScene が Runtime 固定
 - [ ] camera==nullptr で無言 return
 - [ ] ctor で displayName を仮設定
 - [ ] Draw で ChangeScene 常時描画

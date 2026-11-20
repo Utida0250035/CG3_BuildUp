@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「EnterScene が Runtime 固定」（`fix/SceneBuildUpEnterRuntimeTab` 予定）
+- SceneBuildUp「camera==nullptr で無言 return」（`fix/SceneBuildUpCameraNullGuard` 予定）
+
+---
+
+## セッション 2026-11-21 03:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpEnterSceneEditorUiPolicy` で入場時に Runtime タブを強制しない契約を明示
+- 残っていた `requestFocusRuntimeSceneView` のみ解除（Edit/Game 比較を妨げない）
+- `verify_scene_build_up_enter_scene_no_runtime_tab_lock.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 専用ウィンドウは Draw で表示しつつ、エディタの Game/Edit タブ操作は奪わない
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Runtime タブ非固定 | 有効 | エディタ上プレイと BuildUp ランタイムを並行して比較できる |
 
 ---
 
