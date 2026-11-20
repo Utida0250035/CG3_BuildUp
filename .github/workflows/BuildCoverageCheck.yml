@@ -123,3 +123,6 @@ jobs:
 
       - name: Verify CommandScene initial Enter after sceneNow reconcile
         run: python3 EditorAssets/Tools/CursorAI/verify_command_scene_enter_after_scene_now.py
+
+      - name: Verify SceneBuildUp F1 return when returnScene is null
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_return_scene.py

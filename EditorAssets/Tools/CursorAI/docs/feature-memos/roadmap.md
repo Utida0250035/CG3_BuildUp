@@ -435,7 +435,7 @@
 - [x] sceneNow 確定後 Enter を無条件
 
 ### SceneBuildUp
-- [ ] returnScene が null だと機能検証シーンから抜けられない（spec: feature-memos/debug_test_play_area.md）
+- [x] returnScene が null だと機能検証シーンから抜けられない（spec: feature-memos/debug_test_play_area.md）
 - [ ] SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画（spec: feature-memos/debug_test_play_area.md）
 - [ ] SceneBuildUp が EditorSceneRuntime を参照しない（spec: feature-memos/debug_test_play_area.md）
 - [ ] ロード失敗時に空の Entity_0 を生成（spec: feature-memos/debug_test_play_area.md）

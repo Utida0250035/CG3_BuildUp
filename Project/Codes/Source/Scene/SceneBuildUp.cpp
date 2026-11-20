@@ -6,6 +6,7 @@
 #include "Scene/SceneBuildUpRegistryLaunchDedupe.h"
 #include "Scene/SceneBuildUpAudioPolicy.h"
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
+#include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
@@ -136,10 +137,11 @@ void SceneBuildUp::EnterScene() {
 }
 
 void SceneBuildUp::Update() {
-  if (returnScene_ != nullptr &&
-      ::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
+    Scene *const returnTarget =
+        ResolveSceneBuildUpReturnTarget(returnScene_);
     Atrum::CommandChangeScene::Instance()->Set(
-        returnScene_, std::make_unique<ChangeSceneFade>().release());
+        returnTarget, std::make_unique<ChangeSceneFade>().release());
     return;
   }
 
