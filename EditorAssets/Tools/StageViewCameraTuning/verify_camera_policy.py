@@ -24,6 +24,10 @@ UNLOCKED_EDITOR = (
     "SceneParticleEditor.h",
 )
 
+SCENE_SUBCLASS_RE = re.compile(
+    r"class\s+Scene\w+\s*(?:final\s*)?:\s*public\s+Scene\b"
+)
+
 
 def header_path(name: str) -> Path:
     return INCLUDE / name
@@ -62,6 +66,40 @@ def gameplay_header_allows_debug_in_header(path: Path) -> bool:
 def entity_editor_declares_debug_override(path: Path) -> bool:
     text = path.read_text(encoding="utf-8", errors="replace")
     return "AllowDebugCameraControl() const override" in text
+
+
+def discover_scene_implementation_headers() -> list[str]:
+    found: list[str] = []
+    for path in sorted(INCLUDE.glob("Scene*.h")):
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if SCENE_SUBCLASS_RE.search(text):
+            found.append(path.name)
+    return found
+
+
+def scene_base_defaults_locked_true() -> bool:
+    path = INCLUDE / "Scene.h"
+    if not path.is_file():
+        return False
+    text = path.read_text(encoding="utf-8", errors="replace")
+    defaults_path = INCLUDE / "SceneStageCameraLockDefaults.h"
+    defaults_ok = defaults_path.is_file() and bool(
+        re.search(
+            r"kDefaultIsStageViewCameraLocked\s*=\s*true",
+            defaults_path.read_text(encoding="utf-8", errors="replace"),
+        )
+    )
+    return (
+        "kDefaultIsStageViewCameraLocked" in text
+        and defaults_ok
+        and bool(
+            re.search(
+                r"IsStageViewCameraLocked\s*\(\)\s*const\s*\{[\s\S]*?return\s+"
+                r"SceneStageCameraLockDefaults::kDefaultIsStageViewCameraLocked",
+                text,
+            )
+        )
+    )
 
 
 def entity_editor_cpp_defers_debug_input(path: Path) -> bool:
@@ -114,6 +152,20 @@ def main() -> int:
         errors.append(
             "SceneEntityEditor.cpp: expected DEVELOPMENT+USE_IMGUI AllowDebugCameraControl -> false"
         )
+
+    if not scene_base_defaults_locked_true():
+        errors.append(
+            "Scene.h: expected IsStageViewCameraLocked() default via "
+            "SceneStageCameraLockDefaults::kDefaultIsStageViewCameraLocked (true)"
+        )
+
+    known_scenes = set(LOCKED_REQUIRED) | set(UNLOCKED_EDITOR)
+    for name in discover_scene_implementation_headers():
+        if name not in known_scenes:
+            errors.append(
+                f"{name}: new Scene subclass; register in verify_camera_policy "
+                "LOCKED_REQUIRED or UNLOCKED_EDITOR"
+            )
 
     if errors:
         print("verify_camera_policy: FAILED", file=sys.stderr)

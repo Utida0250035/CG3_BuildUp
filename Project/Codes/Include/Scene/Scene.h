@@ -2,6 +2,7 @@
 
 #include "Camera/StageViewFramingBounds.h"
 #include "Scene/SceneCameraRig.h"
+#include "Scene/SceneStageCameraLockDefaults.h"
 #include "System/Particle/EmitterManager.h"
 #include <memory>
 #include <vector>
@@ -71,10 +72,12 @@ public:
 
   /// <summary>
   /// true のとき DebugCamera の操作を行わず EnterScene で設定した戦闘カメラを維持する。
-  /// 本編・タイトル・リザルトなどプレイヤー向けシーンは override で true 必須
-  /// （方針: EditorAssets/Tools/CursorAI/docs/feature-memos/player_friendly_camera_policy.md）
+  /// 既定は true（新規シーンはドキュメントだけに頼らない）。
+  /// エディタ用シーンのみ false を override（verify_camera_policy.py 参照）。
   /// </summary>
-  virtual bool IsStageViewCameraLocked() const { return false; }
+  virtual bool IsStageViewCameraLocked() const {
+    return SceneStageCameraLockDefaults::kDefaultIsStageViewCameraLocked;
+  }
 
   void SetStageViewFramingBounds(const StageViewFramingBounds &bounds) {
     stageViewFramingBounds_ = bounds;

@@ -1316,6 +1316,7 @@
     <ClInclude Include="Codes\Include\Motion\MotionCrossfade.h" />
     <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h" />
     <ClInclude Include="Codes\Include\Scene\SceneDebugCameraInputPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneStageCameraLockDefaults.h" />
     <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallAxisAlignedBounce.h" />
