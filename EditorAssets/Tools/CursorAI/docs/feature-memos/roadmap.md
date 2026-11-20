@@ -311,7 +311,7 @@
 - [x] シーン切替で BGM が瞬断し、クロスフェード／継続再生ポリシーが無い
 
 ### CommandChangeScene
-- [ ] 遷移実行中の Set は無視され次シーン要求が失われる
+- [x] 遷移実行中の Set は無視され次シーン要求が失われる
 
 ### SceneBuildUp
 - [ ] BuildUp 描画に地形越し自機シルエットが無い（spec: feature-memos/player_terrain_silhouette.md）
