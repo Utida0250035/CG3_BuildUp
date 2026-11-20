@@ -45,3 +45,6 @@ jobs:
 
       - name: Verify EditorFrame lighting diagnostics panel
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_frame_lighting_panel.py
+
+      - name: Verify editor runtime functional view draw
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py

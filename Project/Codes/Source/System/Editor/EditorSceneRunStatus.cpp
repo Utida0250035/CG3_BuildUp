@@ -118,6 +118,13 @@ void DrawEntityEditorSceneModeToolbar(EntityEditor::EntityEditor &editor,
   }
   ImGui::SameLine();
   DrawEditorSceneRunPhaseBadge(runPhase);
+  ImGui::SameLine();
+  ImGui::Checkbox("機能試験描画", &ui.runtimeFunctionalViewDraw);
+  if (ImGui::IsItemHovered()) {
+    ImGui::SetTooltip(
+        "ON: BuildUp 同等（ステージカメラ・game_scene_lighting・シルエット）\n"
+        "OFF: エディタ簡易ライト＋プレビュー Entity のみ");
+  }
 }
 
 } // namespace Atrum::Editor

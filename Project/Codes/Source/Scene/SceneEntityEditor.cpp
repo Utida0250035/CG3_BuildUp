@@ -1,5 +1,10 @@
 #include "Scene/SceneEntityEditor.h"
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "System/Editor/EditorSceneRuntimeFunctionalViewDraw.h"
+#include "Scene/SceneBuildUpStageCameraFraming.h"
+#endif
+
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
@@ -146,9 +151,12 @@ void SceneEntityEditor::Update() {
     editor_->SaveToJsonPath(editor_->Ui().jsonFilePath);
     RebuildPreviewScene();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
+    SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(
+        *this, editor_->SceneDocument());
     Editor::EditorFrame::Instance().SetSceneViewTab(
         Editor::SceneViewTab::Runtime);
     editor_->Ui().previewSimulationEnabled = true;
+    editor_->Ui().runtimeFunctionalViewDraw = true;
     editor_->Ui().requestFocusRuntimeSceneView = true;
 #endif
   }
@@ -209,6 +217,9 @@ void SceneEntityEditor::Update() {
       if (entity && entity->IsActive()) {
         entity->Update();
       }
+    }
+    if (editor_->Ui().runtimeFunctionalViewDraw) {
+      SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
     }
     Atrum::Particle::TickEmitterManagerForActiveScene(GetCamera());
   }
@@ -290,6 +301,19 @@ void SceneEntityEditor::DrawSceneViewContent(
     debugCamera = dynamic_cast<Atrum::Debug::DebugCamera *>(camera);
   }
 #endif
+
+  if (!isEditViewPass && editor_ != nullptr &&
+      editor_->Ui().runtimeFunctionalViewDraw) {
+#if defined(DEVELOPMENT) && !defined(NDEBUG)
+    if (!isEditViewPass && debugCamera != nullptr) {
+      RestoreDebugCamera(debugCamera, savedCamera);
+      debugCamera = nullptr;
+    }
+#endif
+    Editor::DrawEditorSceneRuntimeFunctionalView(*this, editor_->SceneDocument(),
+                                                previewEntities_, width, height);
+    return;
+  }
 
   Editor::FitCameraPerspectiveToViewport(camera, width, height);
   engine->SetCamera(camera);

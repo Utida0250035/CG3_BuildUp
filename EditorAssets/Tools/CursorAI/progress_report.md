@@ -6357,3 +6357,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | EditorFrame ライティング診断 | 有効 | エディタ上でのプレイとランタイム検証（デバッグ UI でライティング結果を確認） |
+
+---
+
+## セッション 2026-11-20 16:03（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorSceneRuntimeFunctionalViewDraw` で BuildUp 同等の実行ビュー描画を追加
+- `runtimeFunctionalViewDraw` トグルと「機能試験描画」チェックボックス
+- シーン実行時にステージカメラ境界を適用し Update で `MaintainLockedStageCamera`
+
+### 推測した用途（§6.4）
+
+- エディタ内で Cmp 単体試験を本番に近いライト／カメラ／シルエットで確認
+- SceneBuildUp へ遷移せず Runtime タブで機能検証
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 実行ビュー機能試験 | 有効 | シーンの構成を保存し、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |

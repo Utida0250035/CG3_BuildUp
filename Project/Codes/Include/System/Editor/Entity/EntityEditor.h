@@ -38,6 +38,8 @@ struct UiState {
   bool requestResetPreview = false;
   /// 保存後にエディタ内 Runtime ビューでシミュレーションする
   bool requestPlayRuntimeScene = false;
+  /// Game/Runtime ビューで BuildUp 相当の描画を行う（プレビュー Entity のみ描画を避ける）
+  bool runtimeFunctionalViewDraw = true;
   /// SceneBuildUp へ遷移して JSON シーンをフルランタイム実行する
   bool requestLaunchSceneBuildUp = false;
   /// 空なら jsonFilePath を SceneBuildUp に渡す
