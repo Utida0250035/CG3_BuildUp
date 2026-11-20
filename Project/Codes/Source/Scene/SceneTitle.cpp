@@ -2,7 +2,7 @@
 
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
-#include "Engine/Resource/LightData.h"
+#include "Scene/SceneTitleVisualApply.h"
 #include "Input/AbstractInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
@@ -18,27 +18,12 @@
 
 #include <cmath>
 
-namespace {
-
-	void SetupStageLighting() {
-		Atrum::Math::Vector3 lightDirection{ -0.4f, -0.85f, 0.15f };
-		lightDirection.Normalize();
-		const Atrum::DirectionalLightData directionalLight{
-			.color = Atrum::Math::Vector3{ 1.0f, 1.0f, 1.0f },
-			.direction = lightDirection,
-			.intensity = 8.0f,
-			.lightModel = Atrum::LightModel::HalfLambert,
-		};
-		::Atrum::EngineSetDirectionalLightData(directionalLight);
-	}
-
-} // namespace
-
 namespace Atrum {
 
 	void SceneTitle::EnterScene() {
 		EnsureCommonResources();
 		SetupStageViewCamera();
+		ApplySceneTitleVisualFromProfile();
 		Atrum::SceneScreenUi::PreloadTitleUiTextures();
 		SpawnBackgrounds();
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmTitle.mp3",
@@ -98,7 +83,7 @@ namespace Atrum {
 	}
 
 	void SceneTitle::DrawScene() {
-		SetupStageLighting();
+		ApplySceneTitleVisualFromProfile();
 		DrawBackgrounds();
 
 		if (Atrum::AtrumEngine* engine = ::Atrum::EngineInstance()) {
