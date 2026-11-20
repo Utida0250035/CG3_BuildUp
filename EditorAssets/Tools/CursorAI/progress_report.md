@@ -6992,3 +6992,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 起動先の解決 | 有効 | エディタ上プレイと配布ランタイム検証の段階分けを支える |
+
+---
+
+## セッション 2026-11-20 22:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `CommandSceneReleaseBootApply` で Release／非 Development 起動を集約
+- `launch_config` 未設定・無効時は `SceneTitle` へ（DebugPlayArea テンプレ BuildUp フォールバックを削除）
+- `verify_command_scene_release_boot.py` を CI に追加
+- roadmap「startup 空なら BuildUp ではなく Title」を `[x]`
+- 前 tick の verify 偽陰性修正と `vcxproj.filters` 反映（`78a53cc`）
+
+### 推測した用途（§6.4）
+
+- 配布ビルド: 起動シーン未指定時は本編タイトルからプレイ開始（デバッグ用 BuildUp へ誤って落ちない）
+- Development: 従来どおりテンプレ BuildUp フォールバックは `ResolveDevelopmentBootTarget` 側のみ
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| startup 空 → Title | 有効 | シーン構成の保存とランタイム環境でのプレイ導線を、配布時は Title 起点に揃える |
+
+### 次 tick 候補
+
+- CommandScene「Launch 前に TryLoad を呼ばない」（`fix/CommandSceneLaunchNoTryLoad` 予定）

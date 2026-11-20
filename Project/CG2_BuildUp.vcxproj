@@ -329,6 +329,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\CommandScene.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBoot.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBootApply.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandSceneReleaseBootApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp" />
     <ClCompile Include="Codes\Source\Scene\GameOrderAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\Scene.cpp" />
@@ -653,6 +654,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBoot.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBootApply.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneReleaseBootApply.h" />
     <ClInclude Include="Codes\Include\Scene\GameOrder.h" />
     <ClInclude Include="Codes\Include\Scene\GameOrderAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\Scene.h" />
