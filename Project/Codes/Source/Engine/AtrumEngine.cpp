@@ -3,6 +3,7 @@
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
 #include "Engine/AtrumEngine.h"
+#include "System/Build/BuildConfigurationContract.h"
 #if defined(DEVELOPMENT)
 #include "ForDebug/SubsystemFrameProfiler.h"
 #endif
@@ -465,6 +466,8 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
   /* 初期化完了のログ出力 */
 
   D::LogFile::Instance()->Log("Hello World!");
+  D::LogFile::Instance()->Log(
+      std::string("Build configuration: ") + Atrum::Build::ConfigurationLabel());
 
   isInitialized_ = true;
 }

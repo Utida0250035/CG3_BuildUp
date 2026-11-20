@@ -49,6 +49,9 @@ jobs:
       - name: Verify subsystem frame profiler wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_subsystem_frame_profiler.py
 
+      - name: Verify ship vs debug compile configuration contract
+        run: python3 EditorAssets/Tools/CursorAI/verify_ship_debug_compile_diff.py
+
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
 

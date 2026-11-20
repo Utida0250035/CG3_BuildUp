@@ -82,7 +82,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DEVELOPMENT;_WINDOWS;%(PreprocessorDefinitions);USE_IMGUI;NOMINMAX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;MSVC_DEBUG_CONFIGURATION;DEVELOPMENT;_WINDOWS;%(PreprocessorDefinitions);USE_IMGUI;NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -163,7 +163,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEVELOPMENT;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DEVELOPMENT;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 /FS %(AdditionalOptions)</AdditionalOptions>
@@ -295,6 +295,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
+    <ClCompile Include="Codes\Source\System\Build\BuildConfigurationContract.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp" />
@@ -641,6 +642,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
     <ClInclude Include="Codes\Include\File\FileSize.h" />
     <ClInclude Include="Codes\Include\File\SetWorkingDirectoryToExecutable.h" />
+    <ClInclude Include="Codes\Include\System\Build\BuildConfigurationContract.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h" />

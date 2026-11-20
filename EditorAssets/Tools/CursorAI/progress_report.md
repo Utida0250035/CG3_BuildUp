@@ -8059,3 +8059,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 「Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭」（`GAP-Ship-CG2_BuildUp-002`）
+
+---
+
+## セッション 2026-11-21 07:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ship_build_configurations.md` で Release＝出荷候補、Development／Debug＝非出荷を明示
+- `BuildConfigurationContract` … 未登録マクロ組み合わせは `#error`、起動ログに構成ラベル
+- vcxproj: Development に `NDEBUG`、Debug に `MSVC_DEBUG_CONFIGURATION`
+- `verify_ship_debug_compile_diff.py` を CI に追加
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **配布:** CI ReleaseBuild とローカル Development の意図差を手順書と検証で固定
+- **デバッグ:** LogFile の「Build configuration:」で現ビルド種別を即確認
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 構成契約 | 有効 | ランタイム出力・エディター exe 化と配布時のビルド切り分け |
+
+### 次 tick 候補
+
+- `buildDevelopment.cmd` が CI と異なる入口で前検証も無い（`GAP-Infra-buildDevelopment-001`）

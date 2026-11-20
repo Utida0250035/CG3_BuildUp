@@ -166,6 +166,9 @@
     <ClCompile Include="Codes\Source\File\FileSize.cpp">
       <Filter>Codes\Source\File</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Build\BuildConfigurationContract.cpp">
+      <Filter>Codes\Source\System</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp">
       <Filter>Codes\Source\File</Filter>
     </ClCompile>
@@ -902,6 +905,9 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\File\FileSize.h">
       <Filter>Codes\Include\File</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Build\BuildConfigurationContract.h">
+      <Filter>Codes\Include\System</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\File\SetWorkingDirectoryToExecutable.h">
       <Filter>Codes\Include\File</Filter>
