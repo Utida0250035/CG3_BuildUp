@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「専用ランタイムウィンドウが汎用文言のみ」（`fix/SceneBuildUpRuntimeViewWindowText` 予定）
+- SceneBuildUp「子付きインスタンスは親 Draw 任せ」（`fix/SceneBuildUpChildInstanceDraw` 予定）
+
+---
+
+## セッション 2026-11-21 02:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `BuildSceneBuildUpRuntimeViewStatusLine` でシーン名＋JSON パスをヘッダ文言化
+- `SceneBuildUpDedicatedRuntimeViewWindow` で専用ウィンドウと RT プレビューを配線
+- `verify_scene_build_up_runtime_view_window_text.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: DebugPlayArea や F2 起動後、どの JSON を試しているか UI 上で即確認する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| BuildUp ヘッダに JSON | 有効 | エディタ外ランタイムでの機能試験で誤ったシーンを掴まない |
 
 ---
 

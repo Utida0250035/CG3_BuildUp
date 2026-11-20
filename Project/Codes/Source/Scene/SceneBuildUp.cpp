@@ -14,6 +14,9 @@
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
 #include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
+#endif
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -237,6 +240,9 @@ void SceneBuildUp::Draw() {
 #endif
 #ifdef USE_IMGUI
   engine->ImGuiRender();
+#endif
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  SceneBuildUpDedicatedRuntimeViewWindow::LayoutAndRenderViews(*this);
 #endif
   engine->PostDraw();
 }

@@ -162,3 +162,6 @@ jobs:
 
       - name: Verify SceneBuildUp applies runtime lighting on enter only
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_runtime_lighting_enter_only.py
+
+      - name: Verify SceneBuildUp runtime view shows JSON path in header
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_runtime_view_window_text.py

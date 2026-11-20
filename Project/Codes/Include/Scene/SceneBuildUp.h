@@ -40,6 +40,7 @@ public:
   }
 
   const std::string &SceneJsonPath() const { return sceneJsonPath_; }
+  const std::string &SceneDisplayName() const { return sceneDisplayName_; }
 
   void SetReturnScene(Scene *returnScene) { returnScene_ = returnScene; }
   Scene *ReturnScene() const { return returnScene_; }
