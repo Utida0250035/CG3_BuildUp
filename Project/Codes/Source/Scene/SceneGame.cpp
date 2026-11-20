@@ -21,7 +21,6 @@
 #include "Scene/SceneGameDefeatAudioPolicy.h"
 #include "Scene/SceneGameDefeatPresentationBgm.h"
 #include "Scene/SceneGameEnterVisualPreset.h"
-#include "Scene/SceneGameLightingProfile.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneResult.h"
@@ -244,7 +243,6 @@ namespace Atrum {
 	}
 
 	void SceneGame::DrawScene() {
-		ApplySceneGameLightingFromProfile();
 		DrawEntities();
 		Atrum::Particle::Combat::DrawCombatParticleEffects();
 		DrawBattleHud();

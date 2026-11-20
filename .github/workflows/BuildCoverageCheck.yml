@@ -36,3 +36,6 @@ jobs:
 
       - name: Verify Lighting effects ImGui wire
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_imgui_wire.py
+
+      - name: Verify SceneGame visual apply not per DrawScene
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_game_visual_apply.py

@@ -6282,3 +6282,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Lighting ImGui 配線 | 有効 | ライトをコンポーネント化して配置/編集できる／グラフィックスエンティティとして実装（デバッグ UI でライティング拡張を調整） |
+
+---
+
+## セッション 2026-11-20 15:18（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneGame::DrawScene` から `ApplySceneGameLightingFromProfile` を削除（`EnterScene` の `ApplySceneGameVisualPresetOnEnter` のみ）
+- `SceneGameEnterVisualPreset.h` に Draw 再適用禁止の方針を明記
+- `verify_scene_game_visual_apply.py` を CI に追加
+
+### 推測した用途（§6.4）
+
+- 本編プレイ中、ImGui や演出経路で変えたフォグ／ゴッドレイが毎フレーム C++ 既定で潰れない
+- `game_scene_lighting.json` はシーン進入時に一度だけエンジンへ反映
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| SceneGame Draw 見た目再適用 | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |
