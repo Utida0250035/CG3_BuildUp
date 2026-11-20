@@ -41,7 +41,15 @@ def main() -> int:
         handle.write("\n")
 
     print(f"Wrote {out_path}")
-    print("Run: SceneBuildUpRegistry::Launch(path, returnScene) or EntityEditor OpenScene")
+    print(
+        "Next: open in Entity Editor project list (DebugPlayArea/), "
+        "then in-editor preview or 「シーンを実行」 (BuildUp). "
+        "Optional: set startup scene, or F2 for template BuildUp."
+    )
+    print(
+        "生成後: プロジェクト一覧で開く →「エディタ内プレビュー」または"
+        "「シーンを実行」(BuildUp)。起動シーン化は「起動シーンに設定」。F2 はテンプレ BuildUp。"
+    )
     return 0
 
 

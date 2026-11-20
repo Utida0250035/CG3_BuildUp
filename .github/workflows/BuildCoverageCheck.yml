@@ -105,3 +105,6 @@ jobs:
 
       - name: Verify DebugPlayArea scaffold from editor
         run: python3 EditorAssets/Tools/CursorAI/verify_scaffold_play_area_editor.py
+
+      - name: Verify scaffold post-generate guidance
+        run: python3 EditorAssets/Tools/CursorAI/verify_scaffold_play_area_post_generate_hint.py

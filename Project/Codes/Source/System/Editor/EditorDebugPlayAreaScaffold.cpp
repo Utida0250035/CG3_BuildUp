@@ -2,7 +2,10 @@
 
 #include "System/Editor/EditorDebugPlayAreaScaffold.h"
 
+#include "System/Editor/DebugPlayAreaScaffoldGuidance.h"
 #include "System/Editor/EditorAssetsPaths.h"
+#include "Scene/SceneEntityEditorInEditorPlayQueue.h"
+#include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
 #include "System/Editor/Entity/EntityEditor.h"
 #include "ForDebug/ImGui.h"
 #include <nlohmann/json.hpp>
@@ -86,8 +89,7 @@ EditorDebugPlayAreaScaffold::GenerateFromTemplate(const std::string &sceneName,
 
   result.success = true;
   result.outputPath = outPath.generic_string();
-  result.message =
-      "テストエリアを作成しました。プロジェクトから開くか「エディタ内プレビュー」で試せます。";
+  result.message = DebugPlayAreaScaffoldGuidance::kPostGenerateStepsJa;
   return result;
 }
 
@@ -104,6 +106,31 @@ void EditorDebugPlayAreaScaffold::DrawProjectPanelControls(
     }
   }
   ImGui::SameLine();
+  if (ImGui::Button("作成して BuildUp")) {
+    const DebugPlayAreaScaffoldResult gen =
+        GenerateFromTemplate(nameBuffer, false);
+    if (gen.success) {
+      editor.OpenSceneFromPath(gen.outputPath);
+      EntityEditor::QueueEditorScenePlayViaBuildUp(editor.Ui());
+      editor.Ui().importStatusMessage =
+          DebugPlayAreaScaffoldGuidance::kPostGenerateStepsJa;
+    } else {
+      editor.Ui().importStatusMessage = gen.message;
+    }
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("作成してエディタ内プレビュー")) {
+    const DebugPlayAreaScaffoldResult gen =
+        GenerateFromTemplate(nameBuffer, false);
+    if (gen.success) {
+      editor.OpenSceneFromPath(gen.outputPath);
+      EntityEditor::QueueInEditorPlayRuntimeTabOnly(editor.Ui());
+      editor.Ui().importStatusMessage =
+          DebugPlayAreaScaffoldGuidance::kPostGenerateStepsJa;
+    } else {
+      editor.Ui().importStatusMessage = gen.message;
+    }
+  }
   ImGui::TextDisabled("(DebugPlayArea)");
 }
 

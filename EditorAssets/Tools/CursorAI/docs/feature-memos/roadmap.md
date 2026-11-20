@@ -425,7 +425,7 @@
 
 ### scaffold_play_area
 - [x] テストエリア新規作成が scaffold スクリプト手動実行のみ
-- [ ] 生成後は Launch のみ案内（spec: feature-memos/debug_test_play_area.md）
+- [x] 生成後は Launch のみ案内（spec: feature-memos/debug_test_play_area.md）
 - [ ] 生成は sceneName 差替のみ
 
 ### CommandScene

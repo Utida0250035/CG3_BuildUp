@@ -738,6 +738,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h" />
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldGuidance.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
