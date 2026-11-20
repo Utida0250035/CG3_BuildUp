@@ -880,6 +880,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigLoadDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigSchema.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigJsonDocument.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEditableSceneJsonRoots.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
     <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
     <ClInclude Include="Codes\Include\System\Hash64.h" />

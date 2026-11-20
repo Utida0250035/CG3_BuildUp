@@ -1,5 +1,6 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
+#include "System/Editor/EditorEditableSceneJsonRoots.h"
 #include "System/Editor/EditorLaunchConfigJsonDocument.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/EditorLaunchConfigSchema.h"
@@ -43,13 +44,11 @@ std::vector<std::string> ListSceneJsonFiles(
 }
 
 std::vector<std::string> ListEditableSceneJsonFiles() {
-  std::vector<std::string> paths =
-      ListSceneJsonFiles(GameAssets::kScenesDirectory);
-  const std::vector<std::string> editorPaths = ListSceneJsonFiles();
-  paths.insert(paths.end(), editorPaths.begin(), editorPaths.end());
-  const std::vector<std::string> debugPlayPaths =
-      ListSceneJsonFiles(EditorAssets::kDebugPlayAreaDirectory);
-  paths.insert(paths.end(), debugPlayPaths.begin(), debugPlayPaths.end());
+  std::vector<std::string> paths;
+  for (const char *root : EditorEditableSceneJsonRoots::kAll) {
+    const std::vector<std::string> part = ListSceneJsonFiles(root);
+    paths.insert(paths.end(), part.begin(), part.end());
+  }
   std::sort(paths.begin(), paths.end());
   return paths;
 }

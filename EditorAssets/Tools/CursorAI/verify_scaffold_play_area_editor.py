@@ -21,8 +21,8 @@ def main() -> int:
         text = scaffold_cpp.read_text(encoding="utf-8", errors="replace")
         if "kDebugPlayAreaTemplateScene" not in text:
             errors.append("scaffold must use kDebugPlayAreaTemplateScene")
-        if 'data["sceneName"]' not in text:
-            errors.append("scaffold must set sceneName")
+        if "PersonalizeDebugPlayAreaSceneJson" not in text:
+            errors.append("scaffold must personalize sceneName")
 
     if ui_cpp.is_file():
         if "EditorDebugPlayAreaScaffold" not in ui_cpp.read_text(
@@ -30,10 +30,14 @@ def main() -> int:
         ):
             errors.append("EntityEditorUi must wire EditorDebugPlayAreaScaffold")
 
-    if asset_cpp.is_file():
-        text = asset_cpp.read_text(encoding="utf-8", errors="replace")
-        if "kDebugPlayAreaDirectory" not in text:
-            errors.append("ListEditableSceneJsonFiles must include DebugPlayArea")
+    roots_h = ROOT / "Project" / "Codes" / "Include" / "System" / "Editor" / "EditorEditableSceneJsonRoots.h"
+    if roots_h.is_file():
+        if "kDebugPlayAreaDirectory" not in roots_h.read_text(
+            encoding="utf-8", errors="replace"
+        ):
+            errors.append("editable scene roots must include DebugPlayArea")
+    else:
+        errors.append("missing EditorEditableSceneJsonRoots.h")
 
     if errors:
         print("verify_scaffold_play_area_editor: FAILED", file=sys.stderr)

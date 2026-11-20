@@ -7874,3 +7874,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EditorSceneAsset「ListSceneJson は単一 Dir」（`fix/EditorSceneAssetMultiDirList` 予定）
+
+---
+
+## セッション 2026-11-21 05:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorEditableSceneJsonRoots` で編集可能シーンの走査ルート 3 件を正本化
+- `ListEditableSceneJsonFiles` をループ走査に整理
+- `verify_editor_scene_asset_multi_dir_list.py` を CI に追加
+- `verify_scaffold_play_area_editor.py` を roots 正本に合わせて更新
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- プロジェクト一覧: Assets/Scenes・EditorAssets/Scenes・DebugPlayArea を一画面で開ける
+- 機能検証シーン選定: launch_config 保存前にパスを一覧から選べる
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 複数 Dir 一覧 | 有効 | ファイルの新規作成・削除・名前変更などをエディタから行う（シーン JSON 一覧の網羅） |
+
+### 次 tick 候補
+
+- EditorSceneAsset「startupScenePath を生文字列で保存」（`fix/LaunchConfigStartupPathNormalize` 予定）
