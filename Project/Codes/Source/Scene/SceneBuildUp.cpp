@@ -2,6 +2,7 @@
 
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpRuntimeVisualApply.h"
+#include "Scene/SceneBuildUpSceneJsonPathResolve.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -48,7 +49,9 @@ SceneBuildUpRegistry &SceneBuildUpRegistry::Instance() {
 
 Scene *SceneBuildUpRegistry::Launch(const std::string &sceneJsonPath,
                                     Scene *returnScene) {
-  auto scene = std::make_unique<SceneBuildUp>(sceneJsonPath, returnScene);
+  const std::string resolvedPath =
+      ResolveSceneBuildUpJsonPath(sceneJsonPath);
+  auto scene = std::make_unique<SceneBuildUp>(resolvedPath, returnScene);
   Scene *raw = scene.get();
   ownedScenes_.push_back(std::move(scene));
   return raw;
