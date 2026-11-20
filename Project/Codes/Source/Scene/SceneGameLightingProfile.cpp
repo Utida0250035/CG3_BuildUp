@@ -163,6 +163,9 @@ void MergeFogFromJson(const nlohmann::json &root, VolumetricFogSettings &fog) {
   if (node.contains("heightOffset")) {
     fog.heightOffset = node["heightOffset"].get<float>();
   }
+  if (node.contains("startDistance")) {
+    fog.startDistance = node["startDistance"].get<float>();
+  }
   if (node.contains("maxDistance")) {
     fog.maxDistance = node["maxDistance"].get<float>();
   }

@@ -20,7 +20,18 @@
 
 ## 既定
 
-`SceneGame::SetupGameLighting` で弱いフォグを有効化。
+`SceneGame::SetupGameLighting` で弱いフォグを有効化（JSON 未読込時は `SceneGameLightingProfile` 内のコード既定）。
+
+## プロファイル JSON
+
+ライト・フォグ・ゴッドレイ・平行光シャドウをまとめた見た目プロファイル。カメラの `stage_view_camera_tuning.json` と同様、制作時は EditorAssets 正本を編集し Release 用 `Assets` と揃える。
+
+| 用途 | パス |
+|------|------|
+| エディタ／開発正本 | `EditorAssets/Visual/game_scene_lighting.json` |
+| ゲーム配布物 | `Assets/Visual/game_scene_lighting.json` |
+
+読込: `ApplySceneGameLightingFromProfile`（`SceneGameEnterVisualPreset`・タイトル／リザルト／BuildUp ランタイム見た目でも共用）。
 
 ## 今後
 

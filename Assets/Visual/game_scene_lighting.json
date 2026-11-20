@@ -13,9 +13,11 @@
   },
   "volumetricFog": {
     "enabled": 1,
+    "color": [0.65, 0.72, 0.82],
     "density": 0.022,
     "heightFalloff": 0.28,
     "heightOffset": 0.0,
+    "startDistance": 2.0,
     "maxDistance": 90.0,
     "inScatterIntensity": 0.18
   },

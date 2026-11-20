@@ -7967,3 +7967,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Lighting 節の先頭 `- [ ]`（ファイル出現順。`progress_report` または roadmap 先頭未完了行を参照）
+
+---
+
+## セッション 2026-11-21 06:30（/loop 15m・roadmap tick）
+
+### 完了（§6.2 含む）
+
+- `EditorAssets/Visual/game_scene_lighting.json` と `Assets` 同梱を正本化（既存 JSON をベースにフォグ `color`・`startDistance` を明示）
+- `volumetric_fog.md` にプロファイル JSON 節を追加
+- `SceneGameLightingProfile` が `startDistance` を読込可能に
+- `verify_visual_lighting_profile_json.py` を CI に追加
+- roadmap `visual_lighting_profile` を `[x]`
+
+### 推測した用途（§6.4）
+
+- **レベル制作:** リム・フォグ・ゴッドレイ・影をカメラ tuning と同様に JSON 差し替えで調整
+- **配布:** EditorAssets 正本と Assets 配布物の内容一致を CI で担保
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| visual_lighting_profile | 有効 | VolumetricFog・ライトをコンポーネント／データで編集可能にする流れ |
+
+### 次 tick 候補
+
+- Lighting「シャドウ／シェード適用状態のログ・可視化が無い」（`directional_shadow.md`）

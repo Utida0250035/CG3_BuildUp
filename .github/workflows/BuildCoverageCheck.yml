@@ -40,6 +40,9 @@ jobs:
       - name: Verify SceneGame visual apply not per DrawScene
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_game_visual_apply.py
 
+      - name: Verify visual lighting profile JSON canonical pair
+        run: python3 EditorAssets/Tools/CursorAI/verify_visual_lighting_profile_json.py
+
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
 
