@@ -85,10 +85,11 @@ public:
   }
 
   /// <summary>
-  /// false のとき DebugCamera は行列のみ更新（エディットビュー外など）。
-  /// true のときのみ DEVELOPMENT の DebugCamera 入力を許可（制作ツール用）。
+  /// false のとき DebugCamera は行列のみ更新（本編・未設定シーンの既定）。
+  /// true は制作ツール用シーンでのみ override（入力可否の組み合わせは
+  /// SceneDebugCameraInputPolicy を参照）。
   /// </summary>
-  virtual bool AllowDebugCameraControl() const { return true; }
+  virtual bool AllowDebugCameraControl() const { return false; }
 
   /// <summary>
   /// シーン進入関数 純粋仮想

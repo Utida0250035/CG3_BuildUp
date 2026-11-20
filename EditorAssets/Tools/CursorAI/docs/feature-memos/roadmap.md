@@ -333,7 +333,7 @@
 - [x] ExitScene が即 StopBgmLoop
 
 ### Scene
-- [ ] AllowDebugCameraControl が既定 true でガードが二重依存（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] AllowDebugCameraControl が既定 true でガードが二重依存（spec: feature-memos/player_friendly_camera_policy.md）
 - [ ] 新規シーンのステージカメラロックはドキュメント依存（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### SceneParticleEditor

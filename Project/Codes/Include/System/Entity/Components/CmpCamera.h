@@ -18,7 +18,7 @@ public:
   void SetPerspectiveParams(float fovY, float nearClip, float farClip);
 
   /// GameOrder 描画直前に Scene から呼ぶ（通常の Entity::Update では行わない）
-  void PrepareBeforeDraw(bool stageViewLocked, bool allowDebugControl);
+  void PrepareBeforeDraw(bool enableDebugCameraInput);
 
   Camera *GetCamera() { return camera_.get(); }
   const Camera *GetCamera() const { return camera_.get(); }

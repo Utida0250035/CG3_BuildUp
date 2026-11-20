@@ -14,8 +14,8 @@
 | 機構 | 場所 | 役割 |
 |------|------|------|
 | `IsStageViewCameraLocked()` | 各 `Scene` | `true` で戦闘・本編カメラ固定 |
-| `GameOrder` 更新ループ | `GameOrder.h` | ロック時は `camera->Update()` を呼ばず行列のみ更新 |
-| `AllowDebugCameraControl()` | エディタ系 `Scene` | `false` ならデバッグカメラ入力なし |
+| `SceneDebugCameraInputPolicy` | `SceneDebugCameraInputPolicy.cpp` | ロックと Allow の組み合わせ正本（`CmpCamera::PrepareBeforeDraw`） |
+| `AllowDebugCameraControl()` | 基底は `false`、エディタ系のみ `true` override | 未設定シーンで誤って Debug 入力しない |
 | Release ビルド | `Scene.cpp` | `DebugCamera` 非使用 |
 
 ## シーン一覧（正本はソース）

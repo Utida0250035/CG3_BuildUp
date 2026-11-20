@@ -44,12 +44,11 @@ void CmpCamera::Initialize() {
   }
 }
 
-void CmpCamera::PrepareBeforeDraw(const bool stageViewLocked,
-                                  const bool allowDebugControl) {
+void CmpCamera::PrepareBeforeDraw(const bool enableDebugCameraInput) {
   if (!camera_) {
     return;
   }
-  if (stageViewLocked || !allowDebugControl) {
+  if (!enableDebugCameraInput) {
     camera_->UpdateMatrix();
     return;
   }

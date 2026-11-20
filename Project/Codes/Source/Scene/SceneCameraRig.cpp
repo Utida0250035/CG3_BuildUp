@@ -1,6 +1,7 @@
 #include "Scene/SceneCameraRig.h"
 
 #include "Scene/Scene.h"
+#include "Scene/SceneDebugCameraInputPolicy.h"
 #include "Scene/ScenePrimaryCameraResolve.h"
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Entity.h"
@@ -88,8 +89,7 @@ const Camera *SceneCameraRig::GetPrimaryCamera(const Scene *ownerScene) const {
 void SceneCameraRig::PrepareActiveCameraBeforeDraw(const Scene &scene) {
   EnsureAutoSpawnedCameras(&scene);
   if (CmpCamera *cmp = FindPrimaryCmpCamera(&scene)) {
-    cmp->PrepareBeforeDraw(scene.IsStageViewCameraLocked(),
-                           scene.AllowDebugCameraControl());
+    cmp->PrepareBeforeDraw(AllowsPlayerDebugCameraInput(scene));
   }
 }
 

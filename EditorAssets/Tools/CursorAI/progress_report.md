@@ -6128,3 +6128,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Result Exit BGM | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |
+
+---
+
+## セッション 2026-11-20 13:48（/loop 15m・roadmap tick）
+
+### 完了
+
+- `Scene::AllowDebugCameraControl` 既定を `false` に変更（未設定シーンで Debug 入力を許可しない）
+- `SceneDebugCameraInputPolicy` でロックと Allow の組み合わせを単一正本化し `CmpCamera::PrepareBeforeDraw` を 1 フラグに整理
+- `player_friendly_camera_policy.md` のガード表を更新
+
+### 推測した用途（§6.4）
+
+- 本編・タイトル等ではプレイヤーがカメラを直接操作せずステージカメラを維持する（`ultimateGoal` ゲーム中のカメラワーク）
+- 制作エディタのみ明示的に Allow を true 化してビューポート操作を許可する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行（従来どおり）
+
+### loop lease
+
+- Linux VM に `pwsh` が無く `loopLease.ps1` は未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| AllowDebugCameraControl ガード | 有効 | マリオオデッセイのように、プレイヤーがカメラを直接操作せずとも自動でカメラが動作し、見やすいカメラワークをとるようになっている |
