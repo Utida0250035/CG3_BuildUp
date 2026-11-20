@@ -20,6 +20,13 @@ bool TryLoadSceneDocument(const std::string &jsonFilePath,
 std::vector<std::unique_ptr<Entity>>
 BuildEntitiesFromSceneDocument(const EditorSceneDocument &document);
 
+void InitializeSceneDocumentEntities(
+    std::vector<std::unique_ptr<Entity>> &entities);
+
+/// ルート Entity の Draw と、親が非 Active な子のフォールバック描画。
+void DrawSceneDocumentEntities(
+    const std::vector<std::unique_ptr<Entity>> &entities);
+
 /// シーン JSON の明示 bounds・境界マーカー・既定 StageBounds からフレーミングを解決
 StageViewFramingBounds
 ResolveStageViewFramingBounds(const EditorSceneDocument &document);

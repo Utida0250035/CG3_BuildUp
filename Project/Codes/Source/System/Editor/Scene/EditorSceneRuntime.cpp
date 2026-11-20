@@ -578,15 +578,53 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document) {
     entities[i]->SetParent(entities[static_cast<size_t>(parentIndex)].get());
   }
 
-  for (size_t i = 0; i < document.instances.size(); ++i) {
-    if (document.instances[i].parentIndex >= 0) {
-      continue;
-    }
-    entities[i]->ResolveDependencies();
-    entities[i]->Initialize();
-  }
+  InitializeSceneDocumentEntities(entities);
 
   return entities;
+}
+
+void InitializeSceneDocumentEntities(
+    std::vector<std::unique_ptr<Entity>> &entities) {
+  for (std::unique_ptr<Entity> &entity : entities) {
+    if (entity) {
+      entity->ResolveDependencies();
+    }
+  }
+  for (std::unique_ptr<Entity> &entity : entities) {
+    if (entity && entity->GetParent() == nullptr) {
+      entity->Initialize();
+    }
+  }
+  for (std::unique_ptr<Entity> &entity : entities) {
+    if (entity && entity->GetParent() != nullptr &&
+        entity->GetState() != Entity::State::Active) {
+      entity->Initialize();
+    }
+  }
+}
+
+void DrawSceneDocumentEntities(
+    const std::vector<std::unique_ptr<Entity>> &entities) {
+  for (const std::unique_ptr<Entity> &entity : entities) {
+    if (!entity || entity->GetParent() != nullptr) {
+      continue;
+    }
+    if (entity->GetState() == Entity::State::Active) {
+      entity->Draw();
+    }
+  }
+  for (const std::unique_ptr<Entity> &entity : entities) {
+    if (!entity || entity->GetParent() == nullptr) {
+      continue;
+    }
+    if (entity->GetState() != Entity::State::Active) {
+      continue;
+    }
+    Entity *parent = entity->GetParent();
+    if (parent == nullptr || parent->GetState() != Entity::State::Active) {
+      entity->Draw();
+    }
+  }
 }
 
 StageViewFramingBounds

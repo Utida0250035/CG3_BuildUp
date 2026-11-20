@@ -25,6 +25,7 @@
 #include "System/GameAssetsPaths.h"
 #include "System/Particle/SceneParticleServices.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Entity/Entity.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/EditorFrame.h"
@@ -262,14 +263,7 @@ void SceneEntityEditor::Draw() {
 }
 
 void SceneEntityEditor::DrawPreviewEntities() {
-  for (std::unique_ptr<Entity> &entity : previewEntities_) {
-    if (!entity) {
-      continue;
-    }
-    if (entity->GetParent() == nullptr) {
-      entity->Draw();
-    }
-  }
+  EntityEditor::DrawSceneDocumentEntities(previewEntities_);
 }
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

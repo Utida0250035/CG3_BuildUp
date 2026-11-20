@@ -414,7 +414,7 @@
 - [x] 実行は Runtime タブ切替のみ
 - [x] Edit ホバー時に Draw 内で camera->Update
 - [x] シーンビュー RT が GameOrder 後に SetCamera
-- [ ] DrawPreview が親 root のみ
+- [x] DrawPreview が親 root のみ
 - [ ] Exit はプレビュー解放のみ
 
 ### FrameDeltaTime

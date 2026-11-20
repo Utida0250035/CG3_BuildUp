@@ -6819,3 +6819,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | アクティブカメラと RT 描画 | 有効 | エディタ上プレイ検証とゲーム配布ランタイムのカメラ解決を揃える |
+
+---
+
+## セッション 2026-11-20 20:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `InitializeSceneDocumentEntities` で親子の未初期化子を補完
+- `DrawSceneDocumentEntities` でルート Draw＋親非 Active 時の子フォールバック
+- `DrawPreviewEntities` を上記に委譲
+- roadmap「DrawPreview が親 root のみ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 階層付きシーン JSON をエディタプレビューで欠けなく確認する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 階層プレビュー描画 | 有効 | エンティティのコンポーネント構成を json で編集しプレイ検証に活かす |
