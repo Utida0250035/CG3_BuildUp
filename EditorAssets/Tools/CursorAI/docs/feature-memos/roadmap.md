@@ -328,7 +328,7 @@
 - [x] Submit 直後にフェード遷移
 
 ### SceneResult
-- [ ] SceneResult に BGM 維持・再開処理が無い
+- [x] SceneResult に BGM 維持・再開処理が無い
 - [ ] SceneResult が毎フレーム簡易平行光のみ適用（spec: feature-memos/rim_light.md）
 - [ ] ExitScene が即 StopBgmLoop
 

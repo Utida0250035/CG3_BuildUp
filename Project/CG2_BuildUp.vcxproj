@@ -332,6 +332,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneResultBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp" />
@@ -623,6 +624,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h" />
     <ClInclude Include="Codes\Include\Scene\SceneScreenUi.h" />
     <ClInclude Include="Codes\Include\Scene\SceneResult.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneResultBgmMaintain.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h" />

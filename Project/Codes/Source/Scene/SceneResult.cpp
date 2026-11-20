@@ -10,6 +10,7 @@
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
 #include "Scene/SceneGameExitBgmPolicy.h"
+#include "Scene/SceneResultBgmMaintain.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
@@ -52,20 +53,7 @@ void SceneResult::EnterScene() {
 }
 
 void SceneResult::Update() {
-  Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
-  Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
-  if (sceneBgmHandle_.isSuccess &&
-      !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
-    float pitchRatio = 1.0f;
-    if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
-        pitchRatio < 0.99f) {
-      Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
-    }
-    float volume = 0.0f;
-    if (Atrum::GetSeVolume(sceneBgmHandle_, volume) && volume < 0.99f) {
-      Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
-    }
-  }
+  MaintainSceneResultBgmIfNeeded(sceneBgmHandle_);
   UpdateBackgrounds();
 
   if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {

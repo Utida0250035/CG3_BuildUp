@@ -319,6 +319,9 @@
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneResultBgmMaintain.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -988,6 +991,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneResultBgmMaintain.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneResult.h">
