@@ -132,3 +132,6 @@ jobs:
 
       - name: Verify SceneBuildUp isolates EditorSceneRuntime include
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_no_editor_scene_runtime.py
+
+      - name: Verify SceneBuildUp load failure spawns no dummy entity
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_load_failure_no_dummy_entity.py

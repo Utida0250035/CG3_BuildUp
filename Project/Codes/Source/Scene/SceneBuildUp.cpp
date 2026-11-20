@@ -7,6 +7,7 @@
 #include "Scene/SceneBuildUpAudioPolicy.h"
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
+#include "Scene/SceneBuildUpLoadFailureEntities.h"
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
@@ -99,7 +100,9 @@ void SceneBuildUp::EnterScene() {
   sceneLoadFailureMessage_.clear();
 
   EntityEditor::EditorSceneDocument document{};
-  if (!SceneBuildUpSceneDocumentLoad::TryLoad(sceneJsonPath_, document)) {
+  const bool loadSucceeded =
+      SceneBuildUpSceneDocumentLoad::TryLoad(sceneJsonPath_, document);
+  if (!loadSucceeded) {
     sceneDocumentLoadFailed_ = true;
     sceneLoadFailureMessage_ =
         BuildSceneBuildUpSceneLoadFailureMessage(sceneJsonPath_);
@@ -112,7 +115,8 @@ void SceneBuildUp::EnterScene() {
   }
 
   SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(*this, document);
-  entities_ = SceneBuildUpSceneDocumentLoad::BuildEntities(document);
+  entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
+      loadSucceeded, document);
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   ApplySceneBuildUpRuntimeVisualFromProfile();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);

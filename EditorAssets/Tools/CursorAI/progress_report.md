@@ -7022,7 +7022,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「ロード失敗時に空の Entity_0 を生成」（`fix/SceneBuildUpLoadFailDefaultEntity` 予定）
+- SceneBuildUp「cameraRig 実体は Update されない」（`fix/SceneBuildUpCameraRigUpdate` 予定）
+
+---
+
+## セッション 2026-11-21 00:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad` で読込失敗時は **Entity を 0 件**（ダミー `Entity_0` なし）
+- `EnterScene` で `loadSucceeded` を明示し、失敗 UI（既存の暗転・ImGui 通知）と組み合わせ
+- `verify_scene_build_up_load_failure_no_dummy_entity.py` を CI に追加
+- roadmap「ロード失敗時に空の Entity_0 を生成」を `[x]`（ギャップは「ダミー生成をやめる」）
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 壊れた JSON を即わかる状態にし、見かけだけプレイ可能な 1 体フォールバックを出さない
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 読込失敗の可視化 | 有効 | json エンティティ編集の検証で不整合をすぐ気づける |
 
 ---
 
