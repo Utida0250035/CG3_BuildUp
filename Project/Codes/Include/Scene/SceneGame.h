@@ -30,12 +30,12 @@ public:
 
   bool IsStageViewCameraLocked() const override { return true; }
 
-protected:
-  void DrawScene() override;
-
   void MaintainBgmDuringSceneTransitionEffect() {
     MaintainSceneBgmIfNeeded(false);
   }
+
+protected:
+  void DrawScene() override;
 
 private:
   enum class DefeatKind : uint8_t { None, Boss, Player };
