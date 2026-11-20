@@ -6408,3 +6408,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Launch は生成してポインタ返却のみ | 有効 | エディタ既定の機能検証シーンからエディタ外ランタイムを試す（debug プレイ導線の整理） |
+
+---
+
+## セッション 2026-11-20 16:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpLaunchPolicy::CreateOwnedBuildUp` で「Launch＝生成のみ」を公開 API 化
+- `CommandScene`／`SceneReleaseCarousel` の直 `Launch` をポリシー経由に変更
+- `verify_scene_build_up_launch_policy.py` で `Registry::Launch` 直呼びを定義箇所以外禁止
+- roadmap「Launch は Scene 生成のみ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 起動時（CommandScene）とカルーセル遷移で生成と `EnterScene` の責務を分け、フェード遷移経路と矛盾しない
+- 機能検証シーンのスキャフォールド手順で「作る／入る／遷移する」の段階をコード上も読み分けやすくする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Launch は Scene 生成のみ | 有効 | シーンの構成を保存し、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |

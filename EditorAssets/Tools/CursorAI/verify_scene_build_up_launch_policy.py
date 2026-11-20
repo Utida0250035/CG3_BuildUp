@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BuildUp Launch が QueueFadeToBuildUp 経由に寄せられているか検査。"""
+"""BuildUp: Launch は生成のみを呼び手が守っているか検査。"""
 
 from __future__ import annotations
 
@@ -7,6 +7,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+CODES = ROOT / "Project" / "Codes"
+
+LAUNCH_CALL = "SceneBuildUpRegistry::Instance().Launch("
 
 
 def main() -> int:
@@ -17,13 +20,31 @@ def main() -> int:
     if not policy_h.is_file():
         errors.append("missing SceneBuildUpLaunchPolicy.h")
 
+    policy_text = policy_h.read_text(encoding="utf-8", errors="replace")
+    if "CreateOwnedBuildUp" not in policy_text:
+        errors.append("SceneBuildUpLaunchPolicy.h: expected CreateOwnedBuildUp")
+
     if entity_cpp.is_file():
         text = entity_cpp.read_text(encoding="utf-8", errors="replace")
         if "QueueFadeToBuildUp" not in text:
             errors.append("SceneEntityEditor: expected QueueFadeToBuildUp")
-        if "Registry::Instance().Launch(scenePath" in text:
+        if LAUNCH_CALL in text:
+            errors.append("SceneEntityEditor: raw SceneBuildUp Launch prohibited")
+
+    allowed_launch_files = {
+        (CODES / "Source" / "Scene" / "SceneBuildUp.cpp").resolve(),
+        (CODES / "Source" / "Scene" / "SceneBuildUpLaunchPolicy.cpp").resolve(),
+    }
+
+    for path in CODES.rglob("*"):
+        if path.suffix not in {".cpp", ".h", ".hpp"}:
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        if LAUNCH_CALL not in text:
+            continue
+        if path.resolve() not in allowed_launch_files:
             errors.append(
-                "SceneEntityEditor: raw Launch+Set should use QueueFadeToBuildUp"
+                f"{path.relative_to(ROOT)}: direct SceneBuildUpRegistry::Launch not allowed"
             )
 
     if errors:

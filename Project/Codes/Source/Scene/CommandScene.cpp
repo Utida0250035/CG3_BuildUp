@@ -3,11 +3,13 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/CommandSceneDevelopmentBoot.h"
 #include "Scene/SceneBuildUp.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneEntityEditor.h"
 #include "Scene/SceneTitle.h"
 #else
 #include "Scene/CommandSceneDevelopmentBoot.h"
 #include "Scene/SceneBuildUp.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneTitle.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -24,10 +26,10 @@ CommandScene::CommandScene() {
   SceneEntityEditor *const entityEditor = SceneEntityEditor::Instance();
   const DevelopmentBootTarget bootTarget = ResolveDevelopmentBootTarget();
   if (bootTarget.kind == DevelopmentBootKind::SceneBuildUp) {
-    sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
+    sceneNow_ = SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
         bootTarget.sceneJsonPath, entityEditor);
   } else if (bootTarget.kind == DevelopmentBootKind::SceneBuildUpPlayRuntime) {
-    sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
+    sceneNow_ = SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
         bootTarget.sceneJsonPath, SceneTitle::Instance());
   } else if (bootTarget.kind == DevelopmentBootKind::EntityEditorWithJson) {
     entityEditor->SetBootJsonPath(bootTarget.sceneJsonPath);
@@ -38,10 +40,10 @@ CommandScene::CommandScene() {
 #else
   const std::string startupScene = Editor::Scene::ResolveStartupScenePath();
   if (!startupScene.empty() && IsValidBootSceneJsonPath(startupScene)) {
-    sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
+    sceneNow_ = SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
         startupScene, SceneTitle::Instance());
   } else if (IsValidBootSceneJsonPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
-    sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
+    sceneNow_ = SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
         EditorAssets::kDebugPlayAreaTemplateScene, SceneTitle::Instance());
   } else {
     sceneNow_ = SceneTitle::Instance();

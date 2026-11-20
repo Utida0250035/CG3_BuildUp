@@ -72,7 +72,7 @@ public:
 
   static SceneBuildUpRegistry &Instance();
 
-  /// 新しい SceneBuildUp を生成し、シーン遷移用の生ポインタを返す
+  /// SceneBuildUp を生成して所有するのみ（EnterScene・遷移は呼び手／CommandScene が担当）
   Scene *Launch(const std::string &sceneJsonPath, Scene *returnScene);
 
   /// ExitScene 完了後に所有権を解放

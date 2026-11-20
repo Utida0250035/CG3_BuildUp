@@ -8,9 +8,12 @@
 
 namespace Atrum::SceneBuildUpLaunchPolicy {
 
+Scene *CreateOwnedBuildUp(const std::string &sceneJsonPath, Scene *returnScene) {
+  return SceneBuildUpRegistry::Instance().Launch(sceneJsonPath, returnScene);
+}
+
 void QueueFadeToBuildUp(const std::string &sceneJsonPath, Scene *returnScene) {
-  Scene *const nextScene =
-      SceneBuildUpRegistry::Instance().Launch(sceneJsonPath, returnScene);
+  Scene *const nextScene = CreateOwnedBuildUp(sceneJsonPath, returnScene);
   if (nextScene == nullptr) {
     return;
   }
