@@ -256,6 +256,9 @@
     <ClCompile Include="Codes\Source\Scene\CommandSceneBootLaunchPathGate.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandSceneBootEnterApply.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBoot.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -987,6 +990,9 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\CommandSceneBootLaunchPathGate.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\CommandSceneBootEnterApply.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\GameOrder.h">

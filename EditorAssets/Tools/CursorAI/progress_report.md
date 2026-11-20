@@ -7022,7 +7022,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- CommandScene「sceneNow 確定後 Enter を無条件」（`fix/CommandSceneEnterAfterSceneNow` 予定）
+- SceneBuildUp「returnScene が null だと機能検証シーンから抜けられない」（`fix/SceneBuildUpReturnSceneNull` 予定）
+
+---
+
+## セッション 2026-11-20 23:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `CommandSceneBootEnterApply` で sceneNow 確定後の Enter を一本化
+- Release 起動 BuildUp は Enter 前に `IsValidBootSceneJsonPath` で検証し、失敗時は Title へ差し替え
+- Development は Enter 前検証なし（壊れた JSON は BuildUp::EnterScene 側で扱う）
+- `verify_command_scene_enter_after_scene_now.py` を CI に追加
+- roadmap「sceneNow 確定後 Enter を無条件」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 配布ビルド: 存在するが壊れた起動 JSON で BuildUp Enter せず Title に落とす
+- Development: Launch→Enter の二段 API を CommandScene で明示し、起動直後の導線を固定
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Enter 前の起動検証 | 有効 | シーン構成を保存しランタイム環境でプレイ可能にする（壊れた起動 JSON を Title で受ける） |
 
 ---
 

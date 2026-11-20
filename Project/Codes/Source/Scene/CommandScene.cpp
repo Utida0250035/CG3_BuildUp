@@ -7,6 +7,7 @@
 #else
 #include "Scene/CommandSceneReleaseBootApply.h"
 #endif
+#include "Scene/CommandSceneBootEnterApply.h"
 
 namespace Atrum {
 
@@ -22,7 +23,8 @@ CommandScene::CommandScene() {
   sceneNow_ = CreateInitialSceneForReleaseBoot();
 #endif
 
-  sceneNow_->EnterScene();
+  sceneNow_ = PrepareInitialSceneBeforeEnter(sceneNow_);
+  EnterInitialSceneNow(sceneNow_);
 }
 
 } // namespace Atrum

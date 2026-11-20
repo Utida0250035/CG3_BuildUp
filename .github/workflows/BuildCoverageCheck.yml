@@ -120,3 +120,6 @@ jobs:
 
       - name: Verify CommandScene boot path gate skips TryLoad before Launch
         run: python3 EditorAssets/Tools/CursorAI/verify_command_scene_launch_no_tryload.py
+
+      - name: Verify CommandScene initial Enter after sceneNow reconcile
+        run: python3 EditorAssets/Tools/CursorAI/verify_command_scene_enter_after_scene_now.py
