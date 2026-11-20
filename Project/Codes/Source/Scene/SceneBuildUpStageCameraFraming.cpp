@@ -1,15 +1,14 @@
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 
-#include "Camera/StageViewFramingBounds.h"
+#include "Scene/SceneBuildUpSceneDocumentLoad.h"
 #include "Scene/Scene.h"
-#include "System/Editor/Scene/EditorSceneRuntime.h"
 
 namespace Atrum::SceneBuildUpStageCamera {
 
 void ApplyFramingFromSceneDocument(
     Scene &scene, const EntityEditor::EditorSceneDocument &document) {
   scene.SetStageViewFramingBounds(
-      EntityEditor::ResolveStageViewFramingBounds(document));
+      SceneBuildUpSceneDocumentLoad::ResolveStageViewFraming(document));
 }
 
 void MaintainLockedStageCamera(Scene &scene) {

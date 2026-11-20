@@ -605,6 +605,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpReturnTarget.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentLoad.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
@@ -1421,6 +1422,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpReturnTarget.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentLoad.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitleBgmMaintain.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitleVisualApply.h" />

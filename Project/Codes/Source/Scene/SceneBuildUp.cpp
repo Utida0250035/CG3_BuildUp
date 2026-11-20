@@ -6,6 +6,7 @@
 #include "Scene/SceneBuildUpRegistryLaunchDedupe.h"
 #include "Scene/SceneBuildUpAudioPolicy.h"
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
+#include "Scene/SceneBuildUpSceneDocumentLoad.h"
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
@@ -15,7 +16,6 @@
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
-#include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Entity/Entity.h"
 #include "System/Particle/SceneParticleServices.h"
 
@@ -99,7 +99,7 @@ void SceneBuildUp::EnterScene() {
   sceneLoadFailureMessage_.clear();
 
   EntityEditor::EditorSceneDocument document{};
-  if (!EntityEditor::TryLoadSceneDocument(sceneJsonPath_, document)) {
+  if (!SceneBuildUpSceneDocumentLoad::TryLoad(sceneJsonPath_, document)) {
     sceneDocumentLoadFailed_ = true;
     sceneLoadFailureMessage_ =
         BuildSceneBuildUpSceneLoadFailureMessage(sceneJsonPath_);
@@ -112,7 +112,7 @@ void SceneBuildUp::EnterScene() {
   }
 
   SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(*this, document);
-  entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
+  entities_ = SceneBuildUpSceneDocumentLoad::BuildEntities(document);
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   ApplySceneBuildUpRuntimeVisualFromProfile();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);

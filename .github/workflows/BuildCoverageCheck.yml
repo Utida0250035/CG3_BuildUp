@@ -129,3 +129,6 @@ jobs:
 
       - name: Verify SceneBuildUp Draw skips EditorFrame workbench
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_draw_skips_editor_frame.py
+
+      - name: Verify SceneBuildUp isolates EditorSceneRuntime include
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_no_editor_scene_runtime.py

@@ -7022,7 +7022,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「SceneBuildUp が EditorSceneRuntime を参照しない」（`fix/SceneBuildUpNoEditorSceneRuntime` 予定）
+- SceneBuildUp「ロード失敗時に空の Entity_0 を生成」（`fix/SceneBuildUpLoadFailDefaultEntity` 予定）
+
+---
+
+## セッション 2026-11-21 00:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpSceneDocumentLoad` で JSON 読込・Entity 化・フレーミング解決を集約（内部のみ `EditorSceneRuntime` を include）
+- `SceneBuildUp.cpp` / `SceneBuildUpStageCameraFraming.cpp` から `EditorSceneRuntime.h` を除去
+- `verify_scene_build_up_no_editor_scene_runtime.py` を CI に追加
+- roadmap「SceneBuildUp が EditorSceneRuntime を参照しない」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: ランタイムシーンがエディタ実装ヘッダに直接依存せず、ロード境界を 1 ファイルに固定
+- 将来のランタイム専用ローダ差し替え時に BuildUp 本体の include を触らなくてよい
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| BuildUp ロード境界 | 有効 | シーン JSON を保存しランタイムで再生する流れの責務分離 |
 
 ---
 
