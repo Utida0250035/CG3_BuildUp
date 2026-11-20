@@ -1,5 +1,7 @@
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 
+#include "System/Editor/EditorLaunchConfigJsonDocument.h"
+#include "System/Editor/EditorLaunchConfigSchema.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/GameAssetsPaths.h"
 
@@ -33,15 +35,16 @@ LaunchConfigLoadIssue TryLoadLaunchConfigFromPath(
     return LaunchConfigLoadIssue::ConfigJsonInvalid;
   }
 
-  if (!json.contains("startupScenePath")) {
-    return LaunchConfigLoadIssue::StartupPathKeyMissing;
-  }
-  if (!json.at("startupScenePath").is_string()) {
-    return LaunchConfigLoadIssue::StartupPathKeyMissing;
+  if (json.contains(LaunchConfigSchema::kSchemaVersionKey) &&
+      json.at(LaunchConfigSchema::kSchemaVersionKey).is_number_integer()) {
+    outConfig.schemaVersion =
+        json.at(LaunchConfigSchema::kSchemaVersionKey).get<int>();
   }
 
-  outConfig.startupScenePath =
-      json.at("startupScenePath").get<std::string>();
+  if (!LaunchConfigJsonDocument::TryParseStartupScenePath(json,
+                                                          outConfig.startupScenePath)) {
+    return LaunchConfigLoadIssue::StartupPathKeyMissing;
+  }
   if (outConfig.startupScenePath.empty()) {
     return LaunchConfigLoadIssue::StartupPathEmpty;
   }

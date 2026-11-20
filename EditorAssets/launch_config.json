@@ -1,3 +1,5 @@
 {
-    "startupScenePath": "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json"
+  "schemaVersion": 1,
+  "startupScenePath": "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json",
+  "defaultFeatureVerificationScenePath": "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json"
 }

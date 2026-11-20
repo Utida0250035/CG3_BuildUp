@@ -31,6 +31,7 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath);
 /// スタートアップシーン設定（launch_config.json）
 struct LaunchConfig {
   std::string startupScenePath{};
+  int schemaVersion{0};
 };
 
 bool TryLoadLaunchConfig(LaunchConfig &outConfig);

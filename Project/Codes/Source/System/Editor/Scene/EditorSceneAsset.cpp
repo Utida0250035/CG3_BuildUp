@@ -1,6 +1,8 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
+#include "System/Editor/EditorLaunchConfigJsonDocument.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
+#include "System/Editor/EditorLaunchConfigSchema.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/GameAssetsPaths.h"
 #include <algorithm>
@@ -141,8 +143,8 @@ bool TrySaveLaunchConfig(const LaunchConfig &config) {
   std::error_code ec{};
   fs::create_directories(configPath.parent_path(), ec);
 
-  nlohmann::json json{};
-  json["startupScenePath"] = config.startupScenePath;
+  const nlohmann::json json =
+      LaunchConfigJsonDocument::BuildDocument(config);
 
   std::ofstream file(configPath);
   if (!file.is_open()) {

@@ -473,7 +473,7 @@
 - [x] startup が Feature 検証シーンではない（spec: feature-memos/debug_test_play_area.md）
 - [x] 設定読込失敗を区別できない（spec: feature-memos/debug_test_play_area.md）
 - [x] startupScenePath 空で false
-- [ ] JSON は startupScenePath のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] JSON は startupScenePath のみ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorSceneAsset
 - [ ] ListSceneJson は単一 Dir

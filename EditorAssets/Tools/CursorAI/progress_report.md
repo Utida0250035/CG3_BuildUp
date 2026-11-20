@@ -7842,3 +7842,35 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - launch_config「JSON は startupScenePath のみ」（`fix/LaunchConfigSchemaVersion` 予定）
+
+---
+
+## セッション 2026-11-21 05:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorLaunchConfigSchema`（schemaVersion=1）を定義
+- `EditorLaunchConfigJsonDocument::BuildDocument` で保存 JSON を共通化
+- 保存時に `defaultFeatureVerificationScenePath` を同梱
+- `EditorAssets/launch_config.json` をスキーマ付きに更新
+- `verify_launch_config_schema_version.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 手編集 launch_config: 将来キー追加と機能検証既定の参照点を JSON 上で明示
+- エディタ「起動シーンに設定」: 上書き保存でもメタを欠かず残す
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| launch_config スキーマ | 有効 | シーン構成の保存とランタイム／エディタ連携の起動設定の拡張余地 |
+
+### 次 tick 候補
+
+- EditorSceneAsset「ListSceneJson は単一 Dir」（`fix/EditorSceneAssetMultiDirList` 予定）
