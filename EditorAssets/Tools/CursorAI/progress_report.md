@@ -5824,3 +5824,22 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Fog Flush | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |
+
+---
+
+## セッション 2026-11-20 10:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneTitle::ExitScene` で `ReleaseSceneBgmOnExitDuringFade`（Game と共用）
+- 関数をシーン横断名に整理
+
+### 注意
+
+- ファイル先頭の次 `- [ ]` は CommandScene「Development 起動…」（roadmap 310 行）。本 tick はブランチ `fix/SceneTitleFadeExitBgm` に合わせ SceneTitle を実施
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Title Exit BGM | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |

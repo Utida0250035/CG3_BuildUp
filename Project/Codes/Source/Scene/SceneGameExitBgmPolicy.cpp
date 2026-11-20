@@ -5,7 +5,7 @@
 
 namespace Atrum {
 
-void ReleaseSceneGameBgmOnExitScene(Audio::Handle &sceneBgmHandle) {
+void ReleaseSceneBgmOnExitDuringFade(Audio::Handle &sceneBgmHandle) {
   if (!sceneBgmHandle.isSuccess) {
     return;
   }

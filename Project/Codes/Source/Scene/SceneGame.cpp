@@ -118,7 +118,7 @@ namespace Atrum {
 		}
 
 		ReleaseCommonResources();
-		Atrum::ReleaseSceneGameBgmOnExitScene(sceneBgmHandle_);
+		Atrum::ReleaseSceneBgmOnExitDuringFade(sceneBgmHandle_);
 		introCameraController_.reset();
 		bossDeathCameraController_.reset();
 		ClearEntities();

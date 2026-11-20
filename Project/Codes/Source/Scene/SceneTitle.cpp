@@ -11,6 +11,7 @@
 #include "System/GameAssetsPaths.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
+#include "Scene/SceneGameExitBgmPolicy.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
@@ -114,8 +115,7 @@ namespace Atrum {
 
 	void SceneTitle::ExitScene() {
 		ReleaseCommonResources();
-		Atrum::StopBgmLoop(sceneBgmHandle_);
-		sceneBgmHandle_ = {};
+		Atrum::ReleaseSceneBgmOnExitDuringFade(sceneBgmHandle_);
 		Atrum::StopSeLoop(sceneAmbientLoopSeHandle_);
 		sceneAmbientLoopSeHandle_ = {};
 		ClearBackgrounds();
