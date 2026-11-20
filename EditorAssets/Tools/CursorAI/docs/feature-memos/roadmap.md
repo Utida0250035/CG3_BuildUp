@@ -319,7 +319,7 @@
 - [x] BuildUp の sceneJsonPath_ を基準パス解決しない
 - [x] SceneBuildUp のカメラがシーン JSON の境界情報を読まない
 - [x] シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない
-- [ ] SceneBuildUp に BGM／シーン SE の入退場が無い
+- [x] SceneBuildUp に BGM／シーン SE の入退場が無い
 
 ### SceneTitle
 - [ ] Title の BGM 途切れを検知・再開する処理が無い

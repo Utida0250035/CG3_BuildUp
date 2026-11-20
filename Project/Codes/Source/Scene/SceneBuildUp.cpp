@@ -3,6 +3,7 @@
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
+#include "Scene/SceneBuildUpAudioPolicy.h"
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
@@ -119,6 +120,7 @@ void SceneBuildUp::EnterScene() {
   entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   ApplySceneBuildUpRuntimeVisualFromProfile();
+  SceneBuildUpAudioPolicy::OnEnterScene(*this);
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   showsNextSceneHint_ =
@@ -152,6 +154,7 @@ void SceneBuildUp::Update() {
     Particle::TickEmitterManagerForActiveScene(GetCamera());
   }
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+  SceneBuildUpAudioPolicy::Tick(*this);
 }
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -263,6 +266,7 @@ void SceneBuildUp::Draw() {
 }
 
 void SceneBuildUp::ExitScene() {
+  SceneBuildUpAudioPolicy::OnExitScene(*this);
   TeardownEntities();
   ReleaseCommonResources();
   SceneBuildUpRegistry::Instance().OnSceneExited(this);

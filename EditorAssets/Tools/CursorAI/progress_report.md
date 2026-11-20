@@ -5996,3 +5996,22 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | BuildUp 読込失敗の可視化 | 有効 | 読めないアセットやスクリプトの失敗が、黙って消えず分かる |
+
+---
+
+## セッション 2026-11-20 12:03（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpAudioPolicy` で本編相当 BGM（bgmGame）・環境ループ SE・入場時 `PlaySceneTransitionSe`、退出時フェード連携停止
+- `Update` で `AssignPendingFadeSyncedSceneBgm` / `SyncSceneBgmForChangeSceneFade` を維持
+
+### 推測した用途（§6.4）
+
+- BuildUp 検証プレイで音の文脈を本編に近づけ、フェード遷移時の BGM 挙動を確認する
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| BuildUp 入退場音声 | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |

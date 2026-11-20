@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/AudioHandle.h"
 #include "Scene.h"
 #include <memory>
 #include <string>
@@ -36,6 +37,10 @@ public:
 
   const std::string &SceneJsonPath() const { return sceneJsonPath_; }
 
+  bool SceneDocumentLoadFailed() const { return sceneDocumentLoadFailed_; }
+  Audio::Handle &SceneBgmHandle() { return sceneBgmHandle_; }
+  Audio::Handle &SceneAmbientLoopHandle() { return sceneAmbientLoopSeHandle_; }
+
 protected:
   void DrawScene() override;
 
@@ -48,6 +53,8 @@ private:
   bool showsNextSceneHint_ = false;
   bool sceneDocumentLoadFailed_ = false;
   std::string sceneLoadFailureMessage_{};
+  Audio::Handle sceneBgmHandle_{};
+  Audio::Handle sceneAmbientLoopSeHandle_{};
 
   void TeardownEntities();
   void SetupRuntimeLighting();
