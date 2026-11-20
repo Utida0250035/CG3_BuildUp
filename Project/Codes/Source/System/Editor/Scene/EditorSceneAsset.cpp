@@ -174,44 +174,14 @@ bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath) {
   if (!TrySaveLaunchConfig(config)) {
     return false;
   }
-  EditorScenePlayRequest::Instance().Set(normalized);
+  EditorScenePlayRequest::Instance().Stage(
+      normalized, EditorScenePlayStagingKind::RepositoryStartup);
   return true;
 }
 
 std::string ResolveStartupScenePath() {
   return LaunchConfigLoadDiagnostics::ResolveStartupScenePathDetailed()
       .startupScenePath;
-}
-
-EditorScenePlayRequest &EditorScenePlayRequest::Instance() {
-  static EditorScenePlayRequest instance;
-  return instance;
-}
-
-void EditorScenePlayRequest::Set(const std::string &jsonFilePath) {
-  jsonFilePath_ = jsonFilePath;
-}
-
-void EditorScenePlayRequest::Clear() { jsonFilePath_.clear(); }
-
-void StageEditorPlayScenePath(const std::string &jsonFilePath) {
-  if (jsonFilePath.empty()) {
-    return;
-  }
-  EditorScenePlayRequest::Instance().Set(jsonFilePath);
-}
-
-std::string TakePendingEditorPlayScenePath() {
-  const std::string &pending = EditorScenePlayRequest::Instance().Path();
-  if (pending.empty()) {
-    return {};
-  }
-  EditorScenePlayRequest::Instance().Clear();
-  return pending;
-}
-
-void ClearStagedEditorPlayScenePath() {
-  EditorScenePlayRequest::Instance().Clear();
 }
 
 } // namespace Atrum::Editor::Scene

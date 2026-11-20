@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
+#include "System/Editor/EditorScenePlayRequestMetadata.h"
 #include <string>
 #include <vector>
 
@@ -51,15 +52,19 @@ public:
   static EditorScenePlayRequest &Instance();
 
   void Set(const std::string &jsonFilePath);
+  void Stage(const std::string &jsonFilePath, EditorScenePlayStagingKind kind);
   const std::string &Path() const { return jsonFilePath_; }
+  EditorScenePlayStagingKind StagingKind() const;
   void Clear();
 
 private:
   std::string jsonFilePath_{};
+  EditorScenePlayStagingKind stagingKind_{EditorScenePlayStagingKind::Unset};
 };
 
 /// エディタ「シーンを実行」等で渡した JSON を PlayRequest に載せる。
-void StageEditorPlayScenePath(const std::string &jsonFilePath);
+void StageEditorPlayScenePath(const std::string &jsonFilePath,
+                              EditorScenePlayStagingKind kind);
 
 /// 保持中のパスを返し、非空なら Clear する（起動解決・BuildUp 起動で消費）。
 std::string TakePendingEditorPlayScenePath();

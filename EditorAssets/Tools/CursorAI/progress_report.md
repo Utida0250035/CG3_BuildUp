@@ -7936,3 +7936,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EditorSceneAsset「PlayRequest がパスだけ保持」（`fix/EditorScenePlayRequestMetadata` 予定）
+
+---
+
+## セッション 2026-11-21 06:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorScenePlayStagingKind` と `EditorScenePlayRequest::Stage` を追加
+- BuildUp／エディタ内プレビュー／起動シーン保存で意図を付与
+- `EditorScenePlayRequestStaging.cpp` に実装を分離（パスは正規化済み）
+- `verify_editor_scene_play_request_metadata.py` を CI に追加
+- roadmap 当該行を `[x]`（EditorSceneAsset／launch_config 節は完了）
+
+### 推測した用途（§6.4）
+
+- デバッグ: 次回起動が BuildUp 予約かメモリ内プレビューかを追跡可能に
+- Exit 時 Clear: BuildUp／EntityEditor 双方でステージングを解放
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| PlayRequest メタ | 有効 | エディタ上プレイとランタイム起動の段階分け |
+
+### 次 tick 候補
+
+- Lighting 節の先頭 `- [ ]`（ファイル出現順。`progress_report` または roadmap 先頭未完了行を参照）

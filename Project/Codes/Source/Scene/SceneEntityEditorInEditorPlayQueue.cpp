@@ -12,7 +12,9 @@ void QueueInEditorPlayRuntimeTabOnly(EntityEditorUi &ui) {
   const std::string playPath =
       ui.jsonFilePath.empty() ? ui.selectedScenePath : ui.jsonFilePath;
   if (!playPath.empty()) {
-    Editor::Scene::StageEditorPlayScenePath(playPath);
+    Editor::Scene::StageEditorPlayScenePath(
+        playPath,
+        Editor::Scene::EditorScenePlayStagingKind::InEditorRuntimePreview);
   }
   ui.requestPlayRuntimeScene = true;
 }
