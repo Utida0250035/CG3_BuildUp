@@ -11,6 +11,7 @@ enum class LaunchConfigLoadIssue {
   ConfigOpenFailed,
   ConfigJsonInvalid,
   StartupPathKeyMissing,
+  StartupPathEmpty,
   StartupSceneFileMissing,
 };
 

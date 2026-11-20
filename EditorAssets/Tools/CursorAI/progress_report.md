@@ -7811,3 +7811,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - launch_config「startupScenePath 空で false」（`fix/LaunchConfigEmptyStartupPath` 予定）
+
+---
+
+## セッション 2026-11-21 05:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `LaunchConfigLoadIssue::StartupPathEmpty` を追加（キー欠落と空文字を分離）
+- `TryLoadLaunchConfigWithIssue` を公開 API 化
+- プロジェクトパネル診断文言に「空だが launch_config は存在」を反映
+- `verify_launch_config_empty_startup_path.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- デバッグ: 手編集で `""` にしたケースとファイル自体の欠損を切り分け
+- Release 起動調査: false 一択ではなく UI で空パスを明示
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 空 path 診断 | 有効 | ランタイム環境でのプレイ試験における起動設定の把握 |
+
+### 次 tick 候補
+
+- launch_config「JSON は startupScenePath のみ」（`fix/LaunchConfigSchemaVersion` 予定）

@@ -20,6 +20,7 @@ def main() -> int:
         "ConfigFileMissing",
         "ConfigJsonInvalid",
         "StartupPathKeyMissing",
+        "StartupPathEmpty",
         "StartupSceneFileMissing",
     )
 

@@ -120,9 +120,14 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   return fs::remove(absoluteTarget, ec) && !ec;
 }
 
-bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
+LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue TryLoadLaunchConfigWithIssue(
+    LaunchConfig &outConfig) {
   return LaunchConfigLoadDiagnostics::TryLoadLaunchConfigFromPath(
-             GameAssets::kLaunchConfigPath, outConfig) ==
+      GameAssets::kLaunchConfigPath, outConfig);
+}
+
+bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
+  return TryLoadLaunchConfigWithIssue(outConfig) ==
          LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue::None;
 }
 

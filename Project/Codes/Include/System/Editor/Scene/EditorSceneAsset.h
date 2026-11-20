@@ -1,6 +1,7 @@
 #pragma once
 
 #include "System/Editor/EditorAssetsPaths.h"
+#include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include <string>
 #include <vector>
 
@@ -33,6 +34,8 @@ struct LaunchConfig {
 };
 
 bool TryLoadLaunchConfig(LaunchConfig &outConfig);
+LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue TryLoadLaunchConfigWithIssue(
+    LaunchConfig &outConfig);
 bool TrySaveLaunchConfig(const LaunchConfig &config);
 
 /// シーン JSON を検証し launch_config.json に書き込む（リポジトリ共有用）

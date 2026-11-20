@@ -33,15 +33,17 @@ LaunchConfigLoadIssue TryLoadLaunchConfigFromPath(
     return LaunchConfigLoadIssue::ConfigJsonInvalid;
   }
 
-  if (!json.contains("startupScenePath") ||
-      !json.at("startupScenePath").is_string()) {
+  if (!json.contains("startupScenePath")) {
+    return LaunchConfigLoadIssue::StartupPathKeyMissing;
+  }
+  if (!json.at("startupScenePath").is_string()) {
     return LaunchConfigLoadIssue::StartupPathKeyMissing;
   }
 
   outConfig.startupScenePath =
       json.at("startupScenePath").get<std::string>();
   if (outConfig.startupScenePath.empty()) {
-    return LaunchConfigLoadIssue::StartupPathKeyMissing;
+    return LaunchConfigLoadIssue::StartupPathEmpty;
   }
   if (!fs::exists(outConfig.startupScenePath)) {
     return LaunchConfigLoadIssue::StartupSceneFileMissing;
@@ -92,7 +94,9 @@ const char *DescribeLaunchConfigLoadIssueJa(LaunchConfigLoadIssue issue) {
   case LaunchConfigLoadIssue::ConfigJsonInvalid:
     return "launch_config の JSON が不正です";
   case LaunchConfigLoadIssue::StartupPathKeyMissing:
-    return "startupScenePath が未設定です";
+    return "startupScenePath キーがありません";
+  case LaunchConfigLoadIssue::StartupPathEmpty:
+    return "startupScenePath が空です（launch_config は存在）";
   case LaunchConfigLoadIssue::StartupSceneFileMissing:
     return "startupScenePath のシーン JSON が見つかりません";
   }
