@@ -6593,3 +6593,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | EditorScenePlayRequest::Clear | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-20 18:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `TrySetStartupSceneAndQueueBuildUp` で `TrySetRepositoryStartupScene`（PlayRequest::Set）後に BuildUp を予約
+- プロジェクトパネルに「設定して BuildUp」ボタンを追加
+- `verify_editor_scene_play_request_buildup.py` を CI に追加
+- roadmap「Set 後に BuildUp 起動が無い」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 起動シーン JSON を launch_config に保存した直後に、ワンアクションで SceneBuildUp 検証へ遷移
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Set 後 BuildUp | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |

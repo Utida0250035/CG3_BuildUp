@@ -10,6 +10,7 @@
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
+#include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
 #include "System/Hash64.h"
@@ -718,6 +719,19 @@ void EntityEditor::DrawProjectPanel() {
     } else {
       ui_.importStatusMessage =
           "起動シーンの保存に失敗しました（パスと JSON を確認してください）";
+    }
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("設定して BuildUp")) {
+    const std::string targetPath = ui_.jsonFilePath.empty()
+                                       ? ui_.selectedScenePath
+                                       : ui_.jsonFilePath;
+    if (!targetPath.empty()) {
+      SaveToJsonPath(targetPath);
+    }
+    if (!TrySetStartupSceneAndQueueBuildUp(ui_, targetPath,
+                                           &ui_.importStatusMessage)) {
+      // importStatusMessage は TrySet 内で設定済み
     }
   }
   const std::string startupPath =

@@ -66,3 +66,6 @@ jobs:
 
       - name: Verify EditorScenePlayRequest Clear wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_play_request_clear.py
+
+      - name: Verify Set then BuildUp queue
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_play_request_buildup.py
