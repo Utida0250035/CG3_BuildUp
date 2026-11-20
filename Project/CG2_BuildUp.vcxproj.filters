@@ -613,6 +613,7 @@
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorDebugPlayAreaScaffold.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\DebugPlayAreaScaffoldPersonalize.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
@@ -1417,6 +1418,7 @@
     <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldGuidance.h" />
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldPersonalize.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />

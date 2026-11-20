@@ -3,6 +3,7 @@
 #include "System/Editor/EditorDebugPlayAreaScaffold.h"
 
 #include "System/Editor/DebugPlayAreaScaffoldGuidance.h"
+#include "System/Editor/DebugPlayAreaScaffoldPersonalize.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
 #include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
@@ -10,33 +11,12 @@
 #include "ForDebug/ImGui.h"
 #include <nlohmann/json.hpp>
 
-#include <cctype>
 #include <filesystem>
 #include <fstream>
 
 namespace Atrum::Editor {
 
 namespace fs = std::filesystem;
-
-namespace {
-
-std::string SanitizeSceneFileStem(const std::string &name) {
-  std::string stem;
-  stem.reserve(name.size());
-  for (const unsigned char ch : name) {
-    if (std::isalnum(ch) != 0 || ch == '-' || ch == '_') {
-      stem.push_back(static_cast<char>(ch));
-    } else {
-      stem.push_back('_');
-    }
-  }
-  if (stem.empty()) {
-    stem = "DebugPlayArea";
-  }
-  return stem;
-}
-
-} // namespace
 
 DebugPlayAreaScaffoldResult
 EditorDebugPlayAreaScaffold::GenerateFromTemplate(const std::string &sceneName,
@@ -54,7 +34,7 @@ EditorDebugPlayAreaScaffold::GenerateFromTemplate(const std::string &sceneName,
     return result;
   }
 
-  const std::string fileStem = SanitizeSceneFileStem(sceneName);
+  const std::string fileStem = SanitizeDebugPlayAreaFileStem(sceneName);
   const fs::path outDir = fs::path(EditorAssets::kDebugPlayAreaDirectory);
   const fs::path outPath = outDir / (fileStem + ".scene.json");
 
@@ -76,7 +56,7 @@ EditorDebugPlayAreaScaffold::GenerateFromTemplate(const std::string &sceneName,
     return result;
   }
 
-  data["sceneName"] = sceneName;
+  PersonalizeDebugPlayAreaSceneJson(data, sceneName);
 
   std::error_code ec{};
   fs::create_directories(outDir, ec);

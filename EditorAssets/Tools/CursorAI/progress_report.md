@@ -6943,3 +6943,27 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | テストエリア手順案内 | 有効 | デバッグ用シーンでランタイム挙動を素早く再現する流れを支える |
+
+---
+
+## セッション 2026-11-20 21:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `personalize_play_area_scene.py` / `PersonalizeDebugPlayAreaSceneJson` で tagCatalog と Prop/Floor の instance 名を差し替え
+- Python・エディタ scaffold が共有ロジックを利用
+- roadmap「生成は sceneName 差替のみ」を `[x]`（scaffold_play_area 節完了）
+
+### 推測した用途（§6.4）
+
+- 用途別テストシーンを並べても階層名が衝突しにくくする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| テストシーン個別化 | 有効 | json でエンティティ構成を編集し検証に活かす |
