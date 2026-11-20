@@ -3,6 +3,9 @@
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
 #include "Engine/AtrumEngine.h"
+#if defined(DEVELOPMENT)
+#include "ForDebug/SubsystemFrameProfiler.h"
+#endif
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Device/RenderDevice.h"
 #include "Engine/Renderer/Draw.h"
@@ -594,6 +597,11 @@ void AtrumEngine::PreDraw() {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
 
+#if defined(DEVELOPMENT)
+  Atrum::Debug::SubsystemFrameScope preDrawScope(
+      Atrum::Debug::SubsystemFrameId::GfxPreDraw);
+#endif
+
   swapChainManager_->UpdateBackBufferIndex();
 
 #ifdef DEVELOPMENT
@@ -840,6 +848,11 @@ void AtrumEngine::ApplySubViewportToCommandList() const {
 void AtrumEngine::PostDraw() {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
+
+#if defined(DEVELOPMENT)
+  Atrum::Debug::SubsystemFrameScope postDrawScope(
+      Atrum::Debug::SubsystemFrameId::GfxPostDraw);
+#endif
 
 #ifdef USE_IMGUI
 

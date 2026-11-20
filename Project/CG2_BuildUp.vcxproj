@@ -297,6 +297,8 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
@@ -647,6 +649,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\SubsystemFrameProfiler.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\DirectionalShadowApplyDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />

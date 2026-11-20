@@ -571,6 +571,8 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
@@ -1409,6 +1411,7 @@
     <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\SubsystemFrameProfiler.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\DirectionalShadowApplyDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />

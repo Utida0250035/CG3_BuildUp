@@ -509,7 +509,7 @@
 
 ### ギャップスキャン追補（P0/P1）
 - [x] PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない（gap: `GAP-Ship-CG2_BuildUp-001`・Ship・P0）
-- [ ] サブシステム別フレームプロファイラが未実装（gap: `GAP-Infra-frame_profiler-001`・Debug・P1）
+- [x] サブシステム別フレームプロファイラが未実装（gap: `GAP-Infra-frame_profiler-001`・Debug・P1）
 - [ ] Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭（gap: `GAP-Ship-CG2_BuildUp-002`・Ship・P1）
 - [ ] buildDevelopment.cmd が CI と異なる入口で前検証も無い（gap: `GAP-Infra-buildDevelopment-001`・Ship・P1）
 - [ ] Release ビルド後の exe 起動スモークが CI に無い（gap: `GAP-Infra-Release_smoke-001`・Ship・P1）

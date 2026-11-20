@@ -46,6 +46,9 @@ jobs:
       - name: Verify DirectionalShadow apply diagnostics
         run: python3 EditorAssets/Tools/CursorAI/verify_directional_shadow_apply_diagnostics.py
 
+      - name: Verify subsystem frame profiler wiring
+        run: python3 EditorAssets/Tools/CursorAI/verify_subsystem_frame_profiler.py
+
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
 

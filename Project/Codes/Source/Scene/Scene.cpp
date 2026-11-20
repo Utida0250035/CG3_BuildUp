@@ -11,6 +11,9 @@
 
 #include <cmath>
 
+#if defined(DEVELOPMENT)
+#include "ForDebug/SubsystemFrameProfiler.h"
+#endif
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
 #include "ForDebug/DebugCamera.h"
 #endif
@@ -101,11 +104,17 @@ void Scene::Draw() {
   Atrum::Engine *engine = Atrum::Engine::Instance();
 
   engine->PreDraw();
-  DrawScene();
-  Atrum::CommandChangeScene::Instance()->Draw();
-#ifdef USE_IMGUI
-  engine->ImGuiRender();
+  {
+#if defined(DEVELOPMENT)
+    Atrum::Debug::SubsystemFrameScope sceneDrawScope(
+        Atrum::Debug::SubsystemFrameId::GfxSceneDraw);
 #endif
+    DrawScene();
+    Atrum::CommandChangeScene::Instance()->Draw();
+#ifdef USE_IMGUI
+    engine->ImGuiRender();
+#endif
+  }
   engine->PostDraw();
 }
 

@@ -4,6 +4,7 @@
 
 #include "ForDebug/ImGui.h"
 #include "ForDebug/LightingEffectsDebugImGui.h"
+#include "ForDebug/SubsystemFrameProfiler.h"
 
 namespace Atrum::Editor::EditorFrameLightingDiagnostics {
 
@@ -17,6 +18,12 @@ void DrawMenuItems() {
   if (ImGui::MenuItem("ライティングパネルにフォーカス")) {
     Atrum::Debug::SetLightingEffectsDebugVisible(true);
     ImGui::SetWindowFocus("ライティング効果 (Fog / GodRays / Shadow)");
+  }
+  bool subsystemProfiler =
+      Atrum::Debug::IsSubsystemFrameProfilerDetailVisible();
+  if (ImGui::MenuItem("サブシステム フレームプロファイラ", nullptr,
+                      &subsystemProfiler)) {
+    Atrum::Debug::SetSubsystemFrameProfilerDetailVisible(subsystemProfiler);
   }
 }
 

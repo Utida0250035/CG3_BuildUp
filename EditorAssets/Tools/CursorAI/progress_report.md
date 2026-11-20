@@ -8029,3 +8029,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Repository 節「サブシステム別フレームプロファイラが未実装」（`GAP-Infra-frame_profiler-001`）
+
+---
+
+## セッション 2026-11-21 07:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SubsystemFrameProfiler` … GameOrder / Process / PreDraw / SceneDraw / PostDraw の区間計測
+- ImGui オーバーレイ + 「描画診断」メニューから詳細窓
+- `frame_profiler.md`・`verify_subsystem_frame_profiler.py`（CI）
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** Update が重いのか Present 前後が重いのかを Development 実行中に即比較
+- **プロファイル:** 本番相当 Release ではスコープは no-op
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| frame_profiler | 有効 | エディタ／ゲーム開発のデバッグ・反復（性能当たり付けは制作効率に寄与） |
+
+### 次 tick 候補
+
+- 「Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭」（`GAP-Ship-CG2_BuildUp-002`）
