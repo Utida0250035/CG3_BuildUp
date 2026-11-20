@@ -25,6 +25,8 @@ movie.TryBeginFromJsonFile("../EditorAssets/Camera/sample_movie_track.json");
 | `eye` / `pivot` | `Vector3` 配列 |
 | `easeToNext` | 次キーフレームまでの補間（`PullBackReveal` / `FocusPush` / `LegacyInOutQuad`） |
 
+不正なキーフレーム（`eye`/`pivot` 欠落・型不一致など）は **1 件ごとスキップ** し、有効なキーフレームが 2 件以上あれば再生する（`MovieCameraTrackKeyframeParsePolicy`）。
+
 ## SceneMovie
 
 ```cpp

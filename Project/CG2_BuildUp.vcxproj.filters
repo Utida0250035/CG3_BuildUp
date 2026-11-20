@@ -46,6 +46,9 @@
     <ClCompile Include="Codes\Source\Camera\MovieCameraTrackLoader.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Camera\MovieCameraTrackKeyframeParsePolicy.cpp">
+      <Filter>Codes\Source\Camera</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Camera\MovieCameraTrackPathResolve.cpp">
       <Filter>Codes\Source\Camera</Filter>
     </ClCompile>
@@ -658,6 +661,9 @@
       <Filter>Codes\Include\Camera\CameraController</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\MovieCameraTrackLoader.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\MovieCameraTrackKeyframeParsePolicy.h">
       <Filter>Codes\Include\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Camera\MovieCameraTrackPathResolve.h">
