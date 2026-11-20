@@ -1,5 +1,6 @@
 #include "Scene/CommandSceneDevelopmentBoot.h"
 
+#include "Scene/CommandSceneBootLaunchPathGate.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -50,14 +51,14 @@ DevelopmentBootTarget ResolveDevelopmentBootTarget() {
   DevelopmentBootTarget target{};
   std::string sceneJsonPath = ResolveConfiguredStartupScenePath();
   if (sceneJsonPath.empty()) {
-    if (IsValidBootSceneJsonPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
+    if (CanLaunchBootSceneAtPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
       target.kind = DevelopmentBootKind::SceneBuildUp;
       target.sceneJsonPath = EditorAssets::kDebugPlayAreaTemplateScene;
     }
     return target;
   }
-  if (!IsValidBootSceneJsonPath(sceneJsonPath)) {
-    if (IsValidBootSceneJsonPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
+  if (!CanLaunchBootSceneAtPath(sceneJsonPath)) {
+    if (CanLaunchBootSceneAtPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
       target.kind = DevelopmentBootKind::SceneBuildUp;
       target.sceneJsonPath = EditorAssets::kDebugPlayAreaTemplateScene;
     }

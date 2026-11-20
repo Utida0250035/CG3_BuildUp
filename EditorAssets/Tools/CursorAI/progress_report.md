@@ -7022,4 +7022,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- CommandScene「Launch 前に TryLoad を呼ばない」（`fix/CommandSceneLaunchNoTryLoad` 予定）
+- CommandScene「sceneNow 確定後 Enter を無条件」（`fix/CommandSceneEnterAfterSceneNow` 予定）
+
+---
+
+## セッション 2026-11-20 23:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `CanLaunchBootSceneAtPath`（`CommandSceneBootLaunchPathGate`）を追加。Launch 前は存在チェックのみ
+- `ResolveDevelopmentBootTarget` / `CreateInitialSceneForReleaseBoot` から `IsValidBootSceneJsonPath`（TryLoad）を除去
+- `IsValidBootSceneJsonPath` はエディタ UI 向け検証として維持
+- `verify_command_scene_launch_no_tryload.py` を CI に追加
+- roadmap「Launch 前に TryLoad を呼ばない」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 起動は軽量にし、JSON 検証・タグ同期は `SceneBuildUp::EnterScene` で一括
+- 壊れた JSON は EnterScene 側の失敗 UI で扱い、起動前の二重読込を避ける
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Launch 前 TryLoad 禁止 | 有効 | エディタ上プレイとランタイム検証の段階分け（読込責務を EnterScene に集約） |

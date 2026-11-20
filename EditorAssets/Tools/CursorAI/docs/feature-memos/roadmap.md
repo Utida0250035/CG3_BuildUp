@@ -431,7 +431,7 @@
 ### CommandScene
 - [x] 起動時シーンが SceneEntityEditor に固定（spec: feature-memos/debug_test_play_area.md）
 - [x] startup 空なら BuildUp ではなく Title（spec: feature-memos/debug_test_play_area.md）
-- [ ] Launch 前に TryLoad を呼ばない
+- [x] Launch 前に TryLoad を呼ばない
 - [ ] sceneNow 確定後 Enter を無条件
 
 ### SceneBuildUp
