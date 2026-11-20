@@ -7623,3 +7623,35 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - combat_bounds_sandbox「コード／既定導線から参照されない」（`fix/CombatBoundsSandboxRef` 予定）
+
+---
+
+## セッション 2026-11-21 03:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorAssetsPaths::kDebugPlayAreaCombatBoundsSandboxScene` を追加
+- `EditorDebugPlayAreaCombatBoundsSandbox` でパスを集約
+- デバッグメニューと **F6** から `combat_bounds_sandbox` を BuildUp 起動
+- `verify_combat_bounds_sandbox_debug_play_area.py` を CI に追加
+- `debug_test_play_area.md` のホットキー表を更新
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- ステージ端マーカーと `stageViewFramingBounds` の見え方を、本編 BuildUp 経路で即確認
+- レベル／カメラ調整: 左右端・地上高の JSON 契約をエディタ外ランタイムで試す
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| combat_bounds_sandbox 参照 | 有効 | シーン構成の保存と、エディタ上プレイ／ランタイム環境でのプレイ試験 |
+
+### 次 tick 候補
+
+- DebugPlayAreaGenerator「ランタイムプレビュー手順がコード断片のみ」（`fix/DebugPlayAreaGeneratorRuntimePreview` 予定）

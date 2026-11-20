@@ -8,6 +8,7 @@
 #include <imgui/imgui_internal.h>
 #include "System/Editor/Camera/StageViewCameraTuning.h"
 #include "System/Editor/EditorAssetsPaths.h"
+#include "System/Editor/EditorDebugPlayAreaCombatBoundsSandbox.h"
 #include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -153,6 +154,10 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     if (ImGui::MenuItem("機能検証シーン (LoopTick13Demo 正本)")) {
       ui.sceneBuildUpLaunchPath =
           DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
+      ui.requestLaunchSceneBuildUp = true;
+    }
+    if (ImGui::MenuItem("StageBounds 検証 (combat_bounds_sandbox)")) {
+      ui.sceneBuildUpLaunchPath = DebugPlayAreaCombatBoundsSandbox::SceneJsonPath();
       ui.requestLaunchSceneBuildUp = true;
     }
     ImGui::EndMenu();

@@ -6,6 +6,7 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneParticleEditor.h"
+#include "System/Editor/EditorDebugPlayAreaCombatBoundsSandbox.h"
 #include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
 #include "System/GameAssetsPaths.h"
 #include "Engine/EngineAccess.h"
@@ -34,6 +35,12 @@ void Tick(Scene *returnScene) {
     const std::string demoScene =
         std::string(GameAssets::kScenesDirectory) + "/ParticleDemo.json";
     SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(demoScene, returnScene);
+    return;
+  }
+
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F6)) {
+    SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(
+        DebugPlayAreaCombatBoundsSandbox::SceneJsonPath(), returnScene);
   }
 }
 

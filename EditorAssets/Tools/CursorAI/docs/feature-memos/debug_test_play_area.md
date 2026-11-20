@@ -21,9 +21,10 @@
 
 ## ホットキー（エンティティエディタ）
 
-- **F2:** `template_test_play_area.scene.json` を BuildUp で起動
+- **F2:** `LoopTick13Demo.scene.json`（機能検証正本）を BuildUp で起動
 - **F3:** パーティクルデモシーン BuildUp
 - **F4:** パーティクルエディタへ遷移
+- **F6:** `combat_bounds_sandbox.scene.json`（StageBounds 境界マーカー検証）を BuildUp で起動
 
 ## 推測したゲーム開発での用途
 
