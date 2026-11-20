@@ -126,3 +126,6 @@ jobs:
 
       - name: Verify SceneBuildUp F1 return when returnScene is null
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_return_scene.py
+
+      - name: Verify SceneBuildUp Draw skips EditorFrame workbench
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_draw_skips_editor_frame.py

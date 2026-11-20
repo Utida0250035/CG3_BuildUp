@@ -28,11 +28,6 @@
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/ImGui.h"
-#include "System/Editor/EditorFrame.h"
-#include "System/Editor/EditorSceneRunStatus.h"
-#include "System/Editor/EditorSceneViewPanel.h"
-#include "Scene/CommandChangeScene.h"
-#include "System/Editor/EditorSceneRenderTarget.h"
 #endif
 
 namespace Atrum {
@@ -131,9 +126,6 @@ void SceneBuildUp::EnterScene() {
   }
 #endif
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  Editor::EditorFrame::Instance().SetSceneViewTab(Editor::SceneViewTab::Runtime);
-#endif
 }
 
 void SceneBuildUp::Update() {
@@ -193,9 +185,6 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
 #endif
 
 void SceneBuildUp::DrawScene() {
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  return;
-#else
   Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
@@ -219,31 +208,13 @@ void SceneBuildUp::DrawScene() {
     SceneScreenUi::DrawReleaseCarouselHowToNextSceneUi(engine, GetCamera());
   }
 #endif
-#endif
 }
 
 void SceneBuildUp::Draw() {
   Atrum::Engine *engine = ::Atrum::EngineInstance();
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  Editor::EditorFrame::Instance().ResetPerFrame();
-  const Editor::EditorSceneRunPhase runPhase =
-      Atrum::CommandChangeScene::Instance()->GetIsExecute()
-          ? Editor::EditorSceneRunPhase::Waiting
-          : Editor::EditorSceneRunPhase::Running;
-  Editor::LayoutDedicatedSceneViewWindow(
-      Editor::kRuntimeSceneViewTitle, Editor::SceneViewTab::Runtime,
-      "実行時ビュー — ランタイム（ステージカメラ・シミュレーション実行）",
-      "F1: エンティティエディタへ戻る", true, runPhase);
-  Editor::EditorFrame::Instance().DrawRenderDiagnosticsMainMenuBar();
-#endif
-
   engine->PreDraw();
-
-#if !defined(DEVELOPMENT) || !defined(USE_IMGUI)
   DrawScene();
-#endif
-
   Atrum::CommandChangeScene::Instance()->Draw();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   if (sceneDocumentLoadFailed_ && !sceneLoadFailureMessage_.empty()) {
@@ -253,17 +224,6 @@ void SceneBuildUp::Draw() {
 #ifdef USE_IMGUI
   engine->ImGuiRender();
 #endif
-
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  Editor::EditorSceneRenderTargetHub::Instance().RenderSceneViews(
-      engine, [this](const Editor::SceneViewTab tab, const int width,
-                     const int height) {
-        if (tab == Editor::SceneViewTab::Runtime) {
-          DrawRuntimeViewContent(width, height);
-        }
-      });
-#endif
-
   engine->PostDraw();
 }
 

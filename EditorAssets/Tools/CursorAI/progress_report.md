@@ -7022,7 +7022,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画」（`fix/SceneBuildUpDrawSkipsEditorFrame` 予定）
+- SceneBuildUp「SceneBuildUp が EditorSceneRuntime を参照しない」（`fix/SceneBuildUpNoEditorSceneRuntime` 予定）
+
+---
+
+## セッション 2026-11-20 23:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUp::Draw` から `EditorFrame` ワークベンチ（`ResetPerFrame` / `LayoutDedicatedSceneViewWindow` / 診断メニュー / RT ハブ）を除去
+- Development でも `DrawScene` 直描画の最小ランタイム経路に統一（読込失敗 ImGui のみ残す）
+- `verify_scene_build_up_draw_skips_editor_frame.py` 追加。照明／ストリーミング verify から BuildUp 依存を削除
+- roadmap「SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: エディタドック無しで Cmp／Entity を本番同等の Draw ループで試す
+- 診断メニューは `SceneEntityEditor` ワークベンチ側に集約
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| BuildUp 最小ランタイム Draw | 有効 | エディタ上プレイとランタイム検証の段階分け（検証シーンは UI 薄い経路） |
 
 ---
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BuildUp 経路でストリーミング診断メニューが使えることを検査。"""
+"""EditorFrame にストリーミング診断メニューが配線されていることを検査。"""
 
 from __future__ import annotations
 
@@ -30,13 +30,7 @@ def main() -> int:
         if "EditorFrameStreamingDiagnostics::DrawMenuItems" not in text:
             errors.append("EditorFrame: expected streaming menu in diagnostics")
         if 'BeginMenu("デバッグ")' not in text:
-            errors.append("EditorFrame: expected デバッグ menu for BuildUp path")
-
-    build_up = ROOT / "Project" / "Codes" / "Source" / "Scene" / "SceneBuildUp.cpp"
-    if build_up.is_file():
-        text = build_up.read_text(encoding="utf-8", errors="replace")
-        if "DrawRenderDiagnosticsMainMenuBar" not in text:
-            errors.append("SceneBuildUp: expected diagnostics main menu bar")
+            errors.append("EditorFrame: expected デバッグ menu in diagnostics")
 
     if errors:
         print("verify_editor_frame_streaming_menu: FAILED", file=sys.stderr)

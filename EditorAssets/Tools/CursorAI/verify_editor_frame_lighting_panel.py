@@ -18,8 +18,6 @@ def main() -> int:
     workbench = (
         ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "EditorEntityWorkbench.cpp"
     )
-    buildup = ROOT / "Project" / "Codes" / "Source" / "Scene" / "SceneBuildUp.cpp"
-
     if not frame_h.is_file():
         errors.append("missing EditorFrame.h")
     else:
@@ -34,11 +32,6 @@ def main() -> int:
         text = workbench.read_text(encoding="utf-8", errors="replace")
         if "DrawRenderDiagnosticsMenuItems" not in text:
             errors.append("EditorEntityWorkbench: expected EditorFrame lighting menu wire")
-
-    if buildup.is_file():
-        text = buildup.read_text(encoding="utf-8", errors="replace")
-        if "DrawRenderDiagnosticsMainMenuBar" not in text:
-            errors.append("SceneBuildUp: expected DrawRenderDiagnosticsMainMenuBar")
 
     if errors:
         print("verify_editor_frame_lighting_panel: FAILED", file=sys.stderr)
