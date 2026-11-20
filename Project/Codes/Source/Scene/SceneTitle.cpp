@@ -12,6 +12,7 @@
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
 #include "Scene/SceneGameExitBgmPolicy.h"
+#include "Scene/SceneTitleBgmMaintain.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
@@ -59,16 +60,8 @@ namespace Atrum {
 	}
 
 	void SceneTitle::Update() {
-		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
-		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
-		if (sceneBgmHandle_.isSuccess &&
-		    !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
-			float pitchRatio = 1.0f;
-			if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
-			    pitchRatio < 0.99f) {
-				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
-			}
-		}
+		Atrum::MaintainSceneTitleBgmIfNeeded(sceneBgmHandle_);
+		Atrum::MaintainSceneTitleAmbientLoopIfNeeded(sceneAmbientLoopSeHandle_);
 		if (sceneAmbientLoopSeHandle_.isSuccess) {
 			const bool fading =
 				Atrum::CommandChangeScene::Instance()->GetIsExecute();

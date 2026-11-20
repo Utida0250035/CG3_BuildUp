@@ -6015,3 +6015,22 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | BuildUp 入退場音声 | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |
+
+---
+
+## セッション 2026-11-20 12:18（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneTitleBgmMaintain` で BGM の `IsSceneBgmAudible` 監視と再 `PlayBgmLoop`、環境ループ SE も再開
+- `Update` で `MaintainSceneTitleBgmIfNeeded` にフェード同期を集約
+
+### 推測した用途（§6.4）
+
+- タイトル滞在中のストリーム異常で BGM が止まっても無音にせず復帰する
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Title BGM 維持 | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |

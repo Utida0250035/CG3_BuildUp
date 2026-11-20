@@ -351,6 +351,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovie.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieReturnTarget.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieTrackFailure.cpp" />
@@ -639,6 +640,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneTitleBgmMaintain.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovie.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieReturnTarget.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieTrackFailure.h" />
