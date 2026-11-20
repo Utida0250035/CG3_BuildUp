@@ -16,6 +16,11 @@
 - **Queue:** `BuffersQueued / kBufferCount` プログレスバー
 - **読込:** `remainingData` / チャンクサイズの比率（1 超は赤バー＋ `Nx !` 表示。バーは 1 でクランプ）
 
+## ログ出力（実装済み）
+
+- **API:** `AppendStreamingMemoryDebugSnapshotToLog`（DEVELOPMENT）
+- **UI:** ウィンドウ内「スナップショットをログへ」→ `LogFile` にボイス行・集計を追記
+
 ## 用途
 
-- **デバッグ:** BGM ストリームのメモリ枯渇・remaining 肥大の調査
+- **デバッグ:** BGM ストリームのメモリ枯渇・remaining 肥大の調査（画面だけでなくログ共有）

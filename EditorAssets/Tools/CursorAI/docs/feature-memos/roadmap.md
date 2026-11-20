@@ -395,7 +395,7 @@
 - [x] Launch が同一パス重複を防がない
 
 ### StreamingDebug
-- [ ] ストリーミング診断が ImGui 表示のみでログに残らない（spec: feature-memos/streaming_debug_imgui.md）
+- [x] ストリーミング診断が ImGui 表示のみでログに残らない（spec: feature-memos/streaming_debug_imgui.md）
 
 ### EntityEditorUi
 - [ ] Release 起動パスを表示するだけ（spec: feature-memos/debug_test_play_area.md）

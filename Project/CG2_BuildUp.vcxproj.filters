@@ -557,6 +557,7 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
     <ClCompile Include="Codes\Source\Motion\MotionBlender.cpp" />
@@ -1339,6 +1340,7 @@
     <ClInclude Include="Codes\Include\Engine\Resource\ParticleGpuData.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\Motion\MotionBlender.h" />
     <ClInclude Include="Codes\Include\Motion\MotionClip.h" />

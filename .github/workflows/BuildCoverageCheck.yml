@@ -51,3 +51,6 @@ jobs:
 
       - name: Verify SceneBuildUp launch policy
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_launch_policy.py
+
+      - name: Verify audio streaming debug log
+        run: python3 EditorAssets/Tools/CursorAI/verify_audio_streaming_debug_log.py

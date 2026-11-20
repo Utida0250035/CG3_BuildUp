@@ -295,6 +295,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
@@ -597,6 +598,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\Log.h" />
     <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h" />
