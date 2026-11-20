@@ -3,7 +3,7 @@
 #include "System/Editor/EditorEntityWorkbench.h"
 
 #include "ForDebug/ImGui.h"
-#include "ForDebug/AudioStreamingDebugImGui.h"
+#include "System/Editor/EditorFrameStreamingDiagnostics.h"
 #include "System/Editor/EditorLuaScriptScaffold.h"
 #include <imgui/imgui_internal.h>
 #include "System/Editor/Camera/StageViewCameraTuning.h"
@@ -146,10 +146,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
   }
 
   if (ImGui::BeginMenu("デバッグ")) {
-    bool showStreamingMemory = Atrum::Debug::IsStreamingMemoryDebugVisible();
-    if (ImGui::MenuItem("ストリーミングメモリ", nullptr, &showStreamingMemory)) {
-      Atrum::Debug::SetStreamingMemoryDebugVisible(showStreamingMemory);
-    }
+    EditorFrameStreamingDiagnostics::DrawMenuItems();
     EditorFrame::Instance().DrawRenderDiagnosticsMenuItems();
     if (ImGui::MenuItem("機能検証シーン (DebugPlayArea テンプレ)")) {
       ui.sceneBuildUpLaunchPath = EditorAssets::kDebugPlayAreaTemplateScene;

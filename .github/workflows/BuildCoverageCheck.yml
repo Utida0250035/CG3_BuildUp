@@ -54,3 +54,6 @@ jobs:
 
       - name: Verify audio streaming debug log
         run: python3 EditorAssets/Tools/CursorAI/verify_audio_streaming_debug_log.py
+
+      - name: Verify streaming debug menu on BuildUp
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_frame_streaming_menu.py

@@ -3,7 +3,7 @@
 ## メモリ使用量表示（実装済み）
 
 - **API:** `AudioManager::CollectStreamingMemoryDebug`（DEVELOPMENT）
-- **UI:** メニュー「デバッグ」→「ストリーミングメモリ」
+- **UI:** メニュー「デバッグ」→「ストリーミングメモリ」（エンティティエディタ／SceneBuildUp ランタイムのメニューバー）
 - **表示:** 短尺ロード済みバイト、ストリーミングバッファ／remaining、ボイス一覧
 
 `GameOrder` 毎フレーム `DrawAudioStreamingMemoryDebugWindow()` を呼び、フラグ ON 時のみ描画。

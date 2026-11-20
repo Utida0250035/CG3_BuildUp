@@ -3,6 +3,7 @@
 #include "System/Editor/EditorFrame.h"
 
 #include "System/Editor/EditorFrameLightingDiagnostics.h"
+#include "System/Editor/EditorFrameStreamingDiagnostics.h"
 
 #include "Camera/Camera.h"
 #include "ForDebug/ImGui.h"
@@ -18,10 +19,22 @@ EditorFrame &EditorFrame::Instance() {
 
 void EditorFrame::DrawRenderDiagnosticsMenuItems() {
   EditorFrameLightingDiagnostics::DrawMenuItems();
+  EditorFrameStreamingDiagnostics::DrawMenuItems();
 }
 
 void EditorFrame::DrawRenderDiagnosticsMainMenuBar() {
-  EditorFrameLightingDiagnostics::DrawMainMenuBar();
+  if (!ImGui::BeginMainMenuBar()) {
+    return;
+  }
+  if (ImGui::BeginMenu("描画診断")) {
+    EditorFrameLightingDiagnostics::DrawMenuItems();
+    ImGui::EndMenu();
+  }
+  if (ImGui::BeginMenu("デバッグ")) {
+    EditorFrameStreamingDiagnostics::DrawMenuItems();
+    ImGui::EndMenu();
+  }
+  ImGui::EndMainMenuBar();
 }
 
 void EditorFrame::ResetPerFrame() {

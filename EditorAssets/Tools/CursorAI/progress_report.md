@@ -6486,3 +6486,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | ストリーミング診断のログ | 有効 | 特に明記なし（デバッグ・プロファイリング用途であり最終目標の `・` 行と矛盾なし） |
+
+---
+
+## セッション 2026-11-20 17:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorFrameStreamingDiagnostics` でストリーミングメモリトグルを共通化
+- `EditorFrame::DrawRenderDiagnosticsMainMenuBar` に「デバッグ」メニューを追加（SceneBuildUp ランタイムで ON 可能）
+- エンティティエディタのデバッグメニューも同 API を利用
+- roadmap「ストリーミングデバッグ ON が SceneBuildUp 経路で開けない」を `[x]`
+
+### 注記
+
+- ファイル出現順の次候補は **EntityEditorUi「Release 起動パスを表示するだけ」**（本 tick は着手ブランチに合わせ StreamingMenu を実施）
+
+### 推測した用途（§6.4）
+
+- BuildUp プレビュー中に BGM ストリーム診断ウィンドウを開き、エディタに戻らず計測する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| BuildUp でストリーミング診断 ON | 有効 | エディタ上でのプレイとランタイム検証（開発時デバッグ） |

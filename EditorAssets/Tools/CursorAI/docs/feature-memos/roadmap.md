@@ -421,7 +421,7 @@
 - [ ] フレーム時間のオーバーレイ／ヒストグラムが無い
 
 ### StreamingMenu
-- [ ] ストリーミングデバッグ ON が SceneBuildUp 経路で開けない（spec: feature-memos/streaming_debug_imgui.md）
+- [x] ストリーミングデバッグ ON が SceneBuildUp 経路で開けない（spec: feature-memos/streaming_debug_imgui.md）
 
 ### scaffold_play_area
 - [ ] テストエリア新規作成が scaffold スクリプト手動実行のみ
