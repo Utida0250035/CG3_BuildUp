@@ -4,7 +4,7 @@
 
 namespace Atrum {
 
-void SyncSceneBgmDuringBossDeathPresentation(Audio::Handle &sceneBgmHandle) {
+void SyncSceneBgmDuringDefeatPresentation(Audio::Handle &sceneBgmHandle) {
   AssignPendingFadeSyncedSceneBgm(sceneBgmHandle);
   (void)TryResumeSceneBgmAfterChangeSceneFade(sceneBgmHandle);
 }

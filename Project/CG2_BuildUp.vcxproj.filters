@@ -930,6 +930,9 @@
     <ClInclude Include="Codes\Include\Scene\SceneMoviePendingTransitionUpdate.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneGamePendingDefeatBgmPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneGameIntroBgmPolicy.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>

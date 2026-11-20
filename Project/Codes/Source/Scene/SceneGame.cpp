@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGamePendingDefeatBgmPolicy.h"
 #include "Scene/SceneGameIntroBgmPolicy.h"
 #include "Scene/SceneGameIntroBarrageAudio.h"
 #include "Scene/SceneGameDefeatAudioPolicy.h"
@@ -269,7 +270,8 @@ namespace Atrum {
 	}
 
 	void SceneGame::MaintainSceneBgmIfNeeded(const bool allowRestartPlay) {
-		if (pendingDefeat_ == DefeatKind::Player) {
+		if (pendingDefeat_ != DefeatKind::None &&
+		    !SceneGamePendingDefeatBgmPolicy::kUseFullMaintainDuringDefeatPresentation) {
 			return;
 		}
 
@@ -412,6 +414,8 @@ namespace Atrum {
 			return;
 		}
 
+		SyncSceneBgmDuringDefeatPresentation(sceneBgmHandle_);
+
 		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {
 			return;
@@ -436,7 +440,7 @@ namespace Atrum {
 			return;
 		}
 
-		SyncSceneBgmDuringBossDeathPresentation(sceneBgmHandle_);
+		SyncSceneBgmDuringDefeatPresentation(sceneBgmHandle_);
 
 		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {

@@ -631,6 +631,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneMovieVisualSetup.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMoviePendingTransitionUpdate.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGamePendingDefeatBgmPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameIntroBgmPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameIntroBarrageAudio.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameDefeatAudioPolicy.h" />
