@@ -72,3 +72,6 @@ jobs:
 
       - name: Verify scene play via BuildUp route
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_buildup_play.py
+
+      - name: Verify F2 feature test BuildUp hotkey
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_f2_feature_scene.py

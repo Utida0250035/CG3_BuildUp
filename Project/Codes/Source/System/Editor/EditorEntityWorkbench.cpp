@@ -222,7 +222,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     CycleSceneViewTab();
   }
 
-  ImGui::TextDisabled("F2: パーティクルエディタ");
+  ImGui::TextDisabled("F2: 機能検証 BuildUp / F3: パーティクルデモ / F4: パーティクルエディタ");
   ImGui::EndMainMenuBar();
 }
 

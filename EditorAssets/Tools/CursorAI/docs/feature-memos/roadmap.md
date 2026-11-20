@@ -407,7 +407,7 @@
 
 ### SceneEntityEditor
 - [x] シーン実行が本番相当 SceneBuildUp 経路にならない
-- [ ] F2 はパーティクル遷移のみで機能検証シーン未割当（spec: feature-memos/debug_test_play_area.md）
+- [x] F2 はパーティクル遷移のみで機能検証シーン未割当（spec: feature-memos/debug_test_play_area.md）
 - [ ] シーン実行後は Runtime タブフォーカスのみ（spec: feature-memos/debug_test_play_area.md）
 - [ ] SetupPreviewCamera が GetCamera のみ更新（spec: feature-memos/entity_camera_components.md）
 - [ ] Runtime タブで SetupStageViewCamera に差し替え（spec: feature-memos/entity_camera_components.md）

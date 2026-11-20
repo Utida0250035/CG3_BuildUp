@@ -356,6 +356,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
@@ -667,6 +668,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorScenePlayBuildUpRoute.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorDebugHotkeys.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />

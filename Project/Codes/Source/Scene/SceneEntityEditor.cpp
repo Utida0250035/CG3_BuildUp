@@ -12,6 +12,7 @@
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
+#include "Scene/SceneEntityEditorDebugHotkeys.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -188,19 +189,7 @@ void SceneEntityEditor::Update() {
     return;
   }
 
-  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
-    Atrum::CommandChangeScene::Instance()->Set(
-        SceneParticleEditor::Instance(),
-        std::make_unique<ChangeSceneFade>().release());
-    return;
-  }
-
-  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
-    const std::string demoScene =
-        std::string(Atrum::GameAssets::kScenesDirectory) + "/ParticleDemo.json";
-    Atrum::SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(demoScene, Instance());
-    return;
-  }
+  SceneEntityEditorDebugHotkeys::Tick(Instance());
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   const Editor::SceneViewTab viewTab =
