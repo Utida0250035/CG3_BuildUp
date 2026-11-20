@@ -240,14 +240,13 @@ void SceneBuildUp::Draw() {
 #endif
 
   Atrum::CommandChangeScene::Instance()->Draw();
-#ifdef USE_IMGUI
-  engine->ImGuiRender();
-#endif
-
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   if (sceneDocumentLoadFailed_ && !sceneLoadFailureMessage_.empty()) {
     DrawSceneBuildUpSceneLoadFailureNotice(sceneLoadFailureMessage_);
   }
+#endif
+#ifdef USE_IMGUI
+  engine->ImGuiRender();
 #endif
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
