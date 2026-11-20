@@ -7591,3 +7591,35 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Launch 前 TryLoad 禁止 | 有効 | エディタ上プレイとランタイム検証の段階分け（読込責務を EnterScene に集約） |
+
+---
+
+## セッション 2026-11-21 03:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorAssetsPaths::kDebugPlayAreaLoopTick13DemoScene` を追加
+- `EditorDebugPlayAreaFeatureVerificationCanonical` で正本パスを集約
+- F2／デバッグメニューの BuildUp 起動先を LoopTick13Demo 正本へ切替（テンプレは scaffold 専用のまま）
+- `verify_loop_tick13_demo_feature_verification_canonical.py` を CI に追加
+- `verify_scene_entity_editor_f2_feature_scene.py` を正本起動に合わせて更新
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: リポジトリ同梱の安定 JSON をワンキー／メニューから再現性高く起動
+- ループ／CI: LoopTick13Demo をコード参照の正本として、オフライン検証の種にする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| LoopTick13Demo 正本 | 有効 | シーン構成の保存と、エディタ外ランタイムでのプレイ試験（Entity JSON の編集・プレイ導線） |
+
+### 次 tick 候補
+
+- combat_bounds_sandbox「コード／既定導線から参照されない」（`fix/CombatBoundsSandboxRef` 予定）

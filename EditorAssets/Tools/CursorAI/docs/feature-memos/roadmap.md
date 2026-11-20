@@ -457,7 +457,7 @@
 - [x] Draw で ChangeScene 常時描画
 
 ### LoopTick13Demo
-- [ ] LoopTick13Demo が機能検証シーンの正本として未整備
+- [x] LoopTick13Demo が機能検証シーンの正本として未整備
 
 ### combat_bounds_sandbox
 - [ ] combat_bounds_sandbox がコード／既定導線から参照されない（spec: feature-memos/debug_test_play_area.md）

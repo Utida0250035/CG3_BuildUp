@@ -16,6 +16,9 @@ constexpr const char *kSampleMovieTrackJson =
 constexpr const char *kDebugPlayAreaDirectory = "../EditorAssets/DebugPlayArea";
 constexpr const char *kDebugPlayAreaTemplateScene =
     "../EditorAssets/DebugPlayArea/template_test_play_area.scene.json";
+/// 機能検証 BuildUp 用の同梱正本（scaffold テンプレとは別）
+constexpr const char *kDebugPlayAreaLoopTick13DemoScene =
+    "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json";
 
 /// ゲーム用 Lua スクリプト（エディタのスクリプト雛形の出力先）
 constexpr const char *kScriptsDirectory = "Assets/Scripts";

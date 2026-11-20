@@ -76,6 +76,9 @@ jobs:
       - name: Verify F2 feature test BuildUp hotkey
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_f2_feature_scene.py
 
+      - name: Verify LoopTick13Demo feature verification canonical scene
+        run: python3 EditorAssets/Tools/CursorAI/verify_loop_tick13_demo_feature_verification_canonical.py
+
       - name: Verify in-editor play Runtime tab focus only
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_tab_focus.py
 

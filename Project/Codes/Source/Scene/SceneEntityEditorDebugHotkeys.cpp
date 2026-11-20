@@ -6,7 +6,7 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneParticleEditor.h"
-#include "System/Editor/EditorAssetsPaths.h"
+#include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
 #include "System/GameAssetsPaths.h"
 #include "Engine/EngineAccess.h"
 
@@ -19,7 +19,7 @@ void Tick(Scene *returnScene) {
 
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
     SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(
-        EditorAssets::kDebugPlayAreaTemplateScene, returnScene);
+        DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath(), returnScene);
     return;
   }
 

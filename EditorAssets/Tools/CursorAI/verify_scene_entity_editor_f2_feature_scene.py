@@ -21,8 +21,8 @@ def main() -> int:
     text = hotkeys_cpp.read_text(encoding="utf-8", errors="replace")
     if "Key::F2" not in text:
         errors.append("F2 handler missing")
-    if "kDebugPlayAreaTemplateScene" not in text:
-        errors.append("F2 must launch kDebugPlayAreaTemplateScene")
+    if "DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath" not in text:
+        errors.append("F2 must launch DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath()")
     if "QueueFadeToBuildUp" not in text:
         errors.append("F2 must use QueueFadeToBuildUp")
     if "Key::F2" in text and "Key::F4" in text:

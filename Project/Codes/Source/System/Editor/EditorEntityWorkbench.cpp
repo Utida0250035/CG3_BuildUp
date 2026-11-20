@@ -8,6 +8,7 @@
 #include <imgui/imgui_internal.h>
 #include "System/Editor/Camera/StageViewCameraTuning.h"
 #include "System/Editor/EditorAssetsPaths.h"
+#include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/EditorSceneRunStatus.h"
@@ -149,8 +150,9 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
   if (ImGui::BeginMenu("デバッグ")) {
     EditorFrameStreamingDiagnostics::DrawMenuItems();
     EditorFrame::Instance().DrawRenderDiagnosticsMenuItems();
-    if (ImGui::MenuItem("機能検証シーン (DebugPlayArea テンプレ)")) {
-      ui.sceneBuildUpLaunchPath = EditorAssets::kDebugPlayAreaTemplateScene;
+    if (ImGui::MenuItem("機能検証シーン (LoopTick13Demo 正本)")) {
+      ui.sceneBuildUpLaunchPath =
+          DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
       ui.requestLaunchSceneBuildUp = true;
     }
     ImGui::EndMenu();

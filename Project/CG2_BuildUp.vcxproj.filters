@@ -1492,6 +1492,7 @@
     <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h" />
     <ClInclude Include="Codes\Include\System\GameAssetsPaths.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h" />
     <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h" />
     <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h" />
   </ItemGroup>
