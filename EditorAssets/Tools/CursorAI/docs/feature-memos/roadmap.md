@@ -303,7 +303,7 @@
 - [x] イントロ中の Update 早期 return で弾幕 SE 無音
 - [x] イントロ中に Maintain が PlaySceneBgm
 - [x] pendingDefeat 中は Maintain が return
-- [ ] フェード中も Exit で StopBgmLoop
+- [x] フェード中も Exit で StopBgmLoop
 - [ ] 遷移演出中は MaintainSceneBgm を呼ばない
 
 ### CommandScene

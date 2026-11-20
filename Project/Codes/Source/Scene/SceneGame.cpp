@@ -13,6 +13,7 @@
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "Scene/SceneGameExitBgmPolicy.h"
 #include "Scene/SceneGamePendingDefeatBgmPolicy.h"
 #include "Scene/SceneGameIntroBgmPolicy.h"
 #include "Scene/SceneGameIntroBarrageAudio.h"
@@ -116,8 +117,7 @@ namespace Atrum {
 		}
 
 		ReleaseCommonResources();
-		Atrum::StopBgmLoop(sceneBgmHandle_);
-		sceneBgmHandle_ = {};
+		Atrum::ReleaseSceneGameBgmOnExitScene(sceneBgmHandle_);
 		introCameraController_.reset();
 		bossDeathCameraController_.reset();
 		ClearEntities();

@@ -36,7 +36,25 @@ namespace Atrum {
 		return handle;
 	}
 
+	void CommandChangeScene::AdoptExitingSceneBgmPendingFadeStop(
+		Audio::Handle &handle) {
+		if (!handle.isSuccess) {
+			return;
+		}
+		if (exitingSceneBgmHandle_.isSuccess) {
+			StopBgmLoop(exitingSceneBgmHandle_);
+			exitingSceneBgmHandle_ = {};
+		}
+		exitingSceneBgmHandle_ = handle;
+		handle = {};
+	}
+
 	void CommandChangeScene::OnSceneTransitionEffectFinished() {
+		if (exitingSceneBgmHandle_.isSuccess) {
+			StopBgmLoop(exitingSceneBgmHandle_);
+			exitingSceneBgmHandle_ = {};
+		}
+
 		deferEnterSceneBgmUntilFadeEnds_ = false;
 
 		if (deferredEnterSceneBgmCandidates_.empty()) {

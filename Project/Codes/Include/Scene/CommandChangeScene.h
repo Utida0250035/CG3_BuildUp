@@ -50,6 +50,9 @@ namespace Atrum {
 
 		Audio::Handle pendingEnterSceneBgmHandle_{};
 
+		/// ExitScene がフェード中に保持していた BGM（フェードイン完了で停止）
+		Audio::Handle exitingSceneBgmHandle_{};
+
 		void OnSceneTransitionEffectFinished();
 
 		/// <summary>
@@ -196,6 +199,9 @@ namespace Atrum {
 			const std::initializer_list<const char *> candidatePaths);
 
 		Audio::Handle TryTakePendingEnterSceneBgmHandle();
+
+		/// フェード演出中の ExitScene から BGM スロットを引き継ぎ、即 Stop を避ける
+		void AdoptExitingSceneBgmPendingFadeStop(Audio::Handle &handle);
 
 		Scene* GetPendingNextScene() const { return nextScene_; }
 

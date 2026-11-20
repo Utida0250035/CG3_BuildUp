@@ -5775,3 +5775,18 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | pendingDefeat BGM | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |
+
+---
+
+## セッション 2026-11-20 09:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ReleaseSceneGameBgmOnExitScene` でフェード中は BGM を `CommandChangeScene` へ引き継ぎ
+- `OnSceneTransitionEffectFinished` でフェードイン完了後に停止
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Exit BGM フェード | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |

@@ -355,6 +355,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneGameIntroBarrageAudio.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameDefeatAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameDefeatPresentationBgm.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameExitBgmPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameEnterVisualPreset.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameLightingProfile.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameOperatorGuidanceBoot.cpp" />
@@ -636,6 +637,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneGameIntroBarrageAudio.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameDefeatAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameDefeatPresentationBgm.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameExitBgmPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameEnterVisualPreset.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameLightingProfile.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameOperatorGuidanceBoot.h" />
