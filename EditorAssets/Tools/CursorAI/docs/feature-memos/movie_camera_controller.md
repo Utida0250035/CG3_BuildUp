@@ -27,6 +27,14 @@ movie.TryBeginFromJsonFile("../EditorAssets/Camera/sample_movie_track.json");
 
 不正なキーフレーム（`eye`/`pivot` 欠落・型不一致など）は **1 件ごとスキップ** し、有効なキーフレームが 2 件以上あれば再生する（`MovieCameraTrackKeyframeParsePolicy`）。
 
+## 検証
+
+```bash
+python3 EditorAssets/Tools/MovieCameraTrack/verify_movie_camera_track_json.py
+```
+
+CI: `BuildCoverageCheck`（`sample_movie_track.json` および `EditorAssets/Camera/` の `keyframes` 付き JSON）。
+
 ## SceneMovie
 
 ```cpp

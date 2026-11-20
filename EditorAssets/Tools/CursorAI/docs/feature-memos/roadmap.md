@@ -341,7 +341,7 @@
 
 ### MovieCameraTrackLoader
 - [x] キーフレーム 1 件の不正でトラック全体を拒否（spec: feature-memos/movie_camera_controller.md）
-- [ ] ムービートラック JSON のスモーク検証が自動化されていない（spec: feature-memos/movie_camera_controller.md）
+- [x] ムービートラック JSON のスモーク検証が自動化されていない（spec: feature-memos/movie_camera_controller.md）
 
 ## Render
 

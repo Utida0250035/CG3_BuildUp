@@ -30,3 +30,6 @@ jobs:
 
       - name: Verify player-friendly camera policy
         run: python3 EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py
+
+      - name: Verify movie camera track JSON smoke
+        run: python3 EditorAssets/Tools/MovieCameraTrack/verify_movie_camera_track_json.py
