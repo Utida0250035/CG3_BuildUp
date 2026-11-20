@@ -136,6 +136,9 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.cpp">
       <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\LightingEngineEffectsBinding.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp">
       <Filter>Codes\Source\Engine\Renderer\Shader</Filter>
     </ClCompile>
@@ -788,6 +791,9 @@
       <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\LightingEngineEffectsBinding.h">
       <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h">

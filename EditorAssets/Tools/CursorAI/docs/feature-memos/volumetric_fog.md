@@ -9,9 +9,9 @@
 
 | 層 | 内容 |
 |----|------|
-| `VolumetricFog` | 設定の単一ソース。`ApplyTo` で `DirectionalLightData` / `LightDataDirectional` へ反映 |
-| `Lighting` | `RefVolumetricFog()`、`Update` 時に新ライト CB へ統合 |
-| `AtrumEngine` | `RefVolumetricFog()`、`FlushDirectionalLightConstantBuffer` で現行 3D 描画 CB へ反映 |
+| `VolumetricFog` | 設定オブジェクト。`ApplyTo` で `DirectionalLightData` へ反映 |
+| `AtrumEngine` | **単一正本** … `RefVolumetricFog()` と `FlushDirectionalLightConstantBuffer` |
+| `Visual::Lighting` | ファサード … `RefVolumetricFog()` は `LightingEngineEffectsBinding` 経由で Engine と同一インスタンス |
 | `Object3d.PS` | 距離×高さの指数フォグ + 平行光インスキャッター |
 
 ## パラメータ

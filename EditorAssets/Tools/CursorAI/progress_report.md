@@ -6307,3 +6307,27 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | SceneGame Draw 見た目再適用 | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |
+
+---
+
+## セッション 2026-11-20 15:33（/loop 15m・roadmap tick）
+
+### 完了
+
+- `LightingEngineEffectsBinding` でフォグ／ゴッドレイ／影の正本を `AtrumEngine` に統一
+- `Visual::Lighting` をエンジン参照ファサードへ再構成（独自 `volumetricFog_` 等を削除）
+- `volumetric_fog.md` と `verify_lighting_effects_shared.py` を更新
+
+### 推測した用途（§6.4）
+
+- `Lighting::RefVolumetricFog` と `Engine::RefVolumetricFog` が同一設定を指し、プロファイル／ImGui 変更が 3D CB に一貫して届く
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Lighting と Engine のフォグ共有 | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |
