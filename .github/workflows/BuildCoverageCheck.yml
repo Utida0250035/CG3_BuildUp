@@ -150,3 +150,6 @@ jobs:
 
       - name: Verify SceneBuildUp F1 works while transition blocks Update
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_f1_during_fade.py
+
+      - name: Verify SceneBuildUp merges tagCatalog after JSON load
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_tag_catalog_merge.py

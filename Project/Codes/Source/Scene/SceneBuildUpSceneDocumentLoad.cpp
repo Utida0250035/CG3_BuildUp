@@ -1,13 +1,18 @@
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
 
 #include "Camera/StageViewFramingBounds.h"
+#include "Scene/SceneBuildUpSceneDocumentTagCatalog.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 
 namespace Atrum::SceneBuildUpSceneDocumentLoad {
 
 bool TryLoad(const std::string &jsonFilePath,
              EntityEditor::EditorSceneDocument &outDocument) {
-  return EntityEditor::TryLoadSceneDocument(jsonFilePath, outDocument);
+  if (!EntityEditor::TryLoadSceneDocument(jsonFilePath, outDocument)) {
+    return false;
+  }
+  SceneBuildUpSceneDocumentTagCatalog::ApplyAfterJsonLoad(outDocument);
+  return true;
 }
 
 std::vector<std::unique_ptr<Entity>>

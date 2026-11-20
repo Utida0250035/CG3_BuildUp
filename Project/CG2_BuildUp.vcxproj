@@ -380,6 +380,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpReturnTarget.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentLoad.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpLoadFailureEntities.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeSubviewDrawCamera.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraLock.cpp" />
@@ -714,6 +715,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpReturnTarget.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentLoad.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentTagCatalog.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />

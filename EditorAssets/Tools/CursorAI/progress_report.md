@@ -7050,6 +7050,35 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 |--------|------|------|
 | フェード中 F1 | 有効 | エディタ上プレイとランタイム検証の往復を途切れさせない |
 
+### 次 tick 候補
+
+- SceneBuildUp「AllowDebugCameraControl をオーバーライドしない」（`fix/SceneBuildUpAllowDebugCamera` 予定）
+
+---
+
+## セッション 2026-11-21 01:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpSceneDocumentTagCatalog` で registry マージ＋定義タグ同期を `EntityEditor::LoadFromJsonPath` と揃えた
+- `SceneBuildUpSceneDocumentLoad::TryLoad` の成功直後に適用
+- `verify_scene_build_up_tag_catalog_merge.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: `camera.main` 等ロールタグをエディタプレビューと同じ契約で解決する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| tagCatalog マージ | 有効 | エディタ上プレイとランタイム環境上のプレイでシーン JSON のタグ契約を同一にする |
+
 ---
 
 ## セッション 2026-11-21 01:15（/loop 15m・roadmap tick）
