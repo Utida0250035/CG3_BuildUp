@@ -8090,3 +8090,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - `buildDevelopment.cmd` が CI と異なる入口で前検証も無い（`GAP-Infra-buildDevelopment-001`）
+
+---
+
+## セッション 2026-11-21 07:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `buildDevelopment.cmd` … 先に `verify_vcxproj_coverage.py`、MSBuild は `CG2_BuildUp.slnx`（Development|x64）
+- `cloud_build_vcxproj_check.md` にローカル手順を追記
+- `verify_build_development_ci_parity.py` を CI に追加
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **制作:** ローカル Development 成功が GitHub `DevelopmentBuild` の骨格と一致
+- **エージェント:** Linux では verify のみ、Windows で cmd フル手順
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| buildDevelopment 整合 | 有効 | エディター exe 化・配布前のビルド再現 |
+
+### 次 tick 候補
+
+- Release ビルド後の exe 起動スモークが CI に無い（`GAP-Infra-Release_smoke-001`）

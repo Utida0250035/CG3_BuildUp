@@ -1,6 +1,28 @@
 @echo off
 setlocal
-rem Development|x64 の MSBuild（vswhere で MSBuild を解決。絶対パスは環境依存を避ける）
+rem Development|x64 — CI DevelopmentBuild.yml と同じ前段検証 + slnx 入口
+
+set "REPO_ROOT=%~dp0..\..\.."
+cd /d "%REPO_ROOT%"
+if errorlevel 1 (
+  echo Failed to cd to repo root: %REPO_ROOT%
+  exit /b 1
+)
+
+set "PREFLIGHT=EditorAssets\Tools\CursorAI\verify_vcxproj_coverage.py"
+where python >nul 2>&1
+if %errorlevel%==0 (
+  python "%PREFLIGHT%"
+) else (
+  where py >nul 2>&1
+  if %errorlevel%==0 (
+    py -3 "%PREFLIGHT%"
+  ) else (
+    echo python not found for vcxproj pre-verify.
+    exit /b 1
+  )
+)
+if errorlevel 1 exit /b 1
 
 set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 if not exist "%VSWHERE%" (
@@ -14,6 +36,5 @@ if not defined MSBUILD (
   exit /b 1
 )
 
-set "REPO_ROOT=%~dp0..\..\.."
-"%MSBUILD%" "%REPO_ROOT%\Project\CG2_BuildUp.vcxproj" /p:Configuration=Development /p:Platform=x64 /m /v:minimal
+"%MSBUILD%" "%REPO_ROOT%\Project\CG2_BuildUp.slnx" /p:Configuration=Development /p:Platform=x64 /m /v:minimal
 exit /b %ERRORLEVEL%

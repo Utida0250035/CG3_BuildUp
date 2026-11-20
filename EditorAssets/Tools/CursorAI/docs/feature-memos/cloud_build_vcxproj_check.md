@@ -17,6 +17,15 @@ python3 EditorAssets/Tools/CursorAI/verify_editor_component_registration.py
 - 独立: `.github/workflows/BuildCoverageCheck.yml`
 - `Debug` / `Development` / `Release` ビルドの前段 `vcxproj-coverage` ジョブ
 
+## ローカル Development ビルド
+
+`EditorAssets/Tools/CursorAI/buildDevelopment.cmd` は **CI `DevelopmentBuild.yml` と同じ手順** を踏む。
+
+1. `verify_vcxproj_coverage.py`（`vcxproj-coverage` ジョブ相当）
+2. `MSBuild Project/CG2_BuildUp.slnx`（`Configuration=Development` / `Platform=x64`）
+
+NuGet 復元は別タスク（`buildDevelopment` + NuGet）。CI では `DevelopmentBuild` が packages 復元後に slnx をビルドする。
+
 ## 許容リスト
 
 `EditorAssets/Tools/CursorAI/vcxproj_coverage_allowlist.txt` — 意図的に vcxproj 外の `.cpp`（Lua スクリプト基盤など）

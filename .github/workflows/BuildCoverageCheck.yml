@@ -52,6 +52,9 @@ jobs:
       - name: Verify ship vs debug compile configuration contract
         run: python3 EditorAssets/Tools/CursorAI/verify_ship_debug_compile_diff.py
 
+      - name: Verify buildDevelopment.cmd matches CI Development entry
+        run: python3 EditorAssets/Tools/CursorAI/verify_build_development_ci_parity.py
+
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
 
