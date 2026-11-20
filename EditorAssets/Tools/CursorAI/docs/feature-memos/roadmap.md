@@ -450,7 +450,7 @@
 - [x] ビュー描画ごとに SetupRuntimeLighting
 - [x] 専用ランタイムウィンドウが汎用文言のみ（spec: feature-memos/debug_test_play_area.md）
 - [x] 子付きインスタンスは親 Draw 任せ
-- [ ] 描画毎に半ランバート固定
+- [x] 描画毎に半ランバート固定
 - [ ] EnterScene が Runtime 固定
 - [ ] camera==nullptr で無言 return
 - [ ] ctor で displayName を仮設定

@@ -7052,7 +7052,37 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「描画毎に半ランバート固定」（`fix/SceneBuildUpHalfLambertPerDraw` 予定）
+- SceneBuildUp「EnterScene が Runtime 固定」（`fix/SceneBuildUpEnterRuntimeTab` 予定）
+
+---
+
+## セッション 2026-11-21 03:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- 描画パスのライト再適用は前 tick の `SceneBuildUpRuntimeLightingPolicy` で解消済み（§6.2 追認）
+- 方針ヘッダに「HalfLambert を Draw で再固定しない」旨を追記
+- エディタ機能試験 RT から毎描画の `ApplySceneBuildUpRuntimeVisualFromProfile` を除去
+- `verify_scene_build_up_no_half_lambert_per_draw.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: JSON／profile 由来の lightModel を保持し Cmp ライト試験を上書きしない
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 半ランバート毎描画禁止 | 有効 | グラフィックスコンポーネント検証で意図したライト設定を維持 |
+
+### 実装済みと判断した項目（§6.2）
+
+- 描画毎 `SetupRuntimeLighting` 除去はセッション 02:30 で完了済み。本 tick は CI とエディタ RT の追従
 
 ---
 

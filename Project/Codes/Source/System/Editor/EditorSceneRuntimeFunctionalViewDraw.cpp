@@ -7,7 +7,6 @@
 #include "Engine/Blend/BlendMode.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
-#include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "System/Editor/EditorFrame.h"
 #include "Camera/Camera.h"
@@ -45,7 +44,6 @@ void DrawEditorSceneRuntimeFunctionalView(
     return;
   }
 
-  (void)ApplySceneBuildUpRuntimeVisualFromProfile();
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
 
   SceneBuildUpStageCamera::MaintainLockedStageCamera(scene);

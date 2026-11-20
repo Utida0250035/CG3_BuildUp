@@ -168,3 +168,6 @@ jobs:
 
       - name: Verify SceneBuildUp child entities use document draw contract
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_child_instance_draw.py
+
+      - name: Verify SceneBuildUp does not force HalfLambert each draw
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_no_half_lambert_per_draw.py
