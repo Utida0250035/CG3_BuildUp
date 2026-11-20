@@ -13,6 +13,7 @@
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "Scene/SceneEntityEditorInEditorPlayQueue.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 
@@ -98,13 +99,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
       ui.requestDeleteSceneConfirm = true;
     }
     if (ImGui::MenuItem("シーンを実行（エディタ内）")) {
-      ui.requestSaveToDisk = true;
-      const std::string playPath = ui.jsonFilePath.empty() ? ui.selectedScenePath
-                                                           : ui.jsonFilePath;
-      if (!playPath.empty()) {
-        Atrum::Editor::Scene::StageEditorPlayScenePath(playPath);
-      }
-      ui.requestPlayRuntimeScene = true;
+      QueueInEditorPlayRuntimeTabOnly(ui);
     }
     if (ImGui::MenuItem("SceneBuildUp で実行")) {
       ui.requestSaveToDisk = true;

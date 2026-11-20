@@ -6744,3 +6744,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Runtime CmpCamera 検証 | 有効 | シーン構成の編集とエディタ上でのプレイ／ランタイム検証を分けて通せる |
+
+---
+
+## セッション 2026-11-20 19:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `QueueInEditorPlayRuntimeTabOnly` で UI からのエディタ内実行要求を一本化
+- `SceneEntityEditorInEditorPlayTick::Process` で保存・プレビュー再構築・Runtime タブのみ（BuildUp 非連動）
+- プロジェクト／メニューの「エディタ内プレビュー」が上記キューを利用
+- roadmap「実行は Runtime タブ切替のみ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- エディタ内の軽い実行確認と本番 BuildUp 経路の誤混在を防ぐ
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| エディタ内プレイと BuildUp 分離 | 有効 | シーン構成の編集とエディタ上プレイ／配布ランタイムを別経路で通せる |

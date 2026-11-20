@@ -411,7 +411,7 @@
 - [x] シーン実行後は Runtime タブフォーカスのみ（spec: feature-memos/debug_test_play_area.md）
 - [x] SetupPreviewCamera が GetCamera のみ更新（spec: feature-memos/entity_camera_components.md）
 - [x] Runtime タブで SetupStageViewCamera に差し替え（spec: feature-memos/entity_camera_components.md）
-- [ ] 実行は Runtime タブ切替のみ
+- [x] 実行は Runtime タブ切替のみ
 - [ ] Edit ホバー時に Draw 内で camera->Update
 - [ ] シーンビュー RT が GameOrder 後に SetCamera
 - [ ] DrawPreview が親 root のみ

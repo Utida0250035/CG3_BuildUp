@@ -360,6 +360,8 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayQueue.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayTick.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
@@ -675,6 +677,8 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeTabFocus.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewCameraSetup.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeViewCameraDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayQueue.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayTick.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />

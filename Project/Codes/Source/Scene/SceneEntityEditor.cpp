@@ -13,7 +13,7 @@
 #include "Input/PlayInput.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneEntityEditorDebugHotkeys.h"
-#include "Scene/SceneEntityEditorRuntimeTabFocus.h"
+#include "Scene/SceneEntityEditorInEditorPlayTick.h"
 #include "Scene/SceneEntityEditorPreviewCameraSetup.h"
 #include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -168,14 +168,12 @@ void SceneEntityEditor::Update() {
     RebuildPreviewScene();
   }
 
-  if (editor_->Ui().requestPlayRuntimeScene) {
-    editor_->Ui().requestPlayRuntimeScene = false;
-    editor_->SaveToJsonPath(editor_->Ui().jsonFilePath);
-    RebuildPreviewScene();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-    EntityEditor::ApplyInEditorPlayRuntimeTabFocusOnly(editor_->Ui());
-#endif
+  if (EntityEditor::SceneEntityEditorInEditorPlayTick::Process(
+          *editor_, [this] { RebuildPreviewScene(); })) {
+    return;
   }
+#endif
 
   if (editor_->Ui().requestLaunchSceneBuildUp) {
     editor_->Ui().requestLaunchSceneBuildUp = false;

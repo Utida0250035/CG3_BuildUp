@@ -84,3 +84,6 @@ jobs:
 
       - name: Verify Runtime tab keeps CmpCamera (no stage override)
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_stage_camera.py
+
+      - name: Verify in-editor play is Runtime tab only
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_tab_only_play.py
