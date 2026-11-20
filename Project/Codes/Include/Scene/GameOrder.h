@@ -9,6 +9,7 @@
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/AudioStreamingDebugImGui.h"
+#include "ForDebug/LightingEffectsDebugImGui.h"
 #endif
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
 #include "Scene/SceneReleaseCarousel.h"
@@ -56,6 +57,7 @@ namespace Atrum {
 			Engine::Instance()->ImGuiNewFrame();
 #if defined(DEVELOPMENT)
 			Atrum::Debug::DrawAudioStreamingMemoryDebugWindow();
+			Atrum::Debug::DrawLightingEffectsDebugWindow();
 #endif
 #endif
 			AbstractInput::Instance()->Update();

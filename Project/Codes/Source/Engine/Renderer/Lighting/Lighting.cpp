@@ -6,7 +6,7 @@
 
 #ifdef USE_IMGUI
 
-#include "ForDebug/ImGui.h"
+#include "Engine/Renderer/Lighting/LightingEffectsImGuiPanel.h"
 
 #endif
 
@@ -44,15 +44,7 @@ void Lighting::Update(CommandContext *commandContext, UINT rootParameterIndex) {
 #ifdef USE_IMGUI
 
 void Lighting::ImGui() {
-  if (ImGui::CollapsingHeader("VolumetricFog", ImGuiTreeNodeFlags_DefaultOpen)) {
-    volumetricFog_.ImGui();
-  }
-  if (ImGui::CollapsingHeader("GodRays", ImGuiTreeNodeFlags_DefaultOpen)) {
-    godRays_.ImGui();
-  }
-  if (ImGui::CollapsingHeader("Shadow", ImGuiTreeNodeFlags_DefaultOpen)) {
-    directionalShadow_.ImGui();
-  }
+  DrawLightingEffectsImGuiPanel(volumetricFog_, godRays_, directionalShadow_);
 }
 
 #endif

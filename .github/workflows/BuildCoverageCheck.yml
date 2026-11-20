@@ -33,3 +33,6 @@ jobs:
 
       - name: Verify movie camera track JSON smoke
         run: python3 EditorAssets/Tools/MovieCameraTrack/verify_movie_camera_track_json.py
+
+      - name: Verify Lighting effects ImGui wire
+        run: python3 EditorAssets/Tools/CursorAI/verify_lighting_imgui_wire.py

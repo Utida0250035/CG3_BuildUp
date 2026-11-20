@@ -267,6 +267,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
@@ -293,6 +294,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
@@ -561,6 +563,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h" />
@@ -588,6 +591,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\Log.h" />
     <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h" />
     <ClInclude Include="Codes\Include\Geometry\Bezier.h" />

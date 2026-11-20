@@ -133,6 +133,9 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp">
       <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp">
       <Filter>Codes\Source\Engine\Renderer\Shader</Filter>
     </ClCompile>
@@ -551,6 +554,7 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
     <ClCompile Include="Codes\Source\Motion\MotionBlender.cpp" />
     <ClCompile Include="Codes\Source\Motion\MotionClipLoader.cpp" />
@@ -781,6 +785,9 @@
       <Filter>Codes\Include\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.h">
       <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h">
@@ -1322,6 +1329,7 @@
     <ClInclude Include="Codes\Include\Engine\Resource\ParticleGpuData.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\Motion\MotionBlender.h" />
     <ClInclude Include="Codes\Include\Motion\MotionClip.h" />
     <ClInclude Include="Codes\Include\Motion\MotionKeyframe.h" />
