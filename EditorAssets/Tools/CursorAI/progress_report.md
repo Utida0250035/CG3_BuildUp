@@ -7687,3 +7687,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EditorSceneRuntime「親なしインスタンスだけ初期化」（`fix/EditorSceneRuntimeParentOnly` 予定）
+
+---
+
+## セッション 2026-11-21 04:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorSceneRuntimeEntityInitializePolicy` を追加（ルート初期化＋未 Active の多段パス）
+- `InitializeSceneDocumentEntities` を EditorSceneRuntime から分離
+- `verify_editor_scene_runtime_initialize_hierarchy.py` を CI に追加
+- `verify_scene_entity_editor_draw_preview_roots.py` を policy 分割に合わせて更新
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 階層付き DebugPlayArea／BuildUp: 子付きインスタンスの Cmp が未初期化のまま動かない
+- エディタプレビュー: 親子 JSON をランタイムと同じ Initialize 契約で再現
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 子 Initialize | 有効 | 保存したエンティティをゲーム内に生成し、ランタイムで試す（階層シーンの安定動作） |
+
+### 次 tick 候補
+
+- EditorSceneRuntime「Entity 名が definition のみ」（`fix/EditorSceneRuntimeInstanceName` 予定）

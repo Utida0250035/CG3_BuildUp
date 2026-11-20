@@ -1,5 +1,7 @@
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 
+#include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
+
 #include "Camera/StageViewFramingBounds.h"
 #include "Engine/AtrumEngine.h"
 #include "System/Entity/Components/CmpDrawHitSphere.h"
@@ -581,26 +583,6 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document) {
   InitializeSceneDocumentEntities(entities);
 
   return entities;
-}
-
-void InitializeSceneDocumentEntities(
-    std::vector<std::unique_ptr<Entity>> &entities) {
-  for (std::unique_ptr<Entity> &entity : entities) {
-    if (entity) {
-      entity->ResolveDependencies();
-    }
-  }
-  for (std::unique_ptr<Entity> &entity : entities) {
-    if (entity && entity->GetParent() == nullptr) {
-      entity->Initialize();
-    }
-  }
-  for (std::unique_ptr<Entity> &entity : entities) {
-    if (entity && entity->GetParent() != nullptr &&
-        entity->GetState() != Entity::State::Active) {
-      entity->Initialize();
-    }
-  }
 }
 
 void DrawSceneDocumentEntities(

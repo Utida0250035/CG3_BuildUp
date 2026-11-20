@@ -466,7 +466,7 @@
 - [x] ランタイムプレビュー手順がコード断片のみ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorSceneRuntime
-- [ ] 親なしインスタンスだけ初期化
+- [x] 親なしインスタンスだけ初期化
 - [ ] Entity 名が definition のみ
 
 ### launch_config

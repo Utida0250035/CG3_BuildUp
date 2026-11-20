@@ -14,12 +14,16 @@ def main() -> int:
     runtime_cpp = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "Scene" / "EditorSceneRuntime.cpp"
     entity_cpp = ROOT / "Project" / "Codes" / "Source" / "Scene" / "SceneEntityEditor.cpp"
 
+    policy_cpp = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "EditorSceneRuntimeEntityInitializePolicy.cpp"
+
     if runtime_cpp.is_file():
         text = runtime_cpp.read_text(encoding="utf-8", errors="replace")
         if "DrawSceneDocumentEntities" not in text:
             errors.append("EditorSceneRuntime missing DrawSceneDocumentEntities")
         if "InitializeSceneDocumentEntities" not in text:
-            errors.append("EditorSceneRuntime missing InitializeSceneDocumentEntities")
+            errors.append("BuildEntities must call InitializeSceneDocumentEntities")
+        if "EditorSceneRuntimeEntityInitializePolicy.h" not in text:
+            errors.append("EditorSceneRuntime must include initialize policy")
         draw_fn = text.split("void DrawSceneDocumentEntities", 1)
         if len(draw_fn) > 1:
             body = draw_fn[1][:600]
@@ -27,6 +31,14 @@ def main() -> int:
                 errors.append("DrawSceneDocumentEntities must handle parent hierarchy")
     else:
         errors.append("missing EditorSceneRuntime.cpp")
+
+    if policy_cpp.is_file():
+        if "InitializeSceneDocumentEntities" not in policy_cpp.read_text(
+            encoding="utf-8", errors="replace"
+        ):
+            errors.append("initialize policy missing InitializeSceneDocumentEntities")
+    else:
+        errors.append("missing EditorSceneRuntimeEntityInitializePolicy.cpp")
 
     if entity_cpp.is_file():
         text = entity_cpp.read_text(encoding="utf-8", errors="replace")
