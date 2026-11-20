@@ -133,6 +133,9 @@ jobs:
       - name: Verify launch_config feature verification startup
         run: python3 EditorAssets/Tools/CursorAI/verify_launch_config_feature_startup.py
 
+      - name: Verify launch_config load diagnostics
+        run: python3 EditorAssets/Tools/CursorAI/verify_launch_config_load_diagnostics.py
+
       - name: Verify CommandScene release boot falls back to Title
         run: python3 EditorAssets/Tools/CursorAI/verify_command_scene_release_boot.py
 

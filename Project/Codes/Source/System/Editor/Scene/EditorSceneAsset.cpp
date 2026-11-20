@@ -1,5 +1,6 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
+#include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/GameAssetsPaths.h"
 #include <algorithm>
@@ -119,51 +120,10 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   return fs::remove(absoluteTarget, ec) && !ec;
 }
 
-namespace {
-
-bool TryLoadLaunchConfigFromPath(const std::filesystem::path &configPath,
-                                 LaunchConfig &outConfig) {
-  namespace fs = std::filesystem;
-  outConfig = {};
-  if (!fs::exists(configPath)) {
-    return false;
-  }
-
-  std::ifstream file(configPath);
-  if (!file.is_open()) {
-    return false;
-  }
-
-  nlohmann::json json{};
-  try {
-    file >> json;
-  } catch (...) {
-    return false;
-  }
-
-  if (json.contains("startupScenePath") &&
-      json.at("startupScenePath").is_string()) {
-    outConfig.startupScenePath = json.at("startupScenePath").get<std::string>();
-  }
-  return !outConfig.startupScenePath.empty();
-}
-
-std::string ResolveStartupPathFromConfig(const LaunchConfig &config) {
-  namespace fs = std::filesystem;
-  if (config.startupScenePath.empty()) {
-    return {};
-  }
-  if (!fs::exists(config.startupScenePath)) {
-    return {};
-  }
-  return config.startupScenePath;
-}
-
-} // namespace
-
 bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
-  return TryLoadLaunchConfigFromPath(
-      std::filesystem::path(GameAssets::kLaunchConfigPath), outConfig);
+  return LaunchConfigLoadDiagnostics::TryLoadLaunchConfigFromPath(
+             GameAssets::kLaunchConfigPath, outConfig) ==
+         LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue::None;
 }
 
 bool TrySaveLaunchConfig(const LaunchConfig &config) {
@@ -206,20 +166,8 @@ bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath) {
 }
 
 std::string ResolveStartupScenePath() {
-  LaunchConfig config{};
-  if (TryLoadLaunchConfig(config)) {
-    if (const std::string resolved = ResolveStartupPathFromConfig(config);
-        !resolved.empty()) {
-      return resolved;
-    }
-  }
-  config = {};
-  if (TryLoadLaunchConfigFromPath(
-          std::filesystem::path(EditorAssets::kEditorLaunchConfigJson),
-          config)) {
-    return ResolveStartupPathFromConfig(config);
-  }
-  return {};
+  return LaunchConfigLoadDiagnostics::ResolveStartupScenePathDetailed()
+      .startupScenePath;
 }
 
 EditorScenePlayRequest &EditorScenePlayRequest::Instance() {

@@ -650,6 +650,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
@@ -1500,6 +1501,7 @@
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaCombatBoundsSandbox.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigFeatureVerificationDefaults.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigLoadDiagnostics.h" />
     <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h" />
     <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h" />
   </ItemGroup>

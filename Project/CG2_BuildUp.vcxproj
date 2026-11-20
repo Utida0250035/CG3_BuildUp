@@ -443,6 +443,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
@@ -875,6 +876,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaCombatBoundsSandbox.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigFeatureVerificationDefaults.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigLoadDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
     <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
     <ClInclude Include="Codes\Include\System\Hash64.h" />

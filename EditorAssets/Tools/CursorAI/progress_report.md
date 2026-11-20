@@ -7780,3 +7780,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - launch_config「設定読込失敗を区別できない」（`fix/LaunchConfigLoadDiagnostics` 予定）
+
+---
+
+## セッション 2026-11-21 05:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorLaunchConfigLoadDiagnostics` で読込失敗を原因別に分類
+- `ResolveStartupScenePathDetailed` と日本語説明 API を追加
+- プロジェクトパネルが未設定文言の代わりに理由＋参照パスを表示
+- `verify_launch_config_load_diagnostics.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- デバッグ: launch_config 欠損・JSON 壊れ・シーン JSON 不存在を UI で即切り分け
+- Release／Development 起動: 空パスとファイル不存在を別メッセージで把握
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 読込診断 | 有効 | エディタ上プレイとランタイム検証の起動設定を把握しやすくする |
+
+### 次 tick 候補
+
+- launch_config「startupScenePath 空で false」（`fix/LaunchConfigEmptyStartupPath` 予定）

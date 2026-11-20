@@ -38,10 +38,17 @@ def main() -> int:
         if "DebugPlayAreaFeatureVerificationCanonical" not in text:
             errors.append("defaults must use feature verification canonical")
 
+    diag_cpp = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "EditorLaunchConfigLoadDiagnostics.cpp"
+    if diag_cpp.is_file():
+        text = diag_cpp.read_text(encoding="utf-8", errors="replace")
+        if "kEditorLaunchConfigJson" not in text:
+            errors.append("startup resolver must read EditorAssets launch_config")
+    else:
+        errors.append("missing EditorLaunchConfigLoadDiagnostics.cpp")
     if ASSET_CPP.is_file():
         text = ASSET_CPP.read_text(encoding="utf-8", errors="replace")
-        if "kEditorLaunchConfigJson" not in text:
-            errors.append("ResolveStartupScenePath must read EditorAssets launch_config")
+        if "EditorLaunchConfigLoadDiagnostics" not in text:
+            errors.append("EditorSceneAsset must delegate to load diagnostics")
     else:
         errors.append("missing EditorSceneAsset.cpp")
 

@@ -14,6 +14,7 @@
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
 #include "System/Editor/EditorDebugPlayAreaScaffold.h"
 #include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
+#include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
 #include "System/Hash64.h"
@@ -735,17 +736,24 @@ void EntityEditor::DrawProjectPanel() {
       // importStatusMessage は TrySet 内で設定済み
     }
   }
-  const std::string startupPath =
-      Atrum::Editor::Scene::ResolveStartupScenePath();
-  if (!startupPath.empty()) {
-    ImGui::TextDisabled("Release 起動: %s", startupPath.c_str());
+  const Atrum::Editor::LaunchConfigLoadDiagnostics::LaunchConfigResolveResult
+      startup =
+          Atrum::Editor::LaunchConfigLoadDiagnostics::
+              ResolveStartupScenePathDetailed();
+  if (!startup.startupScenePath.empty()) {
+    ImGui::TextDisabled("Release 起動: %s", startup.startupScenePath.c_str());
     if (ImGui::Button("Release 起動で BuildUp")) {
       if (!TryQueueBuildUpFromReleaseStartup(ui_, &ui_.importStatusMessage)) {
         // importStatusMessage は TryQueue 内で設定済み
       }
     }
   } else {
-    ImGui::TextDisabled("Release 起動: （launch_config 未設定）");
+    ImGui::TextDisabled(
+        "Release 起動: %s（%s）",
+        Atrum::Editor::LaunchConfigLoadDiagnostics::
+            DescribeLaunchConfigLoadIssueJa(startup.issue),
+        startup.configPathTried.empty() ? "—"
+                                        : startup.configPathTried.c_str());
   }
   ImGui::Separator();
 
