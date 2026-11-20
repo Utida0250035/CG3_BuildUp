@@ -329,7 +329,7 @@
 
 ### SceneResult
 - [x] SceneResult に BGM 維持・再開処理が無い
-- [ ] SceneResult が毎フレーム簡易平行光のみ適用（spec: feature-memos/rim_light.md）
+- [x] SceneResult が毎フレーム簡易平行光のみ適用（spec: feature-memos/rim_light.md）
 - [ ] ExitScene が即 StopBgmLoop
 
 ### Scene

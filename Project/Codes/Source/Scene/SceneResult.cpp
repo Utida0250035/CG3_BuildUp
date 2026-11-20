@@ -2,7 +2,7 @@
 
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
-#include "Engine/Resource/LightData.h"
+#include "Scene/SceneResultVisualApply.h"
 #include "Input/AbstractInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
@@ -14,22 +14,6 @@
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
-namespace {
-
-void SetupStageLighting() {
-  Atrum::Math::Vector3 lightDirection{-0.4f, -0.85f, 0.15f};
-  lightDirection.Normalize();
-  const Atrum::DirectionalLightData directionalLight{
-      .color = Atrum::Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 8.0f,
-      .lightModel = Atrum::LightModel::HalfLambert,
-  };
-  ::Atrum::EngineSetDirectionalLightData(directionalLight);
-}
-
-} // namespace
-
 namespace Atrum {
 
 void SceneResult::EnterScene() {
@@ -37,6 +21,7 @@ void SceneResult::EnterScene() {
   SetupStageViewCamera();
   Atrum::SceneScreenUi::PreloadResultUiTextures();
   SpawnBackgrounds();
+  ApplySceneResultVisualFromProfile();
   sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmResult.mp3",
                                         "./Resources/bgmResult.mp3"});
   if (sceneBgmHandle_.isSuccess) {
@@ -64,7 +49,7 @@ void SceneResult::Update() {
 }
 
 void SceneResult::DrawScene() {
-  SetupStageLighting();
+  ApplySceneResultVisualFromProfile();
   DrawBackgrounds();
 
   if (Atrum::AtrumEngine *engine = ::Atrum::EngineInstance()) {
