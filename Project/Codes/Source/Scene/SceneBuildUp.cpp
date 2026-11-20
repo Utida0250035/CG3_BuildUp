@@ -15,6 +15,7 @@
 #include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
 #include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
 #include "Scene/SceneBuildUpEnterSceneEditorUiPolicy.h"
+#include "Scene/SceneBuildUpMissingPrimaryCameraFeedback.h"
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
@@ -188,6 +189,7 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
       SceneBuildUpRuntimeSubviewDrawCamera::BindAfterGameOrderPrepare(
           *this, width, height);
   if (camera == nullptr) {
+    HandleSceneBuildUpDrawWithoutPrimaryCamera(engine, sceneJsonPath_);
     return;
   }
   engine->SetCamera(camera);
@@ -211,7 +213,12 @@ void SceneBuildUp::DrawScene() {
 
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
-  engine->SetCamera(GetCamera());
+  Atrum::Camera *const primaryCamera = GetCamera();
+  if (primaryCamera == nullptr) {
+    HandleSceneBuildUpDrawWithoutPrimaryCamera(engine, sceneJsonPath_);
+    return;
+  }
+  engine->SetCamera(primaryCamera);
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
@@ -232,6 +239,8 @@ void SceneBuildUp::Draw() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   if (sceneDocumentLoadFailed_ && !sceneLoadFailureMessage_.empty()) {
     DrawSceneBuildUpSceneLoadFailureNotice(sceneLoadFailureMessage_);
+  } else {
+    DrawSceneBuildUpMissingPrimaryCameraNoticeIfPending();
   }
 #endif
 #ifdef USE_IMGUI

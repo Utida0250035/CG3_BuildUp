@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「camera==nullptr で無言 return」（`fix/SceneBuildUpCameraNullGuard` 予定）
+- SceneBuildUp「ctor で displayName を仮設定」（`fix/SceneBuildUpDisplayNameCtor` 予定）
+
+---
+
+## セッション 2026-11-21 03:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpMissingPrimaryCameraFeedback` で暗転＋Development 時 ImGui 通知
+- `DrawScene` / `DrawRuntimeViewContent` の camera==nullptr で feedback を呼ぶ
+- `verify_scene_build_up_camera_null_feedback.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: CmpCamera 未配置テンプレと読込失敗を UI で切り分ける
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| カメラ欠落表示 | 有効 | 空エンティティ＋カメラ試験の制作フローを短縮する |
 
 ---
 

@@ -174,3 +174,6 @@ jobs:
 
       - name: Verify SceneBuildUp EnterScene does not lock Runtime tab
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_enter_scene_no_runtime_tab_lock.py
+
+      - name: Verify SceneBuildUp reports missing primary camera
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_camera_null_feedback.py
