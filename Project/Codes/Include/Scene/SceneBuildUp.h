@@ -46,6 +46,8 @@ private:
   std::vector<std::unique_ptr<Entity>> entities_{};
   // Release シーン巡回の対象なら左上に「次のシーンへ」案内を描く
   bool showsNextSceneHint_ = false;
+  bool sceneDocumentLoadFailed_ = false;
+  std::string sceneLoadFailureMessage_{};
 
   void TeardownEntities();
   void SetupRuntimeLighting();

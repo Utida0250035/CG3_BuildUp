@@ -318,7 +318,7 @@
 - [x] BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い
 - [x] BuildUp の sceneJsonPath_ を基準パス解決しない
 - [x] SceneBuildUp のカメラがシーン JSON の境界情報を読まない
-- [ ] シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない
+- [x] シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない
 - [ ] SceneBuildUp に BGM／シーン SE の入退場が無い
 
 ### SceneTitle

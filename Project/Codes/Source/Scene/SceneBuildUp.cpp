@@ -3,6 +3,7 @@
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
+#include "Scene/SceneBuildUpSceneLoadFailure.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
@@ -98,14 +99,16 @@ void SceneBuildUp::EnterScene() {
   EnsureCommonResources();
   TeardownEntities();
 
+  sceneDocumentLoadFailed_ = false;
+  sceneLoadFailureMessage_.clear();
+
   EntityEditor::EditorSceneDocument document{};
   if (!EntityEditor::TryLoadSceneDocument(sceneJsonPath_, document)) {
+    sceneDocumentLoadFailed_ = true;
+    sceneLoadFailureMessage_ =
+        BuildSceneBuildUpSceneLoadFailureMessage(sceneJsonPath_);
+    document = {};
     document.sceneName = sceneDisplayName_;
-    EntityEditor::SceneEntityInstance instance{};
-    instance.instanceName = "Entity_0";
-    instance.definition =
-        EntityEditor::MakeDefaultEntityDefinition("Entity_0");
-    document.instances = {std::move(instance)};
   }
 
   if (!document.sceneName.empty()) {
@@ -139,13 +142,15 @@ void SceneBuildUp::Update() {
     return;
   }
 
-  for (std::unique_ptr<Entity> &entity : entities_) {
-    if (entity && entity->IsActive()) {
-      entity->Update();
+  if (!sceneDocumentLoadFailed_) {
+    for (std::unique_ptr<Entity> &entity : entities_) {
+      if (entity && entity->IsActive()) {
+        entity->Update();
+      }
     }
-  }
 
-  Particle::TickEmitterManagerForActiveScene(GetCamera());
+    Particle::TickEmitterManagerForActiveScene(GetCamera());
+  }
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
 }
 
@@ -158,6 +163,11 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
 
   Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
+    return;
+  }
+
+  if (sceneDocumentLoadFailed_) {
+    DrawSceneBuildUpSceneLoadFailureDimOverlay(engine);
     return;
   }
 
@@ -184,6 +194,11 @@ void SceneBuildUp::DrawScene() {
 #else
   Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
+    return;
+  }
+
+  if (sceneDocumentLoadFailed_) {
+    DrawSceneBuildUpSceneLoadFailureDimOverlay(engine);
     return;
   }
 
@@ -227,6 +242,12 @@ void SceneBuildUp::Draw() {
   Atrum::CommandChangeScene::Instance()->Draw();
 #ifdef USE_IMGUI
   engine->ImGuiRender();
+#endif
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (sceneDocumentLoadFailed_ && !sceneLoadFailureMessage_.empty()) {
+    DrawSceneBuildUpSceneLoadFailureNotice(sceneLoadFailureMessage_);
+  }
 #endif
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
