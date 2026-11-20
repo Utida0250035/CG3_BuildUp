@@ -499,7 +499,7 @@
 - [x] ライト／フォグ用 EditorAssets プロファイル JSON が未定義（spec: feature-memos/volumetric_fog.md）
 
 ### DirectionalShadow
-- [ ] シャドウ／シェード適用状態のログ・可視化が無い（spec: feature-memos/directional_shadow.md）
+- [x] シャドウ／シェード適用状態のログ・可視化が無い（spec: feature-memos/directional_shadow.md）
 
 ## Repository
 

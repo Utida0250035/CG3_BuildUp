@@ -43,6 +43,9 @@ jobs:
       - name: Verify visual lighting profile JSON canonical pair
         run: python3 EditorAssets/Tools/CursorAI/verify_visual_lighting_profile_json.py
 
+      - name: Verify DirectionalShadow apply diagnostics
+        run: python3 EditorAssets/Tools/CursorAI/verify_directional_shadow_apply_diagnostics.py
+
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
 

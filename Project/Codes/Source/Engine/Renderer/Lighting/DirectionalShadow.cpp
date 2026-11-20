@@ -1,4 +1,5 @@
 #include "Engine/Renderer/Lighting/DirectionalShadow.h"
+#include "Engine/Renderer/Lighting/DirectionalShadowApplyDiagnostics.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Math/Transform.h"
@@ -29,12 +30,27 @@ void DirectionalShadowSettings::ApplyTo(LightDataDirectional &out) const {
   } else {
     out.flags &= ~static_cast<uint32_t>(LightFlags::CAST_SHADOW);
   }
+  DirectionalShadowApplyDiagnostics::RecordDirectionalLightDataMerge(*this,
+                                                                      out.flags);
 }
 
 void DirectionalShadowSettings::DrawPlanarGroundShadow(
     AtrumEngine *engine, const Math::Vector3 &worldAnchor,
     const float footprintRadius) const {
-  if (engine == nullptr || planarEnabled == 0u || footprintRadius <= 0.0f) {
+  if (engine == nullptr) {
+    DirectionalShadowApplyDiagnostics::RecordPlanarGroundShadowSkip(
+        DirectionalShadowApplyDiagnostics::PlanarDrawSkipReason::NullEngine);
+    return;
+  }
+  if (planarEnabled == 0u) {
+    DirectionalShadowApplyDiagnostics::RecordPlanarGroundShadowSkip(
+        DirectionalShadowApplyDiagnostics::PlanarDrawSkipReason::PlanarDisabled);
+    return;
+  }
+  if (footprintRadius <= 0.0f) {
+    DirectionalShadowApplyDiagnostics::RecordPlanarGroundShadowSkip(
+        DirectionalShadowApplyDiagnostics::PlanarDrawSkipReason::
+            NonPositiveRadius);
     return;
   }
 
@@ -48,6 +64,7 @@ void DirectionalShadowSettings::DrawPlanarGroundShadow(
   engine->SetBlendModeForFrame(BlendMode::NORMAL);
   engine->DrawSphere(WhiteTextureIndex(), shadowColor, Math::Transform{},
                      shadowTransform.MakeWorldMatrix(), drawRadius, 2, false);
+  DirectionalShadowApplyDiagnostics::RecordPlanarGroundShadowDraw();
 }
 
 #ifdef USE_IMGUI

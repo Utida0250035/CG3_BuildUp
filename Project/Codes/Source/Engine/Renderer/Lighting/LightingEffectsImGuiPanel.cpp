@@ -3,6 +3,7 @@
 #if defined(USE_IMGUI)
 
 #include "Engine/Renderer/Lighting/DirectionalShadow.h"
+#include "Engine/Renderer/Lighting/DirectionalShadowApplyDiagnostics.h"
 #include "Engine/Renderer/Lighting/GodRays.h"
 #include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "ForDebug/ImGui.h"
@@ -19,6 +20,10 @@ void DrawLightingEffectsImGuiPanel(VolumetricFog &volumetricFog, GodRays &godRay
   }
   if (ImGui::CollapsingHeader("Shadow", ImGuiTreeNodeFlags_DefaultOpen)) {
     directionalShadow.ImGui();
+#if defined(DEVELOPMENT)
+    DirectionalShadowApplyDiagnostics::DrawApplyStateOverlay(
+        directionalShadow.GetSettings());
+#endif
   }
 }
 

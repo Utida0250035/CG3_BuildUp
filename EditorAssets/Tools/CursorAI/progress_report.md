@@ -7998,3 +7998,34 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Lighting「シャドウ／シェード適用状態のログ・可視化が無い」（`directional_shadow.md`）
+
+---
+
+## セッション 2026-11-21 06:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `DirectionalShadowApplyDiagnostics` … 平面影 draw/skip・`CAST_SHADOW` マージ統計
+- `DrawPlanarGroundShadow` の各 return で skip 理由を記録（無言 return を廃止）
+- ライティング効果パネルに「適用状態 / 診断」オーバーレイと「適用状態をログへ」
+- `directional_shadow.md` 診断節、`verify_directional_shadow_apply_diagnostics.py`（CI）
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** 平面影が出ないとき planar OFF・radius・engine null を統計とログで切り分け
+- **開発:** ImGui でシェード／CAST_SHADOW の適用状態を即確認
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Shadow 診断 | 有効 | グラフィックス調整をエディタ／デバッグで確認する流れ（間接的にライト影響の可視化） |
+
+### 次 tick 候補
+
+- Repository 節「サブシステム別フレームプロファイラが未実装」（`GAP-Infra-frame_profiler-001`）

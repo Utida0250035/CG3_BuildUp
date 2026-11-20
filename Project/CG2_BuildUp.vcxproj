@@ -272,6 +272,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
@@ -297,6 +298,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
@@ -619,6 +621,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h" />
@@ -645,6 +648,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
+    <ClInclude Include="Codes\Include\ForDebug\DirectionalShadowApplyDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\Log.h" />
     <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h" />
