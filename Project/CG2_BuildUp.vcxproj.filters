@@ -4,6 +4,9 @@
     <ClCompile Include="Codes\Source\Application\main.cpp">
       <Filter>Codes\Source\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeFrames.cpp">
+      <Filter>Codes\Source\Application</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Audio\Audio.cpp">
       <Filter>Codes\Source\Audio</Filter>
     </ClCompile>

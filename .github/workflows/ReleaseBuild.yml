@@ -109,3 +109,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
           }
+
+      - name: Release startup smoke
+        shell: pwsh
+        run: |
+          & "EditorAssets/Tools/CursorAI/runReleaseStartupSmoke.ps1" -Configuration Release -SmokeFrames 90
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }

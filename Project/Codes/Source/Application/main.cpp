@@ -1,3 +1,4 @@
+#include "Application/ReleaseStartupSmokeFrames.h"
 #include "Engine/AtrumEngine.h"
 #include "File/SetWorkingDirectoryToExecutable.h"
 #include "Scene/GameOrder.h"
@@ -21,6 +22,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
   Atrum::GameOrder *gameOrder = Atrum::GameOrder::Instance();
 
+  const int smokeFrameBudget = Atrum::Application::ReadReleaseStartupSmokeFrameBudget();
+  int smokeFrameCount = 0;
+
   while (true) {
 #if defined(DEVELOPMENT)
     {
@@ -36,6 +40,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     }
 #endif
     gameOrder->Run();
+
+    if (smokeFrameBudget > 0) {
+      ++smokeFrameCount;
+      if (smokeFrameCount >= smokeFrameBudget) {
+        break;
+      }
+    }
   }
 
   engine->Finalize();

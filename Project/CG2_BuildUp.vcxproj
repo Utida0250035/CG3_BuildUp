@@ -200,6 +200,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Codes\Source\Application\main.cpp" />
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeFrames.cpp" />
     <ClCompile Include="Codes\Source\Audio\Audio.cpp" />
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\Audio\PlaybackPosition.cpp" />

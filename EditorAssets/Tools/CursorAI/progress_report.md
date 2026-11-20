@@ -8120,3 +8120,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Release ビルド後の exe 起動スモークが CI に無い（`GAP-Infra-Release_smoke-001`）
+
+---
+
+## セッション 2026-11-21 07:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ATRUM_RELEASE_SMOKE_FRAMES` で WinMain を自動終了（CI 専用・通常未設定）
+- `runReleaseStartupSmoke.ps1` を `ReleaseBuild.yml` ビルド後に実行
+- `release_startup_smoke.md`・`verify_release_startup_smoke_ci.py`（CI）
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **配布:** Release 成果物の exe が数フレーム再生できる退行検知
+- **CI:** Windows runner 上で SDL/D3D12 初期化までのスモーク
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` / Release スモーク未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Release スモーク | 有効 | ランタイム出力・配布 exe の起動確認 |
+
+### 次 tick 候補
+
+- Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる（`GAP-Ship-EditorSources-001`）
