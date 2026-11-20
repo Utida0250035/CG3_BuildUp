@@ -6434,3 +6434,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Launch は Scene 生成のみ | 有効 | シーンの構成を保存し、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-20 16:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpRegistryLaunchDedupe::AcquireOrCreateOwned` で resolved パス一致時は既存 `SceneBuildUp` を返却
+- 同一パスの重複エントリを所有リストから除去、`SetReturnScene` で再 Launch 時の戻り先を更新
+- `verify_scene_build_up_launch_policy.py` に dedupe 接続の静的検査を追加
+- roadmap「Launch が同一パス重複を防がない」を `[x]`
+
+### 推測した用途（§6.4）
+
+- デバッグプレイ／機能検証シーンを連打しても `ownedScenes_` が同一 JSON で膨らまない
+- F1 戻り先が再実行たびにエディタ側の最新 `returnScene` に追従する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Launch が同一パス重複を防がない | 有効 | エディタ既定の機能検証シーンからエディタ外ランタイムを試す（debug 導線の安定） |

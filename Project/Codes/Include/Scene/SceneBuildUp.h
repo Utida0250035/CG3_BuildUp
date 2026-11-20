@@ -37,6 +37,8 @@ public:
 
   const std::string &SceneJsonPath() const { return sceneJsonPath_; }
 
+  void SetReturnScene(Scene *returnScene) { returnScene_ = returnScene; }
+
   bool SceneDocumentLoadFailed() const { return sceneDocumentLoadFailed_; }
   Audio::Handle &SceneBgmHandle() { return sceneBgmHandle_; }
   Audio::Handle &SceneAmbientLoopHandle() { return sceneAmbientLoopSeHandle_; }

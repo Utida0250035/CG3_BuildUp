@@ -392,7 +392,7 @@
 ### SceneBuildUpRegistry
 - [x] Launch は生成してポインタ返却のみ（spec: feature-memos/debug_test_play_area.md）
 - [x] Launch は Scene 生成のみ
-- [ ] Launch が同一パス重複を防がない
+- [x] Launch が同一パス重複を防がない
 
 ### StreamingDebug
 - [ ] ストリーミング診断が ImGui 表示のみでログに残らない（spec: feature-memos/streaming_debug_imgui.md）

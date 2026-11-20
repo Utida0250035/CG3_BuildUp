@@ -24,6 +24,21 @@ def main() -> int:
     if "CreateOwnedBuildUp" not in policy_text:
         errors.append("SceneBuildUpLaunchPolicy.h: expected CreateOwnedBuildUp")
 
+    dedupe_cpp = ROOT / "Project" / "Codes" / "Source" / "Scene" / "SceneBuildUpRegistryLaunchDedupe.cpp"
+    build_up_cpp = ROOT / "Project" / "Codes" / "Source" / "Scene" / "SceneBuildUp.cpp"
+    build_up_h = ROOT / "Project" / "Codes" / "Include" / "Scene" / "SceneBuildUp.h"
+
+    if not dedupe_cpp.is_file():
+        errors.append("missing SceneBuildUpRegistryLaunchDedupe.cpp")
+    if build_up_cpp.is_file() and "SceneBuildUpRegistryLaunchDedupe::AcquireOrCreateOwned" not in build_up_cpp.read_text(
+        encoding="utf-8", errors="replace"
+    ):
+        errors.append("SceneBuildUp.cpp: Launch must use AcquireOrCreateOwned")
+    if build_up_h.is_file() and "SetReturnScene" not in build_up_h.read_text(
+        encoding="utf-8", errors="replace"
+    ):
+        errors.append("SceneBuildUp.h: expected SetReturnScene for relaunch")
+
     if entity_cpp.is_file():
         text = entity_cpp.read_text(encoding="utf-8", errors="replace")
         if "QueueFadeToBuildUp" not in text:

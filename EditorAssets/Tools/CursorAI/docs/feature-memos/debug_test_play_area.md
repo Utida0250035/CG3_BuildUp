@@ -16,7 +16,7 @@
 ## フロー
 
 1. `scaffold_play_area.py FeatureX` で JSON 生成
-2. エディタで編集 → `QueueFadeToBuildUp`（生成は `CreateOwnedBuildUp`、EnterScene はフェード切替時）またはメニュー「SceneBuildUp で実行」
+2. エディタで編集 → `QueueFadeToBuildUp`（生成は `CreateOwnedBuildUp`、同一 JSON は再 Launch せず再利用、EnterScene はフェード切替時）またはメニュー「SceneBuildUp で実行」
 3. 問題なければ本編シーンへ Entity を移植
 
 ## 推測したゲーム開発での用途

@@ -3,6 +3,7 @@
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
+#include "Scene/SceneBuildUpRegistryLaunchDedupe.h"
 #include "Scene/SceneBuildUpAudioPolicy.h"
 #include "Scene/SceneBuildUpSceneLoadFailure.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
@@ -54,10 +55,8 @@ Scene *SceneBuildUpRegistry::Launch(const std::string &sceneJsonPath,
                                     Scene *returnScene) {
   const std::string resolvedPath =
       ResolveSceneBuildUpJsonPath(sceneJsonPath);
-  auto scene = std::make_unique<SceneBuildUp>(resolvedPath, returnScene);
-  Scene *raw = scene.get();
-  ownedScenes_.push_back(std::move(scene));
-  return raw;
+  return SceneBuildUpRegistryLaunchDedupe::AcquireOrCreateOwned(
+      ownedScenes_, resolvedPath, returnScene);
 }
 
 void SceneBuildUpRegistry::OnSceneExited(SceneBuildUp *scene) {
