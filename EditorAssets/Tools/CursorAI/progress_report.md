@@ -5958,3 +5958,22 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | sceneJsonPath 解決 | 有効 | プレイヤーがシーンを開き、主要オブジェクトとカメラが安定して動作する |
+
+---
+
+## セッション 2026-11-20 11:32（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpStageCameraFraming` で `stageViewFramingBounds`／境界マーカーを `StageViewFramingBounds` へ取り込み
+- `Update`・実行時ビュー・Release 描画で `MaintainLockedStageCamera`（Publish + SetupStageViewCamera + PrepareCamerasForDraw）
+
+### 推測した用途（§6.4）
+
+- JSON 検証シーン（combat_bounds_sandbox 等）を本編相当のステージカメラ枠でプレビューする
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| BuildUp 境界→カメラ | 有効 | プレイヤーがカメラを直接操作せずとも自動でカメラが動作し、見やすいカメラワークをとるようになっている |

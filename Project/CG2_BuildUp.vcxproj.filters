@@ -548,6 +548,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
@@ -1296,6 +1297,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneJsonPathResolve.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />

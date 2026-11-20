@@ -3,6 +3,7 @@
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
+#include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -111,10 +112,9 @@ void SceneBuildUp::EnterScene() {
     sceneDisplayName_ = document.sceneName;
   }
 
-  SetStageViewFramingBounds(
-      EntityEditor::ResolveStageViewFramingBounds(document));
+  SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(*this, document);
   entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
-  SetupStageViewCamera();
+  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   ApplySceneBuildUpRuntimeVisualFromProfile();
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
@@ -146,6 +146,7 @@ void SceneBuildUp::Update() {
   }
 
   Particle::TickEmitterManagerForActiveScene(GetCamera());
+  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
 }
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -163,7 +164,7 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   SetupRuntimeLighting();
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
 
-  SetupStageViewCamera();
+  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   Atrum::Camera *camera = GetCamera();
   if (camera == nullptr) {
     return;
@@ -188,6 +189,7 @@ void SceneBuildUp::DrawScene() {
 
   SetupRuntimeLighting();
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
+  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   engine->SetCamera(GetCamera());
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();

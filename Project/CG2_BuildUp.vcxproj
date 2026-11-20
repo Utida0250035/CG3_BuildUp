@@ -348,6 +348,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovie.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieReturnTarget.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovieTrackFailure.cpp" />
@@ -633,6 +634,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneJsonPathResolve.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovie.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieReturnTarget.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovieTrackFailure.h" />
