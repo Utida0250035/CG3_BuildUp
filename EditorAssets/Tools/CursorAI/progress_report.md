@@ -7748,3 +7748,35 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - launch_config「startup が Feature 検証シーンではない」（`fix/LaunchConfigFeatureStartup` 予定）
+
+---
+
+## セッション 2026-11-21 04:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorAssets/launch_config.json` を追加（startup = LoopTick13Demo 正本）
+- `ResolveStartupScenePath` が `Assets/launch_config` 未設定時に EditorAssets 側を読む
+- Development 起動フォールバックをテンプレから機能検証正本へ変更
+- `EditorLaunchConfigFeatureVerificationDefaults` を追加
+- `verify_launch_config_feature_startup.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- Development 起動: リポジトリ clone 直後から BuildUp 機能検証シーンへ入れる
+- Release 起動: `./Assets/launch_config.json` を別途本編シーン向けに維持可能
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Feature 検証 startup | 有効 | エディタ上プレイとランタイム環境でのプレイ試験（既定起動の最小構成） |
+
+### 次 tick 候補
+
+- launch_config「設定読込失敗を区別できない」（`fix/LaunchConfigLoadDiagnostics` 予定）

@@ -32,8 +32,8 @@ def main() -> int:
 
     if boot_cpp.is_file():
         text = boot_cpp.read_text(encoding="utf-8", errors="replace")
-        if "kDebugPlayAreaTemplateScene" not in text:
-            errors.append("boot resolver needs DebugPlayArea template fallback")
+        if "DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath" not in text:
+            errors.append("boot resolver needs feature verification fallback")
         if "DevelopmentBootKind::SceneBuildUp" not in text:
             errors.append("boot resolver must assign SceneBuildUp kind")
 

@@ -1,6 +1,7 @@
 #include "Scene/CommandSceneDevelopmentBoot.h"
 
 #include "Scene/CommandSceneBootLaunchPathGate.h"
+#include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -50,17 +51,19 @@ bool IsValidBootSceneJsonPath(const std::string &sceneJsonPath) {
 DevelopmentBootTarget ResolveDevelopmentBootTarget() {
   DevelopmentBootTarget target{};
   std::string sceneJsonPath = ResolveConfiguredStartupScenePath();
+  const char *const featureVerificationFallback =
+      DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
   if (sceneJsonPath.empty()) {
-    if (CanLaunchBootSceneAtPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
+    if (CanLaunchBootSceneAtPath(featureVerificationFallback)) {
       target.kind = DevelopmentBootKind::SceneBuildUp;
-      target.sceneJsonPath = EditorAssets::kDebugPlayAreaTemplateScene;
+      target.sceneJsonPath = featureVerificationFallback;
     }
     return target;
   }
   if (!CanLaunchBootSceneAtPath(sceneJsonPath)) {
-    if (CanLaunchBootSceneAtPath(EditorAssets::kDebugPlayAreaTemplateScene)) {
+    if (CanLaunchBootSceneAtPath(featureVerificationFallback)) {
       target.kind = DevelopmentBootKind::SceneBuildUp;
-      target.sceneJsonPath = EditorAssets::kDebugPlayAreaTemplateScene;
+      target.sceneJsonPath = featureVerificationFallback;
     }
     return target;
   }

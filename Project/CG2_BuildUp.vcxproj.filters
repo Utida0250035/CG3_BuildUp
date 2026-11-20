@@ -1499,6 +1499,7 @@
     <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaCombatBoundsSandbox.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigFeatureVerificationDefaults.h" />
     <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h" />
     <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h" />
   </ItemGroup>

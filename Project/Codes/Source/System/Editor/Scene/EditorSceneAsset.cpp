@@ -119,10 +119,12 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   return fs::remove(absoluteTarget, ec) && !ec;
 }
 
-bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
+namespace {
+
+bool TryLoadLaunchConfigFromPath(const std::filesystem::path &configPath,
+                                 LaunchConfig &outConfig) {
   namespace fs = std::filesystem;
   outConfig = {};
-  const fs::path configPath = GameAssets::kLaunchConfigPath;
   if (!fs::exists(configPath)) {
     return false;
   }
@@ -144,6 +146,24 @@ bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
     outConfig.startupScenePath = json.at("startupScenePath").get<std::string>();
   }
   return !outConfig.startupScenePath.empty();
+}
+
+std::string ResolveStartupPathFromConfig(const LaunchConfig &config) {
+  namespace fs = std::filesystem;
+  if (config.startupScenePath.empty()) {
+    return {};
+  }
+  if (!fs::exists(config.startupScenePath)) {
+    return {};
+  }
+  return config.startupScenePath;
+}
+
+} // namespace
+
+bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
+  return TryLoadLaunchConfigFromPath(
+      std::filesystem::path(GameAssets::kLaunchConfigPath), outConfig);
 }
 
 bool TrySaveLaunchConfig(const LaunchConfig &config) {
@@ -187,14 +207,19 @@ bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath) {
 
 std::string ResolveStartupScenePath() {
   LaunchConfig config{};
-  if (!TryLoadLaunchConfig(config)) {
-    return {};
+  if (TryLoadLaunchConfig(config)) {
+    if (const std::string resolved = ResolveStartupPathFromConfig(config);
+        !resolved.empty()) {
+      return resolved;
+    }
   }
-  namespace fs = std::filesystem;
-  if (!fs::exists(config.startupScenePath)) {
-    return {};
+  config = {};
+  if (TryLoadLaunchConfigFromPath(
+          std::filesystem::path(EditorAssets::kEditorLaunchConfigJson),
+          config)) {
+    return ResolveStartupPathFromConfig(config);
   }
-  return config.startupScenePath;
+  return {};
 }
 
 EditorScenePlayRequest &EditorScenePlayRequest::Instance() {

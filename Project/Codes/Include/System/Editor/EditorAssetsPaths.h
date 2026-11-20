@@ -21,6 +21,8 @@ constexpr const char *kDebugPlayAreaLoopTick13DemoScene =
     "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json";
 constexpr const char *kDebugPlayAreaCombatBoundsSandboxScene =
     "../EditorAssets/DebugPlayArea/combat_bounds_sandbox.scene.json";
+/// リポジトリ同梱の開発用 launch_config（機能検証シーン既定）
+constexpr const char *kEditorLaunchConfigJson = "../EditorAssets/launch_config.json";
 
 /// ゲーム用 Lua スクリプト（エディタのスクリプト雛形の出力先）
 constexpr const char *kScriptsDirectory = "Assets/Scripts";
