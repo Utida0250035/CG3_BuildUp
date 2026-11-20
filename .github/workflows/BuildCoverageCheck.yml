@@ -61,6 +61,9 @@ jobs:
       - name: Verify editor sources excluded from Release build
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_sources_release_exclude.py
 
+      - name: Verify runtime asset pack paths
+        run: python3 EditorAssets/Tools/CursorAI/verify_asset_pack_paths.py
+
       - name: Verify Lighting effects shared with engine
         run: python3 EditorAssets/Tools/CursorAI/verify_lighting_effects_shared.py
 

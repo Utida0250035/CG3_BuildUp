@@ -8179,3 +8179,37 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 同梱アセットとランタイム参照パスの整合（`GAP-Infra-asset_pack_verify-001`）
+
+---
+
+## セッション 2026-11-21 08:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `verify_asset_pack_paths.py` … GameAssets/EditorAssets 定数と PostBuild xcopy を突合
+- `asset_pack_verify.md`、CI 追加
+- `Project/Assets/Visual/game_scene_lighting.json` を PostBuild 正本へ同期、`EditorAssets/Scenes/` を用意
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **配布:** Release exe からの相対パスがビルド前に存在することを担保
+- **制作:** ルート `Assets/` と `Project/Assets/` のズレを検知
+
+### 既存実装の課題点
+
+- リポジトリ直下 `Assets/` と `Project/Assets/` が併存。ランタイム正本は `Project/Assets`（PostBuild ソース）
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| asset_pack_verify | 有効 | リソース配布・ランタイム出力の同梱整合 |
+
+### 次 tick 候補
+
+- エディタ既定の機能検証シーン FeatureTest（`GAP-Infra-FeatureTestScene-001`）

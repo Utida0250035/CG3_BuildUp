@@ -514,7 +514,7 @@
 - [x] buildDevelopment.cmd が CI と異なる入口で前検証も無い（gap: `GAP-Infra-buildDevelopment-001`・Ship・P1）
 - [x] Release ビルド後の exe 起動スモークが CI に無い（gap: `GAP-Infra-Release_smoke-001`・Ship・P1）
 - [x] Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる（gap: `GAP-Ship-EditorSources-001`・Ship・P1）
-- [ ] 同梱アセットとランタイム参照パスの整合を検証する仕組みが無い（gap: `GAP-Infra-asset_pack_verify-001`・Ship・P1）
+- [x] 同梱アセットとランタイム参照パスの整合を検証する仕組みが無い（gap: `GAP-Infra-asset_pack_verify-001`・Ship・P1）
 - [ ] エディタ既定の機能検証シーン（FeatureTest）が定義されていない（gap: `GAP-Infra-FeatureTestScene-001`・Debug・P1）
 - [ ] buildDevelopment.cmd に NuGet 復元ステップが無い（gap: `GAP-Infra-buildDevelopment-002`・Ship・P1）
 - [ ] Release 向け最小起動スモークの手順書が無い（gap: `GAP-Ship-smoke_runbook-001`・Ship・P1）
