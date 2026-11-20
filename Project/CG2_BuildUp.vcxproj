@@ -295,6 +295,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
@@ -400,6 +401,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameStreamingDiagnostics.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFrameDeltaDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -611,6 +613,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\Log.h" />
@@ -724,6 +727,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrameLightingDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrameStreamingDiagnostics.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFrameDeltaDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />

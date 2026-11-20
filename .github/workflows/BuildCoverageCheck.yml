@@ -99,3 +99,6 @@ jobs:
 
       - name: Verify ExitScene releases preview and play Ui flags
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_exit_preview_release.py
+
+      - name: Verify frame delta time debug ImGui
+        run: python3 EditorAssets/Tools/CursorAI/verify_frame_delta_time_debug_imgui.py

@@ -557,6 +557,7 @@
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
@@ -601,6 +602,7 @@
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameStreamingDiagnostics.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFrameDeltaDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
@@ -1353,6 +1355,7 @@
     <ClInclude Include="Codes\Include\Engine\Resource\ParticleGpuData.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
     <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\Motion\MotionBlender.h" />
@@ -1402,6 +1405,7 @@
     <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrameLightingDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrameStreamingDiagnostics.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFrameDeltaDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />

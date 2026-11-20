@@ -418,7 +418,7 @@
 - [x] Exit はプレビュー解放のみ
 
 ### FrameDeltaTime
-- [ ] フレーム時間のオーバーレイ／ヒストグラムが無い
+- [x] フレーム時間のオーバーレイ／ヒストグラムが無い
 
 ### StreamingMenu
 - [x] ストリーミングデバッグ ON が SceneBuildUp 経路で開けない（spec: feature-memos/streaming_debug_imgui.md）

@@ -4,6 +4,7 @@
 
 #include "System/Editor/EditorFrameLightingDiagnostics.h"
 #include "System/Editor/EditorFrameStreamingDiagnostics.h"
+#include "System/Editor/EditorFrameFrameDeltaDiagnostics.h"
 
 #include "Camera/Camera.h"
 #include "ForDebug/ImGui.h"
@@ -32,6 +33,7 @@ void EditorFrame::DrawRenderDiagnosticsMainMenuBar() {
   }
   if (ImGui::BeginMenu("デバッグ")) {
     EditorFrameStreamingDiagnostics::DrawMenuItems();
+    EditorFrameFrameDeltaDiagnostics::DrawMenuItems();
     ImGui::EndMenu();
   }
   ImGui::EndMainMenuBar();
