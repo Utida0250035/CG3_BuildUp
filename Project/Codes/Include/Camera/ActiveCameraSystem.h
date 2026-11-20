@@ -15,6 +15,9 @@ public:
 
   void PrepareSceneAndBindEngine(Scene *scene, AtrumEngine *engine);
 
+  /// GameOrder 後のシーンビュー RT 描画でビューポート Fit 済みカメラを再同期する。
+  void SyncEngineAfterSceneViewFit(AtrumEngine *engine, Camera *camera);
+
 private:
   ActiveCameraSystem() = default;
 

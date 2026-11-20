@@ -90,3 +90,6 @@ jobs:
 
       - name: Verify Edit hover camera via CmpCamera
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_edit_hover_camera.py
+
+      - name: Verify scene view RT camera bind via ActiveCameraSystem
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_scene_view_rt_camera.py

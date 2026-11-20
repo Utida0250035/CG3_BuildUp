@@ -17,6 +17,7 @@
 #include "Scene/SceneEntityEditorPreviewCameraSetup.h"
 #include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
 #include "Scene/SceneEntityEditorEditViewDebugCameraDraw.h"
+#include "Scene/SceneEntityEditorSceneViewRenderCameraBind.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -328,8 +329,8 @@ void SceneEntityEditor::DrawSceneViewContent(
     return;
   }
 
-  Editor::FitCameraPerspectiveToViewport(camera, width, height);
-  engine->SetCamera(camera);
+  SceneEntityEditorSceneViewRenderCameraBind::BindForSceneViewRender(
+      engine, camera, width, height);
   SetupEditorLighting();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

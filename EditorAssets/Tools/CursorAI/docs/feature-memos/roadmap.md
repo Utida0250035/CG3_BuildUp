@@ -413,7 +413,7 @@
 - [x] Runtime タブで SetupStageViewCamera に差し替え（spec: feature-memos/entity_camera_components.md）
 - [x] 実行は Runtime タブ切替のみ
 - [x] Edit ホバー時に Draw 内で camera->Update
-- [ ] シーンビュー RT が GameOrder 後に SetCamera
+- [x] シーンビュー RT が GameOrder 後に SetCamera
 - [ ] DrawPreview が親 root のみ
 - [ ] Exit はプレビュー解放のみ
 

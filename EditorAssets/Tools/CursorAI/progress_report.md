@@ -6794,3 +6794,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Edit ビューカメラと Cmp 経路 | 有効 | エンティティ編集とプレイ検証のワークフローを一貫させる |
+
+---
+
+## セッション 2026-11-20 20:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ActiveCameraSystem::SyncEngineAfterSceneViewFit` で RT 再バインド窓口を追加
+- `BindForSceneViewRender` が GameOrder の active を優先し Fit 後に同期
+- `DrawSceneViewContent` から `engine->SetCamera` 直呼びを除去
+- roadmap「シーンビュー RT が GameOrder 後に SetCamera」を `[x]`
+
+### 推測した用途（§6.4）
+
+- エンジン主導のアクティブカメラ契約を保ったまま ImGui シーンビュー RT を描画する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| アクティブカメラと RT 描画 | 有効 | エディタ上プレイ検証とゲーム配布ランタイムのカメラ解決を揃える |
