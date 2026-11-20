@@ -9,14 +9,16 @@
 #include "Scene/SceneTitle.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
-#include "Scene/SceneGameExitBgmPolicy.h"
 #include "Scene/SceneResultBgmMaintain.h"
+#include "Scene/SceneResultExitBgmPolicy.h"
+#include "Scene/SceneResultSubmitTransition.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
 namespace Atrum {
 
 void SceneResult::EnterScene() {
+  resultSubmitTransitionConsumed_ = false;
   EnsureCommonResources();
   SetupStageViewCamera();
   Atrum::SceneScreenUi::PreloadResultUiTextures();
@@ -41,11 +43,7 @@ void SceneResult::Update() {
   MaintainSceneResultBgmIfNeeded(sceneBgmHandle_);
   UpdateBackgrounds();
 
-  if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
-    Atrum::PlaySubmitSe();
-    Atrum::CommandChangeScene::Instance()->Set(SceneTitle::Instance(),
-                                               std::make_unique<ChangeSceneFade>().release());
-  }
+  (void)SceneResultSubmitTransition::TryBeginOnSubmit(*this);
 }
 
 void SceneResult::DrawScene() {
@@ -59,7 +57,7 @@ void SceneResult::DrawScene() {
 
 void SceneResult::ExitScene() {
   ReleaseCommonResources();
-  Atrum::ReleaseSceneBgmOnExitDuringFade(sceneBgmHandle_);
+  ReleaseSceneResultBgmOnExitDuringFade(sceneBgmHandle_);
   ClearBackgrounds();
 }
 

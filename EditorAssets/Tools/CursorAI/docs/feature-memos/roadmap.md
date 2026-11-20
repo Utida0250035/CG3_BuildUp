@@ -330,7 +330,7 @@
 ### SceneResult
 - [x] SceneResult に BGM 維持・再開処理が無い
 - [x] SceneResult が毎フレーム簡易平行光のみ適用（spec: feature-memos/rim_light.md）
-- [ ] ExitScene が即 StopBgmLoop
+- [x] ExitScene が即 StopBgmLoop
 
 ### Scene
 - [ ] AllowDebugCameraControl が既定 true でガードが二重依存（spec: feature-memos/player_friendly_camera_policy.md）

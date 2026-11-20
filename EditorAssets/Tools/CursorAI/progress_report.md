@@ -6109,3 +6109,22 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | Result 見た目パイプライン | 有効 | ランタイムでライト・フォグ等の見た目がデータどおり反映される |
+
+---
+
+## セッション 2026-11-20 13:33（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneResultExitBgmPolicy` でフェード中 Exit は `ReleaseSceneBgmOnExitDuringFade`（即 Stop しない）
+- `SceneResultSubmitTransition` でタイトル BGM を deferred 登録してからフェード遷移
+
+### 既存実装の課題点
+
+- なし（Exit は既に共有ポリシー経路だったが、Result 専用ポリシーと Submit 連携で明示化）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Result Exit BGM | 有効 | プレイ中に BGM／SE が途切れず再生され、シーン遷移後も期待どおり鳴り続ける |

@@ -325,6 +325,12 @@
     <ClCompile Include="Codes\Source\Scene\SceneResultVisualApply.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneResultExitBgmPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneResultSubmitTransition.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp">
       <Filter>Codes\Source\Scene</Filter>
     </ClCompile>
@@ -1000,6 +1006,12 @@
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneResultVisualApply.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneResultExitBgmPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneResultSubmitTransition.h">
       <Filter>Codes\Include\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\Scene\SceneResult.h">
