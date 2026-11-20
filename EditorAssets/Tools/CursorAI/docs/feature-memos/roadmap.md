@@ -398,7 +398,7 @@
 - [x] ストリーミング診断が ImGui 表示のみでログに残らない（spec: feature-memos/streaming_debug_imgui.md）
 
 ### EntityEditorUi
-- [ ] Release 起動パスを表示するだけ（spec: feature-memos/debug_test_play_area.md）
+- [x] Release 起動パスを表示するだけ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorScenePlayRequest
 - [ ] EditorScenePlayRequest::Path が参照されない（spec: feature-memos/debug_test_play_area.md）

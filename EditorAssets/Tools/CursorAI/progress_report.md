@@ -6515,3 +6515,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | BuildUp でストリーミング診断 ON | 有効 | エディタ上でのプレイとランタイム検証（開発時デバッグ） |
+
+---
+
+## セッション 2026-11-20 17:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `TryQueueBuildUpFromReleaseStartup` で `launch_config` の起動 JSON を BuildUp 起動に接続
+- プロジェクトパネルに「Release 起動で BuildUp」ボタンを追加（検証は `IsValidBootSceneJsonPath`）
+- `verify_entity_editor_release_startup_launch.py` を CI に追加
+- roadmap「Release 起動パスを表示するだけ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- Release 向けに設定した起動シーンを Development エディタから即 BuildUp 試行し、配布起動と同じ JSON を検証
+- 表示のみだった起動パスを実際のデバッグ導線にする
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Release 起動から BuildUp | 有効 | シーンの構成を保存し、エディタ上でのプレイとランタイム環境上でのプレイを可能にしてある |

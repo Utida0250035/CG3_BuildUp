@@ -405,6 +405,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp" />
@@ -695,6 +696,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneMovieStageLighting.h" />
     <ClInclude Include="Codes\Include\Scene\ScenePrimaryCameraResolve.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />

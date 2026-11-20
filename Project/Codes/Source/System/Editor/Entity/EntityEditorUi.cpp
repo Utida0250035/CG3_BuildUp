@@ -9,6 +9,7 @@
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
+#include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
 #include "System/Hash64.h"
@@ -717,6 +718,13 @@ void EntityEditor::DrawProjectPanel() {
       Atrum::Editor::Scene::ResolveStartupScenePath();
   if (!startupPath.empty()) {
     ImGui::TextDisabled("Release 起動: %s", startupPath.c_str());
+    if (ImGui::Button("Release 起動で BuildUp")) {
+      if (!TryQueueBuildUpFromReleaseStartup(ui_, &ui_.importStatusMessage)) {
+        // importStatusMessage は TryQueue 内で設定済み
+      }
+    }
+  } else {
+    ImGui::TextDisabled("Release 起動: （launch_config 未設定）");
   }
   ImGui::Separator();
 

@@ -57,3 +57,6 @@ jobs:
 
       - name: Verify streaming debug menu on BuildUp
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_frame_streaming_menu.py
+
+      - name: Verify Release startup BuildUp launch
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_release_startup_launch.py
