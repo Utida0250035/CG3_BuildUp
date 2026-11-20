@@ -16,6 +16,7 @@
 #include "Scene/SceneEntityEditorInEditorPlayTick.h"
 #include "Scene/SceneEntityEditorPreviewCameraSetup.h"
 #include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
+#include "Scene/SceneEntityEditorEditViewDebugCameraDraw.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
@@ -232,12 +233,8 @@ void SceneEntityEditor::Draw() {
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   editor_->LayoutEditorWorkbench();
-  // エディットビュー上だけ既存 DebugCamera で操作（ImGui::Image ホバー後）
-  if (Editor::EditorFrame::Instance().EditViewHovered()) {
-    if (Atrum::Camera *camera = GetCamera()) {
-      camera->Update();
-    }
-  }
+  SceneEntityEditorEditViewDebugCameraDraw::ApplyHoveredEditViewCameraInput(
+      *this);
 #endif
 
   engine->PreDraw();

@@ -43,6 +43,11 @@ public:
   /// Game タブ描画前に戦闘ステージ相当のカメラを適用する。
   void ApplyGameViewStageCameraForDraw();
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  /// Edit ビューホバー時のみ CmpCamera へ Debug 入力を適用する。
+  void ApplyEditViewHoveredDebugCameraBeforeDraw();
+#endif
+
 protected:
   void DrawScene() override;
 

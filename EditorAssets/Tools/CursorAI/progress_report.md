@@ -6769,3 +6769,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | エディタ内プレイと BuildUp 分離 | 有効 | シーン構成の編集とエディタ上プレイ／配布ランタイムを別経路で通せる |
+
+---
+
+## セッション 2026-11-20 20:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ApplyHoveredEditViewCameraInput` で Edit ビューホバー時のみ `CmpCamera::PrepareBeforeDraw(true)`
+- `AllowDebugCameraControl` は false のまま GameOrder と二重入力を回避
+- `Draw` から `camera->Update()` 直呼びを除去
+- roadmap「Edit ホバー時に Draw 内で camera->Update」を `[x]`
+
+### 推測した用途（§6.4）
+
+- エディタ Edit ビューだけ自由視点を操作しつつ、Runtime／GameOrder 側のカメラ契約を崩さない
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Edit ビューカメラと Cmp 経路 | 有効 | エンティティ編集とプレイ検証のワークフローを一貫させる |

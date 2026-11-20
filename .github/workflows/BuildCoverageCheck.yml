@@ -87,3 +87,6 @@ jobs:
 
       - name: Verify in-editor play is Runtime tab only
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_tab_only_play.py
+
+      - name: Verify Edit hover camera via CmpCamera
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_edit_hover_camera.py
