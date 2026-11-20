@@ -11,6 +11,11 @@ void ApplyFramingFromSceneDocument(
       SceneBuildUpSceneDocumentLoad::ResolveStageViewFraming(document));
 }
 
+void ApplyStageCameraAfterSceneLoad(Scene &scene) {
+  PublishStageViewFramingBounds(scene.GetStageViewFramingBounds());
+  scene.SetupStageViewCamera();
+}
+
 void MaintainLockedStageCamera(Scene &scene) {
   PublishStageViewFramingBounds(scene.GetStageViewFramingBounds());
   scene.SetupStageViewCamera();

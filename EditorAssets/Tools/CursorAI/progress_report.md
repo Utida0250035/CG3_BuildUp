@@ -7022,7 +7022,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「ロード直後 SetupStageViewCamera を呼ぶ」（`fix/SceneBuildUpEnterSetupStageCamera` 予定）
+- SceneBuildUp「DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera」（`fix/SceneBuildUpDrawRuntimeCamera` 予定）
+
+---
+
+## セッション 2026-11-21 00:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ApplyStageCameraAfterSceneLoad` を追加（BuildEntities 直後に `SetupStageViewCamera` のみ）
+- `EnterScene` は `MaintainLockedStageCamera` ではなく上記を使用（Enter 時は `PrepareCamerasForDraw` しない）
+- Update／Draw は従来どおり `MaintainLockedStageCamera`
+- `verify_scene_build_up_enter_setup_stage_camera.py` を CI に追加
+- roadmap「ロード直後 SetupStageViewCamera を呼ぶ」を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: JSON ロード直後にステージカメラ姿勢を確定し、Draw 直前の Prepare と責務分離
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Enter 直後カメラ | 有効 | ランタイムでカメラ／見た目がデータどおり初期化される |
 
 ---
 

@@ -15,6 +15,9 @@ void ApplyFramingFromSceneDocument(Scene &scene,
                                    const EntityEditor::EditorSceneDocument
                                        &document);
 
+/// BuildEntities 直後（EnterScene）に StageView 姿勢だけ確定する
+void ApplyStageCameraAfterSceneLoad(Scene &scene);
+
 void MaintainLockedStageCamera(Scene &scene);
 
 } // namespace SceneBuildUpStageCamera

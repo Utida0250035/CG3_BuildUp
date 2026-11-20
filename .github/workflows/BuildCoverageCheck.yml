@@ -138,3 +138,6 @@ jobs:
 
       - name: Verify SceneBuildUp updates cameraRig entities
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_camera_rig_update.py
+
+      - name: Verify SceneBuildUp Enter calls SetupStageViewCamera after load
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_enter_setup_stage_camera.py

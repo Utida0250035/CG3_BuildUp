@@ -117,7 +117,7 @@ void SceneBuildUp::EnterScene() {
   SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(*this, document);
   entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
       loadSucceeded, document);
-  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+  SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
   ApplySceneBuildUpRuntimeVisualFromProfile();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);
 
