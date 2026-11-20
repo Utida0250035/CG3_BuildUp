@@ -67,7 +67,6 @@ private:
   Audio::Handle sceneAmbientLoopSeHandle_{};
 
   void TeardownEntities();
-  void SetupRuntimeLighting();
   void DrawRuntimeEntities();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

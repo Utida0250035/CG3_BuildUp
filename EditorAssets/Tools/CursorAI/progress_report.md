@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「ビュー描画ごとに SetupRuntimeLighting」（`fix/SceneBuildUpRuntimeLightingPerDraw` 予定）
+- SceneBuildUp「専用ランタイムウィンドウが汎用文言のみ」（`fix/SceneBuildUpRuntimeViewWindowText` 予定）
+
+---
+
+## セッション 2026-11-21 02:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `DrawScene` / `DrawRuntimeViewContent` から毎フレームのライト再適用を除去
+- `SceneBuildUpRuntimeLightingPolicy::ApplyOnceOnEnterScene` を EnterScene のみで呼ぶ
+- `verify_scene_build_up_runtime_lighting_enter_only.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: Runtime ビュー表示中に ImGui デバッグ窓と競合せず、Enter 時のライト状態を維持する
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| ライト Enter のみ | 有効 | ランタイム環境でのプレイ描画コストと見た目の一貫性を保つ |
 
 ---
 

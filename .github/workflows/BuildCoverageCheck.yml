@@ -159,3 +159,6 @@ jobs:
 
       - name: Verify SceneBuildUp ExitScene restores SceneView Edit tab
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_exit_scene_view_tab.py
+
+      - name: Verify SceneBuildUp applies runtime lighting on enter only
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_runtime_lighting_enter_only.py

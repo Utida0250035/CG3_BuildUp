@@ -1,7 +1,6 @@
 #include "Scene/SceneBuildUp.h"
 
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
-#include "Scene/SceneBuildUpRuntimeVisualApply.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
 #include "Scene/SceneBuildUpRegistryLaunchDedupe.h"
 #include "Scene/SceneBuildUpAudioPolicy.h"
@@ -14,6 +13,7 @@
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
+#include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -89,10 +89,6 @@ void SceneBuildUp::TeardownEntities() {
   entities_.clear();
 }
 
-void SceneBuildUp::SetupRuntimeLighting() {
-  ApplySceneBuildUpRuntimeVisualFromProfile();
-}
-
 void SceneBuildUp::DrawRuntimeEntities() {
   for (std::unique_ptr<Entity> &entity : entities_) {
     if (!entity) {
@@ -131,7 +127,7 @@ void SceneBuildUp::EnterScene() {
   entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
       loadSucceeded, document);
   SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
-  ApplySceneBuildUpRuntimeVisualFromProfile();
+  SceneBuildUpRuntimeLightingPolicy::ApplyOnceOnEnterScene();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
@@ -187,7 +183,6 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
     return;
   }
 
-  SetupRuntimeLighting();
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
 
   Atrum::Camera *const camera =
@@ -215,7 +210,6 @@ void SceneBuildUp::DrawScene() {
     return;
   }
 
-  SetupRuntimeLighting();
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   engine->SetCamera(GetCamera());
