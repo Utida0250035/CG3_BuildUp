@@ -649,6 +649,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
@@ -1485,6 +1486,7 @@
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeEntityInitializePolicy.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeInstanceNamePolicy.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h" />

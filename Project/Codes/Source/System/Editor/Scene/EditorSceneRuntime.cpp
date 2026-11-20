@@ -1,6 +1,7 @@
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 
 #include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
+#include "System/Editor/EditorSceneRuntimeInstanceNamePolicy.h"
 
 #include "Camera/StageViewFramingBounds.h"
 #include "Engine/AtrumEngine.h"
@@ -567,7 +568,9 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document) {
   entities.reserve(document.instances.size());
 
   for (const SceneEntityInstance &instance : document.instances) {
-    entities.push_back(BuildEntityFromDefinition(instance.definition));
+    auto entity = BuildEntityFromDefinition(instance.definition);
+    ApplySceneInstanceName(*entity, instance);
+    entities.push_back(std::move(entity));
   }
 
   for (size_t i = 0; i < document.instances.size(); ++i) {

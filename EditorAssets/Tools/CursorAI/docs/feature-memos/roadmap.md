@@ -467,7 +467,7 @@
 
 ### EditorSceneRuntime
 - [x] 親なしインスタンスだけ初期化
-- [ ] Entity 名が definition のみ
+- [x] Entity 名が definition のみ
 
 ### launch_config
 - [ ] startup が Feature 検証シーンではない（spec: feature-memos/debug_test_play_area.md）

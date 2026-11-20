@@ -7718,3 +7718,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EditorSceneRuntime「Entity 名が definition のみ」（`fix/EditorSceneRuntimeInstanceName` 予定）
+
+---
+
+## セッション 2026-11-21 04:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorSceneRuntimeInstanceNamePolicy` を追加し `instanceName` を `Entity::SetHash` へ反映
+- `BuildEntitiesFromSceneDocument` で生成直後に適用
+- `verify_editor_scene_runtime_instance_name.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: ヒエラルキー表示名（instanceName）とランタイム識別を一致させデバッグしやすくする
+- 同一 definition を複数配置したシーンでインスタンス単位の切り分け
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| instanceName 反映 | 有効 | コンポーネント構成を json で編集し、保存したエンティティをランタイムで試す |
+
+### 次 tick 候補
+
+- launch_config「startup が Feature 検証シーンではない」（`fix/LaunchConfigFeatureStartup` 予定）

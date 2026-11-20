@@ -106,6 +106,9 @@ jobs:
       - name: Verify EditorSceneRuntime initializes child instances
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_initialize_hierarchy.py
 
+      - name: Verify EditorSceneRuntime applies instanceName
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_instance_name.py
+
       - name: Verify ExitScene releases preview and play Ui flags
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_exit_preview_release.py
 
