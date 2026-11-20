@@ -7052,7 +7052,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「Draw で ChangeScene 常時描画」（`fix/SceneBuildUpDrawChangeSceneAlways` 予定）
+- LoopTick13Demo「機能検証シーンの正本として未整備」（`feature/LoopTick13DemoCanonical` 予定）
+
+---
+
+## セッション 2026-11-21 04:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `SceneBuildUpChangeSceneDrawPolicy` で `GetIsExecute()` 時のみ遷移演出を描画
+- 機能検証ビューにフェード UI が常時重ならないよう分離
+- `verify_scene_build_up_change_scene_draw_when_active.py` を CI に追加
+- roadmap 当該行を `[x]`（SceneBuildUp 節は一通り完了）
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 通常フレームはランタイム描画のみ、F1／フェード時だけ暗転オーバーレイ
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 遷移描画の分離 | 有効 | エディタ外ランタイムでの最小構成試験画面を汚さない |
 
 ---
 

@@ -17,6 +17,7 @@
 #include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
 #include "Scene/SceneBuildUpEnterSceneEditorUiPolicy.h"
 #include "Scene/SceneBuildUpMissingPrimaryCameraFeedback.h"
+#include "Scene/SceneBuildUpChangeSceneDrawPolicy.h"
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
@@ -236,7 +237,7 @@ void SceneBuildUp::Draw() {
 
   engine->PreDraw();
   DrawScene();
-  Atrum::CommandChangeScene::Instance()->Draw();
+  SceneBuildUpChangeSceneDrawPolicy::DrawTransitionWhenActive();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   if (sceneDocumentLoadFailed_ && !sceneLoadFailureMessage_.empty()) {
     DrawSceneBuildUpSceneLoadFailureNotice(sceneLoadFailureMessage_);

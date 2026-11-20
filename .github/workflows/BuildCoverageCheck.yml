@@ -180,3 +180,6 @@ jobs:
 
       - name: Verify SceneBuildUp ctor resolves display name from JSON
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_display_name_resolve.py
+
+      - name: Verify SceneBuildUp draws ChangeScene only when active
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_change_scene_draw_when_active.py

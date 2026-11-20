@@ -621,6 +621,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpEnterSceneEditorUiPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpMissingPrimaryCameraFeedback.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDisplayNameResolve.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpChangeSceneDrawPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
@@ -1448,6 +1449,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpEnterSceneEditorUiPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpMissingPrimaryCameraFeedback.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDisplayNameResolve.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpChangeSceneDrawPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />

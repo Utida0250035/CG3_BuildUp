@@ -454,7 +454,7 @@
 - [x] EnterScene が Runtime 固定
 - [x] camera==nullptr で無言 return
 - [x] ctor で displayName を仮設定
-- [ ] Draw で ChangeScene 常時描画
+- [x] Draw で ChangeScene 常時描画
 
 ### LoopTick13Demo
 - [ ] LoopTick13Demo が機能検証シーンの正本として未整備
