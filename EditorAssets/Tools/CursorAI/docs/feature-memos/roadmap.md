@@ -424,7 +424,7 @@
 - [x] ストリーミングデバッグ ON が SceneBuildUp 経路で開けない（spec: feature-memos/streaming_debug_imgui.md）
 
 ### scaffold_play_area
-- [ ] テストエリア新規作成が scaffold スクリプト手動実行のみ
+- [x] テストエリア新規作成が scaffold スクリプト手動実行のみ
 - [ ] 生成後は Launch のみ案内（spec: feature-memos/debug_test_play_area.md）
 - [ ] 生成は sceneName 差替のみ
 

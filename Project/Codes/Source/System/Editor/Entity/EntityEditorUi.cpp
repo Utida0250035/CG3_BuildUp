@@ -12,6 +12,7 @@
 #include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
 #include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
+#include "System/Editor/EditorDebugPlayAreaScaffold.h"
 #include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
@@ -688,6 +689,7 @@ void EntityEditor::DrawProjectPanel() {
   Atrum::Editor::Scene::EnsureScenesDirectoryExists();
 
   ImGui::TextUnformatted("シーン一覧");
+  Editor::EditorDebugPlayAreaScaffold::DrawProjectPanelControls(*this);
   if (ImGui::Button("新規シーン")) {
     CreateNewSceneFile();
   }

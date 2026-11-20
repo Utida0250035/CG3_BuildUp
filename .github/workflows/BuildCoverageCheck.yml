@@ -102,3 +102,6 @@ jobs:
 
       - name: Verify frame delta time debug ImGui
         run: python3 EditorAssets/Tools/CursorAI/verify_frame_delta_time_debug_imgui.py
+
+      - name: Verify DebugPlayArea scaffold from editor
+        run: python3 EditorAssets/Tools/CursorAI/verify_scaffold_play_area_editor.py

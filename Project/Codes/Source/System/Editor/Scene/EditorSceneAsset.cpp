@@ -1,5 +1,6 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
+#include "System/Editor/EditorAssetsPaths.h"
 #include "System/GameAssetsPaths.h"
 #include <algorithm>
 #include <fstream>
@@ -43,6 +44,10 @@ std::vector<std::string> ListEditableSceneJsonFiles() {
       ListSceneJsonFiles(GameAssets::kScenesDirectory);
   const std::vector<std::string> editorPaths = ListSceneJsonFiles();
   paths.insert(paths.end(), editorPaths.begin(), editorPaths.end());
+  const std::vector<std::string> debugPlayPaths =
+      ListSceneJsonFiles(EditorAssets::kDebugPlayAreaDirectory);
+  paths.insert(paths.end(), debugPlayPaths.begin(), debugPlayPaths.end());
+  std::sort(paths.begin(), paths.end());
   return paths;
 }
 

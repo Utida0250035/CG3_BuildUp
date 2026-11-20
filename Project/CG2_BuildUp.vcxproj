@@ -413,6 +413,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorDebugPlayAreaScaffold.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
@@ -736,6 +737,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeFunctionalViewDraw.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
