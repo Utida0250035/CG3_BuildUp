@@ -6,7 +6,7 @@ namespace Atrum::Editor::DebugPlayAreaRuntimePreviewGuidance {
 inline constexpr const char kStepsJa[] =
     "ランタイムプレビュー: プロジェクト一覧で JSON を選択 →「シーンを実行」(BuildUp)。"
     "生成直後は「作成して BuildUp」。エディタ内のみなら「作成してエディタ内プレビュー」。"
-    "F2=LoopTick13Demo 正本、F6=combat_bounds_sandbox。";
+    "F2=FeatureTest 正本、F6=combat_bounds_sandbox。";
 
 /// プロジェクトパネルに常時表示する短い案内
 inline constexpr const char kPanelHintJa[] =

@@ -151,7 +151,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
   if (ImGui::BeginMenu("デバッグ")) {
     EditorFrameStreamingDiagnostics::DrawMenuItems();
     EditorFrame::Instance().DrawRenderDiagnosticsMenuItems();
-    if (ImGui::MenuItem("機能検証シーン (LoopTick13Demo 正本)")) {
+    if (ImGui::MenuItem("機能検証シーン (FeatureTest 正本)")) {
       ui.sceneBuildUpLaunchPath =
           DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
       ui.requestLaunchSceneBuildUp = true;

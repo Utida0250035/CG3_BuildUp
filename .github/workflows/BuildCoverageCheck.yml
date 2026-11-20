@@ -100,8 +100,8 @@ jobs:
       - name: Verify F2 feature test BuildUp hotkey
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_f2_feature_scene.py
 
-      - name: Verify LoopTick13Demo feature verification canonical scene
-        run: python3 EditorAssets/Tools/CursorAI/verify_loop_tick13_demo_feature_verification_canonical.py
+      - name: Verify FeatureTest feature verification canonical scene
+        run: python3 EditorAssets/Tools/CursorAI/verify_feature_test_scene_canonical.py
 
       - name: Verify combat_bounds_sandbox debug play area launch
         run: python3 EditorAssets/Tools/CursorAI/verify_combat_bounds_sandbox_debug_play_area.py

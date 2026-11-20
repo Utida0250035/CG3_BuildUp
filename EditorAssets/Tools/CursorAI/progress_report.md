@@ -8213,3 +8213,37 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - エディタ既定の機能検証シーン FeatureTest（`GAP-Infra-FeatureTestScene-001`）
+
+---
+
+## セッション 2026-11-21 08:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `EditorAssets/DebugPlayArea/FeatureTest.scene.json` を同梱正本として追加
+- `kDebugPlayAreaFeatureTestScene`／canonical／`launch_config`／F2・デバッグメニュー導線を FeatureTest に統一
+- `verify_feature_test_scene_canonical.py`、CI 差し替え、`feature_test_scene.md`
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** 開発者が毎回同じ最小シーンから BuildUp 経路で機能単位を試す
+- **エディタ:** launch_config と F2 の既定が一覧で探さず開ける
+
+### 既存実装の課題点
+
+- `LoopTick13Demo.scene.json` は残置（デモ用）。正本は FeatureTest に一本化
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| FeatureTestScene | 有効 | シーン構成の保存と、エディタ上プレイ／配布ランタイムでのプレイ導線 |
+
+### 次 tick 候補
+
+- `buildDevelopment.cmd` の NuGet 復元（`GAP-Infra-buildDevelopment-002`）

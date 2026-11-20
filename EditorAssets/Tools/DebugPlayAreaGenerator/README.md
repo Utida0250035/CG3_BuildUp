@@ -20,7 +20,7 @@ python3 scaffold_play_area.py MyFeatureTest
 1. プロジェクト一覧で `DebugPlayArea/MyFeatureTest.scene.json` を開く → **「シーンを実行」**（BuildUp）
 2. プロジェクトパネル **「作成して BuildUp」** … 生成直後に BuildUp 起動
 3. **「作成してエディタ内プレビュー」** … Runtime タブのみ（エディタ内）
-4. 既定同梱シーン: **F2** = LoopTick13Demo 正本、**F6** = combat_bounds_sandbox（エンティティエディタ）
+4. 既定同梱シーン: **F2** = FeatureTest 正本、**F6** = combat_bounds_sandbox（エンティティエディタ）
 
 手順の正本文言は `Project/Codes/Include/System/Editor/DebugPlayAreaRuntimePreviewGuidance.h`（`kStepsJa`）と CI `verify_debug_play_area_generator_runtime_preview.py` で検査します。
 

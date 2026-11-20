@@ -16,7 +16,10 @@ constexpr const char *kSampleMovieTrackJson =
 constexpr const char *kDebugPlayAreaDirectory = "../EditorAssets/DebugPlayArea";
 constexpr const char *kDebugPlayAreaTemplateScene =
     "../EditorAssets/DebugPlayArea/template_test_play_area.scene.json";
-/// 機能検証 BuildUp 用の同梱正本（scaffold テンプレとは別）
+/// エディタ既定の機能検証シーン正本（scaffold テンプレとは別）
+constexpr const char *kDebugPlayAreaFeatureTestScene =
+    "../EditorAssets/DebugPlayArea/FeatureTest.scene.json";
+/// 歴史的デモ用（正本は FeatureTest）
 constexpr const char *kDebugPlayAreaLoopTick13DemoScene =
     "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json";
 constexpr const char *kDebugPlayAreaCombatBoundsSandboxScene =

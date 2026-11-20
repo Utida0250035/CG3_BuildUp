@@ -26,8 +26,11 @@ def main() -> int:
             errors.append("EditorAssets/launch_config.json: invalid JSON")
         else:
             path = data.get("startupScenePath", "")
-            if "LoopTick13Demo" not in path:
-                errors.append("startupScenePath must reference LoopTick13Demo")
+            if "FeatureTest" not in path:
+                errors.append("startupScenePath must reference FeatureTest.scene.json")
+            default_path = data.get("defaultFeatureVerificationScenePath", "")
+            if "FeatureTest" not in default_path:
+                errors.append("defaultFeatureVerificationScenePath must reference FeatureTest")
             if "DebugPlayArea" not in path:
                 errors.append("startupScenePath must be under DebugPlayArea")
 
