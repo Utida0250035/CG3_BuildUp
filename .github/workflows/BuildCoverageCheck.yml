@@ -147,3 +147,6 @@ jobs:
 
       - name: Verify SceneBuildUp StageView lock is not hardcoded true
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_stage_camera_lock_toggle.py
+
+      - name: Verify SceneBuildUp F1 works while transition blocks Update
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_build_up_f1_during_fade.py

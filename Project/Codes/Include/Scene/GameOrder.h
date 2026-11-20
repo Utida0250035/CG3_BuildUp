@@ -66,6 +66,11 @@ namespace Atrum {
 
 			Scene* sceneNow = commandScene_->GetSceneNow();
 
+			if (commandChangeScene_->GetIsExecute() &&
+			    !commandChangeScene_->AllowsCurrentSceneUpdate()) {
+				sceneNow->TryHandleInputWhileSceneTransitionBlocked();
+			}
+
 			if (commandChangeScene_->AllowsCurrentSceneUpdate()) {
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
 				if (!Atrum::SceneFlow::SceneReleaseCarousel::Instance()

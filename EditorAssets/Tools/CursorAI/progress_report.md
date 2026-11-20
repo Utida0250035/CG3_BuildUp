@@ -7022,7 +7022,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- SceneBuildUp「遷移演出中 F1 復帰が処理されない」（`fix/SceneBuildUpF1DuringFade` 予定）
+- SceneBuildUp「BuildUp が tagCatalog マージを飛ばす」（`fix/SceneBuildUpTagCatalogMerge` 予定）
+
+---
+
+## セッション 2026-11-21 01:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `Scene::TryHandleInputWhileSceneTransitionBlocked` を追加
+- `GameOrder` が遷移フェード中（Update 停止中）に上記を呼ぶ
+- `SceneBuildUpF1ReturnRequest` で F1 復帰を共通化し、BuildUp が override
+- `verify_scene_build_up_f1_during_fade.py` を CI に追加
+- roadmap 当該行を `[x]`
+
+### 推測した用途（§6.4）
+
+- 機能検証 BuildUp: 出入りの暗転中も F1 でエディタ／タイトルへ戻れる
+
+### ビルド
+
+- Cloud VM のため `buildDevelopment.cmd` 未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| フェード中 F1 | 有効 | エディタ上プレイとランタイム検証の往復を途切れさせない |
 
 ---
 

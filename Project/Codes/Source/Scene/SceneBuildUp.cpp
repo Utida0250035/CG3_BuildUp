@@ -10,6 +10,7 @@
 #include "Scene/SceneBuildUpLoadFailureEntities.h"
 #include "Scene/SceneBuildUpRuntimeSubviewDrawCamera.h"
 #include "Scene/SceneBuildUpStageCameraLock.h"
+#include "Scene/SceneBuildUpF1ReturnRequest.h"
 #include "Scene/SceneBuildUpReturnTarget.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Engine/AtrumEngine.h"
@@ -45,6 +46,10 @@ SceneBuildUp::~SceneBuildUp() = default;
 
 bool SceneBuildUp::IsStageViewCameraLocked() const {
   return stageViewCameraLocked_;
+}
+
+bool SceneBuildUp::TryHandleInputWhileSceneTransitionBlocked() {
+  return SceneBuildUpF1ReturnRequest::TryRequestReturnViaF1(*this);
 }
 
 SceneBuildUpRegistry::~SceneBuildUpRegistry() = default;
@@ -145,11 +150,7 @@ void SceneBuildUp::Update() {
     return;
   }
 #endif
-  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
-    Scene *const returnTarget =
-        ResolveSceneBuildUpReturnTarget(returnScene_);
-    Atrum::CommandChangeScene::Instance()->Set(
-        returnTarget, std::make_unique<ChangeSceneFade>().release());
+  if (SceneBuildUpF1ReturnRequest::TryRequestReturnViaF1(*this)) {
     return;
   }
 

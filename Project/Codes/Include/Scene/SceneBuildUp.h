@@ -40,6 +40,9 @@ public:
   const std::string &SceneJsonPath() const { return sceneJsonPath_; }
 
   void SetReturnScene(Scene *returnScene) { returnScene_ = returnScene; }
+  Scene *ReturnScene() const { return returnScene_; }
+
+  bool TryHandleInputWhileSceneTransitionBlocked() override;
 
   bool SceneDocumentLoadFailed() const { return sceneDocumentLoadFailed_; }
   Audio::Handle &SceneBgmHandle() { return sceneBgmHandle_; }

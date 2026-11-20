@@ -107,6 +107,9 @@ public:
   /// </summary>
   virtual void Update() = 0;
 
+  /// 遷移演出で Update が止まっている間だけ入力（例: BuildUp の F1 復帰）
+  virtual bool TryHandleInputWhileSceneTransitionBlocked() { return false; }
+
   /// <summary>
   /// 描画関数（PreDraw → シーン描画 → 遷移演出 → PostDraw）
   /// </summary>

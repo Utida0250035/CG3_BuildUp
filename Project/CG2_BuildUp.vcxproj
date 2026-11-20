@@ -383,6 +383,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpLoadFailureEntities.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeSubviewDrawCamera.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraLock.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpF1ReturnRequest.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
@@ -716,6 +717,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpF1ReturnRequest.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitleBgmMaintain.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitleVisualApply.h" />

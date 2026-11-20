@@ -443,7 +443,7 @@
 - [x] ロード直後 SetupStageViewCamera を呼ぶ（spec: feature-memos/entity_camera_components.md）
 - [x] DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera（spec: feature-memos/entity_camera_components.md）
 - [x] IsStageViewCameraLocked が常時 true（spec: feature-memos/debug_test_play_area.md）
-- [ ] 遷移演出中 F1 復帰が処理されない（spec: feature-memos/debug_test_play_area.md）
+- [x] 遷移演出中 F1 復帰が処理されない（spec: feature-memos/debug_test_play_area.md）
 - [ ] BuildUp が tagCatalog マージを飛ばす（spec: feature-memos/debug_test_play_area.md）
 - [ ] AllowDebugCameraControl をオーバーライドしない（spec: feature-memos/entity_camera_components.md）
 - [ ] ExitScene が SceneViewTab を戻さない（spec: feature-memos/debug_test_play_area.md）
