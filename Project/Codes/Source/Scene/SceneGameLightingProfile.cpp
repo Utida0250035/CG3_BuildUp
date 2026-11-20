@@ -221,14 +221,16 @@ void MergeShadowFromJson(const nlohmann::json &root,
 void PushToEngine(const DirectionalLightData &directional,
                   const VolumetricFogSettings &fog, const GodRaySettings &rays,
                   const DirectionalShadowSettings &shadow) {
-  ::Atrum::EngineSetDirectionalLightData(directional);
   Engine *const engine = Engine::Instance();
   if (engine == nullptr) {
     return;
   }
+  // Fog / GodRays / Shadow を先に格納してから SetDirectionalLightData→Flush へ渡す
   engine->RefVolumetricFog().SetSettings(fog);
   engine->RefGodRays().SetSettings(rays);
   engine->RefDirectionalShadow().SetSettings(shadow);
+  ::Atrum::EngineSetDirectionalLightData(directional);
+  engine->FlushDirectionalLightConstantBuffer();
 }
 
 } // namespace

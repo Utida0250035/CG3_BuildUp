@@ -356,7 +356,7 @@
 - [ ] Lighting::ImGui（フォグ／ゴッドレイ／影）が未配線（gap: `GAP-Render-Lighting-001`・Debug・P1）
 - [ ] DrawScene 毎に見た目リテラルを再適用しデータ反映が上書きされる（gap: `GAP-Render-SceneGame-002`・Play・P1）
 - [ ] Visual::Lighting と AtrumEngine の VolumetricFog が非共有（gap: `GAP-Render-Lighting-002`・Play・P1）
-- [ ] SetupGameLighting が Fog 設定後に Flush しない（gap: `GAP-Render-SceneGame-003`・Play・P1）
+- [x] SetupGameLighting が Fog 設定後に Flush しない（gap: `GAP-Render-SceneGame-003`・Play・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: SceneGame 描画／ライティング反映の残件（在庫 6件）
