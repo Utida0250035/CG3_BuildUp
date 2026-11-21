@@ -681,6 +681,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsGenericJson.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1352,6 +1356,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSlotKindResolve.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorKnownComponentRegistry.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsBallSplit.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsGenericJson.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.h" />

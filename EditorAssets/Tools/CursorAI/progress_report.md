@@ -10193,3 +10193,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - DrawComponentParams が未知 typeName を未対応表示のみ（roadmap 649 行）
+
+---
+
+## セッション 2026-11-22 02:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 649 行: **登録外 typeName** 向け `EntityEditorUiDrawComponentParamsGenericJson`（JSON ツリー簡易編集）
+
+### 推測した用途（§6.4）
+
+- **制作:** JSON 手編集のみだった未登録 Cmp のパラメータ調整
+- **Authoring:** component_split_guidelines 手順とのギャップ可視化
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 未知コンポーネント params 編集 | 有効 | コンポーネント内部のパラメータを json で編集 |
+
+### 次 tick 候補
+
+- インスペクタでシーン JSON パスを自由編集できる（roadmap 650 行）

@@ -4,6 +4,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
 #include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
 
@@ -527,6 +528,12 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       }
     }
     return changed;
+  }
+
+  bool genericChanged = false;
+  if (EntityEditorUiDrawComponentParamsGenericJson::TryDrawUnknownComponentParams(
+          slot, genericChanged)) {
+    return genericChanged;
   }
 
   ImGui::TextDisabled("未対応コンポーネント: %s", slot.typeName.c_str());

@@ -88,6 +88,9 @@ jobs:
       - name: Verify entity editor hierarchy drag drop
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_hierarchy_drag_drop.py
 
+      - name: Verify draw component params unknown JSON
+        run: python3 EditorAssets/Tools/CursorAI/verify_draw_component_params_unknown_json.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 
