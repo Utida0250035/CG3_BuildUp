@@ -8557,3 +8557,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - DebugPlayArea 用 EditorAssets パス定数（`GAP-Editor-EditorAssetsPaths-001`）
+
+---
+
+## セッション 2026-11-21 11:15（/loop 15m・roadmap tick）
+
+### 実装済みと判断した項目（コード確認・即時 [x]）
+
+- `EditorAssetsPaths.h` に DebugPlayArea 一式の定数が既に存在（directory / template / FeatureTest / combat_bounds）
+- 今 tick は `verify_editor_assets_paths_debug_play_area.py` とドキュメント突合でギャップを解消
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** テスト再生 JSON の場所をエディタコードで一意参照
+- **制作:** プロジェクト一覧・scaffold・BuildUp 起動が同じパス契約を共有
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| EditorAssetsPaths | 有効 | エディタでシーン構成を保存しプレイ試験する導線 |
+
+### 次 tick 候補
+
+- シーン切替時の未保存確認（`GAP-Editor-EntityEditor-002`）

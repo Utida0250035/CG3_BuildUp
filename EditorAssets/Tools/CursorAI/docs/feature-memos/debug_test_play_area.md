@@ -7,11 +7,15 @@
 
 ## 成果物
 
-| パス | 内容 |
-|------|------|
-| `EditorAssets/DebugPlayArea/template_*.scene.json` | 床マーカー + 回転プロップ |
-| `combat_bounds_sandbox.scene.json` | `StageBounds` 左右端の可視マーカー |
-| `Tools/DebugPlayAreaGenerator/scaffold_play_area.py` | 名前指定でテンプレ複製 |
+| パス | C++ 定数（`EditorAssetsPaths.h`） | 内容 |
+|------|------|------|
+| `EditorAssets/DebugPlayArea/` | `kDebugPlayAreaDirectory` | 走査ルート・scaffold 出力先 |
+| `template_test_play_area.scene.json` | `kDebugPlayAreaTemplateScene` | 床マーカー + 回転プロップ |
+| `FeatureTest.scene.json` | `kDebugPlayAreaFeatureTestScene` | 機能検証正本 |
+| `combat_bounds_sandbox.scene.json` | `kDebugPlayAreaCombatBoundsSandboxScene` | `StageBounds` 境界マーカー |
+| `Tools/DebugPlayAreaGenerator/scaffold_play_area.py` | — | 名前指定でテンプレ複製 |
+
+検証: `verify_editor_assets_paths_debug_play_area.py`
 
 ## フロー
 

@@ -121,6 +121,9 @@ jobs:
       - name: Verify combat_bounds_sandbox debug play area launch
         run: python3 EditorAssets/Tools/CursorAI/verify_combat_bounds_sandbox_debug_play_area.py
 
+      - name: Verify EditorAssetsPaths DebugPlayArea constants
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_assets_paths_debug_play_area.py
+
       - name: Verify in-editor play Runtime tab focus only
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_runtime_tab_focus.py
 
