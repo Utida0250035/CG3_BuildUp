@@ -10463,3 +10463,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - コンボ変更で DefaultParams に差し替え（roadmap 659 行）
+
+---
+
+## セッション 2026-11-22 04:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 659 行: **`EntityEditorInspectorComponentTypeComboApply`** で型コンボ変更時に `DefaultParamsForType` へ完全差し替え
+
+### 推測した用途（§6.4）
+
+- **制作:** 別 Cmp に差し替える際、旧型の params キーが残ってインスペクタが混乱するのを防ぐ
+- **Authoring:** JSON 読込は従来どおり `MergeParamsForRegisteredType`、UI 操作のみリセット
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 型コンボで既定 params 差し替え | 有効 | コンポーネント内部パラメータを json で編集 |
+
+### 次 tick 候補
+
+- 型 Combo で既定 params に上書き（roadmap 660 行・659 と重複のため §6.2 確認候補）

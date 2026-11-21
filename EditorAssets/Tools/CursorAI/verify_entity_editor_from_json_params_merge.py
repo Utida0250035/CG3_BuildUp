@@ -51,8 +51,16 @@ def main() -> int:
     if UI.is_file():
         ui = UI.read_text(encoding="utf-8", errors="replace")
         combo = ui.split('ImGui::Combo("コンポーネント型"', 1)
-        if len(combo) >= 2 and "MergeParamsForRegisteredType" not in combo[1][:800]:
-            errors.append("component type combo must merge params on type change")
+        if len(combo) >= 2:
+            tail = combo[1][:800]
+            if "MergeParamsForRegisteredType" in tail:
+                errors.append(
+                    "component type combo must replace with DefaultParams, not merge"
+                )
+            if "ApplyKnownComponentTypeFromCombo" not in ui:
+                errors.append(
+                    "component type combo must call ApplyKnownComponentTypeFromCombo"
+                )
     else:
         errors.append("missing EntityEditorUi.cpp")
 

@@ -118,6 +118,9 @@ jobs:
       - name: Verify add scene object presets
         run: python3 EditorAssets/Tools/CursorAI/verify_add_scene_object_presets.py
 
+      - name: Verify component combo default params
+        run: python3 EditorAssets/Tools/CursorAI/verify_component_combo_default_params.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

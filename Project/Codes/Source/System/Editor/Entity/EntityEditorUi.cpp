@@ -52,6 +52,7 @@
 #include "System/Editor/Entity/EntityEditorInspectorComponentRemoveBatchUi.h"
 #include "System/Editor/Entity/EntityEditorInspectorExecutionOrderBatchUi.h"
 #include "System/Editor/Entity/EntityEditorHierarchyAddObjectUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorComponentTypeComboApply.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -1275,10 +1276,9 @@ void EntityEditor::DrawInspectorPanel() {
         const KnownComponentEntry &entry =
             kKnownComponents[presetIndicesForKind[static_cast<size_t>(
                 typeComboListIndex)]];
-        selected.kind = ui_.selectedComponentKind;
-        selected.typeName = entry.typeName;
-        selected.params =
-            MergeParamsForRegisteredType(entry.typeName, selected.params);
+        EntityEditorInspectorComponentTypeComboApply::
+            ApplyKnownComponentTypeFromCombo(selected, ui_.selectedComponentKind,
+                                             entry.typeName);
         changed = true;
         changedInComponentSectionBesidesAssetPath = true;
       }
