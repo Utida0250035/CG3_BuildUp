@@ -8311,3 +8311,37 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - ForDebug 系 cpp の Release リンク除外（`GAP-Ship-ForDebugSources-001`）
+
+---
+
+## セッション 2026-11-21 09:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `apply_for_debug_release_exclusions_to_vcxproj.py` で ForDebug TU 9 件に Release 除外
+- allowlist に `Log.cpp` のみ残置（ランタイム LogFile 参照）
+- `verify_for_debug_sources_release_exclude.py`、CI、`ship_build_configurations.md` 追記
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **配布:** デバッグ ImGui／プロファイラ UI を出荷 exe から分離
+- **Ship:** Release ビルドのリンク面を契約で固定
+
+### 既存実装の課題点
+
+- `DirectionalShadowApplyDiagnostics.cpp` 等エンジン側デバッグ TU は別 roadmap（Release 除外未着手の可能性）
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ForDebugSources | 有効 | ゲーム配布時にランタイムテンプレート exe からデバッグ UI を漏らさない |
+
+### 次 tick 候補
+
+- Release リンク設定の GenerateDebugInformation（`GAP-Ship-CG2_BuildUp-003`）

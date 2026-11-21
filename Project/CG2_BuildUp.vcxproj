@@ -297,15 +297,51 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
     <ClCompile Include="Codes\Source\System\Build\BuildConfigurationContract.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\AABB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
