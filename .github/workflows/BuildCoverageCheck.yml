@@ -16,6 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Verify Cloud Linux Development preflight procedure
+        run: python3 EditorAssets/Tools/CursorAI/verify_cloud_dev_build.py
+
       - name: Verify vcxproj and shader coverage
         run: python3 EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py
 

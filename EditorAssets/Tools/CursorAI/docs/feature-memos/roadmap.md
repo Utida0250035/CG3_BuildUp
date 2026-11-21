@@ -539,7 +539,7 @@
 - [x] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
 
 ### cloud_dev_build
-- [ ] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
+- [x] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
 
 ### main
 - [ ] スモーク起動用 CLI（例: フレーム数上限）が main に無い

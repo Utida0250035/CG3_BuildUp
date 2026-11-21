@@ -8463,3 +8463,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Cloud Linux 上の Development ビルド再現（`cloud_dev_build`）
+
+---
+
+## セッション 2026-11-21 10:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `runCloudDevelopmentPreflight.sh` … Linux で実行可能な Development 前段検証バンドル
+- `cloud_dev_build.md`・`cloud_build_vcxproj_check.md` 追記
+- `verify_cloud_dev_build.py`（プリフライト実行込み）を CI に追加
+- roadmap 当該行 `[x]`（`GAP-Infra-cloud_dev_build-001`）
+
+### 推測した用途（§6.4）
+
+- **半自律／Cloud Agent:** Windows MSBuild 無しでも tick 完了判定の代替手順
+- **CI:** Linux job で手順の退行検知
+
+### ビルド
+
+- 本 tick 環境で `runCloudDevelopmentPreflight.sh` を実行済み（`verify_cloud_dev_build` 経由）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| cloud_dev_build | 有効 | エディター exe 化の前段として Development 手順を再現可能にする |
+
+### 次 tick 候補
+
+- スモーク起動用 CLI（roadmap `main`・`GAP-Ship-main-001` 付近）

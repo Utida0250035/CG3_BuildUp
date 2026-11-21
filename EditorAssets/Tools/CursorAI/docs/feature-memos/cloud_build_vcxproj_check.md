@@ -44,3 +44,7 @@ CI の `DevelopmentBuild.yml` も同じ packages 復元後に slnx をビルド�
 | JsonTest デバッグパネル TU 除外 | `verify_json_test_release_exclude.py` |
 
 正本: `ship_build_configurations.md`。CI の `BuildCoverageCheck` は `verify_config_matrix` で上記をまとめて実行する。
+
+## Cloud Linux（Development 再現）
+
+MSBuild は実行できない。**`runCloudDevelopmentPreflight.sh`** で Linux 上の妥当性チェックを `DevelopmentBuild` の前段と同等に揃える（詳細: `cloud_dev_build.md`）。
