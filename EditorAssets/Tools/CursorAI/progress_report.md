@@ -9869,3 +9869,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Imported 配下のファイル一覧 API が無い（roadmap 633 行）
+
+---
+
+## セッション 2026-11-21 23:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 633 行: **`ListImportedAssetRelativePaths`** とプロジェクトパネル **Imported フォルダ一覧**（選択→適用）
+
+### 推測した用途（§6.4）
+
+- **制作:** 過去ドロップ分を一覧から再選択して連続配置
+- **Authoring:** 直近 1 件表示だけに依存しないアセット再利用
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Imported 一覧 API | 有効 | 自作エディタ上のファイル操作 |
+
+### 次 tick 候補
+
+- 取り込みファイルはドロップコピーだけで、削除と名前変更が無い（roadmap 634 行）

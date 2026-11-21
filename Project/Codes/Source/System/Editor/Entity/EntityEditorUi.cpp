@@ -15,6 +15,7 @@
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
+#include "System/Editor/EditorImportedAssetProjectPanelList.h"
 #include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
 #include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
@@ -836,6 +837,8 @@ void EntityEditor::DrawProjectPanel() {
   }
   Atrum::Editor::EditorImportedAssetBatchApplyToSelection::
       DrawProjectPanelBatchApplyUi(*this);
+  Atrum::Editor::EditorImportedAssetProjectPanelList::DrawImportedAssetsFolderList(
+      *this);
   ImGui::Separator();
 
   DrawEntityEditorEditableSceneList(*this);

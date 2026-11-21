@@ -13,6 +13,9 @@ void EnsureImportedAssetsDirectoryExists();
 /// ソースファイルを Imported へコピー。成功時はコピー先の相対パス、失敗時は空文字。
 std::string CopyFileIntoImportedAssets(const std::string &sourcePath);
 
+/// `kImportedAssetsDirectory` 直下のファイルを相対パスで列挙（名前昇順・非再帰）。
+std::vector<std::string> ListImportedAssetRelativePaths();
+
 /// SDL_DROPFILE からエンジンが受け取ったパス（メインスレッド専用）
 class FileDropQueue {
 public:
