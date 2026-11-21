@@ -9459,3 +9459,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EntityHasComponentForSlot が Mesh／Billboard を認識しない（roadmap 606 行）
+
+---
+
+## セッション 2026-11-21 19:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 606 行 / `GAP-Editor-EditorSceneRuntime-004`: **`EditorSceneRuntimeEntityHasComponentForSlot`** へスロット突合を切り出し、`CmpMesh` と `CmpEditorTextureBillboard` の `HasDrawCmp` 判定を検証で固定（§6.2: 本体ロジックは既存行にあったがモジュール化で契約を明示）
+
+### 推測した用途（§6.4）
+
+- **制作:** component_split_guidelines どおり JSON に Draw スロットを書いたとき、AssetPath 副作用なしで存在検出できる
+- **Authoring:** 手編集 JSON の CmpMesh 再追加ループを防ぐ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| スロット突合 | 有効 | コンポーネント構成を json で作成/編集する流れを支援 |
+
+### 次 tick 候補
+
+- AssetPath プレビューは構築時1回（roadmap 607 行）

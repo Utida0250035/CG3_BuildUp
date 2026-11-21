@@ -4,6 +4,7 @@
 #include "System/Editor/Scene/EditorSceneRuntimeDrawPreviewApply.h"
 #include "System/Editor/Scene/EditorSceneRuntimeEditorAssetPathPreviewLink.h"
 #include "System/Editor/Scene/EditorSceneRuntimeMainCameraSupplement.h"
+#include "System/Editor/Scene/EditorSceneRuntimeEntityHasComponentForSlot.h"
 #include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
 #include "System/Editor/EditorSceneRuntimeInstanceNamePolicy.h"
 
@@ -51,67 +52,6 @@ void ReadHitSpheresFromJson(const nlohmann::json &j,
     sphere.radius = item.value("radius", 1.0f);
     out.push_back(sphere);
   }
-}
-
-bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) {
-  if (slot.kind == ComponentSlotKind::Draw) {
-    if (slot.typeName == "CmpMeshSphere") {
-      return entity.HasDrawCmp<CmpMeshSphere>();
-    }
-    if (slot.typeName == "CmpBillboardInstancedGrid") {
-      return entity.HasDrawCmp<CmpBillboardInstancedGrid>();
-    }
-    if (slot.typeName == "CmpMesh") {
-      return entity.HasDrawCmp<CmpMesh>();
-    }
-    if (slot.typeName == "CmpEditorTextureBillboard") {
-      return entity.HasDrawCmp<CmpEditorTextureBillboard>();
-    }
-    if (slot.typeName == "CmpDrawHitSphere") {
-      return entity.HasDrawCmp<CmpDrawHitSphere>();
-    }
-  }
-  if (slot.kind == ComponentSlotKind::Upd) {
-    if (slot.typeName == "CmpRotator") {
-      return entity.HasUpdCmp<CmpRotator>();
-    }
-    if (slot.typeName == "CmpScroll") {
-      return entity.HasUpdCmp<CmpScroll>();
-    }
-    if (slot.typeName == "CmpHitSphere") {
-      return entity.HasUpdCmp<CmpHitSphere>();
-    }
-    if (slot.typeName == "CmpCamera") {
-      return entity.HasUpdCmp<CmpCamera>();
-    }
-    if (slot.typeName == "CmpParticleEmitter") {
-      return entity.HasUpdCmp<CmpParticleEmitter>();
-    }
-    if (slot.typeName == "CmpBounceBall") {
-      return entity.HasUpdCmp<CmpBounceBall>();
-    }
-    if (slot.typeName == "CmpBallKinematics") {
-      return entity.HasUpdCmp<CmpBallKinematics>();
-    }
-    if (slot.typeName == "CmpBallAxisAlignedBounce") {
-      return entity.HasUpdCmp<CmpBallAxisAlignedBounce>();
-    }
-    if (slot.typeName == "CmpBallBounceImpactFx") {
-      return entity.HasUpdCmp<CmpBallBounceImpactFx>();
-    }
-  }
-  if (slot.kind == ComponentSlotKind::Data) {
-    if (slot.typeName == "CmpEditorAssetPath") {
-      return entity.HasDataCmp<CmpEditorAssetPath>();
-    }
-    if (slot.typeName == "CmpRuntimeTexturePath") {
-      return entity.HasDataCmp<CmpRuntimeTexturePath>();
-    }
-    if (slot.typeName == "CmpColliderAabb") {
-      return entity.HasDataCmp<CmpColliderAabb>();
-    }
-  }
-  return false;
 }
 
 bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {

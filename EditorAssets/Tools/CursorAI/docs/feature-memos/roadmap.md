@@ -603,7 +603,7 @@
 - [x] インポート後プレビュー再適用なし
 
 ### EditorSceneRuntime
-- [ ] EntityHasComponentForSlot が Mesh／Billboard を認識しない（spec: feature-memos/component_split_guidelines.md）
+- [x] EntityHasComponentForSlot が Mesh／Billboard を認識しない（spec: feature-memos/component_split_guidelines.md）
 - [ ] AssetPath プレビューは構築時1回
 
 ### SceneEntityEditor

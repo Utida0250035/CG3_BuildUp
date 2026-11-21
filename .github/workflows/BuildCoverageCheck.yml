@@ -103,6 +103,9 @@ jobs:
       - name: Verify BuildEntities main camera supplement
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_main_camera_supplement.py
 
+      - name: Verify EntityHasComponentForSlot mesh and billboard
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_entity_has_component_for_slot.py
+
       - name: Verify BuildPreviewScene BuildUp parity
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_build_preview_scene_buildup_parity.py
 
