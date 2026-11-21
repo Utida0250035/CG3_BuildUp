@@ -190,6 +190,9 @@ jobs:
       - name: Verify editable scene JSON multi-root listing
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_asset_multi_dir_list.py
 
+      - name: Verify EntityEditor DebugPlayArea scene list UI
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_ui_debug_play_area_list.py
+
       - name: Verify launch_config startupScenePath normalization
         run: python3 EditorAssets/Tools/CursorAI/verify_launch_config_startup_path_normalize.py
 

@@ -14,6 +14,7 @@
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
 #include "System/Editor/EditorDebugPlayAreaScaffold.h"
 #include "System/Editor/Entity/EntityEditorSceneSwitchUnsavedPrompt.h"
+#include "System/Editor/Entity/EntityEditorUiEditableSceneList.h"
 #include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -773,26 +774,7 @@ void EntityEditor::DrawProjectPanel() {
   }
   ImGui::Separator();
 
-  const std::vector<std::string> scenePaths =
-      Atrum::Editor::Scene::ListEditableSceneJsonFiles();
-  if (scenePaths.empty()) {
-    ImGui::TextDisabled("シーンがありません: %s / %s",
-                        Atrum::GameAssets::kScenesDirectory,
-                        Atrum::Editor::Scene::kScenesDirectory);
-  } else {
-    for (const std::string &path : scenePaths) {
-      const bool isActive =
-          !ui_.selectedScenePath.empty()
-              ? ui_.selectedScenePath == path
-              : ui_.jsonFilePath == path;
-      const std::string label =
-          Atrum::Editor::Scene::SceneDisplayNameFromPath(path) + "  |  " +
-          path;
-      if (ImGui::Selectable(label.c_str(), isActive)) {
-        ui_.selectedScenePath = path;
-      }
-    }
-  }
+  DrawEntityEditorEditableSceneList(*this);
 
   ImGui::Separator();
   if (!ui_.selectedScenePath.empty()) {

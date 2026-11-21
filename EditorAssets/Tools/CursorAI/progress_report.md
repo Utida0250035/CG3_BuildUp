@@ -8643,3 +8643,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - テスト再生エリア JSON がエディタのシーン一覧に出ない（`GAP-Editor-EntityEditorUi-004`）
+
+---
+
+## セッション 2026-11-21 12:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditorUi-004`: DebugPlayArea をプロジェクトパネルで「テスト再生エリア」グループ表示
+- `EditorSceneJsonFileEntry` で `*.scene.json` を一覧対象に明示
+- DebugPlayArea 配下のシーン JSON 削除を許可
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** scaffold 生成物や FeatureTest を一覧から開いてエディタ内プレビュー／BuildUp
+- **制作:** 本編 Scenes とテスト用 JSON の場所を UI 上で区別
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| DebugPlayArea 一覧 | 有効 | エディタ上でシーン構成を編集・プレイ試験する導線 |
+
+### 次 tick 候補
+
+- スロット種別不一致のコンポーネント無警告スキップ（`GAP-Editor-EditorSceneRuntime-002`）

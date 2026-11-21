@@ -1,6 +1,7 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
 #include "System/Editor/EditorEditableSceneJsonRoots.h"
+#include "System/Editor/Scene/EditorSceneJsonFileEntry.h"
 #include "System/Editor/EditorLaunchConfigStartupPathNormalize.h"
 #include "System/Editor/EditorLaunchConfigJsonDocument.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
@@ -35,7 +36,7 @@ std::vector<std::string> ListSceneJsonFiles(
     if (!entry.is_regular_file()) {
       continue;
     }
-    if (entry.path().extension() != ".json") {
+    if (!IsEditableSceneJsonPath(entry.path())) {
       continue;
     }
     paths.push_back(entry.path().generic_string());
@@ -80,7 +81,7 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   }
 
   const fs::path target = fs::path(jsonFilePath).lexically_normal();
-  if (target.extension() != ".json") {
+  if (!IsEditableSceneJsonPath(target)) {
     return false;
   }
 
@@ -90,7 +91,8 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
     return false;
   }
 
-  const char *roots[] = {GameAssets::kScenesDirectory, kScenesDirectory};
+  const char *roots[] = {GameAssets::kScenesDirectory, kScenesDirectory,
+                         EditorAssets::kDebugPlayAreaDirectory};
   bool insideManagedRoot = false;
   for (const char *root : roots) {
     const fs::path scenesRoot = fs::absolute(root, ec).lexically_normal();

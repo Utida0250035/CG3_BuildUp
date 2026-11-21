@@ -10,6 +10,16 @@ ROOT = Path(__file__).resolve().parents[3]
 ROOTS_H = ROOT / "Project" / "Codes" / "Include" / "System" / "Editor" / "EditorEditableSceneJsonRoots.h"
 ASSET_CPP = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "Scene" / "EditorSceneAsset.cpp"
 UI_CPP = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "Entity" / "EntityEditorUi.cpp"
+LIST_CPP = (
+    ROOT
+    / "Project"
+    / "Codes"
+    / "Source"
+    / "System"
+    / "Editor"
+    / "Entity"
+    / "EntityEditorUiEditableSceneList.cpp"
+)
 ENTITY_CPP = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "Entity" / "EntityEditor.cpp"
 
 
@@ -42,15 +52,28 @@ def main() -> int:
                     "ListEditableSceneJsonFiles must not hardcode single dir only"
                 )
 
-    for path, label in ((UI_CPP, "EntityEditorUi"), (ENTITY_CPP, "EntityEditor")):
-        if not path.is_file():
-            errors.append(f"missing {path.name}")
-            continue
-        text = path.read_text(encoding="utf-8", errors="replace")
-        if "ListEditableSceneJsonFiles" not in text:
-            errors.append(f"{label} must use ListEditableSceneJsonFiles")
-        if "ListSceneJsonFiles(" in text:
-            errors.append(f"{label} must not call ListSceneJsonFiles directly")
+    if not LIST_CPP.is_file():
+        errors.append("missing EntityEditorUiEditableSceneList.cpp")
+    else:
+        list_text = LIST_CPP.read_text(encoding="utf-8", errors="replace")
+        if "ListEditableSceneJsonFiles" not in list_text:
+            errors.append("editable scene list UI must use ListEditableSceneJsonFiles")
+        if "ListSceneJsonFiles(" in list_text:
+            errors.append("editable scene list UI must not call ListSceneJsonFiles directly")
+
+    if UI_CPP.is_file():
+        ui = UI_CPP.read_text(encoding="utf-8", errors="replace")
+        if "DrawEntityEditorEditableSceneList" not in ui:
+            errors.append("EntityEditorUi must wire DrawEntityEditorEditableSceneList")
+    else:
+        errors.append("missing EntityEditorUi.cpp")
+
+    if ENTITY_CPP.is_file():
+        entity = ENTITY_CPP.read_text(encoding="utf-8", errors="replace")
+        if "ListEditableSceneJsonFiles" not in entity:
+            errors.append("EntityEditor must use ListEditableSceneJsonFiles")
+    else:
+        errors.append("missing EntityEditor.cpp")
 
     if errors:
         print("verify_editor_scene_asset_multi_dir_list: FAILED", file=sys.stderr)
