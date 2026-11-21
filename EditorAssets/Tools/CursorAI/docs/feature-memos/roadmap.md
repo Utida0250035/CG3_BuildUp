@@ -657,7 +657,7 @@
 - [x] CmpCamera が既知型だが未対応表示（spec: feature-memos/entity_camera_components.md）
 - [x] 「オブジェクトを追加」は空のみ
 - [x] コンボ変更で DefaultParams に差し替え
-- [ ] 型 Combo で既定 params に上書き
+- [x] 型 Combo で既定 params に上書き
 - [ ] 型 Combo 変更は params を既定に置換
 - [ ] 直近ドロップ適用が選択中 Cmp のみ
 - [ ] シーン JSON パスを InputString 編集

@@ -10490,3 +10490,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 型 Combo で既定 params に上書き（roadmap 660 行・659 と重複のため §6.2 確認候補）
+
+---
+
+## セッション 2026-11-22 04:45（/loop 15m・roadmap tick）
+
+### 完了タスク（§6.2 即時完了）
+
+- roadmap 660 行: **型 Combo で既定 params に上書き** — 前 tick の `EntityEditorInspectorComponentTypeComboApply` / `verify_component_combo_default_params.py` で要件を満たすと判断し実装スキップ
+
+### 推測した用途（§6.4）
+
+- **制作:** 659 と同趣旨（型差し替え時の params リセット）
+
+### ビルド
+
+- Cloud VM: `verify_component_combo_default_params.py` + `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 型 Combo 既定上書き | 有効（既存実装） | コンポーネント内部パラメータを json で編集 |
+
+### 次 tick 候補
+
+- 型 Combo 変更は params を既定に置換（roadmap 661 行・重複候補）
