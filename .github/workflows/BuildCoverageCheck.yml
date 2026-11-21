@@ -88,6 +88,9 @@ jobs:
       - name: Verify AtrumEngine visual authoring lighting UI
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_atrum_engine_visual_authoring.py
 
+      - name: Verify scene entity editor preview visual effects
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_preview_visual_effects.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 

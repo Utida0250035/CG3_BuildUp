@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorSceneRuntimeFunctionalViewDraw.h"
 
+#include "Scene/SceneEntityEditorSceneViewVisualEffectsApply.h"
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
@@ -55,6 +56,7 @@ void DrawEditorSceneRuntimeFunctionalView(
 
   FitCameraPerspectiveToViewport(camera, width, height);
   engine->SetCamera(camera);
+  SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw(engine);
 
   DrawRootEntities(entities);
   Atrum::Particle::DrawEmitterManagerForActiveScene();

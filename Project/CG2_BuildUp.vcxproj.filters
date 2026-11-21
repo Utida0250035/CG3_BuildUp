@@ -608,6 +608,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayTick.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewDebugCameraDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewRenderCameraBind.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAfterBuildUpExit.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorClearRuntimeFocusRequest.cpp" />
@@ -1459,6 +1460,7 @@
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayTick.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewDebugCameraDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewRenderCameraBind.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewVisualEffectsApply.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorExitSceneTeardown.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />

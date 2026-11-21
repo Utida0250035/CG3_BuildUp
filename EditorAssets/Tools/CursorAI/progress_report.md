@@ -8813,3 +8813,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - エディタプレビューにフォグ／リム／ゴッドレイ／影（`GAP-Editor-SceneEntityEditor-004`）
+
+---
+
+## セッション 2026-11-21 13:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-SceneEntityEditor-004`: `SceneEntityEditorSceneViewVisualEffectsApply` で描画直前に Fog / Rim / GodRays / 影 CB をフラッシュ
+- 実行ビュー（`DrawEditorSceneRuntimeFunctionalView`）でもカメラ設定後に同処理を適用
+- `verify_scene_entity_editor_preview_visual_effects.py` を CI に追加
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** 入場時の `game_scene_lighting.json` 反映に加え、各シーンビュー描画で本編相当のポストを確認
+- **実行タブ:** BuildUp 相当の機能描画でも平行光のみにならない
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレビュー視覚効果 | 有効 | シーン構成の編集とエディタ上プレイ試験 |
+
+### 次 tick 候補
+
+- CmpMesh／Billboard が TryAddEmptyComponent に無い（`GAP-Editor-EditorSceneRuntime-003`）

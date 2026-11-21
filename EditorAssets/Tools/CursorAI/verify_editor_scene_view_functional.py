@@ -27,6 +27,10 @@ def main() -> int:
 
     if not draw_cpp.is_file():
         errors.append("missing EditorSceneRuntimeFunctionalViewDraw.cpp")
+    else:
+        draw_text = draw_cpp.read_text(encoding="utf-8", errors="replace")
+        if "SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw" not in draw_text:
+            errors.append("functional view draw must apply lighting CB after SetCamera")
 
     if not ui_h.is_file():
         errors.append("missing EntityEditor.h")

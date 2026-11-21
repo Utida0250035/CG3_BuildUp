@@ -34,8 +34,8 @@ def main() -> int:
         scene = SCENE_CPP.read_text(encoding="utf-8", errors="replace")
         if "ApplyOnEnterEntityEditor" not in scene:
             errors.append("SceneEntityEditor::EnterScene must apply lighting profile")
-        if "FlushDirectionalLightConstantBuffer" not in scene:
-            errors.append("SetupEditorLighting must flush directional CB for post FX")
+        if "SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw" not in scene:
+            errors.append("scene view draw must apply visual effects before entities")
     else:
         errors.append("missing SceneEntityEditor.cpp")
 

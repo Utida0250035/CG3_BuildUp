@@ -571,7 +571,7 @@
 - [x] 選択エンティティの複製 UI が無く複製が多段手順（gap: `GAP-Editor-EntityEditor-001`・Authoring・P1）
 - [x] 親付きインスタンスが Initialize を呼ばれない（gap: `GAP-Editor-EditorSceneRuntime-006`・Play・P1）
 - [x] ライト・ポスト系パラメータのエディタ用 UI が無い（gap: `GAP-Editor-AtrumEngineVisual-001`・Authoring・P1）
-- [ ] エディタプレビューにフォグ／リム／ゴッドレイ／影が無い（gap: `GAP-Editor-SceneEntityEditor-004`・Authoring・P1）
+- [x] エディタプレビューにフォグ／リム／ゴッドレイ／影が無い（gap: `GAP-Editor-SceneEntityEditor-004`・Authoring・P1）
 - [ ] CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない（gap: `GAP-Editor-EditorSceneRuntime-003`・Authoring・P1）
 - [ ] インスペクタ変更はプレビューのみ更新し自動保存しない（gap: `GAP-Editor-EntityEditor-004`・Authoring・P1）
 - [ ] AssetPath プレビューが Draw 分割を Data に内包（gap: `GAP-Editor-EditorSceneRuntime-005`・Authoring・P1）

@@ -20,6 +20,7 @@
 #include "Scene/SceneEntityEditorEditViewTransformDrag.h"
 #include "Scene/SceneEntityEditorEditViewTransformGizmoDraw.h"
 #include "Scene/SceneEntityEditorSceneViewRenderCameraBind.h"
+#include "Scene/SceneEntityEditorSceneViewVisualEffectsApply.h"
 #include "Scene/SceneEntityEditorAuthoringLightingPreview.h"
 #include "Scene/SceneEntityEditorExitSceneTeardown.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -43,13 +44,6 @@
 #endif
 
 namespace {
-
-void SetupEditorLighting() {
-  Atrum::Engine *engine = ::Atrum::EngineInstance();
-  if (engine != nullptr) {
-    engine->FlushDirectionalLightConstantBuffer();
-  }
-}
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
 
@@ -329,7 +323,7 @@ void SceneEntityEditor::DrawSceneViewContent(
 
   SceneEntityEditorSceneViewRenderCameraBind::BindForSceneViewRender(
       engine, camera, width, height);
-  SetupEditorLighting();
+  SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw(engine);
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
@@ -359,12 +353,12 @@ void SceneEntityEditor::DrawScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   // Draw() 内でレンダーテクスチャへ描画済み
 #else
-  SetupEditorLighting();
   Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
   engine->SetCamera(GetCamera());
+  SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw(engine);
   DrawPreviewEntities();
 #endif
 }

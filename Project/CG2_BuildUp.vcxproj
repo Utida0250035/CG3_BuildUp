@@ -484,6 +484,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1002,6 +1003,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayTick.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewDebugCameraDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewRenderCameraBind.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewVisualEffectsApply.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorExitSceneTeardown.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
