@@ -643,6 +643,10 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDragDrop.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyReparent.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.cpp" />

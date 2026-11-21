@@ -10166,3 +10166,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EntityEditorUi 節の先頭未完了 `- [ ]`（roadmap 647 行以降）
+
+---
+
+## セッション 2026-11-22 01:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 648 行: **ヒエラルキー DnD**（親変更 / Shift 並べ替え / Ctrl 複製）
+
+### 推測した用途（§6.4）
+
+- **制作:** インスペクタ親コンボなしでツリー操作だけ反復
+- **レベル編成:** 階層整理と複製の手数削減
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ヒエラルキー DnD | 有効 | 各エンティティの構成を json 作成/編集する流れ |
+
+### 次 tick 候補
+
+- DrawComponentParams が未知 typeName を未対応表示のみ（roadmap 649 行）

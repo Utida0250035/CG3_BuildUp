@@ -40,6 +40,7 @@
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 #include "System/Entity/EntityTagRegistry.h"
+#include "System/Editor/Entity/EntityEditorHierarchyDragDrop.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -697,6 +698,7 @@ void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
       SetSingleInstanceSelection(ui, nodeIndex);
     }
   }
+  EntityEditorHierarchyDragDrop::AttachToHierarchyNode(editor, nodeIndex);
   ImGui::PopID();
 
   for (int i = 0; i < static_cast<int>(scene.instances.size()); ++i) {
@@ -760,8 +762,11 @@ void EntityEditor::DrawHierarchyPanel() {
   }
 
   ImGui::Separator();
+  ImGui::TextDisabled(
+      "ドラッグ&ドロップ: 親変更 | Shift+ドロップ: 並べ替え | Ctrl+ドロップ: 複製");
   if (ImGui::TreeNodeEx(scene_.sceneName.c_str(),
                         ImGuiTreeNodeFlags_DefaultOpen)) {
+    EntityEditorHierarchyDragDrop::AttachRootDropTarget(*this);
     for (int i = 0; i < static_cast<int>(scene_.instances.size()); ++i) {
       if (scene_.instances[static_cast<size_t>(i)].parentIndex < 0) {
         DrawHierarchyNode(*this, i);

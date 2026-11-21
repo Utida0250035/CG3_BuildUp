@@ -641,6 +641,22 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDragDrop.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyReparent.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSlotParamsNormalize.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1326,6 +1342,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchPlayMenu.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchLightPostWindow.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateInstanceKeyboardShortcut.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyDragDrop.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyReparent.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSlotParamsNormalize.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefaultParamsCmpCamera.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSettingsCopyPaste.h" />

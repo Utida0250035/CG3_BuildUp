@@ -85,6 +85,9 @@ jobs:
       - name: Verify prefab collision policy
         run: python3 EditorAssets/Tools/CursorAI/verify_prefab_collision_policy.py
 
+      - name: Verify entity editor hierarchy drag drop
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_hierarchy_drag_drop.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

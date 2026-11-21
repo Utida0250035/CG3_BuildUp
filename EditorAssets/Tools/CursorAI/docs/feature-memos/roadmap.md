@@ -645,7 +645,7 @@
 - [x] 衝突時 stem_N 連番
 
 ### EntityEditorUi
-- [ ] ヒエラルキーのドラッグ複製・並べ替えが無い
+- [x] ヒエラルキーのドラッグ複製・並べ替えが無い
 - [ ] DrawComponentParams が未知 typeName を未対応表示のみ（spec: feature-memos/component_split_guidelines.md）
 - [ ] インスペクタでシーン JSON パスを自由編集できる
 - [ ] instanceName と entityName を別々に編集しうる
