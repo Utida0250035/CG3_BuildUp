@@ -2,6 +2,7 @@
 
 #include "System/Scripting/LuaComponentRuntime.h"
 #include "System/Scripting/LuaEntityApiBinder.h"
+#include "System/Scripting/LuaSubsystemApiBinder.h"
 #include "System/Scripting/LuaEntitySpawnFromJson.h"
 #include "System/Scripting/LuaSystem.h"
 
@@ -45,6 +46,7 @@ void SceneBuildUpLuaRuntimeHost::OnEnterScene(
   context.entities = entities_;
   context.tickCallbacks = &tickCallbacks_;
   lua_->AddBinder<Script::LuaEntityApiBinder>(context);
+  lua_->AddBinder<Script::LuaSubsystemApiBinder>(context);
   lua_->RegisterBinds();
   Script::LuaComponentRuntime::SetActive(lua_.get());
 

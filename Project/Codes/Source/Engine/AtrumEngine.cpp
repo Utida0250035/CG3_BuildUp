@@ -130,6 +130,14 @@ TextureStorage *EngineTextureStorage() {
 	return AtrumEngine::Instance()->GetTextureStorage();
 }
 
+ModelStorage *EngineModelStorage() {
+	return AtrumEngine::Instance()->GetModelStorage();
+}
+
+CommandContext *EngineCommandContextDirect() {
+	return AtrumEngine::Instance()->GetCommandContextDirect();
+}
+
 template <typename T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 static LONG WINAPI ExportDump(EXCEPTION_POINTERS *exception) {

@@ -11,6 +11,8 @@ namespace Atrum {
 class AtrumEngine;
 class AssetModel;
 class FrameDeltaTime;
+class CommandContext;
+class ModelStorage;
 class TextureStorage;
 
 namespace Input {
@@ -35,6 +37,8 @@ Input::PlayInput *EnginePlayInput();
 Audio::AudioManager *EngineAudioManager();
 Physics::PhysicsManager *EnginePhysicsManager();
 TextureStorage *EngineTextureStorage();
+ModelStorage *EngineModelStorage();
+CommandContext *EngineCommandContextDirect();
 
 uint32_t EngineGetTexture(const std::string &filePath);
 std::shared_ptr<AssetModel> EngineGetModel(const std::string &directoryPathObj,

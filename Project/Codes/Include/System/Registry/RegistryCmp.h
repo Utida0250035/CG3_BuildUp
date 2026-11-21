@@ -81,6 +81,14 @@ public:
   const auto &GetRegistryCmpUpd() const { return registryCmpUpd_; }
   const auto &GetRegistryCmpDraw() const { return registryCmpDraw_; }
   const auto &GetRegistryCmpData() const { return registryCmpData_; }
+
+  bool HasUpdRegistration(const std::string &cmpName) const;
+  bool HasDrawRegistration(const std::string &cmpName) const;
+  bool HasDataRegistration(const std::string &cmpName) const;
+
+  size_t UpdRegistrationCount() const { return registryCmpUpd_.size(); }
+  size_t DrawRegistrationCount() const { return registryCmpDraw_.size(); }
+  size_t DataRegistrationCount() const { return registryCmpData_.size(); }
 };
 
 } // namespace Atrum

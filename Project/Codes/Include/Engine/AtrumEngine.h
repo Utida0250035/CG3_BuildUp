@@ -577,6 +577,13 @@ namespace Atrum {
 		ModelStorage *GetModelStorage() { return modelStorage_.get(); }
 		const ModelStorage *GetModelStorage() const { return modelStorage_.get(); }
 
+		CommandContext *GetCommandContextDirect() {
+			return commandContextDirect_.get();
+		}
+		const CommandContext *GetCommandContextDirect() const {
+			return commandContextDirect_.get();
+		}
+
 		Draw *GetDraw() { return draw_.get(); }
 		const Draw *GetDraw() const { return draw_.get(); }
 

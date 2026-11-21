@@ -10648,3 +10648,26 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 |--------|------|------|
 | Lua コンポーネント | 有効 | ゲーム内のロジック（スクリプト）／エンティティ json の構成編集の流れを前進 |
 | 同上 | 矛盾なし | md／lua は外部テキストエディタ利用と整合 |
+
+---
+
+## セッション 2026-11-22（Lua: Command / Audio / Storage / Registry バインド）
+
+### 実装概要
+
+- `LuaSubsystemApiBinder` で `Atrum.Command`・`Audio`・`Storage`・`Registry` テーブルを追加
+- 対象クラス: `CommandScene` / `CommandChangeScene` / `CommandContext`、`AudioManager`（`PlaySe` 経由）、`EntityStorage` / `TextureStorage` / `ModelStorage`、`EntityTagRegistry` / `RegistryCmp` / `SceneBuildUpRegistry` / `SceneMovieRegistry` / `EntityEditorKnownComponentRegistry`
+- `EngineAccess` に `EngineModelStorage`・`EngineCommandContextDirect` を追加
+- `verify_lua_subsystem_api_bind.py` 追加
+
+### 推測した用途（§6.4）
+
+- **ランタイム:** スクリプトから SE/BGM 再生、シーン JSON へのフェード遷移、タグ・コンポーネント registry 照会
+- **デバッグ:** ストレージ読込成否の確認、遷移指令の状態取得
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| サブシステム Lua バインド | 有効 | ゲーム内のロジック（スクリプト）／ランタイム出力後のプレイ |
+| 同上 | 矛盾なし | 基本機能への外部アクセスと整合 |
