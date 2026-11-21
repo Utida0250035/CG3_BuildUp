@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""implementation_gaps_index.json から roadmap.md へギャップ追補節を挿入する（一回限り運用可）。"""
+"""implementation_gaps_index.json から engineRoadmap.md へギャップ追補節を挿入する（一回限り運用可）。"""
 from __future__ import annotations
 
 import json
@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 INDEX_PATH = ROOT / "docs" / "implementation_gaps_index.json"
-ROADMAP_PATH = ROOT / "docs" / "feature-memos" / "roadmap.md"
+ROADMAP_PATH = ROOT / "docs" / "feature-memos" / "engineRoadmap.md"
 
 MAP_ID = {
     "Audio": "Audio",

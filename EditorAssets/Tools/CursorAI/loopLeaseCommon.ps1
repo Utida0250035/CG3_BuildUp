@@ -8,7 +8,8 @@
 $script:LeaseSharedPaths = @(
     'EditorAssets/Tools/CursorAI/progress_report.md',
     'EditorAssets/Tools/CursorAI/task_backlog.md',
-    'EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md',
+    'EditorAssets/Tools/CursorAI/docs/feature-memos/engineRoadmap.md',
+    'EditorAssets/Tools/CursorAI/docs/feature-memos/gameRoadmap.md',
     'EditorAssets/Tools/CursorAI/Control/'
 )
 

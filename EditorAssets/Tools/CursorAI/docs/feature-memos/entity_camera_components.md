@@ -41,7 +41,7 @@
 ### P0 — ドキュメント（本 tick）
 
 - [x] 本ファイル作成（要件・段階・チェック）
-- [x] `roadmap.md` の Camera 節から本 spec へリンク
+- [x] `engineRoadmap.md` の Camera 節から本 spec へリンク
 
 ### P1 — CmpCamera・自動スポーン・単一アクティブ
 

@@ -12,9 +12,9 @@
 
 行頭の `[feature]` / `[fix]` / `[chore]` は §8 の次ブランチ名（`branchNaming.md`）に使う。
 
-下書き: **`roadmap_rough.md`**（`[大]` / `〇中` / `・小`）→ 正本: **`roadmap.md`**
+下書き: **`engineRoadmap_rough.md`** / **`gameRoadmap_rough.md`**（`[大]` / `〇中` / `・小`）→ 正本: **`engineRoadmap.md`** / **`gameRoadmap.md`**
 
-- 優先行の例: `- [ ] roadmap: EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md`（特定行はチャットで指定可）
+- 優先行の例: `- [ ] roadmap: EditorAssets/Tools/CursorAI/docs/feature-memos/engineRoadmap.md` または `gameRoadmap.md`（特定行はチャットで指定可）
 - 補足 spec があるときだけ: `spec: EditorAssets/Tools/CursorAI/docs/feature-memos/○○.md`
 
 ## キュー

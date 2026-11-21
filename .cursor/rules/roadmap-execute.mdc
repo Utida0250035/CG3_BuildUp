@@ -17,7 +17,8 @@ alwaysApply: true
 1. `EditorAssets/Tools/CursorAI/cursorInstructions.md`（§4 ビルド、§6 タスク順・手入れ、§6.5 ブランチ、§3 報告）
 2. `EditorAssets/Tools/CursorAI/progress_report.md`
 3. `EditorAssets/Tools/CursorAI/task_backlog.md`
-4. `EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md`（`roadmap_rough.md` に下書きがあれば §6.0 起こし後に正本へ）
+4. `EditorAssets/Tools/CursorAI/docs/feature-memos/engineRoadmap.md`（`engineRoadmap_rough.md` に下書きがあれば §6.0 起こし後に正本へ）
+5. `EditorAssets/Tools/CursorAI/docs/feature-memos/gameRoadmap.md`（エンジンに未完了が無いとき。`gameRoadmap_rough.md` 同様）
 5. `EditorAssets/Tools/CursorAI/branchNaming.md`
 6. `.cursor/rules/game-dev-purpose.mdc`（用途 §6.4）
 7. `EditorAssets/Tools/CursorAI/docs/ultimateGoal.md`（着手前の査定 §6.7。本文は書き換えない）
@@ -27,8 +28,8 @@ alwaysApply: true
 `cursorInstructions.md` §6 の順序を厳守する。
 
 1. `task_backlog.md` の **未完了を上から 1 件**
-2. なければ `roadmap_rough.md` → §6.0 起こし → §6.1 構造手入れ
-3. 手入れ後の `roadmap.md` で **ファイル出現順の最初の `- [ ]` 1 行のみ**（`- [x]` / `- [-]` はスキップ）
+2. なければ `engineRoadmap_rough.md` → §6.0 起こし → §6.1 構造手入れ（エンジンに未完了が無ければ `gameRoadmap_*` を同手順）
+3. 手入れ後の対象正本で **ファイル出現順の最初の `- [ ]` 1 行のみ**（`- [x]` / `- [-]` はスキップ）
 4. 親見出しごと一括実装・複数 `- [ ]` の同時着手は禁止
 
 ## 1 サブタスクの手順
