@@ -3,6 +3,7 @@
 #include "System/Editor/Entity/EntityEditorBuildPreviewSceneBuildUpParity.h"
 #include "System/Editor/Entity/EntityEditorSceneDocumentLoadFromPath.h"
 #include "System/Editor/Entity/EntityEditorDroppedImportSpawnSceneInstances.h"
+#include "System/Editor/Entity/EntityEditorPrefabSpawnFirstInstanceRoot.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -131,39 +132,8 @@ bool EntityEditor::SaveSelectedInstanceToPrefabPath(
 }
 
 bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
-  namespace fs = std::filesystem;
-  if (!fs::exists(prefabPath)) {
-    return false;
-  }
-  std::ifstream file(prefabPath);
-  if (!file.is_open()) {
-    return false;
-  }
-  nlohmann::json json{};
-  file >> json;
-  SceneEntityInstance instance{};
-  if (json.contains("entities") && json.at("entities").is_array()) {
-    EditorSceneDocument prefabScene = json.get<EditorSceneDocument>();
-    if (prefabScene.instances.empty()) {
-      return false;
-    }
-    instance = prefabScene.instances.front();
-    instance.parentIndex = -1;
-  } else {
-    instance.definition = json.get<EntityDefinition>();
-    instance.instanceName = instance.definition.entityName;
-    instance.parentIndex = -1;
-  }
-  if (instance.instanceName.empty()) {
-    instance.instanceName =
-        "Instance_" + std::to_string(scene_.instances.size());
-  }
-  scene_.instances.push_back(std::move(instance));
-  ui_.selectedInstanceIndex =
-      static_cast<int>(scene_.instances.size()) - 1;
-  ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
-  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
-  return true;
+  return EntityEditorPrefabSpawnFirstInstanceRoot::AppendFromPrefabFile(*this,
+                                                                        prefabPath);
 }
 
 void EntityEditor::ResetSelectionAfterSceneDocumentReload() {

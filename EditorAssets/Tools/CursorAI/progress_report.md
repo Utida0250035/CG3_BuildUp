@@ -9039,3 +9039,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - プレハブから先頭 1 体のみ追加し親は常に解除（roadmap 590 行）
+
+---
+
+## セッション 2026-11-21 15:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap EntityEditor 節: `EntityEditorPrefabSpawnFirstInstanceRoot` でプレハブ JSON から **先頭 1 体のみ** 取得し `parentIndex = -1` でシーンへ追加
+- シーン形式（`entities` 配列）と単体 `EntityDefinition` の両方に対応。インスタンス名はシーン内で一意化
+- `AddInstanceFromPrefabPath` は上記モジュールへ委譲
+- CI: `verify_entity_editor_prefab_spawn_first_instance_root.py`
+
+### 推測した用途（§6.4）
+
+- **制作:** プレハブをルートに 1 体ずつ配置し、保存済みの親子階層を誤ってシーンへ展開しない
+- **Authoring:** 同一プレハブの繰り返し配置で名前衝突を避け、プレビュー／自動保存へつなぐ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレハブ先頭 1 体・親解除 | 有効 | エンティティ構成を json として編集しプレハブ化／配置する流れを明確化 |
+
+### 次 tick 候補
+
+- AddEmptyInstance が選択中定義を複製しない（roadmap 591 行）

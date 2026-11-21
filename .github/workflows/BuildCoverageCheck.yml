@@ -112,6 +112,9 @@ jobs:
       - name: Verify EntityEditor dropped import spawn instances
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_dropped_import_spawn_instances.py
 
+      - name: Verify EntityEditor prefab spawn first instance root
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_prefab_spawn_first_instance_root.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 
