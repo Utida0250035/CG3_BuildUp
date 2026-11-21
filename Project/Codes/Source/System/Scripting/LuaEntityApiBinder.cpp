@@ -1,41 +1,14 @@
 #include "System/Scripting/LuaEntityApiBinder.h"
 
 #include "System/Entity/EntityTagRegistry.h"
+#include "System/Scripting/LuaComponentModuleLoad.h"
+#include "System/Scripting/LuaEntityComponentAttach.h"
 #include "System/Scripting/LuaEntitySpawnFromJson.h"
 
-#include <filesystem>
 #include <iostream>
 #include <string>
 
 namespace Atrum::Script {
-
-namespace {
-
-bool PathExists(const std::string &candidate) {
-  if (candidate.empty()) {
-    return false;
-  }
-  namespace fs = std::filesystem;
-  std::error_code error{};
-  return fs::exists(candidate, error) && !error;
-}
-
-std::string ResolveLuaScriptPath(const std::string &path) {
-  if (PathExists(path)) {
-    return path;
-  }
-  const std::string underAssets = "Assets/Scripts/" + path;
-  if (PathExists(underAssets)) {
-    return underAssets;
-  }
-  const std::string underRuntime = "Assets/Scripts/Runtime/" + path;
-  if (PathExists(underRuntime)) {
-    return underRuntime;
-  }
-  return path;
-}
-
-} // namespace
 
 LuaEntityApiBinder::LuaEntityApiBinder(const LuaEntityApiContext context)
     : context_(context) {}
@@ -82,12 +55,51 @@ void LuaEntityApiBinder::Register(sol::state &lua) {
         return response;
       });
 
+  atrum.set_function(
+      "attach_lua_upd",
+      [&lua, this](const std::string &entityName, const std::string &scriptPath,
+                   sol::optional<std::string> updCmpGroup) -> sol::table {
+        sol::table response = lua.create_table();
+        if (context_.entities == nullptr) {
+          response["ok"] = false;
+          response["error"] = "entities context is not bound";
+          return response;
+        }
+        const LuaComponentAttachResult attach =
+            TryAttachLuaUpdByEntityName(
+                *context_.entities, entityName, scriptPath,
+                updCmpGroup.value_or("MOVEMENT"));
+        response["ok"] = attach.success;
+        response[attach.success ? "message" : "error"] = attach.message;
+        return response;
+      });
+
+  atrum.set_function(
+      "attach_lua_draw",
+      [&lua, this](const std::string &entityName, const std::string &scriptPath,
+                   sol::optional<std::string> drawCmpGroup) -> sol::table {
+        sol::table response = lua.create_table();
+        if (context_.entities == nullptr) {
+          response["ok"] = false;
+          response["error"] = "entities context is not bound";
+          return response;
+        }
+        const LuaComponentAttachResult attach =
+            TryAttachLuaDrawByEntityName(
+                *context_.entities, entityName, scriptPath,
+                drawCmpGroup.value_or("NONE"));
+        response["ok"] = attach.success;
+        response[attach.success ? "message" : "error"] = attach.message;
+        return response;
+      });
+
   if (context_.tickCallbacks != nullptr) {
     atrum.set_function(
         "require_behavior",
         [&lua, this](const std::string &scriptPath) -> sol::table {
           sol::table response = lua.create_table();
-          const std::string resolved = ResolveLuaScriptPath(scriptPath);
+          const std::string resolved =
+              ResolveLuaScriptPathForComponent(scriptPath);
           sol::protected_function_result loadResult =
               lua.safe_script_file(resolved, sol::script_pass_on_error);
           if (!loadResult.valid()) {

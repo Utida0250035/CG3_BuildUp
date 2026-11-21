@@ -1,6 +1,9 @@
 -- SceneBuildUp シーン入場時に自動実行（存在する場合のみ）
 Atrum.log("Lua runtime bootstrap")
 
+-- 例: 既存エンティティへ Lua コンポーネントを付与
+-- Atrum.attach_lua_upd("entity_editor_preview", "Assets/Scripts/Components/Upd/example_upd.lua", "MOVEMENT")
+
 -- 例: 行動スクリプトを登録する場合
 -- Atrum.require_behavior("Assets/Scripts/Behaviors/my_behavior.lua")
 

@@ -27,6 +27,8 @@
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
+#include "System/Entity/Components/CmpLuaDraw.h"
+#include "System/Entity/Components/CmpLuaUpd.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
 #include <algorithm>
@@ -131,6 +133,18 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   if (slot.typeName == "CmpColliderAabb" &&
       slot.kind == ComponentSlotKind::Data) {
     entity.AddDataCmp<CmpColliderAabb>();
+    return true;
+  }
+  if (slot.typeName == "CmpLuaUpd" && slot.kind == ComponentSlotKind::Upd) {
+    if (!entity.HasUpdCmp<CmpLuaUpd>()) {
+      entity.AddUpdCmp<CmpLuaUpd>();
+    }
+    return true;
+  }
+  if (slot.typeName == "CmpLuaDraw" && slot.kind == ComponentSlotKind::Draw) {
+    if (!entity.HasDrawCmp<CmpLuaDraw>()) {
+      entity.AddDrawCmp<CmpLuaDraw>();
+    }
     return true;
   }
   return false;
@@ -412,6 +426,28 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetImpactJsonPath(
         p.value("impactJsonPath", std::string{"demos/ball_wall_shockwave.json"}));
     cmp->SetImpactCooldownSeconds(p.value("impactCooldownSeconds", 0.12f));
+    return;
+  }
+
+  if (slot.typeName == "CmpLuaUpd") {
+    if (!entity.HasUpdCmp<CmpLuaUpd>()) {
+      return;
+    }
+    CmpLuaUpd *cmp = entity.GetUpdCmp<CmpLuaUpd>();
+    cmp->AddOrUpdateBinding(
+        p.value("scriptPath", std::string{}),
+        p.value("updCmpGroup", std::string{"MOVEMENT"}));
+    return;
+  }
+
+  if (slot.typeName == "CmpLuaDraw") {
+    if (!entity.HasDrawCmp<CmpLuaDraw>()) {
+      return;
+    }
+    CmpLuaDraw *cmp = entity.GetDrawCmp<CmpLuaDraw>();
+    cmp->AddOrUpdateBinding(
+        p.value("scriptPath", std::string{}),
+        p.value("drawCmpGroup", std::string{"NONE"}));
     return;
   }
 }

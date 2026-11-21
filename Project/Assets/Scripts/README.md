@@ -7,4 +7,8 @@
 - `Behaviors/` — 行動スクリプト雛形
 
 `SceneBuildUp` シーン入場時に `Runtime/bootstrap.lua` があれば自動実行されます。
-`Atrum.spawn_entity_from_json` で `EditorAssets/Entities` などの JSON から Entity を追記生成できます。
+
+- `Atrum.spawn_entity_from_json` — JSON プレハブから Entity を追記
+- `Atrum.attach_lua_upd(entityName, scriptPath, updCmpGroup?)` — Lua 更新コンポーネントを実行時に付与
+- `Atrum.attach_lua_draw(entityName, scriptPath, drawCmpGroup?)` — Lua 描画コンポーネントを実行時に付与
+- エンティティ JSON のコンポーネントスロット `CmpLuaUpd` / `CmpLuaDraw` — `scriptPath` で雛形を指定

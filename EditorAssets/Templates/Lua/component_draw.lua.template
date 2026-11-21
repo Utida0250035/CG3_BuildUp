@@ -1,5 +1,5 @@
 -- %AuthorNote%
--- 描画コンポーネント用 Lua 雛形（ComponentDraw 相当・ランタイム読込は Phase 2）
+-- 描画コンポーネント用 Lua 雛形（CmpLuaDraw）
 local M = {}
 
 M.scriptName = "%ScriptName%"

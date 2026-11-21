@@ -17,6 +17,8 @@
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpRuntimeTexturePath.h"
+#include "System/Entity/Components/CmpLuaDraw.h"
+#include "System/Entity/Components/CmpLuaUpd.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
 
@@ -38,6 +40,9 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "CmpDrawHitSphere") {
       return entity.HasDrawCmp<CmpDrawHitSphere>();
+    }
+    if (slot.typeName == "CmpLuaDraw") {
+      return entity.HasDrawCmp<CmpLuaDraw>();
     }
   }
   if (slot.kind == ComponentSlotKind::Upd) {
@@ -67,6 +72,9 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "CmpBallBounceImpactFx") {
       return entity.HasUpdCmp<CmpBallBounceImpactFx>();
+    }
+    if (slot.typeName == "CmpLuaUpd") {
+      return entity.HasUpdCmp<CmpLuaUpd>();
     }
   }
   if (slot.kind == ComponentSlotKind::Data) {

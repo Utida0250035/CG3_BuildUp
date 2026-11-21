@@ -137,6 +137,14 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
     return {{"impactJsonPath", "demos/ball_wall_shockwave.json"},
             {"impactCooldownSeconds", 0.12f}};
   }
+  if (typeName == "CmpLuaUpd") {
+    return {{"scriptPath", "Assets/Scripts/Components/Upd/example_upd.lua"},
+            {"updCmpGroup", "MOVEMENT"}};
+  }
+  if (typeName == "CmpLuaDraw") {
+    return {{"scriptPath", "Assets/Scripts/Components/Draw/example_draw.lua"},
+            {"drawCmpGroup", "NONE"}};
+  }
   return nlohmann::json::object();
 }
 

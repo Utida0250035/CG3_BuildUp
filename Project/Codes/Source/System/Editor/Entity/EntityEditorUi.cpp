@@ -87,6 +87,8 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpBallAxisAlignedBounce", ComponentSlotKind::Upd},
     {"CmpBallBounceImpactFx", ComponentSlotKind::Upd},
     {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
+    {"CmpLuaUpd", ComponentSlotKind::Upd},
+    {"CmpLuaDraw", ComponentSlotKind::Draw},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,
@@ -529,6 +531,36 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
         sphere["radius"] = radius;
         changed = true;
       }
+    }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpLuaUpd") {
+    bool changed = false;
+    std::string scriptPath = slot.params.value("scriptPath", std::string{});
+    if (ImGui::InputText("scriptPath", &scriptPath)) {
+      slot.params["scriptPath"] = scriptPath;
+      changed = true;
+    }
+    std::string updGroup = slot.params.value("updCmpGroup", "MOVEMENT");
+    if (ImGui::InputText("updCmpGroup", &updGroup)) {
+      slot.params["updCmpGroup"] = updGroup;
+      changed = true;
+    }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpLuaDraw") {
+    bool changed = false;
+    std::string scriptPath = slot.params.value("scriptPath", std::string{});
+    if (ImGui::InputText("scriptPath", &scriptPath)) {
+      slot.params["scriptPath"] = scriptPath;
+      changed = true;
+    }
+    std::string drawGroup = slot.params.value("drawCmpGroup", "NONE");
+    if (ImGui::InputText("drawCmpGroup", &drawGroup)) {
+      slot.params["drawCmpGroup"] = drawGroup;
+      changed = true;
     }
     return changed;
   }

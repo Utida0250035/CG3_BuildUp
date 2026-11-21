@@ -10625,3 +10625,26 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### ビルド
 
 - Cloud: `verify_vcxproj_coverage.py` / `verify_lua_runtime_entity_bind.py` OK（Windows Development ビルドは未実行）
+
+---
+
+## セッション 2026-11-22（Lua コンポーネント定義: CmpLuaUpd / CmpLuaDraw）
+
+### 実装概要
+
+- C++ 橋渡し `CmpLuaUpd` / `CmpLuaDraw` で Lua モジュールの `onResolve` / `onUpdate` / `onDraw` / `onExit` を Entity 更新・描画パイプラインに接続
+- エディタ JSON スロット `CmpLuaUpd` / `CmpLuaDraw`（`scriptPath`・グループ名）を登録正本へ追加
+- 実行時 API: `Atrum.attach_lua_upd` / `Atrum.attach_lua_draw`（entity 名は Entity コンストラクタ名のハッシュ一致）
+- `LuaComponentRuntime` で BuildUp 再生中のみモジュール読込
+
+### 推測した用途（§6.4）
+
+- **ランタイムゲームプレイ:** C++ を増やさず Upd/Draw コンポーネント相当の振る舞いを Lua で試作
+- **制作:** エンティティ JSON に Lua コンポーネントスロットを保存し BuildUp でそのまま実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Lua コンポーネント | 有効 | ゲーム内のロジック（スクリプト）／エンティティ json の構成編集の流れを前進 |
+| 同上 | 矛盾なし | md／lua は外部テキストエディタ利用と整合 |

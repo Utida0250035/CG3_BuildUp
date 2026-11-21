@@ -11,14 +11,14 @@ TryDefaultKindForRegisteredType(const std::string &typeName) {
   }
   if (typeName == "CmpMeshSphere" || typeName == "CmpMesh" ||
       typeName == "CmpEditorTextureBillboard" || typeName == "CmpDrawHitSphere" ||
-      typeName == "CmpBillboardInstancedGrid") {
+      typeName == "CmpBillboardInstancedGrid" || typeName == "CmpLuaDraw") {
     return ComponentSlotKind::Draw;
   }
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
       typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
       typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall" ||
       typeName == "CmpBallKinematics" || typeName == "CmpBallAxisAlignedBounce" ||
-      typeName == "CmpBallBounceImpactFx") {
+      typeName == "CmpBallBounceImpactFx" || typeName == "CmpLuaUpd") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||

@@ -21,6 +21,9 @@ def main() -> int:
         r"Codes\Source\System\Scripting\LuaSystem.cpp",
         r"Codes\Source\System\Scripting\LuaEntityApiBinder.cpp",
         r"Codes\Source\System\Scripting\LuaEntitySpawnFromJson.cpp",
+        r"Codes\Source\System\Scripting\LuaEntityComponentAttach.cpp",
+        r"Codes\Source\System\Entity\Components\CmpLuaUpd.cpp",
+        r"Codes\Source\System\Entity\Components\CmpLuaDraw.cpp",
         r"Codes\Source\Scene\SceneBuildUpLuaRuntimeHost.cpp",
     ]
     for item in required_compile:
@@ -53,9 +56,26 @@ def main() -> int:
     binder = (
         root / "Project" / "Codes" / "Source" / "System" / "Scripting" / "LuaEntityApiBinder.cpp"
     ).read_text(encoding="utf-8")
-    for api in ("spawn_entity_from_json", "tag_for_role", "require_behavior"):
+    for api in (
+        "spawn_entity_from_json",
+        "tag_for_role",
+        "require_behavior",
+        "attach_lua_upd",
+        "attach_lua_draw",
+    ):
         if api not in binder:
             errors.append(f"LuaEntityApiBinder missing API: {api}")
+
+    host_cpp = (
+        root
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "Scene"
+        / "SceneBuildUpLuaRuntimeHost.cpp"
+    ).read_text(encoding="utf-8")
+    if "LuaComponentRuntime::SetActive" not in host_cpp:
+        errors.append("SceneBuildUpLuaRuntimeHost must activate LuaComponentRuntime")
 
     if errors:
         print("verify_lua_runtime_entity_bind: FAILED")

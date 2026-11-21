@@ -1112,6 +1112,13 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Entity.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpLuaDraw.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpLuaUpd.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaCmpGroupParse.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaComponentEntityContext.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaComponentModuleLoad.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaComponentRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaEntityComponentAttach.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\LuaEntityApiBinder.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\LuaEntitySpawnFromJson.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\LuaSystem.cpp" />

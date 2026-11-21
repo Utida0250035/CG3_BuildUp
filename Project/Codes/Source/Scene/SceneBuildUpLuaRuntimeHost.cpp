@@ -1,5 +1,6 @@
 #include "Scene/SceneBuildUpLuaRuntimeHost.h"
 
+#include "System/Scripting/LuaComponentRuntime.h"
 #include "System/Scripting/LuaEntityApiBinder.h"
 #include "System/Scripting/LuaEntitySpawnFromJson.h"
 #include "System/Scripting/LuaSystem.h"
@@ -45,6 +46,7 @@ void SceneBuildUpLuaRuntimeHost::OnEnterScene(
   context.tickCallbacks = &tickCallbacks_;
   lua_->AddBinder<Script::LuaEntityApiBinder>(context);
   lua_->RegisterBinds();
+  Script::LuaComponentRuntime::SetActive(lua_.get());
 
   active_ = true;
 
@@ -75,6 +77,7 @@ void SceneBuildUpLuaRuntimeHost::OnUpdate() {
 }
 
 void SceneBuildUpLuaRuntimeHost::OnExitScene() {
+  Script::LuaComponentRuntime::SetActive(nullptr);
   tickCallbacks_.clear();
   entities_ = nullptr;
   active_ = false;
