@@ -25,6 +25,9 @@ jobs:
       - name: Verify editor component registration sync
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_component_registration.py
 
+      - name: Verify component settings copy paste
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_component_settings_copy_paste.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

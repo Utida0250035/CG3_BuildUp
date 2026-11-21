@@ -9625,3 +9625,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - コンポーネント設定のコピー／ペーストが無い（roadmap 616 行）
+
+---
+
+## セッション 2026-11-21 20:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 616 行: **`EntityEditorComponentSettingsCopyPaste`** でインスペクタに「設定をコピー／設定をペースト」（同 typeName のみ params + executionOrder）
+- `UiState::clipboardComponentSlot` でセッション内クリップボード保持
+
+### 推測した用途（§6.4）
+
+- **制作:** 類似エンティティへ Draw/Upd パラメータを揃える反復作業を短縮
+- **Authoring:** JSON 手編集やプレハブ再投入以外のパラメータ展開
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| コンポーネント設定複製 | 有効 | コンポーネント構成・パラメータを json で編集する流れ |
+
+### 次 tick 候補
+
+- CmpCamera 追加で params が空オブジェクト（roadmap 617 行）

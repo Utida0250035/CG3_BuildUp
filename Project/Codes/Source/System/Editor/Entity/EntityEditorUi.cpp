@@ -4,6 +4,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
+#include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/EditorFrame.h"
@@ -1126,6 +1127,10 @@ void EntityEditor::DrawInspectorPanel() {
     ImGui::Separator();
     ComponentSlot &selected =
         document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
+
+    if (DrawComponentSettingsCopyPasteButtons(*this, selected)) {
+      EntityEditorAuthoringDocumentEditNotify::NotifyPreviewOnly(*this);
+    }
 
     bool changedInComponentSectionBesidesAssetPath = false;
     int execOrder = selected.executionOrder;

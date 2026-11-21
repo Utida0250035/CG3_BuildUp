@@ -2,6 +2,7 @@
 
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -65,6 +66,8 @@ struct UiState {
   std::string newCatalogTagName{};
   std::string renameCatalogTagName{};
   std::string newEntityTagName{};
+  /// コンポーネント設定のコピー／ペースト用
+  std::optional<ComponentSlot> clipboardComponentSlot{};
 };
 
 /// エンティティ定義の編集・シリアライズ・プレビュー用 Entity 生成
