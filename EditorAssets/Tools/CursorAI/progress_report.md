@@ -10569,3 +10569,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - シーン JSON パスを InputString 編集（roadmap 663 行）
+
+---
+
+## セッション 2026-11-22 05:30（/loop 15m・roadmap tick）
+
+### 完了タスク（§6.2 即時完了）
+
+- roadmap 663 行: **シーン JSON パスを InputString 編集** — 650 行と同一の `EntityEditorInspectorSceneJsonPathUi` で充足
+
+### 推測した用途（§6.4）
+
+- **制作:** シーン JSON を一覧以外のパスから開き直す
+
+### ビルド
+
+- `verify_inspector_scene_json_path_edit.py` + `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| シーン JSON パス編集 | 有効（既存実装） | エンティティ構成を json で編集 |
+
+### 次 tick 候補
+
+- ヒット球は選択 1 球のみ編集（roadmap 664 行）
