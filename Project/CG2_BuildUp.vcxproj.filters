@@ -600,6 +600,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformDrag.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformGizmoDraw.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAuthoringLightingPreview.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp" />

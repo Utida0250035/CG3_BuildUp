@@ -8785,3 +8785,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - ライト・ポスト系パラメータのエディタ UI（`GAP-Editor-AtrumEngineVisual-001`）
+
+---
+
+## セッション 2026-11-21 13:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-AtrumEngineVisual-001`: 入場時 `game_scene_lighting.json` 反映と「エディタ」メニューから Fog/GodRays/影パネル
+- シーンビュー描画は CB フラッシュのみとし、ImGui 調整が上書きされないよう整理
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** 本編と同じライト・ポストをプレビューしながらパラメータ調整
+- **デバッグ:** デバッグメニューに加えエディタメニューから同一パネルを開く
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ライト・ポスト UI | 有効 | シーン構成の編集とエディタ上プレイ試験 |
+
+### 次 tick 候補
+
+- エディタプレビューにフォグ／リム／ゴッドレイ／影（`GAP-Editor-SceneEntityEditor-004`）

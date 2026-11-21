@@ -20,6 +20,7 @@
 #include "Scene/SceneEntityEditorEditViewTransformDrag.h"
 #include "Scene/SceneEntityEditorEditViewTransformGizmoDraw.h"
 #include "Scene/SceneEntityEditorSceneViewRenderCameraBind.h"
+#include "Scene/SceneEntityEditorAuthoringLightingPreview.h"
 #include "Scene/SceneEntityEditorExitSceneTeardown.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
@@ -44,15 +45,10 @@
 namespace {
 
 void SetupEditorLighting() {
-  Atrum::Math::Vector3 lightDirection{-0.35f, -0.9f, 0.2f};
-  lightDirection.Normalize();
-  const Atrum::DirectionalLightData directionalLight{
-      .color = Atrum::Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 6.0f,
-      .lightModel = Atrum::LightModel::HalfLambert,
-  };
-  ::Atrum::EngineSetDirectionalLightData(directionalLight);
+  Atrum::Engine *engine = ::Atrum::EngineInstance();
+  if (engine != nullptr) {
+    engine->FlushDirectionalLightConstantBuffer();
+  }
 }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
@@ -153,6 +149,7 @@ void SceneEntityEditor::RebuildPreviewScene() {
 
 void SceneEntityEditor::EnterScene() {
   EnsureCommonResources();
+  SceneEntityEditorAuthoringLightingPreview::ApplyOnEnterEntityEditor();
   if (editor_) {
     if (!pendingBootJsonPath_.empty()) {
       editor_->Ui().jsonFilePath = pendingBootJsonPath_;

@@ -12,6 +12,7 @@
 #include "System/Editor/EditorDebugPlayAreaCombatBoundsSandbox.h"
 #include "System/Editor/EditorEntityWorkbenchFeatureTestMenuLaunch.h"
 #include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
+#include "ForDebug/LightingEffectsDebugImGui.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/EditorSceneRunStatus.h"
@@ -149,6 +150,9 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     }
     if (ImGui::MenuItem("Stage camera tuning")) {
       ImGui::SetWindowFocus("Stage camera tuning");
+    }
+    if (ImGui::MenuItem("ライティング効果 (Fog/GodRays/影)")) {
+      Atrum::Debug::SetLightingEffectsDebugVisible(true);
     }
     ImGui::EndMenu();
   }

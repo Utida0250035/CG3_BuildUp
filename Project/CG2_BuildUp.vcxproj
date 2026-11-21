@@ -444,6 +444,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAuthoringLightingPreview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -987,6 +992,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewTransformDrag.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewTransformGizmoDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorAuthoringLightingPreview.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorScenePlayBuildUpRoute.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorDebugHotkeys.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeTabFocus.h" />
