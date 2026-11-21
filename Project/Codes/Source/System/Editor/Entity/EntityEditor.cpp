@@ -2,6 +2,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorBuildPreviewSceneBuildUpParity.h"
 #include "System/Editor/Entity/EntityEditorSceneDocumentLoadFromPath.h"
+#include "System/Editor/Entity/EntityEditorDroppedImportSpawnSceneInstances.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -341,6 +342,9 @@ void EntityEditor::ProcessDroppedFileImports() {
 
   Atrum::Editor::Import::EnsureImportedAssetsDirectoryExists();
 
+  std::vector<std::string> importedPaths;
+  importedPaths.reserve(dropped.size());
+
   for (const std::string &sourcePath : dropped) {
     const std::string dest =
         Atrum::Editor::Import::CopyFileIntoImportedAssets(sourcePath);
@@ -350,7 +354,21 @@ void EntityEditor::ProcessDroppedFileImports() {
     }
 
     ui_.lastImportedAssetPath = dest;
-    ui_.importStatusMessage = "Imported へコピー: " + dest;
+    importedPaths.push_back(dest);
+  }
+
+  const int spawned =
+      EntityEditorDroppedImportSpawnSceneInstances::AppendFromImportedAssetPaths(
+          *this, importedPaths);
+  if (spawned > 0) {
+    ui_.importStatusMessage =
+        "Imported へ " + std::to_string(importedPaths.size()) +
+        " 件コピーし、シーンに " + std::to_string(spawned) +
+        " 体を追加しました";
+  } else if (!importedPaths.empty()) {
+    ui_.importStatusMessage =
+        "Imported へコピー: " + importedPaths.back() +
+        "（対応拡張子のみシーン追加: obj/png/jpg）";
   }
 }
 

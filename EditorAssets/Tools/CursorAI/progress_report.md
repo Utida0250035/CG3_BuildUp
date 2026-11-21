@@ -9010,3 +9010,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - ProcessDroppedFileImports が Entities 生成まで繋がない（roadmap EntityEditor 節）
+
+---
+
+## セッション 2026-11-21 15:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap EntityEditor 節: `ProcessDroppedFileImports` が Imported コピー後にシーンへインスタンスを生成するよう接続
+- `EntityEditorDroppedImportSpawnSceneInstances`: obj → `CmpMesh` + `CmpEditorAssetPath`、png/jpg → `CmpEditorTextureBillboard` + AssetPath。成功時 `EntityEditorAuthoringDocumentEditNotify`
+- CI: `verify_entity_editor_dropped_import_spawn_instances.py`
+
+### 推測した用途（§6.4）
+
+- **制作:** D&D で obj／画像をシーンへ即配置し、インスペクタ微調整へつなぐ（AUT-AssetLoop-001）
+- **Authoring:** Imported 相対パスがコンポーネントに載りプレビュー再構築と自動保存が走る
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ドロップ→Entity 生成 | 有効 | 各エンティティのコンポーネント構成を json として作成／編集できる流れを進める |
+
+### 次 tick 候補
+
+- プレハブから先頭 1 体のみ追加し親は常に解除（roadmap 590 行）
