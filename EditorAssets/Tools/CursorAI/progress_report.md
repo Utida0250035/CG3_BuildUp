@@ -9153,3 +9153,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - requestSaveToDisk が needApply を立てない（roadmap 594 行）
+
+---
+
+## セッション 2026-11-21 16:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-016`（roadmap 行）: `EntityEditorTickPendingRequests` で `requestSaveToDisk` 処理後に **`needApply = true`**（`SceneEntityEditor` の `RebuildPreviewScene` へ接続）
+- パス空のときは保存をスキップ
+
+### 推測した用途（§6.4）
+
+- **制作:** 自動保存直後にランタイムプレビューがディスク内容と同期
+- **デバッグ:** SceneBuildUp 前の明示保存とプレビュー再構築の挙動を揃える
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 保存後プレビュー | 有効 | シーン構成をエディタ上プレイ試験できる流れを維持 |
+
+### 次 tick 候補
+
+- LoadFromJsonPath が選択を先頭に戻す（roadmap 595 行）

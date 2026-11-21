@@ -6,6 +6,7 @@
 #include "System/Editor/Entity/EntityEditorPrefabSpawnFirstInstanceRoot.h"
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 #include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
+#include "System/Editor/Entity/EntityEditorTickPendingRequests.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -171,27 +172,7 @@ void EntityEditor::SaveToJsonPath(const std::string &jsonFilePath) {
 }
 
 bool EntityEditor::TickPendingRequests() {
-  bool needApply = false;
-
-  if (ui_.requestReloadFromDisk) {
-    ui_.requestReloadFromDisk = false;
-    LoadFromJsonPath(ui_.jsonFilePath);
-    needApply = true;
-  }
-  if (ui_.requestSaveToDisk) {
-    ui_.requestSaveToDisk = false;
-    SaveToJsonPath(ui_.jsonFilePath);
-  }
-  if (ui_.requestApplyPreview) {
-    ui_.requestApplyPreview = false;
-    needApply = true;
-  }
-  if (ui_.requestResetPreview) {
-    ui_.requestResetPreview = false;
-    needApply = true;
-  }
-
-  return needApply;
+  return EntityEditorTickPendingRequests::Process(*this);
 }
 
 std::vector<std::unique_ptr<Entity>> EntityEditor::BuildPreviewScene() {
