@@ -9097,3 +9097,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - RemoveSelectedInstance が単一 index のみ（roadmap 592 行）
+
+---
+
+## セッション 2026-11-21 16:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-009`（roadmap 行）: `EntityEditorRemoveSelectedInstances` で **複数選択（`selectedInstanceIndices`）を一括削除**
+- 親 index は `oldToNew` で再マップ。全選択時は主選択（`selectedInstanceIndex`）を残し最低 1 体を維持
+
+### 推測した用途（§6.4）
+
+- **制作:** Ctrl+複数選択後に試配置をまとめて整理
+- **Authoring:** ヒエラルキー削除が複数選択 UI と一致
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 複数削除 | 有効 | シーン構成の json 編集における削除／整理を短縮 |
+
+### 次 tick 候補
+
+- 選択エンティティの複製が無い（roadmap 593 行・§6.2 で既存複製 UI の整合確認想定）

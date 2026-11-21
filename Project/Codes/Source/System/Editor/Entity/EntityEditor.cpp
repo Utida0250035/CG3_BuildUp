@@ -5,6 +5,7 @@
 #include "System/Editor/Entity/EntityEditorDroppedImportSpawnSceneInstances.h"
 #include "System/Editor/Entity/EntityEditorPrefabSpawnFirstInstanceRoot.h"
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
+#include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -81,29 +82,7 @@ bool EntityEditor::DuplicateSelectedInstance() {
 }
 
 void EntityEditor::RemoveSelectedInstance() {
-  if (scene_.instances.size() <= 1) {
-    return;
-  }
-  const int removeIndex = ui_.selectedInstanceIndex;
-  scene_.instances.erase(scene_.instances.begin() + removeIndex);
-  for (SceneEntityInstance &instance : scene_.instances) {
-    if (instance.parentIndex == removeIndex) {
-      instance.parentIndex = -1;
-    } else if (instance.parentIndex > removeIndex) {
-      --instance.parentIndex;
-    }
-  }
-  ui_.selectedInstanceIndices.erase(
-      std::remove(ui_.selectedInstanceIndices.begin(),
-                  ui_.selectedInstanceIndices.end(), removeIndex),
-      ui_.selectedInstanceIndices.end());
-  for (int &selectedIndex : ui_.selectedInstanceIndices) {
-    if (selectedIndex > removeIndex) {
-      --selectedIndex;
-    }
-  }
-  ClampSelectedInstanceIndex();
-  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+  EntityEditorRemoveSelectedInstances::RemoveFromScene(*this);
 }
 
 bool EntityEditor::SaveSelectedInstanceToPrefabPath(

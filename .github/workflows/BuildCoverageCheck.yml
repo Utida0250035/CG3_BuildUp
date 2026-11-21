@@ -118,6 +118,9 @@ jobs:
       - name: Verify EntityEditor add empty copies selection
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_add_empty_copy_selection.py
 
+      - name: Verify EntityEditor remove multi selection
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_remove_selected_instances.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 
