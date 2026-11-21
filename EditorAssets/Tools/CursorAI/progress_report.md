@@ -9896,3 +9896,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 取り込みファイルはドロップコピーだけで、削除と名前変更が無い（roadmap 634 行）
+
+---
+
+## セッション 2026-11-21 23:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 634 行: **`TryDeleteImportedAssetFile`** / **`TryRenameImportedAssetFile`** と一覧 UI の削除・改名（UI パス参照スクラブ付き）
+
+### 推測した用途（§6.4）
+
+- **制作:** 取り込んだ obj/png を中身編集ツールと分けてファイル管理
+- **Authoring:** 試配置の失敗ファイルをエディタ内で整理
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Imported 削除改名 | 有効 | ファイルの新規作成や削除、名前変更が行える |
+
+### 次 tick 候補
+
+- 衝突解決が stem_N 連番のみ（roadmap 635 行）

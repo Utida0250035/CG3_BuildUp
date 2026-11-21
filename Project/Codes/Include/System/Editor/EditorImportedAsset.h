@@ -16,6 +16,13 @@ std::string CopyFileIntoImportedAssets(const std::string &sourcePath);
 /// `kImportedAssetsDirectory` 直下のファイルを相対パスで列挙（名前昇順・非再帰）。
 std::vector<std::string> ListImportedAssetRelativePaths();
 
+/// Imported 管理下のファイルのみ削除。
+bool TryDeleteImportedAssetFile(const std::string &relativePath);
+
+/// 新しいファイル名（ベース名のみ）。成功時は新しい相対パス。
+std::string TryRenameImportedAssetFile(const std::string &relativePath,
+                                       const std::string &newFileName);
+
 /// SDL_DROPFILE からエンジンが受け取ったパス（メインスレッド専用）
 class FileDropQueue {
 public:

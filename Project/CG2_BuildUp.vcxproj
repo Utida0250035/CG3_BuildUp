@@ -585,6 +585,14 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetFileOperations.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetUiPathScrub.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetList.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1250,6 +1258,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetUiPathScrub.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetProjectPanelList.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetApplyToEntityDefinition.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetBatchApplyToSelection.h" />
