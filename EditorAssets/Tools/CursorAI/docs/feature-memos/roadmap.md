@@ -638,7 +638,7 @@
 ### PrefabAsset
 - [x] プレハブの複数一括配置 UI が無い
 - [x] プレハブ保存が EntityDefinition 単体 JSON
-- [ ] シーンへ追加が毎回 1 インスタンス
+- [x] シーンへ追加が毎回 1 インスタンス
 - [ ] プレハブ JSON は新規出力だけで、削除と名前変更が無い
 - [ ] 出力が MakeUnique で上書き更新できない
 - [ ] OpenScene が selectedPrefabPath をクリアしない

@@ -2,6 +2,7 @@
 
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
+#include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 
 #include <filesystem>
 #include <fstream>
@@ -68,45 +69,8 @@ TryBuildRootInstanceFromPrefabJson(const nlohmann::json &json) {
 }
 
 bool AppendFromPrefabFile(EntityEditor &editor, const std::string &prefabPath) {
-  namespace fs = std::filesystem;
-  if (prefabPath.empty() || !fs::exists(prefabPath)) {
-    return false;
-  }
-
-  std::ifstream file(prefabPath);
-  if (!file.is_open()) {
-    return false;
-  }
-
-  nlohmann::json json{};
-  try {
-    file >> json;
-  } catch (...) {
-    return false;
-  }
-
-  std::optional<SceneEntityInstance> built =
-      TryBuildRootInstanceFromPrefabJson(json);
-  if (!built.has_value()) {
-    return false;
-  }
-
-  SceneEntityInstance instance = std::move(*built);
-  EditorSceneDocument &scene = editor.SceneDocument();
-  const std::string uniqueName = MakeUniqueInstanceName(
-      scene, instance.instanceName.empty()
-                 ? std::filesystem::path(prefabPath).stem().string()
-                 : instance.instanceName);
-  instance.instanceName = uniqueName;
-  instance.definition.entityName = uniqueName;
-
-  scene.instances.push_back(std::move(instance));
-  UiState &ui = editor.Ui();
-  ui.selectedInstanceIndex = static_cast<int>(scene.instances.size()) - 1;
-  ui.selectedInstanceIndices = {ui.selectedInstanceIndex};
-  editor.ClampSelectedInstanceIndex();
-  EntityEditorAuthoringDocumentEditNotify::Notify(editor);
-  return true;
+  return EntityEditorPrefabBatchSpawnFromFile::AppendFromPrefabFileBatch(
+             editor, prefabPath, 1, 0.0f) > 0;
 }
 
 } // namespace Atrum::EntityEditor::EntityEditorPrefabSpawnFirstInstanceRoot

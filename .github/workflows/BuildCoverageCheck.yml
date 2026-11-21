@@ -70,6 +70,9 @@ jobs:
       - name: Verify prefab saves EntityDefinition JSON
         run: python3 EditorAssets/Tools/CursorAI/verify_prefab_save_entity_definition_json.py
 
+      - name: Verify prefab scene add multi count
+        run: python3 EditorAssets/Tools/CursorAI/verify_prefab_scene_add_multi_count.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

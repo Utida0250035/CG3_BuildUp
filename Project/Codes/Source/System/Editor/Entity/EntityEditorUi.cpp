@@ -13,6 +13,7 @@
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Prefab/PrefabAssetBatchSpawnUi.h"
+#include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
@@ -893,11 +894,22 @@ void EntityEditor::DrawProjectPanel() {
   }
 
   ImGui::Separator();
-  if (!ui_.selectedPrefabPath.empty() &&
-      ImGui::Button("シーンへ追加")) {
-    AddInstanceFromPrefabPath(ui_.selectedPrefabPath);
-  }
   Atrum::Editor::Prefab::PrefabAssetBatchSpawnUi::DrawBatchSpawnControls(*this);
+  if (!ui_.selectedPrefabPath.empty()) {
+    const int count = std::max(1, ui_.prefabSpawnBatchCount);
+    const char *addLabel =
+        count > 1 ? "シーンへ追加（上記件数）" : "シーンへ追加（1 体）";
+    if (ImGui::Button(addLabel)) {
+      const int spawned =
+          EntityEditor::EntityEditorPrefabBatchSpawnFromFile::
+              AppendFromPrefabFileBatch(*this, ui_.selectedPrefabPath, count,
+                                        ui_.prefabSpawnSpacingX);
+      if (spawned > 0) {
+        ui_.importStatusMessage =
+            "プレハブ追加: " + std::to_string(spawned) + " 体";
+      }
+    }
+  }
 }
 
 void EntityEditor::DrawInspectorPanel() {

@@ -82,6 +82,10 @@ struct UiState {
   std::string newEntityTagName{};
   /// コンポーネント設定のコピー／ペースト用
   std::optional<ComponentSlot> clipboardComponentSlot{};
+  /// プレハブ「シーンへ追加」／一括配置の件数（1–256）
+  int prefabSpawnBatchCount = 1;
+  /// プレハブ複数配置時の X 間隔
+  float prefabSpawnSpacingX = 1.25f;
 };
 
 /// エンティティ定義の編集・シリアライズ・プレビュー用 Entity 生成

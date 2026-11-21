@@ -3,6 +3,7 @@
 #include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 #include "System/Editor/Entity/EntityEditor.h"
 
+#include <algorithm>
 #include <imgui.h>
 
 namespace Atrum::Editor::Prefab::PrefabAssetBatchSpawnUi {
@@ -13,22 +14,17 @@ void DrawBatchSpawnControls(EntityEditor::EntityEditor &editor) {
     return;
   }
 
-  static int batchCount = 5;
-  static float batchSpacing = 1.25f;
-  ImGui::InputInt("一括配置 件数", &batchCount, 1, 5);
-  if (batchCount < 1) {
-    batchCount = 1;
-  }
-  if (batchCount > 256) {
-    batchCount = 256;
-  }
-  ImGui::InputFloat("X 間隔", &batchSpacing, 0.05f, 0.25f, "%.2f");
+  ImGui::InputInt("追加 件数", &ui.prefabSpawnBatchCount, 1, 5);
+  ui.prefabSpawnBatchCount =
+      std::clamp(ui.prefabSpawnBatchCount, 1, 256);
+  ImGui::InputFloat("X 間隔", &ui.prefabSpawnSpacingX, 0.05f, 0.25f, "%.2f");
 
   if (ImGui::Button("一括配置（シーンへ）")) {
     const int spawned =
         EntityEditor::EntityEditorPrefabBatchSpawnFromFile::
-            AppendFromPrefabFileBatch(editor, ui.selectedPrefabPath, batchCount,
-                                      batchSpacing);
+            AppendFromPrefabFileBatch(editor, ui.selectedPrefabPath,
+                                      ui.prefabSpawnBatchCount,
+                                      ui.prefabSpawnSpacingX);
     ui.importStatusMessage =
         "プレハブ一括配置: " + std::to_string(spawned) + " 体 (" +
         ui.selectedPrefabPath + ")";
