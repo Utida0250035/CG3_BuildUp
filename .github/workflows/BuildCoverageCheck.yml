@@ -79,6 +79,9 @@ jobs:
       - name: Verify prefab overwrite save path
         run: python3 EditorAssets/Tools/CursorAI/verify_prefab_overwrite_save_path.py
 
+      - name: Verify prefab clear on open scene
+        run: python3 EditorAssets/Tools/CursorAI/verify_prefab_clear_on_open_scene.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

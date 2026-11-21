@@ -641,7 +641,7 @@
 - [x] シーンへ追加が毎回 1 インスタンス
 - [x] プレハブ JSON は新規出力だけで、削除と名前変更が無い
 - [x] 出力が MakeUnique で上書き更新できない
-- [ ] OpenScene が selectedPrefabPath をクリアしない
+- [x] OpenScene が selectedPrefabPath をクリアしない
 - [ ] 衝突時 stem_N 連番
 
 ### EntityEditorUi

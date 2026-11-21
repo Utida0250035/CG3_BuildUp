@@ -10,6 +10,7 @@
 #include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
 #include "System/Editor/Entity/EntityEditorTickPendingRequests.h"
 #include "System/Editor/Entity/EntityEditorRestoreSelectionAfterSceneLoad.h"
+#include "System/Editor/Entity/EntityEditorClearPrefabSelectionOnSceneOpen.h"
 #include "System/Editor/Entity/EntityEditorDeleteSceneOpenSuccessor.h"
 #include "System/Editor/Entity/EntityEditorCreateNewSceneFile.h"
 #include "System/Editor/Entity/EntityEditorSaveSelectedInstanceToPrefab.h"
@@ -206,6 +207,7 @@ bool EntityEditor::OpenSceneFromPath(const std::string &sceneJsonPath) {
   ui_.jsonFilePath = sceneJsonPath;
   ui_.selectedScenePath = sceneJsonPath;
   LoadFromJsonPath(sceneJsonPath);
+  EntityEditorClearPrefabSelectionOnSceneOpen::OnSceneDocumentOpened(ui_);
   ui_.requestApplyPreview = true;
   return true;
 }

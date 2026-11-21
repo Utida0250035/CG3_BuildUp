@@ -10112,3 +10112,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - OpenScene が selectedPrefabPath をクリアしない（roadmap 644 行）
+
+---
+
+## セッション 2026-11-22 01:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 644 行: **`OpenSceneFromPath`** 後に `EntityEditorClearPrefabSelectionOnSceneOpen` で `selectedPrefabPath` をクリア
+
+### 推測した用途（§6.4）
+
+- **制作:** シーン切替後に別シーンへ誤追加しない
+- **Authoring:** シーン文脈とプレハブ選択 UI の整合
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| シーン切替でプレハブ選択リセット | 有効 | シーンの構成を保存・編集する流れの誤操作防止 |
+
+### 次 tick 候補
+
+- 衝突時 stem_N 連番（roadmap 645 行）
