@@ -9209,3 +9209,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 削除後は remaining.front() のみ開く（roadmap 596 行）
+
+---
+
+## セッション 2026-11-21 17:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-013`（roadmap 行）: `EntityEditorDeleteSceneOpenSuccessor` で削除前一覧上の位置から **次／前のシーン** を開く（`remaining.front()` 固定を廃止）
+- 残シーン無しは従来どおり `CreateNewSceneFile`
+
+### 推測した用途（§6.4）
+
+- **制作:** シーン整理の連続削除で意図しない先頭シーンへ飛ばない
+- **Authoring:** 一覧順（ソート済みパス）に沿った作業コンテキスト維持
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 削除後シーン遷移 | 有効 | json シーンを作成／編集する流れの連続作業を維持 |
+
+### 次 tick 候補
+
+- プレハブ追加は instances[0]（roadmap 597 行・§6.2 既存実装との突合想定）

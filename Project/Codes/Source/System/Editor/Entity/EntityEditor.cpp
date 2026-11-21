@@ -8,6 +8,7 @@
 #include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
 #include "System/Editor/Entity/EntityEditorTickPendingRequests.h"
 #include "System/Editor/Entity/EntityEditorRestoreSelectionAfterSceneLoad.h"
+#include "System/Editor/Entity/EntityEditorDeleteSceneOpenSuccessor.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -234,6 +235,10 @@ bool EntityEditor::OpenSceneFromPath(const std::string &sceneJsonPath) {
 }
 
 bool EntityEditor::DeleteSceneFile(const std::string &sceneJsonPath) {
+  const std::vector<std::string> scenesBeforeDelete =
+      Atrum::Editor::Scene::ListEditableSceneJsonFiles();
+  const bool wasOpen = ui_.jsonFilePath == sceneJsonPath;
+
   if (!Atrum::Editor::Scene::TryDeleteSceneJsonFile(sceneJsonPath)) {
     return false;
   }
@@ -245,15 +250,15 @@ bool EntityEditor::DeleteSceneFile(const std::string &sceneJsonPath) {
     ui_.pendingDeleteScenePath.clear();
   }
 
-  const bool wasOpen = ui_.jsonFilePath == sceneJsonPath;
   if (!wasOpen) {
     return true;
   }
 
-  const std::vector<std::string> remaining =
-      Atrum::Editor::Scene::ListEditableSceneJsonFiles();
-  if (!remaining.empty()) {
-    return OpenSceneFromPath(remaining.front());
+  const std::optional<std::string> successor =
+      EntityEditorDeleteSceneOpenSuccessor::ResolveAfterDelete(
+          scenesBeforeDelete, sceneJsonPath);
+  if (successor.has_value()) {
+    return OpenSceneFromPath(*successor);
   }
 
   CreateNewSceneFile();
