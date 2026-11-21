@@ -89,7 +89,7 @@
       <AdditionalOptions>/utf-8 /FS %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Externals\LuaJIT\include; $(ProjectDir)Codes\Include;</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
       <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
@@ -98,8 +98,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\LuaJIT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -131,7 +130,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <Optimization>MinSpace</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Externals\LuaJIT\include; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
       <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
@@ -140,6 +139,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\LuaJIT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -171,7 +171,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals; $(ProjectDir)Externals\LuaJIT\include; $(ProjectDir)Codes\Include</AdditionalIncludeDirectories>
       <TreatAngleIncludeAsExternal>true</TreatAngleIncludeAsExternal>
       <ExternalTemplatesDiagnostics>true</ExternalTemplatesDiagnostics>
       <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
@@ -181,6 +181,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <LinkTimeCodeGeneration />
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\LuaJIT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -532,6 +533,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentLoad.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpLoadFailureEntities.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLuaRuntimeHost.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeSubviewDrawCamera.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraLock.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpF1ReturnRequest.cpp" />
@@ -1110,6 +1112,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Entity.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaEntityApiBinder.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaEntitySpawnFromJson.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaSystem.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaSystemPool.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
@@ -1365,6 +1371,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDisplayNameResolve.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpChangeSceneDrawPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLuaRuntimeHost.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUpF1ReturnRequest.h" />

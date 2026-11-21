@@ -557,7 +557,7 @@
 ### テキスト系（%変数名%テンプレ）
 - [x] Lua テンプレファイル（`EditorAssets/Templates/Lua/`・`manifest.json`）
 - [x] エディタ組み込み（`EditorLuaScriptScaffold`・ドック「スクリプト」・`Project/Assets/Scripts/` へ出力）
-- [-] ランタイム読込（Phase 2・Script 節）
+- [x] ランタイム読込（Phase 2・Script 節・`SceneBuildUpLuaRuntimeHost`／`Atrum.*` バインド）
 
 
 ### ギャップスキャン追補（P0/P1）

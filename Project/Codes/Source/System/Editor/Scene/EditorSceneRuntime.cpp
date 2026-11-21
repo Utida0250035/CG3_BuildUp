@@ -456,6 +456,12 @@ std::unique_ptr<Entity> BuildEntityFromDefinition(
 
 } // namespace
 
+std::unique_ptr<Entity> BuildEntityFromEntityDefinition(
+    const EntityDefinition &definition,
+    EditorSceneRuntimeBuildWarnings *warnings) {
+  return BuildEntityFromDefinition(definition, warnings);
+}
+
 bool TryLoadSceneDocument(const std::string &jsonFilePath,
                           EditorSceneDocument &outDocument) {
   namespace fs = std::filesystem;
@@ -489,8 +495,9 @@ bool TryLoadSceneDocument(const std::string &jsonFilePath,
 }
 
 std::vector<std::unique_ptr<Entity>>
-BuildEntitiesFromSceneDocument(const EditorSceneDocument &document,
-                               EditorSceneRuntimeBuildWarnings *warnings) {
+BuildEntitiesFromSceneDocument(
+    const EditorSceneDocument &document, EditorSceneRuntimeBuildWarnings *warnings,
+    EditorSceneRuntimeBuildEntitiesOptions options) {
   std::vector<std::unique_ptr<Entity>> entities;
   entities.reserve(document.instances.size());
 
@@ -511,7 +518,10 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document,
     entities[i]->SetParent(entities[static_cast<size_t>(parentIndex)].get());
   }
 
-  EditorSceneRuntimeMainCameraSupplement::EnsureInEntityList(entities, warnings);
+  if (options.addMainCameraIfMissing) {
+    EditorSceneRuntimeMainCameraSupplement::EnsureInEntityList(entities,
+                                                               warnings);
+  }
 
   InitializeSceneDocumentEntities(entities);
 

@@ -235,7 +235,7 @@ EditorLuaScriptScaffold::Generate(const LuaScriptScaffoldRequest &request) {
 
   result.success = true;
   result.message =
-      "Lua スクリプトを生成しました（Phase 2 でランタイム読込予定）。";
+      "Lua スクリプトを生成しました（BuildUp 再生時は Runtime/bootstrap.lua と require_behavior で読込可）。";
   return result;
 }
 

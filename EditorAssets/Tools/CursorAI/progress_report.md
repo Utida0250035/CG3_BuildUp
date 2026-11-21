@@ -10595,3 +10595,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - ヒット球は選択 1 球のみ編集（roadmap 664 行）
+
+---
+
+## セッション 2026-11-22（Lua ランタイム統合・エンティティ API バインド）
+
+### 実装概要
+
+- `SceneBuildUp` に `SceneBuildUpLuaRuntimeHost` を組み込み（`Assets/Scripts/Runtime/bootstrap.lua` 自動実行、`onTick` コールバック）
+- `LuaEntityApiBinder` で `Atrum.spawn_entity_from_json` / `tag_for_role` / `log` / `require_behavior`
+- `LuaEntitySpawnFromJson` で `EditorSceneRuntime` 経由の JSON→Entity 追記（MainCamera 自動補完なし）
+- `CG2_BuildUp.vcxproj` に LuaJIT リンク・Scripting 系 TU 登録、allowlist から Lua を除去
+- `verify_lua_runtime_entity_bind.py` 追加
+- roadmap Script 節「ランタイム読込」を `[x]`
+
+### 推測した用途（§6.4）
+
+- **ランタイムゲームプレイ:** BuildUp シーン再生中に Lua からプレハブ JSON をスポーンし、行動スクリプトを tick する
+- **プロトタイピング:** `bootstrap.lua` で検証シーンに動的にオブジェクトを足す
+- **制作補助:** タグ registry の役割名をスクリプトから参照する
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Lua ランタイム＋エンティティ生成 API | 有効 | ゲーム内のロジック（スクリプト）によって、保存したエンティティをゲーム内に生成することができる |
+| 同上 | 矛盾なし | md／lua は外部エディタ編集の流れと整合 |
+
+### ビルド
+
+- Cloud: `verify_vcxproj_coverage.py` / `verify_lua_runtime_entity_bind.py` OK（Windows Development ビルドは未実行）

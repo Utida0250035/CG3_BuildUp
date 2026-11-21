@@ -2,6 +2,7 @@
 
 #include "Audio/AudioHandle.h"
 #include "Scene/SceneBuildUpAllowDebugCameraContract.h"
+#include "Scene/SceneBuildUpLuaRuntimeHost.h"
 #include "Scene.h"
 #include <memory>
 #include <string>
@@ -66,6 +67,7 @@ private:
   std::string sceneLoadFailureMessage_{};
   Audio::Handle sceneBgmHandle_{};
   Audio::Handle sceneAmbientLoopSeHandle_{};
+  SceneBuildUpLuaRuntimeHost luaRuntimeHost_{};
 
   void TeardownEntities();
   void DrawRuntimeEntities();

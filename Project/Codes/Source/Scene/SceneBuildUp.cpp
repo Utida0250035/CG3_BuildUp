@@ -141,6 +141,9 @@ void SceneBuildUp::EnterScene() {
   }
 #endif
 
+  if (!sceneDocumentLoadFailed_) {
+    luaRuntimeHost_.OnEnterScene(&entities_);
+  }
 }
 
 void SceneBuildUp::Update() {
@@ -163,6 +166,7 @@ void SceneBuildUp::Update() {
     TickCameraRigEntities();
 
     Particle::TickEmitterManagerForActiveScene(GetCamera());
+    luaRuntimeHost_.OnUpdate();
   }
   SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
   SceneBuildUpAudioPolicy::Tick(*this);
@@ -259,6 +263,7 @@ void SceneBuildUp::ExitScene() {
   Editor::Scene::ClearStagedEditorPlayScenePath();
   SceneBuildUpExitSceneEditorUiRestore::ApplyOnExitScene();
 #endif
+  luaRuntimeHost_.OnExitScene();
   SceneBuildUpAudioPolicy::OnExitScene(*this);
   TeardownEntities();
   ReleaseCommonResources();

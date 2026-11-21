@@ -6,4 +6,5 @@
 - `Components/Upd/` — 更新コンポーネント雛形
 - `Behaviors/` — 行動スクリプト雛形
 
-実行時の読込・バインドは Phase 2 で実装予定です。
+`SceneBuildUp` シーン入場時に `Runtime/bootstrap.lua` があれば自動実行されます。
+`Atrum.spawn_entity_from_json` で `EditorAssets/Entities` などの JSON から Entity を追記生成できます。

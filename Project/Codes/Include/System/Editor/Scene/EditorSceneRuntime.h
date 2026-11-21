@@ -19,9 +19,20 @@ struct EditorSceneRuntimeBuildWarnings;
 bool TryLoadSceneDocument(const std::string &jsonFilePath,
                           EditorSceneDocument &outDocument);
 
+struct EditorSceneRuntimeBuildEntitiesOptions {
+  /// false のとき MainCamera 自動補完を行わない（既存シーンへ追加入稿用）
+  bool addMainCameraIfMissing = true;
+};
+
 std::vector<std::unique_ptr<Entity>>
 BuildEntitiesFromSceneDocument(
     const EditorSceneDocument &document,
+    EditorSceneRuntimeBuildWarnings *warnings = nullptr,
+    EditorSceneRuntimeBuildEntitiesOptions options = {});
+
+std::unique_ptr<Entity>
+BuildEntityFromEntityDefinition(
+    const EntityDefinition &definition,
     EditorSceneRuntimeBuildWarnings *warnings = nullptr);
 
 /// ルート Entity の Draw と、親が非 Active な子のフォールバック描画。

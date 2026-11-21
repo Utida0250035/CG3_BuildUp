@@ -2,6 +2,10 @@
 #include "System/Scripting/ILuaBinder.h"
 #include <iostream>
 
+#if defined(_MSC_VER)
+#pragma comment(lib, "lua51.lib")
+#endif
+
 namespace Atrum::Script {
 
 bool LuaSystem::Initialize() {
