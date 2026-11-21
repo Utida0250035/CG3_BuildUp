@@ -666,6 +666,8 @@
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
@@ -1517,6 +1519,8 @@
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeEntityInitializePolicy.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeInstanceNamePolicy.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />

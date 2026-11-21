@@ -8899,3 +8899,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - AssetPath プレビューが Draw 分割を Data に内包（`GAP-Editor-EditorSceneRuntime-005`）
+
+---
+
+## セッション 2026-11-21 14:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EditorSceneRuntime-005`: `EditorSceneRuntimeEditorAssetPathPreviewLink` で AssetPath を宣言済み `CmpMesh` / `CmpEditorTextureBillboard` にのみ反映（暗黙 `AddDrawCmp` 廃止）
+- 描画ロードを `EditorSceneRuntimeDrawPreviewApply` に集約
+
+### 推測した用途（§6.4）
+
+- **制作:** json に Draw スロットを残したまま Data と描画を分離して再利用
+- **移行:** Draw 無しの旧定義はビルド警告で不足を明示
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| コンポーネント分割 | 有効 | 各エンティティのコンポーネント構成を json で作成／編集できる |
+
+### 次 tick 候補
+
+- BuildEntities が camera.main 欠落を補わない（`GAP-Editor-EditorSceneRuntime-007`）

@@ -165,6 +165,9 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
   }
 
   if (slot.typeName == "CmpEditorAssetPath") {
+    ImGui::TextDisabled(
+        "プレビュー表示には CmpMesh または CmpEditorTextureBillboard の "
+        "Draw スロットを別途追加してください");
     std::string path = p.value("assetPath", std::string{});
     changed |= ImGui::InputString("assetPath", path);
     if (changed) {
