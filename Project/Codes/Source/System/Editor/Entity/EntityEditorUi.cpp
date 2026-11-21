@@ -3,6 +3,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/EditorFrame.h"
@@ -131,6 +132,11 @@ void DrawDeleteSceneConfirmPopup(EntityEditor &editor) {
 bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
   nlohmann::json &p = slot.params;
   bool changed = false;
+
+  bool ballSplitChanged = false;
+  if (TryDrawBallSplitComponentParams(slot, ballSplitChanged)) {
+    return ballSplitChanged;
+  }
 
   if (slot.typeName == "CmpRuntimeTexturePath") {
     std::string texturePath = p.value("texturePath", std::string{});

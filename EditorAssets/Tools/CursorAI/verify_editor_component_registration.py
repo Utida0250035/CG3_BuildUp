@@ -17,7 +17,20 @@ def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def extract_registry_known(text: str) -> set[str]:
+    match = re.search(
+        r"kEditorRuntimeComponentTypeNames = \{([^}]+)\}",
+        text,
+        re.DOTALL,
+    )
+    if not match:
+        return set()
+    return set(re.findall(r'"(Cmp[^"]+)"', match.group(1)))
+
+
 def extract_definition_known(text: str) -> set[str]:
+    if "EntityEditorKnownComponentRegistry::Contains" in text:
+        return set()
     match = re.search(
         r"bool IsKnownEditorRuntimeComponentTypeName\(const std::string &typeName\) \{([^}]+)\}",
         text,
@@ -61,6 +74,21 @@ def extract_runtime_addable(text: str) -> set[str]:
     return set(re.findall(r'slot\.typeName == "(Cmp[^"]+)"', block))
 
 
+def extract_slot_has_types(text: str) -> set[str]:
+    return set(re.findall(r'slot\.typeName == "(Cmp[^"]+)"', text))
+
+
+def extract_apply_param_types(text: str) -> set[str]:
+    block = slice_between(
+        text,
+        "void ApplyComponentParams(Entity &entity, const ComponentSlot &slot)",
+        "std::unique_ptr<Entity> BuildEntityFromDefinition",
+    )
+    if not block:
+        return set()
+    return set(re.findall(r'if \(slot\.typeName == "(Cmp[^"]+)"\)', block))
+
+
 def extract_default_params_types(text: str) -> set[str]:
     match = re.search(
         r"nlohmann::json DefaultParamsForType\(const std::string &typeName\) \{([\s\S]*?)^\}",
@@ -86,23 +114,61 @@ def extract_draw_param_types(text: str) -> set[str]:
 def main() -> int:
     root = repo_root()
     def_path = root / "Project/Codes/Source/System/Editor/Entity/EntityEditorDefinition.cpp"
+    registry_path = (
+        root
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "Entity"
+        / "EntityEditorKnownComponentRegistry.cpp"
+    )
     ui_path = root / "Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp"
     runtime_path = root / "Project/Codes/Source/System/Editor/Scene/EditorSceneRuntime.cpp"
+    slot_path = (
+        root
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "Scene"
+        / "EditorSceneRuntimeEntityHasComponentForSlot.cpp"
+    )
+    ball_ui_path = (
+        root
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "Entity"
+        / "EntityEditorUiDrawComponentParamsBallSplit.cpp"
+    )
 
-    for path in (def_path, ui_path, runtime_path):
+    for path in (def_path, registry_path, ui_path, runtime_path, slot_path):
         if not path.is_file():
             print(f"verify_editor_component_registration: missing {path}", file=sys.stderr)
             return 1
 
     def_text = read_text(def_path)
+    registry_text = read_text(registry_path)
     ui_text = read_text(ui_path)
     runtime_text = read_text(runtime_path)
+    slot_text = read_text(slot_path)
 
-    definition = extract_definition_known(def_text)
+    definition = extract_registry_known(registry_text)
+    if not definition:
+        definition = extract_definition_known(def_text)
     ui_presets = extract_ui_presets(ui_text)
     runtime_add = extract_runtime_addable(runtime_text)
+    slot_has = extract_slot_has_types(slot_text)
+    apply_params = extract_apply_param_types(runtime_text)
     default_params = extract_default_params_types(def_text)
     draw_params = extract_draw_param_types(ui_text)
+    if ball_ui_path.is_file():
+        draw_params |= extract_slot_has_types(read_text(ball_ui_path))
 
     errors: list[str] = []
     warnings: list[str] = []
@@ -135,11 +201,28 @@ def main() -> int:
             + ", ".join(sorted(ui_runtime))
         )
 
+    def_slot = definition.symmetric_difference(slot_has)
+    if def_slot:
+        errors.append(
+            "Registry vs EntityHasComponentForSlot mismatch: "
+            + ", ".join(sorted(def_slot))
+        )
+
+    def_apply = definition.symmetric_difference(apply_params)
+    if def_apply:
+        errors.append(
+            "Registry vs ApplyComponentParams mismatch: "
+            + ", ".join(sorted(def_apply))
+        )
+
+    if "GuidelineDrawExamplesAreRegistered" not in registry_text:
+        errors.append("registry must implement GuidelineDrawExamplesAreRegistered")
+
     for cmp_name in sorted(ui_presets):
         if cmp_name not in default_params:
-            warnings.append(f"DefaultParamsForType missing: {cmp_name}")
+            errors.append(f"DefaultParamsForType missing: {cmp_name}")
         if cmp_name not in draw_params:
-            warnings.append(f"DrawComponentParams missing: {cmp_name}")
+            errors.append(f"DrawComponentParams missing: {cmp_name}")
 
     print(
         f"editor component registration: {len(definition)} definition, "

@@ -1,5 +1,7 @@
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 
+#include "System/Editor/Entity/EntityEditorKnownComponentRegistry.h"
+
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 #include <algorithm>
@@ -17,16 +19,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentSlotKind,
 } // namespace
 
 bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName) {
-  return typeName == "CmpMeshSphere" || typeName == "CmpMesh" ||
-         typeName == "CmpEditorTextureBillboard" || typeName == "CmpDrawHitSphere" ||
-         typeName == "CmpRotator" || typeName == "CmpScroll" ||
-         typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
-         typeName == "CmpRuntimeTexturePath" || typeName == "CmpColliderAabb" ||
-         typeName == "CmpCamera" || typeName == "CmpParticleEmitter" ||
-         typeName == "CmpBounceBall" || typeName == "CmpBallKinematics" ||
-         typeName == "CmpBallAxisAlignedBounce" ||
-         typeName == "CmpBallBounceImpactFx" ||
-         typeName == "CmpBillboardInstancedGrid";
+  return EntityEditorKnownComponentRegistry::Contains(typeName);
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {

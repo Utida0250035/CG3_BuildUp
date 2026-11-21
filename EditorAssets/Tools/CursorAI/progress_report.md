@@ -9568,3 +9568,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（roadmap 614 行）
+
+---
+
+## セッション 2026-11-21 20:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 614 行: **`EntityEditorKnownComponentRegistry`** を登録正本にし、Definition / UI / TryAddEmpty / HasComponentForSlot / ApplyComponentParams を `verify_editor_component_registration` で5経路突合
+- **`EntityEditorUiDrawComponentParamsBallSplit`** で分割ボール系3型のインスペクタを追加（DrawComponentParams 欠落警告解消）
+- ガイドライン分割例 Draw 型の登録チェック `GuidelineDrawExamplesAreRegistered`
+
+### 推測した用途（§6.4）
+
+- **制作:** component_split_guidelines の CmpMesh 等を UI から選びプレビューまで一貫
+- **Authoring:** 登録表とランタイムビルドの型集合ズレを CI で検出
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| コンポーネント登録同期 | 有効 | json コンポーネント構成の作成/編集の流れ |
+
+### 次 tick 候補
+
+- 未登録コンポーネント種別が Draw 扱いになる（roadmap 615 行）

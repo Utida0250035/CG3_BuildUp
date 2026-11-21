@@ -611,7 +611,7 @@
 - [x] SetupPreviewCamera が自由位置のみで StageView 未使用（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### EntityEditorDefinition
-- [ ] 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（spec: feature-memos/component_split_guidelines.md）
+- [x] 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（spec: feature-memos/component_split_guidelines.md）
 - [ ] 未登録コンポーネント種別が Draw 扱いになる
 - [ ] コンポーネント設定のコピー／ペーストが無い
 - [ ] CmpCamera 追加で params が空オブジェクト（spec: feature-memos/entity_camera_components.md）
