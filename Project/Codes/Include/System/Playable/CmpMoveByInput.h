@@ -69,6 +69,10 @@ namespace Atrum {
 
 			void SetDirectionMarkers(Entity* forwardMarker, Entity* rearMarker,
 				const float sideOffset);
+			bool HasDirectionMarkers() const {
+				return directionMarkerForward_ != nullptr &&
+				       directionMarkerRear_ != nullptr;
+			}
 			void SetDirectionMarkerBaseColors(const Math::Vector4& forwardColor,
 				const Math::Vector4& rearColor);
 			void SetInitialDirectionFaceSignX(const float signX) {

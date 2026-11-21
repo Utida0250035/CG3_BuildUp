@@ -10696,3 +10696,27 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 |--------|------|------|
 | プレイヤー系コンポーネントのエディタ登録 | 有効 | エンティティ json の構成編集／ランタイム出力後のプレイ |
 | 同上 | 矛盾なし | スクリプト＋JSON 併用ワークフローと整合 |
+
+---
+
+## セッション 2026-11-22（PlayerParry ランタイム組み立て共通化・Lua spawn）
+
+### 実装概要
+
+- `PlayerParryRuntimeAssembly` で本編 `EntityFactory::PlayerParry` と同等の付帯処理（AbstractInput・パリィ武器・武器ピボット・方向マーカー・CmpChildEntitys）を共通化
+- `EntityFactory::PlayerParry` と `ApplyPlayerComponentPostBuild` の双方から呼び出し
+- Lua: `Atrum.spawn_player_parry_from_json`（既定 `player_parry.template.json`）
+- テンプレ JSON を本編の初期姿勢・`useDefaultPlayerParryAssembly` に合わせて更新
+- 検証: `verify_player_parry_runtime_assembly.py`
+
+### 推測した用途（§6.4）
+
+- **BuildUp:** スクリプト 1 行で本編同等の自機を生成し、追加 Lua で振る舞いを上書き
+- **制作:** カスタムプレハブ JSON でも、不足子階層をランタイムが本編どおり自動補完
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| スクリプトから保存エンティティ生成 | 有効 | ゲーム内のロジック（スクリプト）によって、保存したエンティティをゲーム内に生成 |
+| 同上 | 矛盾なし | エンティティ json の構成編集と整合 |

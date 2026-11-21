@@ -1097,6 +1097,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpSwing.cpp" />
     <ClCompile Include="Codes\Source\System\EntityFactory.cpp" />
     <ClCompile Include="Codes\Source\System\Playable\AbstractInput.cpp" />
+    <ClCompile Include="Codes\Source\System\Playable\PlayerParryRuntimeAssembly.cpp" />
     <ClCompile Include="Codes\Source\System\Playable\CmpDrawPlayerParryField.cpp" />
     <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Editor.cpp">
@@ -1568,6 +1569,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\DrawComponent.h" />
     <ClInclude Include="Codes\Include\System\EntityFactory.h" />
     <ClInclude Include="Codes\Include\System\Playable\AbstractInput.h" />
+    <ClInclude Include="Codes\Include\System\Playable\PlayerParryRuntimeAssembly.h" />
     <ClInclude Include="Codes\Include\System\Playable\CmpDrawPlayerParryField.h" />
     <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h" />
     <ClInclude Include="Codes\Include\System\PlaySeDetailCache.h" />

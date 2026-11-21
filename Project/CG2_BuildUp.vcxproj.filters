@@ -532,6 +532,9 @@
     <ClCompile Include="Codes\Source\System\Playable\AbstractInput.cpp">
       <Filter>Codes\Source\System\Playable</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\PlayerParryRuntimeAssembly.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp">
       <Filter>Codes\Source\System\Playable</Filter>
     </ClCompile>
@@ -1372,6 +1375,9 @@
       <Filter>Codes\Include\System\Playable</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Playable\AbstractInput.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\PlayerParryRuntimeAssembly.h">
       <Filter>Codes\Include\System\Playable</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h">

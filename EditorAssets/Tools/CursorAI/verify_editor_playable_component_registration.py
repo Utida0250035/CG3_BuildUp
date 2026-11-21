@@ -43,6 +43,12 @@ def main() -> int:
     if "ApplyPlayerComponentPostBuild" not in runtime:
         errors.append("BuildEntities must call ApplyPlayerComponentPostBuild")
 
+    assembly = (
+        root / "Project/Codes/Source/System/Playable/PlayerParryRuntimeAssembly.cpp"
+    )
+    if not assembly.is_file():
+        errors.append("missing PlayerParryRuntimeAssembly.cpp")
+
     template = root / "EditorAssets/Entities/player_parry.template.json"
     if not template.is_file():
         errors.append("missing player_parry.template.json")

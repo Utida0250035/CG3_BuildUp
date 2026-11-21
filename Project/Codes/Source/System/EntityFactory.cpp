@@ -33,6 +33,7 @@
 #include "System/Entity/EntityTagRegistry.h"
 #include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/Playable/CmpMoveByInput.h"
+#include "System/Playable/PlayerParryRuntimeAssembly.h"
 #include <filesystem>
 #include <iterator>
 #include <numbers>
@@ -109,53 +110,11 @@ std::unique_ptr<Entity> EntityFactory::PlayerParry() {
   cmpHealthHit->SetInitialHealthCount(5);
   cmpHealthHit->SetInvincibleTime(kPlayerDamageInvincibleSeconds);
 
-  CmpParry *cmpParry = playerParry->GetDataCmp<CmpParry>();
-  cmpParry->SetEntParry(Parry(playerParry.get()).release());
-
-  Player::CmpMoveByInput2D *cmpMoveByInput =
-      playerParry->GetUpdCmp<Player::CmpMoveByInput2D>();
-
-  std::unique_ptr<Entity> weaponPivot = std::make_unique<Entity>();
-  weaponPivot->AddUpdCmp<CmpChildEntitys>();
   CmpSwing *cmpSwing = playerParry->GetUpdCmp<CmpSwing>();
-  cmpSwing->SetPivot(weaponPivot.get());
   cmpSwing->SetSwingSpeed(std::numbers::pi_v<float> * 8.0f);
   cmpSwing->SetSwingDuration(0.25f);
 
-  Math::TransformLH weaponPivotInitialTransform{};
-  weaponPivotInitialTransform.quaternion =
-      Math::Quaternion::FromAxisAngle(Math::Vector3::ForwardLh(), -std::numbers::pi_v<float>);
-  weaponPivot->SetInitialTransform(weaponPivotInitialTransform);
-  weaponPivot->SetIsInheritParentPositionOnly(false);
-
-  constexpr float kDirectionMarkerSideOffset = 0.65f;
-  const Math::Vector4 forwardMarkerColor{0.85f, 0.75f, 0.2f, 1.0f};
-  const Math::Vector4 rearMarkerColor{0.85f, 0.75f, 0.2f, 0.45f};
-
-  auto makeDirectionMarker = [&](const float radius,
-                                 const Math::Vector4 &color) -> Entity * {
-    std::unique_ptr<Entity> marker = std::make_unique<Entity>();
-    marker->SetIsInheritParentPositionOnly(true);
-    marker->AddDrawCmp<CmpMeshSphere>();
-    CmpMeshSphere *cmpMarkerMesh = marker->GetDrawCmp<CmpMeshSphere>();
-    cmpMarkerMesh->SetRadius(radius);
-    cmpMarkerMesh->SetColor(color);
-    cmpMarkerMesh->SetSubdivision(8);
-    return marker.release();
-  };
-
-  Entity *directionMarkerForward = makeDirectionMarker(0.24f, forwardMarkerColor);
-  Entity *directionMarkerRear = makeDirectionMarker(0.15f, rearMarkerColor);
-
-  cmpMoveByInput->SetDirectionMarkers(directionMarkerForward,
-                                      directionMarkerRear,
-                                      kDirectionMarkerSideOffset);
-  cmpMoveByInput->SetDirectionMarkerBaseColors(forwardMarkerColor,
-                                               rearMarkerColor);
-  cmpMoveByInput->SetInitialDirectionFaceSignX(1.0f);
-
-  playerParry->GetUpdCmp<CmpChildEntitys>()->AddChilds(
-      {weaponPivot.release(), directionMarkerForward, directionMarkerRear});
+  Player::AssemblePlayerParryRuntimeExtras(*playerParry);
 
   playerParry->ResolveDependencies();
   playerParry->Initialize();

@@ -150,7 +150,8 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
              "シングルトン AbstractInput（PlayInput）。Entity には付かないメタスロット"}};
   }
   if (typeName == "CmpMoveByInput2D") {
-    return {{"directionMarkerSideOffset", 0.65f},
+    return {{"useDefaultPlayerParryAssembly", true},
+            {"directionMarkerSideOffset", 0.65f},
             {"directionMarkerForwardInstance", ""},
             {"directionMarkerRearInstance", ""}};
   }
