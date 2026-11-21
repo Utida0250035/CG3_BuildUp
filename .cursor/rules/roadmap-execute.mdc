@@ -19,9 +19,9 @@ alwaysApply: true
 3. `EditorAssets/Tools/CursorAI/task_backlog.md`
 4. `EditorAssets/Tools/CursorAI/docs/feature-memos/engineRoadmap.md`（`engineRoadmap_rough.md` に下書きがあれば §6.0 起こし後に正本へ）
 5. `EditorAssets/Tools/CursorAI/docs/feature-memos/gameRoadmap.md`（エンジンに未完了が無いとき。`gameRoadmap_rough.md` 同様）
-5. `EditorAssets/Tools/CursorAI/branchNaming.md`
-6. `.cursor/rules/game-dev-purpose.mdc`（用途 §6.4）
-7. `EditorAssets/Tools/CursorAI/docs/ultimateGoal.md`（着手前の査定 §6.7。本文は書き換えない）
+6. `EditorAssets/Tools/CursorAI/branchNaming.md`
+7. `.cursor/rules/game-dev-purpose.mdc`（用途 §6.4）
+8. `EditorAssets/Tools/CursorAI/docs/ultimateGoal.md`（着手前の査定 §6.7。本文は書き換えない）
 
 ## タスクの取り出し（上から順）
 
