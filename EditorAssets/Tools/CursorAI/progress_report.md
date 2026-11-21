@@ -9265,3 +9265,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 削除時に子を祖父へ昇格しない（roadmap 598 行）
+
+---
+
+## セッション 2026-11-21 17:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-018`（roadmap 行）: `EntityEditorRemoveSelectedInstances` で親削除時、子の `parentIndex` を **削除されていない祖先**へ再付け（ルートへのフラット化のみを廃止）
+
+### 推測した用途（§6.4）
+
+- **制作:** グループ親を消しても配下のヒエラルキーを維持
+- **Authoring:** 複数選択削除と併せて親子 index を再マップ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 削除時の親子維持 | 有効 | エンティティ構成の json 編集でヒエラルキー整理を非破壊に |
+
+### 次 tick 候補
+
+- 新規作成が requestSaveToDisk 必須（roadmap 599 行）

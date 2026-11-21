@@ -30,6 +30,27 @@ CollectRemovalIndices(const EntityEditor &editor) {
   return removal;
 }
 
+int ResolveParentIndexAfterRemoval(
+    const EditorSceneDocument &originalScene,
+    const std::vector<int> &oldToNew,
+    const std::unordered_set<int> &removal, int oldParentIndex) {
+  int current = oldParentIndex;
+  while (current >= 0) {
+    if (!removal.contains(current)) {
+      if (current >= static_cast<int>(oldToNew.size())) {
+        return -1;
+      }
+      const int mapped = oldToNew[static_cast<size_t>(current)];
+      return mapped >= 0 ? mapped : -1;
+    }
+    if (current >= static_cast<int>(originalScene.instances.size())) {
+      return -1;
+    }
+    current = originalScene.instances[static_cast<size_t>(current)].parentIndex;
+  }
+  return -1;
+}
+
 } // namespace
 
 void RemoveFromScene(EntityEditor &editor) {
@@ -52,7 +73,8 @@ void RemoveFromScene(EntityEditor &editor) {
     return;
   }
 
-  const size_t instanceCount = scene.instances.size();
+  const EditorSceneDocument originalScene = scene;
+  const size_t instanceCount = originalScene.instances.size();
   std::vector<int> oldToNew(instanceCount, -1);
   std::vector<SceneEntityInstance> kept;
   kept.reserve(instanceCount);
@@ -62,19 +84,15 @@ void RemoveFromScene(EntityEditor &editor) {
       continue;
     }
     oldToNew[i] = static_cast<int>(kept.size());
-    kept.push_back(scene.instances[i]);
+    kept.push_back(originalScene.instances[i]);
   }
 
   for (SceneEntityInstance &instance : kept) {
     if (instance.parentIndex < 0) {
       continue;
     }
-    const size_t parent = static_cast<size_t>(instance.parentIndex);
-    if (parent >= instanceCount || removal.contains(instance.parentIndex)) {
-      instance.parentIndex = -1;
-      continue;
-    }
-    instance.parentIndex = oldToNew[parent];
+    instance.parentIndex = ResolveParentIndexAfterRemoval(
+        originalScene, oldToNew, removal, instance.parentIndex);
   }
 
   scene.instances = std::move(kept);

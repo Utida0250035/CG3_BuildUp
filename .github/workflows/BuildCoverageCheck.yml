@@ -124,6 +124,9 @@ jobs:
       - name: Verify EntityEditor remove multi selection
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_remove_selected_instances.py
 
+      - name: Verify EntityEditor remove promotes child to ancestor
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_remove_promote_child.py
+
       - name: Verify EntityEditor save requests preview rebuild
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_request_save_need_apply.py
 
