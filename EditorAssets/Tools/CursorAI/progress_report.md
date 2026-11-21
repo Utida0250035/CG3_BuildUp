@@ -10004,3 +10004,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - プレハブ保存が EntityDefinition 単体 JSON（roadmap 640 行）
+
+---
+
+## セッション 2026-11-22 00:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 640 行: プレハブ出力を **`EntityDefinition` 単体 JSON** に変更（`instanceName` → `entityName` 反映）
+
+### 推測した用途（§6.4）
+
+- **制作:** プレハブをコンポーネント構成の正本として再利用・一括配置
+- **Authoring:** シーン JSON 手切り出しなしの Definition 単位保存
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Definition 単体プレハブ | 有効 | コンポーネント構成 json 編集 |
+
+### 次 tick 候補
+
+- シーンへ追加が毎回 1 インスタンス（roadmap 641 行）

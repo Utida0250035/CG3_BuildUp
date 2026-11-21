@@ -67,6 +67,9 @@ jobs:
       - name: Verify prefab batch spawn UI
         run: python3 EditorAssets/Tools/CursorAI/verify_prefab_asset_batch_spawn_ui.py
 
+      - name: Verify prefab saves EntityDefinition JSON
+        run: python3 EditorAssets/Tools/CursorAI/verify_prefab_save_entity_definition_json.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

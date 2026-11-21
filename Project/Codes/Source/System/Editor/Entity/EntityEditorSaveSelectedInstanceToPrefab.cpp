@@ -1,6 +1,7 @@
 #include "System/Editor/Entity/EntityEditorSaveSelectedInstanceToPrefab.h"
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorPrefabSaveEntityDefinitionBody.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Json/JsonHandler.h"
 
@@ -22,12 +23,14 @@ bool Save(EntityEditor &editor, const std::string &prefabPath) {
     return false;
   }
 
-  SceneEntityInstance prefabInstance =
+  const SceneEntityInstance &source =
       scene.instances[static_cast<size_t>(ui.selectedInstanceIndex)];
-  prefabInstance.parentIndex = -1;
-  RebuildEntityDefinitionTagHashes(prefabInstance.definition);
+  EntityDefinition definition =
+      EntityEditorPrefabSaveEntityDefinitionBody::BuildEntityDefinitionForPrefabFile(
+          source);
+  RebuildEntityDefinitionTagHashes(definition);
   try {
-    Json::JsonHandler::SaveToFile(prefabPath, prefabInstance);
+    Json::JsonHandler::SaveToFile(prefabPath, definition);
     return true;
   } catch (...) {
     return false;
