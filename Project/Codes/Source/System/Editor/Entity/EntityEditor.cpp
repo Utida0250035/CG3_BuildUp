@@ -7,6 +7,7 @@
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 #include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
 #include "System/Editor/Entity/EntityEditorTickPendingRequests.h"
+#include "System/Editor/Entity/EntityEditorRestoreSelectionAfterSceneLoad.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -123,16 +124,20 @@ void EntityEditor::ResetSelectionAfterSceneDocumentReload() {
 
 void EntityEditor::ApplySceneDocumentLoadedFromDisk(
     EditorSceneDocument document) {
+  const EntityEditorRestoreSelectionAfterSceneLoad::SelectionSnapshot snapshot =
+      EntityEditorRestoreSelectionAfterSceneLoad::Capture(*this);
   scene_ = std::move(document);
   MergeTagCatalogFromRegistry(scene_);
   SyncAllEntityDefinitionTags(scene_);
   SyncTagCatalogFromInstances(scene_);
-  ResetSelectionAfterSceneDocumentReload();
+  EntityEditorRestoreSelectionAfterSceneLoad::Apply(*this, snapshot);
   ClearSceneDocumentDirty();
 }
 
 void EntityEditor::ApplyEmptySceneForMissingJsonPath(
     const std::string &jsonFilePath) {
+  const EntityEditorRestoreSelectionAfterSceneLoad::SelectionSnapshot snapshot =
+      EntityEditorRestoreSelectionAfterSceneLoad::Capture(*this);
   scene_ = EditorSceneDocument{};
   scene_.sceneName =
       Atrum::Editor::Scene::SceneDisplayNameFromPath(jsonFilePath);
@@ -146,7 +151,7 @@ void EntityEditor::ApplyEmptySceneForMissingJsonPath(
   MergeTagCatalogFromRegistry(scene_);
   SyncAllEntityDefinitionTags(scene_);
   SyncTagCatalogFromInstances(scene_);
-  ResetSelectionAfterSceneDocumentReload();
+  EntityEditorRestoreSelectionAfterSceneLoad::Apply(*this, snapshot);
   ClearSceneDocumentDirty();
 }
 

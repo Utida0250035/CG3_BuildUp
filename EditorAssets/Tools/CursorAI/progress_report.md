@@ -9181,3 +9181,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - LoadFromJsonPath が選択を先頭に戻す（roadmap 595 行）
+
+---
+
+## セッション 2026-11-21 16:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-014`（roadmap 行）: `EntityEditorRestoreSelectionAfterSceneLoad` でロード前の **instanceName ベース**に選択を復元（複数選択・コンポーネント index も可能な範囲で維持）
+- `ApplySceneDocumentLoadedFromDisk` / 欠落 JSON 空シーン置換の両方で適用
+
+### 推測した用途（§6.4）
+
+- **制作:** ディスク再読込（自動保存後のリロード）でも編集対象インスタンスを維持
+- **Authoring:** シーン切替で名前が一致すれば選択を引き継ぐ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ロード後選択維持 | 有効 | シーン json の編集反復を短縮 |
+
+### 次 tick 候補
+
+- 削除後は remaining.front() のみ開く（roadmap 596 行）
