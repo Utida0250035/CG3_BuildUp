@@ -49,6 +49,9 @@ jobs:
       - name: Verify FitCameraPerspective FOV from tuning
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_frame_fit_camera_perspective_fov.py
 
+      - name: Verify imported asset batch apply UI
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_imported_asset_batch_apply_ui.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

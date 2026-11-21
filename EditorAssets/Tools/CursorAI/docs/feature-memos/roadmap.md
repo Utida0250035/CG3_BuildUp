@@ -629,7 +629,7 @@
 - [x] FitCameraPerspectiveToViewport が FOV 0.5 固定（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### EditorImportedAsset
-- [ ] インポート直後パス表示のみで一括適用 UI が無い
+- [x] インポート直後パス表示のみで一括適用 UI が無い
 - [ ] Imported 配下のファイル一覧 API が無い
 - [ ] 取り込みファイルはドロップコピーだけで、削除と名前変更が無い
 - [ ] 衝突解決が stem_N 連番のみ

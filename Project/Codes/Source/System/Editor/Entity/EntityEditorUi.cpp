@@ -14,6 +14,7 @@
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
+#include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
 #include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
 #include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
@@ -833,6 +834,8 @@ void EntityEditor::DrawProjectPanel() {
   if (!ui_.importStatusMessage.empty()) {
     ImGui::TextWrapped("%s", ui_.importStatusMessage.c_str());
   }
+  Atrum::Editor::EditorImportedAssetBatchApplyToSelection::
+      DrawProjectPanelBatchApplyUi(*this);
   ImGui::Separator();
 
   DrawEntityEditorEditableSceneList(*this);
