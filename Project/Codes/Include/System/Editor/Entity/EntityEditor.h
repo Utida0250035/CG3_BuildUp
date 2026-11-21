@@ -17,6 +17,14 @@ namespace Atrum::EntityEditor {
 /// シーン内エディット（静止）とプレイ（シミュレーション）
 enum class EditorInteractionMode { Edit, Play };
 
+/// Imported へコピーするときの同名衝突方針
+enum class ImportedAssetNameCollisionPolicy {
+  AutoIncrementStem,
+  OverwriteExisting,
+  TimestampSuffix,
+  BatchPrefixThenIncrement,
+};
+
 /// ImGui・JSON 操作の UI 状態（シーンはプレビュー生成のみ担当）
 struct UiState {
   /// 編集中シーン JSON（既定は Scenes フォルダ）
@@ -62,6 +70,10 @@ struct UiState {
   /// 直近 1 回のドロップでコピー成功したパス（古い順）
   std::vector<std::string> recentImportedAssetPaths{};
   std::string importStatusMessage{};
+  ImportedAssetNameCollisionPolicy importCollisionPolicy =
+      ImportedAssetNameCollisionPolicy::AutoIncrementStem;
+  /// `BatchPrefixThenIncrement` 用（空ならファイル名のみ連番）
+  std::string importBatchNamePrefix{};
 
   std::string tagSearchFilter{};
   std::string selectedCatalogTag{};

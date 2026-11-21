@@ -3,10 +3,21 @@
 #include <string>
 #include <vector>
 
+namespace Atrum::EntityEditor {
+enum class ImportedAssetNameCollisionPolicy;
+}
+
 namespace Atrum::Editor::Import {
 
 /// ウィンドウへドロップした外部ファイルのコピー先（ゲーム本番では未使用）
 constexpr const char *kImportedAssetsDirectory = "../EditorAssets/Imported";
+
+/// EntityEditor の UI 設定を次回 `CopyFileIntoImportedAssets` に反映する。
+void SetImportedAssetCollisionPolicyForNextCopies(
+    EntityEditor::ImportedAssetNameCollisionPolicy policy);
+void SetImportedAssetBatchNamePrefixForNextCopies(const std::string &prefix);
+EntityEditor::ImportedAssetNameCollisionPolicy
+GetImportedAssetCollisionPolicyForCopies();
 
 void EnsureImportedAssetsDirectoryExists();
 

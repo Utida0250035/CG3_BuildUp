@@ -9923,3 +9923,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 衝突解決が stem_N 連番のみ（roadmap 635 行）
+
+---
+
+## セッション 2026-11-21 23:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 635 行: **`ImportedAssetNameCollisionPolicy`**（上書き／タイムスタンプ／接頭辞+連番）とドロップ前 UI
+
+### 推測した用途（§6.4）
+
+- **制作:** 同名 obj 再ドロップ時の上書きか連番かを作業ごとに選択
+- **Authoring:** 一括インポートの命名規則（接頭辞）をエディタ内で指定
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Imported 衝突方針 | 有効 | ファイル操作とアセット取り込み |
+
+### 次 tick 候補
+
+- 重複時に stem_N へ自動リネーム（roadmap 636 行）

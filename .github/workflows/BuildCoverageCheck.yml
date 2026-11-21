@@ -58,6 +58,9 @@ jobs:
       - name: Verify imported asset rename delete
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_imported_asset_rename_delete.py
 
+      - name: Verify imported asset collision policies
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_imported_asset_collision_resolve.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

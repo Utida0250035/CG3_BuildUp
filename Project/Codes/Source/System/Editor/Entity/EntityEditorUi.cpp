@@ -15,6 +15,7 @@
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
+#include "System/Editor/EditorImportedAssetDropPolicyUi.h"
 #include "System/Editor/EditorImportedAssetProjectPanelList.h"
 #include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
 #include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
@@ -823,6 +824,8 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::TextUnformatted("ファイルドロップ（obj / png 等）");
   ImGui::TextDisabled("ウィンドウへドロップ → %s",
                       Atrum::Editor::Import::kImportedAssetsDirectory);
+  Atrum::Editor::EditorImportedAssetDropPolicyUi::DrawDropCollisionPolicyControls(
+      ui_);
   if (!ui_.recentImportedAssetPaths.empty()) {
     ImGui::Text("ドロップキュー: %zu 件（最新は末尾）",
                 ui_.recentImportedAssetPaths.size());

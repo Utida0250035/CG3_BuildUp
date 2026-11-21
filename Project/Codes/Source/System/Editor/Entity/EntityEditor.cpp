@@ -248,6 +248,10 @@ void EntityEditor::ProcessDroppedFileImports() {
   }
 
   Atrum::Editor::Import::EnsureImportedAssetsDirectoryExists();
+  Atrum::Editor::Import::SetImportedAssetCollisionPolicyForNextCopies(
+      ui_.importCollisionPolicy);
+  Atrum::Editor::Import::SetImportedAssetBatchNamePrefixForNextCopies(
+      ui_.importBatchNamePrefix);
 
   std::vector<std::string> importedPaths;
   importedPaths.reserve(dropped.size());
