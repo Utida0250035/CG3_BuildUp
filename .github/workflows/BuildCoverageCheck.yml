@@ -136,6 +136,9 @@ jobs:
       - name: Verify EntityEditor delete scene open successor
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_delete_scene_successor.py
 
+      - name: Verify EntityEditor create new scene without autosave
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_create_new_scene_no_autosave.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 
