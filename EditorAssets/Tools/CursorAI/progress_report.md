@@ -8585,3 +8585,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - シーン切替時の未保存確認（`GAP-Editor-EntityEditor-002`）
+
+---
+
+## セッション 2026-11-21 11:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-002`: シーン切替時の未保存確認（保存して開く／保存せず開く／キャンセル）
+- `EntityEditorSceneSwitchUnsavedPrompt`、dirty 追跡、`TryOpenSceneFromPath`
+- CI: `verify_entity_editor_scene_switch_unsaved.py`
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** 別シーンを開く前に編集内容を失わないよう確認する
+- **デバッグ:** DebugPlayArea scaffold のシーン生成後も同じ切替ポリシーを適用
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| EntityEditor 未保存確認 | 有効 | シーンの構成を保存することと、エディタ上でのプレイを可能にしてある |
+
+### 次 tick 候補
+
+- エディタメニューに機能検証シーン起動（`GAP-Editor-EditorEntityWorkbench-001`）

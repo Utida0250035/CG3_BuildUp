@@ -75,6 +75,7 @@ void EntityEditor::AddEmptyInstance() {
       static_cast<int>(scene_.instances.size()) - 1;
   ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
   ui_.requestApplyPreview = true;
+  MarkSceneDocumentDirty();
 }
 
 void EntityEditor::RemoveSelectedInstance() {
@@ -101,6 +102,7 @@ void EntityEditor::RemoveSelectedInstance() {
   }
   ClampSelectedInstanceIndex();
   ui_.requestApplyPreview = true;
+  MarkSceneDocumentDirty();
 }
 
 bool EntityEditor::SaveSelectedInstanceToPrefabPath(
@@ -153,6 +155,7 @@ bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
       static_cast<int>(scene_.instances.size()) - 1;
   ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
   ui_.requestApplyPreview = true;
+  MarkSceneDocumentDirty();
   return true;
 }
 
@@ -206,6 +209,7 @@ void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
   SyncAllEntityDefinitionTags(scene_);
   SyncTagCatalogFromInstances(scene_);
   ClampSelectedInstanceIndex();
+  ClearSceneDocumentDirty();
 }
 
 void EntityEditor::SaveToJsonPath(const std::string &jsonFilePath) {
@@ -213,6 +217,7 @@ void EntityEditor::SaveToJsonPath(const std::string &jsonFilePath) {
     RebuildEntityDefinitionTagHashes(instance.definition);
   }
   Json::JsonHandler::SaveToFile(jsonFilePath, scene_);
+  ClearSceneDocumentDirty();
 }
 
 bool EntityEditor::TickPendingRequests() {
@@ -263,6 +268,23 @@ void EntityEditor::CreateNewSceneFile() {
   ui_.selectedComponentIndex = 0;
   ui_.requestApplyPreview = true;
   ui_.requestSaveToDisk = true;
+  MarkSceneDocumentDirty();
+}
+
+bool EntityEditor::TryOpenSceneFromPath(const std::string &sceneJsonPath) {
+  if (sceneJsonPath.empty()) {
+    return false;
+  }
+  if (sceneJsonPath == ui_.jsonFilePath) {
+    ui_.selectedScenePath = sceneJsonPath;
+    return true;
+  }
+  if (sceneDocumentDirty_) {
+    ui_.pendingSceneSwitchPath = sceneJsonPath;
+    ui_.requestSceneSwitchUnsavedPrompt = true;
+    return false;
+  }
+  return OpenSceneFromPath(sceneJsonPath);
 }
 
 bool EntityEditor::OpenSceneFromPath(const std::string &sceneJsonPath) {

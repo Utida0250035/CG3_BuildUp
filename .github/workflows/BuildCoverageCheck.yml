@@ -100,6 +100,9 @@ jobs:
       - name: Verify Release startup BuildUp launch
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_release_startup_launch.py
 
+      - name: Verify EntityEditor scene switch unsaved prompt
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_scene_switch_unsaved.py
+
       - name: Verify EditorScenePlayRequest Path wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_play_request_path.py
 

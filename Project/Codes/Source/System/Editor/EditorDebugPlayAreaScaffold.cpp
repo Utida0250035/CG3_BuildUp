@@ -83,7 +83,7 @@ void EditorDebugPlayAreaScaffold::DrawProjectPanelControls(
         GenerateFromTemplate(nameBuffer, false);
     editor.Ui().importStatusMessage = gen.message;
     if (gen.success) {
-      editor.OpenSceneFromPath(gen.outputPath);
+      editor.TryOpenSceneFromPath(gen.outputPath);
     }
   }
   ImGui::SameLine();
@@ -91,7 +91,7 @@ void EditorDebugPlayAreaScaffold::DrawProjectPanelControls(
     const DebugPlayAreaScaffoldResult gen =
         GenerateFromTemplate(nameBuffer, false);
     if (gen.success) {
-      editor.OpenSceneFromPath(gen.outputPath);
+      editor.TryOpenSceneFromPath(gen.outputPath);
       EntityEditor::QueueEditorScenePlayViaBuildUp(editor.Ui());
       editor.Ui().importStatusMessage =
           DebugPlayAreaScaffoldGuidance::kPostGenerateStepsJa;
@@ -104,7 +104,7 @@ void EditorDebugPlayAreaScaffold::DrawProjectPanelControls(
     const DebugPlayAreaScaffoldResult gen =
         GenerateFromTemplate(nameBuffer, false);
     if (gen.success) {
-      editor.OpenSceneFromPath(gen.outputPath);
+      editor.TryOpenSceneFromPath(gen.outputPath);
       EntityEditor::QueueInEditorPlayRuntimeTabOnly(editor.Ui());
       editor.Ui().importStatusMessage =
           DebugPlayAreaScaffoldGuidance::kPostGenerateStepsJa;

@@ -667,6 +667,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneSwitchUnsavedPrompt.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpColliderAabb.cpp" />

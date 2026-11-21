@@ -49,6 +49,9 @@ struct UiState {
   /// シーン削除確認ポップアップを開く
   bool requestDeleteSceneConfirm = false;
   std::string pendingDeleteScenePath{};
+  /// 未保存のまま別シーンを開く確認
+  bool requestSceneSwitchUnsavedPrompt = false;
+  std::string pendingSceneSwitchPath{};
   /// 実行時ビューウィンドウへフォーカス（シーン実行後など）
   bool requestFocusRuntimeSceneView = false;
   /// 直近に Imported へコピーしたアセット（obj / png 等）
@@ -88,9 +91,14 @@ public:
   void LoadFromJsonPath(const std::string &jsonFilePath);
   void SaveToJsonPath(const std::string &jsonFilePath);
 
+  bool IsSceneDocumentDirty() const { return sceneDocumentDirty_; }
+  void MarkSceneDocumentDirty() { sceneDocumentDirty_ = true; }
+
   /// 新規シーン JSON を Scenes フォルダに作成して開く
   void CreateNewSceneFile();
-  /// 別シーン JSON を編集対象として開く
+  /// 別シーン JSON を編集対象として開く（未保存時は確認を挟む）
+  bool TryOpenSceneFromPath(const std::string &sceneJsonPath);
+  /// 未保存確認なしで開く（保存後・モーダル確定後）
   bool OpenSceneFromPath(const std::string &sceneJsonPath);
   /// ディスク上のシーン JSON を削除（編集中なら別シーンへ切替）
   bool DeleteSceneFile(const std::string &sceneJsonPath);
@@ -116,8 +124,11 @@ public:
   void ClampSelectedInstanceIndex();
 
 private:
+  void ClearSceneDocumentDirty() { sceneDocumentDirty_ = false; }
+
   UiState ui_{};
   EditorSceneDocument scene_{};
+  bool sceneDocumentDirty_ = false;
 };
 
 } // namespace Atrum::EntityEditor

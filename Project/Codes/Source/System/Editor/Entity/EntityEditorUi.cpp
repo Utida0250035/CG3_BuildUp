@@ -13,6 +13,7 @@
 #include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
 #include "Scene/SceneEntityEditorInEditorPlayQueue.h"
 #include "System/Editor/EditorDebugPlayAreaScaffold.h"
+#include "System/Editor/Entity/EntityEditorSceneSwitchUnsavedPrompt.h"
 #include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -684,6 +685,10 @@ void EntityEditor::DrawHierarchyPanel() {
     }
     ImGui::TreePop();
   }
+
+  if (ImGui::IsAnyItemDeactivatedAfterEdit()) {
+    MarkSceneDocumentDirty();
+  }
 }
 
 void EntityEditor::DrawProjectPanel() {
@@ -792,7 +797,7 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::Separator();
   if (!ui_.selectedScenePath.empty()) {
     if (ImGui::Button("シーンを開く")) {
-      OpenSceneFromPath(ui_.selectedScenePath);
+      TryOpenSceneFromPath(ui_.selectedScenePath);
     }
     ImGui::SameLine();
     if (ImGui::Button("シーンを削除")) {
@@ -801,6 +806,7 @@ void EntityEditor::DrawProjectPanel() {
   }
 
   DrawDeleteSceneConfirmPopup(*this);
+  DrawEntityEditorSceneSwitchUnsavedPrompt(*this);
 
   ImGui::Spacing();
   ImGui::TextUnformatted("プレハブ一覧 (Entity JSON)");
@@ -1128,6 +1134,7 @@ void EntityEditor::DrawInspectorPanel() {
 
   if (changed) {
     ui_.requestApplyPreview = true;
+    MarkSceneDocumentDirty();
   }
 }
 
@@ -1193,6 +1200,7 @@ void EntityEditor::DrawTagsPanel() {
 
   if (changedScene) {
     ui_.requestApplyPreview = true;
+    MarkSceneDocumentDirty();
   }
 }
 
