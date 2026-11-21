@@ -576,7 +576,7 @@
 - [x] インスペクタ変更はプレビューのみ更新し自動保存しない（gap: `GAP-Editor-EntityEditor-004`・Authoring・P1）
 - [x] AssetPath プレビューが Draw 分割を Data に内包（gap: `GAP-Editor-EditorSceneRuntime-005`・Authoring・P1）
 - [x] BuildEntities が camera.main 欠落を補わない（gap: `GAP-Editor-EditorSceneRuntime-007`・Debug・P1）
-- [ ] BuildPreviewScene がエディタ内ベクタのみ（gap: `GAP-Editor-EntityEditor-011`・Debug・P1）
+- [x] BuildPreviewScene がエディタ内ベクタのみ（gap: `GAP-Editor-EntityEditor-011`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: EntityEditorUi／インスペクタ・プレハブ・タグカタログ導線（在庫 92件・Authoring 中心）

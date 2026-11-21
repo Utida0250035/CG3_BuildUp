@@ -8955,3 +8955,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - BuildPreviewScene がエディタ内ベクタのみ（`GAP-Editor-EntityEditor-011`）
+
+---
+
+## セッション 2026-11-21 14:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-011`: `EntityEditorBuildPreviewSceneBuildUpParity` で BuildUp と同じタグ同期後に `BuildEntitiesFromSceneDocument`、PlayRequest と `sceneBuildUpLaunchPath` を同期
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** エディタプレビューと BuildUp 実行が同じ JSON→Entity 契約になる
+- **FeatureScene 検証:** プレビュー再構築のたびに実行用パスが PlayRequest に載る
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| BuildUp プレビュー接続 | 有効 | シーン構成をエディタ上プレイ試験できる |
+
+### 次 tick 候補
+
+- roadmap P1 ギャップスキャン追補または EntityEditor 節の次 `- [ ]`（ファイル出現順）

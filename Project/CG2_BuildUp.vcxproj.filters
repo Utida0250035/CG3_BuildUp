@@ -644,6 +644,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp" />

@@ -1,5 +1,6 @@
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
+#include "System/Editor/Entity/EntityEditorBuildPreviewSceneBuildUpParity.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -249,14 +250,8 @@ bool EntityEditor::TickPendingRequests() {
 }
 
 std::vector<std::unique_ptr<Entity>> EntityEditor::BuildPreviewScene() {
-  EditorSceneRuntimeBuildWarnings warnings;
-  warnings.Clear();
-  std::vector<std::unique_ptr<Entity>> entities =
-      BuildEntitiesFromSceneDocument(scene_, &warnings);
-  if (!warnings.lines.empty()) {
-    ui_.importStatusMessage = warnings.FormatForImportStatusMessage();
-  }
-  return entities;
+  return EntityEditorBuildPreviewSceneBuildUpParity::Build(
+      scene_, ui_, &ui_.importStatusMessage);
 }
 
 void EntityEditor::CreateNewSceneFile() {
