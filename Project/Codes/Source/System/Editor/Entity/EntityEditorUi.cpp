@@ -44,6 +44,8 @@
 #include "System/Editor/Entity/EntityEditorHierarchyDragDrop.h"
 #include "System/Editor/Entity/EntityEditorInspectorSceneJsonPathUi.h"
 #include "System/Editor/Entity/EntityEditorInspectorInstanceIdentityUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorTransformCopyPasteUi.h"
+#include "System/Editor/Entity/EntityEditorTransformCopyPaste.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -649,6 +651,31 @@ void DrawMultiInstanceBatchPanel(EntityEditor &editor,
     batchScaleFactor = 1.0f;
   }
 
+  ImGui::Separator();
+  if (ImGui::Button("先頭選択のトランスフォームをコピー")) {
+    if (!selection.empty() && selection.front() >= 0 &&
+        selection.front() < static_cast<int>(scene.instances.size())) {
+      const Math::TransformLH &source =
+          scene.instances[static_cast<size_t>(selection.front())]
+              .definition.initialTransform;
+      EntityEditorTransformCopyPaste::CopyInitialTransformToClipboard(ui,
+                                                                      source);
+      ui.importStatusMessage = "クリップボードへ初期トランスフォームをコピー";
+    }
+  }
+  ImGui::BeginDisabled(!ui.clipboardInitialTransform.has_value());
+  if (ImGui::Button("クリップボードから一括適用")) {
+    const int applied =
+        EntityEditorTransformCopyPaste::ApplyClipboardTransformToInstanceIndices(
+            editor, selection);
+    if (applied > 0) {
+      changed = true;
+      ui.importStatusMessage =
+          "初期トランスフォームを " + std::to_string(applied) + " 体へ適用";
+    }
+  }
+  ImGui::EndDisabled();
+
   static float positionOffset[3] = {0.0f, 0.0f, 0.0f};
   ImGui::InputFloat3("位置オフセット", positionOffset);
   if (ImGui::Button("位置オフセット一括適用")) {
@@ -1098,6 +1125,11 @@ void EntityEditor::DrawInspectorPanel() {
         transformBefore.quaternion.z != transformAfter.quaternion.z ||
         transformBefore.quaternion.w != transformAfter.quaternion.w) {
       changed = true;
+    }
+    bool transformClipboardChanged = false;
+    if (EntityEditorInspectorTransformCopyPasteUi::Draw(
+            *this, document.initialTransform, transformClipboardChanged)) {
+      changed |= transformClipboardChanged;
     }
   }
 

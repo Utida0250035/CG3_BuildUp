@@ -1,6 +1,7 @@
 #pragma once
 
 #include "System/Editor/Entity/EntityEditorDefinition.h"
+#include "Math/Transform.h"
 #include <memory>
 #include <optional>
 #include <string>
@@ -90,6 +91,8 @@ struct UiState {
   std::string newEntityTagName{};
   /// コンポーネント設定のコピー／ペースト用
   std::optional<ComponentSlot> clipboardComponentSlot{};
+  /// 初期トランスフォームのコピー／一括適用用
+  std::optional<Math::TransformLH> clipboardInitialTransform{};
   /// プレハブ「シーンへ追加」／一括配置の件数（1–256）
   int prefabSpawnBatchCount = 1;
   /// プレハブ複数配置時の X 間隔

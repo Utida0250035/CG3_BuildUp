@@ -97,6 +97,9 @@ jobs:
       - name: Verify inspector instance entity name split
         run: python3 EditorAssets/Tools/CursorAI/verify_inspector_instance_entity_name_split.py
 
+      - name: Verify transform copy batch apply
+        run: python3 EditorAssets/Tools/CursorAI/verify_transform_copy_batch_apply.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 
