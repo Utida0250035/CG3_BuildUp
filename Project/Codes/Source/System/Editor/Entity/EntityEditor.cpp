@@ -9,6 +9,7 @@
 #include "System/Editor/Entity/EntityEditorTickPendingRequests.h"
 #include "System/Editor/Entity/EntityEditorRestoreSelectionAfterSceneLoad.h"
 #include "System/Editor/Entity/EntityEditorDeleteSceneOpenSuccessor.h"
+#include "System/Editor/Entity/EntityEditorCreateNewSceneFile.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -187,24 +188,7 @@ std::vector<std::unique_ptr<Entity>> EntityEditor::BuildPreviewScene() {
 }
 
 void EntityEditor::CreateNewSceneFile() {
-  Atrum::Editor::Scene::EnsureScenesDirectoryExists();
-  const std::string path = Atrum::Editor::Scene::MakeUniqueSceneFilePath();
-
-  scene_ = EditorSceneDocument{};
-  scene_.sceneName = Atrum::Editor::Scene::SceneDisplayNameFromPath(path);
-  MergeTagCatalogFromRegistry(scene_);
-  SceneEntityInstance instance{};
-  instance.instanceName = "Entity_0";
-  instance.definition = MakeDefaultEntityDefinition("Entity_0");
-  scene_.instances = {std::move(instance)};
-
-  ui_.jsonFilePath = path;
-  ui_.selectedScenePath = path;
-  ui_.selectedInstanceIndex = 0;
-  ui_.selectedInstanceIndices = {0};
-  ui_.selectedComponentKind = ComponentSlotKind::Draw;
-  ui_.selectedComponentIndex = 0;
-  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+  EntityEditorCreateNewSceneFile::Create(*this);
 }
 
 bool EntityEditor::TryOpenSceneFromPath(const std::string &sceneJsonPath) {

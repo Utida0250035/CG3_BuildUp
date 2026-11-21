@@ -9292,3 +9292,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 新規作成が requestSaveToDisk 必須（roadmap 599 行）
+
+---
+
+## セッション 2026-11-21 17:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-015`（roadmap 行）: `EntityEditorCreateNewSceneFile` で新規シーンは **`NotifyPreviewOnly`**（`requestSaveToDisk` を立てない）でメモリ草案として試せるように変更
+
+### 推測した用途（§6.4）
+
+- **制作:** 保存前に複数案をエディタプレビューだけで試す
+- **Authoring:** Scenes 配下へ意図しない空 JSON が自動増殖しない
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 新規シーン草案 | 有効 | json シーンの作成／編集でファイル新規作成と内部編集の棲み分け |
+
+### 次 tick 候補
+
+- 起動設定前に SaveToJsonPath（roadmap 600 行）
