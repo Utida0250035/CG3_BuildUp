@@ -55,8 +55,9 @@ def main() -> int:
         if "EntityEditorDefaultParamsCmpCamera::Json" not in def_text:
             errors.append("DefaultParamsForType must use CmpCamera module")
         fj = def_text.split("void from_json(const nlohmann::json &j, ComponentSlot &slot)", 1)
-        if len(fj) < 2 or "NormalizeKnownComponentSlotParams" not in fj[1].split("void from_json", 1)[0]:
-            errors.append("ComponentSlot from_json must normalize params")
+        fj_body = fj[1].split("namespace {", 1)[0] if len(fj) >= 2 else ""
+        if "MergeParamsForRegisteredType" not in fj_body:
+            errors.append("ComponentSlot from_json must merge params with defaults")
     else:
         errors.append("missing EntityEditorDefinition.cpp")
 

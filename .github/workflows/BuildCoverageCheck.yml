@@ -31,6 +31,9 @@ jobs:
       - name: Verify CmpCamera default params on add
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_cmp_camera_default_params.py
 
+      - name: Verify ComponentSlot from_json params merge
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_from_json_params_merge.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

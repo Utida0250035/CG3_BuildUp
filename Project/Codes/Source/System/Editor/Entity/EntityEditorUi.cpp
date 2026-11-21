@@ -1167,7 +1167,8 @@ void EntityEditor::DrawInspectorPanel() {
                 typeComboListIndex)]];
         selected.kind = ui_.selectedComponentKind;
         selected.typeName = entry.typeName;
-        selected.params = DefaultParamsForType(entry.typeName);
+        selected.params =
+            MergeParamsForRegisteredType(entry.typeName, selected.params);
         changed = true;
         changedInComponentSectionBesidesAssetPath = true;
       }

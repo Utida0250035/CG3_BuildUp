@@ -172,8 +172,8 @@ void from_json(const nlohmann::json &j, ComponentSlot &slot) {
           TryDefaultKindForRegisteredType(slot.typeName)) {
     slot.kind = *registeredKind;
   }
-  slot.params = j.value("params", nlohmann::json::object());
-  NormalizeKnownComponentSlotParams(slot);
+  slot.params = MergeParamsForRegisteredType(
+      slot.typeName, j.value("params", nlohmann::json::object()));
 }
 
 namespace {

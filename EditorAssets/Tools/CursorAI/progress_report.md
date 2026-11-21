@@ -9680,3 +9680,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - from_json が params を丸ごと代入（roadmap 618 行）
+
+---
+
+## セッション 2026-11-21 21:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 618 行: **`MergeParamsForRegisteredType`** で `from_json` とコンポーネント型コンボ変更時に既定 params へ JSON を上書きマージ
+
+### 推測した用途（§6.4）
+
+- **Authoring:** テンプレ差替・部分 JSON の欠損キーを読み込み時に補完
+- **制作:** 型変更時も共通キー（色・速度など）を可能な限り維持
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| from_json params マージ | 有効 | コンポーネント構成 json 編集 |
+
+### 次 tick 候補
+
+- エンティティ複製用キーボードショートカットが無い（roadmap 621 行）

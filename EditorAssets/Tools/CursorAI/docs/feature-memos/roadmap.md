@@ -615,7 +615,7 @@
 - [x] 未登録コンポーネント種別が Draw 扱いになる
 - [x] コンポーネント設定のコピー／ペーストが無い
 - [x] CmpCamera 追加で params が空オブジェクト（spec: feature-memos/entity_camera_components.md）
-- [ ] from_json が params を丸ごと代入
+- [x] from_json が params を丸ごと代入
 
 ### EntityEditorShortcuts
 - [ ] エンティティ複製用キーボードショートカットが無い

@@ -5,27 +5,26 @@
 
 namespace Atrum::EntityEditor {
 
-void NormalizeKnownComponentSlotParams(ComponentSlot &slot) {
-  if (!EntityEditorKnownComponentRegistry::Contains(slot.typeName)) {
-    return;
-  }
-  const nlohmann::json defaults = DefaultParamsForType(slot.typeName);
-  if (!defaults.is_object() || defaults.empty()) {
-    return;
-  }
-  if (!slot.params.is_object()) {
-    slot.params = defaults;
-    return;
-  }
-  if (slot.params.empty()) {
-    slot.params = defaults;
-    return;
-  }
-  for (const auto &[key, value] : defaults.items()) {
-    if (!slot.params.contains(key)) {
-      slot.params[key] = value;
+nlohmann::json MergeParamsForRegisteredType(const std::string &typeName,
+                                            const nlohmann::json &incoming) {
+  if (!EntityEditorKnownComponentRegistry::Contains(typeName)) {
+    if (incoming.is_object()) {
+      return incoming;
     }
+    return nlohmann::json::object();
   }
+  nlohmann::json merged = DefaultParamsForType(typeName);
+  if (!incoming.is_object() || incoming.empty()) {
+    return merged;
+  }
+  for (const auto &[key, value] : incoming.items()) {
+    merged[key] = value;
+  }
+  return merged;
+}
+
+void NormalizeKnownComponentSlotParams(ComponentSlot &slot) {
+  slot.params = MergeParamsForRegisteredType(slot.typeName, slot.params);
 }
 
 } // namespace Atrum::EntityEditor
