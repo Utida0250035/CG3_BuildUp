@@ -527,7 +527,7 @@
 
 
 ### Development_opt
-- [ ] 本番相当プロファイル計測用の構成／手順が未定義
+- [x] 本番相当プロファイル計測用の構成／手順が未定義
 
 ### CG2_BuildUp
 - [x] Release リンク設定で GenerateDebugInformation が true

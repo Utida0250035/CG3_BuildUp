@@ -1,5 +1,7 @@
 # サブシステム別フレームプロファイラ
 
+本番相当との切り分け: `development_opt_profile.md`
+
 ## 用途
 
 - **DEVELOPMENT ビルド:** 1 フレーム内の CPU 区間（Process / Update / Draw / Present 前後）の当たりを付ける

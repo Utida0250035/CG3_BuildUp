@@ -8374,3 +8374,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - roadmap 先頭未完: 本番相当プロファイル計測（`Development_opt`）または `verify_config_matrix`
+
+---
+
+## セッション 2026-11-21 09:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `development_opt_profile.md`（DBG-Profiler-001・Development / Profile / Release の切り分け）
+- `buildDevelopmentProfile.cmd` … Development 構成で `ClCompile_Optimization=MinSpace`
+- `verify_development_opt_profile.py`、CI、`frame_profiler.md` リンク
+- roadmap `Development_opt` 行 `[x]`（`GAP-Ship-Development_opt-001`）
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** サブシステムプロファイラと Release スループットの二系統計測
+- **制作:** 最適化 OFF の日常ビルドと計測用ビルドの使い分け
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Development_opt | 有効 | 基本機能・描画エンジンの性能を配布前に切り分けて検証 |
+
+### 次 tick 候補
+
+- `verify_config_matrix`（コンパイル定義と Release 除外マトリクス）

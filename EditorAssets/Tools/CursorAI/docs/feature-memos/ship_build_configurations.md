@@ -13,6 +13,8 @@
 | 構成 | 用途 | 主要マクロ |
 |------|------|------------|
 | **Development\|x64** | エディタ日常・`buildDevelopment.cmd`・`DevelopmentBuild` | `NDEBUG` + `DEVELOPMENT` + `USE_IMGUI` |
+
+本番相当の計測手順（最適化 MinSpace オーバーライド）: `development_opt_profile.md` / `buildDevelopmentProfile.cmd`
 | **Debug\|x64** | MSVC Debug CRT・`DebugBuild`（最適化オフ・診断向け） | `_DEBUG` + `DEVELOPMENT` + `USE_IMGUI` + `MSVC_DEBUG_CONFIGURATION` |
 
 ## コード上の判定
