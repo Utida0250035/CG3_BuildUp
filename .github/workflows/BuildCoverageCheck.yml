@@ -49,11 +49,11 @@ jobs:
       - name: Verify subsystem frame profiler wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_subsystem_frame_profiler.py
 
-      - name: Verify ship vs debug compile configuration contract
-        run: python3 EditorAssets/Tools/CursorAI/verify_ship_debug_compile_diff.py
-
       - name: Verify development opt profile measurement procedure
         run: python3 EditorAssets/Tools/CursorAI/verify_development_opt_profile.py
+
+      - name: Verify compile and Release exclusion config matrix
+        run: python3 EditorAssets/Tools/CursorAI/verify_config_matrix.py
 
       - name: Verify buildDevelopment.cmd matches CI Development entry
         run: python3 EditorAssets/Tools/CursorAI/verify_build_development_ci_parity.py
@@ -66,15 +66,6 @@ jobs:
 
       - name: Verify Release smoke runbook documented
         run: python3 EditorAssets/Tools/CursorAI/verify_ship_smoke_runbook.py
-
-      - name: Verify editor sources excluded from Release build
-        run: python3 EditorAssets/Tools/CursorAI/verify_editor_sources_release_exclude.py
-
-      - name: Verify ForDebug sources excluded from Release build
-        run: python3 EditorAssets/Tools/CursorAI/verify_for_debug_sources_release_exclude.py
-
-      - name: Verify Release link does not generate PDB
-        run: python3 EditorAssets/Tools/CursorAI/verify_release_link_generate_debug_info.py
 
       - name: Verify runtime asset pack paths
         run: python3 EditorAssets/Tools/CursorAI/verify_asset_pack_paths.py

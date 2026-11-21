@@ -533,7 +533,7 @@
 - [x] Release リンク設定で GenerateDebugInformation が true
 
 ### verify_config_matrix
-- [ ] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）
+- [x] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）
 
 ### JsonTest
 - [ ] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない

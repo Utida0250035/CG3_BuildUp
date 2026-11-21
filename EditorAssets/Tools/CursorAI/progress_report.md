@@ -8404,3 +8404,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - `verify_config_matrix`（コンパイル定義と Release 除外マトリクス）
+
+---
+
+## セッション 2026-11-21 10:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `verify_config_matrix.py` … マクロ契約・Editor/ForDebug Release 除外・PDB 無効を一括実行
+- `cloud_build_vcxproj_check.md` に期待マトリクス表を追記
+- CI の個別 4 ステップを `verify_config_matrix` に集約
+- roadmap 当該行 `[x]`（`GAP-Infra-verify_config_matrix-001`）
+
+### 推測した用途（§6.4）
+
+- **CI/Ship:** 意図外マクロやエディタ TU の Release 混入を単一コマンドで検知
+- **Cloud Linux:** ビルド前に構成契約だけ先に検証
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| verify_config_matrix | 有効 | ゲーム配布時に開発専用コードを同梱しない |
+
+### 次 tick 候補
+
+- JsonTest デバッグパネル用 TU の Release 除外（roadmap `JsonTest`）
