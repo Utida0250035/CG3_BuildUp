@@ -2,6 +2,8 @@
 
 #include "System/Editor/EditorFrame.h"
 
+#include "System/Editor/EditorFrameFitCameraPerspectiveParams.h"
+
 #include "System/Editor/EditorFrameLightingDiagnostics.h"
 #include "System/Editor/EditorFrameStreamingDiagnostics.h"
 #include "System/Editor/EditorFrameFrameDeltaDiagnostics.h"
@@ -177,8 +179,11 @@ void FitCameraPerspectiveToViewport(Atrum::Camera *camera, const int width,
   }
   const float aspect =
       static_cast<float>(width) / static_cast<float>(height);
-  camera->SetPerspectiveFovMatrix(
-      Math::Matrix4x4::PerspectiveFov(0.5f, aspect, 0.125f, 128.0f));
+  const float fovY =
+      EditorFrameFitCameraPerspectiveParams::ResolveViewportPerspectiveFovY();
+  camera->SetPerspectiveFovMatrix(Math::Matrix4x4::PerspectiveFov(
+      fovY, aspect, EditorFrameFitCameraPerspectiveParams::kViewportNearClip,
+      EditorFrameFitCameraPerspectiveParams::kViewportFarClip));
   camera->UpdateMatrix();
 }
 

@@ -46,6 +46,9 @@ jobs:
       - name: Verify default dock layout versioning
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_entity_workbench_default_dock_layout.py
 
+      - name: Verify FitCameraPerspective FOV from tuning
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_frame_fit_camera_perspective_fov.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

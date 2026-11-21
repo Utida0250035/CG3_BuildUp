@@ -585,6 +585,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFitCameraPerspectiveParams.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchDefaultDockLayout.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1230,6 +1234,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFitCameraPerspectiveParams.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchDefaultDockLayout.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchPlayMenu.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchLightPostWindow.h" />

@@ -9815,3 +9815,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - FitCameraPerspectiveToViewport が FOV 0.5 固定（roadmap 629 行）
+
+---
+
+## セッション 2026-11-21 22:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 629 行: **`ResolveViewportPerspectiveFovY`** で `FitCameraPerspectiveToViewport` が `stage_view_camera_tuning.json` の FOV を反映
+
+### 推測した用途（§6.4）
+
+- **制作:** Stage camera tuning とシーンビュー投影の整合
+- **Authoring:** Game ビュー試写とエディタ内フレーミングの一致
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ビューポート FOV | 有効 | シーン構成の編集とプレビューでの視覚確認 |
+
+### 次 tick 候補
+
+- インポート直後パス表示のみで一括適用 UI が無い（roadmap 632 行）

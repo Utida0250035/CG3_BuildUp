@@ -626,7 +626,7 @@
 - [x] defaultLayoutBuilt が static で一回切り
 
 ### EditorFrame
-- [ ] FitCameraPerspectiveToViewport が FOV 0.5 固定（spec: feature-memos/odyssey_style_stage_camera.md）
+- [x] FitCameraPerspectiveToViewport が FOV 0.5 固定（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### EditorImportedAsset
 - [ ] インポート直後パス表示のみで一括適用 UI が無い
