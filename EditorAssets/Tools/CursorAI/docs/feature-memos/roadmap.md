@@ -651,7 +651,7 @@
 - [x] instanceName と entityName を別々に編集しうる
 - [x] トランスフォームのコピー／一括適用 UI が無い
 - [x] タグをすべて解除が選択 1 体のみ
-- [ ] コンポーネント削除が選択 1 件のみ
+- [x] コンポーネント削除が選択 1 件のみ
 - [ ] 実行順 InputInt が 1 スロットのみ
 - [ ] png・obj・gltf を外部ツールで開く操作がエディタに無い
 - [ ] CmpCamera が既知型だが未対応表示（spec: feature-memos/entity_camera_components.md）

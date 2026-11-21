@@ -10328,3 +10328,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - コンポーネント削除が選択 1 件のみ（roadmap 654 行）
+
+---
+
+## セッション 2026-11-22 03:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 654 行: **`EntityEditorRemoveComponentSlotsBatch`** とインスペクタの単体／同型一括／種別一括削除 UI
+
+### 推測した用途（§6.4）
+
+- **制作:** 誤追加した同型コンポーネントや種別丸ごとの整理を一括で実施
+- **Authoring:** 実行順リストからの選択削除に加え、型単位のクリーンアップ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| コンポーネント一括削除 | 有効 | エンティティのコンポーネント構成を json で編集 |
+
+### 次 tick 候補
+
+- 実行順 InputInt が 1 スロットのみ（roadmap 655 行）

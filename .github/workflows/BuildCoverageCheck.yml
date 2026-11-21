@@ -103,6 +103,9 @@ jobs:
       - name: Verify clear all tags multi select
         run: python3 EditorAssets/Tools/CursorAI/verify_clear_all_tags_multi_select.py
 
+      - name: Verify component remove batch
+        run: python3 EditorAssets/Tools/CursorAI/verify_component_remove_batch.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

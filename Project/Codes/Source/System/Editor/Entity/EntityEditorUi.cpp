@@ -47,6 +47,7 @@
 #include "System/Editor/Entity/EntityEditorInspectorTransformCopyPasteUi.h"
 #include "System/Editor/Entity/EntityEditorTransformCopyPaste.h"
 #include "System/Editor/Entity/EntityEditorClearAllEntityTags.h"
+#include "System/Editor/Entity/EntityEditorInspectorComponentRemoveBatchUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -1196,14 +1197,6 @@ void EntityEditor::DrawInspectorPanel() {
   std::vector<int> kindComponentIndices =
       CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
 
-  if (!kindComponentIndices.empty() &&
-      ImGui::Button("選択中のコンポーネントを削除")) {
-    document.components.erase(
-        document.components.begin() + ui_.selectedComponentIndex);
-    SyncSelectedComponentToKind(ui_, document);
-    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
-  }
-
   if (kindComponentIndices.empty()) {
     ImGui::TextUnformatted(
         "選択中の種別にコンポーネントがありません。「コンポーネントを追加」で追加してください。");
@@ -1231,6 +1224,25 @@ void EntityEditor::DrawInspectorPanel() {
     }
 
     ImGui::Separator();
+    const ComponentSlot &slotForRemove =
+        document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
+    bool componentRemoveChanged = false;
+    EntityEditorInspectorComponentRemoveBatchUi::Draw(*this, document,
+                                                      slotForRemove,
+                                                      componentRemoveChanged);
+    if (componentRemoveChanged) {
+      SyncSelectedComponentToKind(ui_, document);
+      changed = true;
+      kindComponentIndices =
+          CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
+    }
+
+    if (kindComponentIndices.empty() ||
+        ui_.selectedComponentIndex < 0 ||
+        ui_.selectedComponentIndex >=
+            static_cast<int>(document.components.size())) {
+      ImGui::TextDisabled("コンポーネントはすべて削除されました");
+    } else {
     ComponentSlot &selected =
         document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
 
@@ -1298,6 +1310,7 @@ void EntityEditor::DrawInspectorPanel() {
       } else {
         EntityEditorAuthoringDocumentEditNotify::Notify(*this);
       }
+    }
     }
   } else if (changed) {
     EntityEditorAuthoringDocumentEditNotify::Notify(*this);
