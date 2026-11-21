@@ -12,6 +12,7 @@
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
+#include "System/Editor/Prefab/PrefabAssetBatchSpawnUi.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
@@ -896,6 +897,7 @@ void EntityEditor::DrawProjectPanel() {
       ImGui::Button("シーンへ追加")) {
     AddInstanceFromPrefabPath(ui_.selectedPrefabPath);
   }
+  Atrum::Editor::Prefab::PrefabAssetBatchSpawnUi::DrawBatchSpawnControls(*this);
 }
 
 void EntityEditor::DrawInspectorPanel() {

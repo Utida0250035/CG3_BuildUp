@@ -9977,3 +9977,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - プレハブの複数一括配置 UI が無い（roadmap 639 行）
+
+---
+
+## セッション 2026-11-22 00:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 639 行: **`AppendFromPrefabFileBatch`** とプロジェクトパネル **一括配置（件数・X 間隔）**
+
+### 推測した用途（§6.4）
+
+- **制作:** 同プレハブを試配置区画にグリッド状に並べる
+- **Authoring:** 1 体ずつ「シーンへ追加」を繰り返す手間の削減
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレハブ一括配置 | 有効 | シーン構成の編集と反復配置 |
+
+### 次 tick 候補
+
+- プレハブ保存が EntityDefinition 単体 JSON（roadmap 640 行）
