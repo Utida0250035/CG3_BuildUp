@@ -10409,3 +10409,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - CmpCamera が既知型だが未対応表示（roadmap 657 行）
+
+---
+
+## セッション 2026-11-22 04:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 657 行: **`EntityEditorUiDrawComponentParamsCmpCamera`** で FOV／クリップ平面 UI を分離し、component 登録検証の正規表現を修正
+
+### 推測した用途（§6.4）
+
+- **制作:** MainCamera プレハブ量産時に JSON 直編集なしで投影パラメータを調整
+- **プレイ検証:** エディタプレビューと `EditorSceneRuntime` の `SetPerspectiveParams` 同期
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| CmpCamera インスペクタ | 有効 | コンポーネント構成を json で編集しエディタ上でプレイ試験 |
+
+### 次 tick 候補
+
+- 「オブジェクトを追加」は空のみ（roadmap 658 行）

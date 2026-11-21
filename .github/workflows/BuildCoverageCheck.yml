@@ -112,6 +112,9 @@ jobs:
       - name: Verify editor asset open external tool
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_asset_open_external_tool.py
 
+      - name: Verify CmpCamera inspector draw
+        run: python3 EditorAssets/Tools/CursorAI/verify_cmp_camera_inspector_draw.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

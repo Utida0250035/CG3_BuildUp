@@ -102,13 +102,18 @@ def extract_default_params_types(text: str) -> set[str]:
 
 def extract_draw_param_types(text: str) -> set[str]:
     match = re.search(
-        r"bool DrawComponentParams\(ComponentSlot &slot, const UiState &ui\) \{([\s\S]*?)^\}",
+        r"bool DrawComponentParams\(ComponentSlot &slot, (?:const )?UiState &ui\) \{([\s\S]*?)^\}",
         text,
         re.MULTILINE,
     )
     if not match:
         return set()
     return set(re.findall(r'if \(slot\.typeName == "(Cmp[^"]+)"\)', match.group(1)))
+
+
+def extract_draw_param_type_branches(text: str) -> set[str]:
+    """分割ドロワー用: ファイル全体から slot.typeName 分岐を拾う"""
+    return set(re.findall(r'if \(slot\.typeName == "(Cmp[^"]+)"', text))
 
 
 def main() -> int:
@@ -146,6 +151,16 @@ def main() -> int:
         / "Entity"
         / "EntityEditorUiDrawComponentParamsBallSplit.cpp"
     )
+    cmp_camera_ui_path = (
+        root
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "Entity"
+        / "EntityEditorUiDrawComponentParamsCmpCamera.cpp"
+    )
 
     for path in (def_path, registry_path, ui_path, runtime_path, slot_path):
         if not path.is_file():
@@ -168,7 +183,9 @@ def main() -> int:
     default_params = extract_default_params_types(def_text)
     draw_params = extract_draw_param_types(ui_text)
     if ball_ui_path.is_file():
-        draw_params |= extract_slot_has_types(read_text(ball_ui_path))
+        draw_params |= extract_draw_param_type_branches(read_text(ball_ui_path))
+    if cmp_camera_ui_path.is_file():
+        draw_params |= extract_draw_param_type_branches(read_text(cmp_camera_ui_path))
 
     errors: list[str] = []
     warnings: list[str] = []

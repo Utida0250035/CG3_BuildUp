@@ -4,6 +4,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
@@ -159,6 +160,11 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
   bool ballSplitChanged = false;
   if (TryDrawBallSplitComponentParams(slot, ballSplitChanged)) {
     return ballSplitChanged;
+  }
+
+  bool cmpCameraChanged = false;
+  if (TryDrawCmpCameraComponentParams(slot, cmpCameraChanged)) {
+    return cmpCameraChanged;
   }
 
   if (slot.typeName == "CmpRuntimeTexturePath") {
@@ -420,25 +426,6 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
             ? static_cast<int>(p.at("samplePaths").size())
             : 0;
     ImGui::Text("samplePaths: %d 件（JSON で編集）", sampleCount);
-    return changed;
-  }
-
-  if (slot.typeName == "CmpCamera") {
-    float fovY = p.value("perspectiveFovY", 0.5f);
-    if (ImGui::DragFloat("perspectiveFovY", &fovY, 0.01f, 0.1f, 2.5f)) {
-      p["perspectiveFovY"] = fovY;
-      changed = true;
-    }
-    float nearClip = p.value("nearClip", 0.125f);
-    if (ImGui::DragFloat("nearClip", &nearClip, 0.01f, 0.01f, 8.0f)) {
-      p["nearClip"] = nearClip;
-      changed = true;
-    }
-    float farClip = p.value("farClip", 128.0f);
-    if (ImGui::DragFloat("farClip", &farClip, 1.0f, 1.0f, 512.0f)) {
-      p["farClip"] = farClip;
-      changed = true;
-    }
     return changed;
   }
 
