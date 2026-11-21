@@ -53,13 +53,35 @@ def main() -> int:
         if "kDebugPlayAreaFeatureTestScene" not in canon:
             errors.append("canonical header must use kDebugPlayAreaFeatureTestScene")
 
-    for path, label in ((HOTKEYS_CPP, "F2"), (WORKBENCH_CPP, "debug menu")):
+    LAUNCH_CPP = (
+        ROOT
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "EditorEntityWorkbenchFeatureTestMenuLaunch.cpp"
+    )
+    if not LAUNCH_CPP.is_file():
+        errors.append("missing EditorEntityWorkbenchFeatureTestMenuLaunch.cpp")
+    else:
+        launch_text = LAUNCH_CPP.read_text(encoding="utf-8", errors="replace")
+        if "DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath" not in launch_text:
+            errors.append("menu launch helper must use canonical SceneJsonPath()")
+
+    for path, label in ((HOTKEYS_CPP, "F2"), (WORKBENCH_CPP, "workbench")):
         if not path.is_file():
             errors.append(f"missing {path.name}")
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        if "DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath" not in text:
-            errors.append(f"{label}: must launch canonical SceneJsonPath()")
+        if "QueueFeatureVerificationSceneBuildUp" not in text and label == "workbench":
+            errors.append("workbench must call QueueFeatureVerificationSceneBuildUp")
+        if label == "workbench" and 'BeginMenu("エディタ")' in text:
+            editor_block = text.split('BeginMenu("エディタ")', 1)[1].split("ImGui::EndMenu()", 1)[
+                0
+            ]
+            if "機能検証シーン" not in editor_block:
+                errors.append('エディタ menu must expose FeatureTest scene launch')
         if "kDebugPlayAreaTemplateScene" in text and label == "F2":
             errors.append("F2 must not launch kDebugPlayAreaTemplateScene")
 

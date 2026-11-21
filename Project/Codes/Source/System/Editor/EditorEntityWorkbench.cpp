@@ -10,6 +10,7 @@
 #include "System/Editor/Camera/StageViewCameraTuning.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/EditorDebugPlayAreaCombatBoundsSandbox.h"
+#include "System/Editor/EditorEntityWorkbenchFeatureTestMenuLaunch.h"
 #include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -140,6 +141,9 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     if (ImGui::MenuItem("パーティクルエディタ")) {
       ui.requestOpenParticleEditor = true;
     }
+    if (ImGui::MenuItem("機能検証シーン (FeatureTest / SceneBuildUp)")) {
+      QueueFeatureVerificationSceneBuildUp(ui);
+    }
     if (ImGui::MenuItem("スクリプト")) {
       ImGui::SetWindowFocus("スクリプト");
     }
@@ -153,9 +157,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     EditorFrameStreamingDiagnostics::DrawMenuItems();
     EditorFrame::Instance().DrawRenderDiagnosticsMenuItems();
     if (ImGui::MenuItem("機能検証シーン (FeatureTest 正本)")) {
-      ui.sceneBuildUpLaunchPath =
-          DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
-      ui.requestLaunchSceneBuildUp = true;
+      QueueFeatureVerificationSceneBuildUp(ui);
     }
     if (ImGui::MenuItem("StageBounds 検証 (combat_bounds_sandbox)")) {
       ui.sceneBuildUpLaunchPath = DebugPlayAreaCombatBoundsSandbox::SceneJsonPath();

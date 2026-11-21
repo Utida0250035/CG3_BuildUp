@@ -649,6 +649,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />

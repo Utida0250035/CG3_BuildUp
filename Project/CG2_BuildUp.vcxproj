@@ -589,6 +589,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1025,6 +1030,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.h" />
     <ClInclude Include="Codes\Include\System\Editor\Camera\StageViewCameraTuning.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeFunctionalViewDraw.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />

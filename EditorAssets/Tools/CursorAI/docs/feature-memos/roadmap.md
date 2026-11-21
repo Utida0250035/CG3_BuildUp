@@ -564,7 +564,7 @@
 - [x] カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装（gap: `GAP-Editor-StageViewCameraTuning-001`・Authoring・P1）
 - [x] DebugPlayArea 用の EditorAssets パス定数が無い（gap: `GAP-Editor-EditorAssetsPaths-001`・Debug・P1）
 - [x] シーン切替時に未保存確認・自動保存が無い（gap: `GAP-Editor-EntityEditor-002`・Authoring・P1）
-- [ ] エディタメニューに機能検証シーン起動が無い（gap: `GAP-Editor-EditorEntityWorkbench-001`・Debug・P1）
+- [x] エディタメニューに機能検証シーン起動が無い（gap: `GAP-Editor-EditorEntityWorkbench-001`・Debug・P1）
 - [ ] テスト再生エリア JSON がエディタのシーン一覧に出ない（gap: `GAP-Editor-EntityEditorUi-004`・Debug・P1）
 - [ ] スロット種別不一致のコンポーネントが無警告でスキップされる（gap: `GAP-Editor-EditorSceneRuntime-002`・Authoring・P1）
 - [ ] エディットビューに配置用ギズモ／ドラッグ操作が無い（gap: `GAP-Editor-SceneEntityEditor-002`・Authoring・P1）

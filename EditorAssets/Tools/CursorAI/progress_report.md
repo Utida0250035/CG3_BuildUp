@@ -8614,3 +8614,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - エディタメニューに機能検証シーン起動（`GAP-Editor-EditorEntityWorkbench-001`）
+
+---
+
+## セッション 2026-11-21 11:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EditorEntityWorkbench-001`: 「エディタ」メニューから FeatureTest 正本の SceneBuildUp 起動
+- `EditorEntityWorkbenchFeatureTestMenuLaunch` でデバッグメニューと共通化
+- `verify_feature_test_scene_canonical.py` にエディタメニュー検査を追加
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** F2 以外でもメニューから最小構成のランタイム機能検証へ遷移
+- **制作:** パーティクルエディタと同列のエディタ導線で検証シーンにアクセス
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| エディタメニュー機能検証 | 有効 | シーンの構成を保存し、エディタ上プレイと配布ランタイムプレイを可能に |
+
+### 次 tick 候補
+
+- テスト再生エリア JSON がエディタのシーン一覧に出ない（`GAP-Editor-EntityEditorUi-004`）
