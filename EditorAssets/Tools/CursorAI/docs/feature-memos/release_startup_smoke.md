@@ -1,5 +1,7 @@
 # Release 起動スモーク
 
+人手向けの全体手順は **`smoke_runbook.md`**（ルート README からリンク）。
+
 ## 用途
 
 - **CI:** `ReleaseBuild.yml` で MSBuild 成功後、exe が数フレーム起動できるか確認

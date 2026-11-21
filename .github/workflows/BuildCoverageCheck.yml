@@ -61,6 +61,9 @@ jobs:
       - name: Verify Release startup smoke CI wiring
         run: python3 EditorAssets/Tools/CursorAI/verify_release_startup_smoke_ci.py
 
+      - name: Verify Release smoke runbook documented
+        run: python3 EditorAssets/Tools/CursorAI/verify_ship_smoke_runbook.py
+
       - name: Verify editor sources excluded from Release build
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_sources_release_exclude.py
 

@@ -8281,3 +8281,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Release 向け最小起動スモーク手順書（`GAP-Ship-smoke_runbook-001`）
+
+---
+
+## セッション 2026-11-21 09:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- `smoke_runbook.md`（Release ビルド・自動／手動スモーク・切り分け）
+- ルート `README.md` から手順書と `runReleaseStartupSmoke.ps1` へリンク
+- `verify_ship_smoke_runbook.py`、CI 追加
+- roadmap 当該行 `[x]`
+
+### 推測した用途（§6.4）
+
+- **配布:** 人手で Title 表示まで確認する共有手順
+- **Ship:** CI スモークとローカル手順の対応付け
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| smoke_runbook | 有効 | ランタイムテンプレート exe とアセットを同梱してゲームとして動かせる |
+
+### 次 tick 候補
+
+- ForDebug 系 cpp の Release リンク除外（`GAP-Ship-ForDebugSources-001`）
