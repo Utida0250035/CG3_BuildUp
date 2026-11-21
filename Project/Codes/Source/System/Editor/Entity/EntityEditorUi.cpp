@@ -808,7 +808,13 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::TextUnformatted("ファイルドロップ（obj / png 等）");
   ImGui::TextDisabled("ウィンドウへドロップ → %s",
                       Atrum::Editor::Import::kImportedAssetsDirectory);
-  if (!ui_.lastImportedAssetPath.empty()) {
+  if (!ui_.recentImportedAssetPaths.empty()) {
+    ImGui::Text("ドロップキュー: %zu 件（最新は末尾）",
+                ui_.recentImportedAssetPaths.size());
+    for (const std::string &importedPath : ui_.recentImportedAssetPaths) {
+      ImGui::BulletText("%s", importedPath.c_str());
+    }
+  } else if (!ui_.lastImportedAssetPath.empty()) {
     ImGui::TextWrapped("直近: %s", ui_.lastImportedAssetPath.c_str());
   }
   if (!ui_.importStatusMessage.empty()) {

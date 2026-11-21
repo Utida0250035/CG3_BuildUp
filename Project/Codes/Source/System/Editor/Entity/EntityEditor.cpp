@@ -3,6 +3,7 @@
 #include "System/Editor/Entity/EntityEditorBuildPreviewSceneBuildUpParity.h"
 #include "System/Editor/Entity/EntityEditorSceneDocumentLoadFromPath.h"
 #include "System/Editor/Entity/EntityEditorDroppedImportSpawnSceneInstances.h"
+#include "System/Editor/Entity/EntityEditorDroppedImportPathQueue.h"
 #include "System/Editor/Entity/EntityEditorPrefabSpawnFirstInstanceRoot.h"
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 #include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
@@ -258,9 +259,10 @@ void EntityEditor::ProcessDroppedFileImports() {
       continue;
     }
 
-    ui_.lastImportedAssetPath = dest;
     importedPaths.push_back(dest);
   }
+
+  EntityEditorDroppedImportPathQueue::RecordBatch(ui_, importedPaths);
 
   const int spawned =
       EntityEditorDroppedImportSpawnSceneInstances::AppendFromImportedAssetPaths(

@@ -599,7 +599,7 @@
 - [x] 新規作成が requestSaveToDisk 必須
 - [x] 起動設定前に SaveToJsonPath
 - [x] プレハブ出力が Definition のみ
-- [ ] ループ内で lastImported が上書き
+- [x] ループ内で lastImported が上書き
 - [ ] インポート後プレビュー再適用なし
 
 ### EditorSceneRuntime

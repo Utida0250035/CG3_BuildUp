@@ -9375,3 +9375,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - ループ内で lastImported が上書き（roadmap 602 行）
+
+---
+
+## セッション 2026-11-21 18:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-017`（roadmap 行）: `EntityEditorDroppedImportPathQueue` で複数ドロップの **Imported パスを `recentImportedAssetPaths` に一括記録**（ループ内の `lastImported` 上書きを廃止）
+- UI にドロップキュー一覧を表示。`lastImportedAssetPath` は末尾（最新）を維持
+
+### 推測した用途（§6.4）
+
+- **制作:** 同時ドロップした obj/png すべてを確認し、インスペクタの「直近ドロップ適用」と併用
+- **Authoring:** AUT-AssetLoop 一括インポートの可視化
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ドロップキュー | 有効 | 外部ツール連携用アセット（obj/png）の取り込みを把握しやすくする |
+
+### 次 tick 候補
+
+- インポート後プレビュー再適用なし（roadmap 603 行）
