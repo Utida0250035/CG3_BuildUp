@@ -9009,4 +9009,4 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 
 ### 次 tick 候補
 
-- ProcessDroppedFileImports が Entities 生成まで繋がない（roadmap EntityEditor 
+- ProcessDroppedFileImports が Entities 生成まで繋がない（roadmap EntityEditor 節）
