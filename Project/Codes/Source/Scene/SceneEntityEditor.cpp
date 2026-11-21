@@ -3,6 +3,7 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/EditorSceneRuntimeFunctionalViewDraw.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
+#include "Scene/SceneEntityEditorPreviewBuildUpParityRebuild.h"
 #endif
 
 #include "Camera/Camera.h"
@@ -137,7 +138,8 @@ void SceneEntityEditor::RebuildPreviewScene() {
   if (!editor_) {
     return;
   }
-  previewEntities_ = editor_->BuildPreviewScene();
+  previewEntities_ =
+      RebuildPreviewEntitiesViaBuildUpParity(*editor_);
   SetupPreviewCamera();
 }
 

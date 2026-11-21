@@ -580,7 +580,7 @@
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: EntityEditorUi／インスペクタ・プレハブ・タグカタログ導線（在庫 92件・Authoring 中心）
-- [ ] SceneEntityEditor プレビューと本番 SceneBuildUp 経路の差分
+- [x] SceneEntityEditor プレビューと本番 SceneBuildUp 経路の差分
   - 正本: `../implementation_gaps.md`（Area=Editor）
 
 

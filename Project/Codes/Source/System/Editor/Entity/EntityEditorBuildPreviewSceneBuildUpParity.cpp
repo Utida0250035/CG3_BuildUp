@@ -2,10 +2,8 @@
 
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
 #include "Scene/SceneBuildUpSceneDocumentTagCatalog.h"
-#include "System/Editor/Entity/EntityEditorDefinition.h"
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
-#include "System/Editor/Scene/EditorSceneRuntime.h"
 
 namespace Atrum::EntityEditor::EntityEditorBuildPreviewSceneBuildUpParity {
 
@@ -15,13 +13,10 @@ Build(const EditorSceneDocument &document, EntityEditorUi &ui,
   EditorSceneDocument buildDocument = document;
   SceneBuildUpSceneDocumentTagCatalog::ApplyAfterJsonLoad(buildDocument);
 
-  EditorSceneRuntimeBuildWarnings warnings;
-  warnings.Clear();
   std::vector<std::unique_ptr<Entity>> entities =
-      BuildEntitiesFromSceneDocument(buildDocument, &warnings);
-
+      SceneBuildUpSceneDocumentLoad::BuildEntities(buildDocument);
   if (importStatusMessageOut != nullptr) {
-    *importStatusMessageOut = warnings.FormatForImportStatusMessage();
+    importStatusMessageOut->clear();
   }
 
   const std::string playPath =

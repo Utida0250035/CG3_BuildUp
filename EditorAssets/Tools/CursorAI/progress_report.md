@@ -9430,3 +9430,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EntityEditor 節は 603 まで完了。次はファイル出現順: SceneEntityEditor プレビューと本番 SceneBuildUp 経路の差分（roadmap 583 行）または EditorSceneRuntime 606 行
+
+---
+
+## セッション 2026-11-21 19:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 583 行: `EntityEditorBuildPreviewSceneBuildUpParity` の実体生成を **`SceneBuildUpSceneDocumentLoad::BuildEntities` に統一**（本番 SceneBuildUp と同一関数）
+- `SceneEntityEditorPreviewBuildUpParityRebuild` 経由で `RebuildPreviewScene` が BuildUp パリティ経路であることを明示
+- verify: `verify_scene_entity_editor_preview_buildup_parity.py`、既存 parity verify を `BuildEntities` 参照に更新
+
+### 推測した用途（§6.4）
+
+- **制作:** エディタ内プレビューと BuildUp プレイでエンティティ構成の乖離を抑える
+- **デバッグ:** シーン JSON 編集の見た目が本番ロード経路と一致しやすくする
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレビュー／BuildUp 経路 | 有効 | エディタ上プレイとランタイム環境上プレイの流れを整合 |
+
+### 次 tick 候補
+
+- EntityHasComponentForSlot が Mesh／Billboard を認識しない（roadmap 606 行）

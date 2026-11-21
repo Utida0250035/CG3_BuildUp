@@ -29,7 +29,7 @@ def main() -> int:
         text = PARITY.read_text(encoding="utf-8", errors="replace")
         for needle in (
             "SceneBuildUpSceneDocumentTagCatalog::ApplyAfterJsonLoad",
-            "BuildEntitiesFromSceneDocument",
+            "SceneBuildUpSceneDocumentLoad::BuildEntities",
             "StageEditorPlayScenePath",
             "InEditorRuntimePreview",
             "sceneBuildUpLaunchPath",
