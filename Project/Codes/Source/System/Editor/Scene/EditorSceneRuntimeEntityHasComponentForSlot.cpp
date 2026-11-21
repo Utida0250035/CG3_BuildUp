@@ -17,8 +17,16 @@
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpRuntimeTexturePath.h"
+#include "System/Entity/Components/CmpChildEntitys.h"
+#include "System/Entity/Components/CmpDirection.h"
+#include "System/Entity/Components/CmpHealthHit.h"
+#include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Components/CmpLuaDraw.h"
 #include "System/Entity/Components/CmpLuaUpd.h"
+#include "System/Entity/Components/CmpParry.h"
+#include "System/Entity/Components/CmpSwing.h"
+#include "System/Playable/CmpDrawPlayerParryField.h"
+#include "System/Playable/CmpMoveByInput.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
 
@@ -43,6 +51,9 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "CmpLuaDraw") {
       return entity.HasDrawCmp<CmpLuaDraw>();
+    }
+    if (slot.typeName == "CmpDrawPlayerParryField") {
+      return entity.HasDrawCmp<Player::CmpDrawPlayerParryField>();
     }
   }
   if (slot.kind == ComponentSlotKind::Upd) {
@@ -76,6 +87,24 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpLuaUpd") {
       return entity.HasUpdCmp<CmpLuaUpd>();
     }
+    if (slot.typeName == "CmpMoveByInput2D") {
+      return entity.HasUpdCmp<Player::CmpMoveByInput2D>();
+    }
+    if (slot.typeName == "CmpLhRigidBody") {
+      return entity.HasUpdCmp<CmpLhRigidBody>();
+    }
+    if (slot.typeName == "CmpHealthHit") {
+      return entity.HasUpdCmp<CmpHealthHit>();
+    }
+    if (slot.typeName == "CmpSwing") {
+      return entity.HasUpdCmp<CmpSwing>();
+    }
+    if (slot.typeName == "CmpChildEntitys") {
+      return entity.HasUpdCmp<CmpChildEntitys>();
+    }
+    if (slot.typeName == "CmpInput") {
+      return false;
+    }
   }
   if (slot.kind == ComponentSlotKind::Data) {
     if (slot.typeName == "CmpEditorAssetPath") {
@@ -86,6 +115,12 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "CmpColliderAabb") {
       return entity.HasDataCmp<CmpColliderAabb>();
+    }
+    if (slot.typeName == "CmpDirection") {
+      return entity.HasDataCmp<CmpDirection>();
+    }
+    if (slot.typeName == "CmpParry") {
+      return entity.HasDataCmp<CmpParry>();
     }
   }
   return false;

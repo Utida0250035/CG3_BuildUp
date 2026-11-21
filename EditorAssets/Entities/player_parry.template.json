@@ -1,0 +1,22 @@
+{
+  "entityName": "player_parry",
+  "tags": ["player"],
+  "initialTransform": {
+    "translate": { "x": -8.0, "y": -3.0, "z": 0.0 },
+    "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 },
+    "scale": { "x": 1.0, "y": 1.0, "z": 1.0 }
+  },
+  "components": [
+    { "kind": "Upd", "typeName": "CmpInput", "params": {} },
+    { "kind": "Data", "typeName": "CmpDirection", "params": { "direction": { "x": 1, "y": 0, "z": 0 } } },
+    { "kind": "Upd", "typeName": "CmpLhRigidBody", "params": { "gravity": { "x": 0, "y": -45, "z": 0 } } },
+    { "kind": "Upd", "typeName": "CmpHitSphere", "params": { "isActive": true, "spheres": [{ "localOffset": { "x": 0, "y": 0, "z": 0 }, "radius": 0.5 }] } },
+    { "kind": "Upd", "typeName": "CmpHealthHit", "params": { "hurterRoles": ["enemy", "enemyWeapon"], "initialHealthCount": 5, "invincibleTime": 2.0 } },
+    { "kind": "Draw", "typeName": "CmpMesh", "params": { "radius": 0.5, "color": { "x": 0, "y": 0, "z": 0, "w": 1 } } },
+    { "kind": "Draw", "typeName": "CmpDrawPlayerParryField", "params": {} },
+    { "kind": "Data", "typeName": "CmpParry", "params": { "autoCreateParryWeapon": true } },
+    { "kind": "Upd", "typeName": "CmpChildEntitys", "params": {} },
+    { "kind": "Upd", "typeName": "CmpSwing", "params": { "pivotInstanceName": "WeaponPivot" } },
+    { "kind": "Upd", "typeName": "CmpMoveByInput2D", "params": { "directionMarkerSideOffset": 0.65 } }
+  ]
+}

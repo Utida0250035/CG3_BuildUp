@@ -145,6 +145,43 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
     return {{"scriptPath", "Assets/Scripts/Components/Draw/example_draw.lua"},
             {"drawCmpGroup", "NONE"}};
   }
+  if (typeName == "CmpInput") {
+    return {{"note",
+             "シングルトン CmpInput（PlayInput）。Entity には付かないメタスロット"}};
+  }
+  if (typeName == "CmpMoveByInput2D") {
+    return {{"directionMarkerSideOffset", 0.65f},
+            {"directionMarkerForwardInstance", ""},
+            {"directionMarkerRearInstance", ""}};
+  }
+  if (typeName == "CmpDrawPlayerParryField") {
+    return {{"radius", 2.0f},
+            {"color", Math::Vector4{0.42f, 0.88f, 1.0f, 0.38f}}};
+  }
+  if (typeName == "CmpDirection") {
+    return {{"direction", Math::Vector3{1.0f, 0.0f, 0.0f}}};
+  }
+  if (typeName == "CmpLhRigidBody") {
+    return {{"gravity", Math::Vector3{0.0f, -45.0f, 0.0f}},
+            {"isUseGravity", true},
+            {"isUseSpaceEnd", true}};
+  }
+  if (typeName == "CmpHealthHit") {
+    return {{"hurterRoles", nlohmann::json::array({"enemy", "enemyWeapon"})},
+            {"initialHealthCount", 5},
+            {"invincibleTime", 2.0f}};
+  }
+  if (typeName == "CmpSwing") {
+    return {{"swingSpeed", 3.141592653589793f * 8.0f},
+            {"swingDuration", 0.25f},
+            {"pivotInstanceName", ""}};
+  }
+  if (typeName == "CmpChildEntitys") {
+    return nlohmann::json::object();
+  }
+  if (typeName == "CmpParry") {
+    return {{"autoCreateParryWeapon", true}};
+  }
   return nlohmann::json::object();
 }
 

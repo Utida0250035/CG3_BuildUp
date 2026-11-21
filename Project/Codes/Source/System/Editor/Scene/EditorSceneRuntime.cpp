@@ -8,6 +8,7 @@
 #include "System/Editor/Scene/EditorSceneRuntimeEntityHasComponentForSlot.h"
 #include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
 #include "System/Editor/EditorSceneRuntimeInstanceNamePolicy.h"
+#include "System/Editor/Scene/EditorSceneRuntimePlayerComponentPostBuild.h"
 
 #include "Camera/StageViewFramingBounds.h"
 #include "Engine/AtrumEngine.h"
@@ -27,9 +28,19 @@
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
+#include "System/Entity/Components/CmpChildEntitys.h"
+#include "System/Entity/Components/CmpDirection.h"
+#include "System/Entity/Components/CmpHealthHit.h"
+#include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Components/CmpLuaDraw.h"
 #include "System/Entity/Components/CmpLuaUpd.h"
+#include "System/Entity/Components/CmpParry.h"
+#include "System/Entity/Components/CmpSwing.h"
 #include "System/Entity/Components/CmpScroll.h"
+#include "System/Entity/EntityTagRegistry.h"
+#include "System/Playable/CmpDrawPlayerParryField.h"
+#include "System/Playable/CmpInput.h"
+#include "System/Playable/CmpMoveByInput.h"
 #include "System/Entity/Entity.h"
 #include <algorithm>
 #include <fstream>
@@ -133,6 +144,43 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   if (slot.typeName == "CmpColliderAabb" &&
       slot.kind == ComponentSlotKind::Data) {
     entity.AddDataCmp<CmpColliderAabb>();
+    return true;
+  }
+  if (slot.typeName == "CmpInput" && slot.kind == ComponentSlotKind::Upd) {
+    Player::CmpInput::Instance()->ResolveDependence();
+    return true;
+  }
+  if (slot.typeName == "CmpMoveByInput2D" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<Player::CmpMoveByInput2D>();
+    return true;
+  }
+  if (slot.typeName == "CmpDrawPlayerParryField" &&
+      slot.kind == ComponentSlotKind::Draw) {
+    entity.AddDrawCmp<Player::CmpDrawPlayerParryField>();
+    return true;
+  }
+  if (slot.typeName == "CmpDirection" && slot.kind == ComponentSlotKind::Data) {
+    entity.AddDataCmp<CmpDirection>();
+    return true;
+  }
+  if (slot.typeName == "CmpLhRigidBody" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpLhRigidBody>();
+    return true;
+  }
+  if (slot.typeName == "CmpHealthHit" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpHealthHit>();
+    return true;
+  }
+  if (slot.typeName == "CmpSwing" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpSwing>();
+    return true;
+  }
+  if (slot.typeName == "CmpChildEntitys" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpChildEntitys>();
+    return true;
+  }
+  if (slot.typeName == "CmpParry" && slot.kind == ComponentSlotKind::Data) {
+    entity.AddDataCmp<CmpParry>();
     return true;
   }
   if (slot.typeName == "CmpLuaUpd" && slot.kind == ComponentSlotKind::Upd) {
@@ -429,6 +477,95 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     return;
   }
 
+  if (slot.typeName == "CmpDirection") {
+    if (!entity.HasDataCmp<CmpDirection>()) {
+      return;
+    }
+    CmpDirection *cmp = entity.GetDataCmp<CmpDirection>();
+    cmp->SetDirection(p.value("direction", Math::Vector3{1.0f, 0.0f, 0.0f}));
+    return;
+  }
+
+  if (slot.typeName == "CmpLhRigidBody") {
+    if (!entity.HasUpdCmp<CmpLhRigidBody>()) {
+      return;
+    }
+    CmpLhRigidBody *cmp = entity.GetUpdCmp<CmpLhRigidBody>();
+    cmp->SetGravity(p.value("gravity", Math::Vector3{0.0f, -45.0f, 0.0f}));
+    cmp->SetIsUseGravity(p.value("isUseGravity", true));
+    cmp->SetIsUseSpaceEnd(p.value("isUseSpaceEnd", true));
+    return;
+  }
+
+  if (slot.typeName == "CmpHealthHit") {
+    if (!entity.HasUpdCmp<CmpHealthHit>()) {
+      return;
+    }
+    CmpHealthHit *cmp = entity.GetUpdCmp<CmpHealthHit>();
+    EntityTagRegistry::Instance().EnsureLoaded();
+    if (p.contains("hurterTagHashes") && p.at("hurterTagHashes").is_array()) {
+      cmp->SetHurterTagHashes(p.at("hurterTagHashes").get<std::vector<uint64_t>>());
+    } else if (p.contains("hurterRoles") && p.at("hurterRoles").is_array()) {
+      std::vector<uint64_t> hashes{};
+      for (const nlohmann::json &role : p.at("hurterRoles")) {
+        if (!role.is_string()) {
+          continue;
+        }
+        hashes.push_back(
+            EntityTagRegistry::Instance().HashForRole(role.get<std::string>()));
+      }
+      cmp->SetHurterTagHashes(hashes);
+    } else {
+      cmp->SetHurterTagHashes(
+          EntityTagRegistry::Instance().PlayerDamageHurterTagHashes());
+    }
+    cmp->SetInitialHealthCount(p.value("initialHealthCount", 5u));
+    cmp->SetInvincibleTime(
+        p.value("invincibleTime", kPlayerDamageInvincibleSeconds));
+    return;
+  }
+
+  if (slot.typeName == "CmpDrawPlayerParryField") {
+    if (!entity.HasDrawCmp<Player::CmpDrawPlayerParryField>()) {
+      return;
+    }
+    Player::CmpDrawPlayerParryField *cmp =
+        entity.GetDrawCmp<Player::CmpDrawPlayerParryField>();
+    cmp->SetRadius(p.value("radius", 2.0f));
+    cmp->SetColor(
+        p.value("color", Math::Vector4{0.42f, 0.88f, 1.0f, 0.38f}));
+    return;
+  }
+
+  if (slot.typeName == "CmpSwing") {
+    if (!entity.HasUpdCmp<CmpSwing>()) {
+      return;
+    }
+    CmpSwing *cmp = entity.GetUpdCmp<CmpSwing>();
+    cmp->SetSwingSpeed(
+        p.value("swingSpeed", 3.141592653589793f * 8.0f));
+    cmp->SetSwingDuration(p.value("swingDuration", 0.25f));
+    cmp->SetPivotInstanceName(
+        p.value("pivotInstanceName", std::string{}));
+    return;
+  }
+
+  if (slot.typeName == "CmpParry") {
+    return;
+  }
+
+  if (slot.typeName == "CmpInput") {
+    return;
+  }
+
+  if (slot.typeName == "CmpMoveByInput2D") {
+    return;
+  }
+
+  if (slot.typeName == "CmpChildEntitys") {
+    return;
+  }
+
   if (slot.typeName == "CmpLuaUpd") {
     if (!entity.HasUpdCmp<CmpLuaUpd>()) {
       return;
@@ -558,6 +695,8 @@ BuildEntitiesFromSceneDocument(
     EditorSceneRuntimeMainCameraSupplement::EnsureInEntityList(entities,
                                                                warnings);
   }
+
+  ApplyPlayerComponentPostBuild(document, entities);
 
   InitializeSceneDocumentEntities(entities);
 

@@ -5,6 +5,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsPlayable.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
@@ -89,6 +90,15 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
     {"CmpLuaUpd", ComponentSlotKind::Upd},
     {"CmpLuaDraw", ComponentSlotKind::Draw},
+    {"CmpInput", ComponentSlotKind::Upd},
+    {"CmpMoveByInput2D", ComponentSlotKind::Upd},
+    {"CmpDrawPlayerParryField", ComponentSlotKind::Draw},
+    {"CmpDirection", ComponentSlotKind::Data},
+    {"CmpLhRigidBody", ComponentSlotKind::Upd},
+    {"CmpHealthHit", ComponentSlotKind::Upd},
+    {"CmpSwing", ComponentSlotKind::Upd},
+    {"CmpChildEntitys", ComponentSlotKind::Upd},
+    {"CmpParry", ComponentSlotKind::Data},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,
@@ -533,6 +543,14 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
       }
     }
     return changed;
+  }
+
+  {
+    bool playableChanged = false;
+    if (EntityEditorUiDrawComponentParamsPlayable::TryDraw(slot,
+                                                           playableChanged)) {
+      return playableChanged;
+    }
   }
 
   if (slot.typeName == "CmpLuaUpd") {

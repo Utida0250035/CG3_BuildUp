@@ -10671,3 +10671,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 |--------|------|------|
 | サブシステム Lua バインド | 有効 | ゲーム内のロジック（スクリプト）／ランタイム出力後のプレイ |
 | 同上 | 矛盾なし | 基本機能への外部アクセスと整合 |
+
+---
+
+## セッション 2026-11-22（エディタ／EditorSceneRuntime: プレイヤー系コンポーネント登録）
+
+### 実装概要
+
+- 既知コンポーネント正本を 28 件に拡張（`CmpInput`・`CmpMoveByInput2D`・`CmpDrawPlayerParryField`・`CmpDirection`・`CmpLhRigidBody`・`CmpHealthHit`・`CmpSwing`・`CmpChildEntitys`・`CmpParry`）
+- `EditorSceneRuntime`: `TryAddEmptyComponent` / `ApplyComponentParams`、親子リンク後に `ApplyPlayerComponentPostBuild`（パリィ武器自動生成・スイングピボット・移動方向マーカー）
+- `CmpSwing`: `pivotInstanceName` を JSON から解決
+- エディタ UI: `EntityEditorUiDrawComponentParamsPlayable`、既定パラメータを `EntityEditorDefinition` に追加
+- サンプル: `EditorAssets/Entities/player_parry.template.json`
+- 検証: `verify_editor_playable_component_registration.py`、既存 registry 検証に Playable UI をマージ
+
+### 推測した用途（§6.4）
+
+- **レベル／アセット制作:** エディタまたは JSON プレハブで `EntityFactory::PlayerParry()` 相当の自機を組み立て、`spawn_entity_from_json` と Lua を併用した試作
+- **ランタイム:** BuildUp 上で入力・移動・パリィ・体力を C++ コンポーネントとして実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレイヤー系コンポーネントのエディタ登録 | 有効 | エンティティ json の構成編集／ランタイム出力後のプレイ |
+| 同上 | 矛盾なし | スクリプト＋JSON 併用ワークフローと整合 |

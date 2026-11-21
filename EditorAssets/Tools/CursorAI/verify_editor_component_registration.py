@@ -161,6 +161,16 @@ def main() -> int:
         / "Entity"
         / "EntityEditorUiDrawComponentParamsCmpCamera.cpp"
     )
+    playable_ui_path = (
+        root
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "Entity"
+        / "EntityEditorUiDrawComponentParamsPlayable.cpp"
+    )
 
     for path in (def_path, registry_path, ui_path, runtime_path, slot_path):
         if not path.is_file():
@@ -186,6 +196,8 @@ def main() -> int:
         draw_params |= extract_draw_param_type_branches(read_text(ball_ui_path))
     if cmp_camera_ui_path.is_file():
         draw_params |= extract_draw_param_type_branches(read_text(cmp_camera_ui_path))
+    if playable_ui_path.is_file():
+        draw_params |= extract_draw_param_type_branches(read_text(playable_ui_path))
 
     errors: list[str] = []
     warnings: list[str] = []

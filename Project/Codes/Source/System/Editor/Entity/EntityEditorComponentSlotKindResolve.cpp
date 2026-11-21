@@ -11,18 +11,23 @@ TryDefaultKindForRegisteredType(const std::string &typeName) {
   }
   if (typeName == "CmpMeshSphere" || typeName == "CmpMesh" ||
       typeName == "CmpEditorTextureBillboard" || typeName == "CmpDrawHitSphere" ||
-      typeName == "CmpBillboardInstancedGrid" || typeName == "CmpLuaDraw") {
+      typeName == "CmpBillboardInstancedGrid" || typeName == "CmpLuaDraw" ||
+      typeName == "CmpDrawPlayerParryField") {
     return ComponentSlotKind::Draw;
   }
   if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
       typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
       typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall" ||
       typeName == "CmpBallKinematics" || typeName == "CmpBallAxisAlignedBounce" ||
-      typeName == "CmpBallBounceImpactFx" || typeName == "CmpLuaUpd") {
+      typeName == "CmpBallBounceImpactFx" || typeName == "CmpLuaUpd" ||
+      typeName == "CmpInput" || typeName == "CmpMoveByInput2D" ||
+      typeName == "CmpLhRigidBody" || typeName == "CmpHealthHit" ||
+      typeName == "CmpSwing" || typeName == "CmpChildEntitys") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||
-      typeName == "CmpColliderAabb") {
+      typeName == "CmpColliderAabb" || typeName == "CmpDirection" ||
+      typeName == "CmpParry") {
     return ComponentSlotKind::Data;
   }
   return std::nullopt;
