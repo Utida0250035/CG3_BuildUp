@@ -61,6 +61,11 @@ std::string EnsureJsonExtension(std::string fileName) {
 
 } // namespace
 
+bool IsManagedExistingPrefabJsonPath(const std::string &prefabPath) {
+  fs::path absolute{};
+  return ResolveManagedPrefabFile(prefabPath, absolute);
+}
+
 bool TryDeletePrefabJsonFile(const std::string &prefabPath) {
   fs::path absolute{};
   if (!ResolveManagedPrefabFile(prefabPath, absolute)) {

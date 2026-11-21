@@ -76,6 +76,9 @@ jobs:
       - name: Verify prefab JSON rename delete
         run: python3 EditorAssets/Tools/CursorAI/verify_prefab_json_rename_delete.py
 
+      - name: Verify prefab overwrite save path
+        run: python3 EditorAssets/Tools/CursorAI/verify_prefab_overwrite_save_path.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

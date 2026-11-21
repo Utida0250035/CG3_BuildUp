@@ -4,6 +4,9 @@
 
 namespace Atrum::Editor::Prefab {
 
+/// 既存の Entities 配下プレハブ JSON か（上書き保存の対象判定）
+bool IsManagedExistingPrefabJsonPath(const std::string &prefabPath);
+
 /// Entities 配下のプレハブ JSON を削除（ルート外は拒否）
 bool TryDeletePrefabJsonFile(const std::string &prefabPath);
 

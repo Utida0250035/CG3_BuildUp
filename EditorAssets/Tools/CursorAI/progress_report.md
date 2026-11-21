@@ -10085,3 +10085,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 出力が MakeUnique で上書き更新できない（roadmap 643 行）
+
+---
+
+## セッション 2026-11-22 01:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 643 行: **選択プレハブへ上書き保存**（`IsManagedExistingPrefabJsonPath` + 新規は従来どおり MakeUnique）
+
+### 推測した用途（§6.4）
+
+- **制作:** 同一プレハブの反復調整で `_N` ファイルが増殖しない
+- **Authoring:** 新規出力と上書きの経路分離
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレハブ上書き保存 | 有効 | プレハブ化して json としてアセット保存（更新を含む） |
+
+### 次 tick 候補
+
+- OpenScene が selectedPrefabPath をクリアしない（roadmap 644 行）

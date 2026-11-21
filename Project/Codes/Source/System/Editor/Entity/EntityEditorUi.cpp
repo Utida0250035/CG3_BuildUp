@@ -14,6 +14,7 @@
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Prefab/PrefabAssetBatchSpawnUi.h"
 #include "System/Editor/Prefab/PrefabAssetProjectPanelList.h"
+#include "System/Editor/Prefab/PrefabAssetOverwriteSaveUi.h"
 #include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
@@ -877,6 +878,8 @@ void EntityEditor::DrawProjectPanel() {
       ui_.selectedPrefabPath = path;
     }
   }
+  Atrum::Editor::Prefab::PrefabAssetOverwriteSaveUi::
+      DrawOverwriteSelectedPrefabSaveButton(*this);
   ImGui::Spacing();
 
   const std::vector<std::string> prefabPaths =
