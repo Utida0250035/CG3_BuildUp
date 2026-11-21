@@ -4,6 +4,7 @@
 #include "System/Editor/EditorSceneRuntimeFunctionalViewDraw.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Scene/SceneEntityEditorPreviewBuildUpParityRebuild.h"
+#include "Scene/SceneEntityEditorPreviewEditorAssetPathRelink.h"
 #endif
 
 #include "Camera/Camera.h"
@@ -140,6 +141,7 @@ void SceneEntityEditor::RebuildPreviewScene() {
   }
   previewEntities_ =
       RebuildPreviewEntitiesViaBuildUpParity(*editor_);
+  RelinkPreviewEditorAssetPathsAfterRebuild(*editor_, previewEntities_);
   SetupPreviewCamera();
 }
 

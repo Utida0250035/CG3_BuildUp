@@ -9486,3 +9486,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - AssetPath プレビューは構築時1回（roadmap 607 行）
+
+---
+
+## セッション 2026-11-21 19:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 607 行 / `GAP-Editor-EditorSceneRuntime-009`: **`EditorSceneRuntimeEditorAssetPathPreviewRelink`** で Initialize 後に再リンク、`SceneEntityEditor` プレビュー再構築後も再適用
+- **`EntityEditorAuthoringEditorAssetPathEditNotify`**: CmpEditorAssetPath インスペクタ編集は `NotifyPreviewOnly` で即プレビュー再構築（不要な毎キーストローク保存を回避）
+
+### 推測した用途（§6.4）
+
+- **制作:** assetPath 変更のたびに Draw へ反映、手動「プレビューに適用」待ちを減らす
+- **Authoring:** 一括ドロップ後の path 差し替えとプレビュー同期
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| AssetPath プレビュー再同期 | 有効 | json 上のアセット編集とエディタプレビュー確認の流れ |
+
+### 次 tick 候補
+
+- EnterScene が毎回ディスクから Load（roadmap 610 行）

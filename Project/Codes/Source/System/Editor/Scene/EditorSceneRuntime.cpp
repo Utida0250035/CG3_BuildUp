@@ -3,6 +3,7 @@
 #include "System/Editor/Scene/EditorSceneRuntimeBuildWarnings.h"
 #include "System/Editor/Scene/EditorSceneRuntimeDrawPreviewApply.h"
 #include "System/Editor/Scene/EditorSceneRuntimeEditorAssetPathPreviewLink.h"
+#include "System/Editor/Scene/EditorSceneRuntimeEditorAssetPathPreviewRelink.h"
 #include "System/Editor/Scene/EditorSceneRuntimeMainCameraSupplement.h"
 #include "System/Editor/Scene/EditorSceneRuntimeEntityHasComponentForSlot.h"
 #include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
@@ -513,6 +514,8 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document,
   EditorSceneRuntimeMainCameraSupplement::EnsureInEntityList(entities, warnings);
 
   InitializeSceneDocumentEntities(entities);
+
+  RelinkEditorAssetPathPreviewsInScene(entities, document, warnings);
 
   return entities;
 }

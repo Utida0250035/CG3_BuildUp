@@ -2,6 +2,7 @@
 
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
+#include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/EditorFrame.h"
@@ -1077,6 +1078,7 @@ void EntityEditor::DrawInspectorPanel() {
         "この種別では追加できるプリセットがありません");
   }
 
+  const bool changedBeforeComponentInspector = changed;
   SyncSelectedComponentToKind(ui_, document);
   std::vector<int> kindComponentIndices =
       CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
@@ -1119,10 +1121,12 @@ void EntityEditor::DrawInspectorPanel() {
     ComponentSlot &selected =
         document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
 
+    bool changedInComponentSectionBesidesAssetPath = false;
     int execOrder = selected.executionOrder;
     if (ImGui::InputInt("実行順 (priority)", &execOrder)) {
       selected.executionOrder = std::max(0, execOrder);
       changed = true;
+      changedInComponentSectionBesidesAssetPath = true;
     }
 
     if (!presetIndicesForKind.empty()) {
@@ -1152,17 +1156,32 @@ void EntityEditor::DrawInspectorPanel() {
         selected.typeName = entry.typeName;
         selected.params = DefaultParamsForType(entry.typeName);
         changed = true;
+        changedInComponentSectionBesidesAssetPath = true;
       }
     } else {
       ImGui::TextUnformatted(selected.typeName.c_str());
     }
 
+    bool editedCmpEditorAssetPathParams = false;
     if (DrawComponentParams(selected, ui_)) {
       changed = true;
+      if (selected.typeName == "CmpEditorAssetPath") {
+        editedCmpEditorAssetPathParams = true;
+      }
     }
-  }
 
-  if (changed) {
+    if (changed) {
+      const bool assetPathParamsOnly =
+          editedCmpEditorAssetPathParams && !changedBeforeComponentInspector &&
+          !changedInComponentSectionBesidesAssetPath;
+      if (assetPathParamsOnly) {
+        EntityEditorAuthoringEditorAssetPathEditNotify::
+            NotifyEditorAssetPathPreviewRefresh(*this);
+      } else {
+        EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+      }
+    }
+  } else if (changed) {
     EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }

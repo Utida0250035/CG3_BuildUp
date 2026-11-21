@@ -604,7 +604,7 @@
 
 ### EditorSceneRuntime
 - [x] EntityHasComponentForSlot が Mesh／Billboard を認識しない（spec: feature-memos/component_split_guidelines.md）
-- [ ] AssetPath プレビューは構築時1回
+- [x] AssetPath プレビューは構築時1回
 
 ### SceneEntityEditor
 - [ ] EnterScene が毎回ディスクから Load し編集中ドキュメントを上書き
