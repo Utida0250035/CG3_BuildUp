@@ -7,7 +7,7 @@ namespace Atrum::EntityEditor::EntityEditorKnownComponentRegistry {
 
 namespace {
 
-constexpr std::array<std::string_view, 28> kEditorRuntimeComponentTypeNames = {
+constexpr std::array<std::string_view, 29> kEditorRuntimeComponentTypeNames = {
     "CmpMeshSphere",
     "CmpMesh",
     "CmpEditorTextureBillboard",
@@ -36,6 +36,7 @@ constexpr std::array<std::string_view, 28> kEditorRuntimeComponentTypeNames = {
     "CmpSwing",
     "CmpChildEntitys",
     "CmpParry",
+    "CmpStgPlayerPilot",
 };
 
 constexpr std::array<std::string_view, 3> kGuidelineDrawExampleTypeNames = {

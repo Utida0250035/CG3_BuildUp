@@ -27,6 +27,7 @@
 #include "System/Entity/Components/CmpSwing.h"
 #include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/Playable/CmpMoveByInput.h"
+#include "System/Playable/CmpStgPlayerPilot.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
 
@@ -104,6 +105,9 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "AbstractInput") {
       return false;
+    }
+    if (slot.typeName == "CmpStgPlayerPilot") {
+      return entity.HasUpdCmp<Player::CmpStgPlayerPilot>();
     }
   }
   if (slot.kind == ComponentSlotKind::Data) {

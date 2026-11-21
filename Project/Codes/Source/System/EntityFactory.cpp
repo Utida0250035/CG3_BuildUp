@@ -383,6 +383,40 @@ std::unique_ptr<Entity> EntityFactory::LinearEnemyBullet(
   return bullet;
 }
 
+std::unique_ptr<Entity> EntityFactory::LinearPlayerBullet(
+    const Math::Vector3 &velocity, const Math::Vector3 &position) {
+  EntityTagRegistry::Instance().EnsureLoaded();
+  std::unique_ptr<Entity> bullet = std::make_unique<Entity>();
+  Math::TransformLH initialTransform{};
+  initialTransform.translate = position;
+  initialTransform.translate.z = 0.0f;
+  bullet->SetInitialTransform(initialTransform);
+  bullet->AddTag(EntityTagRegistry::Instance().TagNameForRole("playerWeapon"));
+
+  bullet->AddUpdCmp<CmpLhRigidBody>();
+  bullet->AddUpdCmp<CmpHitSphere>();
+  bullet->AddDrawCmp<CmpMeshSphere>();
+
+  bullet->GetUpdCmp<CmpHitSphere>()->SetSpheres({{{}, 0.35f}});
+
+  CmpMeshSphere *cmpMeshSphere = bullet->GetDrawCmp<CmpMeshSphere>();
+  cmpMeshSphere->SetRadius(0.22f);
+  cmpMeshSphere->SetSubdivision(6);
+  cmpMeshSphere->SetColor({0.2f, 0.85f, 1.0f, 1.0f});
+  cmpMeshSphere->SetLightingEnabled(true);
+
+  bullet->ResolveDependencies();
+  bullet->Initialize();
+
+  CmpLhRigidBody *cmpLhRigidBody = bullet->GetUpdCmp<CmpLhRigidBody>();
+  Math::Vector3 planeVelocity = velocity;
+  planeVelocity.z = 0.0f;
+  cmpLhRigidBody->RefVelocity() = planeVelocity;
+  cmpLhRigidBody->SetIsUseGravity(false);
+  cmpLhRigidBody->SetIsUseSpaceEnd(false);
+  return bullet;
+}
+
 namespace {
 
 constexpr const char *kMainCameraPrefabPath =

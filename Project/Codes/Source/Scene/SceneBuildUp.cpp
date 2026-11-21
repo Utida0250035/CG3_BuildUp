@@ -24,6 +24,7 @@
 #endif
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
+#include "System/Playable/StgPilotPrimaryCameraContext.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
@@ -157,6 +158,11 @@ void SceneBuildUp::Update() {
   }
 
   if (!sceneDocumentLoadFailed_) {
+    int32_t viewW = 0;
+    int32_t viewH = 0;
+    if (::Atrum::EngineTryGetClientViewportSize(viewW, viewH)) {
+      Player::StgPilotPrimaryCameraContext::Sync(GetCamera(), viewW, viewH);
+    }
     for (std::unique_ptr<Entity> &entity : entities_) {
       if (entity && entity->IsActive()) {
         entity->Update();

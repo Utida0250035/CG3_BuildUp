@@ -1,0 +1,17 @@
+{
+  "entityName": "stg_player_pilot",
+  "tags": ["player"],
+  "initialTransform": {
+    "translate": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "quaternion": { "x": 0.0, "y": 0.0, "z": 0.0, "w": 1.0 },
+    "scale": { "x": 1.0, "y": 1.0, "z": 1.0 }
+  },
+  "components": [
+    { "kind": "Data", "typeName": "CmpDirection", "params": { "direction": { "x": 0, "y": 1, "z": 0 } } },
+    { "kind": "Upd", "typeName": "CmpLhRigidBody", "params": { "isUseGravity": false, "isUseSpaceEnd": false } },
+    { "kind": "Upd", "typeName": "CmpHitSphere", "params": { "isActive": true, "spheres": [{ "localOffset": { "x": 0, "y": 0, "z": 0 }, "radius": 0.45 }] } },
+    { "kind": "Draw", "typeName": "CmpMeshSphere", "params": { "radius": 0.4, "color": { "x": 0.15, "y": 0.75, "z": 1.0, "w": 1.0 } } },
+    { "kind": "Upd", "typeName": "CmpChildEntitys", "params": {} },
+    { "kind": "Upd", "typeName": "CmpStgPlayerPilot", "params": { "moveSpeed": 8.0, "shootCooldownSeconds": 0.2, "bulletSpeed": 14.0, "bulletSpawnOffset": 0.55 } }
+  ]
+}

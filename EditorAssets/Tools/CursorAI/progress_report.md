@@ -10720,3 +10720,28 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 |--------|------|------|
 | スクリプトから保存エンティティ生成 | 有効 | ゲーム内のロジック（スクリプト）によって、保存したエンティティをゲーム内に生成 |
 | 同上 | 矛盾なし | エンティティ json の構成編集と整合 |
+
+---
+
+## セッション 2026-11-22（全方位 STG 自機: CmpStgPlayerPilot・JSON＋Lua）
+
+### 実装概要
+
+- `CmpStgPlayerPilot`: WASD＋L スティック移動、マウス＋R スティックエイム、Space／A 単発射撃、`shootCooldownSeconds` クールダウン
+- `EntityFactory::LinearPlayerBullet`、`StgScreenAimOnPlane`（マウス→プレイ平面）、`StgPilotPrimaryCameraContext`（BuildUp がカメラ同期）
+- `XInputController::GetRightStick`
+- エディタ登録（既知コンポーネント 29 件）、`stg_player_pilot.template.json`
+- Lua: `Atrum.spawn_stg_player_from_json`、例 `Assets/Scripts/BuildUp/spawn_stg_player_example.lua`
+- 検証: `verify_stg_player_pilot.py`
+
+### 推測した用途（§6.4）
+
+- **BuildUp 試作:** JSON プレハブで STG 自機を置き、Lua でシーン入場時 spawn
+- **ランタイム:** 画面上での全方位移動・エイム・連射制限付き射撃
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| STG 自機のスクリプト＋JSON | 有効 | ゲーム内のロジック（スクリプト）／エンティティ json の構成編集 |
+| 同上 | 矛盾なし | 保存したエンティティをゲーム内に生成する流れと整合 |

@@ -99,6 +99,7 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpSwing", ComponentSlotKind::Upd},
     {"CmpChildEntitys", ComponentSlotKind::Upd},
     {"CmpParry", ComponentSlotKind::Data},
+    {"CmpStgPlayerPilot", ComponentSlotKind::Upd},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,

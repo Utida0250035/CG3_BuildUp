@@ -116,23 +116,36 @@ bool XInputController::IsButtonRelease(const GamepadButton button) const {
   return !now && prev;
 }
 
+namespace {
+
+Math::Vector2 ReadStick(const SHORT rawX, const SHORT rawY) {
+  constexpr float deadZone = 0.24f;
+  const float x = static_cast<float>(rawX) / 32767.0f;
+  const float y = static_cast<float>(rawY) / 32767.0f;
+  Math::Vector2 stick{ApplyCircularDeadZone(x, deadZone),
+                      ApplyCircularDeadZone(y, deadZone)};
+  if (stick.LengthSquare() > 1.01f) {
+    stick.Normalize();
+  }
+  return stick;
+}
+
+} // namespace
+
 Math::Vector2 XInputController::GetLeftStick() const {
   if (!isConnected_ || private_ == nullptr) {
     return {};
   }
-
   const XINPUT_GAMEPAD &gamepad = private_->state.Gamepad;
-  const float rawX = static_cast<float>(gamepad.sThumbLX) / 32767.0f;
-  const float rawY = static_cast<float>(gamepad.sThumbLY) / 32767.0f;
+  return ReadStick(gamepad.sThumbLX, gamepad.sThumbLY);
+}
 
-  Math::Vector2 stick{ApplyCircularDeadZone(rawX, kStickDeadZoneRatio),
-                      ApplyCircularDeadZone(rawY, kStickDeadZoneRatio)};
-
-  if (stick.LengthSquare() > 1.01f) {
-    stick.Normalize();
+Math::Vector2 XInputController::GetRightStick() const {
+  if (!isConnected_ || private_ == nullptr) {
+    return {};
   }
-
-  return stick;
+  const XINPUT_GAMEPAD &gamepad = private_->state.Gamepad;
+  return ReadStick(gamepad.sThumbRX, gamepad.sThumbRY);
 }
 
 void XInputController::AddDirectionInput(Math::Vector2 &vector) const {

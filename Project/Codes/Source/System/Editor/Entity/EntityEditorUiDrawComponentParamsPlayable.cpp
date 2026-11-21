@@ -45,6 +45,10 @@ bool TryDraw(ComponentSlot &slot, bool &outChanged) {
     draw();
     return true;
   }
+  if (slot.typeName == "CmpStgPlayerPilot") {
+    draw();
+    return true;
+  }
   return false;
 }
 

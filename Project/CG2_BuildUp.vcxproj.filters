@@ -535,6 +535,15 @@
     <ClCompile Include="Codes\Source\System\Playable\PlayerParryRuntimeAssembly.cpp">
       <Filter>Codes\Source\System\Playable</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\CmpStgPlayerPilot.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\StgPilotPrimaryCameraContext.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Playable\StgScreenAimOnPlane.cpp">
+      <Filter>Codes\Source\System\Playable</Filter>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp">
       <Filter>Codes\Source\System\Playable</Filter>
     </ClCompile>
@@ -1378,6 +1387,15 @@
       <Filter>Codes\Include\System\Playable</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Playable\PlayerParryRuntimeAssembly.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\CmpStgPlayerPilot.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\StgPilotPrimaryCameraContext.h">
+      <Filter>Codes\Include\System\Playable</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Playable\StgScreenAimOnPlane.h">
       <Filter>Codes\Include\System\Playable</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h">

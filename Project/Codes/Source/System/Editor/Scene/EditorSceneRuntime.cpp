@@ -41,6 +41,7 @@
 #include "System/Playable/CmpDrawPlayerParryField.h"
 #include "System/Playable/AbstractInput.h"
 #include "System/Playable/CmpMoveByInput.h"
+#include "System/Playable/CmpStgPlayerPilot.h"
 #include "System/Entity/Entity.h"
 #include <algorithm>
 #include <fstream>
@@ -181,6 +182,10 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   }
   if (slot.typeName == "CmpParry" && slot.kind == ComponentSlotKind::Data) {
     entity.AddDataCmp<CmpParry>();
+    return true;
+  }
+  if (slot.typeName == "CmpStgPlayerPilot" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<Player::CmpStgPlayerPilot>();
     return true;
   }
   if (slot.typeName == "CmpLuaUpd" && slot.kind == ComponentSlotKind::Upd) {
@@ -563,6 +568,18 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
   }
 
   if (slot.typeName == "CmpChildEntitys") {
+    return;
+  }
+
+  if (slot.typeName == "CmpStgPlayerPilot") {
+    if (!entity.HasUpdCmp<Player::CmpStgPlayerPilot>()) {
+      return;
+    }
+    Player::CmpStgPlayerPilot *cmp = entity.GetUpdCmp<Player::CmpStgPlayerPilot>();
+    cmp->SetMoveSpeed(p.value("moveSpeed", 8.0f));
+    cmp->SetShootCooldownSeconds(p.value("shootCooldownSeconds", 0.2f));
+    cmp->SetBulletSpeed(p.value("bulletSpeed", 14.0f));
+    cmp->SetBulletSpawnOffset(p.value("bulletSpawnOffset", 0.55f));
     return;
   }
 

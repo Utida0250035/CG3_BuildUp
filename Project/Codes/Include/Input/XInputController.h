@@ -43,6 +43,9 @@ public:
   /// 左スティック（デッドゾーン適用・最大長 1）
   Math::Vector2 GetLeftStick() const;
 
+  /// 右スティック（デッドゾーン適用・最大長 1）
+  Math::Vector2 GetRightStick() const;
+
   /// 十字キーとスティックを -1〜1 の移動ベクトルに加算
   void AddDirectionInput(Math::Vector2 &vector) const;
 

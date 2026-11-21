@@ -59,6 +59,7 @@ def main() -> int:
     for api in (
         "spawn_entity_from_json",
         "spawn_player_parry_from_json",
+        "spawn_stg_player_from_json",
         "tag_for_role",
         "require_behavior",
         "attach_lua_upd",

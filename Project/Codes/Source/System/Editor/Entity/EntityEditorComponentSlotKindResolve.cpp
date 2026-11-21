@@ -22,7 +22,8 @@ TryDefaultKindForRegisteredType(const std::string &typeName) {
       typeName == "CmpBallBounceImpactFx" || typeName == "CmpLuaUpd" ||
       typeName == "AbstractInput" || typeName == "CmpMoveByInput2D" ||
       typeName == "CmpLhRigidBody" || typeName == "CmpHealthHit" ||
-      typeName == "CmpSwing" || typeName == "CmpChildEntitys") {
+      typeName == "CmpSwing" || typeName == "CmpChildEntitys" ||
+      typeName == "CmpStgPlayerPilot") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||

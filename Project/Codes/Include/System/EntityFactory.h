@@ -26,6 +26,9 @@ public:
   static std::unique_ptr<Entity> SkyDome(Camera *camera);
   static std::unique_ptr<Entity> LinearEnemyBullet(const Math::Vector3 &velocity,
                                                    const Math::Vector3 &position);
+  /// 自機 STG 用の直進弾（重力なし・playerWeapon タグ）
+  static std::unique_ptr<Entity> LinearPlayerBullet(const Math::Vector3 &velocity,
+                                                    const Math::Vector3 &position);
   static std::unique_ptr<Entity> Parry(Entity *parent);
 
   static std::unique_ptr<Entity> MainCameraEntity();

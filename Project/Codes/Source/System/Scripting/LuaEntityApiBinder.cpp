@@ -86,6 +86,36 @@ void LuaEntityApiBinder::Register(sol::state &lua) {
       });
 
   atrum.set_function(
+      "spawn_stg_player_from_json",
+      [&lua, this](sol::optional<std::string> jsonPath, sol::optional<float> offsetX,
+                   sol::optional<float> offsetY,
+                   sol::optional<float> offsetZ) -> sol::table {
+        const std::string path =
+            jsonPath.value_or("stg_player_pilot.template.json");
+        sol::table response = lua.create_table();
+        if (context_.entities == nullptr) {
+          response["ok"] = false;
+          response["error"] = "entities context is not bound";
+          response["count"] = 0;
+          return response;
+        }
+
+        const LuaEntitySpawnResult spawnResult =
+            TryAppendEntitiesFromJsonPath(
+                path, *context_.entities, offsetX.value_or(0.0f),
+                offsetY.value_or(0.0f), offsetZ.value_or(0.0f));
+
+        response["ok"] = spawnResult.success;
+        response["count"] = spawnResult.spawnedCount;
+        if (spawnResult.success) {
+          response["message"] = spawnResult.message;
+        } else {
+          response["error"] = spawnResult.message;
+        }
+        return response;
+      });
+
+  atrum.set_function(
       "attach_lua_upd",
       [&lua, this](const std::string &entityName, const std::string &scriptPath,
                    sol::optional<std::string> updCmpGroup) -> sol::table {

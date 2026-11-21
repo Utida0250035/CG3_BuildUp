@@ -183,6 +183,12 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
   if (typeName == "CmpParry") {
     return {{"autoCreateParryWeapon", true}};
   }
+  if (typeName == "CmpStgPlayerPilot") {
+    return {{"moveSpeed", 8.0f},
+            {"shootCooldownSeconds", 0.2f},
+            {"bulletSpeed", 14.0f},
+            {"bulletSpawnOffset", 0.55f}};
+  }
   return nlohmann::json::object();
 }
 
