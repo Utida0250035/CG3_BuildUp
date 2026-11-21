@@ -8523,3 +8523,37 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - roadmap 先頭の Editor 系 `- [ ]`（例: StageViewCameraTuning）
+
+---
+
+## セッション 2026-11-21 11:00（/loop 15m・roadmap tick）
+
+### 完了
+
+- 既存 `StageViewCameraTuningPanel` を正本化（Game view プレビュー／自動ホットリロード）
+- `EditorStageViewCameraTuningHotReloadTick` … パネル折りたたみ時も `PollHotReload`
+- `verify_stage_view_camera_tuning_editor_preview.py`、CI、`odyssey_style_stage_camera.md` 更新
+- roadmap 当該行 `[x]`（`GAP-Editor-StageViewCameraTuning-001`）
+
+### 推測した用途（§6.4）
+
+- **制作:** JSON を外部エディタで編集しながら Game ビューで戦闘カメラを即確認
+- **Authoring:** CLI プレビューに加えエディタ内ループを短縮
+
+### 既存実装の課題点
+
+- focus ポーズの Game view プレビューは battle のみ（focus ブレンドは別タスク余地）
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| StageViewCameraTuning | 有効 | インスペクタ／プレビューで制作パラメータを編集し結果を確認 |
+
+### 次 tick 候補
+
+- DebugPlayArea 用 EditorAssets パス定数（`GAP-Editor-EditorAssetsPaths-001`）

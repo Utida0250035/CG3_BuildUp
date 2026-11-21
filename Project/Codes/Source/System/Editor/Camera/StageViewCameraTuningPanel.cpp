@@ -16,8 +16,6 @@ void DrawStageViewCameraTuningPanel() {
     return;
   }
 
-  tuning.PollHotReload();
-
   bool preview = tuning.IsGameViewPreviewEnabled();
   if (ImGui::Checkbox("JSON preview on Game view", &preview)) {
     tuning.SetGameViewPreviewEnabled(preview);

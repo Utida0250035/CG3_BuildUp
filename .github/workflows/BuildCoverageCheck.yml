@@ -34,6 +34,9 @@ jobs:
       - name: Verify player-friendly camera policy
         run: python3 EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py
 
+      - name: Verify stage view camera tuning editor preview
+        run: python3 EditorAssets/Tools/CursorAI/verify_stage_view_camera_tuning_editor_preview.py
+
       - name: Verify movie camera track JSON smoke
         run: python3 EditorAssets/Tools/MovieCameraTrack/verify_movie_camera_track_json.py
 

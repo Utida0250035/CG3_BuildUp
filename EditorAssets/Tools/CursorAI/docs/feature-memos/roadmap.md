@@ -561,7 +561,7 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装（gap: `GAP-Editor-StageViewCameraTuning-001`・Authoring・P1）
+- [x] カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装（gap: `GAP-Editor-StageViewCameraTuning-001`・Authoring・P1）
 - [ ] DebugPlayArea 用の EditorAssets パス定数が無い（gap: `GAP-Editor-EditorAssetsPaths-001`・Debug・P1）
 - [ ] シーン切替時に未保存確認・自動保存が無い（gap: `GAP-Editor-EntityEditor-002`・Authoring・P1）
 - [ ] エディタメニューに機能検証シーン起動が無い（gap: `GAP-Editor-EditorEntityWorkbench-001`・Debug・P1）

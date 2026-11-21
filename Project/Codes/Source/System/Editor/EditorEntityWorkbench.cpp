@@ -6,6 +6,7 @@
 #include "System/Editor/EditorFrameStreamingDiagnostics.h"
 #include "System/Editor/EditorLuaScriptScaffold.h"
 #include <imgui/imgui_internal.h>
+#include "System/Editor/Camera/EditorStageViewCameraTuningHotReloadTick.h"
 #include "System/Editor/Camera/StageViewCameraTuning.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/EditorDebugPlayAreaCombatBoundsSandbox.h"
@@ -330,6 +331,7 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   }
   ImGui::End();
 
+  TickStageViewCameraTuningHotReload();
   DrawStageViewCameraTuningPanel();
 
   ImGui::End();
