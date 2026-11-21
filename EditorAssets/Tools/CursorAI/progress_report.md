@@ -9761,3 +9761,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - メニュー「プレイ」は保存・実行を呼ばない（roadmap 625 行）
+
+---
+
+## セッション 2026-11-21 22:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 625 行: **`EditorEntityWorkbenchPlayMenu`** で **「プレイ」** メニューに保存＋ランタイム実行／BuildUp 実行を集約
+
+### 推測した用途（§6.4）
+
+- **制作:** Edit↔Play 反復で保存漏れなくエディタ内プレイ試行
+- **Authoring:** ファイルメニューと別系統だった実行導線をプレイメニューで一本化
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレイメニュー保存実行 | 有効 | シーン構成の編集とエディタ上プレイ試験 |
+
+### 次 tick 候補
+
+- defaultLayoutBuilt が static で一回切り（roadmap 626 行）

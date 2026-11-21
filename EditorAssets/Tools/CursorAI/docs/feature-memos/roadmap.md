@@ -622,7 +622,7 @@
 
 ### EditorEntityWorkbench
 - [x] メニューにライト・ポスト調整ウィンドウが無い
-- [ ] メニュー「プレイ」は保存・実行を呼ばない
+- [x] メニュー「プレイ」は保存・実行を呼ばない
 - [ ] defaultLayoutBuilt が static で一回切り
 
 ### EditorFrame

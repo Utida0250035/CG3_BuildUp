@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorEntityWorkbench.h"
 
+#include "System/Editor/EditorEntityWorkbenchPlayMenu.h"
 #include "System/Editor/EditorEntityWorkbenchLightPostWindow.h"
 #include "System/Editor/Entity/EntityEditorDuplicateInstanceKeyboardShortcut.h"
 
@@ -118,6 +119,8 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     }
     ImGui::EndMenu();
   }
+
+  EditorEntityWorkbenchPlayMenu::DrawMenuItems(editor);
 
   if (ImGui::BeginMenu("モード")) {
     const bool isEdit =
