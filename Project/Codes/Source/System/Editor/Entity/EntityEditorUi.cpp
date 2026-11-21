@@ -741,6 +741,9 @@ void EntityEditor::DrawHierarchyPanel() {
   if (!scene_.instances.empty() && ImGui::Button("複製")) {
     DuplicateSelectedInstance();
   }
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+    ImGui::SetTooltip("Ctrl+D");
+  }
   ImGui::SameLine();
   if (scene_.instances.size() > 1 && ImGui::Button("削除")) {
     RemoveSelectedInstance();

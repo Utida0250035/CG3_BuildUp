@@ -2,6 +2,8 @@
 
 #include "System/Editor/EditorEntityWorkbench.h"
 
+#include "System/Editor/Entity/EntityEditorDuplicateInstanceKeyboardShortcut.h"
+
 #include "ForDebug/ImGui.h"
 #include "System/Editor/EditorFrameStreamingDiagnostics.h"
 #include "System/Editor/EditorLuaScriptScaffold.h"
@@ -243,6 +245,7 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   editor.ProcessDroppedFileImports();
 
   DrawMainMenuBar(editor);
+  EntityEditor::PollEntityEditorDuplicateInstanceKeyboardShortcut(editor);
 
   ImGuiViewport *mainViewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(mainViewport->WorkPos);

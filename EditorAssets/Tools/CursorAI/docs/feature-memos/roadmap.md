@@ -618,7 +618,7 @@
 - [x] from_json が params を丸ごと代入
 
 ### EntityEditorShortcuts
-- [ ] エンティティ複製用キーボードショートカットが無い
+- [x] エンティティ複製用キーボードショートカットが無い
 
 ### EditorEntityWorkbench
 - [ ] メニューにライト・ポスト調整ウィンドウが無い

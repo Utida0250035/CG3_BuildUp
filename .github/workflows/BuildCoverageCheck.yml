@@ -34,6 +34,9 @@ jobs:
       - name: Verify ComponentSlot from_json params merge
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_from_json_params_merge.py
 
+      - name: Verify duplicate instance Ctrl+D shortcut
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_duplicate_instance_shortcut.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 
