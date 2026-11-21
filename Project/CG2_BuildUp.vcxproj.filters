@@ -666,6 +666,9 @@
     <ClCompile Include="Codes\Source\System\Editor\DebugPlayAreaScaffoldPersonalize.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetFileOperations.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetProjectPanelList.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetUiPathScrub.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.cpp" />
@@ -1520,6 +1523,9 @@
     <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldPersonalize.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetFileOperations.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.h" />

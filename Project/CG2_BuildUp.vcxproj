@@ -702,6 +702,18 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetFileOperations.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetProjectPanelList.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetUiPathScrub.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1308,6 +1320,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSaveEntityDefinitionBody.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabBatchSpawnFromFile.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetBatchSpawnUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetFileOperations.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveSelectedInstances.h" />

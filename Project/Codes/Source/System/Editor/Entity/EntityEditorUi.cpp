@@ -13,6 +13,7 @@
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 #include "System/Editor/Prefab/PrefabAssetBatchSpawnUi.h"
+#include "System/Editor/Prefab/PrefabAssetProjectPanelList.h"
 #include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
@@ -886,12 +887,8 @@ void EntityEditor::DrawProjectPanel() {
     return;
   }
 
-  for (const std::string &path : prefabPaths) {
-    const bool isActive = ui_.selectedPrefabPath == path;
-    if (ImGui::Selectable(path.c_str(), isActive)) {
-      ui_.selectedPrefabPath = path;
-    }
-  }
+  Atrum::Editor::Prefab::PrefabAssetProjectPanelList::DrawPrefabJsonFileList(
+      *this, prefabPaths);
 
   ImGui::Separator();
   Atrum::Editor::Prefab::PrefabAssetBatchSpawnUi::DrawBatchSpawnControls(*this);
