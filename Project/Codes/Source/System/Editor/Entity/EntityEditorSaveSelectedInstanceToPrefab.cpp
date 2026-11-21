@@ -1,6 +1,7 @@
 #include "System/Editor/Entity/EntityEditorSaveSelectedInstanceToPrefab.h"
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Json/JsonHandler.h"
 
 namespace Atrum::EntityEditor::EntityEditorSaveSelectedInstanceToPrefab {
