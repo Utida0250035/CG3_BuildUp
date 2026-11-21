@@ -10,6 +10,7 @@
 #include "System/Editor/Entity/EntityEditorRestoreSelectionAfterSceneLoad.h"
 #include "System/Editor/Entity/EntityEditorDeleteSceneOpenSuccessor.h"
 #include "System/Editor/Entity/EntityEditorCreateNewSceneFile.h"
+#include "System/Editor/Entity/EntityEditorSaveSelectedInstanceToPrefab.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -91,19 +92,7 @@ void EntityEditor::RemoveSelectedInstance() {
 
 bool EntityEditor::SaveSelectedInstanceToPrefabPath(
     const std::string &prefabPath) {
-  if (scene_.instances.empty() || ui_.selectedInstanceIndex < 0 ||
-      prefabPath.empty()) {
-    return false;
-  }
-
-  EntityDefinition definition = SelectedDefinition();
-  RebuildEntityDefinitionTagHashes(definition);
-  try {
-    Json::JsonHandler::SaveToFile(prefabPath, definition);
-    return true;
-  } catch (...) {
-    return false;
-  }
+  return EntityEditorSaveSelectedInstanceToPrefab::Save(*this, prefabPath);
 }
 
 bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {

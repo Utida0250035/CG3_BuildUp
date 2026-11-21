@@ -9347,3 +9347,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - プレハブ出力が Definition のみ（roadmap 601 行）
+
+---
+
+## セッション 2026-11-21 18:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap / `GAP-Editor-EntityEditor-020` 相当: `EntityEditorSaveSelectedInstanceToPrefab` で **SceneEntityInstance**（instanceName + definition + initialTransform）をプレハブ JSON へ保存
+- `TryBuildRootInstanceFromPrefabJson` は `definition` ラッパー形式と従来 **EntityDefinition のみ** JSON の双方を読込可能
+
+### 推測した用途（§6.4）
+
+- **制作:** 配置・名前・変形込みのプレハブをそのまま再配置
+- **Authoring:** シーン JSON を手切り出しせずプレハブ循環
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレハブ实例保存 | 有効 | エンティティをプレハブ化して json アセット保存する流れを強化 |
+
+### 次 tick 候補
+
+- ループ内で lastImported が上書き（roadmap 602 行）

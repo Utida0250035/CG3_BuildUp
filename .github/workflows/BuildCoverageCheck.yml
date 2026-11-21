@@ -118,6 +118,9 @@ jobs:
       - name: Verify EntityEditor prefab add index zero only
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_prefab_add_index_zero.py
 
+      - name: Verify EntityEditor prefab save scene instance
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_prefab_save_scene_instance.py
+
       - name: Verify EntityEditor add empty copies selection
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_add_empty_copy_selection.py
 

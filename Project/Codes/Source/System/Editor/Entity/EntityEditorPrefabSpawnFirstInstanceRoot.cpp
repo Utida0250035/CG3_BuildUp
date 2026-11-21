@@ -56,6 +56,11 @@ TryBuildRootInstanceFromPrefabJson(const nlohmann::json &json) {
     return DetachAsRootInstance(prefabScene.instances.front());
   }
 
+  if (json.contains("definition")) {
+    SceneEntityInstance instance = json.get<SceneEntityInstance>();
+    return DetachAsRootInstance(std::move(instance));
+  }
+
   SceneEntityInstance instance{};
   instance.definition = json.get<EntityDefinition>();
   instance.instanceName = instance.definition.entityName;
