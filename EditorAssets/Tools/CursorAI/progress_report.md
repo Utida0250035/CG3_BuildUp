@@ -10516,3 +10516,29 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 型 Combo 変更は params を既定に置換（roadmap 661 行・重複候補）
+
+---
+
+## セッション 2026-11-22 05:00（/loop 15m・roadmap tick）
+
+### 完了タスク（§6.2 即時完了）
+
+- roadmap 661 行: **型 Combo 変更は params を既定に置換** — `EntityEditorInspectorComponentTypeComboApply`（659）で充足と判断し実装スキップ
+
+### 推測した用途（§6.4）
+
+- **制作:** 659/660 と同じ（型変更時の params 初期化）
+
+### ビルド
+
+- `verify_component_combo_default_params.py` + `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 型 Combo 既定置換 | 有効（既存実装） | コンポーネント内部パラメータを json で編集 |
+
+### 次 tick 候補
+
+- 直近ドロップ適用が選択中 Cmp のみ（roadmap 662 行）
