@@ -9541,3 +9541,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - SetupPreviewCamera が自由位置のみで StageView 未使用（roadmap 611 行）
+
+---
+
+## セッション 2026-11-21 20:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 611 行: **`SceneEntityEditorPreviewStageViewCameraFallback`** で CmpCamera 不在時に `ResolveStageViewFramingBounds` + `SetupStageViewCamera`（固定 `0,1.6,-6` 廃止）
+
+### 推測した用途（§6.4）
+
+- **制作:** Edit タブの初期プレビューが本編 StageView に近い視点で配置確認できる
+- **Authoring:** player_friendly_camera_policy に沿ったエディタ内プレビュー
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレビューカメラ | 有効 | コンポーネント編集とプレビュー確認の流れ |
+
+### 次 tick 候補
+
+- 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（roadmap 614 行）

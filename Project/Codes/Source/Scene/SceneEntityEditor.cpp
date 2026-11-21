@@ -18,6 +18,7 @@
 #include "Scene/SceneEntityEditorDebugHotkeys.h"
 #include "Scene/SceneEntityEditorInEditorPlayTick.h"
 #include "Scene/SceneEntityEditorPreviewCameraSetup.h"
+#include "Scene/SceneEntityEditorPreviewStageViewCameraFallback.h"
 #include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
 #include "Scene/SceneEntityEditorEditViewDebugCameraDraw.h"
 #include "Scene/SceneEntityEditorEditViewTransformDrag.h"
@@ -124,9 +125,10 @@ void SceneEntityEditor::SetupPreviewCamera() {
           previewEntities_, AllowDebugCameraControl())) {
     return;
   }
-  if (Atrum::Camera *camera = GetCamera()) {
-    camera->SetTranslate(Atrum::Math::Vector3{0.0f, 1.6f, -6.0f});
-    camera->UpdateMatrix();
+  if (editor_) {
+    ApplyPreviewStageViewCameraFallback(*this, *editor_);
+  } else {
+    SetupStageViewCamera();
   }
 }
 

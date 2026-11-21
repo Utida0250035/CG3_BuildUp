@@ -503,6 +503,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewStageViewCameraFallback.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewEditorAssetPathRelink.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1122,6 +1126,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewCameraSetup.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewBuildUpParityRebuild.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewEditorAssetPathRelink.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewStageViewCameraFallback.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEnterSceneDocumentLoadPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeViewCameraDraw.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayQueue.h" />

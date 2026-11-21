@@ -608,7 +608,7 @@
 
 ### SceneEntityEditor
 - [x] EnterScene が毎回ディスクから Load し編集中ドキュメントを上書き
-- [ ] SetupPreviewCamera が自由位置のみで StageView 未使用（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] SetupPreviewCamera が自由位置のみで StageView 未使用（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### EntityEditorDefinition
 - [ ] 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（spec: feature-memos/component_split_guidelines.md）
