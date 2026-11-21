@@ -28,7 +28,7 @@ msbuild Project/CG2_BuildUp.slnx /p:Configuration=Release /p:Platform=x64 /m /v:
 EditorAssets/Tools/CursorAI/runReleaseStartupSmoke.ps1 -Configuration Release -SmokeFrames 90
 ```
 
-- 環境変数 `ATRUM_RELEASE_SMOKE_FRAMES` を設定し、約 90 フレームで正常終了（exit 0）すること
+- 起動引数 `--smoke-frames=90`（または環境変数 `ATRUM_RELEASE_SMOKE_FRAMES`）で約 90 フレーム後に正常終了（exit 0）
 - 実装メモ: `release_startup_smoke.md`、`ReleaseStartupSmokeFrames.cpp`
 
 ## 3. 手動スモーク（タイトル表示の目視）

@@ -14,10 +14,10 @@ if (!(Test-Path $ExePath)) {
 }
 
 $WorkDir = Split-Path $ExePath -Parent
-$env:ATRUM_RELEASE_SMOKE_FRAMES = "$SmokeFrames"
+$argList = "--smoke-frames=$SmokeFrames"
 
-Write-Host "Smoke: $ExePath ($SmokeFrames frames)"
-$p = Start-Process -FilePath $ExePath -WorkingDirectory $WorkDir -PassThru -Wait
+Write-Host "Smoke: $ExePath ($SmokeFrames frames) $argList"
+$p = Start-Process -FilePath $ExePath -WorkingDirectory $WorkDir -ArgumentList $argList -PassThru -Wait
 if ($p.ExitCode -ne 0) {
   Write-Error "Smoke failed with exit code $($p.ExitCode)"
   exit $p.ExitCode

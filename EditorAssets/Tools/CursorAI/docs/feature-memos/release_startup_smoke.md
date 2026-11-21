@@ -12,7 +12,10 @@
 1. `Release|x64` で `CG2_BuildUp.slnx` をビルド
 2. `EditorAssets/Tools/CursorAI/runReleaseStartupSmoke.ps1` を実行
 
-環境変数 `ATRUM_RELEASE_SMOKE_FRAMES`（既定 90）で `WinMain` が自動終了する。通常プレイでは未設定のまま。
+- **CLI（優先）:** `CG2_BuildUp.exe --smoke-frames=90` または `--smoke-frames 90`
+- **環境変数:** `ATRUM_RELEASE_SMOKE_FRAMES`（CLI 未指定時のフォールバック）
+
+通常プレイではどちらも指定しない。
 
 ## 成果物パス
 

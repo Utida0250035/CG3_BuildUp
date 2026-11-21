@@ -46,8 +46,8 @@ def main() -> int:
         errors.append("missing ReleaseStartupSmokeFrames.cpp")
     if main_cpp.is_file():
         text = main_cpp.read_text(encoding="utf-8", errors="replace")
-        if "ReadReleaseStartupSmokeFrameBudget" not in text:
-            errors.append("main.cpp must honor smoke frame budget")
+        if "ResolveReleaseStartupSmokeFrameBudget" not in text:
+            errors.append("main.cpp must honor smoke frame budget via ResolveReleaseStartupSmokeFrameBudget")
     else:
         errors.append("missing main.cpp")
 

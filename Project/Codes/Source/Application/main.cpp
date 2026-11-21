@@ -6,7 +6,7 @@
 #include "ForDebug/SubsystemFrameProfiler.h"
 #endif
 
-int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
+int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR lpCmdLine, _In_ int) {
   Atrum::CoUnInitializer coUnInitializer;
 
   if (!Atrum::File::SetWorkingDirectoryToExecutableDirectory()) {
@@ -22,7 +22,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
   Atrum::GameOrder *gameOrder = Atrum::GameOrder::Instance();
 
-  const int smokeFrameBudget = Atrum::Application::ReadReleaseStartupSmokeFrameBudget();
+  const int smokeFrameBudget =
+      Atrum::Application::ResolveReleaseStartupSmokeFrameBudget(lpCmdLine);
   int smokeFrameCount = 0;
 
   while (true) {

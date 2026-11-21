@@ -542,7 +542,7 @@
 - [x] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
 
 ### main
-- [ ] スモーク起動用 CLI（例: フレーム数上限）が main に無い
+- [x] スモーク起動用 CLI（例: フレーム数上限）が main に無い
 
 ## Editor
 

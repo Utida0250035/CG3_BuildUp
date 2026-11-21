@@ -8493,3 +8493,33 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - スモーク起動用 CLI（roadmap `main`・`GAP-Ship-main-001` 付近）
+
+---
+
+## セッション 2026-11-21 10:45（/loop 15m・roadmap tick）
+
+### 完了
+
+- `ReleaseStartupSmokeCliParse` / `ResolveReleaseStartupSmokeFrameBudget`
+- `main` が `lpCmdLine` の `--smoke-frames` を優先（環境変数はフォールバック）
+- `runReleaseStartupSmoke.ps1` を CLI 起動に変更、`verify_release_startup_smoke_cli.py`、CI
+- roadmap 当該行 `[x]`（`GAP-Ship-main-001`）
+
+### 推測した用途（§6.4）
+
+- **CI/Ship:** 非対話で N フレーム後に終了する公式フック
+- **手動:** コマンドラインからスモーク長を指定
+
+### ビルド
+
+- Cloud VM のため未実行（C++ 追加は vcxproj 登録済み）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| main smoke CLI | 有効 | 配布ビルドのランタイムを最小起動で検証する |
+
+### 次 tick 候補
+
+- roadmap 先頭の Editor 系 `- [ ]`（例: StageViewCameraTuning）
