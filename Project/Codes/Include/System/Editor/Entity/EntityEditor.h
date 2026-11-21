@@ -110,7 +110,7 @@ public:
   void ProcessDroppedFileImports();
 
   /// 現在のシーン定義からプレビュー用 Entity 列を生成（親子付け済み）
-  std::vector<std::unique_ptr<Entity>> BuildPreviewScene() const;
+  std::vector<std::unique_ptr<Entity>> BuildPreviewScene();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   /// ドック分割レイアウト（シーンビュー矩形を EditorFrame に登録）

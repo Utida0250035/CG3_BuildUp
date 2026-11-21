@@ -14,12 +14,14 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentSlotKind,
                              {ComponentSlotKind::Draw, "Draw"},
                              {ComponentSlotKind::Data, "Data"}})
 
-bool IsKnownEntityEditorComponent(const std::string &typeName) {
+} // namespace
+
+bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName) {
   return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
          typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
          typeName == "CmpRuntimeTexturePath" || typeName == "CmpColliderAabb" ||
-         typeName == "CmpCamera" ||          typeName == "CmpParticleEmitter" ||
+         typeName == "CmpCamera" || typeName == "CmpParticleEmitter" ||
          typeName == "CmpBounceBall" || typeName == "CmpBallKinematics" ||
          typeName == "CmpBallAxisAlignedBounce" ||
          typeName == "CmpBallBounceImpactFx" ||
@@ -45,8 +47,6 @@ ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
   }
   return ComponentSlotKind::Draw;
 }
-
-} // namespace
 
 nlohmann::json DefaultParamsForType(const std::string &typeName) {
   if (typeName == "CmpMeshSphere") {
@@ -176,7 +176,7 @@ void from_json(const nlohmann::json &j, ComponentSlot &slot) {
   if (j.contains("kind") && !j.at("kind").is_null()) {
     from_json(j.at("kind"), slot.kind);
   }
-  if (IsKnownEntityEditorComponent(slot.typeName)) {
+  if (IsKnownEditorRuntimeComponentTypeName(slot.typeName)) {
     slot.kind = DefaultKindForTypeName(slot.typeName);
   } else if (!j.contains("kind") || j.at("kind").is_null()) {
     slot.kind = ComponentSlotKind::Draw;

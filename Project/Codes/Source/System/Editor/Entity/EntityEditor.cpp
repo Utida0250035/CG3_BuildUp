@@ -4,6 +4,7 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
+#include "System/Editor/Scene/EditorSceneRuntimeBuildWarnings.h"
 #include "System/Entity/Entity.h"
 #include "System/Json/JsonHandler.h"
 #include <algorithm>
@@ -244,8 +245,15 @@ bool EntityEditor::TickPendingRequests() {
   return needApply;
 }
 
-std::vector<std::unique_ptr<Entity>> EntityEditor::BuildPreviewScene() const {
-  return BuildEntitiesFromSceneDocument(scene_);
+std::vector<std::unique_ptr<Entity>> EntityEditor::BuildPreviewScene() {
+  EditorSceneRuntimeBuildWarnings warnings;
+  warnings.Clear();
+  std::vector<std::unique_ptr<Entity>> entities =
+      BuildEntitiesFromSceneDocument(scene_, &warnings);
+  if (!warnings.lines.empty()) {
+    ui_.importStatusMessage = warnings.FormatForImportStatusMessage();
+  }
+  return entities;
 }
 
 void EntityEditor::CreateNewSceneFile() {

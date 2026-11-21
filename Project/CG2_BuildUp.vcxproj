@@ -631,6 +631,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp">
@@ -1050,6 +1051,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneJsonFileEntry.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiEditableSceneList.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeEntityInitializePolicy.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeInstanceNamePolicy.h" />
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorReferenceGrid.h" />

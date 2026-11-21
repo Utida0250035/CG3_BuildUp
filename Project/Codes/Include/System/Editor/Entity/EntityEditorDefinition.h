@@ -57,6 +57,12 @@ EntityDefinition MakeDefaultEntityDefinition(const std::string &entityName);
 /// 登録済みコンポーネント種別の既定パラメータ（JSON）
 nlohmann::json DefaultParamsForType(const std::string &typeName);
 
+/// 既知 typeName の既定スロット種別（JSON 手編集の照合用）
+ComponentSlotKind DefaultKindForTypeName(const std::string &typeName);
+
+/// EditorSceneRuntime の TryAddEmptyComponent で追加可能な型名
+bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName);
+
 void to_json(nlohmann::json &j, const ComponentSlot &slot);
 void from_json(const nlohmann::json &j, ComponentSlot &slot);
 void to_json(nlohmann::json &j, const EntityDefinition &definition);

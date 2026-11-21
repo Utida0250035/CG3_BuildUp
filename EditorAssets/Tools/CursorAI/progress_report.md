@@ -8672,3 +8672,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - スロット種別不一致のコンポーネント無警告スキップ（`GAP-Editor-EditorSceneRuntime-002`）
+
+---
+
+## セッション 2026-11-21 12:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EditorSceneRuntime-002`: `TryAddEmptyComponent` 失敗時に `EditorSceneRuntimeBuildWarnings` で理由を記録
+- プレビュー再構築時、プロジェクトパネル `importStatusMessage` に表示（種別不一致／未対応型）
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** JSON 手編集で Draw/Upd/Data を誤ったときに黙って消えない
+- **デバッグ:** プレビュー適用直後にどの Entity のどのコンポーネントが落ちたか確認
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| スロット種別警告 | 有効 | コンポーネント構成を json として編集できる |
+
+### 次 tick 候補
+
+- エディットビュー配置ギズモ（`GAP-Editor-SceneEntityEditor-002`）

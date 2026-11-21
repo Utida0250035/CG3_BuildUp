@@ -1,5 +1,6 @@
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 
+#include "System/Editor/Scene/EditorSceneRuntimeBuildWarnings.h"
 #include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
 #include "System/Editor/EditorSceneRuntimeInstanceNamePolicy.h"
 
@@ -496,7 +497,8 @@ void TryLoadEditorAssetPathPreview(Entity &entity) {
 }
 
 std::unique_ptr<Entity> BuildEntityFromDefinition(
-    const EntityDefinition &definition) {
+    const EntityDefinition &definition,
+    EditorSceneRuntimeBuildWarnings *warnings) {
   auto entity = std::make_unique<Entity>(definition.entityName);
   entity->SetInitialTransform(definition.initialTransform);
 
@@ -509,6 +511,9 @@ std::unique_ptr<Entity> BuildEntityFromDefinition(
   for (const ComponentSlot &slot : orderedSlots) {
     if (!EntityHasComponentForSlot(*entity, slot)) {
       if (!TryAddEmptyComponent(*entity, slot)) {
+        if (warnings != nullptr) {
+          warnings->RecordSkippedComponentSlot(definition.entityName, slot);
+        }
         continue;
       }
     }
@@ -563,12 +568,14 @@ bool TryLoadSceneDocument(const std::string &jsonFilePath,
 }
 
 std::vector<std::unique_ptr<Entity>>
-BuildEntitiesFromSceneDocument(const EditorSceneDocument &document) {
+BuildEntitiesFromSceneDocument(const EditorSceneDocument &document,
+                               EditorSceneRuntimeBuildWarnings *warnings) {
   std::vector<std::unique_ptr<Entity>> entities;
   entities.reserve(document.instances.size());
 
   for (const SceneEntityInstance &instance : document.instances) {
-    auto entity = BuildEntityFromDefinition(instance.definition);
+    auto entity =
+        BuildEntityFromDefinition(instance.definition, warnings);
     ApplySceneInstanceName(*entity, instance);
     entities.push_back(std::move(entity));
   }

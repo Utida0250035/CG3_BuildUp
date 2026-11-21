@@ -13,12 +13,16 @@ class Entity;
 
 namespace Atrum::EntityEditor {
 
+struct EditorSceneRuntimeBuildWarnings;
+
 /// シーン JSON の読み込みと Entity 実体化（エディタ・実行シーン共通）
 bool TryLoadSceneDocument(const std::string &jsonFilePath,
                           EditorSceneDocument &outDocument);
 
 std::vector<std::unique_ptr<Entity>>
-BuildEntitiesFromSceneDocument(const EditorSceneDocument &document);
+BuildEntitiesFromSceneDocument(
+    const EditorSceneDocument &document,
+    EditorSceneRuntimeBuildWarnings *warnings = nullptr);
 
 /// ルート Entity の Draw と、親が非 Active な子のフォールバック描画。
 void DrawSceneDocumentEntities(

@@ -659,6 +659,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp" />
