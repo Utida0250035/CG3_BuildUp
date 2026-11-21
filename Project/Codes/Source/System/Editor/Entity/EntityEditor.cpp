@@ -4,6 +4,7 @@
 #include "System/Editor/Entity/EntityEditorSceneDocumentLoadFromPath.h"
 #include "System/Editor/Entity/EntityEditorDroppedImportSpawnSceneInstances.h"
 #include "System/Editor/Entity/EntityEditorDroppedImportPathQueue.h"
+#include "System/Editor/Entity/EntityEditorDroppedImportRequestPreview.h"
 #include "System/Editor/Entity/EntityEditorPrefabSpawnFirstInstanceRoot.h"
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 #include "System/Editor/Entity/EntityEditorRemoveSelectedInstances.h"
@@ -277,6 +278,9 @@ void EntityEditor::ProcessDroppedFileImports() {
         "Imported へコピー: " + importedPaths.back() +
         "（対応拡張子のみシーン追加: obj/png/jpg）";
   }
+
+  EntityEditorDroppedImportRequestPreview::AfterProcessing(*this, spawned,
+                                                         importedPaths);
 }
 
 } // namespace Atrum::EntityEditor

@@ -9403,3 +9403,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - インポート後プレビュー再適用なし（roadmap 603 行）
+
+---
+
+## セッション 2026-11-21 18:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-020`（roadmap 603 行）: `EntityEditorDroppedImportRequestPreview` でドロップ処理後に **`requestApplyPreview` を必ずキュー**（spawn 済みは spawn 側 Notify、コピーのみは `NotifyPreviewOnly`）
+
+### 推測した用途（§6.4）
+
+- **制作:** D&D 直後にエディタプレビューへ反映（手動「エディタ内プレビュー」待ちを削減）
+- **デバッグ:** 一括ドロップ後も `TickPendingRequests` → `RebuildPreviewScene` へ接続
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| インポート後プレビュー | 有効 | シーン構成をエディタ上プレイ試験できる流れを維持 |
+
+### 次 tick 候補
+
+- EntityEditor 節は 603 まで完了。次はファイル出現順: SceneEntityEditor プレビューと本番 SceneBuildUp 経路の差分（roadmap 583 行）または EditorSceneRuntime 606 行

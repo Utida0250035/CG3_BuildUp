@@ -600,7 +600,7 @@
 - [x] 起動設定前に SaveToJsonPath
 - [x] プレハブ出力が Definition のみ
 - [x] ループ内で lastImported が上書き
-- [ ] インポート後プレビュー再適用なし
+- [x] インポート後プレビュー再適用なし
 
 ### EditorSceneRuntime
 - [ ] EntityHasComponentForSlot が Mesh／Billboard を認識しない（spec: feature-memos/component_split_guidelines.md）
