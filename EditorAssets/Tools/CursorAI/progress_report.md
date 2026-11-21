@@ -8700,3 +8700,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - エディットビュー配置ギズモ（`GAP-Editor-SceneEntityEditor-002`）
+
+---
+
+## セッション 2026-11-21 12:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-SceneEntityEditor-002`: エディットビューで選択オブジェクトを床面（Y=0.05）左ドラッグ移動
+- 選択位置に RGB 軸ラインの簡易ギズモ表示、`EditorEditViewScreenRay` でピック
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** インスペクタ数値入力なしでシーン内配置を調整し JSON 保存
+- **デバッグ:** 右ドラッグは従来どおりカメラ、左ドラッグはオブジェクト移動
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| エディットビュー配置 | 有効 | シーンの構成を保存しエディタ上でプレイ試験できる |
+
+### 次 tick 候補
+
+- 選択エンティティ複製 UI（`GAP-Editor-EntityEditor-001`）

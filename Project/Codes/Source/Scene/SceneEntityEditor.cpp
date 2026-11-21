@@ -17,6 +17,8 @@
 #include "Scene/SceneEntityEditorPreviewCameraSetup.h"
 #include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
 #include "Scene/SceneEntityEditorEditViewDebugCameraDraw.h"
+#include "Scene/SceneEntityEditorEditViewTransformDrag.h"
+#include "Scene/SceneEntityEditorEditViewTransformGizmoDraw.h"
 #include "Scene/SceneEntityEditorSceneViewRenderCameraBind.h"
 #include "Scene/SceneEntityEditorExitSceneTeardown.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -208,6 +210,10 @@ void SceneEntityEditor::Update() {
   SceneEntityEditorDebugHotkeys::Tick(Instance());
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  SceneEntityEditorEditViewTransformDrag::Tick(*this);
+#endif
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
   const Editor::SceneViewTab viewTab =
       Editor::EditorFrame::Instance().SceneViewTabSelection();
   const bool simulateRuntimeTab = viewTab == Editor::SceneViewTab::Runtime;
@@ -336,6 +342,9 @@ void SceneEntityEditor::DrawSceneViewContent(
 #endif
 
   DrawPreviewEntities();
+  if (isEditViewPass && editor_ != nullptr) {
+    SceneEntityEditorEditViewTransformGizmoDraw::Draw(engine, *this);
+  }
   if (!isEditViewPass) {
     Atrum::Particle::DrawEmitterManagerForActiveScene();
   }

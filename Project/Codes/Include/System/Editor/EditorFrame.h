@@ -51,6 +51,10 @@ public:
 
   bool EditViewHovered() const { return editViewHovered_; }
 
+  void SetEditViewImageScreenBounds(float minX, float minY, float maxX,
+                                    float maxY);
+  bool TryMapMouseToEditViewLocal(float &outLocalX, float &outLocalY) const;
+
   /// 描画診断メニュー（実体は EditorFrameLightingDiagnostics）
   void DrawRenderDiagnosticsMenuItems();
 
@@ -65,6 +69,11 @@ private:
   SceneViewDisplaySize gameDisplay_{};
   SceneViewDisplaySize runtimeDisplay_{};
   bool editViewHovered_ = false;
+  float editViewImageMinX_ = 0.0f;
+  float editViewImageMinY_ = 0.0f;
+  float editViewImageMaxX_ = 0.0f;
+  float editViewImageMaxY_ = 0.0f;
+  bool editViewImageBoundsValid_ = false;
   SceneViewTab sceneViewTab_ = SceneViewTab::Edit;
 };
 

@@ -114,6 +114,12 @@ void LayoutDedicatedSceneViewWindow(
       const bool hovered = ImGui::IsItemHovered();
       SubViewportRect renderRect = frame.SceneViewRect(tab);
       frame.SetSceneViewRect(tab, renderRect, hovered);
+      if (tab == SceneViewTab::Edit) {
+        const ImVec2 rectMin = ImGui::GetItemRectMin();
+        const ImVec2 rectMax = ImGui::GetItemRectMax();
+        frame.SetEditViewImageScreenBounds(rectMin.x, rectMin.y, rectMax.x,
+                                           rectMax.y);
+      }
       if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
         frame.SetSceneViewTab(tab);
       }
@@ -135,7 +141,7 @@ void LayoutEntityEditorSceneViews(const SceneViewPanelOptions &options) {
   if (options.showEditView) {
     LayoutDedicatedSceneViewWindow(
         kEditSceneViewTitle, SceneViewTab::Edit,
-        "エディットビュー — デバッグカメラ・Unity風グリッド", nullptr,
+        "エディットビュー — 左ドラッグで配置・右でカメラ", nullptr,
         showPhase, phase);
   }
   if (options.showGameView) {

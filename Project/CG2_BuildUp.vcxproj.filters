@@ -598,6 +598,8 @@
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformDrag.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformGizmoDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp" />
@@ -646,6 +648,7 @@
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorEditViewScreenRay.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />

@@ -196,6 +196,9 @@ jobs:
       - name: Verify EditorSceneRuntime slot kind warnings
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_slot_kind_warn.py
 
+      - name: Verify SceneEntityEditor edit view transform drag
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_edit_view_transform_drag.py
+
       - name: Verify launch_config startupScenePath normalization
         run: python3 EditorAssets/Tools/CursorAI/verify_launch_config_startup_path_normalize.py
 

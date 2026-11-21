@@ -50,6 +50,10 @@ public:
   void ApplyGameViewStageCameraForDraw();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  EntityEditor::EntityEditor *MutableEntityEditor() { return editor_.get(); }
+#endif
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
   /// Edit ビューホバー時のみ CmpCamera へ Debug 入力を適用する。
   void ApplyEditViewHoveredDebugCameraBeforeDraw();
 #endif

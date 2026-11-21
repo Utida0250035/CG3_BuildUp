@@ -47,6 +47,33 @@ void EditorFrame::ResetPerFrame() {
   gameDisplay_ = {};
   runtimeDisplay_ = {};
   editViewHovered_ = false;
+  editViewImageBoundsValid_ = false;
+}
+
+void EditorFrame::SetEditViewImageScreenBounds(const float minX, const float minY,
+                                               const float maxX,
+                                               const float maxY) {
+  editViewImageMinX_ = minX;
+  editViewImageMinY_ = minY;
+  editViewImageMaxX_ = maxX;
+  editViewImageMaxY_ = maxY;
+  editViewImageBoundsValid_ = maxX > minX && maxY > minY;
+}
+
+bool EditorFrame::TryMapMouseToEditViewLocal(float &outLocalX,
+                                             float &outLocalY) const {
+  if (!editViewHovered_ || !editViewImageBoundsValid_) {
+    return false;
+  }
+  const ImVec2 mouse = ImGui::GetIO().MousePos;
+  outLocalX = mouse.x - editViewImageMinX_;
+  outLocalY = mouse.y - editViewImageMinY_;
+  const float w = editViewImageMaxX_ - editViewImageMinX_;
+  const float h = editViewImageMaxY_ - editViewImageMinY_;
+  if (outLocalX < 0.0f || outLocalY < 0.0f || outLocalX > w || outLocalY > h) {
+    return false;
+  }
+  return true;
 }
 
 void EditorFrame::SetSceneViewRect(const SceneViewTab tab,
