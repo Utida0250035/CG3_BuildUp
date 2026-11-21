@@ -25,6 +25,14 @@ enum class ImportedAssetNameCollisionPolicy {
   BatchPrefixThenIncrement,
 };
 
+/// Entities へプレハブ JSON を新規出力するときの同名衝突方針
+enum class PrefabAssetNameCollisionPolicy {
+  AutoIncrementStem,
+  OverwriteExisting,
+  TimestampSuffix,
+  BatchPrefixThenIncrement,
+};
+
 /// ImGui・JSON 操作の UI 状態（シーンはプレビュー生成のみ担当）
 struct UiState {
   /// 編集中シーン JSON（既定は Scenes フォルダ）
@@ -86,6 +94,10 @@ struct UiState {
   int prefabSpawnBatchCount = 1;
   /// プレハブ複数配置時の X 間隔
   float prefabSpawnSpacingX = 1.25f;
+  PrefabAssetNameCollisionPolicy prefabOutputCollisionPolicy =
+      PrefabAssetNameCollisionPolicy::AutoIncrementStem;
+  /// `BatchPrefixThenIncrement` 用（プレハブ新規出力）
+  std::string prefabOutputBatchNamePrefix{};
 };
 
 /// エンティティ定義の編集・シリアライズ・プレビュー用 Entity 生成

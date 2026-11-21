@@ -670,6 +670,9 @@
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetProjectPanelList.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetUiPathScrub.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetCollisionPolicy.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.cpp" />
@@ -1528,6 +1531,9 @@
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetCollisionPolicy.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.h" />

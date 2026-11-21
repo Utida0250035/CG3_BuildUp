@@ -718,6 +718,18 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetCollisionPolicy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1332,6 +1344,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetCollisionPolicy.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveSelectedInstances.h" />

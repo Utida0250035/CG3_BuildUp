@@ -642,7 +642,7 @@
 - [x] プレハブ JSON は新規出力だけで、削除と名前変更が無い
 - [x] 出力が MakeUnique で上書き更新できない
 - [x] OpenScene が selectedPrefabPath をクリアしない
-- [ ] 衝突時 stem_N 連番
+- [x] 衝突時 stem_N 連番
 
 ### EntityEditorUi
 - [ ] ヒエラルキーのドラッグ複製・並べ替えが無い

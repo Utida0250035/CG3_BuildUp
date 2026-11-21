@@ -82,6 +82,9 @@ jobs:
       - name: Verify prefab clear on open scene
         run: python3 EditorAssets/Tools/CursorAI/verify_prefab_clear_on_open_scene.py
 
+      - name: Verify prefab collision policy
+        run: python3 EditorAssets/Tools/CursorAI/verify_prefab_collision_policy.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

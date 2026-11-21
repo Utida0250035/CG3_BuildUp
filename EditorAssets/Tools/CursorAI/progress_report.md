@@ -10139,3 +10139,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 衝突時 stem_N 連番（roadmap 645 行）
+
+---
+
+## セッション 2026-11-22 01:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 645 行: **`ResolvePrefabJsonOutputPath`** と出力衝突 UI（stem_N／上書き／タイムスタンプ／接頭辞+連番）
+
+### 推測した用途（§6.4）
+
+- **制作:** 同名プレハブ反復出力の命名方針を Imported と同様に選択
+- **Authoring:** stem_N 自動リネームをステータスで可視化
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレハブ出力の衝突命名 | 有効 | ファイルの名前変更が行える／プレハブ化して json 保存 |
+
+### 次 tick 候補
+
+- EntityEditorUi 節の先頭未完了 `- [ ]`（roadmap 647 行以降）

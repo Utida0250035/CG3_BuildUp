@@ -15,6 +15,9 @@
 #include "System/Editor/Prefab/PrefabAssetBatchSpawnUi.h"
 #include "System/Editor/Prefab/PrefabAssetProjectPanelList.h"
 #include "System/Editor/Prefab/PrefabAssetOverwriteSaveUi.h"
+#include "System/Editor/Prefab/PrefabAssetCollisionPolicy.h"
+#include "System/Editor/Prefab/PrefabAssetOutputCollisionPolicyUi.h"
+#include "System/Editor/Prefab/PrefabAssetAutoStemRenameReport.h"
 #include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
@@ -867,15 +870,25 @@ void EntityEditor::DrawProjectPanel() {
   ImGui::Spacing();
   ImGui::TextUnformatted("プレハブ一覧 (Entity JSON)");
   ImGui::Separator();
+  Atrum::Editor::Prefab::PrefabAssetOutputCollisionPolicyUi::
+      DrawPrefabOutputCollisionPolicyControls(ui_);
 
   if (!scene_.instances.empty() &&
       ImGui::Button("選択エンティティをプレハブ JSON へ出力")) {
-    Atrum::Editor::Prefab::EnsureEntitiesPrefabDirectoryExists();
-    const std::string path = Atrum::Editor::Prefab::MakeUniquePrefabFilePath(
-        SelectedDefinition().entityName);
-    if (!path.empty()) {
-      SaveSelectedInstanceToPrefabPath(path);
+    const std::string entityName = SelectedDefinition().entityName;
+    const std::string path =
+        Atrum::Editor::Prefab::ResolvePrefabJsonOutputPath(
+            entityName, ui_.prefabOutputCollisionPolicy,
+            ui_.prefabOutputBatchNamePrefix);
+    if (!path.empty() && SaveSelectedInstanceToPrefabPath(path)) {
       ui_.selectedPrefabPath = path;
+      ui_.importStatusMessage = "プレハブ出力: " + path;
+      if (Atrum::Editor::Prefab::PrefabAssetAutoStemRenameReport::
+              UsedAutoStemIncrementRename(entityName, path)) {
+        ui_.importStatusMessage += "（自動リネーム stem_N）";
+      }
+    } else if (!path.empty()) {
+      ui_.importStatusMessage = "プレハブ出力失敗: " + path;
     }
   }
   Atrum::Editor::Prefab::PrefabAssetOverwriteSaveUi::

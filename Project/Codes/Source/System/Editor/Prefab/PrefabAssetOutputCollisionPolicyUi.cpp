@@ -1,0 +1,32 @@
+#include "System/Editor/Prefab/PrefabAssetOutputCollisionPolicyUi.h"
+
+#include "System/Editor/Entity/EntityEditor.h"
+
+#include <cstring>
+#include <imgui.h>
+
+namespace Atrum::Editor::Prefab::PrefabAssetOutputCollisionPolicyUi {
+
+void DrawPrefabOutputCollisionPolicyControls(EntityEditor::UiState &ui) {
+  ImGui::TextDisabled(
+      "新規出力の同名衝突: 既定は stem_1, stem_2 …（上書きは別ボタンでも可）");
+  const char *policyLabels[] = {"連番 (stem_N)", "上書き",
+                                "タイムスタンプ付与", "接頭辞+連番"};
+  int policyIndex = static_cast<int>(ui.prefabOutputCollisionPolicy);
+  if (ImGui::Combo("プレハブ出力の同名衝突", &policyIndex, policyLabels,
+                   IM_ARRAYSIZE(policyLabels))) {
+    ui.prefabOutputCollisionPolicy =
+        static_cast<EntityEditor::PrefabAssetNameCollisionPolicy>(policyIndex);
+  }
+  if (ui.prefabOutputCollisionPolicy ==
+      EntityEditor::PrefabAssetNameCollisionPolicy::BatchPrefixThenIncrement) {
+    char buffer[128]{};
+    std::strncpy(buffer, ui.prefabOutputBatchNamePrefix.c_str(),
+                 sizeof(buffer) - 1);
+    if (ImGui::InputText("接頭辞", buffer, sizeof(buffer))) {
+      ui.prefabOutputBatchNamePrefix = buffer;
+    }
+  }
+}
+
+} // namespace Atrum::Editor::Prefab::PrefabAssetOutputCollisionPolicyUi
