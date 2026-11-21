@@ -9514,3 +9514,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - EnterScene が毎回ディスクから Load（roadmap 610 行）
+
+---
+
+## セッション 2026-11-21 19:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 610 行 / `GAP-Editor-SceneEntityEditor-003`: **`SceneEntityEditorEnterSceneDocumentLoadPolicy`** で初回・起動パスのみディスク読込、BuildUp／他シーンからの再入場はメモリ上の `EntityEditor` ドキュメントを維持
+
+### 推測した用途（§6.4）
+
+- **制作:** 未保存の配置・transform を BuildUp 試行後も保持
+- **Authoring:** パーティクルエディタやフェード遷移の往復で編集状態を失わない
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| EnterScene 読込 | 有効 | エンティティ json の作成/編集とエディタ上プレイ試験の流れ |
+
+### 次 tick 候補
+
+- SetupPreviewCamera が自由位置のみで StageView 未使用（roadmap 611 行）

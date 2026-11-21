@@ -65,6 +65,7 @@ private:
   std::unique_ptr<EntityEditor::EntityEditor> editor_{};
   std::vector<std::unique_ptr<Entity>> previewEntities_{};
   std::string pendingBootJsonPath_{};
+  bool hasEnteredSceneEntityEditor_ = false;
 
   void SetupPreviewCamera();
   void RebuildPreviewScene();

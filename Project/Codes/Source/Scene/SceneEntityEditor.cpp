@@ -5,6 +5,7 @@
 #include "Scene/SceneBuildUpStageCameraFraming.h"
 #include "Scene/SceneEntityEditorPreviewBuildUpParityRebuild.h"
 #include "Scene/SceneEntityEditorPreviewEditorAssetPathRelink.h"
+#include "Scene/SceneEntityEditorEnterSceneDocumentLoadPolicy.h"
 #endif
 
 #include "Camera/Camera.h"
@@ -149,11 +150,17 @@ void SceneEntityEditor::EnterScene() {
   EnsureCommonResources();
   SceneEntityEditorAuthoringLightingPreview::ApplyOnEnterEntityEditor();
   if (editor_) {
+    const SceneEntityEditorEnterSceneLoadPlan loadPlan =
+        PlanEnterSceneDocumentLoad(pendingBootJsonPath_, *editor_,
+                                   hasEnteredSceneEntityEditor_);
     if (!pendingBootJsonPath_.empty()) {
       editor_->Ui().jsonFilePath = pendingBootJsonPath_;
       pendingBootJsonPath_.clear();
     }
-    editor_->LoadFromJsonPath(editor_->Ui().jsonFilePath);
+    if (loadPlan.loadFromDisk) {
+      editor_->LoadFromJsonPath(loadPlan.jsonPathToLoad);
+    }
+    hasEnteredSceneEntityEditor_ = true;
     RebuildPreviewScene();
   } else {
     SetupPreviewCamera();

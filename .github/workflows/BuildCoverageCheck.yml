@@ -115,6 +115,9 @@ jobs:
       - name: Verify SceneEntityEditor preview BuildUp parity route
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_preview_buildup_parity.py
 
+      - name: Verify SceneEntityEditor EnterScene preserves in-memory edits
+        run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_enter_scene_preserve_memory.py
+
       - name: Verify scene JSON load failure notification
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_load_scene_json_failure_notify.py
 
