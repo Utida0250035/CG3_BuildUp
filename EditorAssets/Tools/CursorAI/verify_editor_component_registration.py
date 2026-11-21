@@ -19,7 +19,7 @@ def read_text(path: Path) -> str:
 
 def extract_definition_known(text: str) -> set[str]:
     match = re.search(
-        r"bool IsKnownEntityEditorComponent\(const std::string &typeName\) \{([^}]+)\}",
+        r"bool IsKnownEditorRuntimeComponentTypeName\(const std::string &typeName\) \{([^}]+)\}",
         text,
         re.DOTALL,
     )
@@ -108,7 +108,7 @@ def main() -> int:
     warnings: list[str] = []
 
     if not definition:
-        errors.append("IsKnownEntityEditorComponent: no Cmp* types parsed")
+        errors.append("IsKnownEditorRuntimeComponentTypeName: no Cmp* types parsed")
     if not ui_presets:
         errors.append("kKnownComponents: no Cmp* presets parsed")
     if not runtime_add:

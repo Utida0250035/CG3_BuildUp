@@ -8842,3 +8842,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - CmpMesh／Billboard が TryAddEmptyComponent に無い（`GAP-Editor-EditorSceneRuntime-003`）
+
+---
+
+## セッション 2026-11-21 13:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EditorSceneRuntime-003`: `CmpMesh` / `CmpEditorTextureBillboard` を Definition・Ui プリセット・`TryAddEmptyComponent` に登録
+- スロットパラメータから obj／画像パスをプレビュー用ロード（`modelAssetPath` / `textureFilePath`）
+- `verify_editor_component_registration.py` の関数名パース修正、`verify_editor_scene_runtime_cmp_mesh_billboard_try_add.py` 追加
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** component_split_guidelines の分割例どおり、メッシュ／ビルボードを独立スロットで組み立て
+- **アセット試作:** AssetPath 副作用に頼らず直指定でもプレビュー表示
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 描画コンポーネント分割 | 有効 | 各エンティティのコンポーネント構成を json で作成／編集できる |
+
+### 次 tick 候補
+
+- インスペクタ変更は自動保存しない（`GAP-Editor-EntityEditor-004`）

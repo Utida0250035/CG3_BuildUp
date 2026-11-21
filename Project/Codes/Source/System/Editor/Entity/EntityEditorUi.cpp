@@ -41,6 +41,8 @@ struct KnownComponentEntry {
 
 constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpMeshSphere", ComponentSlotKind::Draw},
+    {"CmpMesh", ComponentSlotKind::Draw},
+    {"CmpEditorTextureBillboard", ComponentSlotKind::Draw},
     {"CmpDrawHitSphere", ComponentSlotKind::Draw},
     {"CmpEditorAssetPath", ComponentSlotKind::Data},
     {"CmpRuntimeTexturePath", ComponentSlotKind::Data},
@@ -190,6 +192,55 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
     if (!ui.lastImportedAssetPath.empty() &&
         ImGui::Button("直近ドロップを assetPath に適用")) {
       p["assetPath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpMesh") {
+    float radius = p.value("radius", 0.5f);
+    if (ImGui::DragFloat("radius", &radius, 0.02f, 0.01f, 64.0f)) {
+      p["radius"] = radius;
+      changed = true;
+    }
+    bool lighting = p.value("isLightingEnabled", true);
+    if (ImGui::Checkbox("isLightingEnabled", &lighting)) {
+      p["isLightingEnabled"] = lighting;
+      changed = true;
+    }
+    changed |= DrawVector4ColorParam("color", p, "color", Math::Vector4::White());
+    std::string modelPath = p.value("modelAssetPath", std::string{});
+    if (ImGui::InputString("modelAssetPath", modelPath)) {
+      p["modelAssetPath"] = modelPath;
+      changed = true;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを modelAssetPath に適用")) {
+      p["modelAssetPath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    return changed;
+  }
+
+  if (slot.typeName == "CmpEditorTextureBillboard") {
+    std::string tex = p.value("textureFilePath", std::string{});
+    changed |= ImGui::InputString("textureFilePath", tex);
+    if (changed) {
+      p["textureFilePath"] = tex;
+    }
+    float width = p.value("billboardWidth", 1.0f);
+    if (ImGui::DragFloat("billboardWidth", &width, 0.02f, 0.01f, 32.0f)) {
+      p["billboardWidth"] = width;
+      changed = true;
+    }
+    float height = p.value("billboardHeight", 1.0f);
+    if (ImGui::DragFloat("billboardHeight", &height, 0.02f, 0.01f, 32.0f)) {
+      p["billboardHeight"] = height;
+      changed = true;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを textureFilePath に適用")) {
+      p["textureFilePath"] = ui.lastImportedAssetPath;
       changed = true;
     }
     return changed;

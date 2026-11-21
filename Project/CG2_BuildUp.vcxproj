@@ -484,7 +484,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -657,7 +661,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp">

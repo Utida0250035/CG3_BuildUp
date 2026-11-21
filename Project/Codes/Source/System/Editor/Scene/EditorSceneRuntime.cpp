@@ -6,6 +6,7 @@
 
 #include "Camera/StageViewFramingBounds.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/Resource/AssetModel.h"
 #include "System/Entity/Components/CmpDrawHitSphere.h"
 #include "System/Entity/Components/CmpColliderAabb.h"
 #include "System/Entity/Components/CmpEditorAssetPath.h"
@@ -50,6 +51,10 @@ void ReadHitSpheresFromJson(const nlohmann::json &j,
   }
 }
 
+void TryApplyCmpMeshObjAssetPath(CmpMesh &mesh, const std::string &path);
+void TryApplyCmpEditorTextureBillboardPath(CmpEditorTextureBillboard &billboard,
+                                           const std::string &path);
+
 bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) {
   if (slot.kind == ComponentSlotKind::Draw) {
     if (slot.typeName == "CmpMeshSphere") {
@@ -57,6 +62,12 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "CmpBillboardInstancedGrid") {
       return entity.HasDrawCmp<CmpBillboardInstancedGrid>();
+    }
+    if (slot.typeName == "CmpMesh") {
+      return entity.HasDrawCmp<CmpMesh>();
+    }
+    if (slot.typeName == "CmpEditorTextureBillboard") {
+      return entity.HasDrawCmp<CmpEditorTextureBillboard>();
     }
     if (slot.typeName == "CmpDrawHitSphere") {
       return entity.HasDrawCmp<CmpDrawHitSphere>();
@@ -108,6 +119,15 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
 bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
   if (slot.typeName == "CmpMeshSphere" && slot.kind == ComponentSlotKind::Draw) {
     entity.AddDrawCmp<CmpMeshSphere>();
+    return true;
+  }
+  if (slot.typeName == "CmpMesh" && slot.kind == ComponentSlotKind::Draw) {
+    entity.AddDrawCmp<CmpMesh>();
+    return true;
+  }
+  if (slot.typeName == "CmpEditorTextureBillboard" &&
+      slot.kind == ComponentSlotKind::Draw) {
+    entity.AddDrawCmp<CmpEditorTextureBillboard>();
     return true;
   }
   if (slot.typeName == "CmpBillboardInstancedGrid" &&
@@ -201,12 +221,47 @@ void ApplySlotExecutionOrder(Entity &entity, const ComponentSlot &slot) {
     } else if (slot.typeName == "CmpDrawHitSphere" &&
                entity.HasDrawCmp<CmpDrawHitSphere>()) {
       entity.SetDrawCmpPriority(entity.GetDrawCmp<CmpDrawHitSphere>(), priority);
+    } else if (slot.typeName == "CmpMesh" && entity.HasDrawCmp<CmpMesh>()) {
+      entity.SetDrawCmpPriority(entity.GetDrawCmp<CmpMesh>(), priority);
+    } else if (slot.typeName == "CmpEditorTextureBillboard" &&
+               entity.HasDrawCmp<CmpEditorTextureBillboard>()) {
+      entity.SetDrawCmpPriority(
+          entity.GetDrawCmp<CmpEditorTextureBillboard>(), priority);
+    } else if (slot.typeName == "CmpBillboardInstancedGrid" &&
+               entity.HasDrawCmp<CmpBillboardInstancedGrid>()) {
+      entity.SetDrawCmpPriority(entity.GetDrawCmp<CmpBillboardInstancedGrid>(),
+                                priority);
     }
   }
 }
 
 void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
   const nlohmann::json &p = slot.params;
+
+  if (slot.typeName == "CmpMesh") {
+    if (!entity.HasDrawCmp<CmpMesh>()) {
+      return;
+    }
+    CmpMesh *cmp = entity.GetDrawCmp<CmpMesh>();
+    cmp->SetRadius(p.value("radius", 0.5f));
+    cmp->SetLightingEnabled(p.value("isLightingEnabled", true));
+    cmp->SetColor(p.value("color", Math::Vector4::White()));
+    TryApplyCmpMeshObjAssetPath(*cmp, p.value("modelAssetPath", std::string{}));
+    return;
+  }
+
+  if (slot.typeName == "CmpEditorTextureBillboard") {
+    if (!entity.HasDrawCmp<CmpEditorTextureBillboard>()) {
+      return;
+    }
+    CmpEditorTextureBillboard *cmp = entity.GetDrawCmp<CmpEditorTextureBillboard>();
+    const float width = p.value("billboardWidth", 1.0f);
+    const float height = p.value("billboardHeight", 1.0f);
+    cmp->SetSize(width, height);
+    TryApplyCmpEditorTextureBillboardPath(
+        *cmp, p.value("textureFilePath", std::string{}));
+    return;
+  }
 
   if (slot.typeName == "CmpBillboardInstancedGrid") {
     if (!entity.HasDrawCmp<CmpBillboardInstancedGrid>()) {
@@ -433,6 +488,57 @@ std::string ToLowerAscii(std::string value) {
 bool IsImageAssetExtension(const std::string &extensionLower) {
   return extensionLower == ".png" || extensionLower == ".jpg" ||
          extensionLower == ".jpeg";
+}
+
+void TryApplyCmpMeshObjAssetPath(CmpMesh &mesh, const std::string &path) {
+  if (path.empty()) {
+    return;
+  }
+  namespace fs = std::filesystem;
+  const fs::path assetPath(path);
+  if (!fs::exists(assetPath)) {
+    return;
+  }
+  const std::string extLower = ToLowerAscii(assetPath.extension().string());
+  if (extLower != ".obj") {
+    return;
+  }
+  AtrumEngine *engine = AtrumEngine::Instance();
+  if (engine == nullptr) {
+    return;
+  }
+  const std::string objDirectory = assetPath.parent_path().generic_string();
+  const std::string objFileName = assetPath.filename().string();
+  const std::string mtlFileName = assetPath.stem().string() + ".mtl";
+  const std::shared_ptr<AssetModel> model =
+      engine->GetModel(objDirectory, objFileName, objDirectory, mtlFileName);
+  if (model) {
+    mesh.SetModel(model.get());
+  }
+}
+
+void TryApplyCmpEditorTextureBillboardPath(CmpEditorTextureBillboard &billboard,
+                                           const std::string &path) {
+  if (path.empty()) {
+    return;
+  }
+  namespace fs = std::filesystem;
+  if (!fs::exists(fs::path(path))) {
+    return;
+  }
+  AtrumEngine *engine = AtrumEngine::Instance();
+  if (engine == nullptr) {
+    return;
+  }
+  const std::string extLower =
+      ToLowerAscii(fs::path(path).extension().string());
+  if (!IsImageAssetExtension(extLower)) {
+    return;
+  }
+  const uint32_t textureIndex = engine->GetTexture(path);
+  if (textureIndex != 0) {
+    billboard.SetTextureIndex(textureIndex);
+  }
 }
 
 } // namespace

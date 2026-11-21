@@ -17,7 +17,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentSlotKind,
 } // namespace
 
 bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName) {
-  return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
+  return typeName == "CmpMeshSphere" || typeName == "CmpMesh" ||
+         typeName == "CmpEditorTextureBillboard" || typeName == "CmpDrawHitSphere" ||
          typeName == "CmpRotator" || typeName == "CmpScroll" ||
          typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
          typeName == "CmpRuntimeTexturePath" || typeName == "CmpColliderAabb" ||
@@ -29,7 +30,8 @@ bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName) {
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
-  if (typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
+  if (typeName == "CmpMeshSphere" || typeName == "CmpMesh" ||
+      typeName == "CmpEditorTextureBillboard" || typeName == "CmpDrawHitSphere" ||
       typeName == "CmpBillboardInstancedGrid") {
     return ComponentSlotKind::Draw;
   }
@@ -54,6 +56,17 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"subdivision", 12},
             {"isLightingEnabled", true},
             {"color", Math::Vector4::White()}};
+  }
+  if (typeName == "CmpMesh") {
+    return {{"radius", 0.5f},
+            {"isLightingEnabled", true},
+            {"color", Math::Vector4::White()},
+            {"modelAssetPath", ""}};
+  }
+  if (typeName == "CmpEditorTextureBillboard") {
+    return {{"textureFilePath", "./Assets/Images/white4x4.png"},
+            {"billboardWidth", 1.0f},
+            {"billboardHeight", 1.0f}};
   }
   if (typeName == "CmpRotator") {
     return {{"rotateAxis", Math::Vector3::UpLh()},
