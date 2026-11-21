@@ -8927,3 +8927,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - BuildEntities が camera.main 欠落を補わない（`GAP-Editor-EditorSceneRuntime-007`）
+
+---
+
+## セッション 2026-11-21 14:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EditorSceneRuntime-007`: `EditorSceneRuntimeMainCameraSupplement` で `BuildEntitiesFromSceneDocument` 直前に `ScenePrimaryCameraResolve` 契約で MainCamera を自動追加
+- 既定プレハブ → `EntityFactory::MainCameraEntity` の順で `SceneCameraRig` と同等
+
+### 推測した用途（§6.4）
+
+- **デバッグ:** カメラ無しシーン JSON でもエディタプレビュー／機能検証が描画可能
+- **Authoring:** `CmpCamera` + `camera.main` タグがあるシーンは従来どおり上書きなし
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| MainCamera 補完 | 有効 | シーン構成をエディタ上プレイ試験できる |
+
+### 次 tick 候補
+
+- BuildPreviewScene がエディタ内ベクタのみ（`GAP-Editor-EntityEditor-011`）

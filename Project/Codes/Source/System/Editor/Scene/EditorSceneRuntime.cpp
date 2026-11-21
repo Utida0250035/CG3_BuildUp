@@ -3,6 +3,7 @@
 #include "System/Editor/Scene/EditorSceneRuntimeBuildWarnings.h"
 #include "System/Editor/Scene/EditorSceneRuntimeDrawPreviewApply.h"
 #include "System/Editor/Scene/EditorSceneRuntimeEditorAssetPathPreviewLink.h"
+#include "System/Editor/Scene/EditorSceneRuntimeMainCameraSupplement.h"
 #include "System/Editor/EditorSceneRuntimeEntityInitializePolicy.h"
 #include "System/Editor/EditorSceneRuntimeInstanceNamePolicy.h"
 
@@ -568,6 +569,8 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document,
     }
     entities[i]->SetParent(entities[static_cast<size_t>(parentIndex)].get());
   }
+
+  EditorSceneRuntimeMainCameraSupplement::EnsureInEntityList(entities, warnings);
 
   InitializeSceneDocumentEntities(entities);
 

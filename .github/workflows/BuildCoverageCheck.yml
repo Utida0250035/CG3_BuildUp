@@ -100,6 +100,9 @@ jobs:
       - name: Verify AssetPath preview uses declared Draw slots only
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_asset_path_draw_split.py
 
+      - name: Verify BuildEntities main camera supplement
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_main_camera_supplement.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 
