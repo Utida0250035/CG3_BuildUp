@@ -55,6 +55,8 @@ struct UiState {
   std::string pendingSceneSwitchPath{};
   /// 実行時ビューウィンドウへフォーカス（シーン実行後など）
   bool requestFocusRuntimeSceneView = false;
+  /// 次フレームで EntityEditor の Dock 既定レイアウトを再構築する
+  bool requestResetDefaultDockLayout = false;
   /// 直近に Imported へコピーしたアセット（obj / png 等）
   std::string lastImportedAssetPath{};
   /// 直近 1 回のドロップでコピー成功したパス（古い順）

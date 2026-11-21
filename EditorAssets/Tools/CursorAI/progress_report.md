@@ -9788,3 +9788,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - defaultLayoutBuilt が static で一回切り（roadmap 626 行）
+
+---
+
+## セッション 2026-11-21 22:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 626 行: **`EditorEntityWorkbenchDefaultDockLayout`**（version 5）と **「ドックレイアウトを既定に戻す」** で static 一回切りを解消
+
+### 推測した用途（§6.4）
+
+- **制作:** パネル追加後や作業切替で Dock を既定に戻す
+- **Authoring:** imgui.ini 手削除なしでレイアウト復元
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Dock レイアウト再構築 | 有効 | 自作エディタ上の編集 UI の扱いやすさ |
+
+### 次 tick 候補
+
+- FitCameraPerspectiveToViewport が FOV 0.5 固定（roadmap 629 行）

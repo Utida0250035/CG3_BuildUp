@@ -43,6 +43,9 @@ jobs:
       - name: Verify play menu save and execute
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_entity_workbench_play_menu.py
 
+      - name: Verify default dock layout versioning
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_entity_workbench_default_dock_layout.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

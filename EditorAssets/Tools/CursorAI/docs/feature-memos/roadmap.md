@@ -623,7 +623,7 @@
 ### EditorEntityWorkbench
 - [x] メニューにライト・ポスト調整ウィンドウが無い
 - [x] メニュー「プレイ」は保存・実行を呼ばない
-- [ ] defaultLayoutBuilt が static で一回切り
+- [x] defaultLayoutBuilt が static で一回切り
 
 ### EditorFrame
 - [ ] FitCameraPerspectiveToViewport が FOV 0.5 固定（spec: feature-memos/odyssey_style_stage_camera.md）

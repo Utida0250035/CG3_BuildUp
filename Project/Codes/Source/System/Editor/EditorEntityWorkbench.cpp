@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorEntityWorkbench.h"
 
+#include "System/Editor/EditorEntityWorkbenchDefaultDockLayout.h"
 #include "System/Editor/EditorEntityWorkbenchPlayMenu.h"
 #include "System/Editor/EditorEntityWorkbenchLightPostWindow.h"
 #include "System/Editor/Entity/EntityEditorDuplicateInstanceKeyboardShortcut.h"
@@ -200,6 +201,10 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
                         Atrum::Debug::IsLightingEffectsDebugVisible())) {
       EditorEntityWorkbenchLightPostWindow::OpenFromMenu();
     }
+    ImGui::Separator();
+    if (ImGui::MenuItem("ドックレイアウトを既定に戻す")) {
+      ui.requestResetDefaultDockLayout = true;
+    }
     ImGui::TextDisabled("色付きヘッダが現在の表示対象");
     ImGui::EndMenu();
   }
@@ -272,44 +277,15 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   ImGui::Begin("EditorDockSpaceHost", nullptr, dockSpaceFlags);
   ImGui::PopStyleVar(3);
 
-  const ImGuiID dockSpaceId = ImGui::GetID("EntityEditorDockSpaceV4");
+  const ImGuiID dockSpaceId =
+      ImGui::GetID(EditorEntityWorkbenchDefaultDockLayout::DockSpaceIdLabel());
   ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f),
                    ImGuiDockNodeFlags_PassthruCentralNode);
 
-  static bool defaultLayoutBuilt = false;
-  if (!defaultLayoutBuilt) {
-    defaultLayoutBuilt = true;
-    ImGui::DockBuilderRemoveNode(dockSpaceId);
-    const ImGuiDockNodeFlags dockRootFlags = static_cast<ImGuiDockNodeFlags>(
-        static_cast<int>(ImGuiDockNodeFlags_DockSpace) |
-        static_cast<int>(ImGuiDockNodeFlags_PassthruCentralNode));
-    ImGui::DockBuilderAddNode(dockSpaceId, dockRootFlags);
-    ImGui::DockBuilderSetNodeSize(dockSpaceId, mainViewport->WorkSize);
-
-    ImGuiID dockCenter = dockSpaceId;
-    const ImGuiID dockLeft =
-        ImGui::DockBuilderSplitNode(dockCenter, ImGuiDir_Left, 0.22f, nullptr,
-                                    &dockCenter);
-    const ImGuiID dockRight =
-        ImGui::DockBuilderSplitNode(dockCenter, ImGuiDir_Right, 0.28f, nullptr,
-                                    &dockCenter);
-    const ImGuiID dockBottom =
-        ImGui::DockBuilderSplitNode(dockCenter, ImGuiDir_Down, 0.28f, nullptr,
-                                    &dockCenter);
-
-    ImGui::DockBuilderDockWindow(kEditSceneViewTitle, dockCenter);
-    ImGui::DockBuilderDockWindow(kGameSceneViewTitle, dockCenter);
-    ImGui::DockBuilderDockWindow(kRuntimeSceneViewTitle, dockCenter);
-    ImGui::DockBuilderDockWindow("ヒエラルキー", dockLeft);
-    ImGui::DockBuilderDockWindow("インスペクター", dockRight);
-    ImGui::DockBuilderDockWindow("プロジェクト", dockBottom);
-    ImGui::DockBuilderDockWindow("タグ", dockBottom);
-    ImGui::DockBuilderDockWindow("スクリプト", dockBottom);
-    ImGui::DockBuilderDockWindow("Stage camera tuning", dockBottom);
-    ImGui::DockBuilderDockWindow(
-        EditorEntityWorkbenchLightPostWindow::WindowTitle(), dockBottom);
-    ImGui::DockBuilderFinish(dockSpaceId);
-  }
+  const bool forceLayoutRebuild = editor.Ui().requestResetDefaultDockLayout;
+  EditorEntityWorkbenchDefaultDockLayout::ApplyIfNeeded(
+      dockSpaceId, mainViewport->WorkSize, forceLayoutRebuild);
+  editor.Ui().requestResetDefaultDockLayout = false;
 
   SceneViewPanelOptions sceneViewOptions{};
   sceneViewOptions.showEditView = true;
