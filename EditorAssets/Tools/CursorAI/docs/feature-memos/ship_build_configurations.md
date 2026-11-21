@@ -44,3 +44,9 @@ Release では `DEVELOPMENT` / `USE_IMGUI` が無いため、エディタ UI・F
 `Codes/Source/ForDebug/` の TU は **Release|x64 から除外**（ImGui デバッグ UI・プロファイラ表示・DebugCamera 等）。例外は `for_debug_sources_release_link_allowlist.txt`（現状 `Log.cpp` のみ — シェーダ／リソース初期化が `LogFile` を参照）。
 
 検証: `verify_for_debug_sources_release_exclude.py`（CI）。vcxproj 更新: `apply_for_debug_release_exclusions_to_vcxproj.py`。
+
+## JsonTest（Release リンク）
+
+`JsonTest.cpp` は JSON シリアライズ検証用 ImGui パネル（`DEVELOPMENT` / `USE_IMGUI`）のため **Release ではビルドしない**。
+
+検証: `verify_json_test_release_exclude.py`（`verify_config_matrix` に含む）。vcxproj 更新: `apply_json_test_release_exclusion_to_vcxproj.py`。

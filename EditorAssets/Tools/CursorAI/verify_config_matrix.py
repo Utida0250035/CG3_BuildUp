@@ -16,6 +16,7 @@ MATRIX: tuple[tuple[str, Path], ...] = (
     ("editor TU Release ExcludedFromBuild", TOOLS / "verify_editor_sources_release_exclude.py"),
     ("ForDebug TU Release ExcludedFromBuild", TOOLS / "verify_for_debug_sources_release_exclude.py"),
     ("Release link GenerateDebugInformation=false", TOOLS / "verify_release_link_generate_debug_info.py"),
+    ("JsonTest debug panel TU Release exclude", TOOLS / "verify_json_test_release_exclude.py"),
 )
 
 

@@ -41,5 +41,6 @@ CI の `DevelopmentBuild.yml` も同じ packages 復元後に slnx をビルド�
 | エディタ専用 TU の `Release\|x64` 除外 | `verify_editor_sources_release_exclude.py` |
 | ForDebug TU の `Release\|x64` 除外（`Log.cpp` は allowlist） | `verify_for_debug_sources_release_exclude.py` |
 | 出荷候補の PDB 無効 | `verify_release_link_generate_debug_info.py` |
+| JsonTest デバッグパネル TU 除外 | `verify_json_test_release_exclude.py` |
 
 正本: `ship_build_configurations.md`。CI の `BuildCoverageCheck` は `verify_config_matrix` で上記をまとめて実行する。

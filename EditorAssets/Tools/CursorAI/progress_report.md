@@ -8434,3 +8434,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - JsonTest デバッグパネル用 TU の Release 除外（roadmap `JsonTest`）
+
+---
+
+## セッション 2026-11-21 10:15（/loop 15m・roadmap tick）
+
+### 完了
+
+- `JsonTest.cpp` に Release `ExcludedFromBuild`
+- `apply_json_test_release_exclusion_to_vcxproj.py`・`verify_json_test_release_exclude.py`
+- `verify_config_matrix`・`cloud_build_vcxproj_check.md`・`ship_build_configurations.md` 更新
+- roadmap 当該行 `[x]`（`GAP-Ship-JsonTest-001`）
+
+### 推測した用途（§6.4）
+
+- **配布:** ImGui 向け JSON 実験パネルを出荷 exe に載せない
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| JsonTest Release 除外 | 有効 | json 等のランタイム読込のみを配布物に残す |
+
+### 次 tick 候補
+
+- Cloud Linux 上の Development ビルド再現（`cloud_dev_build`）

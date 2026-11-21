@@ -536,7 +536,7 @@
 - [x] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）
 
 ### JsonTest
-- [ ] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
+- [x] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
 
 ### cloud_dev_build
 - [ ] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
