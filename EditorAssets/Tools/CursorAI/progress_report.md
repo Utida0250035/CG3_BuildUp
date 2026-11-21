@@ -10542,3 +10542,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 直近ドロップ適用が選択中 Cmp のみ（roadmap 662 行）
+
+---
+
+## セッション 2026-11-22 05:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 662 行: **`ApplyImportedPathToAllMatchingSlots`** とインスペクタの「全パススロットへ適用」
+
+### 推測した用途（§6.4）
+
+- **制作:** obj/png ドロップ後、同一エンティティ内の複数 Mesh／Billboard を個別ボタンなしで更新
+- **Authoring:** 複数選択インスタンスへの既存プロジェクトパネル一括適用とインスペクタ導線を統合
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| ドロップ一括適用 | 有効 | コンポーネントパラメータを json で編集・外部アセット取り込み |
+
+### 次 tick 候補
+
+- シーン JSON パスを InputString 編集（roadmap 663 行）

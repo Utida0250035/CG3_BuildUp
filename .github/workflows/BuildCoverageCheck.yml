@@ -121,6 +121,9 @@ jobs:
       - name: Verify component combo default params
         run: python3 EditorAssets/Tools/CursorAI/verify_component_combo_default_params.py
 
+      - name: Verify dropped import apply all slots
+        run: python3 EditorAssets/Tools/CursorAI/verify_dropped_import_apply_all_slots.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

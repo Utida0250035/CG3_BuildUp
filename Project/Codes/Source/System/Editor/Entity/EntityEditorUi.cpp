@@ -53,6 +53,7 @@
 #include "System/Editor/Entity/EntityEditorInspectorExecutionOrderBatchUi.h"
 #include "System/Editor/Entity/EntityEditorHierarchyAddObjectUi.h"
 #include "System/Editor/Entity/EntityEditorInspectorComponentTypeComboApply.h"
+#include "System/Editor/Entity/EntityEditorInspectorImportedDropBatchApplyUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -1185,6 +1186,8 @@ void EntityEditor::DrawInspectorPanel() {
     ImGui::TextDisabled(
         "この種別では追加できるプリセットがありません");
   }
+
+  EntityEditorInspectorImportedDropBatchApplyUi::Draw(*this);
 
   const bool changedBeforeComponentInspector = changed;
   SyncSelectedComponentToKind(ui_, document);

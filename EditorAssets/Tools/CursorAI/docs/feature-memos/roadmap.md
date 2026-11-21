@@ -659,7 +659,7 @@
 - [x] コンボ変更で DefaultParams に差し替え
 - [x] 型 Combo で既定 params に上書き
 - [x] 型 Combo 変更は params を既定に置換
-- [ ] 直近ドロップ適用が選択中 Cmp のみ
+- [x] 直近ドロップ適用が選択中 Cmp のみ
 - [ ] シーン JSON パスを InputString 編集
 - [ ] ヒット球は選択 1 球のみ編集
 - [ ] 未対応コンポーネントは警告表示のみ

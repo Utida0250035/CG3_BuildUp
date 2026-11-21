@@ -48,10 +48,46 @@ bool IsSupportedAssetExtension(const std::string &importedPath) {
   return ext == ".obj" || ext == ".png" || ext == ".jpg" || ext == ".jpeg";
 }
 
+int ApplyImportedPathToAllMatchingSlots(
+    EntityEditor::EntityDefinition &definition, const std::string &importedPath) {
+  if (!IsSupportedAssetExtension(importedPath)) {
+    return 0;
+  }
+  const std::string ext = ExtensionLower(importedPath);
+  const bool isObj = ext == ".obj";
+  const bool isImage = ext == ".png" || ext == ".jpg" || ext == ".jpeg";
+
+  int updated = 0;
+  for (EntityEditor::ComponentSlot &slot : definition.components) {
+    if (slot.typeName == "CmpEditorAssetPath") {
+      slot.params["assetPath"] = importedPath;
+      slot.params["loadObjAsMesh"] = isObj;
+      slot.params["loadImageAsBillboard"] = isImage;
+      ++updated;
+    } else if (isObj && slot.typeName == "CmpMesh") {
+      slot.params["modelAssetPath"] = importedPath;
+      ++updated;
+    } else if (isImage && slot.typeName == "CmpEditorTextureBillboard") {
+      slot.params["textureFilePath"] = importedPath;
+      ++updated;
+    } else if (isImage && slot.typeName == "CmpBillboardInstancedGrid") {
+      slot.params["textureFilePath"] = importedPath;
+      ++updated;
+    } else if (isImage && slot.typeName == "CmpRuntimeTexturePath") {
+      slot.params["texturePath"] = importedPath;
+      ++updated;
+    }
+  }
+  return updated;
+}
+
 bool ApplyImportedPath(EntityEditor::EntityDefinition &definition,
                        const std::string &importedPath) {
   if (!IsSupportedAssetExtension(importedPath)) {
     return false;
+  }
+  if (ApplyImportedPathToAllMatchingSlots(definition, importedPath) > 0) {
+    return true;
   }
   const std::string ext = ExtensionLower(importedPath);
   const bool isObj = ext == ".obj";
