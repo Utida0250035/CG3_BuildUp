@@ -8871,3 +8871,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - インスペクタ変更は自動保存しない（`GAP-Editor-EntityEditor-004`）
+
+---
+
+## セッション 2026-11-21 14:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-004`: `EntityEditorAuthoringDocumentEditNotify` でインスペクタ／タグ／ヒエラルキー／配置ドラッグ確定後に `requestSaveToDisk` をキュー
+- ドラッグ中は `NotifyPreviewOnly` で毎フレームのディスク書き込みを回避
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** パラメータや配置変更のたびに手動保存し忘れても JSON に残る
+- **レビュー:** `jsonFilePath` 未設定時は従来どおりプレビューのみ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 自動保存 | 有効 | 各エンティティのコンポーネント構成やパラメータを json で作成／保存／編集できる |
+
+### 次 tick 候補
+
+- AssetPath プレビューが Draw 分割を Data に内包（`GAP-Editor-EditorSceneRuntime-005`）

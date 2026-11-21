@@ -2,6 +2,8 @@
 
 #include "Scene/SceneEntityEditorEditViewTransformDrag.h"
 
+#include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
+
 #include "Camera/Camera.h"
 #include "ForDebug/ImGui.h"
 #include "Scene/SceneEntityEditor.h"
@@ -106,14 +108,16 @@ void Tick(SceneEntityEditor &editor) {
   }
 
   if (!drag.active || !ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+    if (drag.active && !ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+      EntityEditorAuthoringDocumentEditNotify::Notify(*entityEditor);
+    }
     drag.active = false;
     return;
   }
 
   translate.x = hit.x + drag.grabOffset.x;
   translate.z = hit.z + drag.grabOffset.z;
-  entityEditor->MarkSceneDocumentDirty();
-  ui.requestApplyPreview = true;
+  EntityEditorAuthoringDocumentEditNotify::NotifyPreviewOnly(*entityEditor);
 }
 
 } // namespace Atrum::SceneEntityEditorEditViewTransformDrag

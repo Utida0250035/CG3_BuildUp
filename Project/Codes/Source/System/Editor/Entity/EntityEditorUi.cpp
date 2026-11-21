@@ -1,6 +1,7 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/EditorFrame.h"
@@ -743,7 +744,7 @@ void EntityEditor::DrawHierarchyPanel() {
   }
 
   if (ImGui::IsAnyItemDeactivatedAfterEdit()) {
-    MarkSceneDocumentDirty();
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }
 
@@ -894,7 +895,7 @@ void EntityEditor::DrawInspectorPanel() {
     bool batchChanged = false;
     DrawMultiInstanceBatchPanel(*this, ui_.selectedInstanceIndices, batchChanged);
     if (batchChanged) {
-      ui_.requestApplyPreview = true;
+      EntityEditorAuthoringDocumentEditNotify::Notify(*this);
     }
     return;
   }
@@ -1077,7 +1078,7 @@ void EntityEditor::DrawInspectorPanel() {
       AppendKnownComponentSlot(document, entry);
       ui_.selectedComponentIndex =
           static_cast<int>(document.components.size()) - 1;
-      ui_.requestApplyPreview = true;
+      EntityEditorAuthoringDocumentEditNotify::Notify(*this);
     }
   } else {
     ImGui::TextDisabled(
@@ -1093,7 +1094,7 @@ void EntityEditor::DrawInspectorPanel() {
     document.components.erase(
         document.components.begin() + ui_.selectedComponentIndex);
     SyncSelectedComponentToKind(ui_, document);
-    ui_.requestApplyPreview = true;
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 
   if (kindComponentIndices.empty()) {
@@ -1170,8 +1171,7 @@ void EntityEditor::DrawInspectorPanel() {
   }
 
   if (changed) {
-    ui_.requestApplyPreview = true;
-    MarkSceneDocumentDirty();
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }
 
@@ -1236,8 +1236,7 @@ void EntityEditor::DrawTagsPanel() {
   }
 
   if (changedScene) {
-    ui_.requestApplyPreview = true;
-    MarkSceneDocumentDirty();
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }
 

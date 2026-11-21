@@ -573,7 +573,7 @@
 - [x] ライト・ポスト系パラメータのエディタ用 UI が無い（gap: `GAP-Editor-AtrumEngineVisual-001`・Authoring・P1）
 - [x] エディタプレビューにフォグ／リム／ゴッドレイ／影が無い（gap: `GAP-Editor-SceneEntityEditor-004`・Authoring・P1）
 - [x] CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない（gap: `GAP-Editor-EditorSceneRuntime-003`・Authoring・P1）
-- [ ] インスペクタ変更はプレビューのみ更新し自動保存しない（gap: `GAP-Editor-EntityEditor-004`・Authoring・P1）
+- [x] インスペクタ変更はプレビューのみ更新し自動保存しない（gap: `GAP-Editor-EntityEditor-004`・Authoring・P1）
 - [ ] AssetPath プレビューが Draw 分割を Data に内包（gap: `GAP-Editor-EditorSceneRuntime-005`・Authoring・P1）
 - [ ] BuildEntities が camera.main 欠落を補わない（gap: `GAP-Editor-EditorSceneRuntime-007`・Debug・P1）
 - [ ] BuildPreviewScene がエディタ内ベクタのみ（gap: `GAP-Editor-EntityEditor-011`・Debug・P1）

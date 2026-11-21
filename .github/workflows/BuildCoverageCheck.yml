@@ -94,6 +94,9 @@ jobs:
       - name: Verify CmpMesh and texture billboard TryAdd in editor runtime
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_cmp_mesh_billboard_try_add.py
 
+      - name: Verify entity editor inspector auto save queue
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_inspector_auto_save.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 

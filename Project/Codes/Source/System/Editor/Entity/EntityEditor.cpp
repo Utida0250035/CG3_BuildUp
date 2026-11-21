@@ -1,4 +1,5 @@
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -76,8 +77,7 @@ void EntityEditor::AddEmptyInstance() {
   ui_.selectedInstanceIndex =
       static_cast<int>(scene_.instances.size()) - 1;
   ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
-  ui_.requestApplyPreview = true;
-  MarkSceneDocumentDirty();
+  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
 }
 
 bool EntityEditor::DuplicateSelectedInstance() {
@@ -107,8 +107,7 @@ void EntityEditor::RemoveSelectedInstance() {
     }
   }
   ClampSelectedInstanceIndex();
-  ui_.requestApplyPreview = true;
-  MarkSceneDocumentDirty();
+  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
 }
 
 bool EntityEditor::SaveSelectedInstanceToPrefabPath(
@@ -160,8 +159,7 @@ bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
   ui_.selectedInstanceIndex =
       static_cast<int>(scene_.instances.size()) - 1;
   ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
-  ui_.requestApplyPreview = true;
-  MarkSceneDocumentDirty();
+  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   return true;
 }
 
@@ -279,9 +277,7 @@ void EntityEditor::CreateNewSceneFile() {
   ui_.selectedInstanceIndices = {0};
   ui_.selectedComponentKind = ComponentSlotKind::Draw;
   ui_.selectedComponentIndex = 0;
-  ui_.requestApplyPreview = true;
-  ui_.requestSaveToDisk = true;
-  MarkSceneDocumentDirty();
+  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
 }
 
 bool EntityEditor::TryOpenSceneFromPath(const std::string &sceneJsonPath) {

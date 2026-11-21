@@ -1,6 +1,7 @@
 #include "System/Editor/Entity/EntityEditorDuplicateSelectedInstance.h"
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 
 namespace Atrum::EntityEditor {
 
@@ -61,8 +62,7 @@ bool DuplicateSelectedInstanceInScene(EntityEditor &editor) {
   UiState &mutableUi = editor.Ui();
   mutableUi.selectedInstanceIndex = newIndex;
   mutableUi.selectedInstanceIndices = {newIndex};
-  mutableUi.requestApplyPreview = true;
-  editor.MarkSceneDocumentDirty();
+  EntityEditorAuthoringDocumentEditNotify::Notify(editor);
   return true;
 }
 
