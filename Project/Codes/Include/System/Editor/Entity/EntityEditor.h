@@ -56,6 +56,8 @@ struct UiState {
   bool requestFocusRuntimeSceneView = false;
   /// 直近に Imported へコピーしたアセット（obj / png 等）
   std::string lastImportedAssetPath{};
+  /// 直近 1 回のドロップでコピー成功したパス（古い順）
+  std::vector<std::string> recentImportedAssetPaths{};
   std::string importStatusMessage{};
 
   std::string tagSearchFilter{};

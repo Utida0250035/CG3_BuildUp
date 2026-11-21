@@ -580,6 +580,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportPathQueue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
@@ -1150,6 +1155,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportPathQueue.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveSelectedInstances.h" />
