@@ -530,7 +530,7 @@
 - [ ] 本番相当プロファイル計測用の構成／手順が未定義
 
 ### CG2_BuildUp
-- [ ] Release リンク設定で GenerateDebugInformation が true
+- [x] Release リンク設定で GenerateDebugInformation が true
 
 ### verify_config_matrix
 - [ ] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）

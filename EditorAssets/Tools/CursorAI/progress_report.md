@@ -8345,3 +8345,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - Release リンク設定の GenerateDebugInformation（`GAP-Ship-CG2_BuildUp-003`）
+
+---
+
+## セッション 2026-11-21 09:30（/loop 15m・roadmap tick）
+
+### 完了
+
+- `CG2_BuildUp.vcxproj` の `Release|x64` リンクで `GenerateDebugInformation=false`
+- `verify_release_link_generate_debug_info.py`、CI、`ship_build_configurations.md` 追記
+- roadmap `CG2_BuildUp` 行 `[x]`（`GAP-Ship-CG2_BuildUp-003`）
+
+### 推測した用途（§6.4）
+
+- **配布:** 出荷フォルダに `.pdb` を残さない
+- **Ship:** Release 成果物のサイズと情報漏えいリスク低減
+
+### ビルド
+
+- Cloud VM のため未実行
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| Release PDB 無効 | 有効 | ゲーム配布時にリソースを圧縮・同梱して配布する（出荷物の整理） |
+
+### 次 tick 候補
+
+- roadmap 先頭未完: 本番相当プロファイル計測（`Development_opt`）または `verify_config_matrix`

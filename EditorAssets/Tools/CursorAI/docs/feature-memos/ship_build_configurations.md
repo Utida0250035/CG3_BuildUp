@@ -6,6 +6,8 @@
 |------|------|------------|
 | **Release\|x64** | ゲーム配布・CI `ReleaseBuild` | `NDEBUG` のみ（`DEVELOPMENT` / `USE_IMGUI` / `_DEBUG` なし） |
 
+**リンク:** `GenerateDebugInformation=false`（出荷物に PDB を同梱しない）。Development は診断用に `true` のまま。
+
 ## 開発用（非出荷）
 
 | 構成 | 用途 | 主要マクロ |
