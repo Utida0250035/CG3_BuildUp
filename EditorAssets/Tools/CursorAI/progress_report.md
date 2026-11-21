@@ -10436,3 +10436,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 「オブジェクトを追加」は空のみ（roadmap 658 行）
+
+---
+
+## セッション 2026-11-22 04:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 658 行: **`EntityEditorSceneObjectAddPreset`** とヒエラルキーの追加テンプレート Combo（空／サンプル／主カメラ／選択複製）
+
+### 推測した用途（§6.4）
+
+- **制作:** カメラや球サンプルをワンクリックで配置し、空オブジェクトのみの制約を解消
+- **Authoring:** `MainCamera.json` 正本と選択中定義の複製を同一導線に統合
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| オブジェクト追加テンプレート | 有効 | エンティティの構成を json で編集・配置 |
+
+### 次 tick 候補
+
+- コンボ変更で DefaultParams に差し替え（roadmap 659 行）

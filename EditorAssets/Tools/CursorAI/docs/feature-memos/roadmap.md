@@ -655,7 +655,7 @@
 - [x] 実行順 InputInt が 1 スロットのみ
 - [x] png・obj・gltf を外部ツールで開く操作がエディタに無い
 - [x] CmpCamera が既知型だが未対応表示（spec: feature-memos/entity_camera_components.md）
-- [ ] 「オブジェクトを追加」は空のみ
+- [x] 「オブジェクトを追加」は空のみ
 - [ ] コンボ変更で DefaultParams に差し替え
 - [ ] 型 Combo で既定 params に上書き
 - [ ] 型 Combo 変更は params を既定に置換

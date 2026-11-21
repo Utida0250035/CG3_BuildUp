@@ -1,11 +1,14 @@
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorSceneObjectAddPreset.h"
+
+#include <optional>
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 
 namespace Atrum::EntityEditor::EntityEditorAddEmptyInstanceFromSelection {
 
-void AppendInstance(EntityEditor &editor) {
+void AppendInstance(EntityEditor &editor, const SceneObjectAddPreset preset) {
   EditorSceneDocument &scene = editor.SceneDocument();
   const std::string name =
       "Entity_" + std::to_string(scene.instances.size());
@@ -14,12 +17,26 @@ void AppendInstance(EntityEditor &editor) {
   instance.instanceName = name;
   instance.parentIndex = -1;
 
-  if (scene.instances.empty()) {
-    instance.definition = MakeDefaultEntityDefinition(name);
+  if (preset == SceneObjectAddPreset::CopySelection) {
+    if (scene.instances.empty()) {
+      instance.definition = MakeDefaultEntityDefinition(name);
+    } else {
+      editor.ClampSelectedInstanceIndex();
+      instance.definition = editor.SelectedDefinition();
+      instance.definition.entityName = name;
+    }
   } else {
-    editor.ClampSelectedInstanceIndex();
-    instance.definition = editor.SelectedDefinition();
-    instance.definition.entityName = name;
+    const std::optional<EntityDefinition> built =
+        BuildEntityDefinitionForAddPreset(preset, name);
+    if (built.has_value()) {
+      instance.definition = *built;
+    } else if (!scene.instances.empty()) {
+      editor.ClampSelectedInstanceIndex();
+      instance.definition = editor.SelectedDefinition();
+      instance.definition.entityName = name;
+    } else {
+      instance.definition = MakeDefaultEntityDefinition(name);
+    }
   }
 
   scene.instances.push_back(std::move(instance));

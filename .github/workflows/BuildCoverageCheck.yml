@@ -115,6 +115,9 @@ jobs:
       - name: Verify CmpCamera inspector draw
         run: python3 EditorAssets/Tools/CursorAI/verify_cmp_camera_inspector_draw.py
 
+      - name: Verify add scene object presets
+        run: python3 EditorAssets/Tools/CursorAI/verify_add_scene_object_presets.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

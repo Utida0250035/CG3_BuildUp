@@ -51,6 +51,7 @@
 #include "System/Editor/Entity/EntityEditorClearAllEntityTags.h"
 #include "System/Editor/Entity/EntityEditorInspectorComponentRemoveBatchUi.h"
 #include "System/Editor/Entity/EntityEditorInspectorExecutionOrderBatchUi.h"
+#include "System/Editor/Entity/EntityEditorHierarchyAddObjectUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -789,9 +790,7 @@ void EntityEditor::DrawHierarchyPanel() {
   ImGui::Separator();
   ImGui::InputString("シーン名", scene_.sceneName);
 
-  if (ImGui::Button("オブジェクトを追加")) {
-    AddEmptyInstance();
-  }
+  EntityEditorHierarchyAddObjectUi::Draw(*this);
   ImGui::SameLine();
   if (!scene_.instances.empty() && ImGui::Button("複製")) {
     DuplicateSelectedInstance();
