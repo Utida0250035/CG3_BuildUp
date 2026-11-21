@@ -14,6 +14,8 @@ bool NeedsSceneEntityInitialize(const Entity *entity) {
 
 void InitializeSceneDocumentEntities(
     std::vector<std::unique_ptr<Entity>> &entities) {
+  // シーン JSON の親子は BuildEntities 側で Entity::SetParent に反映済み。
+  // ルートの Initialize が Entity::childs_ を再帰的に初期化し、取り残しは下の多段パスで補う。
   for (std::unique_ptr<Entity> &entity : entities) {
     if (entity) {
       entity->ResolveDependencies();
@@ -21,7 +23,8 @@ void InitializeSceneDocumentEntities(
   }
 
   for (std::unique_ptr<Entity> &entity : entities) {
-    if (entity && entity->GetParent() == nullptr && NeedsSceneEntityInitialize(entity.get())) {
+    if (entity && entity->GetParent() == nullptr &&
+        NeedsSceneEntityInitialize(entity.get())) {
       entity->Initialize();
     }
   }

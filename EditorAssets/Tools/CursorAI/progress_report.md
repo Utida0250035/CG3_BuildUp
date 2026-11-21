@@ -8756,3 +8756,32 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 親付きインスタンスの Initialize（`GAP-Editor-EditorSceneRuntime-006`）
+
+---
+
+## セッション 2026-11-21 13:00（/loop 15m・roadmap tick）
+
+### 実装済みと判断した項目（コード確認・即時 [x]）
+
+- `BuildEntitiesFromSceneDocument` は `SetParent` 後に `InitializeSceneDocumentEntities` を呼ぶ
+- ポリシーはルート `Initialize` の子再帰＋最大 8 パスの取り残し初期化
+- `verify_editor_scene_runtime_initialize_hierarchy.py` OK（CI 登録済み）
+
+### 推測した用途（§6.4）
+
+- **プレイ:** 階層付きシーン JSON を BuildUp／プレビューで開いても子の Upd Cmp が動く
+- **制作:** 親子ヒエラルキー付きシーンをエディタ保存後、そのまま実行確認
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 親子 Initialize | 有効 | ゲーム中に保存したエンティティを生成し、シーン構成をプレイできる |
+
+### 次 tick 候補
+
+- ライト・ポスト系パラメータのエディタ UI（`GAP-Editor-AtrumEngineVisual-001`）
