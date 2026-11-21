@@ -10220,3 +10220,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - インスペクタでシーン JSON パスを自由編集できる（roadmap 650 行）
+
+---
+
+## セッション 2026-11-22 02:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 650 行: **インスペクタ先頭**で `jsonFilePath` 編集（空シーンでも可）・検証・開き直し・`selectedScenePath` 同期
+
+### 推測した用途（§6.4）
+
+- **制作:** プロジェクト一覧外のシーン JSON を指定して編集
+- **デバッグ:** 保存先誤りを検証してから開き直す
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| シーン JSON パス編集 | 有効 | シーンの構成を保存・再度開いて同じ状態を得る |
+
+### 次 tick 候補
+
+- instanceName と entityName を別々に編集しうる（roadmap 651 行）

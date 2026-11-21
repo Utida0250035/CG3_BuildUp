@@ -42,6 +42,7 @@
 #include "Math/Vector4.h"
 #include "System/Entity/EntityTagRegistry.h"
 #include "System/Editor/Entity/EntityEditorHierarchyDragDrop.h"
+#include "System/Editor/Entity/EntityEditorInspectorSceneJsonPathUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -938,6 +939,13 @@ void EntityEditor::DrawProjectPanel() {
 }
 
 void EntityEditor::DrawInspectorPanel() {
+  bool scenePathChanged = false;
+  EntityEditorInspectorSceneJsonPathUi::Draw(*this, scenePathChanged);
+  if (scenePathChanged) {
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+  }
+  ImGui::Separator();
+
   if (scene_.instances.empty()) {
     ImGui::TextUnformatted("シーンにオブジェクトがありません");
     return;
@@ -957,7 +965,6 @@ void EntityEditor::DrawInspectorPanel() {
   SceneEntityInstance &instance = SelectedInstance();
   EntityDefinition &document = SelectedDefinition();
 
-  ImGui::InputString("シーン JSON パス", ui_.jsonFilePath);
   changed |= ImGui::InputString("表示名", instance.instanceName);
 
   int parentIndex = instance.parentIndex;

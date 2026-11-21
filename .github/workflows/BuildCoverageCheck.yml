@@ -91,6 +91,9 @@ jobs:
       - name: Verify draw component params unknown JSON
         run: python3 EditorAssets/Tools/CursorAI/verify_draw_component_params_unknown_json.py
 
+      - name: Verify inspector scene JSON path edit
+        run: python3 EditorAssets/Tools/CursorAI/verify_inspector_scene_json_path_edit.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 
