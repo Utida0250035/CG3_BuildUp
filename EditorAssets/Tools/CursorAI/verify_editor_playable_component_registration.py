@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 PLAYABLE = (
-    "CmpInput",
+    "AbstractInput",
     "CmpMoveByInput2D",
     "CmpDrawPlayerParryField",
     "CmpDirection",

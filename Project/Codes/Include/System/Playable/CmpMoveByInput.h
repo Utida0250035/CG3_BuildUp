@@ -4,7 +4,7 @@
 #include "Math/Vector4.h"
 #include "System/Entity/BehaviorBox.h"
 #include "System/Entity/ComponentUpd.h"
-#include "System/Playable/CmpInput.h"
+#include "System/Playable/AbstractInput.h"
 
 namespace Atrum {
 
@@ -25,7 +25,7 @@ namespace Atrum {
 
 			static inline constexpr Math::Vector4 kDefaultColor = { 0.0625f, 0.0625f, 0.0625f, 1.0f };
 
-			CmpInput* cmpInput_ = nullptr;
+			AbstractInput* abstractInput_ = nullptr;
 			InputData inputData_{};
 			FrameDeltaTime* frameDeltaTime_ = nullptr;
 			BehaviorBox behaviorBox_{};

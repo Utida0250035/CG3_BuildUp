@@ -27,7 +27,7 @@ constexpr std::array<std::string_view, 28> kEditorRuntimeComponentTypeNames = {
     "CmpBillboardInstancedGrid",
     "CmpLuaUpd",
     "CmpLuaDraw",
-    "CmpInput",
+    "AbstractInput",
     "CmpMoveByInput2D",
     "CmpDrawPlayerParryField",
     "CmpDirection",

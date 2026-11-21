@@ -5,7 +5,7 @@
 namespace Atrum {
 
 namespace Player {
-class CmpInput;
+class AbstractInput;
 }
 
 class CmpLhRigidBody;
@@ -15,7 +15,7 @@ namespace Player {
 
 class BehWalkAndJump : public Behavior {
 private:
-  Player::CmpInput *cmpInput_ = nullptr;
+  Player::AbstractInput *abstractInput_ = nullptr;
   CmpLhRigidBody *cmpLhRigidBody_ = nullptr;
   CmpDirection *cmpDirection_ = nullptr;
   float walkSpeed_ = 6.0f;

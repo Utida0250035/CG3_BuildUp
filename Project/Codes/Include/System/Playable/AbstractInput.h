@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Input/PlayInput.h"
 #include "Math/Vector2.h"
-#include "System/Entity/ComponentUpd.h"
 
 namespace Atrum {
 class FrameDeltaTime;
@@ -25,7 +23,8 @@ struct InputData {
   bool isDashPress = false;
 };
 
-class CmpInput : public ComponentUpd {
+/// プレイ用入力の集約（シングルトン）。Entity の Upd コンポーネントではない。
+class AbstractInput final {
 private:
   InputData inputData_{};
   FrameDeltaTime *frameDeltaTime_ = nullptr;
@@ -46,23 +45,21 @@ private:
 
   Math::Vector2 vec2InputBuffer_{};
 
-  CmpInput() = default;
-  ~CmpInput() = default;
+  AbstractInput() = default;
+  ~AbstractInput() = default;
 
 public:
-  constexpr UpdCmpGroup UpdGroup() const override { return UpdCmpGroup::INPUT; }
-
-  void ResolveDependence() override;
-  void Update() override;
+  void ResolveDependence();
+  void Update();
   const InputData &GetData() const { return inputData_; }
 
-  static CmpInput *Instance() {
-    static CmpInput instance;
+  static AbstractInput *Instance() {
+    static AbstractInput instance;
     return &instance;
   }
 
-  CmpInput(const CmpInput &) = delete;
-  CmpInput &operator=(const CmpInput &) = delete;
+  AbstractInput(const AbstractInput &) = delete;
+  AbstractInput &operator=(const AbstractInput &) = delete;
 };
 
 } // namespace Atrum::Player

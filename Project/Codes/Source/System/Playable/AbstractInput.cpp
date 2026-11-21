@@ -1,13 +1,15 @@
-#include "System/Playable/CmpInput.h"
+#include "System/Playable/AbstractInput.h"
 
 #include "Input/XInputController.h"
 #include "System/DeltaTime.h"
 
 namespace Atrum::Player {
 
-void CmpInput::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime(); }
+void AbstractInput::ResolveDependence() {
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
+}
 
-void CmpInput::Update() {
+void AbstractInput::Update() {
   using Input::GamepadButton;
   using Input::Key;
   Input::PlayInput *input = ::Atrum::EnginePlayInput();

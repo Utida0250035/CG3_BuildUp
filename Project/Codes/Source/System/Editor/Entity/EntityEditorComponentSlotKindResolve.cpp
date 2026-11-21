@@ -20,7 +20,7 @@ TryDefaultKindForRegisteredType(const std::string &typeName) {
       typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall" ||
       typeName == "CmpBallKinematics" || typeName == "CmpBallAxisAlignedBounce" ||
       typeName == "CmpBallBounceImpactFx" || typeName == "CmpLuaUpd" ||
-      typeName == "CmpInput" || typeName == "CmpMoveByInput2D" ||
+      typeName == "AbstractInput" || typeName == "CmpMoveByInput2D" ||
       typeName == "CmpLhRigidBody" || typeName == "CmpHealthHit" ||
       typeName == "CmpSwing" || typeName == "CmpChildEntitys") {
     return ComponentSlotKind::Upd;

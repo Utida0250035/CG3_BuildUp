@@ -39,7 +39,7 @@
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/EntityTagRegistry.h"
 #include "System/Playable/CmpDrawPlayerParryField.h"
-#include "System/Playable/CmpInput.h"
+#include "System/Playable/AbstractInput.h"
 #include "System/Playable/CmpMoveByInput.h"
 #include "System/Entity/Entity.h"
 #include <algorithm>
@@ -146,8 +146,8 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
     entity.AddDataCmp<CmpColliderAabb>();
     return true;
   }
-  if (slot.typeName == "CmpInput" && slot.kind == ComponentSlotKind::Upd) {
-    Player::CmpInput::Instance()->ResolveDependence();
+  if (slot.typeName == "AbstractInput" && slot.kind == ComponentSlotKind::Upd) {
+    Player::AbstractInput::Instance()->ResolveDependence();
     return true;
   }
   if (slot.typeName == "CmpMoveByInput2D" && slot.kind == ComponentSlotKind::Upd) {
@@ -554,7 +554,7 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     return;
   }
 
-  if (slot.typeName == "CmpInput") {
+  if (slot.typeName == "AbstractInput") {
     return;
   }
 

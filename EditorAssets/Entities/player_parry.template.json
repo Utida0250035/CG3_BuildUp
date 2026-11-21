@@ -7,7 +7,7 @@
     "scale": { "x": 1.0, "y": 1.0, "z": 1.0 }
   },
   "components": [
-    { "kind": "Upd", "typeName": "CmpInput", "params": {} },
+    { "kind": "Upd", "typeName": "AbstractInput", "params": {} },
     { "kind": "Data", "typeName": "CmpDirection", "params": { "direction": { "x": 1, "y": 0, "z": 0 } } },
     { "kind": "Upd", "typeName": "CmpLhRigidBody", "params": { "gravity": { "x": 0, "y": -45, "z": 0 } } },
     { "kind": "Upd", "typeName": "CmpHitSphere", "params": { "isActive": true, "spheres": [{ "localOffset": { "x": 0, "y": 0, "z": 0 }, "radius": 0.5 }] } },

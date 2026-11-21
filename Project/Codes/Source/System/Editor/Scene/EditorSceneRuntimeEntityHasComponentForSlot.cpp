@@ -102,7 +102,7 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     if (slot.typeName == "CmpChildEntitys") {
       return entity.HasUpdCmp<CmpChildEntitys>();
     }
-    if (slot.typeName == "CmpInput") {
+    if (slot.typeName == "AbstractInput") {
       return false;
     }
   }

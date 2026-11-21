@@ -145,9 +145,9 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
     return {{"scriptPath", "Assets/Scripts/Components/Draw/example_draw.lua"},
             {"drawCmpGroup", "NONE"}};
   }
-  if (typeName == "CmpInput") {
+  if (typeName == "AbstractInput") {
     return {{"note",
-             "シングルトン CmpInput（PlayInput）。Entity には付かないメタスロット"}};
+             "シングルトン AbstractInput（PlayInput）。Entity には付かないメタスロット"}};
   }
   if (typeName == "CmpMoveByInput2D") {
     return {{"directionMarkerSideOffset", 0.65f},

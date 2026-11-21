@@ -9,7 +9,7 @@ bool TryDraw(ComponentSlot &slot, bool &outChanged) {
     return EntityEditorUiDrawComponentParamsGenericJson::
         TryDrawUnknownComponentParams(slot, outChanged);
   };
-  if (slot.typeName == "CmpInput") {
+  if (slot.typeName == "AbstractInput") {
     draw();
     return true;
   }

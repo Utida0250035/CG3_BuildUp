@@ -3,21 +3,21 @@
 #include "System/Entity/Components/CmpDirection.h"
 #include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Entity.h"
-#include "System/Playable/CmpInput.h"
+#include "System/Playable/AbstractInput.h"
 #include "System/StageBounds.h"
 #include <numbers>
 
 namespace Atrum::Player {
 
 void BehWalkAndJump::ResolveDependence() {
-  cmpInput_ = CmpInput::Instance();
+  abstractInput_ = AbstractInput::Instance();
   cmpLhRigidBody_ = RefGrandOwner().GetUpdCmp<CmpLhRigidBody>();
   cmpDirection_ = RefGrandOwner().GetDataCmp<CmpDirection>();
 }
 
 void BehWalkAndJump::Execute() {
   Math::Vector3 &velocity = cmpLhRigidBody_->RefVelocity();
-  const InputData &inputData = cmpInput_->GetData();
+  const InputData &inputData = abstractInput_->GetData();
   Math::Vector3 &direction = cmpDirection_->RefDirection();
   Math::Quaternion &quaternion = RefGrandOwner().RefTransform().quaternion;
 

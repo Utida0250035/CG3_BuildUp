@@ -90,7 +90,7 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
     {"CmpLuaUpd", ComponentSlotKind::Upd},
     {"CmpLuaDraw", ComponentSlotKind::Draw},
-    {"CmpInput", ComponentSlotKind::Upd},
+    {"AbstractInput", ComponentSlotKind::Upd},
     {"CmpMoveByInput2D", ComponentSlotKind::Upd},
     {"CmpDrawPlayerParryField", ComponentSlotKind::Draw},
     {"CmpDirection", ComponentSlotKind::Data},

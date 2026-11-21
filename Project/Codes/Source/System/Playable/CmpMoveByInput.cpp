@@ -45,8 +45,8 @@ namespace Atrum::Player {
 	}
 
 	void CmpMoveByInput2D::ResolveDependence() {
-		cmpInput_ = CmpInput::Instance();
-		cmpInput_->ResolveDependence();
+		abstractInput_ = AbstractInput::Instance();
+		abstractInput_->ResolveDependence();
 		frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 
 		cmpDirection_ = RefOwner().GetDataCmp<CmpDirection>();
@@ -102,8 +102,8 @@ namespace Atrum::Player {
 	}
 
 	void CmpMoveByInput2D::Update() {
-		cmpInput_->Update();
-		inputData_ = cmpInput_->GetData();
+		abstractInput_->Update();
+		inputData_ = abstractInput_->GetData();
 		behaviorBox_.Execute();
 
 		if (parryCmpHitSphere_ != nullptr) {
