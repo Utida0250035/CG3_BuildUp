@@ -46,6 +46,7 @@
 #include "System/Editor/Entity/EntityEditorInspectorInstanceIdentityUi.h"
 #include "System/Editor/Entity/EntityEditorInspectorTransformCopyPasteUi.h"
 #include "System/Editor/Entity/EntityEditorTransformCopyPaste.h"
+#include "System/Editor/Entity/EntityEditorClearAllEntityTags.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -699,9 +700,20 @@ void DrawMultiInstanceBatchPanel(EntityEditor &editor,
   ImGui::Separator();
   ImGui::InputString("一括付与タグ", ui.newEntityTagName);
   ImGui::SameLine();
-  if (ImGui::Button("タグを一括付与")) {
-    if (!ui.newEntityTagName.empty()) {
-      for (const int index : selection) {
+    if (ImGui::Button("タグをすべて解除（選択全体）")) {
+      const int cleared =
+          EntityEditorClearAllEntityTags::ClearAllTagsOnInstanceIndices(scene,
+                                                                      selection);
+      if (cleared > 0) {
+        changed = true;
+        ui.importStatusMessage =
+            "タグをすべて解除: " + std::to_string(cleared) + " 体";
+      }
+    }
+
+    if (ImGui::Button("タグを一括付与")) {
+      if (!ui.newEntityTagName.empty()) {
+        for (const int index : selection) {
         if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
           continue;
         }
@@ -1103,8 +1115,7 @@ void EntityEditor::DrawInspectorPanel() {
     }
 
     if (ImGui::Button("タグをすべて解除")) {
-      document.tags.clear();
-      document.tagHashes.clear();
+      EntityEditorClearAllEntityTags::ClearAllTagsOnDefinition(document);
       changed = true;
     }
   }
