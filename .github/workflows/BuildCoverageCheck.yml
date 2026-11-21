@@ -199,6 +199,9 @@ jobs:
       - name: Verify SceneEntityEditor edit view transform drag
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_edit_view_transform_drag.py
 
+      - name: Verify EntityEditor duplicate selected instance
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_duplicate_instance.py
+
       - name: Verify launch_config startupScenePath normalization
         run: python3 EditorAssets/Tools/CursorAI/verify_launch_config_startup_path_normalize.py
 

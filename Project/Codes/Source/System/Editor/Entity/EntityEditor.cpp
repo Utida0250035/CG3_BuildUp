@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
+#include "System/Editor/Entity/EntityEditorDuplicateSelectedInstance.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Editor/Scene/EditorSceneRuntimeBuildWarnings.h"
@@ -77,6 +78,10 @@ void EntityEditor::AddEmptyInstance() {
   ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
   ui_.requestApplyPreview = true;
   MarkSceneDocumentDirty();
+}
+
+bool EntityEditor::DuplicateSelectedInstance() {
+  return DuplicateSelectedInstanceInScene(*this);
 }
 
 void EntityEditor::RemoveSelectedInstance() {

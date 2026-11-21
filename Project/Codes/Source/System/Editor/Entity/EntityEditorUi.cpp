@@ -672,6 +672,10 @@ void EntityEditor::DrawHierarchyPanel() {
     AddEmptyInstance();
   }
   ImGui::SameLine();
+  if (!scene_.instances.empty() && ImGui::Button("複製")) {
+    DuplicateSelectedInstance();
+  }
+  ImGui::SameLine();
   if (scene_.instances.size() > 1 && ImGui::Button("削除")) {
     RemoveSelectedInstance();
   }

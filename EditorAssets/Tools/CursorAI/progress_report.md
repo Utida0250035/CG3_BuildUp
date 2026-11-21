@@ -8728,3 +8728,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 選択エンティティ複製 UI（`GAP-Editor-EntityEditor-001`）
+
+---
+
+## セッション 2026-11-21 12:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-001`: ヒエラルキー「複製」ボタンと `DuplicateSelectedInstance`
+- 同一親を維持し、名前は `_Copy` 連番、配置は +0.5 XZ オフセット
+
+### 推測した用途（§6.4）
+
+- **制作（Authoring）:** レベル内の反復配置をプレハブ往復なしで 1 クリック
+- **デバッグ:** 既存定義のバリエーションを素早く増やして試す
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| インスタンス複製 | 有効 | コンポーネント構成を json として作成・編集できる |
+
+### 次 tick 候補
+
+- 親付きインスタンスの Initialize（`GAP-Editor-EditorSceneRuntime-006`）

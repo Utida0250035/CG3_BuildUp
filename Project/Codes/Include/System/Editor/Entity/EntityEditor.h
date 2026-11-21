@@ -83,6 +83,7 @@ public:
 
   void AddEmptyInstance();
   void RemoveSelectedInstance();
+  bool DuplicateSelectedInstance();
   bool AddInstanceFromPrefabPath(const std::string &prefabPath);
 
   /// 選択中インスタンスの定義を EntityDefinition JSON として出力
