@@ -21,6 +21,16 @@ def main() -> int:
         / "Entity"
         / "EditorScenePlayRequestBuildUpQueue.cpp"
     )
+    startup = (
+        ROOT
+        / "Project"
+        / "Codes"
+        / "Source"
+        / "System"
+        / "Editor"
+        / "Entity"
+        / "EntityEditorStartupSceneSetWithoutAutosave.cpp"
+    )
     ui_cpp = ROOT / "Project" / "Codes" / "Source" / "System" / "Editor" / "Entity" / "EntityEditorUi.cpp"
 
     if not helper.is_file():
@@ -28,10 +38,14 @@ def main() -> int:
 
     if helper.is_file():
         text = helper.read_text(encoding="utf-8", errors="replace")
-        if "TrySetRepositoryStartupScene" not in text:
-            errors.append("expected TrySetRepositoryStartupScene before BuildUp")
-        if "requestLaunchSceneBuildUp" not in text:
+        if "SetAndQueueBuildUp" not in text:
+            errors.append("expected SetAndQueueBuildUp before BuildUp")
+    if startup.is_file():
+        st = startup.read_text(encoding="utf-8", errors="replace")
+        if "requestLaunchSceneBuildUp" not in st:
             errors.append("expected requestLaunchSceneBuildUp")
+    else:
+        errors.append("missing EntityEditorStartupSceneSetWithoutAutosave.cpp")
 
     if ui_cpp.is_file():
         text = ui_cpp.read_text(encoding="utf-8", errors="replace")

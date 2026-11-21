@@ -139,6 +139,9 @@ jobs:
       - name: Verify EntityEditor create new scene without autosave
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_create_new_scene_no_autosave.py
 
+      - name: Verify EntityEditor startup set without implicit scene save
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_startup_set_no_implicit_save.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 

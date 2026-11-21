@@ -17,6 +17,7 @@
 #include "System/Editor/Entity/EntityEditorSceneSwitchUnsavedPrompt.h"
 #include "System/Editor/Entity/EntityEditorUiEditableSceneList.h"
 #include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
+#include "System/Editor/Entity/EntityEditorStartupSceneSetWithoutAutosave.h"
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
@@ -774,30 +775,12 @@ void EntityEditor::DrawProjectPanel() {
     ui_.requestLaunchSceneBuildUp = true;
   }
   if (ImGui::Button("起動シーンに設定")) {
-    const std::string targetPath = ui_.jsonFilePath.empty()
-                                       ? ui_.selectedScenePath
-                                       : ui_.jsonFilePath;
-    if (!targetPath.empty()) {
-      SaveToJsonPath(targetPath);
-    }
-    if (Atrum::Editor::Scene::TrySetRepositoryStartupScene(targetPath)) {
-      ui_.importStatusMessage =
-          "Release 起動シーンを launch_config.json に保存しました";
-    } else {
-      ui_.importStatusMessage =
-          "起動シーンの保存に失敗しました（パスと JSON を確認してください）";
-    }
+    EntityEditorStartupSceneSetWithoutAutosave::SetOnly(*this,
+                                                       &ui_.importStatusMessage);
   }
   ImGui::SameLine();
   if (ImGui::Button("設定して BuildUp")) {
-    const std::string targetPath = ui_.jsonFilePath.empty()
-                                       ? ui_.selectedScenePath
-                                       : ui_.jsonFilePath;
-    if (!targetPath.empty()) {
-      SaveToJsonPath(targetPath);
-    }
-    if (!TrySetStartupSceneAndQueueBuildUp(ui_, targetPath,
-                                           &ui_.importStatusMessage)) {
+    if (!TrySetStartupSceneAndQueueBuildUp(*this, &ui_.importStatusMessage)) {
       // importStatusMessage は TrySet 内で設定済み
     }
   }

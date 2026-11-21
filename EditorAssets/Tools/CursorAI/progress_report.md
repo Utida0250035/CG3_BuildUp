@@ -9319,3 +9319,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 起動設定前に SaveToJsonPath（roadmap 600 行）
+
+---
+
+## セッション 2026-11-21 18:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-019`（roadmap 行）: `EntityEditorStartupSceneSetWithoutAutosave` で起動シーン設定時の **暗黙 SaveToJsonPath を廃止**
+- 「設定して BuildUp」は launch_config のみ即時更新し、編集中パス一致時だけ `requestSaveToDisk` をキュー
+
+### 推測した用途（§6.4）
+
+- **制作:** 未保存の試行内容を勝手にディスク確定せず Release 起動パスだけ切替
+- **デバッグ:** 明示保存／SceneBuildUp ボタンとの操作対称
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| launch と保存の分離 | 有効 | ファイル操作と json 編集の棲み分け |
+
+### 次 tick 候補
+
+- プレハブ出力が Definition のみ（roadmap 601 行）

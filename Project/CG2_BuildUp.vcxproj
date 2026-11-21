@@ -615,6 +615,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -1147,6 +1152,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRestoreSelectionAfterSceneLoad.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDeleteSceneOpenSuccessor.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorCreateNewSceneFile.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEditViewScreenRay.h" />

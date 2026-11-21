@@ -597,7 +597,7 @@
 - [x] プレハブ追加は instances[0]
 - [x] 削除時に子を祖父へ昇格しない
 - [x] 新規作成が requestSaveToDisk 必須
-- [ ] 起動設定前に SaveToJsonPath
+- [x] 起動設定前に SaveToJsonPath
 - [ ] プレハブ出力が Definition のみ
 - [ ] ループ内で lastImported が上書き
 - [ ] インポート後プレビュー再適用なし
