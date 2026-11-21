@@ -39,7 +39,7 @@ def main() -> int:
         text = WARN_CPP.read_text(encoding="utf-8", errors="replace")
         for needle in (
             "RecordSkippedComponentSlot",
-            "DefaultKindForTypeName",
+            "TryDefaultKindForRegisteredType",
             "スロット種別の不一致",
         ):
             if needle not in text:
@@ -58,7 +58,10 @@ def main() -> int:
         errors.append("missing EntityEditor.cpp")
     else:
         ed = EDITOR_CPP.read_text(encoding="utf-8", errors="replace")
-        if "importStatusMessage" not in ed.split("BuildPreviewScene", 1)[-1][:600]:
+        build_preview = ed.split("EntityEditor::BuildPreviewScene", 1)
+        if len(build_preview) < 2:
+            errors.append("missing EntityEditor::BuildPreviewScene")
+        elif "importStatusMessage" not in build_preview[1][:400]:
             errors.append("BuildPreviewScene must surface warnings to importStatusMessage")
 
     if errors:

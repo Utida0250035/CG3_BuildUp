@@ -1,5 +1,7 @@
 #include "System/Editor/Scene/EditorSceneRuntimeBuildWarnings.h"
 
+#include "System/Editor/Entity/EntityEditorComponentSlotKindResolve.h"
+
 #include <algorithm>
 #include <sstream>
 
@@ -29,9 +31,11 @@ void EditorSceneRuntimeBuildWarnings::RecordSkippedComponentSlot(
       << ") をスキップ — ";
   if (!IsKnownEditorRuntimeComponentTypeName(slot.typeName)) {
     oss << "未対応のコンポーネント型です";
-  } else if (DefaultKindForTypeName(slot.typeName) != slot.kind) {
+  } else if (const std::optional<ComponentSlotKind> expected =
+                 TryDefaultKindForRegisteredType(slot.typeName);
+             expected && *expected != slot.kind) {
     oss << "スロット種別の不一致（期待: "
-        << SlotKindLabelJa(DefaultKindForTypeName(slot.typeName)) << "）";
+        << SlotKindLabelJa(*expected) << "）";
   } else {
     oss << "追加に失敗しました（typeName と kind の組み合わせを確認）";
   }

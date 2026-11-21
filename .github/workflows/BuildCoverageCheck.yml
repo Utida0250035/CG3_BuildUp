@@ -274,6 +274,9 @@ jobs:
       - name: Verify EditorSceneRuntime slot kind warnings
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_runtime_slot_kind_warn.py
 
+      - name: Verify unknown component slot kind not defaulted to Draw
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_unknown_component_slot_kind.py
+
       - name: Verify SceneEntityEditor edit view transform drag
         run: python3 EditorAssets/Tools/CursorAI/verify_scene_entity_editor_edit_view_transform_drag.py
 

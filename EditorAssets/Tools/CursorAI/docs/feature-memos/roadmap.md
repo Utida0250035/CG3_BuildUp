@@ -612,7 +612,7 @@
 
 ### EntityEditorDefinition
 - [x] 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（spec: feature-memos/component_split_guidelines.md）
-- [ ] 未登録コンポーネント種別が Draw 扱いになる
+- [x] 未登録コンポーネント種別が Draw 扱いになる
 - [ ] コンポーネント設定のコピー／ペーストが無い
 - [ ] CmpCamera 追加で params が空オブジェクト（spec: feature-memos/entity_camera_components.md）
 - [ ] from_json が params を丸ごと代入

@@ -9597,3 +9597,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 未登録コンポーネント種別が Draw 扱いになる（roadmap 615 行）
+
+---
+
+## セッション 2026-11-21 20:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 615 行: **`EntityEditorComponentSlotKindResolve`** で登録済み型のみ kind 推定、未登録は `nullopt`（`DefaultKindForTypeName` の Draw フォールバック廃止、`from_json` の未知型→Draw 代入廃止）
+- プレビュー警告は `TryDefaultKindForRegisteredType` で種別不一致のみ報告
+
+### 推測した用途（§6.4）
+
+- **制作:** 手編集 JSON の typo 型名が Draw スロットとして黙ってプレビューに載らない
+- **Authoring:** 未登録型は警告文「未対応のコンポーネント型」に集約
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| スロット種別解決 | 有効 | コンポーネント構成 json の編集・検証の流れ |
+
+### 次 tick 候補
+
+- コンポーネント設定のコピー／ペーストが無い（roadmap 616 行）

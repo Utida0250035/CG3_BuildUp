@@ -1,6 +1,7 @@
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 
 #include "System/Editor/Entity/EntityEditorKnownComponentRegistry.h"
+#include "System/Editor/Entity/EntityEditorComponentSlotKindResolve.h"
 
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
@@ -23,24 +24,9 @@ bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName) {
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
-  if (typeName == "CmpMeshSphere" || typeName == "CmpMesh" ||
-      typeName == "CmpEditorTextureBillboard" || typeName == "CmpDrawHitSphere" ||
-      typeName == "CmpBillboardInstancedGrid") {
-    return ComponentSlotKind::Draw;
-  }
-  if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
-      typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
-      typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall" ||
-      typeName == "CmpBallKinematics" ||
-      typeName == "CmpBallAxisAlignedBounce" ||
-      typeName == "CmpBallBounceImpactFx") {
-    return ComponentSlotKind::Upd;
-  }
-  if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||
-      typeName == "CmpColliderAabb") {
-    return ComponentSlotKind::Data;
-  }
-  return ComponentSlotKind::Draw;
+  const std::optional<ComponentSlotKind> kind =
+      TryDefaultKindForRegisteredType(typeName);
+  return kind.value_or(ComponentSlotKind::Upd);
 }
 
 nlohmann::json DefaultParamsForType(const std::string &typeName) {
@@ -182,10 +168,9 @@ void from_json(const nlohmann::json &j, ComponentSlot &slot) {
   if (j.contains("kind") && !j.at("kind").is_null()) {
     from_json(j.at("kind"), slot.kind);
   }
-  if (IsKnownEditorRuntimeComponentTypeName(slot.typeName)) {
-    slot.kind = DefaultKindForTypeName(slot.typeName);
-  } else if (!j.contains("kind") || j.at("kind").is_null()) {
-    slot.kind = ComponentSlotKind::Draw;
+  if (const std::optional<ComponentSlotKind> registeredKind =
+          TryDefaultKindForRegisteredType(slot.typeName)) {
+    slot.kind = *registeredKind;
   }
   slot.params = j.value("params", nlohmann::json::object());
 }
