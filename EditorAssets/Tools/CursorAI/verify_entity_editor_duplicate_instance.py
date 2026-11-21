@@ -31,7 +31,9 @@ def main() -> int:
         for needle in (
             "DuplicateSelectedInstanceInScene",
             "MakeUniqueDuplicateInstanceName",
-            "MarkSceneDocumentDirty",
+            "CollectDuplicateSourceIndices",
+            "selectedInstanceIndices",
+            "EntityEditorAuthoringDocumentEditNotify::Notify",
         ):
             if needle not in text:
                 errors.append(f"duplicate module: expected {needle}")

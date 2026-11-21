@@ -9125,3 +9125,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 選択エンティティの複製が無い（roadmap 593 行・§6.2 で既存複製 UI の整合確認想定）
+
+---
+
+## セッション 2026-11-21 16:15（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-012`（roadmap 行）: `DuplicateSelectedInstanceInScene` を **複数選択対応**に拡張（`selectedInstanceIndices` 全件を `_Copy` 付きで複製）
+- ヒエラルキー「複製」ボタン＋既存 verify を `EntityEditorAuthoringDocumentEditNotify` 基準に更新
+
+### 推測した用途（§6.4）
+
+- **制作:** Ctrl+複数選択後にワンクリックで試配置を複製
+- **Authoring:** 一括削除・一括スケールと対になる複製導線
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 選択複製 | 有効 | エンティティのコンポーネント構成を編集する反復作業を短縮 |
+
+### 次 tick 候補
+
+- requestSaveToDisk が needApply を立てない（roadmap 594 行）
