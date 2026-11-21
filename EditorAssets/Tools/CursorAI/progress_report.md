@@ -10382,3 +10382,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - png・obj・gltf を外部ツールで開く操作がエディタに無い（roadmap 656 行）
+
+---
+
+## セッション 2026-11-22 03:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 656 行: **`EditorExternalAssetOpen`** とインスペクタの「外部ツールで開く」（png/jpg/obj/gltf/glb）
+
+### 推測した用途（§6.4）
+
+- **制作:** 画像・モデルの中身編集を Photoshop / Blender 等へ渡し、エディタではパス参照とプレビューに集中
+- **Authoring:** CmpEditorAssetPath・Mesh・テクスチャ系 params からワンクリックで既定アプリ起動
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 外部ツール連携 | 有効 | png/obj/gltf 等は外部ツールで編集し json・インスペクタは参照に留める |
+
+### 次 tick 候補
+
+- CmpCamera が既知型だが未対応表示（roadmap 657 行）

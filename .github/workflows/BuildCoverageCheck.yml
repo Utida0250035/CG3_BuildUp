@@ -109,6 +109,9 @@ jobs:
       - name: Verify component execution order batch
         run: python3 EditorAssets/Tools/CursorAI/verify_component_execution_order_batch.py
 
+      - name: Verify editor asset open external tool
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_asset_open_external_tool.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

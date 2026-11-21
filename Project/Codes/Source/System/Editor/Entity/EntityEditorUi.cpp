@@ -5,6 +5,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
 #include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
 
@@ -151,7 +152,7 @@ void DrawDeleteSceneConfirmPopup(EntityEditor &editor) {
   }
 }
 
-bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
+bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
   nlohmann::json &p = slot.params;
   bool changed = false;
 
@@ -171,6 +172,7 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["texturePath"] = ui.lastImportedAssetPath;
       changed = true;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(texturePath, ui);
     return changed;
   }
 
@@ -228,6 +230,7 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["assetPath"] = ui.lastImportedAssetPath;
       changed = true;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(path, ui);
     return changed;
   }
 
@@ -253,6 +256,7 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["modelAssetPath"] = ui.lastImportedAssetPath;
       changed = true;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(modelPath, ui);
     return changed;
   }
 
@@ -277,6 +281,7 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["textureFilePath"] = ui.lastImportedAssetPath;
       changed = true;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(tex, ui);
     return changed;
   }
 
@@ -348,6 +353,7 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
     if (changed) {
       p["textureFilePath"] = tex;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(tex, ui);
     int gridX = p.value("gridCountX", 10);
     if (ImGui::DragInt("gridCountX", &gridX, 1, 1, 32)) {
       p["gridCountX"] = gridX;

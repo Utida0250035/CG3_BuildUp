@@ -653,7 +653,7 @@
 - [x] タグをすべて解除が選択 1 体のみ
 - [x] コンポーネント削除が選択 1 件のみ
 - [x] 実行順 InputInt が 1 スロットのみ
-- [ ] png・obj・gltf を外部ツールで開く操作がエディタに無い
+- [x] png・obj・gltf を外部ツールで開く操作がエディタに無い
 - [ ] CmpCamera が既知型だが未対応表示（spec: feature-memos/entity_camera_components.md）
 - [ ] 「オブジェクトを追加」は空のみ
 - [ ] コンボ変更で DefaultParams に差し替え
