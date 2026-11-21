@@ -4,6 +4,7 @@
 #include "System/Editor/Entity/EntityEditorSceneDocumentLoadFromPath.h"
 #include "System/Editor/Entity/EntityEditorDroppedImportSpawnSceneInstances.h"
 #include "System/Editor/Entity/EntityEditorPrefabSpawnFirstInstanceRoot.h"
+#include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -72,16 +73,7 @@ void EntityEditor::ClampSelectedInstanceIndex() {
 }
 
 void EntityEditor::AddEmptyInstance() {
-  const std::string name =
-      "Entity_" + std::to_string(scene_.instances.size());
-  SceneEntityInstance instance{};
-  instance.instanceName = name;
-  instance.definition = MakeDefaultEntityDefinition(name);
-  scene_.instances.push_back(std::move(instance));
-  ui_.selectedInstanceIndex =
-      static_cast<int>(scene_.instances.size()) - 1;
-  ui_.selectedInstanceIndices = {ui_.selectedInstanceIndex};
-  EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+  EntityEditorAddEmptyInstanceFromSelection::AppendInstance(*this);
 }
 
 bool EntityEditor::DuplicateSelectedInstance() {

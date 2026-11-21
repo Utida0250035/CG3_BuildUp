@@ -9069,3 +9069,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - AddEmptyInstance が選択中定義を複製しない（roadmap 591 行）
+
+---
+
+## セッション 2026-11-21 15:45（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-008`（roadmap 行）: `EntityEditorAddEmptyInstanceFromSelection` で「オブジェクトを追加」時に **選択中の `EntityDefinition` を複製**（シーン空時のみ既定定義）
+- 新規インスタンス名は従来どおり `Entity_<n>`、親はルート（`-1`）
+
+### 推測した用途（§6.4）
+
+- **制作:** 同一コンポーネント構成のバリエーションを連続配置し、複製ボタンなしでもテンプレ追加ができる
+- **Authoring:** 配置反復の手順を減らし、プレビュー／自動保存へつなぐ
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 追加＝選択定義複製 | 有効 | エンティティのコンポーネント構成を json として編集する反復作業を短縮 |
+
+### 次 tick 候補
+
+- RemoveSelectedInstance が単一 index のみ（roadmap 592 行）
