@@ -61,6 +61,9 @@ jobs:
       - name: Verify imported asset collision policies
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_imported_asset_collision_resolve.py
 
+      - name: Verify imported asset auto stem_N rename
+        run: python3 EditorAssets/Tools/CursorAI/verify_editor_imported_asset_auto_stem_rename.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

@@ -15,6 +15,7 @@
 #include "System/Editor/Entity/EntityEditorSaveSelectedInstanceToPrefab.h"
 
 #include "System/Editor/EditorImportedAsset.h"
+#include "System/Editor/EditorImportedAssetAutoStemRenameReport.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/Entity/EntityEditorDuplicateSelectedInstance.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
@@ -255,6 +256,7 @@ void EntityEditor::ProcessDroppedFileImports() {
 
   std::vector<std::string> importedPaths;
   importedPaths.reserve(dropped.size());
+  int autoStemRenameCount = 0;
 
   for (const std::string &sourcePath : dropped) {
     const std::string dest =
@@ -264,6 +266,9 @@ void EntityEditor::ProcessDroppedFileImports() {
       continue;
     }
 
+    if (Atrum::Editor::Import::UsedAutoStemIncrementRename(sourcePath, dest)) {
+      ++autoStemRenameCount;
+    }
     importedPaths.push_back(dest);
   }
 
@@ -279,8 +284,14 @@ void EntityEditor::ProcessDroppedFileImports() {
         " 体を追加しました";
   } else if (!importedPaths.empty()) {
     ui_.importStatusMessage =
-        "Imported へコピー: " + importedPaths.back() +
-        "（対応拡張子のみシーン追加: obj/png/jpg）";
+        "Imported へコピー: " +
+        Atrum::Editor::Import::DescribeImportedCopyLine(dropped.back(),
+                                                        importedPaths.back());
+    if (autoStemRenameCount > 0) {
+      ui_.importStatusMessage += " / 自動 stem_N: " +
+                                 std::to_string(autoStemRenameCount) + " 件";
+    }
+    ui_.importStatusMessage += "（対応拡張子のみシーン追加: obj/png/jpg）";
   }
 
   EntityEditorDroppedImportRequestPreview::AfterProcessing(*this, spawned,

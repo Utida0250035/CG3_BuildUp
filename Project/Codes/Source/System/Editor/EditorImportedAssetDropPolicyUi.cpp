@@ -1,3 +1,5 @@
+#include "System/Editor/EditorImportedAssetDropPolicyUi.h"
+
 #include "System/Editor/Entity/EntityEditor.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -8,6 +10,8 @@ namespace Atrum::Editor::EditorImportedAssetDropPolicyUi {
 
 void DrawDropCollisionPolicyControls(EntityEditor::UiState &ui) {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  ImGui::TextDisabled(
+      "既定「連番」: 同名ファイルは stem_1, stem_2 … へ自動リネーム");
   const char *policyLabels[] = {"連番 (stem_N)", "上書き",
                                 "タイムスタンプ付与", "接頭辞+連番"};
   int policyIndex = static_cast<int>(ui.importCollisionPolicy);
