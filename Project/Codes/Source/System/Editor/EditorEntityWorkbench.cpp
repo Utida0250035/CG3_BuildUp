@@ -2,6 +2,7 @@
 
 #include "System/Editor/EditorEntityWorkbench.h"
 
+#include "System/Editor/EditorEntityWorkbenchLightPostWindow.h"
 #include "System/Editor/Entity/EntityEditorDuplicateInstanceKeyboardShortcut.h"
 
 #include "ForDebug/ImGui.h"
@@ -153,8 +154,9 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     if (ImGui::MenuItem("Stage camera tuning")) {
       ImGui::SetWindowFocus("Stage camera tuning");
     }
-    if (ImGui::MenuItem("ライティング効果 (Fog/GodRays/影)")) {
-      Atrum::Debug::SetLightingEffectsDebugVisible(true);
+    if (ImGui::MenuItem("ライト・ポスト調整", nullptr,
+                        Atrum::Debug::IsLightingEffectsDebugVisible())) {
+      EditorEntityWorkbenchLightPostWindow::OpenFromMenu();
     }
     ImGui::EndMenu();
   }
@@ -189,6 +191,11 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     ImGui::Separator();
     if (ImGui::MenuItem("ビューを順送り", "`")) {
       CycleSceneViewTab();
+    }
+    ImGui::Separator();
+    if (ImGui::MenuItem("ライト・ポスト調整", nullptr,
+                        Atrum::Debug::IsLightingEffectsDebugVisible())) {
+      EditorEntityWorkbenchLightPostWindow::OpenFromMenu();
     }
     ImGui::TextDisabled("色付きヘッダが現在の表示対象");
     ImGui::EndMenu();
@@ -296,6 +303,8 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
     ImGui::DockBuilderDockWindow("タグ", dockBottom);
     ImGui::DockBuilderDockWindow("スクリプト", dockBottom);
     ImGui::DockBuilderDockWindow("Stage camera tuning", dockBottom);
+    ImGui::DockBuilderDockWindow(
+        EditorEntityWorkbenchLightPostWindow::WindowTitle(), dockBottom);
     ImGui::DockBuilderFinish(dockSpaceId);
   }
 

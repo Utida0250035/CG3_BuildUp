@@ -41,8 +41,10 @@ def main() -> int:
 
     if WORKBENCH.is_file():
         wb = WORKBENCH.read_text(encoding="utf-8", errors="replace")
-        if "SetLightingEffectsDebugVisible" not in wb:
-            errors.append("EntityEditor エディタ menu must open lighting panel")
+        if "ライト・ポスト調整" not in wb:
+            errors.append("EntityEditor menu must open light/post adjust window")
+        if "EditorEntityWorkbenchLightPostWindow::OpenFromMenu" not in wb:
+            errors.append("menu must call OpenFromMenu for light/post")
     else:
         errors.append("missing EditorEntityWorkbench.cpp")
 

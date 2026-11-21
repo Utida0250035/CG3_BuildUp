@@ -16,7 +16,11 @@ bool &LightingEffectsDebugShowFlag() {
   return showWindow;
 }
 
+constexpr const char kWindowTitle[] = "ライト・ポスト調整";
+
 } // namespace
+
+const char *LightingEffectsDebugWindowTitle() { return kWindowTitle; }
 
 bool IsLightingEffectsDebugVisible() { return LightingEffectsDebugShowFlag(); }
 
@@ -30,7 +34,7 @@ void DrawLightingEffectsDebugWindow() {
     return;
   }
 
-  if (!ImGui::Begin("ライティング効果 (Fog / GodRays / Shadow)", &showWindow)) {
+  if (!ImGui::Begin(kWindowTitle, &showWindow)) {
     ImGui::End();
     return;
   }
@@ -55,6 +59,8 @@ namespace Atrum::Debug {
 bool IsLightingEffectsDebugVisible() { return false; }
 
 void SetLightingEffectsDebugVisible(const bool /*visible*/) {}
+
+const char *LightingEffectsDebugWindowTitle() { return "ライト・ポスト調整"; }
 
 } // namespace Atrum::Debug
 
