@@ -48,6 +48,7 @@
 #include "System/Editor/Entity/EntityEditorTransformCopyPaste.h"
 #include "System/Editor/Entity/EntityEditorClearAllEntityTags.h"
 #include "System/Editor/Entity/EntityEditorInspectorComponentRemoveBatchUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorExecutionOrderBatchUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -1251,9 +1252,10 @@ void EntityEditor::DrawInspectorPanel() {
     }
 
     bool changedInComponentSectionBesidesAssetPath = false;
-    int execOrder = selected.executionOrder;
-    if (ImGui::InputInt("実行順 (priority)", &execOrder)) {
-      selected.executionOrder = std::max(0, execOrder);
+    bool executionOrderChanged = false;
+    EntityEditorInspectorExecutionOrderBatchUi::Draw(*this, document, selected,
+                                                     executionOrderChanged);
+    if (executionOrderChanged) {
       changed = true;
       changedInComponentSectionBesidesAssetPath = true;
     }

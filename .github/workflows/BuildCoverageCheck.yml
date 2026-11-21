@@ -106,6 +106,9 @@ jobs:
       - name: Verify component remove batch
         run: python3 EditorAssets/Tools/CursorAI/verify_component_remove_batch.py
 
+      - name: Verify component execution order batch
+        run: python3 EditorAssets/Tools/CursorAI/verify_component_execution_order_batch.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

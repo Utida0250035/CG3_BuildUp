@@ -10355,3 +10355,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - 実行順 InputInt が 1 スロットのみ（roadmap 655 行）
+
+---
+
+## セッション 2026-11-22 03:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 655 行: **`EntityEditorExecutionOrderBatch`** と実行順の同型／種別一括適用・連番整列 UI
+
+### 推測した用途（§6.4）
+
+- **制作:** 同型コンポーネント複数の Draw/Upd priority を一括で揃える
+- **Authoring:** 種別タブ内の実行順リストと `SortComponents` 前提の priority 調整
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 実行順一括編集 | 有効 | コンポーネント構成・内部パラメータを json で編集 |
+
+### 次 tick 候補
+
+- png・obj・gltf を外部ツールで開く操作がエディタに無い（roadmap 656 行）
