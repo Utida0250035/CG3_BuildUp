@@ -585,7 +585,7 @@
 
 
 ### EntityEditor
-- [ ] シーン JSON が開けないとき空シーンへ置換し通知しない
+- [x] シーン JSON が開けないとき空シーンへ置換し通知しない
 - [ ] ProcessDroppedFileImports が Entities 生成まで繋がない
 - [ ] プレハブから先頭 1 体のみ追加し親は常に解除
 - [ ] AddEmptyInstance が選択中定義を複製しない

@@ -645,6 +645,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp" />

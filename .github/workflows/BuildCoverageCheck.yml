@@ -106,6 +106,9 @@ jobs:
       - name: Verify BuildPreviewScene BuildUp parity
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_build_preview_scene_buildup_parity.py
 
+      - name: Verify scene JSON load failure notification
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_load_scene_json_failure_notify.py
+
       - name: Verify editor runtime functional view draw
         run: python3 EditorAssets/Tools/CursorAI/verify_editor_scene_view_functional.py
 

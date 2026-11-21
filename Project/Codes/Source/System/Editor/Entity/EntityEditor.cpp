@@ -1,6 +1,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorBuildPreviewSceneBuildUpParity.h"
+#include "System/Editor/Entity/EntityEditorSceneDocumentLoadFromPath.h"
 
 #include "System/Editor/EditorImportedAsset.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
@@ -164,43 +165,7 @@ bool EntityEditor::AddInstanceFromPrefabPath(const std::string &prefabPath) {
   return true;
 }
 
-void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
-  namespace fs = std::filesystem;
-  if (!fs::exists(jsonFilePath)) {
-    scene_ = EditorSceneDocument{};
-    scene_.sceneName = "EditorScene";
-    SceneEntityInstance instance{};
-    instance.instanceName = "Entity_0";
-    instance.definition = MakeDefaultEntityDefinition("Entity_0");
-    scene_.instances = {std::move(instance)};
-    ui_.selectedInstanceIndex = 0;
-    ui_.selectedInstanceIndices = {0};
-    ui_.selectedComponentKind = ComponentSlotKind::Draw;
-    ui_.selectedComponentIndex = 0;
-    return;
-  }
-
-  std::ifstream file(jsonFilePath);
-  if (!file.is_open()) {
-    return;
-  }
-  nlohmann::json json{};
-  file >> json;
-
-  if (json.contains("entities") && json.at("entities").is_array()) {
-    scene_ = json.get<EditorSceneDocument>();
-  } else {
-    scene_ = EditorSceneDocument{};
-    scene_.sceneName = "EditorScene";
-    SceneEntityInstance instance{};
-    instance.definition = json.get<EntityDefinition>();
-    instance.instanceName = instance.definition.entityName;
-    if (instance.instanceName.empty()) {
-      instance.instanceName = "Entity_0";
-    }
-    scene_.instances = {std::move(instance)};
-  }
-
+void EntityEditor::ResetSelectionAfterSceneDocumentReload() {
   ui_.selectedInstanceIndex = 0;
   ui_.selectedInstanceIndices = {0};
   ui_.selectedComponentIndex = 0;
@@ -210,11 +175,49 @@ void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
   } else {
     ui_.selectedComponentKind = ComponentSlotKind::Draw;
   }
+  ClampSelectedInstanceIndex();
+}
+
+void EntityEditor::ApplySceneDocumentLoadedFromDisk(
+    EditorSceneDocument document) {
+  scene_ = std::move(document);
   MergeTagCatalogFromRegistry(scene_);
   SyncAllEntityDefinitionTags(scene_);
   SyncTagCatalogFromInstances(scene_);
-  ClampSelectedInstanceIndex();
+  ResetSelectionAfterSceneDocumentReload();
   ClearSceneDocumentDirty();
+}
+
+void EntityEditor::ApplyEmptySceneForMissingJsonPath(
+    const std::string &jsonFilePath) {
+  scene_ = EditorSceneDocument{};
+  scene_.sceneName =
+      Atrum::Editor::Scene::SceneDisplayNameFromPath(jsonFilePath);
+  if (scene_.sceneName.empty()) {
+    scene_.sceneName = "EditorScene";
+  }
+  SceneEntityInstance instance{};
+  instance.instanceName = "Entity_0";
+  instance.definition = MakeDefaultEntityDefinition("Entity_0");
+  scene_.instances = {std::move(instance)};
+  MergeTagCatalogFromRegistry(scene_);
+  SyncAllEntityDefinitionTags(scene_);
+  SyncTagCatalogFromInstances(scene_);
+  ResetSelectionAfterSceneDocumentReload();
+  ClearSceneDocumentDirty();
+}
+
+void EntityEditor::LoadFromJsonPath(const std::string &jsonFilePath) {
+  std::string status;
+  if (!EntityEditorSceneDocumentLoadFromPath::TryLoad(*this, jsonFilePath,
+                                                     status)) {
+    if (!status.empty()) {
+      ui_.importStatusMessage = std::move(status);
+    }
+  } else if (!ui_.importStatusMessage.empty() &&
+             ui_.importStatusMessage.find("シーン JSON") != std::string::npos) {
+    ui_.importStatusMessage.clear();
+  }
 }
 
 void EntityEditor::SaveToJsonPath(const std::string &jsonFilePath) {

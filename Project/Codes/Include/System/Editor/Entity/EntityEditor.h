@@ -124,8 +124,14 @@ public:
 
   void ClampSelectedInstanceIndex();
 
+  /// 正常読込後に Document を差し替え（タグ同期・選択リセット含む）
+  void ApplySceneDocumentLoadedFromDisk(EditorSceneDocument document);
+  /// パス不存在時の空シーン開始（通知は呼び出し側の status）
+  void ApplyEmptySceneForMissingJsonPath(const std::string &jsonFilePath);
+
 private:
   void ClearSceneDocumentDirty() { sceneDocumentDirty_ = false; }
+  void ResetSelectionAfterSceneDocumentReload();
 
   UiState ui_{};
   EditorSceneDocument scene_{};

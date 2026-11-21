@@ -8982,3 +8982,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - roadmap P1 ギャップスキャン追補または EntityEditor 節の次 `- [ ]`（ファイル出現順）
+
+---
+
+## セッション 2026-11-21 15:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- `GAP-Editor-EntityEditor-003`（roadmap 行）: `EntityEditorSceneDocumentLoadFromPath` で欠落／オープン失敗時に `importStatusMessage` を設定
+- パス不存在時のみ空シーンへ置換（従来挙動）＋理由を明示
+
+### 推測した用途（§6.4）
+
+- **制作:** 誤パスや壊れた JSON で黙って空シーンになるのを防ぎ、再保存ミスを抑制
+- **デバッグ:** 開けないファイルは前の Document を維持
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| シーン JSON 読込通知 | 有効 | json データとしてシーン構成を作成／保存／編集できる |
+
+### 次 tick 候補
+
+- ProcessDroppedFileImports が Entities 生成まで繋がない（roadmap EntityEditor 
