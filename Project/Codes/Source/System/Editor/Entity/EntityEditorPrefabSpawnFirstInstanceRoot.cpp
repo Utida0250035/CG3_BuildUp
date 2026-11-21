@@ -52,6 +52,7 @@ TryBuildRootInstanceFromPrefabJson(const nlohmann::json &json) {
     if (prefabScene.instances.empty()) {
       return std::nullopt;
     }
+    // プレハブ追加は instances[0] のみ（複数体シーン JSON は一括取り込まない）
     return DetachAsRootInstance(prefabScene.instances.front());
   }
 

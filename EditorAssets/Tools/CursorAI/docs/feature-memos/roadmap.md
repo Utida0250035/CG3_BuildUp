@@ -594,7 +594,7 @@
 - [x] requestSaveToDisk が needApply を立てない
 - [x] LoadFromJsonPath が選択を先頭に戻す
 - [x] 削除後は remaining.front() のみ開く
-- [ ] プレハブ追加は instances[0]
+- [x] プレハブ追加は instances[0]
 - [ ] 削除時に子を祖父へ昇格しない
 - [ ] 新規作成が requestSaveToDisk 必須
 - [ ] 起動設定前に SaveToJsonPath

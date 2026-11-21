@@ -9237,3 +9237,31 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - プレハブ追加は instances[0]（roadmap 597 行・§6.2 既存実装との突合想定）
+
+---
+
+## セッション 2026-11-21 17:15（/loop 15m・roadmap tick）
+
+### 完了タスク（§6.2 実装済み判定）
+
+- `GAP-Editor-EntityEditor-021`（roadmap 597 行）: `EntityEditorPrefabSpawnFirstInstanceRoot` がシーン形式プレハブを **`instances.front()`（= [0]）のみ** 追加していることを確認
+- 新規 verify: `verify_entity_editor_prefab_add_index_zero.py`（一括ループ禁止の静的検査）
+
+### 推測した用途（§6.4）
+
+- **制作:** マルチエントリプレハブ JSON を誤って全展開しない（1 クリック 1 体の契約を明示）
+- **Authoring:** tick 590 の先頭 1 体・親解除と同じ経路の二重チェック
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| プレハブ [0] のみ | 有効（実装済み） | プレハブ化／配置の json 編集方針を既存モジュールで満たす |
+
+### 次 tick 候補
+
+- 削除時に子を祖父へ昇格しない（roadmap 598 行）
