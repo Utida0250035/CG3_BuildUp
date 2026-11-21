@@ -648,7 +648,7 @@
 - [x] ヒエラルキーのドラッグ複製・並べ替えが無い
 - [x] DrawComponentParams が未知 typeName を未対応表示のみ（spec: feature-memos/component_split_guidelines.md）
 - [x] インスペクタでシーン JSON パスを自由編集できる
-- [ ] instanceName と entityName を別々に編集しうる
+- [x] instanceName と entityName を別々に編集しうる
 - [ ] トランスフォームのコピー／一括適用 UI が無い
 - [ ] タグをすべて解除が選択 1 体のみ
 - [ ] コンポーネント削除が選択 1 件のみ

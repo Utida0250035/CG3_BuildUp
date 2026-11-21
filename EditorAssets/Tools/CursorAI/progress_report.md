@@ -10247,3 +10247,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - instanceName と entityName を別々に編集しうる（roadmap 651 行）
+
+---
+
+## セッション 2026-11-22 02:30（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 651 行: **instanceName / entityName** 独立入力 UI・差分表示・任意コピー（`EntityEditorInspectorInstanceIdentityUi`）
+
+### 推測した用途（§6.4）
+
+- **制作:** ヒエラルキー表示とランタイム Entity 名を意図的に分離
+- **デバッグ:** `ApplySceneInstanceName` との役割をインスペクタで明示
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| 名前の独立編集 | 有効 | エンティティの構成を json 作成/保存/編集 |
+
+### 次 tick 候補
+
+- トランスフォームのコピー／一括適用 UI が無い（roadmap 652 行）

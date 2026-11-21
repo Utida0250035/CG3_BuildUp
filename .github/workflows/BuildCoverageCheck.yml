@@ -94,6 +94,9 @@ jobs:
       - name: Verify inspector scene JSON path edit
         run: python3 EditorAssets/Tools/CursorAI/verify_inspector_scene_json_path_edit.py
 
+      - name: Verify inspector instance entity name split
+        run: python3 EditorAssets/Tools/CursorAI/verify_inspector_instance_entity_name_split.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

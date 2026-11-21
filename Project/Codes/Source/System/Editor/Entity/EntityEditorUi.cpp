@@ -43,6 +43,7 @@
 #include "System/Entity/EntityTagRegistry.h"
 #include "System/Editor/Entity/EntityEditorHierarchyDragDrop.h"
 #include "System/Editor/Entity/EntityEditorInspectorSceneJsonPathUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorInstanceIdentityUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -965,7 +966,10 @@ void EntityEditor::DrawInspectorPanel() {
   SceneEntityInstance &instance = SelectedInstance();
   EntityDefinition &document = SelectedDefinition();
 
-  changed |= ImGui::InputString("表示名", instance.instanceName);
+  bool identityChanged = false;
+  EntityEditorInspectorInstanceIdentityUi::Draw(*this, instance, document,
+                                                identityChanged);
+  changed |= identityChanged;
 
   int parentIndex = instance.parentIndex;
   const int selfIndex = ui_.selectedInstanceIndex;
@@ -994,7 +998,6 @@ void EntityEditor::DrawInspectorPanel() {
   }
 
   ImGui::Separator();
-  changed |= ImGui::InputString("エンティティ名", document.entityName);
 
   if (ImGui::CollapsingHeader("タグ", ImGuiTreeNodeFlags_DefaultOpen)) {
     ImGui::TextDisabled("JSON: tags + tagHashes / 実行時 std::set<uint64_t>");
