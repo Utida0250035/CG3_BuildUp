@@ -2,6 +2,8 @@
 
 #include "System/Editor/Entity/EntityEditorKnownComponentRegistry.h"
 #include "System/Editor/Entity/EntityEditorComponentSlotKindResolve.h"
+#include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
+#include "System/Editor/Entity/EntityEditorDefaultParamsCmpCamera.h"
 
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
@@ -81,9 +83,7 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"isTrigger", false}};
   }
   if (typeName == "CmpCamera") {
-    return {{"perspectiveFovY", 0.5f},
-            {"nearClip", 0.125f},
-            {"farClip", 128.0f}};
+    return EntityEditorDefaultParamsCmpCamera::Json();
   }
   if (typeName == "CmpParticleEmitter") {
     return {{"emitterName", ""},
@@ -173,6 +173,7 @@ void from_json(const nlohmann::json &j, ComponentSlot &slot) {
     slot.kind = *registeredKind;
   }
   slot.params = j.value("params", nlohmann::json::object());
+  NormalizeKnownComponentSlotParams(slot);
 }
 
 namespace {

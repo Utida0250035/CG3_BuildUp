@@ -28,6 +28,9 @@ jobs:
       - name: Verify component settings copy paste
         run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_component_settings_copy_paste.py
 
+      - name: Verify CmpCamera default params on add
+        run: python3 EditorAssets/Tools/CursorAI/verify_entity_editor_cmp_camera_default_params.py
+
       - name: Verify BinaryConverter mesh pipeline
         run: python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py
 

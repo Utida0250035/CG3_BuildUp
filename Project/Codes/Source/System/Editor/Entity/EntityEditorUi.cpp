@@ -5,6 +5,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
+#include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/EditorFrame.h"
@@ -70,6 +71,7 @@ void AppendKnownComponentSlot(EntityDefinition &definition,
   slot.kind = entry.kind;
   slot.typeName = entry.typeName;
   slot.params = DefaultParamsForType(entry.typeName);
+  NormalizeKnownComponentSlotParams(slot);
   definition.components.push_back(std::move(slot));
 }
 

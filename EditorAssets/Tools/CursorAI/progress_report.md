@@ -9653,3 +9653,30 @@ roadmap_rough.md を解釈して roadmap.md へマージ（重複する小見出
 ### 次 tick 候補
 
 - CmpCamera 追加で params が空オブジェクト（roadmap 617 行）
+
+---
+
+## セッション 2026-11-21 21:00（/loop 15m・roadmap tick）
+
+### 完了タスク
+
+- roadmap 617 行: **`EntityEditorDefaultParamsCmpCamera`** と **`NormalizeKnownComponentSlotParams`** で UI 追加・JSON 読込時の空 `params` を既定 FOV／クリップで補完
+
+### 推測した用途（§6.4）
+
+- **制作:** カメラ試配置をプリセット値付きで即追加
+- **Authoring:** 手編集 JSON の `"params": {}` を読み込んでもプレビュー可能
+
+### ビルド
+
+- Cloud VM: `runCloudDevelopmentPreflight.sh` OK（MSBuild 未実行）
+
+### 8. 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠（`・` 行） |
+|--------|------|------|
+| CmpCamera 既定 params | 有効 | コンポーネント構成 json 編集とエディタ上プレイ試験 |
+
+### 次 tick 候補
+
+- from_json が params を丸ごと代入（roadmap 618 行）
