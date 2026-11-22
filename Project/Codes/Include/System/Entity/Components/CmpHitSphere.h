@@ -41,7 +41,7 @@ public:
   void SetIsActive(const bool isActive) { isActive_ = isActive; }
   bool GetIsActive() const { return isActive_; }
 
-  std::vector<Entity *> GetHitEntitys();
+  const std::vector<Entity *>& GetHitEntitys();
   
   ~CmpHitSphere() {
       Finalize();

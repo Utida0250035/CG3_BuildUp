@@ -17,7 +17,7 @@ namespace {
 
 constexpr float kShrinkDurationSeconds = 0.6f;
 
-bool IsTouchingOtherEnemy(const Entity &self) {
+bool IsTouchingOtherEnemy(Entity &self) {
   CmpHitSphere *hit = self.GetUpdCmp<CmpHitSphere>();
   if (hit == nullptr || !hit->GetIsActive()) {
     return false;

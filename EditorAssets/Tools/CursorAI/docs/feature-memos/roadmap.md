@@ -8,6 +8,7 @@
 
 
 
+
 ---
 
 ## Audio
@@ -21,6 +22,7 @@
 ### Bgmの一時停止や再開
 - [x] シーン BGM の一時停止・再開（`PauseBgmLoop` / `ResumeBgmLoop`）
 - [x] 再生地点の記録／指定（`GetBgmLoopPlaybackSeconds` / `SetBgmLoopPlaybackSeconds`、ストリーミング／短尺）
+
 
 
 
@@ -81,6 +83,7 @@
 
 
 
+
 ### ギャップスキャン追補（P2/P3・在庫）
 - [ ] Entity／Runtime まわり残件（在庫 3件）
   - 正本: `../implementation_gaps.md`
@@ -123,6 +126,7 @@
 
 
 
+
 ### ギャップスキャン追補（P0/P1）
 - [ ] StageView カメラが StageBounds 定数のみ参照しシーン毎の範囲に追従しない（gap: `GAP-Camera-StageBounds-001`・Play・P1）
 
@@ -137,6 +141,7 @@
 
 ### ムービー用シーン
 - [x] 実装（`SceneMovie`・Registry・sample トラック連携）
+
 
 
 
@@ -160,6 +165,7 @@
 
 ### 自機のシルエット透視
 - [x] 地形越しシルエット表示（`OCCLUDED_SILHOUETTE`・`PlayerTerrainSilhouette`）
+
 
 
 
@@ -189,6 +195,7 @@
 ### ストリーミング再生のデバッグ(ImGui)
 - [x] メモリ使用量表示（`AudioStreamingDebugImGui`・`CollectStreamingMemoryDebug`）
 - [x] ストリーミング進捗表示（再生秒・キュー／デコーダ progress bar）
+
 
 
 
@@ -229,6 +236,7 @@
 
 
 
+
 ### ギャップスキャン追補（P0/P1）
 - [ ] PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない（gap: `GAP-Ship-CG2_BuildUp-001`・Ship・P0）
 - [ ] サブシステム別フレームプロファイラが未実装（gap: `GAP-Infra-frame_profiler-001`・Debug・P1）
@@ -261,6 +269,7 @@
 - [x] Lua テンプレファイル（`EditorAssets/Templates/Lua/`・`manifest.json`）
 - [x] エディタ組み込み（`EditorLuaScriptScaffold`・ドック「スクリプト」・`Project/Assets/Scripts/` へ出力）
 - [-] ランタイム読込（Phase 2・Script 節）
+
 
 
 
@@ -306,6 +315,7 @@
 ### Operator
 - [x] 案内吹き出しシステム（`OperatorGuidance::System`・UX JSON・SceneGame）
 - [x] チュートリアル置換・ナビキャラ（`navigator`・`tutorialReplacement`・OnBattleReady）
+
 
 
 

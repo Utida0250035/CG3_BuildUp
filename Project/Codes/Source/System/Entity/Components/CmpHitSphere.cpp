@@ -15,7 +15,7 @@ void CmpHitSphere::Initialize() { hitEntitys_ = {}; }
 
 void CmpHitSphere::Update() { hitEntitys_ = hitJudge_->IsHitOthers(this); }
 
-std::vector<Entity*> CmpHitSphere::GetHitEntitys() { return hitEntitys_; }
+const std::vector<Entity*>& CmpHitSphere::GetHitEntitys() { return hitEntitys_; }
 
 void CmpHitSphere::Finalize() {
   if (!isRegisteredWithHitJudge_ || hitJudge_ == nullptr) {
