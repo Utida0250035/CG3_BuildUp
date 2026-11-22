@@ -1,6 +1,8 @@
 #pragma once
 
 #include "System/Editor/EditorAssetsPaths.h"
+#include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
+#include "System/Editor/EditorScenePlayRequestMetadata.h"
 #include <string>
 #include <vector>
 
@@ -30,9 +32,12 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath);
 /// スタートアップシーン設定（launch_config.json）
 struct LaunchConfig {
   std::string startupScenePath{};
+  int schemaVersion{0};
 };
 
 bool TryLoadLaunchConfig(LaunchConfig &outConfig);
+LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue TryLoadLaunchConfigWithIssue(
+    LaunchConfig &outConfig);
 bool TrySaveLaunchConfig(const LaunchConfig &config);
 
 /// シーン JSON を検証し launch_config.json に書き込む（リポジトリ共有用）
@@ -47,11 +52,24 @@ public:
   static EditorScenePlayRequest &Instance();
 
   void Set(const std::string &jsonFilePath);
+  void Stage(const std::string &jsonFilePath, EditorScenePlayStagingKind kind);
   const std::string &Path() const { return jsonFilePath_; }
+  EditorScenePlayStagingKind StagingKind() const;
   void Clear();
 
 private:
   std::string jsonFilePath_{};
+  EditorScenePlayStagingKind stagingKind_{EditorScenePlayStagingKind::Unset};
 };
+
+/// エディタ「シーンを実行」等で渡した JSON を PlayRequest に載せる。
+void StageEditorPlayScenePath(const std::string &jsonFilePath,
+                              EditorScenePlayStagingKind kind);
+
+/// 保持中のパスを返し、非空なら Clear する（起動解決・BuildUp 起動で消費）。
+std::string TakePendingEditorPlayScenePath();
+
+/// 未消費の PlayRequest を破棄（シーン Exit 等）。
+void ClearStagedEditorPlayScenePath();
 
 } // namespace Atrum::Editor::Scene

@@ -3,10 +3,8 @@
 #include "Camera/Camera.h"
 #include "Camera/CameraFlipHorizontal.h"
 #include "Camera/CameraFlipVertical.h"
-#include "Engine/Platform/Window/Window.h"
+#include "Camera/StageViewDesignViewport.h"
 #include "Math/Lerp.h"
-#include "System/StageBounds.h"
-
 #include <algorithm>
 #include <cmath>
 
@@ -16,10 +14,7 @@ namespace {
 
 constexpr float kPerspectiveFovY = 0.5f;
 
-float GetAspectRatio() {
-  return static_cast<float>(Window::kDefaultClientWidth) /
-         static_cast<float>(Window::kDefaultClientHeight);
-}
+float GetAspectRatio() { return GetStageViewDesignAspectRatio(); }
 
 StageViewCameraPose ComputeViewPose(const Math::Vector3 &pivot, float viewHalfHeight,
                                     float viewHalfWidth, float distanceScale,
@@ -54,19 +49,26 @@ void SetupPerspectiveMatrix(Camera *camera) {
 
 } // namespace
 
-StageViewCameraPose ComputeStageBattleViewPose() {
-  const float centerX = (kLeftEndX + kRightEndX) * 0.5f;
-  const float bottomY = kGroundHeight;
-  const float topY = kBarrageSpawnTopY;
+StageViewCameraPose ComputeStageBattleViewPose(
+    const StageViewFramingBounds &framingBounds) {
+  const float centerX =
+      (framingBounds.leftEndX + framingBounds.rightEndX) * 0.5f;
+  const float bottomY = framingBounds.groundHeight;
+  const float topY = framingBounds.barrageSpawnTopY;
   const float centerY = (bottomY + topY) * 0.5f;
   const float viewHeight = (topY - bottomY) * 0.5f;
-  const float viewWidth = (kRightEndX - kLeftEndX) * 0.5f;
+  const float viewWidth =
+      (framingBounds.rightEndX - framingBounds.leftEndX) * 0.5f;
 
-  const Math::Vector3 pivot{centerX, centerY, 0.0f};
+  const Math::Vector3 pivot{centerX, centerY, framingBounds.pivotZ};
   return ComputeViewPose(pivot, viewHeight, viewWidth,
                          kStageBattleViewDistanceScale,
                          kStageBattleViewEyeHeightAbovePivotY,
                          kStageBattleViewEyeSideOffsetX);
+}
+
+StageViewCameraPose ComputeStageBattleViewPose() {
+  return ComputeStageBattleViewPose(ResolveStageViewFramingBounds());
 }
 
 StageViewCameraPose ComputeFocusViewPose(const Math::Vector3 &focusWorld,

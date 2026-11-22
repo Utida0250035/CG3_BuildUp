@@ -5,9 +5,15 @@
 #include "Scene/CommandScene.h"
 #include "Audio/Audio.h"
 #include "Scene/CommandChangeScene.h"
+#include "Scene/GameOrderAudioPolicy.h"
 #include "System/DeltaTime.h"
+#if defined(DEVELOPMENT)
+#include "ForDebug/SubsystemFrameProfiler.h"
+#endif
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/AudioStreamingDebugImGui.h"
+#include "ForDebug/LightingEffectsDebugImGui.h"
+#include "ForDebug/FrameDeltaTimeDebugImGui.h"
 #endif
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
 #include "Scene/SceneReleaseCarousel.h"
@@ -51,34 +57,84 @@ namespace Atrum {
 		void Run() {
 
 			// デルタタイムは AtrumEngine::Process() で計算済み
-#ifdef USE_IMGUI
-			Engine::Instance()->ImGuiNewFrame();
 #if defined(DEVELOPMENT)
-			Atrum::Debug::DrawAudioStreamingMemoryDebugWindow();
+			Atrum::Debug::SubsystemFrameProfilerBeginFrame();
 #endif
+			{
+#if defined(DEVELOPMENT)
+				Atrum::Debug::SubsystemFrameScope imguiScope(
+				    Atrum::Debug::SubsystemFrameId::ImGuiPrep);
 #endif
-			AbstractInput::Instance()->Update();
-
-			Scene* sceneNow = commandScene_->GetSceneNow();
-
-			if (!commandChangeScene_->GetIsExecute()) {
-#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
-				if (!Atrum::SceneFlow::SceneReleaseCarousel::Instance()
-				        .TryAdvanceOnSubmit()) {
-					sceneNow->Update();
-				}
-#else
-				sceneNow->Update();
+#ifdef USE_IMGUI
+				Engine::Instance()->ImGuiNewFrame();
+#if defined(DEVELOPMENT)
+				Atrum::Debug::DrawAudioStreamingMemoryDebugWindow();
+				Atrum::Debug::DrawLightingEffectsDebugWindow();
+				Atrum::Debug::DrawFrameDeltaTimeDebug();
+				Atrum::Debug::DrawSubsystemFrameProfilerDebug();
+#endif
 #endif
 			}
 
+			{
+#if defined(DEVELOPMENT)
+				Atrum::Debug::SubsystemFrameScope inputScope(
+				    Atrum::Debug::SubsystemFrameId::Input);
+#endif
+				AbstractInput::Instance()->Update();
+			}
+
+			Scene* sceneNow = commandScene_->GetSceneNow();
+
+			if (commandChangeScene_->GetIsExecute() &&
+			    !commandChangeScene_->AllowsCurrentSceneUpdate()) {
+				sceneNow->TryHandleInputWhileSceneTransitionBlocked();
+			}
+
+			{
+#if defined(DEVELOPMENT)
+				Atrum::Debug::SubsystemFrameScope updateScope(
+				    Atrum::Debug::SubsystemFrameId::SceneUpdate);
+#endif
+				if (commandChangeScene_->AllowsCurrentSceneUpdate()) {
+#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
+					if (!Atrum::SceneFlow::SceneReleaseCarousel::Instance()
+					        .TryAdvanceOnSubmit()) {
+						sceneNow->Update();
+					}
+#else
+					sceneNow->Update();
+#endif
+				}
+			}
+
 			// シーン遷移の更新処理（遷移先が非シングルトンの場合、直前の scene は破棄される）
-			commandChangeScene_->Update();
+			{
+#if defined(DEVELOPMENT)
+				Atrum::Debug::SubsystemFrameScope transitionScope(
+				    Atrum::Debug::SubsystemFrameId::SceneTransition);
+#endif
+				commandChangeScene_->Update();
+			}
 
 			sceneNow = commandScene_->GetSceneNow();
 
-			ActiveCameraSystem::Instance().PrepareSceneAndBindEngine(
-			    sceneNow, Engine::Instance());
+			{
+#if defined(DEVELOPMENT)
+				Atrum::Debug::SubsystemFrameScope audioScope(
+				    Atrum::Debug::SubsystemFrameId::Audio);
+#endif
+				TickGameOrderFrameAudio(audio_, commandChangeScene_);
+			}
+
+			{
+#if defined(DEVELOPMENT)
+				Atrum::Debug::SubsystemFrameScope cameraScope(
+				    Atrum::Debug::SubsystemFrameId::CameraPrepare);
+#endif
+				ActiveCameraSystem::Instance().PrepareSceneAndBindEngine(
+				    sceneNow, Engine::Instance());
+			}
 
 			// 現在シーンの描画処理（PreDraw / PostDraw を含む）
 			sceneNow->Draw();

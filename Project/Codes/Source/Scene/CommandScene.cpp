@@ -1,12 +1,13 @@
 ﻿#include "Scene/CommandScene.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-#include "Scene/SceneEntityEditor.h"
+#include "Scene/CommandSceneDevelopmentBoot.h"
+#include "Scene/CommandSceneDevelopmentBootApply.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
 #else
-#include "Scene/SceneBuildUp.h"
-#include "Scene/SceneTitle.h"
-#include "System/Editor/Scene/EditorSceneAsset.h"
+#include "Scene/CommandSceneReleaseBootApply.h"
 #endif
+#include "Scene/CommandSceneBootEnterApply.h"
 
 namespace Atrum {
 
@@ -16,18 +17,14 @@ namespace Atrum {
 CommandScene::CommandScene() {
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  sceneNow_ = SceneEntityEditor::Instance();
+  const DevelopmentBootTarget bootTarget = ResolveDevelopmentBootTarget();
+  sceneNow_ = CreateInitialSceneForDevelopmentBoot(bootTarget);
 #else
-  const std::string startupScene = Editor::Scene::ResolveStartupScenePath();
-  if (!startupScene.empty()) {
-    sceneNow_ = SceneBuildUpRegistry::Instance().Launch(
-        startupScene, SceneTitle::Instance());
-  } else {
-    sceneNow_ = SceneTitle::Instance();
-  }
+  sceneNow_ = CreateInitialSceneForReleaseBoot();
 #endif
 
-  sceneNow_->EnterScene();
+  sceneNow_ = PrepareInitialSceneBeforeEnter(sceneNow_);
+  EnterInitialSceneNow(sceneNow_);
 }
 
 } // namespace Atrum

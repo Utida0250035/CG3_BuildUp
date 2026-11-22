@@ -2,14 +2,28 @@
 
 #include "System/Editor/EditorEntityWorkbench.h"
 
+#include "System/Editor/EditorEntityWorkbenchDefaultDockLayout.h"
+#include "System/Editor/EditorEntityWorkbenchPlayMenu.h"
+#include "System/Editor/EditorEntityWorkbenchLightPostWindow.h"
+#include "System/Editor/Entity/EntityEditorDuplicateInstanceKeyboardShortcut.h"
+
 #include "ForDebug/ImGui.h"
-#include "ForDebug/AudioStreamingDebugImGui.h"
+#include "System/Editor/EditorFrameStreamingDiagnostics.h"
 #include "System/Editor/EditorLuaScriptScaffold.h"
 #include <imgui/imgui_internal.h>
+#include "System/Editor/Camera/EditorStageViewCameraTuningHotReloadTick.h"
+#include "System/Editor/Camera/StageViewCameraTuning.h"
+#include "System/Editor/EditorAssetsPaths.h"
+#include "System/Editor/EditorDebugPlayAreaCombatBoundsSandbox.h"
+#include "System/Editor/EditorEntityWorkbenchFeatureTestMenuLaunch.h"
+#include "System/Editor/EditorDebugPlayAreaFeatureVerificationCanonical.h"
+#include "ForDebug/LightingEffectsDebugImGui.h"
 #include "System/Editor/EditorFrame.h"
+#include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "System/Editor/EditorSceneViewPanel.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "Scene/SceneEntityEditorInEditorPlayQueue.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
 
@@ -94,15 +108,20 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
       ui.pendingDeleteScenePath = deleteSceneTarget;
       ui.requestDeleteSceneConfirm = true;
     }
-    if (ImGui::MenuItem("シーンを実行")) {
+    if (ImGui::MenuItem("シーンを実行（エディタ内）")) {
+      QueueInEditorPlayRuntimeTabOnly(ui);
+    }
+    if (ImGui::MenuItem("SceneBuildUp で実行")) {
       ui.requestSaveToDisk = true;
-      ui.requestPlayRuntimeScene = true;
+      ui.requestLaunchSceneBuildUp = true;
     }
     if (ImGui::MenuItem("プレビューに適用")) {
       ui.requestApplyPreview = true;
     }
     ImGui::EndMenu();
   }
+
+  EditorEntityWorkbenchPlayMenu::DrawMenuItems(editor);
 
   if (ImGui::BeginMenu("モード")) {
     const bool isEdit =
@@ -130,16 +149,31 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     if (ImGui::MenuItem("パーティクルエディタ")) {
       ui.requestOpenParticleEditor = true;
     }
+    if (ImGui::MenuItem("機能検証シーン (FeatureTest / SceneBuildUp)")) {
+      QueueFeatureVerificationSceneBuildUp(ui);
+    }
     if (ImGui::MenuItem("スクリプト")) {
       ImGui::SetWindowFocus("スクリプト");
+    }
+    if (ImGui::MenuItem("Stage camera tuning")) {
+      ImGui::SetWindowFocus("Stage camera tuning");
+    }
+    if (ImGui::MenuItem("ライト・ポスト調整", nullptr,
+                        Atrum::Debug::IsLightingEffectsDebugVisible())) {
+      EditorEntityWorkbenchLightPostWindow::OpenFromMenu();
     }
     ImGui::EndMenu();
   }
 
   if (ImGui::BeginMenu("デバッグ")) {
-    bool showStreamingMemory = Atrum::Debug::IsStreamingMemoryDebugVisible();
-    if (ImGui::MenuItem("ストリーミングメモリ", nullptr, &showStreamingMemory)) {
-      Atrum::Debug::SetStreamingMemoryDebugVisible(showStreamingMemory);
+    EditorFrameStreamingDiagnostics::DrawMenuItems();
+    EditorFrame::Instance().DrawRenderDiagnosticsMenuItems();
+    if (ImGui::MenuItem("機能検証シーン (FeatureTest 正本)")) {
+      QueueFeatureVerificationSceneBuildUp(ui);
+    }
+    if (ImGui::MenuItem("StageBounds 検証 (combat_bounds_sandbox)")) {
+      ui.sceneBuildUpLaunchPath = DebugPlayAreaCombatBoundsSandbox::SceneJsonPath();
+      ui.requestLaunchSceneBuildUp = true;
     }
     ImGui::EndMenu();
   }
@@ -161,6 +195,15 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     ImGui::Separator();
     if (ImGui::MenuItem("ビューを順送り", "`")) {
       CycleSceneViewTab();
+    }
+    ImGui::Separator();
+    if (ImGui::MenuItem("ライト・ポスト調整", nullptr,
+                        Atrum::Debug::IsLightingEffectsDebugVisible())) {
+      EditorEntityWorkbenchLightPostWindow::OpenFromMenu();
+    }
+    ImGui::Separator();
+    if (ImGui::MenuItem("ドックレイアウトを既定に戻す")) {
+      ui.requestResetDefaultDockLayout = true;
     }
     ImGui::TextDisabled("色付きヘッダが現在の表示対象");
     ImGui::EndMenu();
@@ -205,7 +248,7 @@ void DrawMainMenuBar(EntityEditor::EntityEditor &editor) {
     CycleSceneViewTab();
   }
 
-  ImGui::TextDisabled("F2: パーティクルエディタ");
+  ImGui::TextDisabled("F2: 機能検証 BuildUp / F3: パーティクルデモ / F4: パーティクルエディタ");
   ImGui::EndMainMenuBar();
 }
 
@@ -217,6 +260,7 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   editor.ProcessDroppedFileImports();
 
   DrawMainMenuBar(editor);
+  EntityEditor::PollEntityEditorDuplicateInstanceKeyboardShortcut(editor);
 
   ImGuiViewport *mainViewport = ImGui::GetMainViewport();
   ImGui::SetNextWindowPos(mainViewport->WorkPos);
@@ -233,41 +277,15 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
   ImGui::Begin("EditorDockSpaceHost", nullptr, dockSpaceFlags);
   ImGui::PopStyleVar(3);
 
-  const ImGuiID dockSpaceId = ImGui::GetID("EntityEditorDockSpaceV4");
+  const ImGuiID dockSpaceId =
+      ImGui::GetID(EditorEntityWorkbenchDefaultDockLayout::DockSpaceIdLabel());
   ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f),
                    ImGuiDockNodeFlags_PassthruCentralNode);
 
-  static bool defaultLayoutBuilt = false;
-  if (!defaultLayoutBuilt) {
-    defaultLayoutBuilt = true;
-    ImGui::DockBuilderRemoveNode(dockSpaceId);
-    const ImGuiDockNodeFlags dockRootFlags = static_cast<ImGuiDockNodeFlags>(
-        static_cast<int>(ImGuiDockNodeFlags_DockSpace) |
-        static_cast<int>(ImGuiDockNodeFlags_PassthruCentralNode));
-    ImGui::DockBuilderAddNode(dockSpaceId, dockRootFlags);
-    ImGui::DockBuilderSetNodeSize(dockSpaceId, mainViewport->WorkSize);
-
-    ImGuiID dockCenter = dockSpaceId;
-    const ImGuiID dockLeft =
-        ImGui::DockBuilderSplitNode(dockCenter, ImGuiDir_Left, 0.22f, nullptr,
-                                    &dockCenter);
-    const ImGuiID dockRight =
-        ImGui::DockBuilderSplitNode(dockCenter, ImGuiDir_Right, 0.28f, nullptr,
-                                    &dockCenter);
-    const ImGuiID dockBottom =
-        ImGui::DockBuilderSplitNode(dockCenter, ImGuiDir_Down, 0.28f, nullptr,
-                                    &dockCenter);
-
-    ImGui::DockBuilderDockWindow(kEditSceneViewTitle, dockCenter);
-    ImGui::DockBuilderDockWindow(kGameSceneViewTitle, dockCenter);
-    ImGui::DockBuilderDockWindow(kRuntimeSceneViewTitle, dockCenter);
-    ImGui::DockBuilderDockWindow("ヒエラルキー", dockLeft);
-    ImGui::DockBuilderDockWindow("インスペクター", dockRight);
-    ImGui::DockBuilderDockWindow("プロジェクト", dockBottom);
-    ImGui::DockBuilderDockWindow("タグ", dockBottom);
-    ImGui::DockBuilderDockWindow("スクリプト", dockBottom);
-    ImGui::DockBuilderFinish(dockSpaceId);
-  }
+  const bool forceLayoutRebuild = editor.Ui().requestResetDefaultDockLayout;
+  EditorEntityWorkbenchDefaultDockLayout::ApplyIfNeeded(
+      dockSpaceId, mainViewport->WorkSize, forceLayoutRebuild);
+  editor.Ui().requestResetDefaultDockLayout = false;
 
   SceneViewPanelOptions sceneViewOptions{};
   sceneViewOptions.showEditView = true;
@@ -309,6 +327,9 @@ void LayoutEntityEditorWorkbench(EntityEditor::EntityEditor &editor) {
     EditorLuaScriptScaffold::DrawImGuiPanel();
   }
   ImGui::End();
+
+  TickStageViewCameraTuningHotReload();
+  DrawStageViewCameraTuningPanel();
 
   ImGui::End();
 }

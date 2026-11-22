@@ -18,6 +18,8 @@ public:
 
   void Draw(AtrumEngine *engine);
 
+  bool IsShowing() const { return timer_ > 0.0f; }
+
 private:
   float timer_ = 0.0f;
   float duration_ = 0.0f;

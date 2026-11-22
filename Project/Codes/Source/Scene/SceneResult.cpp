@@ -1,57 +1,53 @@
 #include "Scene/SceneResult.h"
 
 #include "Engine/AtrumEngine.h"
-#include "Engine/Resource/LightData.h"
+#include "Engine/EngineAccess.h"
+#include "Scene/SceneResultVisualApply.h"
 #include "Input/AbstractInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneTitle.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
+#include "Scene/SceneResultBgmMaintain.h"
+#include "Scene/SceneResultExitBgmPolicy.h"
+#include "Scene/SceneResultSubmitTransition.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
-
-namespace {
-
-void SetupStageLighting() {
-  Atrum::Math::Vector3 lightDirection{-0.4f, -0.85f, 0.15f};
-  lightDirection.Normalize();
-  const Atrum::DirectionalLightData directionalLight{
-      .color = Atrum::Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 8.0f,
-      .lightModel = Atrum::LightModel::HalfLambert,
-  };
-  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
-}
-
-} // namespace
 
 namespace Atrum {
 
 void SceneResult::EnterScene() {
+  resultSubmitTransitionConsumed_ = false;
   EnsureCommonResources();
   SetupStageViewCamera();
   Atrum::SceneScreenUi::PreloadResultUiTextures();
   SpawnBackgrounds();
+  ApplySceneResultVisualFromProfile();
   sceneBgmHandle_ = Atrum::PlayBgmLoop({"./Assets/Audios/bgmResult.mp3",
                                         "./Resources/bgmResult.mp3"});
-}
-
-void SceneResult::Update() {
-  Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
-  Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
-  UpdateBackgrounds();
-
-  if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
-    Atrum::PlaySubmitSe();
-    Atrum::CommandChangeScene::Instance()->Set(SceneTitle::Instance(),
-                                               std::make_unique<ChangeSceneFade>().release());
+  if (sceneBgmHandle_.isSuccess) {
+    float pitchRatio = 1.0f;
+    if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+        pitchRatio < 0.99f) {
+      Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
+    }
+    float volume = 0.0f;
+    if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
+      Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
+    }
   }
 }
 
+void SceneResult::Update() {
+  MaintainSceneResultBgmIfNeeded(sceneBgmHandle_);
+  UpdateBackgrounds();
+
+  (void)SceneResultSubmitTransition::TryBeginOnSubmit(*this);
+}
+
 void SceneResult::DrawScene() {
-  SetupStageLighting();
+  ApplySceneResultVisualFromProfile();
   DrawBackgrounds();
 
   if (Atrum::AtrumEngine *engine = ::Atrum::EngineInstance()) {
@@ -61,8 +57,7 @@ void SceneResult::DrawScene() {
 
 void SceneResult::ExitScene() {
   ReleaseCommonResources();
-  Atrum::StopBgmLoop(sceneBgmHandle_);
-  sceneBgmHandle_ = {};
+  ReleaseSceneResultBgmOnExitDuringFade(sceneBgmHandle_);
   ClearBackgrounds();
 }
 

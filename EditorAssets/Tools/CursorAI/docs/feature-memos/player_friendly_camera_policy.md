@@ -13,9 +13,9 @@
 
 | 機構 | 場所 | 役割 |
 |------|------|------|
-| `IsStageViewCameraLocked()` | 各 `Scene` | `true` で戦闘・本編カメラ固定 |
-| `GameOrder` 更新ループ | `GameOrder.h` | ロック時は `camera->Update()` を呼ばず行列のみ更新 |
-| `AllowDebugCameraControl()` | エディタ系 `Scene` | `false` ならデバッグカメラ入力なし |
+| `IsStageViewCameraLocked()` | `Scene` 基底＋各派生 | 既定 `true`（`SceneStageCameraLockDefaults.h`）。エディタのみ `false` を明示 |
+| `SceneDebugCameraInputPolicy` | `SceneDebugCameraInputPolicy.cpp` | ロックと Allow の組み合わせ正本（`CmpCamera::PrepareBeforeDraw`） |
+| `AllowDebugCameraControl()` | 基底は `false`、エディタ系のみ `true` override | 未設定シーンで誤って Debug 入力しない |
 | Release ビルド | `Scene.cpp` | `DebugCamera` 非使用 |
 
 ## シーン一覧（正本はソース）
@@ -30,10 +30,11 @@
 
 ## 新シーン追加時チェックリスト
 
-1. プレイヤーが操作する本番シーンか？ → **`IsStageViewCameraLocked() const override { return true; }`**
-2. `EnterScene` / 演出完了後に **`SetupStageViewCamera()`** またはコントローラで姿勢を確定しているか？
-3. UI テキストに「カメラを動かす」系の説明を入れていないか？
-4. 検証: `EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py`
+1. **制作ツール用シーンか？** → `false` を override し、`verify_camera_policy.py` の `UNLOCKED_EDITOR` に登録
+2. **本番・プレイ用シーンか？** → 既定 `true` のため override は任意（明示 `return true` 推奨）。`LOCKED_REQUIRED` に登録
+3. `EnterScene` / 演出完了後に **`SetupStageViewCamera()`** またはコントローラで姿勢を確定しているか？
+4. UI テキストに「カメラを動かす」系の説明を入れていないか？
+5. 検証: `python3 EditorAssets/Tools/StageViewCameraTuning/verify_camera_policy.py`（CI 組込み済み）
 
 ## 意図しない例（避ける）
 

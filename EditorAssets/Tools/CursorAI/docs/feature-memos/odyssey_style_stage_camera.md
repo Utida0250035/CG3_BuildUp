@@ -25,11 +25,13 @@
 | `CameraFocusPushController` | ボス撃破などのプッシュイン |
 | `DebugCamera` | DEVELOPMENT の自由視点（**本番プレイ体験とは分離**） |
 
-## 調整ツール化（本 tick）
+## 調整ツール化
 
 - JSON に battle / focus / 演出用のスカラを集約
-- Python で `ComputeStageBattleViewPose` 相当の数式を再現し CLI 出力
-- **未実装（次）:** DEVELOPMENT 時に JSON ホットリード or ImGui スライダー → 即プレビュー
+- Python で `ComputeStageBattleViewPose` 相当の数式を再現し CLI 出力（`StageViewCameraTuning/preview_poses.py`）
+- **エディタ内:** ImGui ドック「Stage camera tuning」（`DrawStageViewCameraTuningPanel`）
+  - 「JSON preview on Game view」で `Scene::SetupStageViewCamera` が tuning JSON を使用
+  - 「Auto hot-reload」＋ `TickStageViewCameraTuningHotReload` で `stage_view_camera_tuning.json` の変更を監視
 
 ## C++ 定数との同期
 

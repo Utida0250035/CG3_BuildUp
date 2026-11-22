@@ -3,6 +3,10 @@
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
 #include "Engine/AtrumEngine.h"
+#include "System/Build/BuildConfigurationContract.h"
+#if defined(DEVELOPMENT)
+#include "ForDebug/SubsystemFrameProfiler.h"
+#endif
 #include "Engine/Command/CommandContext.h"
 #include "Engine/Device/RenderDevice.h"
 #include "Engine/Renderer/Draw.h"
@@ -19,6 +23,7 @@
 #include "Geometry/Plane.h"
 #include "Input/DirectInput.h"
 #include "Input/PlayInput.h"
+#include "Physics/PhysicsManager.h"
 #include "Math/Matrix4x4.h"
 #include "Math/Vector4.h"
 #include "String/ConvertString.h"
@@ -115,6 +120,10 @@ Input::PlayInput *EnginePlayInput() {
 
 Audio::AudioManager *EngineAudioManager() {
 	return AtrumEngine::Instance()->GetAudioManager();
+}
+
+Physics::PhysicsManager *EnginePhysicsManager() {
+	return &Physics::PhysicsManager::Instance();
 }
 
 TextureStorage *EngineTextureStorage() {
@@ -457,6 +466,8 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
   /* 初期化完了のログ出力 */
 
   D::LogFile::Instance()->Log("Hello World!");
+  D::LogFile::Instance()->Log(
+      std::string("Build configuration: ") + Atrum::Build::ConfigurationLabel());
 
   isInitialized_ = true;
 }
@@ -560,8 +571,6 @@ bool AtrumEngine::Process() {
 
   directInput_->Update();
 
-  audioManager_->Update();
-
   frameDeltaTime_->CalcDeltaTime();
 
   return true;
@@ -590,6 +599,11 @@ void AtrumEngine::ImGuiRender() const {
 void AtrumEngine::PreDraw() {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
+
+#if defined(DEVELOPMENT)
+  Atrum::Debug::SubsystemFrameScope preDrawScope(
+      Atrum::Debug::SubsystemFrameId::GfxPreDraw);
+#endif
 
   swapChainManager_->UpdateBackBufferIndex();
 
@@ -698,6 +712,16 @@ void AtrumEngine::RebindObject3dDrawBindings() {
   FlushDirectionalLightConstantBuffer();
   commandContextDirect_->GetCommandList()->SetGraphicsRootConstantBufferView(
       3, directionalLightBuffer_->GetGpuVirtualAddress());
+}
+
+bool AtrumEngine::TryGetClientViewportSize(int32_t &outWidth,
+                                           int32_t &outHeight) const {
+  if (window_ == nullptr) {
+    return false;
+  }
+  outWidth = window_->GetClientWidth();
+  outHeight = window_->GetClientHeight();
+  return outHeight > 0;
 }
 
 void AtrumEngine::SetSubViewport(const int x, const int y, const int width,
@@ -827,6 +851,11 @@ void AtrumEngine::ApplySubViewportToCommandList() const {
 void AtrumEngine::PostDraw() {
 
   assert(isInitialized_ && "AtrumEngine is not initialized");
+
+#if defined(DEVELOPMENT)
+  Atrum::Debug::SubsystemFrameScope postDrawScope(
+      Atrum::Debug::SubsystemFrameId::GfxPostDraw);
+#endif
 
 #ifdef USE_IMGUI
 

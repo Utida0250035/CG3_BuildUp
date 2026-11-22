@@ -1,5 +1,10 @@
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 
+#include "System/Editor/Entity/EntityEditorKnownComponentRegistry.h"
+#include "System/Editor/Entity/EntityEditorComponentSlotKindResolve.h"
+#include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
+#include "System/Editor/Entity/EntityEditorDefaultParamsCmpCamera.h"
+
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 #include <algorithm>
@@ -14,32 +19,17 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ComponentSlotKind,
                              {ComponentSlotKind::Draw, "Draw"},
                              {ComponentSlotKind::Data, "Data"}})
 
-bool IsKnownEntityEditorComponent(const std::string &typeName) {
-  return typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
-         typeName == "CmpRotator" || typeName == "CmpScroll" ||
-         typeName == "CmpHitSphere" || typeName == "CmpEditorAssetPath" ||
-         typeName == "CmpCamera" ||          typeName == "CmpParticleEmitter" ||
-         typeName == "CmpBounceBall" ||
-         typeName == "CmpBillboardInstancedGrid";
+} // namespace
+
+bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName) {
+  return EntityEditorKnownComponentRegistry::Contains(typeName);
 }
 
 ComponentSlotKind DefaultKindForTypeName(const std::string &typeName) {
-  if (typeName == "CmpMeshSphere" || typeName == "CmpDrawHitSphere" ||
-      typeName == "CmpBillboardInstancedGrid") {
-    return ComponentSlotKind::Draw;
-  }
-  if (typeName == "CmpRotator" || typeName == "CmpScroll" ||
-      typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
-      typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall") {
-    return ComponentSlotKind::Upd;
-  }
-  if (typeName == "CmpEditorAssetPath") {
-    return ComponentSlotKind::Data;
-  }
-  return ComponentSlotKind::Draw;
+  const std::optional<ComponentSlotKind> kind =
+      TryDefaultKindForRegisteredType(typeName);
+  return kind.value_or(ComponentSlotKind::Upd);
 }
-
-} // namespace
 
 nlohmann::json DefaultParamsForType(const std::string &typeName) {
   if (typeName == "CmpMeshSphere") {
@@ -47,6 +37,17 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"subdivision", 12},
             {"isLightingEnabled", true},
             {"color", Math::Vector4::White()}};
+  }
+  if (typeName == "CmpMesh") {
+    return {{"radius", 0.5f},
+            {"isLightingEnabled", true},
+            {"color", Math::Vector4::White()},
+            {"modelAssetPath", ""}};
+  }
+  if (typeName == "CmpEditorTextureBillboard") {
+    return {{"textureFilePath", "./Assets/Images/white4x4.png"},
+            {"billboardWidth", 1.0f},
+            {"billboardHeight", 1.0f}};
   }
   if (typeName == "CmpRotator") {
     return {{"rotateAxis", Math::Vector3::UpLh()},
@@ -72,6 +73,17 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"loadImageAsBillboard", true},
             {"billboardWidth", 1.0f},
             {"billboardHeight", 1.0f}};
+  }
+  if (typeName == "CmpRuntimeTexturePath") {
+    return {{"texturePath", "./Assets/Images/white4x4.png"}};
+  }
+  if (typeName == "CmpColliderAabb") {
+    return {{"localCenter", Math::Vector3::Zero()},
+            {"halfExtents", Math::Vector3{0.5f, 0.5f, 0.5f}},
+            {"isTrigger", false}};
+  }
+  if (typeName == "CmpCamera") {
+    return EntityEditorDefaultParamsCmpCamera::Json();
   }
   if (typeName == "CmpParticleEmitter") {
     return {{"emitterName", ""},
@@ -110,6 +122,21 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"impactJsonPath", "demos/ball_wall_shockwave.json"},
             {"impactCooldownSeconds", 0.12f}};
   }
+  if (typeName == "CmpBallKinematics") {
+    return {{"velocity", Math::Vector3{7.0f, 5.5f, 0.0f}}, {"gravity", -14.0f}};
+  }
+  if (typeName == "CmpBallAxisAlignedBounce") {
+    return {{"leftWallX", -5.0f},
+            {"rightWallX", 5.0f},
+            {"groundY", -3.68f},
+            {"radius", 0.32f},
+            {"wallRestitution", 0.94f},
+            {"floorRestitution", 0.88f}};
+  }
+  if (typeName == "CmpBallBounceImpactFx") {
+    return {{"impactJsonPath", "demos/ball_wall_shockwave.json"},
+            {"impactCooldownSeconds", 0.12f}};
+  }
   return nlohmann::json::object();
 }
 
@@ -141,12 +168,12 @@ void from_json(const nlohmann::json &j, ComponentSlot &slot) {
   if (j.contains("kind") && !j.at("kind").is_null()) {
     from_json(j.at("kind"), slot.kind);
   }
-  if (IsKnownEntityEditorComponent(slot.typeName)) {
-    slot.kind = DefaultKindForTypeName(slot.typeName);
-  } else if (!j.contains("kind") || j.at("kind").is_null()) {
-    slot.kind = ComponentSlotKind::Draw;
+  if (const std::optional<ComponentSlotKind> registeredKind =
+          TryDefaultKindForRegisteredType(slot.typeName)) {
+    slot.kind = *registeredKind;
   }
-  slot.params = j.value("params", nlohmann::json::object());
+  slot.params = MergeParamsForRegisteredType(
+      slot.typeName, j.value("params", nlohmann::json::object()));
 }
 
 namespace {
@@ -209,12 +236,29 @@ void to_json(nlohmann::json &j, const EditorSceneDocument &document) {
   j = nlohmann::json{{"sceneName", document.sceneName},
                      {"tagCatalog", document.tagCatalog},
                      {"entities", document.instances}};
+  if (document.stageViewFramingBounds.has_value()) {
+    const StageViewFramingBounds &bounds = *document.stageViewFramingBounds;
+    j["stageViewFramingBounds"] =
+        nlohmann::json{{"leftEndX", bounds.leftEndX},
+                       {"rightEndX", bounds.rightEndX},
+                       {"groundHeight", bounds.groundHeight},
+                       {"barrageSpawnTopY", bounds.barrageSpawnTopY},
+                       {"pivotZ", bounds.pivotZ}};
+  }
 }
 
 void from_json(const nlohmann::json &j, EditorSceneDocument &document) {
   document.sceneName = j.value("sceneName", document.sceneName);
   document.tagCatalog = j.value("tagCatalog", document.tagCatalog);
   document.instances = j.value("entities", document.instances);
+  document.stageViewFramingBounds.reset();
+  if (j.contains("stageViewFramingBounds")) {
+    StageViewFramingBounds parsed{};
+    if (StageViewFramingBounds::TryParse(j.at("stageViewFramingBounds"),
+                                         parsed)) {
+      document.stageViewFramingBounds = parsed;
+    }
+  }
 }
 
 } // namespace Atrum::EntityEditor

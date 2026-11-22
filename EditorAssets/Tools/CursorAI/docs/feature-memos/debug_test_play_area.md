@@ -7,17 +7,28 @@
 
 ## 成果物
 
-| パス | 内容 |
-|------|------|
-| `EditorAssets/DebugPlayArea/template_*.scene.json` | 床マーカー + 回転プロップ |
-| `combat_bounds_sandbox.scene.json` | `StageBounds` 左右端の可視マーカー |
-| `Tools/DebugPlayAreaGenerator/scaffold_play_area.py` | 名前指定でテンプレ複製 |
+| パス | C++ 定数（`EditorAssetsPaths.h`） | 内容 |
+|------|------|------|
+| `EditorAssets/DebugPlayArea/` | `kDebugPlayAreaDirectory` | 走査ルート・scaffold 出力先 |
+| `template_test_play_area.scene.json` | `kDebugPlayAreaTemplateScene` | 床マーカー + 回転プロップ |
+| `FeatureTest.scene.json` | `kDebugPlayAreaFeatureTestScene` | 機能検証正本 |
+| `combat_bounds_sandbox.scene.json` | `kDebugPlayAreaCombatBoundsSandboxScene` | `StageBounds` 境界マーカー |
+| `Tools/DebugPlayAreaGenerator/scaffold_play_area.py` | — | 名前指定でテンプレ複製 |
+
+検証: `verify_editor_assets_paths_debug_play_area.py`
 
 ## フロー
 
 1. `scaffold_play_area.py FeatureX` で JSON 生成
-2. エディタで編集 → `SceneBuildUp` またはビルドアッププレビュー
+2. エディタで編集 → プロジェクトパネル「シーンを実行」は `QueueFadeToBuildUp`（本番同等 BuildUp）。エディタ内だけ試すときは「エディタ内プレビュー」
 3. 問題なければ本編シーンへ Entity を移植
+
+## ホットキー（エンティティエディタ）
+
+- **F2:** `FeatureTest.scene.json`（機能検証正本）を BuildUp で起動
+- **F3:** パーティクルデモシーン BuildUp
+- **F4:** パーティクルエディタへ遷移
+- **F6:** `combat_bounds_sandbox.scene.json`（StageBounds 境界マーカー検証）を BuildUp で起動
 
 ## 推測したゲーム開発での用途
 

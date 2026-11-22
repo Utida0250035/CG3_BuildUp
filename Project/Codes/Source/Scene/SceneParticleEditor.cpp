@@ -1,12 +1,14 @@
 #include "Scene/SceneParticleEditor.h"
+#include "Scene/SceneParticleEditorAllowDebugPolicy.h"
 
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "System/Entity/Entity.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"
-#include "Scene/ChangeSceneFade.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -44,7 +46,7 @@ namespace {
 			.intensity = 6.0f,
 			.lightModel = Atrum::LightModel::HalfLambert,
 		};
-		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
+		::Atrum::EngineSetDirectionalLightData(directionalLight);
 	}
 
 	Atrum::Particle::Emitter::EmitterManager *EditorEmitterManager() {
@@ -67,6 +69,10 @@ SceneParticleEditor::~SceneParticleEditor() = default;
 SceneParticleEditor* SceneParticleEditor::Instance() {
 	static SceneParticleEditor instance;
 	return &instance;
+}
+
+bool SceneParticleEditor::AllowDebugCameraControl() const {
+	return AllowDebugCameraControlInParticleEditorScene();
 }
 
 void SceneParticleEditor::SetupPreviewCamera() {
@@ -184,10 +190,8 @@ void SceneParticleEditor::Update() {
 	if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
 		const std::string demoScene = std::string(Atrum::GameAssets::kScenesDirectory) +
 		                              "/ParticleDemo.json";
-		Atrum::CommandChangeScene::Instance()->Set(
-		    SceneBuildUpRegistry::Instance().Launch(
-		        demoScene, SceneEntityEditor::Instance()),
-		    std::make_unique<ChangeSceneFade>().release());
+		Atrum::SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(
+		    demoScene, SceneEntityEditor::Instance());
 		return;
 	}
 #endif

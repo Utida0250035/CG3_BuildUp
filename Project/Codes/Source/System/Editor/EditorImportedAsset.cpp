@@ -1,10 +1,42 @@
 #include "System/Editor/EditorImportedAsset.h"
 
+#include "System/Editor/EditorImportedAssetCollisionPolicy.h"
+#include "System/Editor/Entity/EntityEditor.h"
+
 #include <filesystem>
 
 namespace Atrum::Editor::Import {
 
 namespace fs = std::filesystem;
+
+namespace {
+
+EntityEditor::ImportedAssetNameCollisionPolicy &ActiveCollisionPolicy() {
+  static EntityEditor::ImportedAssetNameCollisionPolicy policy =
+      EntityEditor::ImportedAssetNameCollisionPolicy::AutoIncrementStem;
+  return policy;
+}
+
+std::string &ActiveBatchPrefix() {
+  static std::string prefix;
+  return prefix;
+}
+
+} // namespace
+
+void SetImportedAssetCollisionPolicyForNextCopies(
+    const EntityEditor::ImportedAssetNameCollisionPolicy policy) {
+  ActiveCollisionPolicy() = policy;
+}
+
+void SetImportedAssetBatchNamePrefixForNextCopies(const std::string &prefix) {
+  ActiveBatchPrefix() = prefix;
+}
+
+EntityEditor::ImportedAssetNameCollisionPolicy
+GetImportedAssetCollisionPolicyForCopies() {
+  return ActiveCollisionPolicy();
+}
 
 FileDropQueue &FileDropQueue::Instance() {
   static FileDropQueue queue;
@@ -50,21 +82,12 @@ std::string CopyFileIntoImportedAssets(const std::string &sourcePath) {
   };
 
   fs::path dest = makeDestination(fileName);
-  if (fs::exists(dest)) {
-    const fs::path stem = src.stem();
-    const std::string ext = src.extension().string();
-    bool copied = false;
-    for (int suffix = 1; suffix < 10000; ++suffix) {
-      dest = makeDestination(stem.string() + "_" + std::to_string(suffix) + ext);
-      if (!fs::exists(dest)) {
-        copied = true;
-        break;
-      }
-    }
-    if (!copied) {
-      return {};
-    }
+  const std::string destFileName = ResolveImportedAssetDestinationFileName(
+      fileName, fs::exists(dest), ActiveCollisionPolicy(), ActiveBatchPrefix());
+  if (destFileName.empty()) {
+    return {};
   }
+  dest = makeDestination(destFileName);
 
   std::error_code ec;
   fs::copy_file(src, dest, fs::copy_options::overwrite_existing, ec);

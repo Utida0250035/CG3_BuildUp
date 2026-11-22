@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "startupScenePath": "../EditorAssets/DebugPlayArea/FeatureTest.scene.json",
+  "defaultFeatureVerificationScenePath": "../EditorAssets/DebugPlayArea/FeatureTest.scene.json"
+}

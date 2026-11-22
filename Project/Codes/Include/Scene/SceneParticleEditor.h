@@ -29,6 +29,9 @@ public:
   /// 戦闘カメラ固定は使わず DebugCamera で回転する
   bool IsStageViewCameraLocked() const override { return false; }
 
+  /// Development+ImGui プレビューのみ GameOrder 経路で DebugCamera を許可
+  bool AllowDebugCameraControl() const override;
+
 protected:
   void DrawScene() override;
 

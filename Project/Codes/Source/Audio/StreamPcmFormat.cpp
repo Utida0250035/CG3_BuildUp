@@ -2,6 +2,7 @@
 
 #include <mfapi.h>
 #include <mfidl.h>
+#include <wrl/client.h>
 
 namespace Atrum::Audio {
 
@@ -28,6 +29,31 @@ namespace Atrum::Audio {
 		format.wf.cbSize = 0;
 		format.valid = true;
 		return format;
+
+	}
+
+	StreamPcmFormat ProbeStreamPcmFormatFromUrl(const wchar_t* url) {
+
+		StreamPcmFormat format{};
+		if (url == nullptr) {
+			return format;
+		}
+
+		Microsoft::WRL::ComPtr<IMFSourceReader> reader;
+		const HRESULT hrOpen =
+		    MFCreateSourceReaderFromURL(url, nullptr, &reader);
+		if (FAILED(hrOpen)) {
+			return format;
+		}
+
+		Microsoft::WRL::ComPtr<IMFMediaType> nativeType;
+		const HRESULT hrType = reader->GetCurrentMediaType(
+		    static_cast<DWORD>(MF_SOURCE_READER_FIRST_AUDIO_STREAM), &nativeType);
+		if (FAILED(hrType)) {
+			return format;
+		}
+
+		return BuildStreamPcmFormat(nativeType.Get());
 
 	}
 

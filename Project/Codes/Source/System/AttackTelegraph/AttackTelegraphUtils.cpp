@@ -154,7 +154,11 @@ void PlayBulletWarningSound() {
     return;
   }
 
-  PlaySe(sePath);
+  const Audio::Handle handle = PlaySe(sePath);
+  if (handle.isSuccess) {
+    SetSeVolume(handle, 0.78f);
+    SetSeFrequencyRatio(handle, 0.92f);
+  }
 }
 
 void PlayBossMeleeWarnSound() {
@@ -165,7 +169,11 @@ void PlayBossMeleeWarnSound() {
     return;
   }
 
-  PlaySe(sePath);
+  const Audio::Handle handle = PlaySe(sePath);
+  if (handle.isSuccess) {
+    SetSeVolume(handle, 0.78f);
+    SetSeFrequencyRatio(handle, 0.92f);
+  }
 }
 
 bool IsBossMeleeTelegraphColor(const Math::Vector4 &color) {

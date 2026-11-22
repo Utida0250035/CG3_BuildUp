@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Camera/StageViewFramingBounds.h"
 #include "Math/Transform.h"
 #include <cstdint>
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -44,6 +46,8 @@ struct EditorSceneDocument {
   std::string sceneName = "EditorScene";
   /// シーン全体で共有するタグ名一覧（エディタ検索・改名の基準）
   std::vector<std::string> tagCatalog{};
+  /// StageView カメラのフレーミング（未設定時は境界マーカーまたは既定 StageBounds）
+  std::optional<StageViewFramingBounds> stageViewFramingBounds{};
   std::vector<SceneEntityInstance> instances{};
 };
 
@@ -52,6 +56,12 @@ EntityDefinition MakeDefaultEntityDefinition(const std::string &entityName);
 
 /// 登録済みコンポーネント種別の既定パラメータ（JSON）
 nlohmann::json DefaultParamsForType(const std::string &typeName);
+
+/// 既知 typeName の既定スロット種別（JSON 手編集の照合用）
+ComponentSlotKind DefaultKindForTypeName(const std::string &typeName);
+
+/// EditorSceneRuntime の TryAddEmptyComponent で追加可能な型名
+bool IsKnownEditorRuntimeComponentTypeName(const std::string &typeName);
 
 void to_json(nlohmann::json &j, const ComponentSlot &slot);
 void from_json(const nlohmann::json &j, ComponentSlot &slot);

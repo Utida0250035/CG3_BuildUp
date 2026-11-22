@@ -3,6 +3,7 @@
 #include "Camera/CameraController/CameraFocusPushController.h"
 #include "Camera/CameraController/CameraGameIntroController.h"
 #include "Camera/CombatCameraShake.h"
+#include "Camera/StageViewFramingBounds.h"
 #include "Camera/PlayerDamageScreenVignette.h"
 #include "Scene/BossDeathPresentation.h"
 #include "Scene/PlayerDeathPresentation.h"
@@ -11,13 +12,22 @@
 #include "Visual/PlayerTerrainSilhouette.h"
 #include "Scene/SceneScreenUi.h"
 #include "Engine/AtrumEngine.h"
-#include "Engine/Resource/LightData.h"
+#include "Engine/EngineAccess.h"
+#include "Scene/SceneGameTransitionBgmPolicy.h"
+#include "Scene/SceneGameExitBgmPolicy.h"
+#include "Scene/SceneGamePendingDefeatBgmPolicy.h"
+#include "Scene/SceneGameIntroBgmPolicy.h"
+#include "Scene/SceneGameIntroBarrageAudio.h"
+#include "Scene/SceneGameDefeatAudioPolicy.h"
+#include "Scene/SceneGameDefeatPresentationBgm.h"
+#include "Scene/SceneGameEnterVisualPreset.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneResult.h"
 #include "System/BossCombatCleanup.h"
 #include "System/OrbiterChildUtils.h"
 #include "Visual/CmpSkyDome.h"
+#include "Scene/SceneGameOperatorGuidanceBoot.h"
 #include "UX/OperatorGuidanceSystem.h"
 #include "System/Entity/Components/CmpParry.h"
 #include "System/Entity/Components/CmpReflectAbleBullet.h"
@@ -30,52 +40,7 @@
 #include "System/GameAssetsPaths.h"
 #include "System/PlaySe.h"
 
-namespace {
-
-	using Atrum::Engine;
-
-	void SetupGameLighting() {
-		Atrum::Math::Vector3 lightDirection{ -0.4f, -0.85f, 0.15f };
-		lightDirection.Normalize();
-		const Atrum::DirectionalLightData directionalLight{
-			.color = Atrum::Math::Vector3{ 1.0f, 1.0f, 1.0f },
-			.direction = lightDirection,
-			.intensity = 8.0f,
-			.lightModel = Atrum::LightModel::HalfLambert,
-			.rimColor = Atrum::Math::Vector3{ 0.75f, 0.85f, 1.0f },
-			.rimIntensity = 0.35f,
-			.rimPower = 3.0f,
-			.rimEnabled = 1u,
-		};
-		Engine::Instance()->SetDirectionalLightData(directionalLight);
-
-		Atrum::Visual::VolumetricFogSettings gameFog{};
-		gameFog.enabled = 1u;
-		gameFog.density = 0.022f;
-		gameFog.heightFalloff = 0.28f;
-		gameFog.heightOffset = 0.0f;
-		gameFog.maxDistance = 90.0f;
-		gameFog.inScatterIntensity = 0.18f;
-		Engine::Instance()->RefVolumetricFog().SetSettings(gameFog);
-
-		Atrum::Visual::GodRaySettings gameGodRays{};
-		gameGodRays.enabled = 1u;
-		gameGodRays.intensity = 0.12f;
-		gameGodRays.angularPower = 8.0f;
-		gameGodRays.fogCoupling = 0.9f;
-		Engine::Instance()->RefGodRays().SetSettings(gameGodRays);
-
-		Atrum::Visual::DirectionalShadowSettings gameShadow{};
-		gameShadow.shadeEnabled = 1u;
-		gameShadow.shadeDarkness = 0.42f;
-		gameShadow.groundPlaneY = 0.0f;
-		gameShadow.contactHeight = 3.0f;
-		gameShadow.planarEnabled = 1u;
-		gameShadow.planarAlpha = 0.32f;
-		Engine::Instance()->RefDirectionalShadow().SetSettings(gameShadow);
-	}
-
-} // namespace
+#include <cmath>
 
 namespace Atrum {
 
@@ -90,13 +55,15 @@ namespace Atrum {
 
 	void SceneGame::EnterScene() {
 		EnsureCommonResources();
+		ApplySceneGameVisualPresetOnEnter();
 		pendingDefeat_ = DefeatKind::None;
 		bossDeathResultTransitionRequested_ = false;
 		bossDeathPresentation_.reset();
 		bossDeathCameraController_.reset();
 		playerDeathPresentation_.reset();
 		playerDeathRestartTransitionRequested_ = false;
-		SpawnEntities();
+		ClearEntities();
+		SpawnCombatEntities();
 
 		introCameraController_ =
 			std::make_unique<Atrum::CameraGameIntroController>();
@@ -108,22 +75,49 @@ namespace Atrum {
 			SetupStageViewCamera();
 		}
 
+		SpawnEnvironmentEntities();
+
 		Atrum::Particle::Combat::SetEffectCamera(GetCamera());
 		Atrum::CombatCameraShake::Instance().Reset();
 		Atrum::PlayerDamageScreenVignette::Instance().Reset();
 		Atrum::SceneScreenUi::PreloadGameSceneUiTextures();
-		Atrum::OperatorGuidance::System::Instance().LoadFromJsonFile(
-			Atrum::GameAssets::kOperatorGuidanceJson);
-		Atrum::OperatorGuidance::System::Instance().ResetSession();
+		operatorGuidanceDocumentLoaded_ = Atrum::BootSceneGameOperatorGuidance();
 		operatorBattleReadyNotified_ = false;
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmGame.mp3",
 											  "./Resources/bgmGame.mp3" });
+
+		if (resumeGameBgmPlaybackSeconds_ >= 0.0f && sceneBgmHandle_.isSuccess) {
+			if (Atrum::SetBgmLoopPlaybackSeconds(sceneBgmHandle_,
+			                                    resumeGameBgmPlaybackSeconds_)) {
+				resumeGameBgmPlaybackSeconds_ = -1.0f;
+			}
+		}
+
+		if (sceneBgmHandle_.isSuccess) {
+			float pitchRatio = 1.0f;
+			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+			    pitchRatio < 0.99f) {
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
+			}
+			float volume = 0.0f;
+			if (!Atrum::GetSeVolume(sceneBgmHandle_, volume) || volume < 0.99f) {
+				Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
+			}
+		}
 	}
 
 	void SceneGame::ExitScene() {
+
+		if (sceneBgmHandle_.isSuccess &&
+		    Atrum::CommandChangeScene::Instance()->GetPendingNextScene() == Instance()) {
+			const float seconds = Atrum::GetBgmLoopPlaybackSeconds(sceneBgmHandle_);
+			if (seconds >= 0.0f) {
+				resumeGameBgmPlaybackSeconds_ = seconds;
+			}
+		}
+
 		ReleaseCommonResources();
-		Atrum::StopBgmLoop(sceneBgmHandle_);
-		sceneBgmHandle_ = {};
+		Atrum::ReleaseSceneBgmOnExitDuringFade(sceneBgmHandle_);
 		introCameraController_.reset();
 		bossDeathCameraController_.reset();
 		ClearEntities();
@@ -136,6 +130,7 @@ namespace Atrum {
 			if (bossDeathPresentation_) {
 				UpdateBossDeathPresentation();
 			} else if (!bossDeathResultTransitionRequested_) {
+				Atrum::StopSceneBgmAfterBossVictoryPresentation(sceneBgmHandle_);
 				bossDeathResultTransitionRequested_ = true;
 				RequestTransitionToResult();
 			}
@@ -159,13 +154,52 @@ namespace Atrum {
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
 
+		if (sceneBgmHandle_.isSuccess &&
+		    !Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+			constexpr float kDamageDuckVolume = 0.58f;
+			float currentVolume = 1.0f;
+			Atrum::GetSeVolume(sceneBgmHandle_, currentVolume);
+			constexpr float kDamageDuckPitch = 0.94f;
+			float pitchRatio = 1.0f;
+			Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio);
+			if (Atrum::PlayerDamageScreenVignette::Instance().IsShowing()) {
+				if (currentVolume > kDamageDuckVolume + 0.02f) {
+					Atrum::SetSeVolume(sceneBgmHandle_, kDamageDuckVolume);
+				}
+				if (pitchRatio > kDamageDuckPitch + 0.02f) {
+					Atrum::SetSeFrequencyRatio(sceneBgmHandle_, kDamageDuckPitch);
+				}
+			} else {
+				if (currentVolume >= kDamageDuckVolume - 0.02f &&
+				    currentVolume <= kDamageDuckVolume + 0.02f) {
+					Atrum::SetSeVolume(sceneBgmHandle_, 1.0f);
+				}
+				if (pitchRatio >= kDamageDuckPitch - 0.02f &&
+				    pitchRatio <= kDamageDuckPitch + 0.02f) {
+					Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
+				}
+			}
+
+			constexpr float kDefeatSlowPitch = 0.82f;
+			if (Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) &&
+			    !Atrum::PlayerDamageScreenVignette::Instance().IsShowing() &&
+			    pitchRatio >= kDefeatSlowPitch - 0.02f &&
+			    pitchRatio <= kDefeatSlowPitch + 0.02f) {
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
+			}
+		}
+
 		if (Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
+			Atrum::MaintainSceneGameBgmDuringTransitionEffect(*this);
 			return;
 		}
 
-		MaintainSceneBgmIfNeeded();
+		const bool introPresentationActive =
+			Atrum::ShouldDeferSceneBgmRestartDuringIntro(
+				introCameraController_.get());
+		MaintainSceneBgmIfNeeded(!introPresentationActive);
 
-		if (introCameraController_ && !introCameraController_->IsFinished()) {
+		if (introPresentationActive) {
 			if (Atrum::AbstractInput::Instance()->GetData().isSubmitTrigger) {
 				introCameraController_->SkipIntro();
 			} else {
@@ -173,10 +207,11 @@ namespace Atrum {
 			}
 			UpdateIntroPresentation();
 			Atrum::Particle::Combat::SetEffectCamera(GetCamera());
+			Atrum::Particle::Combat::UpdateCombatParticleEffects();
 			return;
 		}
 
-		if (!operatorBattleReadyNotified_ &&
+		if (operatorGuidanceDocumentLoaded_ && !operatorBattleReadyNotified_ &&
 			(introCameraController_ == nullptr ||
 			 introCameraController_->IsFinished())) {
 			operatorBattleReadyNotified_ = true;
@@ -191,20 +226,23 @@ namespace Atrum {
 			const float deltaTime = frameDeltaTime->GetDeltaTime();
 			cameraShake.Update(deltaTime);
 			Atrum::PlayerDamageScreenVignette::Instance().Update(deltaTime);
+			PublishStageViewFramingBounds(GetStageViewFramingBounds());
 			cameraShake.ApplyStageBattleView(GetCamera());
 		}
 
 		Atrum::Particle::Combat::SetEffectCamera(GetCamera());
 		Atrum::Particle::Combat::UpdateCombatParticleEffects();
-		if (Atrum::FrameDeltaTime *frameDeltaTime = ::Atrum::EngineFrameDeltaTime()) {
-			Atrum::OperatorGuidance::System::Instance().Update(
-				frameDeltaTime->GetDeltaTime());
+		if (operatorGuidanceDocumentLoaded_) {
+			if (Atrum::FrameDeltaTime *frameDeltaTime =
+			        ::Atrum::EngineFrameDeltaTime()) {
+				Atrum::OperatorGuidance::System::Instance().Update(
+					frameDeltaTime->GetDeltaTime());
+			}
 		}
 		CheckRoundEnd();
 	}
 
 	void SceneGame::DrawScene() {
-		SetupGameLighting();
 		DrawEntities();
 		Atrum::Particle::Combat::DrawCombatParticleEffects();
 		DrawBattleHud();
@@ -231,23 +269,24 @@ namespace Atrum {
 		Atrum::SceneScreenUi::DrawGameIntroHowToNextUi(engine, GetCamera());
 	}
 
-	void SceneGame::MaintainSceneBgmIfNeeded() {
-		if (pendingDefeat_ != DefeatKind::None) {
+	void SceneGame::MaintainSceneBgmIfNeeded(const bool allowRestartPlay) {
+		if (pendingDefeat_ != DefeatKind::None &&
+		    !SceneGamePendingDefeatBgmPolicy::kUseFullMaintainDuringDefeatPresentation) {
 			return;
 		}
 
 		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
 
-		if (sceneBgmHandle_.isSuccess && Atrum::IsBgmLoopPaused(sceneBgmHandle_)) {
-			if (!Atrum::CommandChangeScene::Instance()->GetIsExecute()) {
-				Atrum::ResumeBgmLoop(sceneBgmHandle_);
-				Atrum::SetBgmLoopVolume(sceneBgmHandle_, 1.0f);
-			}
+		if (Atrum::TryResumeSceneBgmAfterChangeSceneFade(sceneBgmHandle_)) {
 			return;
 		}
 
 		if (sceneBgmHandle_.isSuccess &&
 			Atrum::IsSceneBgmAudible(sceneBgmHandle_)) {
+			return;
+		}
+
+		if (!allowRestartPlay) {
 			return;
 		}
 
@@ -265,6 +304,10 @@ namespace Atrum {
 	}
 
 	void SceneGame::DrawOperatorGuidanceUi() {
+		if (!operatorGuidanceDocumentLoaded_) {
+			return;
+		}
+
 		if (introCameraController_ != nullptr &&
 			!introCameraController_->IsFinished()) {
 			return;
@@ -311,14 +354,15 @@ namespace Atrum {
 			bossHealth->GetInitialHealthCount(), bossHpBarReveal);
 	}
 
-	void SceneGame::SpawnEntities() {
-		ClearEntities();
+	void SceneGame::SpawnCombatEntities() {
+		player_ = Atrum::EntityFactory::PlayerParry();
+		boss_ = Atrum::EntityFactory::EnemyAstro(player_.get());
+	}
 
+	void SceneGame::SpawnEnvironmentEntities() {
 		skyDome_ = Atrum::EntityFactory::SkyDome(GetCamera());
 		backgrounds_ = Atrum::EntityFactory::ScrollSpheres();
 		foregroundGroundClouds_ = Atrum::EntityFactory::ForegroundGroundClouds();
-		player_ = Atrum::EntityFactory::PlayerParry();
-		boss_ = Atrum::EntityFactory::EnemyAstro(player_.get());
 	}
 
 	void SceneGame::ClearEntities() {
@@ -370,6 +414,8 @@ namespace Atrum {
 			return;
 		}
 
+		SyncSceneBgmDuringDefeatPresentation(sceneBgmHandle_);
+
 		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {
 			return;
@@ -394,6 +440,8 @@ namespace Atrum {
 			return;
 		}
 
+		SyncSceneBgmDuringDefeatPresentation(sceneBgmHandle_);
+
 		Atrum::FrameDeltaTime* frameDeltaTime = ::Atrum::EngineFrameDeltaTime();
 		if (frameDeltaTime == nullptr) {
 			return;
@@ -414,6 +462,7 @@ namespace Atrum {
 
 		if (bossDeathPresentation_->IsFinished() &&
 			!bossDeathResultTransitionRequested_) {
+			Atrum::StopSceneBgmAfterBossVictoryPresentation(sceneBgmHandle_);
 			bossDeathResultTransitionRequested_ = true;
 			RequestTransitionToResult();
 		}
@@ -421,10 +470,7 @@ namespace Atrum {
 
 	void SceneGame::UpdateIntroPresentation() {
 		UpdateBackgrounds();
-
-		if (boss_) {
-			Atrum::OrbiterChildUtils::UpdateBossOrbiterMovementOnly(*boss_);
-		}
+		Atrum::UpdateSceneGameIntroBarrageAudio(boss_.get());
 	}
 
 	void SceneGame::UpdateEntities() {
@@ -512,13 +558,13 @@ namespace Atrum {
 	}
 
 	void SceneGame::OnBossDefeated() {
-		Atrum::StopBgmLoop(sceneBgmHandle_);
-		sceneBgmHandle_ = {};
-
 		if (!boss_) {
+			Atrum::StopSceneBgmAfterBossVictoryPresentation(sceneBgmHandle_);
 			RequestTransitionToResult();
 			return;
 		}
+
+		Atrum::BeginBossDefeatSceneBgmPolicy(sceneBgmHandle_);
 
 		bossDeathCameraController_ =
 			std::make_unique<Atrum::CameraFocusPushController>();
@@ -537,6 +583,8 @@ namespace Atrum {
 
 		playerDeathPresentation_ = std::make_unique<Atrum::PlayerDeathPresentation>();
 		playerDeathPresentation_->Begin(player_.get());
+
+		Atrum::BeginPlayerDefeatSceneBgmPolicy(sceneBgmHandle_);
 	}
 
 } // namespace Atrum

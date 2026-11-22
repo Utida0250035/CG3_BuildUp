@@ -27,7 +27,7 @@
 #include "System/Entity/Components/CmpLhRigidBody.h"
 #include "System/Entity/Components/CmpMesh.h"
 #include "Camera/Camera.h"
-#include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Resource/AssetModel.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -377,10 +377,8 @@ std::vector<std::unique_ptr<Entity>> EntityFactory::ForegroundGroundClouds() {
 
 std::unique_ptr<Entity> EntityFactory::SkyDome(Camera *camera) {
   std::shared_ptr<AssetModel> skyDomeModel =
-      AtrumEngine::Instance()->GetModel(kSkyDomeObjectDirectory,
-                                        kSkyDomeObjFileName,
-                                        kSkyDomeObjectDirectory,
-                                        kSkyDomeMtlFileName);
+      EngineGetModel(kSkyDomeObjectDirectory, kSkyDomeObjFileName,
+                     kSkyDomeObjectDirectory, kSkyDomeMtlFileName);
 
   std::unique_ptr<Entity> skyDomeEntity = std::make_unique<Entity>();
   skyDomeEntity->AddDrawCmp<CmpSkyDome>();

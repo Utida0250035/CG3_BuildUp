@@ -2,6 +2,12 @@
 
 #include "System/Editor/EditorFrame.h"
 
+#include "System/Editor/EditorFrameFitCameraPerspectiveParams.h"
+
+#include "System/Editor/EditorFrameLightingDiagnostics.h"
+#include "System/Editor/EditorFrameStreamingDiagnostics.h"
+#include "System/Editor/EditorFrameFrameDeltaDiagnostics.h"
+
 #include "Camera/Camera.h"
 #include "ForDebug/ImGui.h"
 #include <imgui/imgui_internal.h>
@@ -14,6 +20,27 @@ EditorFrame &EditorFrame::Instance() {
   return frame;
 }
 
+void EditorFrame::DrawRenderDiagnosticsMenuItems() {
+  EditorFrameLightingDiagnostics::DrawMenuItems();
+  EditorFrameStreamingDiagnostics::DrawMenuItems();
+}
+
+void EditorFrame::DrawRenderDiagnosticsMainMenuBar() {
+  if (!ImGui::BeginMainMenuBar()) {
+    return;
+  }
+  if (ImGui::BeginMenu("描画診断")) {
+    EditorFrameLightingDiagnostics::DrawMenuItems();
+    ImGui::EndMenu();
+  }
+  if (ImGui::BeginMenu("デバッグ")) {
+    EditorFrameStreamingDiagnostics::DrawMenuItems();
+    EditorFrameFrameDeltaDiagnostics::DrawMenuItems();
+    ImGui::EndMenu();
+  }
+  ImGui::EndMainMenuBar();
+}
+
 void EditorFrame::ResetPerFrame() {
   editView_ = {};
   gameView_ = {};
@@ -22,6 +49,33 @@ void EditorFrame::ResetPerFrame() {
   gameDisplay_ = {};
   runtimeDisplay_ = {};
   editViewHovered_ = false;
+  editViewImageBoundsValid_ = false;
+}
+
+void EditorFrame::SetEditViewImageScreenBounds(const float minX, const float minY,
+                                               const float maxX,
+                                               const float maxY) {
+  editViewImageMinX_ = minX;
+  editViewImageMinY_ = minY;
+  editViewImageMaxX_ = maxX;
+  editViewImageMaxY_ = maxY;
+  editViewImageBoundsValid_ = maxX > minX && maxY > minY;
+}
+
+bool EditorFrame::TryMapMouseToEditViewLocal(float &outLocalX,
+                                             float &outLocalY) const {
+  if (!editViewHovered_ || !editViewImageBoundsValid_) {
+    return false;
+  }
+  const ImVec2 mouse = ImGui::GetIO().MousePos;
+  outLocalX = mouse.x - editViewImageMinX_;
+  outLocalY = mouse.y - editViewImageMinY_;
+  const float w = editViewImageMaxX_ - editViewImageMinX_;
+  const float h = editViewImageMaxY_ - editViewImageMinY_;
+  if (outLocalX < 0.0f || outLocalY < 0.0f || outLocalX > w || outLocalY > h) {
+    return false;
+  }
+  return true;
 }
 
 void EditorFrame::SetSceneViewRect(const SceneViewTab tab,
@@ -125,8 +179,11 @@ void FitCameraPerspectiveToViewport(Atrum::Camera *camera, const int width,
   }
   const float aspect =
       static_cast<float>(width) / static_cast<float>(height);
-  camera->SetPerspectiveFovMatrix(
-      Math::Matrix4x4::PerspectiveFov(0.5f, aspect, 0.125f, 128.0f));
+  const float fovY =
+      EditorFrameFitCameraPerspectiveParams::ResolveViewportPerspectiveFovY();
+  camera->SetPerspectiveFovMatrix(Math::Matrix4x4::PerspectiveFov(
+      fovY, aspect, EditorFrameFitCameraPerspectiveParams::kViewportNearClip,
+      EditorFrameFitCameraPerspectiveParams::kViewportFarClip));
   camera->UpdateMatrix();
 }
 

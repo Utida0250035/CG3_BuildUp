@@ -23,4 +23,12 @@ void ActiveCameraSystem::PrepareSceneAndBindEngine(Scene *scene,
   }
 }
 
+void ActiveCameraSystem::SyncEngineAfterSceneViewFit(AtrumEngine *engine,
+                                                     Camera *camera) {
+  activeCamera_ = camera;
+  if (engine != nullptr && camera != nullptr) {
+    engine->SetCamera(camera);
+  }
+}
+
 } // namespace Atrum

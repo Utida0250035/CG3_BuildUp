@@ -56,6 +56,9 @@ bool System::LoadFromJsonFile(const std::string &path) {
   navigator_ = {};
   tutorialReplacement_ = {};
   navigatorPortraitIndex_ = UINT32_MAX;
+  documentLoaded_ = false;
+  secondsSinceLastAction_.clear();
+
   std::ifstream stream(path);
   if (!stream) {
     return false;
@@ -64,54 +67,82 @@ bool System::LoadFromJsonFile(const std::string &path) {
   nlohmann::json json;
   try {
     stream >> json;
+    if (!json.is_object()) {
+      return false;
+    }
+
+    if (json.contains("navigator")) {
+      const auto &nav = json.at("navigator");
+      navigator_.displayName = nav.value("displayName", "ナビ");
+      navigator_.portraitAnchorX = nav.value("portraitAnchorX", 0.1f);
+      navigator_.portraitAnchorY = nav.value("portraitAnchorY", 0.78f);
+      navigator_.portraitScale = nav.value("portraitScale", 0.28f);
+      if (nav.contains("portraitTexturePaths")) {
+        for (const auto &p : nav.at("portraitTexturePaths")) {
+          navigator_.portraitTexturePaths.push_back(p.get<std::string>());
+        }
+      }
+    }
+
+    if (json.contains("tutorialReplacement")) {
+      const auto &tr = json.at("tutorialReplacement");
+      tutorialReplacement_.skipIntroHowToOverlay =
+          tr.value("skipIntroHowToOverlay", false);
+      tutorialReplacement_.replaceWithNavigatorHints =
+          tr.value("replaceWithNavigatorHints", true);
+      tutorialReplacement_.welcomeHintId =
+          tr.value("welcomeHintId", std::string{});
+    }
+
+    if (!json.contains("hints") || !json.at("hints").is_array()) {
+      navigator_ = {};
+      tutorialReplacement_ = {};
+      return false;
+    }
+
+    std::vector<HintDefinition> parsedHints;
+    std::unordered_map<std::string, float> parsedIdleTimers;
+
+    for (const auto &item : json.at("hints")) {
+      HintDefinition hint{};
+      hint.id = item.at("id").get<std::string>();
+      hint.actionId = item.at("actionId").get<std::string>();
+      hint.message = item.value("message", std::string{});
+      hint.idleBeforeShowSeconds = item.value("idleBeforeShowSeconds", 15.0f);
+      hint.displayDurationSeconds = item.value("displayDurationSeconds", 6.0f);
+      hint.anchorX = item.value("anchorX", 0.75f);
+      hint.anchorY = item.value("anchorY", 0.32f);
+      hint.bodyScale = item.value("bodyScale", 0.42f);
+      hint.showOnBattleReady = item.value("showOnBattleReady", false);
+      if (item.contains("bodyTexturePaths")) {
+        for (const auto &p : item.at("bodyTexturePaths")) {
+          hint.bodyTexturePaths.push_back(p.get<std::string>());
+        }
+      }
+      if (!hint.showOnBattleReady) {
+        parsedIdleTimers[hint.actionId] = 0.0f;
+      }
+      parsedHints.push_back(std::move(hint));
+    }
+
+    if (parsedHints.empty()) {
+      navigator_ = {};
+      tutorialReplacement_ = {};
+      return false;
+    }
+
+    hints_ = std::move(parsedHints);
+    secondsSinceLastAction_ = std::move(parsedIdleTimers);
+    documentLoaded_ = true;
+    return true;
   } catch (...) {
+    hints_.clear();
+    navigator_ = {};
+    tutorialReplacement_ = {};
+    secondsSinceLastAction_.clear();
+    documentLoaded_ = false;
     return false;
   }
-
-  if (json.contains("navigator")) {
-    const auto &nav = json.at("navigator");
-    navigator_.displayName = nav.value("displayName", "ナビ");
-    navigator_.portraitAnchorX = nav.value("portraitAnchorX", 0.1f);
-    navigator_.portraitAnchorY = nav.value("portraitAnchorY", 0.78f);
-    navigator_.portraitScale = nav.value("portraitScale", 0.28f);
-    if (nav.contains("portraitTexturePaths")) {
-      for (const auto &p : nav.at("portraitTexturePaths")) {
-        navigator_.portraitTexturePaths.push_back(p.get<std::string>());
-      }
-    }
-  }
-
-  if (json.contains("tutorialReplacement")) {
-    const auto &tr = json.at("tutorialReplacement");
-    tutorialReplacement_.skipIntroHowToOverlay =
-        tr.value("skipIntroHowToOverlay", false);
-    tutorialReplacement_.replaceWithNavigatorHints =
-        tr.value("replaceWithNavigatorHints", true);
-    tutorialReplacement_.welcomeHintId = tr.value("welcomeHintId", std::string{});
-  }
-
-  for (const auto &item : json.at("hints")) {
-    HintDefinition hint{};
-    hint.id = item.at("id").get<std::string>();
-    hint.actionId = item.at("actionId").get<std::string>();
-    hint.message = item.value("message", std::string{});
-    hint.idleBeforeShowSeconds = item.value("idleBeforeShowSeconds", 15.0f);
-    hint.displayDurationSeconds = item.value("displayDurationSeconds", 6.0f);
-    hint.anchorX = item.value("anchorX", 0.75f);
-    hint.anchorY = item.value("anchorY", 0.32f);
-    hint.bodyScale = item.value("bodyScale", 0.42f);
-    hint.showOnBattleReady = item.value("showOnBattleReady", false);
-    if (item.contains("bodyTexturePaths")) {
-      for (const auto &p : item.at("bodyTexturePaths")) {
-        hint.bodyTexturePaths.push_back(p.get<std::string>());
-      }
-    }
-    hints_.push_back(std::move(hint));
-    if (!hint.showOnBattleReady) {
-      secondsSinceLastAction_[hint.actionId] = 0.0f;
-    }
-  }
-  return !hints_.empty();
 }
 
 void System::ResetSession() {

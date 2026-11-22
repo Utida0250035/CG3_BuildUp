@@ -1,7 +1,8 @@
 #include "System/Entity/Components/CmpLhRigidBody.h"
+
+#include "Engine/EngineAccess.h"
+#include "Physics/PhysicsManager.h"
 #include "System/Entity/Entity.h"
-#include "System/DeltaTime.h"
-#include "System/StageBounds.h"
 
 namespace Atrum {
 
@@ -10,31 +11,22 @@ void CmpLhRigidBody::ResolveDependence() { frameDeltaTime_ = ::Atrum::EngineFram
 void CmpLhRigidBody::Initialize() { velocity_ = {}; }
 
 void CmpLhRigidBody::Update() {
-	Math::Vector3& translate = RefOwner().RefTransform().translate;
-
-	if (isUseGravity_) {
-		velocity_ += gravity_ * frameDeltaTime_->GetDeltaTime();
-	}
-
-	translate += velocity_ * frameDeltaTime_->GetDeltaTime();
-
-	if (!isUseSpaceEnd_) {
+	if (frameDeltaTime_ == nullptr) {
 		return;
 	}
 
-	if (translate.y <= kGroundHeight) {
-		velocity_.y = 0.0f;
-		translate.y = kGroundHeight;
-	} else if (translate.y > kCeilHeight) {
-		velocity_.y = 0.0f;
-		translate.y = kCeilHeight;
+	Physics::PhysicsManager *physics = ::Atrum::EnginePhysicsManager();
+	if (physics == nullptr) {
+		return;
 	}
 
-	if (translate.x <= kLeftEndX) {
-		translate.x = kLeftEndX;
-	} else if (translate.x >= kRightEndX) {
-		translate.x = kRightEndX;
-	}
+	Physics::KinematicStepSettings settings{};
+	settings.gravity = gravity_;
+	settings.useGravity = isUseGravity_;
+	settings.clampToStageBounds = isUseSpaceEnd_;
+
+	physics->StepKinematic(RefOwner().RefTransform().translate, velocity_, settings,
+	                       frameDeltaTime_->GetDeltaTime());
 }
 
 } // namespace Atrum

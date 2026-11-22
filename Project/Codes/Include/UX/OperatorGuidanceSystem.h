@@ -44,6 +44,8 @@ public:
   static System &Instance();
 
   bool LoadFromJsonFile(const std::string &path);
+  /// LoadFromJsonFile が直近成功したときのみ true（失敗時は代替データを載せない）
+  bool IsDocumentLoaded() const { return documentLoaded_; }
   void ResetSession();
 
   void NotifyAction(const std::string &actionId);
@@ -53,7 +55,7 @@ public:
 
   const std::string &ActiveMessage() const { return activeMessage_; }
   bool ShouldSkipIntroHowToOverlay() const {
-    return tutorialReplacement_.skipIntroHowToOverlay;
+    return documentLoaded_ && tutorialReplacement_.skipIntroHowToOverlay;
   }
   const NavigatorProfile &GetNavigator() const { return navigator_; }
 
@@ -69,6 +71,7 @@ private:
   std::string activeMessage_{};
   float activeDisplayRemaining_ = 0.0f;
   bool battleReadyHintShown_ = false;
+  bool documentLoaded_ = false;
   mutable std::unordered_map<std::string, uint32_t> textureCache_{};
   mutable uint32_t navigatorPortraitIndex_ = UINT32_MAX;
 };

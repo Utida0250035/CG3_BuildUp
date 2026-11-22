@@ -6,7 +6,7 @@
 
 namespace Atrum {
 
-/// 簡易ボール運動＋壁／床バウンス、衝突点でワンショットパーティクル
+/// デモ／既存 JSON 用ファサード。実処理は CmpBallKinematics 等の部品へ委譲する。
 class CmpBounceBall : public ComponentUpd {
 public:
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -14,7 +14,9 @@ public:
   }
 
   void Initialize() override;
-  void Update() override;
+  void Update() override {}
+
+  void EnsureAndSyncChildComponents();
 
   void SetInitialVelocity(const Math::Vector3 &velocity) {
     velocity_ = velocity;
@@ -32,8 +34,6 @@ public:
   }
 
 private:
-  void SpawnImpactAt(const Math::Vector3 &worldPosition);
-
   Math::Vector3 velocity_{7.0f, 5.5f, 0.0f};
   float gravity_ = -14.0f;
   float leftWallX_ = -5.0f;
@@ -44,9 +44,6 @@ private:
   float floorRestitution_ = 0.88f;
   std::string impactJsonPath_{"demos/ball_wall_shockwave.json"};
   float impactCooldownSeconds_ = 0.12f;
-
-  float impactCooldownRemaining_ = 0.0f;
-  uint32_t impactSequence_ = 0;
 };
 
 } // namespace Atrum

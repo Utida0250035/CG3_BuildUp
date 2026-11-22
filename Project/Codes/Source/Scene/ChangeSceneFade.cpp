@@ -1,6 +1,7 @@
 #include "Scene/ChangeSceneFade.h"
 
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Platform/Window/Window.h"
 #include "Math/Easing.h"
 #include "Math/Transform.h"
@@ -27,7 +28,7 @@ ChangeSceneFade::ChangeSceneFade() {
 	waitCount_ = 0.0f;
 	isSeOpenTrigger_ = false;
 
-	textureIndex_ = AtrumEngine::Instance()->GetTexture("./Assets/Images/white4x4.png");
+	textureIndex_ = EngineGetTexture("./Assets/Images/white4x4.png");
 }
 
 void ChangeSceneFade::Update() {

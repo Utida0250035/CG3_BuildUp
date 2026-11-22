@@ -75,55 +75,55 @@
 - [x] ボイス枯渇で assert
 - [x] Init 失敗で playId 不一致
 - [x] ストリーム PCM を 44.1k 固定
-- [ ] SetupStreaming が 44.1kHz 固定
-- [ ] Load ヒットで再判定なし
-- [ ] 不足バイトを 0 でパディング
+- [x] SetupStreaming が 44.1kHz 固定（gap: `GAP-Audio-AudioManager-011`）
+- [x] Load ヒットで再判定なし（gap: `GAP-Audio-AudioManager-017`）
+- [x] 不足バイトを 0 でパディング（gap: `GAP-Audio-AudioManager-015`）
 
 ### PlaySe
-- [ ] PlaySe が Play の Handle を捨てる
+- [x] PlaySe が Play の Handle を捨てる（gap: `GAP-Audio-PlaySe-001`）
 
 ### StreamingVoiceCallback
-- [ ] OnStreamEnd が Waiting のみセット
-- [ ] OnBufferEnd が Streaming へ遷移
+- [x] OnStreamEnd が Waiting のみセット（gap: `GAP-Audio-StreamingVoiceCallback-001`）
+- [x] OnBufferEnd が Streaming へ遷移（gap: `GAP-Audio-StreamingVoiceCallback-002`）
 
 ### AudioDecoder
-- [ ] EOF で break のみ
-- [ ] 4 バイト揃えで端数を次回へ
+- [x] EOF で break のみ（gap: `GAP-Audio-AudioDecoder-002`）
+- [x] 4 バイト揃えで端数を次回へ（gap: `GAP-Audio-AudioDecoder-001`）
 
 ### IsBgmLoopPaused
-- [ ] IsBgmLoopPaused がシーンから未使用
+- [x] IsBgmLoopPaused がシーンから未使用（gap: `GAP-Audio-IsBgmLoopPaused-001`）
 
 ### IsSuitableStreaming
-- [ ] ファイルサイズだけでストリーム判定
-- [ ] 閾値 5MB がハードコード
+- [x] ファイルサイズだけでストリーム判定（gap: `GAP-Audio-IsSuitableStreaming-001`）
+- [x] 閾値 5MB がハードコード（gap: `GAP-Audio-IsSuitableStreaming-002`）
 
 ### GetBgmLoopPlaybackSeconds
-- [ ] 再生秒取得がゲームシーン未使用
+- [x] 再生秒取得がゲームシーン未使用（gap: `GAP-Audio-GetBgmLoopPlaybackSeconds-001`）
 
 ### StopSe
-- [ ] ループ SE ハンドルの個別停止が無い
+- [x] ループ SE ハンドルの個別停止が無い（gap: `GAP-Audio-StopSe-001`）
 
 ### PlaySeDetail
-- [ ] キャッシュ命中で再 Load しない
-- [ ] static cache がアンロードされない
+- [x] キャッシュ命中で再 Load しない（gap: `GAP-Audio-PlaySeDetail-002`）
+- [x] static cache がアンロードされない（gap: `GAP-Audio-PlaySeDetail-001`）
 
 ### SetBgmLoopPlaybackSeconds
-- [ ] 再生位置指定がゲームシーン未使用
+- [x] 再生位置指定がゲームシーン未使用（gap: `GAP-Audio-SetBgmLoopPlaybackSeconds-001`）
 
 ### SetBgmLoopPitch
-- [ ] SetBgmLoopPitch がシーンから未呼び出し
+- [x] SetBgmLoopPitch がシーンから未呼び出し（gap: `GAP-Audio-SetBgmLoopPitch-001`）
 
 ### SetSeVolume
-- [ ] SetSeVolume がゲームロジックから未使用
+- [x] SetSeVolume がゲームロジックから未使用（gap: `GAP-Audio-SetSeVolume-001`）
 
 ### GetSeVolume
-- [ ] GetSeVolume がシーンから未呼び出し
+- [x] GetSeVolume がシーンから未呼び出し（gap: `GAP-Audio-GetSeVolume-001`）
 
 ### GetSeFrequencyRatio
-- [ ] GetSeFrequencyRatio が未使用
+- [x] GetSeFrequencyRatio が未使用（gap: `GAP-Audio-GetSeFrequencyRatio-001`）
 
 ### SetSeFrequencyRatio
-- [ ] SetSeFrequencyRatio がゲームから未使用
+- [x] SetSeFrequencyRatio がゲームから未使用（gap: `GAP-Audio-SetSeFrequencyRatio-001`）
 
 ## System
 
@@ -178,25 +178,25 @@
 
 
 ### UiState
-- [ ] 複数選択が無く一括調整できない
+- [x] 複数選択が無く一括調整できない（gap: `GAP-Editor-UiState-001`）
 
 ### component_split_next
-- [ ] ランタイム用 Data／Collider 分割候補のエディタ登録が未着手（spec: feature-memos/component_split_guidelines.md）
+- [x] ランタイム用 Data／Collider 分割候補のエディタ登録が未着手（gap: `GAP-Authoring-component_split_next-001`）
 
 ### component_split_verify
-- [ ] コンポーネント登録の三箇所同期を検証する自動化が無い（spec: feature-memos/component_split_guidelines.md）
+- [x] コンポーネント登録の三箇所同期を検証する自動化が無い（gap: `GAP-Infra-component_split_verify-001`）
 
 ### CmpCamera
-- [ ] Initialize が Orthographic を既定生成（spec: feature-memos/entity_camera_components.md）
+- [x] Initialize が Orthographic を既定生成（gap: `GAP-Entity-CmpCamera-001`）
 
 ### CmpLhRigidBody
-- [ ] 物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている
+- [x] 物理演算が基本機能として独立せず、剛体コンポーネントの Update に閉じている（gap: `GAP-Runtime-CmpLhRigidBody-001`）
 
 ### EngineAccess
-- [ ] 描画への外部アクセスが EngineAccess に無く、AtrumEngine 経由になる
+- [x] 描画への外部アクセスが EngineAccess に無く、AtrumEngine 経由になる（gap: `GAP-Engine-EngineAccess-001`）
 
 ### CmpBounceBall
-- [ ] ボールの運動・壁床バウンス・衝突演出が1クラスに同居している
+- [x] ボールの運動・壁床バウンス・衝突演出が1クラスに同居している（gap: `GAP-Runtime-CmpBounceBall-001`）
 
 ## Loader
 
@@ -212,7 +212,7 @@
 
 
 ### BinaryConverter
-- [ ] メッシュ変換パイプラインのバッチ／CI フックが未整備（spec: feature-memos/atr_mesh_binary_format.md）
+- [x] メッシュ変換パイプラインのバッチ／CI フックが未整備（spec: feature-memos/atr_mesh_binary_format.md）（gap: `GAP-Infra-BinaryConverter-001`）
 
 ## Math
 
@@ -236,7 +236,7 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] StageView カメラが StageBounds 定数のみ参照しシーン毎の範囲に追従しない（gap: `GAP-Camera-StageBounds-001`・Play・P1）
+- [x] StageView カメラが StageBounds 定数のみ参照しシーン毎の範囲に追従しない（gap: `GAP-Camera-StageBounds-001`・Play・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: tuning.json と StageViewCamera 定数の自動同期（在庫 1件）
@@ -244,18 +244,18 @@
 
 
 ### StageViewCameraTuning
-- [ ] カメラ tuning JSON のエディタ内プレビュー／ホットリロードが未実装（spec: feature-memos/odyssey_style_stage_camera.md）
+- [x] カメラ tuning JSON のエディタ内プレビュー／ホットリロードが未実装（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### stage_view_camera_tuning
-- [ ] tuning.json と StageViewCamera 定数の自動同期が無い
-- [ ] tuning JSON の client 解像度が参照されない（spec: feature-memos/odyssey_style_stage_camera.md）
+- [x] tuning.json と StageViewCamera 定数の自動同期が無い（gap: `GAP-Infra-stage_view_camera_tuning-001`）
+- [x] tuning JSON の client 解像度が参照されない（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### StageViewCamera
-- [ ] ステージカメラのアスペクトが既定解像度固定
+- [x] ステージカメラのアスペクトが既定解像度固定
 
 ### verify_camera_policy
-- [ ] カメラ方針静的検証が CI／ビルド手順に未組み込み
-- [ ] verify_camera_policy が AllowDebugCameraControl を検査しない
+- [x] カメラ方針静的検証が CI／ビルド手順に未組み込み
+- [x] verify_camera_policy が AllowDebugCameraControl を検査しない
 
 ## Scene
 
@@ -267,81 +267,81 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] ムービーシーン起動がゲームプレイ経路に未接続（gap: `GAP-Scene-SceneMovieRegistry-001`・Play・P1）
-- [ ] 最小ランタイム検証シーン起動がエディタから未配線（gap: `GAP-Scene-SceneBuildUpRegistry-001`・Debug・P1）
-- [ ] returnScene が null だとムービー終了／失敗後もシーンが抜けられない（gap: `GAP-Scene-SceneMovie-004`・Play・P1）
-- [ ] 遷移演出中はシーン Update が全面停止（gap: `GAP-Scene-GameOrder-001`・Play・P1）
-- [ ] FindPrimaryCmpCamera が rig 配列のみ走査（gap: `GAP-Scene-SceneCameraRig-001`・Debug・P1）
-- [ ] entities_ と GetCamera の cameraRig が未接続（gap: `GAP-Scene-SceneBuildUp-009`・Debug・P1）
+- [x] ムービーシーン起動がゲームプレイ経路に未接続（gap: `GAP-Scene-SceneMovieRegistry-001`・Play・P1）
+- [x] 最小ランタイム検証シーン起動がエディタから未配線（gap: `GAP-Scene-SceneBuildUpRegistry-001`・Debug・P1）
+- [x] returnScene が null だとムービー終了／失敗後もシーンが抜けられない（gap: `GAP-Scene-SceneMovie-004`・Play・P1）
+- [x] 遷移演出中はシーン Update が全面停止（gap: `GAP-Scene-GameOrder-001`・Play・P1）
+- [x] FindPrimaryCmpCamera が rig 配列のみ走査（gap: `GAP-Scene-SceneCameraRig-001`・Debug・P1）
+- [x] entities_ と GetCamera の cameraRig が未接続（gap: `GAP-Scene-SceneBuildUp-009`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: SceneBuildUp 検証経路・レジストリ・cameraRig 接続の細部（在庫 65件）
-- [ ] CommandScene 遷移要求・Development 起動シーン不一致
+- [x] CommandScene 遷移要求・Development 起動シーン不一致
   - 正本: `../implementation_gaps.md`（Area=Scene）
 
 
 ### SceneMovie
-- [ ] movie トラックパスを EditorAssets 基準に解決していない（spec: feature-memos/movie_camera_controller.md）
-- [ ] トラック読込失敗時に初回 Update で即戻り（エラー表示なし）
-- [ ] SkyDome がトラック先頭姿勢前のカメラに紐づく（spec: feature-memos/scene_movie.md）
-- [ ] トラック開始失敗時に SetupStageViewCamera を呼ぶ（spec: feature-memos/scene_movie.md）
-- [ ] ムービーシーンに BGM/トラック音声の再生・復帰ポリシーがコード上見えない（spec: feature-memos/scene_movie.md）
-- [ ] 遷移予約後はカメラ／SkyDome 更新が停止（spec: feature-memos/scene_movie.md）
-- [ ] SceneMovie のライティングにリム・ボリュームフォグが無い（spec: feature-memos/rim_light.md）
+- [x] movie トラックパスを EditorAssets 基準に解決していない（spec: feature-memos/movie_camera_controller.md）
+- [x] トラック読込失敗時に初回 Update で即戻り（エラー表示なし）
+- [x] SkyDome がトラック先頭姿勢前のカメラに紐づく（spec: feature-memos/scene_movie.md）
+- [x] トラック開始失敗時に SetupStageViewCamera を呼ぶ（spec: feature-memos/scene_movie.md）
+- [x] ムービーシーンに BGM/トラック音声の再生・復帰ポリシーがコード上見えない（spec: feature-memos/scene_movie.md）
+- [x] 遷移予約後はカメラ／SkyDome 更新が停止（spec: feature-memos/scene_movie.md）
+- [x] SceneMovie のライティングにリム・ボリュームフォグが無い（spec: feature-memos/rim_light.md）
 
 ### GameOrder
-- [ ] フレームループが音声を管理しない
+- [x] フレームループが音声を管理しない
 
 ### SceneGame
-- [ ] 見た目パラメータがデータではなく SetupGameLighting 直書き（spec: feature-memos/volumetric_fog.md）
-- [ ] OnBossDefeated で BGM を演出完了前に停止
-- [ ] シーン入場時の operator_guidance 読込失敗を検知・代替しない
-- [ ] EnterScene が本編見た目プリセットを適用しない（spec: feature-memos/rim_light.md）
-- [ ] SpawnEntities がイントロカメラ設定より先に実行される
-- [ ] 撃破演出中は MaintainSceneBgmIfNeeded が無効
-- [ ] OnPlayerDefeated は BGM を止めず撃破は即停止
-- [ ] イントロ中の Update 早期 return で弾幕 SE 無音
-- [ ] イントロ中に Maintain が PlaySceneBgm
-- [ ] pendingDefeat 中は Maintain が return
-- [ ] フェード中も Exit で StopBgmLoop
-- [ ] 遷移演出中は MaintainSceneBgm を呼ばない
+- [x] 見た目パラメータがデータではなく SetupGameLighting 直書き（spec: feature-memos/volumetric_fog.md）
+- [x] OnBossDefeated で BGM を演出完了前に停止
+- [x] シーン入場時の operator_guidance 読込失敗を検知・代替しない
+- [x] EnterScene が本編見た目プリセットを適用しない（spec: feature-memos/rim_light.md）
+- [x] SpawnEntities がイントロカメラ設定より先に実行される
+- [x] 撃破演出中は MaintainSceneBgmIfNeeded が無効
+- [x] OnPlayerDefeated は BGM を止めず撃破は即停止
+- [x] イントロ中の Update 早期 return で弾幕 SE 無音
+- [x] イントロ中に Maintain が PlaySceneBgm
+- [x] pendingDefeat 中は Maintain が return
+- [x] フェード中も Exit で StopBgmLoop
+- [x] 遷移演出中は MaintainSceneBgm を呼ばない
 
 ### CommandScene
-- [ ] Development 起動の初期シーンがプレイ用シーンロード経路と一致しない
-- [ ] シーン切替で BGM が瞬断し、クロスフェード／継続再生ポリシーが無い
+- [x] Development 起動の初期シーンがプレイ用シーンロード経路と一致しない
+- [x] シーン切替で BGM が瞬断し、クロスフェード／継続再生ポリシーが無い
 
 ### CommandChangeScene
-- [ ] 遷移実行中の Set は無視され次シーン要求が失われる
+- [x] 遷移実行中の Set は無視され次シーン要求が失われる
 
 ### SceneBuildUp
-- [ ] BuildUp 描画に地形越し自機シルエットが無い（spec: feature-memos/player_terrain_silhouette.md）
-- [ ] BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い
-- [ ] BuildUp の sceneJsonPath_ を基準パス解決しない
-- [ ] SceneBuildUp のカメラがシーン JSON の境界情報を読まない
-- [ ] シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない
-- [ ] SceneBuildUp に BGM／シーン SE の入退場が無い
+- [x] BuildUp 描画に地形越し自機シルエットが無い（spec: feature-memos/player_terrain_silhouette.md）
+- [x] BuildUp ランタイム描画にフォグ・リム・ゴッドレイ・シャドウが無い
+- [x] BuildUp の sceneJsonPath_ を基準パス解決しない
+- [x] SceneBuildUp のカメラがシーン JSON の境界情報を読まない
+- [x] シーン JSON 読込失敗時にデフォルト 1 体へ置換しプレイヤーに通知しない
+- [x] SceneBuildUp に BGM／シーン SE の入退場が無い
 
 ### SceneTitle
-- [ ] Title の BGM 途切れを検知・再開する処理が無い
-- [ ] SceneTitle のライティングにリム・フォグ・ゴッドレイが無い（spec: feature-memos/rim_light.md）
-- [ ] ExitScene がフェード完了前に StopBgmLoop
-- [ ] Submit 直後にフェード遷移
+- [x] Title の BGM 途切れを検知・再開する処理が無い
+- [x] SceneTitle のライティングにリム・フォグ・ゴッドレイが無い（spec: feature-memos/rim_light.md）
+- [x] ExitScene がフェード完了前に StopBgmLoop
+- [x] Submit 直後にフェード遷移
 
 ### SceneResult
-- [ ] SceneResult に BGM 維持・再開処理が無い
-- [ ] SceneResult が毎フレーム簡易平行光のみ適用（spec: feature-memos/rim_light.md）
-- [ ] ExitScene が即 StopBgmLoop
+- [x] SceneResult に BGM 維持・再開処理が無い
+- [x] SceneResult が毎フレーム簡易平行光のみ適用（spec: feature-memos/rim_light.md）
+- [x] ExitScene が即 StopBgmLoop
 
 ### Scene
-- [ ] AllowDebugCameraControl が既定 true でガードが二重依存（spec: feature-memos/player_friendly_camera_policy.md）
-- [ ] 新規シーンのステージカメラロックはドキュメント依存（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] AllowDebugCameraControl が既定 true でガードが二重依存（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] 新規シーンのステージカメラロックはドキュメント依存（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### SceneParticleEditor
-- [ ] SceneParticleEditor が AllowDebugCameraControl を限定していない（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] SceneParticleEditor が AllowDebugCameraControl を限定していない（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### MovieCameraTrackLoader
-- [ ] キーフレーム 1 件の不正でトラック全体を拒否（spec: feature-memos/movie_camera_controller.md）
-- [ ] ムービートラック JSON のスモーク検証が自動化されていない（spec: feature-memos/movie_camera_controller.md）
+- [x] キーフレーム 1 件の不正でトラック全体を拒否（spec: feature-memos/movie_camera_controller.md）
+- [x] ムービートラック JSON のスモーク検証が自動化されていない（spec: feature-memos/movie_camera_controller.md）
 
 ## Render
 
@@ -353,10 +353,10 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] Lighting::ImGui（フォグ／ゴッドレイ／影）が未配線（gap: `GAP-Render-Lighting-001`・Debug・P1）
-- [ ] DrawScene 毎に見た目リテラルを再適用しデータ反映が上書きされる（gap: `GAP-Render-SceneGame-002`・Play・P1）
-- [ ] Visual::Lighting と AtrumEngine の VolumetricFog が非共有（gap: `GAP-Render-Lighting-002`・Play・P1）
-- [ ] SetupGameLighting が Fog 設定後に Flush しない（gap: `GAP-Render-SceneGame-003`・Play・P1）
+- [x] Lighting::ImGui（フォグ／ゴッドレイ／影）が未配線（gap: `GAP-Render-Lighting-001`・Debug・P1）
+- [x] DrawScene 毎に見た目リテラルを再適用しデータ反映が上書きされる（gap: `GAP-Render-SceneGame-002`・Play・P1）
+- [x] Visual::Lighting と AtrumEngine の VolumetricFog が非共有（gap: `GAP-Render-Lighting-002`・Play・P1）
+- [x] SetupGameLighting が Fog 設定後に Flush しない（gap: `GAP-Render-SceneGame-003`・Play・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: SceneGame 描画／ライティング反映の残件（在庫 6件）
@@ -381,8 +381,8 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] 描画診断用ライティングパネルが EditorFrame に無い（gap: `GAP-Engine-AtrumEngineLighting-001`・Debug・P1）
-- [ ] 実行ビューがプレビュー Entity のみで機能単体試験にならない（gap: `GAP-Debug-SceneViewTab-001`・Debug・P1）
+- [x] 描画診断用ライティングパネルが EditorFrame に無い（gap: `GAP-Engine-AtrumEngineLighting-001`・Debug・P1）
+- [x] 実行ビューがプレビュー Entity のみで機能単体試験にならない（gap: `GAP-Debug-SceneViewTab-001`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: フレーム時間オーバーレイ・ストリーミングデバッグメニュー導線（在庫 2件）
@@ -390,95 +390,95 @@
 
 
 ### SceneBuildUpRegistry
-- [ ] Launch は生成してポインタ返却のみ（spec: feature-memos/debug_test_play_area.md）
-- [ ] Launch は Scene 生成のみ
-- [ ] Launch が同一パス重複を防がない
+- [x] Launch は生成してポインタ返却のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] Launch は Scene 生成のみ
+- [x] Launch が同一パス重複を防がない
 
 ### StreamingDebug
-- [ ] ストリーミング診断が ImGui 表示のみでログに残らない（spec: feature-memos/streaming_debug_imgui.md）
+- [x] ストリーミング診断が ImGui 表示のみでログに残らない（spec: feature-memos/streaming_debug_imgui.md）
 
 ### EntityEditorUi
-- [ ] Release 起動パスを表示するだけ（spec: feature-memos/debug_test_play_area.md）
+- [x] Release 起動パスを表示するだけ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorScenePlayRequest
-- [ ] EditorScenePlayRequest::Path が参照されない（spec: feature-memos/debug_test_play_area.md）
-- [ ] EditorScenePlayRequest::Clear が呼ばれない（spec: feature-memos/debug_test_play_area.md）
-- [ ] Set 後に BuildUp 起動が無い（spec: feature-memos/debug_test_play_area.md）
+- [x] EditorScenePlayRequest::Path が参照されない（spec: feature-memos/debug_test_play_area.md）
+- [x] EditorScenePlayRequest::Clear が呼ばれない（spec: feature-memos/debug_test_play_area.md）
+- [x] Set 後に BuildUp 起動が無い（spec: feature-memos/debug_test_play_area.md）
 
 ### SceneEntityEditor
-- [ ] シーン実行が本番相当 SceneBuildUp 経路にならない
-- [ ] F2 はパーティクル遷移のみで機能検証シーン未割当（spec: feature-memos/debug_test_play_area.md）
-- [ ] シーン実行後は Runtime タブフォーカスのみ（spec: feature-memos/debug_test_play_area.md）
-- [ ] SetupPreviewCamera が GetCamera のみ更新（spec: feature-memos/entity_camera_components.md）
-- [ ] Runtime タブで SetupStageViewCamera に差し替え（spec: feature-memos/entity_camera_components.md）
-- [ ] 実行は Runtime タブ切替のみ
-- [ ] Edit ホバー時に Draw 内で camera->Update
-- [ ] シーンビュー RT が GameOrder 後に SetCamera
-- [ ] DrawPreview が親 root のみ
-- [ ] Exit はプレビュー解放のみ
+- [x] シーン実行が本番相当 SceneBuildUp 経路にならない
+- [x] F2 はパーティクル遷移のみで機能検証シーン未割当（spec: feature-memos/debug_test_play_area.md）
+- [x] シーン実行後は Runtime タブフォーカスのみ（spec: feature-memos/debug_test_play_area.md）
+- [x] SetupPreviewCamera が GetCamera のみ更新（spec: feature-memos/entity_camera_components.md）
+- [x] Runtime タブで SetupStageViewCamera に差し替え（spec: feature-memos/entity_camera_components.md）
+- [x] 実行は Runtime タブ切替のみ
+- [x] Edit ホバー時に Draw 内で camera->Update
+- [x] シーンビュー RT が GameOrder 後に SetCamera
+- [x] DrawPreview が親 root のみ
+- [x] Exit はプレビュー解放のみ
 
 ### FrameDeltaTime
-- [ ] フレーム時間のオーバーレイ／ヒストグラムが無い
+- [x] フレーム時間のオーバーレイ／ヒストグラムが無い
 
 ### StreamingMenu
-- [ ] ストリーミングデバッグ ON が SceneBuildUp 経路で開けない（spec: feature-memos/streaming_debug_imgui.md）
+- [x] ストリーミングデバッグ ON が SceneBuildUp 経路で開けない（spec: feature-memos/streaming_debug_imgui.md）
 
 ### scaffold_play_area
-- [ ] テストエリア新規作成が scaffold スクリプト手動実行のみ
-- [ ] 生成後は Launch のみ案内（spec: feature-memos/debug_test_play_area.md）
-- [ ] 生成は sceneName 差替のみ
+- [x] テストエリア新規作成が scaffold スクリプト手動実行のみ
+- [x] 生成後は Launch のみ案内（spec: feature-memos/debug_test_play_area.md）
+- [x] 生成は sceneName 差替のみ
 
 ### CommandScene
-- [ ] 起動時シーンが SceneEntityEditor に固定（spec: feature-memos/debug_test_play_area.md）
-- [ ] startup 空なら BuildUp ではなく Title（spec: feature-memos/debug_test_play_area.md）
-- [ ] Launch 前に TryLoad を呼ばない
-- [ ] sceneNow 確定後 Enter を無条件
+- [x] 起動時シーンが SceneEntityEditor に固定（spec: feature-memos/debug_test_play_area.md）
+- [x] startup 空なら BuildUp ではなく Title（spec: feature-memos/debug_test_play_area.md）
+- [x] Launch 前に TryLoad を呼ばない
+- [x] sceneNow 確定後 Enter を無条件
 
 ### SceneBuildUp
-- [ ] returnScene が null だと機能検証シーンから抜けられない（spec: feature-memos/debug_test_play_area.md）
-- [ ] SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画（spec: feature-memos/debug_test_play_area.md）
-- [ ] SceneBuildUp が EditorSceneRuntime を参照しない（spec: feature-memos/debug_test_play_area.md）
-- [ ] ロード失敗時に空の Entity_0 を生成（spec: feature-memos/debug_test_play_area.md）
-- [ ] cameraRig 実体は Update されない（spec: feature-memos/entity_camera_components.md）
-- [ ] ロード直後 SetupStageViewCamera を呼ぶ（spec: feature-memos/entity_camera_components.md）
-- [ ] DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera（spec: feature-memos/entity_camera_components.md）
-- [ ] IsStageViewCameraLocked が常時 true（spec: feature-memos/debug_test_play_area.md）
-- [ ] 遷移演出中 F1 復帰が処理されない（spec: feature-memos/debug_test_play_area.md）
-- [ ] BuildUp が tagCatalog マージを飛ばす（spec: feature-memos/debug_test_play_area.md）
-- [ ] AllowDebugCameraControl をオーバーライドしない（spec: feature-memos/entity_camera_components.md）
-- [ ] ExitScene が SceneViewTab を戻さない（spec: feature-memos/debug_test_play_area.md）
-- [ ] ビュー描画ごとに SetupRuntimeLighting
-- [ ] 専用ランタイムウィンドウが汎用文言のみ（spec: feature-memos/debug_test_play_area.md）
-- [ ] 子付きインスタンスは親 Draw 任せ
-- [ ] 描画毎に半ランバート固定
-- [ ] EnterScene が Runtime 固定
-- [ ] camera==nullptr で無言 return
-- [ ] ctor で displayName を仮設定
-- [ ] Draw で ChangeScene 常時描画
+- [x] returnScene が null だと機能検証シーンから抜けられない（spec: feature-memos/debug_test_play_area.md）
+- [x] SceneBuildUp::Draw が EditorFrame ワークベンチを常時描画（spec: feature-memos/debug_test_play_area.md）
+- [x] SceneBuildUp が EditorSceneRuntime を参照しない（spec: feature-memos/debug_test_play_area.md）
+- [x] ロード失敗時に空の Entity_0 を生成（spec: feature-memos/debug_test_play_area.md）
+- [x] cameraRig 実体は Update されない（spec: feature-memos/entity_camera_components.md）
+- [x] ロード直後 SetupStageViewCamera を呼ぶ（spec: feature-memos/entity_camera_components.md）
+- [x] DrawRuntimeViewContent が Prepare 後に SetupStageViewCamera（spec: feature-memos/entity_camera_components.md）
+- [x] IsStageViewCameraLocked が常時 true（spec: feature-memos/debug_test_play_area.md）
+- [x] 遷移演出中 F1 復帰が処理されない（spec: feature-memos/debug_test_play_area.md）
+- [x] BuildUp が tagCatalog マージを飛ばす（spec: feature-memos/debug_test_play_area.md）
+- [x] AllowDebugCameraControl をオーバーライドしない（spec: feature-memos/entity_camera_components.md）
+- [x] ExitScene が SceneViewTab を戻さない（spec: feature-memos/debug_test_play_area.md）
+- [x] ビュー描画ごとに SetupRuntimeLighting
+- [x] 専用ランタイムウィンドウが汎用文言のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] 子付きインスタンスは親 Draw 任せ
+- [x] 描画毎に半ランバート固定
+- [x] EnterScene が Runtime 固定
+- [x] camera==nullptr で無言 return
+- [x] ctor で displayName を仮設定
+- [x] Draw で ChangeScene 常時描画
 
 ### LoopTick13Demo
-- [ ] LoopTick13Demo が機能検証シーンの正本として未整備
+- [x] LoopTick13Demo が機能検証シーンの正本として未整備
 
 ### combat_bounds_sandbox
-- [ ] combat_bounds_sandbox がコード／既定導線から参照されない（spec: feature-memos/debug_test_play_area.md）
+- [x] combat_bounds_sandbox がコード／既定導線から参照されない（spec: feature-memos/debug_test_play_area.md）
 
 ### DebugPlayAreaGenerator
-- [ ] ランタイムプレビュー手順がコード断片のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] ランタイムプレビュー手順がコード断片のみ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorSceneRuntime
-- [ ] 親なしインスタンスだけ初期化
-- [ ] Entity 名が definition のみ
+- [x] 親なしインスタンスだけ初期化
+- [x] Entity 名が definition のみ
 
 ### launch_config
-- [ ] startup が Feature 検証シーンではない（spec: feature-memos/debug_test_play_area.md）
-- [ ] 設定読込失敗を区別できない（spec: feature-memos/debug_test_play_area.md）
-- [ ] startupScenePath 空で false
-- [ ] JSON は startupScenePath のみ（spec: feature-memos/debug_test_play_area.md）
+- [x] startup が Feature 検証シーンではない（spec: feature-memos/debug_test_play_area.md）
+- [x] 設定読込失敗を区別できない（spec: feature-memos/debug_test_play_area.md）
+- [x] startupScenePath 空で false
+- [x] JSON は startupScenePath のみ（spec: feature-memos/debug_test_play_area.md）
 
 ### EditorSceneAsset
-- [ ] ListSceneJson は単一 Dir
-- [ ] startupScenePath を生文字列で保存
-- [ ] PlayRequest がパスだけ保持
+- [x] ListSceneJson は単一 Dir
+- [x] startupScenePath を生文字列で保存
+- [x] PlayRequest がパスだけ保持
 
 ## Lighting
 
@@ -496,10 +496,10 @@
 
 
 ### visual_lighting_profile
-- [ ] ライト／フォグ用 EditorAssets プロファイル JSON が未定義（spec: feature-memos/volumetric_fog.md）
+- [x] ライト／フォグ用 EditorAssets プロファイル JSON が未定義（spec: feature-memos/volumetric_fog.md）
 
 ### DirectionalShadow
-- [ ] シャドウ／シェード適用状態のログ・可視化が無い（spec: feature-memos/directional_shadow.md）
+- [x] シャドウ／シェード適用状態のログ・可視化が無い（spec: feature-memos/directional_shadow.md）
 
 ## Repository
 
@@ -509,16 +509,16 @@
 
 ### ギャップスキャン追補（P0/P1）
 - [x] PostBuild が Assets のみコピーしランタイム参照の EditorAssets が同梱されない（gap: `GAP-Ship-CG2_BuildUp-001`・Ship・P0）
-- [ ] サブシステム別フレームプロファイラが未実装（gap: `GAP-Infra-frame_profiler-001`・Debug・P1）
-- [ ] Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭（gap: `GAP-Ship-CG2_BuildUp-002`・Ship・P1）
-- [ ] buildDevelopment.cmd が CI と異なる入口で前検証も無い（gap: `GAP-Infra-buildDevelopment-001`・Ship・P1）
-- [ ] Release ビルド後の exe 起動スモークが CI に無い（gap: `GAP-Infra-Release_smoke-001`・Ship・P1）
-- [ ] Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる（gap: `GAP-Ship-EditorSources-001`・Ship・P1）
-- [ ] 同梱アセットとランタイム参照パスの整合を検証する仕組みが無い（gap: `GAP-Infra-asset_pack_verify-001`・Ship・P1）
-- [ ] エディタ既定の機能検証シーン（FeatureTest）が定義されていない（gap: `GAP-Infra-FeatureTestScene-001`・Debug・P1）
-- [ ] buildDevelopment.cmd に NuGet 復元ステップが無い（gap: `GAP-Infra-buildDevelopment-002`・Ship・P1）
-- [ ] Release 向け最小起動スモークの手順書が無い（gap: `GAP-Ship-smoke_runbook-001`・Ship・P1）
-- [ ] ForDebug 系 cpp が Release でコンパイル・リンクされる（gap: `GAP-Ship-ForDebugSources-001`・Ship・P1）
+- [x] サブシステム別フレームプロファイラが未実装（gap: `GAP-Infra-frame_profiler-001`・Debug・P1）
+- [x] Debug 構成も DEVELOPMENT+USE_IMGUI で本番用コンパイル差分が不明瞭（gap: `GAP-Ship-CG2_BuildUp-002`・Ship・P1）
+- [x] buildDevelopment.cmd が CI と異なる入口で前検証も無い（gap: `GAP-Infra-buildDevelopment-001`・Ship・P1）
+- [x] Release ビルド後の exe 起動スモークが CI に無い（gap: `GAP-Infra-Release_smoke-001`・Ship・P1）
+- [x] Release でも Editor 系ソースが ExcludedFromBuild されずリンクされる（gap: `GAP-Ship-EditorSources-001`・Ship・P1）
+- [x] 同梱アセットとランタイム参照パスの整合を検証する仕組みが無い（gap: `GAP-Infra-asset_pack_verify-001`・Ship・P1）
+- [x] エディタ既定の機能検証シーン（FeatureTest）が定義されていない（gap: `GAP-Infra-FeatureTestScene-001`・Debug・P1）
+- [x] buildDevelopment.cmd に NuGet 復元ステップが無い（gap: `GAP-Infra-buildDevelopment-002`・Ship・P1）
+- [x] Release 向け最小起動スモークの手順書が無い（gap: `GAP-Ship-smoke_runbook-001`・Ship・P1）
+- [x] ForDebug 系 cpp が Release でコンパイル・リンクされる（gap: `GAP-Ship-ForDebugSources-001`・Ship・P1）
 - [x] EditorScenePlayRequest がどこからも Set されない（gap: `GAP-Infra-EditorScenePlayRequest-001`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
@@ -527,22 +527,22 @@
 
 
 ### Development_opt
-- [ ] 本番相当プロファイル計測用の構成／手順が未定義
+- [x] 本番相当プロファイル計測用の構成／手順が未定義
 
 ### CG2_BuildUp
-- [ ] Release リンク設定で GenerateDebugInformation が true
+- [x] Release リンク設定で GenerateDebugInformation が true
 
 ### verify_config_matrix
-- [ ] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）
+- [x] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）
 
 ### JsonTest
-- [ ] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
+- [x] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
 
 ### cloud_dev_build
-- [ ] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
+- [x] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
 
 ### main
-- [ ] スモーク起動用 CLI（例: フレーム数上限）が main に無い
+- [x] スモーク起動用 CLI（例: フレーム数上限）が main に無い
 
 ## Editor
 
@@ -561,106 +561,106 @@
 
 
 ### ギャップスキャン追補（P0/P1）
-- [ ] カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装（gap: `GAP-Editor-StageViewCameraTuning-001`・Authoring・P1）
-- [ ] DebugPlayArea 用の EditorAssets パス定数が無い（gap: `GAP-Editor-EditorAssetsPaths-001`・Debug・P1）
-- [ ] シーン切替時に未保存確認・自動保存が無い（gap: `GAP-Editor-EntityEditor-002`・Authoring・P1）
-- [ ] エディタメニューに機能検証シーン起動が無い（gap: `GAP-Editor-EditorEntityWorkbench-001`・Debug・P1）
-- [ ] テスト再生エリア JSON がエディタのシーン一覧に出ない（gap: `GAP-Editor-EntityEditorUi-004`・Debug・P1）
-- [ ] スロット種別不一致のコンポーネントが無警告でスキップされる（gap: `GAP-Editor-EditorSceneRuntime-002`・Authoring・P1）
-- [ ] エディットビューに配置用ギズモ／ドラッグ操作が無い（gap: `GAP-Editor-SceneEntityEditor-002`・Authoring・P1）
-- [ ] 選択エンティティの複製 UI が無く複製が多段手順（gap: `GAP-Editor-EntityEditor-001`・Authoring・P1）
-- [ ] 親付きインスタンスが Initialize を呼ばれない（gap: `GAP-Editor-EditorSceneRuntime-006`・Play・P1）
-- [ ] ライト・ポスト系パラメータのエディタ用 UI が無い（gap: `GAP-Editor-AtrumEngineVisual-001`・Authoring・P1）
-- [ ] エディタプレビューにフォグ／リム／ゴッドレイ／影が無い（gap: `GAP-Editor-SceneEntityEditor-004`・Authoring・P1）
-- [ ] CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない（gap: `GAP-Editor-EditorSceneRuntime-003`・Authoring・P1）
-- [ ] インスペクタ変更はプレビューのみ更新し自動保存しない（gap: `GAP-Editor-EntityEditor-004`・Authoring・P1）
-- [ ] AssetPath プレビューが Draw 分割を Data に内包（gap: `GAP-Editor-EditorSceneRuntime-005`・Authoring・P1）
-- [ ] BuildEntities が camera.main 欠落を補わない（gap: `GAP-Editor-EditorSceneRuntime-007`・Debug・P1）
-- [ ] BuildPreviewScene がエディタ内ベクタのみ（gap: `GAP-Editor-EntityEditor-011`・Debug・P1）
+- [x] カメラ tuning JSON のエディタ内プレビュー／ホットリードが未実装（gap: `GAP-Editor-StageViewCameraTuning-001`・Authoring・P1）
+- [x] DebugPlayArea 用の EditorAssets パス定数が無い（gap: `GAP-Editor-EditorAssetsPaths-001`・Debug・P1）
+- [x] シーン切替時に未保存確認・自動保存が無い（gap: `GAP-Editor-EntityEditor-002`・Authoring・P1）
+- [x] エディタメニューに機能検証シーン起動が無い（gap: `GAP-Editor-EditorEntityWorkbench-001`・Debug・P1）
+- [x] テスト再生エリア JSON がエディタのシーン一覧に出ない（gap: `GAP-Editor-EntityEditorUi-004`・Debug・P1）
+- [x] スロット種別不一致のコンポーネントが無警告でスキップされる（gap: `GAP-Editor-EditorSceneRuntime-002`・Authoring・P1）
+- [x] エディットビューに配置用ギズモ／ドラッグ操作が無い（gap: `GAP-Editor-SceneEntityEditor-002`・Authoring・P1）
+- [x] 選択エンティティの複製 UI が無く複製が多段手順（gap: `GAP-Editor-EntityEditor-001`・Authoring・P1）
+- [x] 親付きインスタンスが Initialize を呼ばれない（gap: `GAP-Editor-EditorSceneRuntime-006`・Play・P1）
+- [x] ライト・ポスト系パラメータのエディタ用 UI が無い（gap: `GAP-Editor-AtrumEngineVisual-001`・Authoring・P1）
+- [x] エディタプレビューにフォグ／リム／ゴッドレイ／影が無い（gap: `GAP-Editor-SceneEntityEditor-004`・Authoring・P1）
+- [x] CmpMesh／Billboard が TryAddEmptyComponent に無く分割例を直組みできない（gap: `GAP-Editor-EditorSceneRuntime-003`・Authoring・P1）
+- [x] インスペクタ変更はプレビューのみ更新し自動保存しない（gap: `GAP-Editor-EntityEditor-004`・Authoring・P1）
+- [x] AssetPath プレビューが Draw 分割を Data に内包（gap: `GAP-Editor-EditorSceneRuntime-005`・Authoring・P1）
+- [x] BuildEntities が camera.main 欠落を補わない（gap: `GAP-Editor-EditorSceneRuntime-007`・Debug・P1）
+- [x] BuildPreviewScene がエディタ内ベクタのみ（gap: `GAP-Editor-EntityEditor-011`・Debug・P1）
 
 ### ギャップスキャン追補（P2/P3・在庫）
 - 展開済み: EntityEditorUi／インスペクタ・プレハブ・タグカタログ導線（在庫 92件・Authoring 中心）
-- [ ] SceneEntityEditor プレビューと本番 SceneBuildUp 経路の差分
+- [x] SceneEntityEditor プレビューと本番 SceneBuildUp 経路の差分
   - 正本: `../implementation_gaps.md`（Area=Editor）
 
 
 ### EntityEditor
-- [ ] シーン JSON が開けないとき空シーンへ置換し通知しない
-- [ ] ProcessDroppedFileImports が Entities 生成まで繋がない
-- [ ] プレハブから先頭 1 体のみ追加し親は常に解除
-- [ ] AddEmptyInstance が選択中定義を複製しない
-- [ ] RemoveSelectedInstance が単一 index のみ
-- [ ] 選択エンティティの複製が無い
-- [ ] requestSaveToDisk が needApply を立てない
-- [ ] LoadFromJsonPath が選択を先頭に戻す
-- [ ] 削除後は remaining.front() のみ開く
-- [ ] プレハブ追加は instances[0]
-- [ ] 削除時に子を祖父へ昇格しない
-- [ ] 新規作成が requestSaveToDisk 必須
-- [ ] 起動設定前に SaveToJsonPath
-- [ ] プレハブ出力が Definition のみ
-- [ ] ループ内で lastImported が上書き
-- [ ] インポート後プレビュー再適用なし
+- [x] シーン JSON が開けないとき空シーンへ置換し通知しない
+- [x] ProcessDroppedFileImports が Entities 生成まで繋がない
+- [x] プレハブから先頭 1 体のみ追加し親は常に解除
+- [x] AddEmptyInstance が選択中定義を複製しない
+- [x] RemoveSelectedInstance が単一 index のみ
+- [x] 選択エンティティの複製が無い
+- [x] requestSaveToDisk が needApply を立てない
+- [x] LoadFromJsonPath が選択を先頭に戻す
+- [x] 削除後は remaining.front() のみ開く
+- [x] プレハブ追加は instances[0]
+- [x] 削除時に子を祖父へ昇格しない
+- [x] 新規作成が requestSaveToDisk 必須
+- [x] 起動設定前に SaveToJsonPath
+- [x] プレハブ出力が Definition のみ
+- [x] ループ内で lastImported が上書き
+- [x] インポート後プレビュー再適用なし
 
 ### EditorSceneRuntime
-- [ ] EntityHasComponentForSlot が Mesh／Billboard を認識しない（spec: feature-memos/component_split_guidelines.md）
-- [ ] AssetPath プレビューは構築時1回
+- [x] EntityHasComponentForSlot が Mesh／Billboard を認識しない（spec: feature-memos/component_split_guidelines.md）
+- [x] AssetPath プレビューは構築時1回
 
 ### SceneEntityEditor
-- [ ] EnterScene が毎回ディスクから Load し編集中ドキュメントを上書き
-- [ ] SetupPreviewCamera が自由位置のみで StageView 未使用（spec: feature-memos/player_friendly_camera_policy.md）
+- [x] EnterScene が毎回ディスクから Load し編集中ドキュメントを上書き
+- [x] SetupPreviewCamera が自由位置のみで StageView 未使用（spec: feature-memos/player_friendly_camera_policy.md）
 
 ### EntityEditorDefinition
-- [ ] 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（spec: feature-memos/component_split_guidelines.md）
-- [ ] 未登録コンポーネント種別が Draw 扱いになる
-- [ ] コンポーネント設定のコピー／ペーストが無い
-- [ ] CmpCamera 追加で params が空オブジェクト（spec: feature-memos/entity_camera_components.md）
-- [ ] from_json が params を丸ごと代入
+- [x] 登録コンポーネント一覧がガイドライン／プレビュー経路と同期していない（spec: feature-memos/component_split_guidelines.md）
+- [x] 未登録コンポーネント種別が Draw 扱いになる
+- [x] コンポーネント設定のコピー／ペーストが無い
+- [x] CmpCamera 追加で params が空オブジェクト（spec: feature-memos/entity_camera_components.md）
+- [x] from_json が params を丸ごと代入
 
 ### EntityEditorShortcuts
-- [ ] エンティティ複製用キーボードショートカットが無い
+- [x] エンティティ複製用キーボードショートカットが無い
 
 ### EditorEntityWorkbench
-- [ ] メニューにライト・ポスト調整ウィンドウが無い
-- [ ] メニュー「プレイ」は保存・実行を呼ばない
-- [ ] defaultLayoutBuilt が static で一回切り
+- [x] メニューにライト・ポスト調整ウィンドウが無い
+- [x] メニュー「プレイ」は保存・実行を呼ばない
+- [x] defaultLayoutBuilt が static で一回切り
 
 ### EditorFrame
-- [ ] FitCameraPerspectiveToViewport が FOV 0.5 固定（spec: feature-memos/odyssey_style_stage_camera.md）
+- [x] FitCameraPerspectiveToViewport が FOV 0.5 固定（spec: feature-memos/odyssey_style_stage_camera.md）
 
 ### EditorImportedAsset
-- [ ] インポート直後パス表示のみで一括適用 UI が無い
-- [ ] Imported 配下のファイル一覧 API が無い
-- [ ] 取り込みファイルはドロップコピーだけで、削除と名前変更が無い
-- [ ] 衝突解決が stem_N 連番のみ
-- [ ] 重複時に stem_N へ自動リネーム
+- [x] インポート直後パス表示のみで一括適用 UI が無い
+- [x] Imported 配下のファイル一覧 API が無い
+- [x] 取り込みファイルはドロップコピーだけで、削除と名前変更が無い
+- [x] 衝突解決が stem_N 連番のみ
+- [x] 重複時に stem_N へ自動リネーム
 
 ### PrefabAsset
-- [ ] プレハブの複数一括配置 UI が無い
-- [ ] プレハブ保存が EntityDefinition 単体 JSON
-- [ ] シーンへ追加が毎回 1 インスタンス
-- [ ] プレハブ JSON は新規出力だけで、削除と名前変更が無い
-- [ ] 出力が MakeUnique で上書き更新できない
-- [ ] OpenScene が selectedPrefabPath をクリアしない
-- [ ] 衝突時 stem_N 連番
+- [x] プレハブの複数一括配置 UI が無い
+- [x] プレハブ保存が EntityDefinition 単体 JSON
+- [x] シーンへ追加が毎回 1 インスタンス
+- [x] プレハブ JSON は新規出力だけで、削除と名前変更が無い
+- [x] 出力が MakeUnique で上書き更新できない
+- [x] OpenScene が selectedPrefabPath をクリアしない
+- [x] 衝突時 stem_N 連番
 
 ### EntityEditorUi
-- [ ] ヒエラルキーのドラッグ複製・並べ替えが無い
-- [ ] DrawComponentParams が未知 typeName を未対応表示のみ（spec: feature-memos/component_split_guidelines.md）
-- [ ] インスペクタでシーン JSON パスを自由編集できる
-- [ ] instanceName と entityName を別々に編集しうる
-- [ ] トランスフォームのコピー／一括適用 UI が無い
-- [ ] タグをすべて解除が選択 1 体のみ
-- [ ] コンポーネント削除が選択 1 件のみ
-- [ ] 実行順 InputInt が 1 スロットのみ
-- [ ] png・obj・gltf を外部ツールで開く操作がエディタに無い
-- [ ] CmpCamera が既知型だが未対応表示（spec: feature-memos/entity_camera_components.md）
-- [ ] 「オブジェクトを追加」は空のみ
-- [ ] コンボ変更で DefaultParams に差し替え
-- [ ] 型 Combo で既定 params に上書き
-- [ ] 型 Combo 変更は params を既定に置換
-- [ ] 直近ドロップ適用が選択中 Cmp のみ
-- [ ] シーン JSON パスを InputString 編集
+- [x] ヒエラルキーのドラッグ複製・並べ替えが無い
+- [x] DrawComponentParams が未知 typeName を未対応表示のみ（spec: feature-memos/component_split_guidelines.md）
+- [x] インスペクタでシーン JSON パスを自由編集できる
+- [x] instanceName と entityName を別々に編集しうる
+- [x] トランスフォームのコピー／一括適用 UI が無い
+- [x] タグをすべて解除が選択 1 体のみ
+- [x] コンポーネント削除が選択 1 件のみ
+- [x] 実行順 InputInt が 1 スロットのみ
+- [x] png・obj・gltf を外部ツールで開く操作がエディタに無い
+- [x] CmpCamera が既知型だが未対応表示（spec: feature-memos/entity_camera_components.md）
+- [x] 「オブジェクトを追加」は空のみ
+- [x] コンボ変更で DefaultParams に差し替え
+- [x] 型 Combo で既定 params に上書き
+- [x] 型 Combo 変更は params を既定に置換
+- [x] 直近ドロップ適用が選択中 Cmp のみ
+- [x] シーン JSON パスを InputString 編集
 - [ ] ヒット球は選択 1 球のみ編集
 - [ ] 未対応コンポーネントは警告表示のみ
 - [ ] InputInt で実行順が 1 スロットのみ

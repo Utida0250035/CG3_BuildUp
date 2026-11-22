@@ -1,17 +1,40 @@
 #include "Scene/SceneEntityEditor.h"
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "System/Editor/EditorSceneRuntimeFunctionalViewDraw.h"
+#include "Scene/SceneBuildUpStageCameraFraming.h"
+#include "Scene/SceneEntityEditorPreviewBuildUpParityRebuild.h"
+#include "Scene/SceneEntityEditorPreviewEditorAssetPathRelink.h"
+#include "Scene/SceneEntityEditorEnterSceneDocumentLoadPolicy.h"
+#endif
+
 #include "Camera/Camera.h"
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
 #include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
-#include "Scene/ChangeSceneFade.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
+#include "Scene/SceneEntityEditorDebugHotkeys.h"
+#include "Scene/SceneEntityEditorInEditorPlayTick.h"
+#include "Scene/SceneEntityEditorPreviewCameraSetup.h"
+#include "Scene/SceneEntityEditorPreviewStageViewCameraFallback.h"
+#include "Scene/SceneEntityEditorRuntimeViewCameraDraw.h"
+#include "Scene/SceneEntityEditorEditViewDebugCameraDraw.h"
+#include "Scene/SceneEntityEditorEditViewTransformDrag.h"
+#include "Scene/SceneEntityEditorEditViewTransformGizmoDraw.h"
+#include "Scene/SceneEntityEditorSceneViewRenderCameraBind.h"
+#include "Scene/SceneEntityEditorSceneViewVisualEffectsApply.h"
+#include "Scene/SceneEntityEditorAuthoringLightingPreview.h"
+#include "Scene/SceneEntityEditorExitSceneTeardown.h"
+#include "System/Editor/Scene/EditorSceneAsset.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneParticleEditor.h"
 #include "System/GameAssetsPaths.h"
 #include "System/Particle/SceneParticleServices.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Entity/Entity.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "System/Editor/EditorFrame.h"
@@ -25,18 +48,6 @@
 #endif
 
 namespace {
-
-void SetupEditorLighting() {
-  Atrum::Math::Vector3 lightDirection{-0.35f, -0.9f, 0.2f};
-  lightDirection.Normalize();
-  const Atrum::DirectionalLightData directionalLight{
-      .color = Atrum::Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 6.0f,
-      .lightModel = Atrum::LightModel::HalfLambert,
-  };
-  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
-}
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
 
@@ -85,6 +96,10 @@ SceneEntityEditor *SceneEntityEditor::Instance() {
   return &instance;
 }
 
+void SceneEntityEditor::SetBootJsonPath(const std::string &jsonFilePath) {
+  pendingBootJsonPath_ = jsonFilePath;
+}
+
 bool SceneEntityEditor::AllowDebugCameraControl() const {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   // DebugCamera の入力は Layout 後の Draw 内で行う（ホバー矩形が確定してから）
@@ -94,10 +109,26 @@ bool SceneEntityEditor::AllowDebugCameraControl() const {
 #endif
 }
 
+const std::vector<std::unique_ptr<Entity>> *
+SceneEntityEditor::GetSupplementalCameraEntities() const {
+  return &previewEntities_;
+}
+
+void SceneEntityEditor::ApplyGameViewStageCameraForDraw() {
+  SetupStageViewCamera();
+  PrepareCamerasForDraw();
+}
+
 void SceneEntityEditor::SetupPreviewCamera() {
-  if (Atrum::Camera *camera = GetCamera()) {
-    camera->SetTranslate(Atrum::Math::Vector3{0.0f, 1.6f, -6.0f});
-    camera->UpdateMatrix();
+  cameraRig_.EnsureAutoSpawnedCameras(this);
+  if (SceneEntityEditorPreviewCameraSetup::ApplyPrimaryFromPreviewEntities(
+          previewEntities_, AllowDebugCameraControl())) {
+    return;
+  }
+  if (editor_) {
+    ApplyPreviewStageViewCameraFallback(*this, *editor_);
+  } else {
+    SetupStageViewCamera();
   }
 }
 
@@ -111,15 +142,30 @@ void SceneEntityEditor::RebuildPreviewScene() {
   if (!editor_) {
     return;
   }
-  previewEntities_ = editor_->BuildPreviewScene();
+  previewEntities_ =
+      RebuildPreviewEntitiesViaBuildUpParity(*editor_);
+  RelinkPreviewEditorAssetPathsAfterRebuild(*editor_, previewEntities_);
+  SetupPreviewCamera();
 }
 
 void SceneEntityEditor::EnterScene() {
   EnsureCommonResources();
-  SetupPreviewCamera();
+  SceneEntityEditorAuthoringLightingPreview::ApplyOnEnterEntityEditor();
   if (editor_) {
-    editor_->LoadFromJsonPath(editor_->Ui().jsonFilePath);
+    const SceneEntityEditorEnterSceneLoadPlan loadPlan =
+        PlanEnterSceneDocumentLoad(pendingBootJsonPath_, *editor_,
+                                   hasEnteredSceneEntityEditor_);
+    if (!pendingBootJsonPath_.empty()) {
+      editor_->Ui().jsonFilePath = pendingBootJsonPath_;
+      pendingBootJsonPath_.clear();
+    }
+    if (loadPlan.loadFromDisk) {
+      editor_->LoadFromJsonPath(loadPlan.jsonPathToLoad);
+    }
+    hasEnteredSceneEntityEditor_ = true;
     RebuildPreviewScene();
+  } else {
+    SetupPreviewCamera();
   }
 }
 
@@ -132,16 +178,29 @@ void SceneEntityEditor::Update() {
     RebuildPreviewScene();
   }
 
-  if (editor_->Ui().requestPlayRuntimeScene) {
-    editor_->Ui().requestPlayRuntimeScene = false;
-    editor_->SaveToJsonPath(editor_->Ui().jsonFilePath);
-    RebuildPreviewScene();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-    Editor::EditorFrame::Instance().SetSceneViewTab(
-        Editor::SceneViewTab::Runtime);
-    editor_->Ui().previewSimulationEnabled = true;
-    editor_->Ui().requestFocusRuntimeSceneView = true;
+  if (EntityEditor::SceneEntityEditorInEditorPlayTick::Process(
+          *editor_, [this] { RebuildPreviewScene(); })) {
+    return;
+  }
 #endif
+
+  if (editor_->Ui().requestLaunchSceneBuildUp) {
+    editor_->Ui().requestLaunchSceneBuildUp = false;
+    std::string scenePath = editor_->Ui().sceneBuildUpLaunchPath;
+    editor_->Ui().sceneBuildUpLaunchPath.clear();
+    if (scenePath.empty()) {
+      scenePath = Atrum::Editor::Scene::TakePendingEditorPlayScenePath();
+    }
+    if (scenePath.empty()) {
+      scenePath = editor_->Ui().jsonFilePath;
+    }
+    if (!scenePath.empty()) {
+      editor_->SaveToJsonPath(scenePath);
+      Atrum::SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(scenePath,
+                                                           Instance());
+      return;
+    }
   }
 
   if (editor_->Ui().requestOpenParticleEditor) {
@@ -152,21 +211,11 @@ void SceneEntityEditor::Update() {
     return;
   }
 
-  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
-    Atrum::CommandChangeScene::Instance()->Set(
-        SceneParticleEditor::Instance(),
-        std::make_unique<ChangeSceneFade>().release());
-    return;
-  }
+  SceneEntityEditorDebugHotkeys::Tick(Instance());
 
-  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F3)) {
-    const std::string demoScene =
-        std::string(Atrum::GameAssets::kScenesDirectory) + "/ParticleDemo.json";
-    Atrum::CommandChangeScene::Instance()->Set(
-        SceneBuildUpRegistry::Instance().Launch(demoScene, Instance()),
-        std::make_unique<ChangeSceneFade>().release());
-    return;
-  }
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  SceneEntityEditorEditViewTransformDrag::Tick(*this);
+#endif
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   const Editor::SceneViewTab viewTab =
@@ -185,6 +234,9 @@ void SceneEntityEditor::Update() {
         entity->Update();
       }
     }
+    if (editor_->Ui().runtimeFunctionalViewDraw) {
+      SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+    }
     Atrum::Particle::TickEmitterManagerForActiveScene(GetCamera());
   }
 }
@@ -194,12 +246,8 @@ void SceneEntityEditor::Draw() {
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   editor_->LayoutEditorWorkbench();
-  // エディットビュー上だけ既存 DebugCamera で操作（ImGui::Image ホバー後）
-  if (Editor::EditorFrame::Instance().EditViewHovered()) {
-    if (Atrum::Camera *camera = GetCamera()) {
-      camera->Update();
-    }
-  }
+  SceneEntityEditorEditViewDebugCameraDraw::ApplyHoveredEditViewCameraInput(
+      *this);
 #endif
 
   engine->PreDraw();
@@ -226,14 +274,7 @@ void SceneEntityEditor::Draw() {
 }
 
 void SceneEntityEditor::DrawPreviewEntities() {
-  for (std::unique_ptr<Entity> &entity : previewEntities_) {
-    if (!entity) {
-      continue;
-    }
-    if (entity->GetParent() == nullptr) {
-      entity->Draw();
-    }
-  }
+  EntityEditor::DrawSceneDocumentEntities(previewEntities_);
 }
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -250,6 +291,13 @@ void SceneEntityEditor::DrawSceneViewContent(
     return;
   }
 
+  if (viewTab == Editor::SceneViewTab::Runtime) {
+    const bool functionalDraw =
+        editor_ != nullptr && editor_->Ui().runtimeFunctionalViewDraw;
+    SceneEntityEditorRuntimeViewCameraDraw::PrepareSceneViewCameraForDraw(
+        *this, viewTab, previewEntities_, functionalDraw);
+  }
+
   Atrum::Camera *camera = GetCamera();
   if (camera == nullptr) {
     return;
@@ -258,17 +306,37 @@ void SceneEntityEditor::DrawSceneViewContent(
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
   auto *debugCamera = dynamic_cast<Atrum::Debug::DebugCamera *>(camera);
   SavedDebugCameraState savedCamera{};
-  if (!isEditViewPass && debugCamera != nullptr) {
-    savedCamera = CaptureDebugCamera(debugCamera);
-    SetupStageViewCamera();
+  if (viewTab == Editor::SceneViewTab::Game) {
+    if (debugCamera != nullptr) {
+      savedCamera = CaptureDebugCamera(debugCamera);
+    }
+    ApplyGameViewStageCameraForDraw();
     camera = GetCamera();
     debugCamera = dynamic_cast<Atrum::Debug::DebugCamera *>(camera);
   }
+#elif defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (viewTab == Editor::SceneViewTab::Game) {
+    ApplyGameViewStageCameraForDraw();
+    camera = GetCamera();
+  }
 #endif
 
-  Editor::FitCameraPerspectiveToViewport(camera, width, height);
-  engine->SetCamera(camera);
-  SetupEditorLighting();
+  if (!isEditViewPass && editor_ != nullptr &&
+      editor_->Ui().runtimeFunctionalViewDraw) {
+#if defined(DEVELOPMENT) && !defined(NDEBUG)
+    if (viewTab == Editor::SceneViewTab::Game && debugCamera != nullptr) {
+      RestoreDebugCamera(debugCamera, savedCamera);
+      debugCamera = nullptr;
+    }
+#endif
+    Editor::DrawEditorSceneRuntimeFunctionalView(*this, editor_->SceneDocument(),
+                                                previewEntities_, width, height);
+    return;
+  }
+
+  SceneEntityEditorSceneViewRenderCameraBind::BindForSceneViewRender(
+      engine, camera, width, height);
+  SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw(engine);
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
@@ -278,12 +346,15 @@ void SceneEntityEditor::DrawSceneViewContent(
 #endif
 
   DrawPreviewEntities();
+  if (isEditViewPass && editor_ != nullptr) {
+    SceneEntityEditorEditViewTransformGizmoDraw::Draw(engine, *this);
+  }
   if (!isEditViewPass) {
     Atrum::Particle::DrawEmitterManagerForActiveScene();
   }
 
 #if defined(DEVELOPMENT) && !defined(NDEBUG)
-  if (!isEditViewPass && debugCamera != nullptr) {
+  if (viewTab == Editor::SceneViewTab::Game && debugCamera != nullptr) {
     RestoreDebugCamera(debugCamera, savedCamera);
   }
 #endif
@@ -295,23 +366,24 @@ void SceneEntityEditor::DrawScene() {
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   // Draw() 内でレンダーテクスチャへ描画済み
 #else
-  SetupEditorLighting();
   Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
   engine->SetCamera(GetCamera());
+  SceneEntityEditorSceneViewVisualEffectsApply::ApplyBeforeDraw(engine);
   DrawPreviewEntities();
 #endif
 }
 
 void SceneEntityEditor::ExitScene() {
-  for (std::unique_ptr<Entity> &entity : previewEntities_) {
-    if (entity) {
-      entity->Finalize();
-    }
+  Atrum::Editor::Scene::ClearStagedEditorPlayScenePath();
+  EntityEditor::SceneEntityEditorExitSceneTeardown::ReleasePreviewEntities(
+      previewEntities_);
+  if (editor_) {
+    EntityEditor::SceneEntityEditorExitSceneTeardown::ResetEditorTransientPlayUi(
+        *editor_);
   }
-  previewEntities_.clear();
   ReleaseCommonResources();
 }
 

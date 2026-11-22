@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Scene.h"
+#include "System/PlaySeDetailCache.h"
 
 namespace Atrum {
 
@@ -65,8 +66,11 @@ namespace Atrum {
 
 			if (sceneNext != nullptr) {
 
+				// BGM: SceneTransitionBgmPolicy（Exit はフェード中に ReleaseSceneBgmOnExitDuringFade）
 				// 現在シーンの退出処理
 				sceneNow_->ExitScene();
+
+				PlaySeDetail::ClearSeIndexPathCache();
 
 				// 現在シーンの変更
 				sceneNow_ = sceneNext;

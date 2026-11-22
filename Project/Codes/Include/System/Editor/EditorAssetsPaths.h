@@ -6,6 +6,26 @@ namespace Atrum::EditorAssets {
 constexpr const char *kScenesDirectory = "../EditorAssets/Scenes";
 constexpr const char *kEntitiesPrefabDirectory = "../EditorAssets/Entities";
 constexpr const char *kParticlesDirectory = "../EditorAssets/Particles";
+constexpr const char *kStageViewCameraTuningJson =
+    "../EditorAssets/Camera/stage_view_camera_tuning.json";
+constexpr const char *kGameSceneLightingProfileJson =
+    "../EditorAssets/Visual/game_scene_lighting.json";
+constexpr const char *kMovieCameraTracksDirectory = "../EditorAssets/Camera";
+constexpr const char *kSampleMovieTrackJson =
+    "../EditorAssets/Camera/sample_movie_track.json";
+constexpr const char *kDebugPlayAreaDirectory = "../EditorAssets/DebugPlayArea";
+constexpr const char *kDebugPlayAreaTemplateScene =
+    "../EditorAssets/DebugPlayArea/template_test_play_area.scene.json";
+/// エディタ既定の機能検証シーン正本（scaffold テンプレとは別）
+constexpr const char *kDebugPlayAreaFeatureTestScene =
+    "../EditorAssets/DebugPlayArea/FeatureTest.scene.json";
+/// 歴史的デモ用（正本は FeatureTest）
+constexpr const char *kDebugPlayAreaLoopTick13DemoScene =
+    "../EditorAssets/DebugPlayArea/LoopTick13Demo.scene.json";
+constexpr const char *kDebugPlayAreaCombatBoundsSandboxScene =
+    "../EditorAssets/DebugPlayArea/combat_bounds_sandbox.scene.json";
+/// リポジトリ同梱の開発用 launch_config（機能検証シーン既定）
+constexpr const char *kEditorLaunchConfigJson = "../EditorAssets/launch_config.json";
 
 /// ゲーム用 Lua スクリプト（エディタのスクリプト雛形の出力先）
 constexpr const char *kScriptsDirectory = "Assets/Scripts";

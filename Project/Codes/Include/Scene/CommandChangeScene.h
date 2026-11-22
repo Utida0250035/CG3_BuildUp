@@ -50,6 +50,19 @@ namespace Atrum {
 
 		Audio::Handle pendingEnterSceneBgmHandle_{};
 
+		/// ExitScene がフェード中に保持していた BGM（フェードイン完了で停止）
+		Audio::Handle exitingSceneBgmHandle_{};
+
+		/// 遷移実行中に届いた Set（最後の要求のみ保持）
+		bool hasQueuedSet_ = false;
+		Scene *queuedNextScene_ = nullptr;
+		std::unique_ptr<ChangeScene> queuedChangeSceneEffect_;
+		bool queuedSetUsesFadeEffect_ = false;
+
+		void ApplySetInternal(Scene *nextScene, ChangeScene *newEffect);
+
+		void TryStartQueuedSet();
+
 		void OnSceneTransitionEffectFinished();
 
 		/// <summary>
@@ -107,6 +120,7 @@ namespace Atrum {
 
 					// 処理中フラグを折る
 					isExecute_ = false;
+					TryStartQueuedSet();
 
 				} else {
 					// シーン遷移エフェクトが空のポインタでなければ
@@ -144,6 +158,7 @@ namespace Atrum {
 
 							// 処理中フラグを折る
 							isExecute_ = false;
+							TryStartQueuedSet();
 
 						}
 
@@ -185,6 +200,9 @@ namespace Atrum {
 
 		}
 
+		/// フェードアウト中（未切替）は false。フェードイン中は現シーンの Update を許可する。
+		bool AllowsCurrentSceneUpdate() const;
+
 		bool ShouldDeferEnterSceneBgm() const {
 			return deferEnterSceneBgmUntilFadeEnds_;
 		}
@@ -194,41 +212,17 @@ namespace Atrum {
 
 		Audio::Handle TryTakePendingEnterSceneBgmHandle();
 
+		/// フェード演出中の ExitScene から BGM スロットを引き継ぎ、即 Stop を避ける
+		void AdoptExitingSceneBgmPendingFadeStop(Audio::Handle &handle);
+
+		Scene* GetPendingNextScene() const { return nextScene_; }
+
 		/// <summary>
 		/// シーン遷移の設定 (注: 各シーンの更新処理でのみ実行すること)
 		/// </summary>
 		/// <param name="nextScene"> 次のシーンのインスタンス</param>
 		/// <param name="newEffect"> 遷移エフェクトのインスタンス (無しにするも可) </param>
-		void Set(Scene* nextScene, ChangeScene* newEffect = nullptr) {
-
-			if (!isExecute_) {
-				// 実行フラグが立っていなければ
-
-				if (newEffect != nullptr) {
-					// 新しい遷移エフェクトが空のポインタでなければ
-
-					// 遷移エフェクトを設定
-					changeSceneEffect_.reset(newEffect);
-
-					deferEnterSceneBgmUntilFadeEnds_ = true;
-					deferredEnterSceneBgmCandidates_.clear();
-					pendingEnterSceneBgmHandle_ = {};
-
-				} else {
-					deferEnterSceneBgmUntilFadeEnds_ = false;
-					deferredEnterSceneBgmCandidates_.clear();
-					pendingEnterSceneBgmHandle_ = {};
-				}
-
-				// 次のシーンを設定
-				nextScene_ = nextScene;
-
-				// 実行フラグを立てる
-				isExecute_ = true;
-
-			}
-
-		}
+		void Set(Scene *nextScene, ChangeScene *newEffect = nullptr);
 
 	};
 

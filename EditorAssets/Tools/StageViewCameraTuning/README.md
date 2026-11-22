@@ -18,6 +18,35 @@ python3 preview_poses.py --focus 0 2 0 --focus-half 1.2 1.2
 python3 verify_camera_policy.py
 ```
 
-## 次のステップ
+`IsStageViewCameraLocked` に加え、`SceneEntityEditor` の `AllowDebugCameraControl`（ImGui 配下で `false`）と、本編シーンでの誤った `AllowDebugCameraControl -> true` を検査。CI: `BuildCoverageCheck`。
 
-- Development ビルドで JSON を読み込み ImGui からスライダー調整
+## C++ 定数との同期
+
+数値の正本は C++（`StageViewCamera.h` / `.cpp`・`StageBounds.h`・`Window.h`）。  
+JSON は制作プレビュー用コピー。
+
+```bash
+python3 verify_stage_view_tuning_sync.py
+python3 sync_stage_view_tuning_json.py --write   # C++ 変更後に JSON を更新
+```
+
+CI: `BuildCoverageCheck` が `verify_stage_view_tuning_sync.py` を実行。
+
+## Development エディタ内プレビュー
+
+エンティティエディタの **Stage camera tuning** ドック:
+
+- `stage_view_camera_tuning.json` を読み込み eye / pivot を表示
+- **JSON preview on Game view** で Game ビューの戦闘カメラに JSON を即反映
+- **Auto hot-reload** でファイル保存を検知して再読込
+
+パス定数: `EditorAssetsPaths::kStageViewCameraTuningJson`
+
+## ランタイム参照（DEVELOPMENT）
+
+`GetStageViewDesignAspectRatio()` の優先順:
+
+1. JSON プレビュー ON 時 … tuning の client 解像度
+2. 実行中ウィンドウのクライアントサイズ（`EngineTryGetClientViewportSize`）
+3. DEVELOPMENT … tuning JSON（遅延読込）
+4. `Window` 既定値

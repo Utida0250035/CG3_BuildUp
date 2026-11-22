@@ -2,6 +2,7 @@
 #include "Audio/AudioDecoder.h"
 #include "Audio/PlaybackPosition.h"
 #include "Audio/ShortVoicePoolExhaust.h"
+#include "Audio/StreamLoadPolicy.h"
 #include "Audio/StreamPcmFormat.h"
 #include "Audio/StreamingSourceVoice.h"
 #include "Audio/StreamingVoiceCallBack.h"
@@ -48,6 +49,18 @@ float ClampVolume(const float volume) {
 		soundIndexMap_.clear();
 
 		AudioDecoder::Finalize();
+
+	}
+
+	void AudioManager::SetStreamingLoadThresholdBytes(const size_t bytes) {
+
+		StreamLoadPolicy::SetThresholdBytes(bytes);
+
+	}
+
+	size_t AudioManager::GetStreamingLoadThresholdBytes() const {
+
+		return StreamLoadPolicy::ThresholdBytes();
 
 	}
 
@@ -150,7 +163,8 @@ float ClampVolume(const float volume) {
 			streamingSourceVoicePool_.emplace_back();
 			auto& pStrmSourceVoice = streamingSourceVoicePool_.back();
 			pStrmSourceVoice = std::make_unique<StreamingSourceVoice>();
-			pStrmSourceVoice->pCallBack = std::make_unique<StreamingVoiceCallback>(pStrmSourceVoice.get());
+			pStrmSourceVoice->pCallBack =
+			    std::make_unique<StreamingVoiceCallback>(this, pStrmSourceVoice.get());
 
 			[[maybe_unused]] HRESULT hr = xAudio2_->CreateSourceVoice(&pStrmSourceVoice->pVoice, &standardWfEx, 0, 2.0f, pStrmSourceVoice->pCallBack.get());
 			assert(SUCCEEDED(hr));
@@ -203,20 +217,83 @@ float ClampVolume(const float volume) {
 
 	bool AudioManager::IsSuitableStreaming(const std::string& filePath) {
 
-		return (File::GetFileSize(filePath) > kFileSizeThreshold);
+		return IsSuitableStreamingLoad(filePath);
+
+	}
+
+	void AudioManager::AssignStreamingSoundInPlace(SoundData& data, const std::string& filePath) {
+
+		data.pBuffer.clear();
+		data.bufferSize = 0;
+		data.filePath = StringToWString(filePath);
+		data.isSuitableStreaming = true;
+
+		const StreamPcmFormat probed = ProbeStreamPcmFormatFromUrl(data.filePath.c_str());
+		data.wfEx = probed.valid ? probed.wf : StandardWaveFormatEx();
+
+	}
+
+	bool AudioManager::TryReloadShortSoundInPlace(SoundData& data, const std::string& filePath) {
+
+		std::vector<uint8_t> pBuffer;
+		WAVEFORMATEX* wfEx = nullptr;
+
+		const bool result =
+		    AudioDecoder::LoadAudio(StringToWString(filePath), pBuffer, &wfEx);
+		if (!result) {
+			CoTaskMemFree(wfEx);
+			return false;
+		}
+
+		data.wfEx = *wfEx;
+		data.pBuffer.assign(pBuffer.begin(), pBuffer.end());
+		data.bufferSize = static_cast<UINT>(data.pBuffer.size());
+		data.filePath = StringToWString(filePath);
+		data.isSuitableStreaming = false;
+
+		CoTaskMemFree(wfEx);
+		return true;
+
+	}
+
+	void AudioManager::RefreshSoundDataOnLoadCacheHit(const size_t soundIndex, const std::string& filePath) {
+
+		if (soundIndex >= soundDataStorage_.size() || soundDataStorage_[soundIndex] == nullptr) {
+			return;
+		}
+
+		SoundData& data = *soundDataStorage_[soundIndex];
+		const bool wantStream = IsSuitableStreaming(filePath);
+
+		if (wantStream != data.isSuitableStreaming) {
+
+			if (wantStream) {
+				AssignStreamingSoundInPlace(data, filePath);
+			} else {
+				TryReloadShortSoundInPlace(data, filePath);
+			}
+			return;
+
+		}
+
+		if (data.isSuitableStreaming) {
+
+			const StreamPcmFormat probed = ProbeStreamPcmFormatFromUrl(data.filePath.c_str());
+			if (probed.valid) {
+				data.wfEx = probed.wf;
+			}
+			return;
+
+		}
+
+		TryReloadShortSoundInPlace(data, filePath);
 
 	}
 
 	size_t AudioManager::SetupStreaming(const char* filePath) {
 
 		soundDataStorage_.emplace_back(std::make_unique<SoundData>());
-
-		auto& soundData = soundDataStorage_.back();
-
-		soundData->filePath = StringToWString(filePath);
-		soundData->isSuitableStreaming = true;
-
-		soundData->wfEx = StandardWaveFormatEx();
+		AssignStreamingSoundInPlace(*soundDataStorage_.back(), filePath);
 
 		const size_t index = soundDataStorage_.size() - 1;
 		soundIndexMap_.emplace(Hash64(filePath), index);
@@ -253,6 +330,7 @@ float ClampVolume(const float volume) {
 		const uint64_t pathHash = Hash64(filePath);
 		if (const auto found = soundIndexMap_.find(pathHash);
 		    found != soundIndexMap_.end()) {
+			RefreshSoundDataOnLoadCacheHit(found->second, filePath);
 			return found->second;
 		}
 
@@ -406,9 +484,11 @@ float ClampVolume(const float volume) {
 
 		voice.pReader.Reset();
 		voice.remainingData.clear();
+		voice.atEndOfStream = false;
 		voice.state = VoiceState::Stopped;
 		voice.playId = 65536;
 		voice.isLoop = false;
+		voice.pcmBlockAlign = 4;
 		voice.nonLoopWait.Reset();
 		voice.nextBufferIndex = 0;
 		voice.frequencyRatio = 1.0f;
@@ -549,6 +629,9 @@ float ClampVolume(const float volume) {
 		// 再生秒はボイスに載せた PCM レートを見る。SetupStreaming の初期値はここで置き換わる。
 		soundDataStorage_[soundIndex]->wfEx = pcmFormat.wf;
 
+		voice.pcmBlockAlign =
+		    pcmFormat.wf.nBlockAlign != 0 ? pcmFormat.wf.nBlockAlign : 4;
+
 		voice.startTime100ns = startTime100ns;
 
 		return AudioDecoder::Seek(voice, startTime100ns);
@@ -682,6 +765,24 @@ float ClampVolume(const float volume) {
 		};
 	}
 
+	void AudioManager::RefillStreamingVoiceAfterBufferEnd(StreamingSourceVoice& voice) {
+
+		const VoiceState prior = voice.state.load();
+		if (prior == VoiceState::Stopped || prior == VoiceState::Paused ||
+		    prior == VoiceState::Waiting) {
+			return;
+		}
+
+		if (RefillBuffer(voice)) {
+			voice.nonLoopWait.NoteReadSucceeded();
+			voice.state = VoiceState::Playing;
+			return;
+		}
+
+		voice.state = VoiceState::Streaming;
+
+	}
+
 	bool AudioManager::RefillBuffer(StreamingSourceVoice& voice) {
 
 		uint64_t currentBufferIndex = voice.nextBufferIndex;
@@ -699,11 +800,6 @@ float ClampVolume(const float volume) {
 			buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
 			// pContext には parentVoice 自身を入れておくことが一般的
 			buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
-
-			if (bytesRead < StreamingSourceVoice::kBufferSize) {
-				std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
-					voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
-			}
 
 			voice.pVoice->SubmitSourceBuffer(&buf);
 
@@ -723,11 +819,6 @@ float ClampVolume(const float volume) {
 					buf.pAudioData = voice.pBuffers[currentBufferIndex].data();
 					buf.pContext = reinterpret_cast<void*>(static_cast<uintptr_t>(currentBufferIndex));
 
-					if (bytesRead < StreamingSourceVoice::kBufferSize) {
-						std::fill(voice.pBuffers[currentBufferIndex].begin() + bytesRead,
-							voice.pBuffers[currentBufferIndex].end(), static_cast<BYTE>(0));
-					}
-
 					voice.pVoice->SubmitSourceBuffer(&buf);
 
 					return true;
@@ -746,6 +837,14 @@ float ClampVolume(const float volume) {
 
 		if (voice.isLoop || voice.pVoice == nullptr) {
 			return false;
+		}
+
+		if (voice.atEndOfStream.load()) {
+			XAUDIO2_VOICE_STATE xaState{};
+			voice.pVoice->GetState(&xaState);
+			if (xaState.BuffersQueued == 0) {
+				return false;
+			}
 		}
 
 		XAUDIO2_VOICE_STATE xaState{};

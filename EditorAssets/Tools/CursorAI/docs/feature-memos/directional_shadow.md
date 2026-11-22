@@ -18,6 +18,15 @@
 - シェード: `shadeEnabled`, `shadeDarkness`, `groundPlaneY`, `contactHeight`
 - 平面影: `planarEnabled`, `planarAlpha`, `planarSquash`, `planarRadiusScale`
 
+## 診断（DEVELOPMENT + ImGui）
+
+- メニュー「描画診断」→「ライティング効果」パネル内 **適用状態 / 診断**
+  - シェード／平面影の ON/OFF と `LightFlags::CAST_SHADOW` の可視化
+  - `DrawPlanarGroundShadow` の draw／skip 回数と直近 skip 理由
+- **適用状態をログへ** … `LogFile` に `[DirectionalShadow]` スナップショットを追記（`DirectionalShadowApplyDebugLog`）
+
+実装: `DirectionalShadowApplyDiagnostics`（統計）・`DrawPlanarGroundShadow` 各 return 経路で記録。
+
 ## 今後
 
 シャドウマップ SRV と `shadowMapIndex` による投影シャドウへ拡張可能。

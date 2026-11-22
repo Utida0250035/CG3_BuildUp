@@ -1,0 +1,2 @@
+# Release|x64 でもリンクする ForDebug TU（出荷ランタイムが LogFile 等を参照）
+Codes\Source\ForDebug\Log.cpp

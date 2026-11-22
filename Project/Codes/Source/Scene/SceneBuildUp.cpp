@@ -1,13 +1,34 @@
 #include "Scene/SceneBuildUp.h"
 
+#include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
+#include "Scene/SceneBuildUpSceneJsonPathResolve.h"
+#include "Scene/SceneBuildUpSceneDisplayNameResolve.h"
+#include "Scene/SceneBuildUpRegistryLaunchDedupe.h"
+#include "Scene/SceneBuildUpAudioPolicy.h"
+#include "Scene/SceneBuildUpSceneLoadFailure.h"
+#include "Scene/SceneBuildUpSceneDocumentLoad.h"
+#include "Scene/SceneBuildUpLoadFailureEntities.h"
+#include "Scene/SceneBuildUpRuntimeSubviewDrawCamera.h"
+#include "Scene/SceneBuildUpStageCameraLock.h"
+#include "Scene/SceneBuildUpF1ReturnRequest.h"
+#include "Scene/SceneBuildUpReturnTarget.h"
+#include "Scene/SceneBuildUpStageCameraFraming.h"
+#include "Scene/SceneBuildUpExitSceneEditorUiRestore.h"
+#include "Scene/SceneBuildUpRuntimeLightingPolicy.h"
+#include "Scene/SceneBuildUpEnterSceneEditorUiPolicy.h"
+#include "Scene/SceneBuildUpMissingPrimaryCameraFeedback.h"
+#include "Scene/SceneBuildUpChangeSceneDrawPolicy.h"
+#include "Scene/SceneBuildUpRuntimeEntityDraw.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
+#endif
 #include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
 #include "Engine/Blend/BlendMode.h"
-#include "Engine/Resource/LightData.h"
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
-#include "System/Editor/Scene/EditorSceneRuntime.h"
 #include "System/Entity/Entity.h"
 #include "System/Particle/SceneParticleServices.h"
 
@@ -20,22 +41,25 @@
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "ForDebug/ImGui.h"
-#include "System/Editor/EditorFrame.h"
-#include "System/Editor/EditorSceneRunStatus.h"
-#include "System/Editor/EditorSceneViewPanel.h"
-#include "Scene/CommandChangeScene.h"
-#include "System/Editor/EditorSceneRenderTarget.h"
 #endif
 
 namespace Atrum {
 
 SceneBuildUp::SceneBuildUp(std::string sceneJsonPath, Scene *returnScene)
     : sceneJsonPath_(std::move(sceneJsonPath)), returnScene_(returnScene) {
-  sceneDisplayName_ =
-      Editor::Scene::SceneDisplayNameFromPath(sceneJsonPath_);
+  sceneDisplayName_ = SceneBuildUpSceneDisplayNameResolve::ResolveInitialSceneDisplayName(
+      sceneJsonPath_);
 }
 
 SceneBuildUp::~SceneBuildUp() = default;
+
+bool SceneBuildUp::IsStageViewCameraLocked() const {
+  return stageViewCameraLocked_;
+}
+
+bool SceneBuildUp::TryHandleInputWhileSceneTransitionBlocked() {
+  return SceneBuildUpF1ReturnRequest::TryRequestReturnViaF1(*this);
+}
 
 SceneBuildUpRegistry::~SceneBuildUpRegistry() = default;
 
@@ -46,10 +70,10 @@ SceneBuildUpRegistry &SceneBuildUpRegistry::Instance() {
 
 Scene *SceneBuildUpRegistry::Launch(const std::string &sceneJsonPath,
                                     Scene *returnScene) {
-  auto scene = std::make_unique<SceneBuildUp>(sceneJsonPath, returnScene);
-  Scene *raw = scene.get();
-  ownedScenes_.push_back(std::move(scene));
-  return raw;
+  const std::string resolvedPath =
+      ResolveSceneBuildUpJsonPath(sceneJsonPath);
+  return SceneBuildUpRegistryLaunchDedupe::AcquireOrCreateOwned(
+      ownedScenes_, resolvedPath, returnScene);
 }
 
 void SceneBuildUpRegistry::OnSceneExited(SceneBuildUp *scene) {
@@ -73,49 +97,40 @@ void SceneBuildUp::TeardownEntities() {
   entities_.clear();
 }
 
-void SceneBuildUp::SetupRuntimeLighting() {
-  Atrum::Math::Vector3 lightDirection{-0.35f, -0.9f, 0.2f};
-  lightDirection.Normalize();
-  const Atrum::DirectionalLightData directionalLight{
-      .color = Atrum::Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 6.0f,
-      .lightModel = Atrum::LightModel::HalfLambert,
-  };
-  ::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
-}
-
 void SceneBuildUp::DrawRuntimeEntities() {
-  for (std::unique_ptr<Entity> &entity : entities_) {
-    if (!entity) {
-      continue;
-    }
-    if (entity->GetParent() == nullptr) {
-      entity->Draw();
-    }
-  }
+  SceneBuildUpRuntimeEntityDraw::Draw(entities_);
 }
 
 void SceneBuildUp::EnterScene() {
   EnsureCommonResources();
   TeardownEntities();
 
+  sceneDocumentLoadFailed_ = false;
+  sceneLoadFailureMessage_.clear();
+  stageViewCameraLocked_ = SceneBuildUpStageCameraLock::kDefaultLocked;
+
   EntityEditor::EditorSceneDocument document{};
-  if (!EntityEditor::TryLoadSceneDocument(sceneJsonPath_, document)) {
+  const bool loadSucceeded =
+      SceneBuildUpSceneDocumentLoad::TryLoad(sceneJsonPath_, document);
+  if (!loadSucceeded) {
+    sceneDocumentLoadFailed_ = true;
+    sceneLoadFailureMessage_ =
+        BuildSceneBuildUpSceneLoadFailureMessage(sceneJsonPath_);
+    document = {};
     document.sceneName = sceneDisplayName_;
-    EntityEditor::SceneEntityInstance instance{};
-    instance.instanceName = "Entity_0";
-    instance.definition =
-        EntityEditor::MakeDefaultEntityDefinition("Entity_0");
-    document.instances = {std::move(instance)};
   }
 
   if (!document.sceneName.empty()) {
     sceneDisplayName_ = document.sceneName;
   }
 
-  entities_ = EntityEditor::BuildEntitiesFromSceneDocument(document);
-  SetupStageViewCamera();
+  SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(*this, document);
+  entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
+      loadSucceeded, document);
+  SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
+  SceneBuildUpRuntimeLightingPolicy::ApplyOnceOnEnterScene();
+  SceneBuildUpAudioPolicy::OnEnterScene(*this);
+  SceneBuildUpEnterSceneEditorUiPolicy::ApplyOnEnterScene();
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   showsNextSceneHint_ =
@@ -126,26 +141,31 @@ void SceneBuildUp::EnterScene() {
   }
 #endif
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  Editor::EditorFrame::Instance().SetSceneViewTab(Editor::SceneViewTab::Runtime);
-#endif
 }
 
 void SceneBuildUp::Update() {
-  if (returnScene_ != nullptr &&
-      ::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F1)) {
-    Atrum::CommandChangeScene::Instance()->Set(
-        returnScene_, std::make_unique<ChangeSceneFade>().release());
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (SceneBuildUpStageCameraLock::TryToggleLockHotkey(*this)) {
+    return;
+  }
+#endif
+  if (SceneBuildUpF1ReturnRequest::TryRequestReturnViaF1(*this)) {
     return;
   }
 
-  for (std::unique_ptr<Entity> &entity : entities_) {
-    if (entity && entity->IsActive()) {
-      entity->Update();
+  if (!sceneDocumentLoadFailed_) {
+    for (std::unique_ptr<Entity> &entity : entities_) {
+      if (entity && entity->IsActive()) {
+        entity->Update();
+      }
     }
-  }
 
-  Particle::TickEmitterManagerForActiveScene(GetCamera());
+    TickCameraRigEntities();
+
+    Particle::TickEmitterManagerForActiveScene(GetCamera());
+  }
+  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+  SceneBuildUpAudioPolicy::Tick(*this);
 }
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
@@ -160,85 +180,86 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
     return;
   }
 
-  SetupRuntimeLighting();
-  engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
-
-  SetupStageViewCamera();
-  Atrum::Camera *camera = GetCamera();
-  if (camera == nullptr) {
+  if (sceneDocumentLoadFailed_) {
+    DrawSceneBuildUpSceneLoadFailureDimOverlay(engine);
     return;
   }
-  Editor::FitCameraPerspectiveToViewport(camera, width, height);
+
+  engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
+
+  Atrum::Camera *const camera =
+      SceneBuildUpRuntimeSubviewDrawCamera::BindAfterGameOrderPrepare(
+          *this, width, height);
+  if (camera == nullptr) {
+    HandleSceneBuildUpDrawWithoutPrimaryCamera(engine, sceneJsonPath_);
+    return;
+  }
   engine->SetCamera(camera);
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
+  SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
 }
 
 #endif
 
 void SceneBuildUp::DrawScene() {
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  return;
-#else
   Atrum::Engine *engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
   }
 
-  SetupRuntimeLighting();
+  if (sceneDocumentLoadFailed_) {
+    DrawSceneBuildUpSceneLoadFailureDimOverlay(engine);
+    return;
+  }
+
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
-  engine->SetCamera(GetCamera());
+  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+  Atrum::Camera *const primaryCamera = GetCamera();
+  if (primaryCamera == nullptr) {
+    HandleSceneBuildUpDrawWithoutPrimaryCamera(engine, sceneJsonPath_);
+    return;
+  }
+  engine->SetCamera(primaryCamera);
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
+  SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   if (showsNextSceneHint_) {
     SceneScreenUi::DrawReleaseCarouselHowToNextSceneUi(engine, GetCamera());
   }
 #endif
-#endif
 }
 
 void SceneBuildUp::Draw() {
   Atrum::Engine *engine = ::Atrum::EngineInstance();
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  Editor::EditorFrame::Instance().ResetPerFrame();
-  const Editor::EditorSceneRunPhase runPhase =
-      Atrum::CommandChangeScene::Instance()->GetIsExecute()
-          ? Editor::EditorSceneRunPhase::Waiting
-          : Editor::EditorSceneRunPhase::Running;
-  Editor::LayoutDedicatedSceneViewWindow(
-      Editor::kRuntimeSceneViewTitle, Editor::SceneViewTab::Runtime,
-      "実行時ビュー — ランタイム（ステージカメラ・シミュレーション実行）",
-      "F1: エンティティエディタへ戻る", true, runPhase);
-#endif
-
   engine->PreDraw();
-
-#if !defined(DEVELOPMENT) || !defined(USE_IMGUI)
   DrawScene();
+  SceneBuildUpChangeSceneDrawPolicy::DrawTransitionWhenActive();
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (sceneDocumentLoadFailed_ && !sceneLoadFailureMessage_.empty()) {
+    DrawSceneBuildUpSceneLoadFailureNotice(sceneLoadFailureMessage_);
+  } else {
+    DrawSceneBuildUpMissingPrimaryCameraNoticeIfPending();
+  }
 #endif
-
-  Atrum::CommandChangeScene::Instance()->Draw();
 #ifdef USE_IMGUI
   engine->ImGuiRender();
 #endif
-
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  Editor::EditorSceneRenderTargetHub::Instance().RenderSceneViews(
-      engine, [this](const Editor::SceneViewTab tab, const int width,
-                     const int height) {
-        if (tab == Editor::SceneViewTab::Runtime) {
-          DrawRuntimeViewContent(width, height);
-        }
-      });
+  SceneBuildUpDedicatedRuntimeViewWindow::LayoutAndRenderViews(*this);
 #endif
-
   engine->PostDraw();
 }
 
 void SceneBuildUp::ExitScene() {
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  Editor::Scene::ClearStagedEditorPlayScenePath();
+  SceneBuildUpExitSceneEditorUiRestore::ApplyOnExitScene();
+#endif
+  SceneBuildUpAudioPolicy::OnExitScene(*this);
   TeardownEntities();
   ReleaseCommonResources();
   SceneBuildUpRegistry::Instance().OnSceneExited(this);

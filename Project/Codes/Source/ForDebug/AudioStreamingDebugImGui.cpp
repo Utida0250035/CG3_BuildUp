@@ -5,6 +5,7 @@
 #include "Audio/Audio.h"
 #include "Engine/EngineAccess.h"
 #include "Audio/VoiceState.h"
+#include "ForDebug/AudioStreamingDebugLog.h"
 #include "ForDebug/ImGui.h"
 
 #include <cstdio>
@@ -69,6 +70,12 @@ void DrawAudioStreamingMemoryDebugWindow() {
 
   Audio::StreamingMemoryDebugSnapshot snapshot{};
   ::Atrum::EngineAudioManager()->CollectStreamingMemoryDebug(snapshot);
+
+  if (ImGui::Button("スナップショットをログへ")) {
+    AppendStreamingMemoryDebugSnapshotToLog(snapshot);
+  }
+  ImGui::SameLine();
+  ImGui::TextDisabled("(LogFile)");
 
   char buf[64];
   FormatBytes(snapshot.loadedShortSoundBytes, buf, sizeof(buf));

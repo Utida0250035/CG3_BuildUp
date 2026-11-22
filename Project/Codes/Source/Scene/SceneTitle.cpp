@@ -1,66 +1,83 @@
 #include "Scene/SceneTitle.h"
 
 #include "Engine/AtrumEngine.h"
-#include "Engine/Resource/LightData.h"
+#include "Engine/EngineAccess.h"
+#include "Scene/SceneTitleVisualApply.h"
 #include "Input/AbstractInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneGame.h"
+#include "Scene/SceneMovie.h"
+#include "System/GameAssetsPaths.h"
 #include "System/Entity/Entity.h"
 #include "System/EntityFactory.h"
+#include "Scene/SceneGameExitBgmPolicy.h"
+#include "Scene/SceneTitleBgmMaintain.h"
+#include "Scene/SceneTitleSubmitTransition.h"
 #include "Scene/SceneScreenUi.h"
 #include "System/PlaySe.h"
 
-namespace {
-
-	void SetupStageLighting() {
-		Atrum::Math::Vector3 lightDirection{ -0.4f, -0.85f, 0.15f };
-		lightDirection.Normalize();
-		const Atrum::DirectionalLightData directionalLight{
-			.color = Atrum::Math::Vector3{ 1.0f, 1.0f, 1.0f },
-			.direction = lightDirection,
-			.intensity = 8.0f,
-			.lightModel = Atrum::LightModel::HalfLambert,
-		};
-		::Atrum::EngineInstance()->SetDirectionalLightData(directionalLight);
-	}
-
-} // namespace
+#include <cmath>
 
 namespace Atrum {
 
 	void SceneTitle::EnterScene() {
+		titleSubmitTransitionConsumed_ = false;
 		EnsureCommonResources();
 		SetupStageViewCamera();
+		ApplySceneTitleVisualFromProfile();
 		Atrum::SceneScreenUi::PreloadTitleUiTextures();
 		SpawnBackgrounds();
 		sceneBgmHandle_ = Atrum::PlayBgmLoop({ "./Assets/Audios/bgmTitle.mp3",
 											  "./Resources/bgmTitle.mp3" });
+		if (sceneBgmHandle_.isSuccess) {
+			float pitchRatio = 1.0f;
+			if (!Atrum::GetSeFrequencyRatio(sceneBgmHandle_, pitchRatio) ||
+			    pitchRatio < 0.99f) {
+				Atrum::SetSeFrequencyRatio(sceneBgmHandle_, 1.0f);
+			}
+		}
 		sceneAmbientLoopSeHandle_ = Atrum::PlaySeLoopCandidates(
 			{"./Assets/Audios/seTitleAmbientLoop.mp3",
 			 "./Resources/seTitleAmbientLoop.mp3"});
+		if (sceneAmbientLoopSeHandle_.isSuccess) {
+			Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, 0.42f);
+			Atrum::SetSeFrequencyRatio(sceneAmbientLoopSeHandle_, 0.98f);
+		}
 	}
 
 	void SceneTitle::Update() {
-		Atrum::AssignPendingFadeSyncedSceneBgm(sceneBgmHandle_);
-		Atrum::SyncSceneBgmForChangeSceneFade(sceneBgmHandle_);
+		Atrum::MaintainSceneTitleBgmIfNeeded(sceneBgmHandle_);
+		Atrum::MaintainSceneTitleAmbientLoopIfNeeded(sceneAmbientLoopSeHandle_);
+		if (sceneAmbientLoopSeHandle_.isSuccess) {
+			const bool fading =
+				Atrum::CommandChangeScene::Instance()->GetIsExecute();
+			const float targetVolume = fading ? 0.1f : 0.42f;
+			const float targetPitch = fading ? 0.9f : 0.98f;
+			float currentVolume = targetVolume;
+			if (!Atrum::GetSeVolume(sceneAmbientLoopSeHandle_, currentVolume) ||
+				std::abs(currentVolume - targetVolume) > 0.02f) {
+				Atrum::SetSeVolume(sceneAmbientLoopSeHandle_, targetVolume);
+			}
+			float currentPitch = targetPitch;
+			if (!Atrum::GetSeFrequencyRatio(sceneAmbientLoopSeHandle_,
+			                                currentPitch) ||
+				std::abs(currentPitch - targetPitch) > 0.02f) {
+				Atrum::SetSeFrequencyRatio(sceneAmbientLoopSeHandle_, targetPitch);
+			}
+		}
 		UpdateBackgrounds();
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 		// エディタビルドの起動シーンは SceneEntityEditor（タイトル経由の遷移は無効）
 		return;
 #else
-		const Atrum::InputData& input = Atrum::AbstractInput::Instance()->GetData();
-		if (input.isSubmitTrigger) {
-			Atrum::PlaySubmitSe();
-			Atrum::CommandChangeScene::Instance()->Set(SceneGame::Instance(),
-				std::make_unique<ChangeSceneFade>().release());
-		}
+		(void)SceneTitleSubmitTransition::TryBeginOnSubmit(*this);
 #endif
 	}
 
 	void SceneTitle::DrawScene() {
-		SetupStageLighting();
+		ApplySceneTitleVisualFromProfile();
 		DrawBackgrounds();
 
 		if (Atrum::AtrumEngine* engine = ::Atrum::EngineInstance()) {
@@ -70,9 +87,8 @@ namespace Atrum {
 
 	void SceneTitle::ExitScene() {
 		ReleaseCommonResources();
-		Atrum::StopBgmLoop(sceneBgmHandle_);
-		sceneBgmHandle_ = {};
-		Atrum::StopSe(sceneAmbientLoopSeHandle_);
+		Atrum::ReleaseSceneBgmOnExitDuringFade(sceneBgmHandle_);
+		Atrum::StopSeLoop(sceneAmbientLoopSeHandle_);
 		sceneAmbientLoopSeHandle_ = {};
 		ClearBackgrounds();
 	}

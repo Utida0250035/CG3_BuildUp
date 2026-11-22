@@ -3,15 +3,36 @@
 #include <string>
 #include <vector>
 
+namespace Atrum::EntityEditor {
+enum class ImportedAssetNameCollisionPolicy;
+}
+
 namespace Atrum::Editor::Import {
 
 /// ウィンドウへドロップした外部ファイルのコピー先（ゲーム本番では未使用）
 constexpr const char *kImportedAssetsDirectory = "../EditorAssets/Imported";
 
+/// EntityEditor の UI 設定を次回 `CopyFileIntoImportedAssets` に反映する。
+void SetImportedAssetCollisionPolicyForNextCopies(
+    EntityEditor::ImportedAssetNameCollisionPolicy policy);
+void SetImportedAssetBatchNamePrefixForNextCopies(const std::string &prefix);
+EntityEditor::ImportedAssetNameCollisionPolicy
+GetImportedAssetCollisionPolicyForCopies();
+
 void EnsureImportedAssetsDirectoryExists();
 
 /// ソースファイルを Imported へコピー。成功時はコピー先の相対パス、失敗時は空文字。
 std::string CopyFileIntoImportedAssets(const std::string &sourcePath);
+
+/// `kImportedAssetsDirectory` 直下のファイルを相対パスで列挙（名前昇順・非再帰）。
+std::vector<std::string> ListImportedAssetRelativePaths();
+
+/// Imported 管理下のファイルのみ削除。
+bool TryDeleteImportedAssetFile(const std::string &relativePath);
+
+/// 新しいファイル名（ベース名のみ）。成功時は新しい相対パス。
+std::string TryRenameImportedAssetFile(const std::string &relativePath,
+                                       const std::string &newFileName);
 
 /// SDL_DROPFILE からエンジンが受け取ったパス（メインスレッド専用）
 class FileDropQueue {

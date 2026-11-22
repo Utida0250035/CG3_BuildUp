@@ -1,5 +1,8 @@
 #include "System/Editor/Prefab/PrefabAsset.h"
 
+#include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Prefab/PrefabAssetCollisionPolicy.h"
+
 #include <algorithm>
 #include <filesystem>
 
@@ -14,32 +17,9 @@ void EnsureEntitiesPrefabDirectoryExists() {
 }
 
 std::string MakeUniquePrefabFilePath(const std::string &baseName) {
-  namespace fs = std::filesystem;
-  EnsureEntitiesPrefabDirectoryExists();
-
-  std::string stem = baseName.empty() ? "Entity" : baseName;
-  for (char &ch : stem) {
-    if (ch == '/' || ch == '\\' || ch == ':' || ch == '"' ||
-        ch == '*' || ch == '?' || ch == '<' || ch == '>' || ch == '|') {
-      ch = '_';
-    }
-  }
-
-  fs::path candidate =
-      fs::path(kEntitiesPrefabDirectory) / (stem + ".json");
-  if (!fs::exists(candidate)) {
-    return candidate.generic_string();
-  }
-
-  for (int suffix = 1; suffix < 10000; ++suffix) {
-    candidate = fs::path(kEntitiesPrefabDirectory) /
-                (stem + "_" + std::to_string(suffix) + ".json");
-    if (!fs::exists(candidate)) {
-      return candidate.generic_string();
-    }
-  }
-
-  return {};
+  return ResolvePrefabJsonOutputPath(
+      baseName, EntityEditor::PrefabAssetNameCollisionPolicy::AutoIncrementStem,
+      {});
 }
 
 std::vector<std::string> ListPrefabJsonFiles(

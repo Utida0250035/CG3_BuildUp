@@ -2,35 +2,14 @@
 
 #include "Audio/Audio.h"
 #include "Engine/AtrumEngine.h"
+#include "System/PlaySeDetailCache.h"
 #include <cstddef>
 #include <filesystem>
 #include <string>
-#include <unordered_map>
 
 namespace Atrum {
 
 namespace PlaySeDetail {
-
-inline size_t GetOrLoadSeIndex(const std::string &path) {
-  if (!std::filesystem::exists(path)) {
-    return static_cast<size_t>(-1);
-  }
-
-  static std::unordered_map<std::string, size_t> cache;
-  Audio::AudioManager *audio = ::Atrum::EngineAudioManager();
-
-  const auto found = cache.find(path);
-  if (found == cache.end()) {
-    const size_t index = audio->Load(path);
-    if (index == static_cast<size_t>(-1)) {
-      return static_cast<size_t>(-1);
-    }
-    cache.emplace(path, index);
-    return index;
-  }
-
-  return found->second;
-}
 
 inline std::string ResolveExistingSePath(
     const std::initializer_list<const char *> candidatePaths) {
@@ -45,25 +24,25 @@ inline std::string ResolveExistingSePath(
 } // namespace PlaySeDetail
 
 // ファイルが無い効果音は鳴らさない。同じパスは一度だけ読む
-inline void PlaySe(const std::string &path) {
+inline Audio::Handle PlaySe(const std::string &path) {
   const size_t index = PlaySeDetail::GetOrLoadSeIndex(path);
   if (index == static_cast<size_t>(-1)) {
-    return;
+    return {};
   }
 
-  ::Atrum::EngineAudioManager()->Play(index);
+  return ::Atrum::EngineAudioManager()->Play(index);
 }
 
 /// Assets / Resources など複数候補から存在する SE を再生
-inline void PlaySeCandidates(
+inline Audio::Handle PlaySeCandidates(
     const std::initializer_list<const char *> candidatePaths) {
   const std::string path =
       PlaySeDetail::ResolveExistingSePath(candidatePaths);
   if (path.empty()) {
-    return;
+    return {};
   }
 
-  PlaySe(path);
+  return PlaySe(path);
 }
 
 /// 決定・スキップ（Submit）用 SE
@@ -122,6 +101,9 @@ inline void StopSe(const Audio::Handle &handle) {
 
   ::Atrum::EngineAudioManager()->Stop(handle);
 }
+
+/// ループ SE を Handle 単位で停止（PlaySeLoop / PlaySeLoopCandidates 用）
+inline void StopSeLoop(const Audio::Handle &handle) { StopSe(handle); }
 
 /// シーン BGM を停止（汎用ストリーミング SE は巻き添えしない）
 inline void StopBgmLoop(const Audio::Handle &handle) {
@@ -254,6 +236,28 @@ inline void AssignPendingFadeSyncedSceneBgm(Audio::Handle &slot) {
   }
 }
 
+/// フェード中の一時停止を維持すべきか（シーン BGM スロットの再 Play を避ける）
+inline bool IsSceneBgmPausedForChangeSceneFade(const Audio::Handle &handle) {
+  if (!handle.isSuccess || !IsBgmLoopPaused(handle)) {
+    return false;
+  }
+  return CommandChangeScene::Instance()->GetIsExecute();
+}
+
+/// フェード完了後、一時停止のまま残ったシーン BGM を再開する
+inline bool TryResumeSceneBgmAfterChangeSceneFade(Audio::Handle &handle) {
+  if (!handle.isSuccess || !IsBgmLoopPaused(handle)) {
+    return false;
+  }
+  if (CommandChangeScene::Instance()->GetIsExecute()) {
+    return true;
+  }
+  ResumeBgmLoop(handle);
+  SetBgmLoopVolume(handle, 1.0f);
+  SetBgmLoopPitch(handle, 1.0f);
+  return true;
+}
+
 /// ChangeSceneFade 実行中は BGM をダック＋一時停止し、通常時はフル音量へ戻す
 inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
   if (!handle.isSuccess) {
@@ -261,19 +265,29 @@ inline void SyncSceneBgmForChangeSceneFade(Audio::Handle &handle) {
   }
 
   constexpr float kFadeDuckVolume = 0.12f;
+  constexpr float kFadeDuckPitch = 0.88f;
 
   if (CommandChangeScene::Instance()->GetIsExecute()) {
     SetBgmLoopVolume(handle, kFadeDuckVolume);
+    float pitchRatio = 1.0f;
+    if (!GetSeFrequencyRatio(handle, pitchRatio) ||
+        pitchRatio > kFadeDuckPitch + 0.02f) {
+      SetBgmLoopPitch(handle, kFadeDuckPitch);
+    }
     if (!IsBgmLoopPaused(handle)) {
       PauseBgmLoop(handle);
     }
     return;
   }
 
-  if (IsBgmLoopPaused(handle)) {
-    ResumeBgmLoop(handle);
+  if (TryResumeSceneBgmAfterChangeSceneFade(handle)) {
+    return;
   }
   SetBgmLoopVolume(handle, 1.0f);
+  float pitchRatio = 1.0f;
+  if (!GetSeFrequencyRatio(handle, pitchRatio) || pitchRatio < 0.99f) {
+    SetBgmLoopPitch(handle, 1.0f);
+  }
 }
 
 } // namespace Atrum

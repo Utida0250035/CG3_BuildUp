@@ -1,5 +1,7 @@
 #pragma once
 
+#include "System/Editor/EditorAssetsPaths.h"
+
 namespace Atrum::GameAssets {
 
 /// ランタイムが参照するデータは Project/Assets 以下（開発時 cwd = Project）
@@ -21,5 +23,12 @@ constexpr const char *kReleaseSceneCarouselPath =
 /// 本編のオペレータ案内
 constexpr const char *kOperatorGuidanceJson =
     "./Assets/UX/operator_guidance.json";
+
+/// 本編 SceneGame のライト／フォグ／ゴッドレイ／影（Release 配布物）
+constexpr const char *kGameSceneLightingProfileJson =
+    "./Assets/Visual/game_scene_lighting.json";
+
+/// タイトル→本編の間に再生するサンプルカメラトラック
+constexpr const char *kTitleIntroMovieTrack = EditorAssets::kSampleMovieTrackJson;
 
 } // namespace Atrum::GameAssets

@@ -28,10 +28,18 @@ public:
 
   bool IsStageViewCameraLocked() const override { return true; }
 
+  bool ResultSubmitTransitionConsumed() const {
+    return resultSubmitTransitionConsumed_;
+  }
+  void SetResultSubmitTransitionConsumed(const bool consumed) {
+    resultSubmitTransitionConsumed_ = consumed;
+  }
+
 protected:
   void DrawScene() override;
 
 private:
+  bool resultSubmitTransitionConsumed_ = false;
   Atrum::Audio::Handle sceneBgmHandle_{};
   std::unique_ptr<Atrum::Entity> skyDome_;
   std::vector<std::unique_ptr<Atrum::Entity>> backgrounds_;

@@ -5,6 +5,7 @@
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
 #include "Scene/SceneBuildUp.h"
+#include "Scene/SceneBuildUpLaunchPolicy.h"
 #include "Scene/SceneGame.h"
 #include "Scene/SceneResult.h"
 #include "Scene/SceneTitle.h"
@@ -182,8 +183,8 @@ Scene *SceneReleaseCarousel::ResolveSceneForIndex(const int index) const {
     return SceneTitle::Instance();
   }
 
-  return SceneBuildUpRegistry::Instance().Launch(entry.buildUpPath,
-                                                 SceneTitle::Instance());
+  return SceneBuildUpLaunchPolicy::CreateOwnedBuildUp(
+      entry.buildUpPath, SceneTitle::Instance());
 }
 
 bool SceneReleaseCarousel::AdvanceToNextScene() {

@@ -32,13 +32,15 @@ private:
   Scene *returnScene_ = nullptr;
   MovieCameraController movieCamera_{};
   bool trackPlaybackStarted_ = false;
+  bool trackLoadFailed_ = false;
+  float trackLoadFailureElapsedSeconds_ = 0.0f;
+  std::string trackLoadFailureMessage_{};
   bool hasPendingSceneChange_ = false;
 
   std::unique_ptr<Entity> skyDome_{};
 
   void ClearVisuals();
   void SpawnVisuals();
-  void SetupStageLighting();
   void RequestReturnToCaller();
 };
 

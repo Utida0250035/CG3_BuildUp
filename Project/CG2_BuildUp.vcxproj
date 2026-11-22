@@ -82,7 +82,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DEVELOPMENT;_WINDOWS;%(PreprocessorDefinitions);USE_IMGUI;NOMINMAX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;MSVC_DEBUG_CONFIGURATION;DEVELOPMENT;_WINDOWS;%(PreprocessorDefinitions);USE_IMGUI;NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -138,7 +138,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
     <FxCompile>
@@ -163,7 +163,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DEVELOPMENT;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DEVELOPMENT;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 /FS %(AdditionalOptions)</AdditionalOptions>
@@ -200,9 +200,13 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Codes\Source\Application\main.cpp" />
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeCliParse.cpp" />
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeFrameBudgetResolve.cpp" />
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeFrames.cpp" />
     <ClCompile Include="Codes\Source\Audio\Audio.cpp" />
     <ClCompile Include="Codes\Source\Audio\AudioDecoder.cpp" />
     <ClCompile Include="Codes\Source\Audio\PlaybackPosition.cpp" />
+    <ClCompile Include="Codes\Source\Audio\StreamLoadPolicy.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamPcmFormat.cpp" />
     <ClCompile Include="Codes\Source\Audio\StreamingVoiceCallBack.cpp" />
     <ClCompile Include="Codes\Source\Audio\VoiceCallBack.cpp" />
@@ -215,15 +219,20 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Camera\CameraController\MovieCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\CameraController\TimedStageViewCameraController.cpp" />
     <ClCompile Include="Codes\Source\Camera\MovieCameraTrackLoader.cpp" />
+    <ClCompile Include="Codes\Source\Camera\MovieCameraTrackKeyframeParsePolicy.cpp" />
+    <ClCompile Include="Codes\Source\Camera\MovieCameraTrackPathResolve.cpp" />
     <ClCompile Include="Codes\Source\Camera\ActiveCameraSystem.cpp" />
     <ClCompile Include="Codes\Source\Camera\CombatCameraShake.cpp" />
     <ClCompile Include="Codes\Source\Camera\PlayerDamageScreenVignette.cpp" />
+    <ClCompile Include="Codes\Source\Camera\StageViewDesignViewport.cpp" />
+    <ClCompile Include="Codes\Source\Camera\StageViewFramingBounds.cpp" />
     <ClCompile Include="Codes\Source\Camera\StageViewCamera.cpp" />
     <ClCompile Include="Codes\Source\Collision2D\Collision2D.cpp" />
     <ClCompile Include="Codes\Source\Collision\CollisionManager.cpp" />
     <ClCompile Include="Codes\Source\Collision\ContactConstraint.cpp" />
     <ClCompile Include="Codes\Source\Collision\HitMeshBuilder.cpp" />
     <ClCompile Include="Codes\Source\Collision\SAT.cpp" />
+    <ClCompile Include="Codes\Source\Engine\EngineAccess.cpp" />
     <ClCompile Include="Codes\Source\Engine\AtrumEngine.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
@@ -261,9 +270,12 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
     </ClCompile>
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\Lighting.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\LightingEngineEffectsBinding.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.cpp" />
     <ClCompile Include="Codes\Source\Engine\Renderer\Shader\ShaderCompiler.cpp" />
     <ClCompile Include="Codes\Source\Engine\Resource\CreateBufferResource.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Development|x64'">MinSpace</Optimization>
@@ -286,9 +298,52 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     </ClCompile>
     <ClCompile Include="Codes\Source\File\FileSize.cpp" />
     <ClCompile Include="Codes\Source\File\SetWorkingDirectoryToExecutable.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
+    <ClCompile Include="Codes\Source\System\Build\BuildConfigurationContract.cpp" />
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\AABB.cpp" />
     <ClCompile Include="Codes\Source\Geometry\Bezier.cpp" />
@@ -299,6 +354,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Input\DirectInput.cpp" />
     <ClCompile Include="Codes\Source\Input\AbstractInput.cpp" />
     <ClCompile Include="Codes\Source\Input\PlayInput.cpp" />
+    <ClCompile Include="Codes\Source\Physics\PhysicsManager.cpp" />
     <ClCompile Include="Codes\Source\Input\XInputController.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix3x3.cpp" />
     <ClCompile Include="Codes\Source\Math\Matrix4x4.cpp" />
@@ -315,46 +371,686 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\ChangeSceneFade.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandChangeScene.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandScene.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBoot.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBootApply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandSceneReleaseBootApply.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandSceneBootLaunchPathGate.cpp" />
+    <ClCompile Include="Codes\Source\Scene\CommandSceneBootEnterApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\GameOrder.cpp" />
+    <ClCompile Include="Codes\Source\Scene\GameOrderAudioPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\Scene.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneCameraRig.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneDebugCameraInputPolicy.cpp" />
     <ClCompile Include="Codes\Source\Scene\BossDeathPresentation.cpp" />
     <ClCompile Include="Codes\Source\Scene\PlayerDeathPresentation.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGame.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneGameBattleHud.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneScreenUi.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneResult.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneResultBgmMaintain.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneResultVisualApply.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneResultExitBgmPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneResultSubmitTransition.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneTitle.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneParticleEditorAllowDebugPolicy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallAxisAlignedBounce.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallBounceImpactFx.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallKinematics.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformDrag.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformGizmoDraw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAuthoringLightingPreview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayQueue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayTick.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewDebugCameraDraw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewRenderCameraBind.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAfterBuildUpExit.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewBuildUpParityRebuild.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewStageViewCameraFallback.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewEditorAssetPathRelink.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEnterSceneDocumentLoadPolicy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorClearRuntimeFocusRequest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLaunchPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRegistryLaunchDedupe.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpReturnTarget.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentLoad.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentTagCatalog.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLoadFailureEntities.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeSubviewDrawCamera.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraLock.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpF1ReturnRequest.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpExitSceneEditorUiRestore.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeLightingPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeViewStatusText.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpDedicatedRuntimeViewWindow.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeEntityDraw.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpEnterSceneEditorUiPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpMissingPrimaryCameraFeedback.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDisplayNameResolve.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpChangeSceneDrawPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneTitleSubmitTransition.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneMovie.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieReturnTarget.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieTrackFailure.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieVisualSetup.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieAudioPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMoviePendingTransitionUpdate.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameIntroBgmPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameIntroBarrageAudio.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameDefeatAudioPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameDefeatPresentationBgm.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameTransitionBgmPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameExitBgmPolicy.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameEnterVisualPreset.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameLightingProfile.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneGameOperatorGuidanceBoot.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneMovieStageLighting.cpp" />
+    <ClCompile Include="Codes\Source\Scene\ScenePrimaryCameraResolve.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetAutoStemRenameReport.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetCollisionPolicy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetDropPolicyUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorExternalAssetOpen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsExternalOpen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetFileOperations.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetUiPathScrub.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetList.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetProjectPanelList.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetApplyToEntityDefinition.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetBatchApplyToSelection.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFitCameraPerspectiveParams.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchDefaultDockLayout.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchPlayMenu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchLightPostWindow.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateInstanceKeyboardShortcut.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDragDrop.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyReparent.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSlotParamsNormalize.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefaultParamsCmpCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSettingsCopyPaste.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSlotKindResolve.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorKnownComponentRegistry.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsBallSplit.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsGenericJson.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorSceneJsonPathUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorInstanceIdentityUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTransformCopyPaste.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorTransformCopyPasteUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorClearAllEntityTags.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRemoveComponentSlotsBatch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorImportedDropBatchApplyUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorComponentTypeComboApply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorComponentRemoveBatchUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorExecutionOrderBatch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorExecutionOrderBatchUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportPathQueue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportRequestPreview.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSaveEntityDefinitionBody.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabBatchSpawnFromFile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetBatchSpawnUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetFileOperations.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetProjectPanelList.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetUiPathScrub.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetCollisionPolicy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneObjectAddPreset.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyAddObjectUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRemoveSelectedInstances.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTickPendingRequests.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRestoreSelectionAfterSceneLoad.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorClearPrefabSelectionOnSceneOpen.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDeleteSceneOpenSuccessor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorCreateNewSceneFile.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSaveSelectedInstanceToPrefab.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameStreamingDiagnostics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFrameDeltaDiagnostics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEditViewScreenRay.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Camera\EditorStageViewCameraTuningHotReloadTick.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorDebugPlayAreaScaffold.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\DebugPlayAreaScaffoldPersonalize.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEntityHasComponentForSlot.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewRelink.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeMainCameraSupplement.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigJsonDocument.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigStartupPathNormalize.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorScenePlayRequestStaging.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiEditableSceneList.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneSwitchUnsavedPrompt.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
+    <ClCompile Include="Codes\Source\System\PlaySeDetailCache.cpp" />
     <ClCompile Include="Codes\Source\System\BehDodge.cpp" />
     <ClCompile Include="Codes\Source\System\BehEnemyMeteor.cpp" />
     <ClCompile Include="Codes\Source\System\BehEnemyDepthRush.cpp" />
@@ -393,12 +1089,22 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Playable\CmpInput.cpp" />
     <ClCompile Include="Codes\Source\System\Playable\CmpDrawPlayerParryField.cpp" />
     <ClCompile Include="Codes\Source\System\Playable\CmpMoveByInput.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Editor.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Editor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpHitSphere.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpColliderAabb.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorAssetPath.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpRuntimeTexturePath.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorTextureBillboard.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpLhRigidBody.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMesh.cpp" />
@@ -406,7 +1112,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\EntityStorage.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\HitJudge.cpp" />
-    <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp" />
+    <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\System\SimulationSpace.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\EmitterManager.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\GameCombatParticleEffects.cpp" />
@@ -457,6 +1167,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Audio\PlaybackPosition.h" />
     <ClInclude Include="Codes\Include\Audio\NonLoopStreamWait.h" />
     <ClInclude Include="Codes\Include\Audio\ShortVoicePoolExhaust.h" />
+    <ClInclude Include="Codes\Include\Audio\StreamLoadPolicy.h" />
     <ClInclude Include="Codes\Include\Audio\StreamPcmFormat.h" />
     <ClInclude Include="Codes\Include\Audio\AudioHandle.h" />
     <ClInclude Include="Codes\Include\Audio\SourceVoice.h" />
@@ -476,7 +1187,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Camera\CameraController\MovieCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\CameraController\TimedStageViewCameraController.h" />
     <ClInclude Include="Codes\Include\Camera\MovieCameraTrackLoader.h" />
+    <ClInclude Include="Codes\Include\Camera\MovieCameraTrackKeyframeParsePolicy.h" />
+    <ClInclude Include="Codes\Include\Camera\MovieCameraTrackPathResolve.h" />
     <ClInclude Include="Codes\Include\Camera\ActiveCameraSystem.h" />
+    <ClInclude Include="Codes\Include\Camera\StageViewDesignViewport.h" />
+    <ClInclude Include="Codes\Include\Camera\StageViewFramingBounds.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCamera.h" />
     <ClInclude Include="Codes\Include\Camera\StageViewCameraEasing.h" />
     <ClInclude Include="Codes\Include\Cast\StaticCast.h" />
@@ -508,9 +1223,12 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Engine\Renderer\Draw.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\DrawSprite.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\Lighting.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\LightingEffectsImGuiPanel.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\LightingEngineEffectsBinding.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h" />
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.h" />
     <ClInclude Include="Codes\Include\Engine\Renderer\Shader\ShaderCompiler.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\AssetModel.h" />
     <ClInclude Include="Codes\Include\Engine\Resource\ConstantBuffer.h" />
@@ -528,6 +1246,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Engine\Resource\VertexData.h" />
     <ClInclude Include="Codes\Include\File\FileSize.h" />
     <ClInclude Include="Codes\Include\File\SetWorkingDirectoryToExecutable.h" />
+    <ClInclude Include="Codes\Include\System\Build\BuildConfigurationContract.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugCamera.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
     <ClInclude Include="Codes\Include\ForDebug\DebugConsole.h" />
@@ -535,6 +1254,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\ForDebug\ErrorSupression.h" />
     <ClInclude Include="Codes\Include\ForDebug\ImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
+    <ClInclude Include="Codes\Include\ForDebug\SubsystemFrameProfiler.h" />
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
+    <ClInclude Include="Codes\Include\ForDebug\DirectionalShadowApplyDebugLog.h" />
+    <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
     <ClInclude Include="Codes\Include\ForDebug\Log.h" />
     <ClInclude Include="Codes\Include\ForDebug\SetBreakOnSeverity.h" />
     <ClInclude Include="Codes\Include\Geometry\Bezier.h" />
@@ -548,6 +1272,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Input\AbstractInput.h" />
     <ClInclude Include="Codes\Include\Input\XInputController.h" />
     <ClInclude Include="Codes\Include\Input\PlayInput.h" />
+    <ClInclude Include="Codes\Include\Physics\PhysicsManager.h" />
     <ClInclude Include="Codes\Include\Math\Easing.h" />
     <ClInclude Include="Codes\Include\Math\Lerp.h" />
     <ClInclude Include="Codes\Include\Math\Matrix3x3.h" />
@@ -566,40 +1291,210 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\ChangeSceneFade.h" />
     <ClInclude Include="Codes\Include\Scene\CommandChangeScene.h" />
     <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBoot.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBootApply.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneReleaseBootApply.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneBootLaunchPathGate.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneBootEnterApply.h" />
     <ClInclude Include="Codes\Include\Scene\GameOrder.h" />
+    <ClInclude Include="Codes\Include\Scene\GameOrderAudioPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\Scene.h" />
     <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneDebugCameraInputPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneStageCameraLockDefaults.h" />
     <ClInclude Include="Codes\Include\Scene\BossDeathPresentation.h" />
     <ClInclude Include="Codes\Include\Scene\PlayerDeathPresentation.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGame.h" />
     <ClInclude Include="Codes\Include\Scene\SceneGameBattleHud.h" />
     <ClInclude Include="Codes\Include\Scene\SceneScreenUi.h" />
     <ClInclude Include="Codes\Include\Scene\SceneResult.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneResultBgmMaintain.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneResultVisualApply.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneResultExitBgmPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneResultSubmitTransition.h" />
     <ClInclude Include="Codes\Include\Scene\SceneTitle.h" />
     <ClInclude Include="Codes\Include\Scene\SceneParticleEditor.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneParticleEditorAllowDebugPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallAxisAlignedBounce.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallBounceImpactFx.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallKinematics.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h" />
     <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h" />
     <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h" />
     <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewTransformDrag.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewTransformGizmoDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorAuthoringLightingPreview.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorScenePlayBuildUpRoute.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorDebugHotkeys.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeTabFocus.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewCameraSetup.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewBuildUpParityRebuild.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewEditorAssetPathRelink.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewStageViewCameraFallback.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEnterSceneDocumentLoadPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeViewCameraDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayQueue.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayTick.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewDebugCameraDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewRenderCameraBind.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewVisualEffectsApply.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorExitSceneTeardown.h" />
     <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneJsonPathResolve.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLaunchPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRegistryLaunchDedupe.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpReturnTarget.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentLoad.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentTagCatalog.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAllowDebugCameraContract.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpExitSceneEditorUiRestore.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeLightingPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeViewStatusText.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpDedicatedRuntimeViewWindow.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeEntityDraw.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpEnterSceneEditorUiPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpMissingPrimaryCameraFeedback.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDisplayNameResolve.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpChangeSceneDrawPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpF1ReturnRequest.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneTitleBgmMaintain.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneTitleVisualApply.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneTitleSubmitTransition.h" />
     <ClInclude Include="Codes\Include\Scene\SceneMovie.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieReturnTarget.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieTrackFailure.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieVisualSetup.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieAudioPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMoviePendingTransitionUpdate.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGamePendingDefeatBgmPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameIntroBgmPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameIntroBarrageAudio.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameDefeatAudioPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameDefeatPresentationBgm.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameTransitionBgmPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameExitBgmPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneTransitionBgmPolicy.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameEnterVisualPreset.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameLightingProfile.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneGameOperatorGuidanceBoot.h" />
+    <ClInclude Include="Codes\Include\Scene\SceneMovieStageLighting.h" />
+    <ClInclude Include="Codes\Include\Scene\ScenePrimaryCameraResolve.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetAutoStemRenameReport.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetCollisionPolicy.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetDropPolicyUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetUiPathScrub.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetProjectPanelList.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetApplyToEntityDefinition.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetBatchApplyToSelection.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFitCameraPerspectiveParams.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchDefaultDockLayout.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchPlayMenu.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchLightPostWindow.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateInstanceKeyboardShortcut.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyDragDrop.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyReparent.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSlotParamsNormalize.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefaultParamsCmpCamera.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSettingsCopyPaste.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSlotKindResolve.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorKnownComponentRegistry.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpCamera.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsBallSplit.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsGenericJson.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorSceneJsonPathUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorInstanceIdentityUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTransformCopyPaste.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorTransformCopyPasteUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorClearAllEntityTags.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveComponentSlotsBatch.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorImportedDropBatchApplyUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorComponentTypeComboApply.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorComponentRemoveBatchUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorExecutionOrderBatch.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorExecutionOrderBatchUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportPathQueue.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportRequestPreview.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSaveEntityDefinitionBody.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabBatchSpawnFromFile.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetBatchSpawnUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetFileOperations.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetCollisionPolicy.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSceneObjectAddPreset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyAddObjectUi.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveSelectedInstances.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTickPendingRequests.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRestoreSelectionAfterSceneLoad.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorClearPrefabSelectionOnSceneOpen.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDeleteSceneOpenSuccessor.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorCreateNewSceneFile.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSaveSelectedInstanceToPrefab.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEditViewScreenRay.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameLightingDiagnostics.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameStreamingDiagnostics.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFrameDeltaDiagnostics.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Camera\StageViewCameraTuning.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeFunctionalViewDraw.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h" />
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldGuidance.h" />
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaRuntimePreviewGuidance.h" />
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldPersonalize.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorExternalAssetOpen.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsExternalOpen.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneJsonFileEntry.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiEditableSceneList.h" />
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEntityHasComponentForSlot.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewRelink.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeMainCameraSupplement.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeEntityInitializePolicy.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeInstanceNamePolicy.h" />
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorReferenceGrid.h" />
     <ClInclude Include="Codes\Include\System\Editor\Particle\ParticleEditorUi.h" />
     <ClInclude Include="Codes\Include\String\ConvertString.h" />
@@ -649,6 +1544,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Playable\CmpInput.h" />
     <ClInclude Include="Codes\Include\System\Playable\CmpDrawPlayerParryField.h" />
     <ClInclude Include="Codes\Include\System\Playable\CmpMoveByInput.h" />
+    <ClInclude Include="Codes\Include\System\PlaySeDetailCache.h" />
     <ClInclude Include="Codes\Include\System\PlaySe.h" />
     <ClInclude Include="Codes\Include\System\StageBounds.h" />
     <ClInclude Include="Codes\Include\System\BulletDepthVisual.h" />
@@ -666,7 +1562,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpDirection.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpHealthHit.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpHitSphere.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpColliderAabb.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorAssetPath.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpRuntimeTexturePath.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorTextureBillboard.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpLhRigidBody.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMesh.h" />
@@ -676,6 +1574,15 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h" />
     <ClInclude Include="Codes\Include\System\GameAssetsPaths.h" />
     <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaCombatBoundsSandbox.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigFeatureVerificationDefaults.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigLoadDiagnostics.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigSchema.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigJsonDocument.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorEditableSceneJsonRoots.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigStartupPathNormalize.h" />
+    <ClInclude Include="Codes\Include\System\Editor\EditorScenePlayRequestMetadata.h" />
     <ClInclude Include="Codes\Include\System\Entity\EntityType.h" />
     <ClInclude Include="Codes\Include\System\Entity\HitJudge.h" />
     <ClInclude Include="Codes\Include\System\Hash64.h" />

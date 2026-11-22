@@ -1,5 +1,12 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
+#include "System/Editor/EditorEditableSceneJsonRoots.h"
+#include "System/Editor/Scene/EditorSceneJsonFileEntry.h"
+#include "System/Editor/EditorLaunchConfigStartupPathNormalize.h"
+#include "System/Editor/EditorLaunchConfigJsonDocument.h"
+#include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
+#include "System/Editor/EditorLaunchConfigSchema.h"
+#include "System/Editor/EditorAssetsPaths.h"
 #include "System/GameAssetsPaths.h"
 #include <algorithm>
 #include <fstream>
@@ -29,7 +36,7 @@ std::vector<std::string> ListSceneJsonFiles(
     if (!entry.is_regular_file()) {
       continue;
     }
-    if (entry.path().extension() != ".json") {
+    if (!IsEditableSceneJsonPath(entry.path())) {
       continue;
     }
     paths.push_back(entry.path().generic_string());
@@ -39,10 +46,12 @@ std::vector<std::string> ListSceneJsonFiles(
 }
 
 std::vector<std::string> ListEditableSceneJsonFiles() {
-  std::vector<std::string> paths =
-      ListSceneJsonFiles(GameAssets::kScenesDirectory);
-  const std::vector<std::string> editorPaths = ListSceneJsonFiles();
-  paths.insert(paths.end(), editorPaths.begin(), editorPaths.end());
+  std::vector<std::string> paths;
+  for (const char *root : EditorEditableSceneJsonRoots::kAll) {
+    const std::vector<std::string> part = ListSceneJsonFiles(root);
+    paths.insert(paths.end(), part.begin(), part.end());
+  }
+  std::sort(paths.begin(), paths.end());
   return paths;
 }
 
@@ -72,7 +81,7 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   }
 
   const fs::path target = fs::path(jsonFilePath).lexically_normal();
-  if (target.extension() != ".json") {
+  if (!IsEditableSceneJsonPath(target)) {
     return false;
   }
 
@@ -82,7 +91,8 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
     return false;
   }
 
-  const char *roots[] = {GameAssets::kScenesDirectory, kScenesDirectory};
+  const char *roots[] = {GameAssets::kScenesDirectory, kScenesDirectory,
+                         EditorAssets::kDebugPlayAreaDirectory};
   bool insideManagedRoot = false;
   for (const char *root : roots) {
     const fs::path scenesRoot = fs::absolute(root, ec).lexically_normal();
@@ -114,31 +124,15 @@ bool TryDeleteSceneJsonFile(const std::string &jsonFilePath) {
   return fs::remove(absoluteTarget, ec) && !ec;
 }
 
+LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue TryLoadLaunchConfigWithIssue(
+    LaunchConfig &outConfig) {
+  return LaunchConfigLoadDiagnostics::TryLoadLaunchConfigFromPath(
+      GameAssets::kLaunchConfigPath, outConfig);
+}
+
 bool TryLoadLaunchConfig(LaunchConfig &outConfig) {
-  namespace fs = std::filesystem;
-  outConfig = {};
-  const fs::path configPath = GameAssets::kLaunchConfigPath;
-  if (!fs::exists(configPath)) {
-    return false;
-  }
-
-  std::ifstream file(configPath);
-  if (!file.is_open()) {
-    return false;
-  }
-
-  nlohmann::json json{};
-  try {
-    file >> json;
-  } catch (...) {
-    return false;
-  }
-
-  if (json.contains("startupScenePath") &&
-      json.at("startupScenePath").is_string()) {
-    outConfig.startupScenePath = json.at("startupScenePath").get<std::string>();
-  }
-  return !outConfig.startupScenePath.empty();
+  return TryLoadLaunchConfigWithIssue(outConfig) ==
+         LaunchConfigLoadDiagnostics::LaunchConfigLoadIssue::None;
 }
 
 bool TrySaveLaunchConfig(const LaunchConfig &config) {
@@ -151,8 +145,12 @@ bool TrySaveLaunchConfig(const LaunchConfig &config) {
   std::error_code ec{};
   fs::create_directories(configPath.parent_path(), ec);
 
-  nlohmann::json json{};
-  json["startupScenePath"] = config.startupScenePath;
+  LaunchConfig toSave = config;
+  toSave.startupScenePath =
+      LaunchConfigStartupPathNormalize::NormalizeForLaunchConfig(
+          config.startupScenePath);
+
+  const nlohmann::json json = LaunchConfigJsonDocument::BuildDocument(toSave);
 
   std::ofstream file(configPath);
   if (!file.is_open()) {
@@ -171,36 +169,21 @@ bool TrySetRepositoryStartupScene(const std::string &sceneJsonPath) {
   if (!fs::exists(sceneJsonPath) || fs::path(sceneJsonPath).extension() != ".json") {
     return false;
   }
+  const std::string normalized =
+      LaunchConfigStartupPathNormalize::NormalizeForLaunchConfig(sceneJsonPath);
   LaunchConfig config{};
-  config.startupScenePath = sceneJsonPath;
+  config.startupScenePath = normalized;
   if (!TrySaveLaunchConfig(config)) {
     return false;
   }
-  EditorScenePlayRequest::Instance().Set(sceneJsonPath);
+  EditorScenePlayRequest::Instance().Stage(
+      normalized, EditorScenePlayStagingKind::RepositoryStartup);
   return true;
 }
 
 std::string ResolveStartupScenePath() {
-  LaunchConfig config{};
-  if (!TryLoadLaunchConfig(config)) {
-    return {};
-  }
-  namespace fs = std::filesystem;
-  if (!fs::exists(config.startupScenePath)) {
-    return {};
-  }
-  return config.startupScenePath;
+  return LaunchConfigLoadDiagnostics::ResolveStartupScenePathDetailed()
+      .startupScenePath;
 }
-
-EditorScenePlayRequest &EditorScenePlayRequest::Instance() {
-  static EditorScenePlayRequest instance;
-  return instance;
-}
-
-void EditorScenePlayRequest::Set(const std::string &jsonFilePath) {
-  jsonFilePath_ = jsonFilePath;
-}
-
-void EditorScenePlayRequest::Clear() { jsonFilePath_.clear(); }
 
 } // namespace Atrum::Editor::Scene

@@ -6,14 +6,17 @@
 namespace Atrum::Audio {
 
 	struct StreamingSourceVoice;
+	class AudioManager;
 
 	class StreamingVoiceCallback : public IXAudio2VoiceCallback {
 	private:
 
+		AudioManager* owner_ = nullptr;
 		StreamingSourceVoice* parentVoice = nullptr; // 自身を所有するボイスへの参照
 
 	public:
-		StreamingVoiceCallback(StreamingSourceVoice* v) : parentVoice(v) {}
+		StreamingVoiceCallback(AudioManager* owner, StreamingSourceVoice* v)
+		    : owner_(owner), parentVoice(v) {}
 
 		// OnBufferEnd が呼ばれたら、parentVoice を通じてデータを補充
 		void STDMETHODCALLTYPE OnBufferEnd(void*) override;

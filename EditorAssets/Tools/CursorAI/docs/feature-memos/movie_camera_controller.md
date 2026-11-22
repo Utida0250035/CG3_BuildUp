@@ -25,6 +25,16 @@ movie.TryBeginFromJsonFile("../EditorAssets/Camera/sample_movie_track.json");
 | `eye` / `pivot` | `Vector3` 配列 |
 | `easeToNext` | 次キーフレームまでの補間（`PullBackReveal` / `FocusPush` / `LegacyInOutQuad`） |
 
+不正なキーフレーム（`eye`/`pivot` 欠落・型不一致など）は **1 件ごとスキップ** し、有効なキーフレームが 2 件以上あれば再生する（`MovieCameraTrackKeyframeParsePolicy`）。
+
+## 検証
+
+```bash
+python3 EditorAssets/Tools/MovieCameraTrack/verify_movie_camera_track_json.py
+```
+
+CI: `BuildCoverageCheck`（`sample_movie_track.json` および `EditorAssets/Camera/` の `keyframes` 付き JSON）。
+
 ## SceneMovie
 
 ```cpp
@@ -51,5 +61,6 @@ CommandChangeScene::Instance()->Set(movie, std::make_unique<ChangeSceneFade>().r
 
 - `IsStageViewCameraLocked() == true`
 - カメラは `MovieCameraController` のみ（失敗時は即 return へ）
+- オーディオ: `SceneMovieAudioPolicy`（Enter でループ BGM 無し、復帰フェード前に returnScene 向け遅延 BGM 登録）
 
 > `scene_movie.md` は GAP／roadmap リンク互換用スタブ（本文は本節）。

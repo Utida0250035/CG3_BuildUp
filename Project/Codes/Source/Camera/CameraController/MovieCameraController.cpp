@@ -1,6 +1,7 @@
 #include "Camera/CameraController/MovieCameraController.h"
 
 #include "Camera/MovieCameraTrackLoader.h"
+#include "Camera/MovieCameraTrackPathResolve.h"
 #include "System/DeltaTime.h"
 
 #include <algorithm>
@@ -28,8 +29,9 @@ void MovieCameraController::Begin(std::vector<MovieCameraKeyframe> keyframes) {
 }
 
 bool MovieCameraController::TryBeginFromJsonFile(const std::string &jsonPath) {
+  const std::string resolvedPath = ResolveMovieCameraTrackJsonPath(jsonPath);
   std::vector<MovieCameraKeyframe> loaded{};
-  if (!LoadMovieCameraTrackFromJson(jsonPath, loaded)) {
+  if (!LoadMovieCameraTrackFromJson(resolvedPath, loaded)) {
     return false;
   }
 

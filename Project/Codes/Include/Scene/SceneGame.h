@@ -30,6 +30,10 @@ public:
 
   bool IsStageViewCameraLocked() const override { return true; }
 
+  void MaintainBgmDuringSceneTransitionEffect() {
+    MaintainSceneBgmIfNeeded(false);
+  }
+
 protected:
   void DrawScene() override;
 
@@ -53,8 +57,15 @@ private:
   std::unique_ptr<Atrum::PlayerDeathPresentation> playerDeathPresentation_;
 
   bool operatorBattleReadyNotified_ = false;
+  bool operatorGuidanceDocumentLoaded_ = false;
 
-  void SpawnEntities();
+  // Game→Game 再開時に BGM 位置を戻す（Exit で Get、次 Enter で Set）
+  float resumeGameBgmPlaybackSeconds_ = -1.0f;
+
+  /// 戦闘主体（イントロカメラの焦点確定用に先に生成）
+  void SpawnCombatEntities();
+  /// 背景・SkyDome（イントロカメラ姿勢確定後に生成）
+  void SpawnEnvironmentEntities();
   void ClearEntities();
   void UpdateBackgrounds();
   void UpdateEntities();
@@ -67,7 +78,8 @@ private:
   void DrawIntroScreenUi();
   void DrawHowToPlayUi();
   void DrawOperatorGuidanceUi();
-  void MaintainSceneBgmIfNeeded();
+  /// allowRestartPlay が false のときはフェード同期／再開のみ（イントロ中等）
+  void MaintainSceneBgmIfNeeded(bool allowRestartPlay = true);
 
   void CheckRoundEnd();
   void RequestTransitionToResult();

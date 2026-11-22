@@ -294,6 +294,9 @@ namespace Atrum {
 		void PreDraw();
 
 		/// ImGui のシーンビュー矩形（PreDraw より前に設定し、PreDraw / Apply で GPU に反映）
+		bool TryGetClientViewportSize(int32_t &outWidth,
+		                           int32_t &outHeight) const;
+
 		void SetSubViewport(int x, int y, int width, int height);
 		void ClearSubViewport();
 		/// 記録中のコマンドリストへ sub viewport を再適用（DrawScene 内の追従用）

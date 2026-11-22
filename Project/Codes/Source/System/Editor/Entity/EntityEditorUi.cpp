@@ -1,14 +1,41 @@
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
+#include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
+#include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
+#include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
 
 #include "System/Editor/EditorEntityWorkbench.h"
 #include "System/Editor/EditorFrame.h"
 #include "System/Editor/EditorSceneRunStatus.h"
 #include "Scene/CommandChangeScene.h"
 #include "System/Editor/Prefab/PrefabAsset.h"
+#include "System/Editor/Prefab/PrefabAssetBatchSpawnUi.h"
+#include "System/Editor/Prefab/PrefabAssetProjectPanelList.h"
+#include "System/Editor/Prefab/PrefabAssetOverwriteSaveUi.h"
+#include "System/Editor/Prefab/PrefabAssetCollisionPolicy.h"
+#include "System/Editor/Prefab/PrefabAssetOutputCollisionPolicyUi.h"
+#include "System/Editor/Prefab/PrefabAssetAutoStemRenameReport.h"
+#include "System/Editor/Entity/EntityEditorPrefabBatchSpawnFromFile.h"
 #include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/EditorImportedAsset.h"
+#include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
+#include "System/Editor/EditorImportedAssetDropPolicyUi.h"
+#include "System/Editor/EditorImportedAssetProjectPanelList.h"
+#include "System/Editor/Entity/EntityEditorReleaseStartupBuildUp.h"
+#include "Scene/SceneEntityEditorScenePlayBuildUpRoute.h"
+#include "Scene/SceneEntityEditorInEditorPlayQueue.h"
+#include "System/Editor/EditorDebugPlayAreaScaffold.h"
+#include "System/Editor/Entity/EntityEditorSceneSwitchUnsavedPrompt.h"
+#include "System/Editor/Entity/EntityEditorUiEditableSceneList.h"
+#include "System/Editor/Entity/EditorScenePlayRequestBuildUpQueue.h"
+#include "System/Editor/Entity/EntityEditorStartupSceneSetWithoutAutosave.h"
+#include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
 #include "System/Hash64.h"
@@ -16,6 +43,17 @@
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
 #include "System/Entity/EntityTagRegistry.h"
+#include "System/Editor/Entity/EntityEditorHierarchyDragDrop.h"
+#include "System/Editor/Entity/EntityEditorInspectorSceneJsonPathUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorInstanceIdentityUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorTransformCopyPasteUi.h"
+#include "System/Editor/Entity/EntityEditorTransformCopyPaste.h"
+#include "System/Editor/Entity/EntityEditorClearAllEntityTags.h"
+#include "System/Editor/Entity/EntityEditorInspectorComponentRemoveBatchUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorExecutionOrderBatchUi.h"
+#include "System/Editor/Entity/EntityEditorHierarchyAddObjectUi.h"
+#include "System/Editor/Entity/EntityEditorInspectorComponentTypeComboApply.h"
+#include "System/Editor/Entity/EntityEditorInspectorImportedDropBatchApplyUi.h"
 
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -33,14 +71,21 @@ struct KnownComponentEntry {
 
 constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpMeshSphere", ComponentSlotKind::Draw},
+    {"CmpMesh", ComponentSlotKind::Draw},
+    {"CmpEditorTextureBillboard", ComponentSlotKind::Draw},
     {"CmpDrawHitSphere", ComponentSlotKind::Draw},
     {"CmpEditorAssetPath", ComponentSlotKind::Data},
+    {"CmpRuntimeTexturePath", ComponentSlotKind::Data},
+    {"CmpColliderAabb", ComponentSlotKind::Data},
     {"CmpRotator", ComponentSlotKind::Upd},
     {"CmpScroll", ComponentSlotKind::Upd},
     {"CmpHitSphere", ComponentSlotKind::Upd},
     {"CmpCamera", ComponentSlotKind::Upd},
     {"CmpParticleEmitter", ComponentSlotKind::Upd},
     {"CmpBounceBall", ComponentSlotKind::Upd},
+    {"CmpBallKinematics", ComponentSlotKind::Upd},
+    {"CmpBallAxisAlignedBounce", ComponentSlotKind::Upd},
+    {"CmpBallBounceImpactFx", ComponentSlotKind::Upd},
     {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
 };
 
@@ -50,6 +95,7 @@ void AppendKnownComponentSlot(EntityDefinition &definition,
   slot.kind = entry.kind;
   slot.typeName = entry.typeName;
   slot.params = DefaultParamsForType(entry.typeName);
+  NormalizeKnownComponentSlotParams(slot);
   definition.components.push_back(std::move(slot));
 }
 
@@ -110,11 +156,59 @@ void DrawDeleteSceneConfirmPopup(EntityEditor &editor) {
   }
 }
 
-bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
+bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
   nlohmann::json &p = slot.params;
   bool changed = false;
 
+  bool ballSplitChanged = false;
+  if (TryDrawBallSplitComponentParams(slot, ballSplitChanged)) {
+    return ballSplitChanged;
+  }
+
+  bool cmpCameraChanged = false;
+  if (TryDrawCmpCameraComponentParams(slot, cmpCameraChanged)) {
+    return cmpCameraChanged;
+  }
+
+  if (slot.typeName == "CmpRuntimeTexturePath") {
+    std::string texturePath = p.value("texturePath", std::string{});
+    changed |= ImGui::InputString("texturePath", texturePath);
+    if (changed) {
+      p["texturePath"] = texturePath;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを texturePath に適用")) {
+      p["texturePath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(texturePath, ui);
+    return changed;
+  }
+
+  if (slot.typeName == "CmpColliderAabb") {
+    Math::Vector3 center = p.value("localCenter", Math::Vector3::Zero());
+    if (ImGui::DragFloat3("localCenter", &center.x, 0.02f)) {
+      p["localCenter"] = center;
+      changed = true;
+    }
+    Math::Vector3 halfExtents =
+        p.value("halfExtents", Math::Vector3{0.5f, 0.5f, 0.5f});
+    if (ImGui::DragFloat3("halfExtents", &halfExtents.x, 0.02f, 0.01f)) {
+      p["halfExtents"] = halfExtents;
+      changed = true;
+    }
+    bool isTrigger = p.value("isTrigger", false);
+    if (ImGui::Checkbox("isTrigger", &isTrigger)) {
+      p["isTrigger"] = isTrigger;
+      changed = true;
+    }
+    return changed;
+  }
+
   if (slot.typeName == "CmpEditorAssetPath") {
+    ImGui::TextDisabled(
+        "プレビュー表示には CmpMesh または CmpEditorTextureBillboard の "
+        "Draw スロットを別途追加してください");
     std::string path = p.value("assetPath", std::string{});
     changed |= ImGui::InputString("assetPath", path);
     if (changed) {
@@ -145,6 +239,58 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
       p["assetPath"] = ui.lastImportedAssetPath;
       changed = true;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(path, ui);
+    return changed;
+  }
+
+  if (slot.typeName == "CmpMesh") {
+    float radius = p.value("radius", 0.5f);
+    if (ImGui::DragFloat("radius", &radius, 0.02f, 0.01f, 64.0f)) {
+      p["radius"] = radius;
+      changed = true;
+    }
+    bool lighting = p.value("isLightingEnabled", true);
+    if (ImGui::Checkbox("isLightingEnabled", &lighting)) {
+      p["isLightingEnabled"] = lighting;
+      changed = true;
+    }
+    changed |= DrawVector4ColorParam("color", p, "color", Math::Vector4::White());
+    std::string modelPath = p.value("modelAssetPath", std::string{});
+    if (ImGui::InputString("modelAssetPath", modelPath)) {
+      p["modelAssetPath"] = modelPath;
+      changed = true;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを modelAssetPath に適用")) {
+      p["modelAssetPath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(modelPath, ui);
+    return changed;
+  }
+
+  if (slot.typeName == "CmpEditorTextureBillboard") {
+    std::string tex = p.value("textureFilePath", std::string{});
+    changed |= ImGui::InputString("textureFilePath", tex);
+    if (changed) {
+      p["textureFilePath"] = tex;
+    }
+    float width = p.value("billboardWidth", 1.0f);
+    if (ImGui::DragFloat("billboardWidth", &width, 0.02f, 0.01f, 32.0f)) {
+      p["billboardWidth"] = width;
+      changed = true;
+    }
+    float height = p.value("billboardHeight", 1.0f);
+    if (ImGui::DragFloat("billboardHeight", &height, 0.02f, 0.01f, 32.0f)) {
+      p["billboardHeight"] = height;
+      changed = true;
+    }
+    if (!ui.lastImportedAssetPath.empty() &&
+        ImGui::Button("直近ドロップを textureFilePath に適用")) {
+      p["textureFilePath"] = ui.lastImportedAssetPath;
+      changed = true;
+    }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(tex, ui);
     return changed;
   }
 
@@ -216,6 +362,7 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
     if (changed) {
       p["textureFilePath"] = tex;
     }
+    EntityEditorUiDrawComponentParamsExternalOpen::DrawButton(tex, ui);
     int gridX = p.value("gridCountX", 10);
     if (ImGui::DragInt("gridCountX", &gridX, 1, 1, 32)) {
       p["gridCountX"] = gridX;
@@ -386,6 +533,12 @@ bool DrawComponentParams(ComponentSlot &slot, const UiState &ui) {
     return changed;
   }
 
+  bool genericChanged = false;
+  if (EntityEditorUiDrawComponentParamsGenericJson::TryDrawUnknownComponentParams(
+          slot, genericChanged)) {
+    return genericChanged;
+  }
+
   ImGui::TextDisabled("未対応コンポーネント: %s", slot.typeName.c_str());
   return false;
 }
@@ -436,6 +589,143 @@ void CollectKnownPresetIndicesForKind(const ComponentSlotKind kind,
   }
 }
 
+bool IsInstanceIndexSelected(const UiState &ui, const int index) {
+  if (ui.selectedInstanceIndices.empty()) {
+    return ui.selectedInstanceIndex == index;
+  }
+  return std::find(ui.selectedInstanceIndices.begin(),
+                   ui.selectedInstanceIndices.end(),
+                   index) != ui.selectedInstanceIndices.end();
+}
+
+void SetSingleInstanceSelection(UiState &ui, const int index) {
+  ui.selectedInstanceIndex = index;
+  ui.selectedInstanceIndices = {index};
+}
+
+void ToggleInstanceSelection(UiState &ui, const int index) {
+  if (ui.selectedInstanceIndices.empty()) {
+    ui.selectedInstanceIndices = {ui.selectedInstanceIndex};
+  }
+  const auto found = std::find(ui.selectedInstanceIndices.begin(),
+                               ui.selectedInstanceIndices.end(), index);
+  if (found != ui.selectedInstanceIndices.end()) {
+    if (ui.selectedInstanceIndices.size() <= 1) {
+      return;
+    }
+    ui.selectedInstanceIndices.erase(found);
+    ui.selectedInstanceIndex = ui.selectedInstanceIndices.front();
+    return;
+  }
+  ui.selectedInstanceIndices.push_back(index);
+  std::sort(ui.selectedInstanceIndices.begin(),
+            ui.selectedInstanceIndices.end());
+  ui.selectedInstanceIndex = index;
+}
+
+void DrawMultiInstanceBatchPanel(EntityEditor &editor,
+                                 const std::vector<int> &selection,
+                                 bool &changed) {
+  EditorSceneDocument &scene = editor.SceneDocument();
+  UiState &ui = editor.Ui();
+
+  ImGui::Text("複数選択: %zu 件", selection.size());
+  ImGui::TextDisabled("Ctrl+クリックで選択を追加/解除");
+
+  static float batchScaleFactor = 1.0f;
+  ImGui::InputFloat("スケール倍率", &batchScaleFactor, 0.01f, 0.1f, "%.3f");
+  if (ImGui::Button("スケール一括適用")) {
+    for (const int index : selection) {
+      if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
+        continue;
+      }
+      Math::Vector3 &scale =
+          scene.instances[static_cast<size_t>(index)]
+              .definition.initialTransform.scale;
+      scale.x *= batchScaleFactor;
+      scale.y *= batchScaleFactor;
+      scale.z *= batchScaleFactor;
+    }
+    changed = true;
+    batchScaleFactor = 1.0f;
+  }
+
+  ImGui::Separator();
+  if (ImGui::Button("先頭選択のトランスフォームをコピー")) {
+    if (!selection.empty() && selection.front() >= 0 &&
+        selection.front() < static_cast<int>(scene.instances.size())) {
+      const Math::TransformLH &source =
+          scene.instances[static_cast<size_t>(selection.front())]
+              .definition.initialTransform;
+      EntityEditorTransformCopyPaste::CopyInitialTransformToClipboard(ui,
+                                                                      source);
+      ui.importStatusMessage = "クリップボードへ初期トランスフォームをコピー";
+    }
+  }
+  ImGui::BeginDisabled(!ui.clipboardInitialTransform.has_value());
+  if (ImGui::Button("クリップボードから一括適用")) {
+    const int applied =
+        EntityEditorTransformCopyPaste::ApplyClipboardTransformToInstanceIndices(
+            editor, selection);
+    if (applied > 0) {
+      changed = true;
+      ui.importStatusMessage =
+          "初期トランスフォームを " + std::to_string(applied) + " 体へ適用";
+    }
+  }
+  ImGui::EndDisabled();
+
+  static float positionOffset[3] = {0.0f, 0.0f, 0.0f};
+  ImGui::InputFloat3("位置オフセット", positionOffset);
+  if (ImGui::Button("位置オフセット一括適用")) {
+    for (const int index : selection) {
+      if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
+        continue;
+      }
+      Math::Vector3 &translate =
+          scene.instances[static_cast<size_t>(index)]
+              .definition.initialTransform.translate;
+      translate.x += positionOffset[0];
+      translate.y += positionOffset[1];
+      translate.z += positionOffset[2];
+    }
+    changed = true;
+    positionOffset[0] = 0.0f;
+    positionOffset[1] = 0.0f;
+    positionOffset[2] = 0.0f;
+  }
+
+  ImGui::Separator();
+  ImGui::InputString("一括付与タグ", ui.newEntityTagName);
+  ImGui::SameLine();
+    if (ImGui::Button("タグをすべて解除（選択全体）")) {
+      const int cleared =
+          EntityEditorClearAllEntityTags::ClearAllTagsOnInstanceIndices(scene,
+                                                                      selection);
+      if (cleared > 0) {
+        changed = true;
+        ui.importStatusMessage =
+            "タグをすべて解除: " + std::to_string(cleared) + " 体";
+      }
+    }
+
+    if (ImGui::Button("タグを一括付与")) {
+      if (!ui.newEntityTagName.empty()) {
+        for (const int index : selection) {
+        if (index < 0 || index >= static_cast<int>(scene.instances.size())) {
+          continue;
+        }
+        AddTagToCatalog(scene, ui.newEntityTagName);
+        AddTagToEntityDefinition(
+            scene.instances[static_cast<size_t>(index)].definition,
+            ui.newEntityTagName);
+      }
+      ui.newEntityTagName.clear();
+      changed = true;
+    }
+  }
+}
+
 void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
   EditorSceneDocument &scene = editor.SceneDocument();
   UiState &ui = editor.Ui();
@@ -445,11 +735,16 @@ void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
   }
   SceneEntityInstance &instance =
       scene.instances[static_cast<size_t>(nodeIndex)];
-  const bool selected = ui.selectedInstanceIndex == nodeIndex;
+  const bool selected = IsInstanceIndexSelected(ui, nodeIndex);
   ImGui::PushID(nodeIndex);
   if (ImGui::Selectable(instance.instanceName.c_str(), selected)) {
-    ui.selectedInstanceIndex = nodeIndex;
+    if (ImGui::GetIO().KeyCtrl) {
+      ToggleInstanceSelection(ui, nodeIndex);
+    } else {
+      SetSingleInstanceSelection(ui, nodeIndex);
+    }
   }
+  EntityEditorHierarchyDragDrop::AttachToHierarchyNode(editor, nodeIndex);
   ImGui::PopID();
 
   for (int i = 0; i < static_cast<int>(scene.instances.size()); ++i) {
@@ -497,8 +792,13 @@ void EntityEditor::DrawHierarchyPanel() {
   ImGui::Separator();
   ImGui::InputString("シーン名", scene_.sceneName);
 
-  if (ImGui::Button("オブジェクトを追加")) {
-    AddEmptyInstance();
+  EntityEditorHierarchyAddObjectUi::Draw(*this);
+  ImGui::SameLine();
+  if (!scene_.instances.empty() && ImGui::Button("複製")) {
+    DuplicateSelectedInstance();
+  }
+  if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+    ImGui::SetTooltip("Ctrl+D");
   }
   ImGui::SameLine();
   if (scene_.instances.size() > 1 && ImGui::Button("削除")) {
@@ -506,8 +806,11 @@ void EntityEditor::DrawHierarchyPanel() {
   }
 
   ImGui::Separator();
+  ImGui::TextDisabled(
+      "ドラッグ&ドロップ: 親変更 | Shift+ドロップ: 並べ替え | Ctrl+ドロップ: 複製");
   if (ImGui::TreeNodeEx(scene_.sceneName.c_str(),
                         ImGuiTreeNodeFlags_DefaultOpen)) {
+    EntityEditorHierarchyDragDrop::AttachRootDropTarget(*this);
     for (int i = 0; i < static_cast<int>(scene_.instances.size()); ++i) {
       if (scene_.instances[static_cast<size_t>(i)].parentIndex < 0) {
         DrawHierarchyNode(*this, i);
@@ -515,78 +818,94 @@ void EntityEditor::DrawHierarchyPanel() {
     }
     ImGui::TreePop();
   }
+
+  if (ImGui::IsAnyItemDeactivatedAfterEdit()) {
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+  }
 }
 
 void EntityEditor::DrawProjectPanel() {
   Atrum::Editor::Scene::EnsureScenesDirectoryExists();
 
   ImGui::TextUnformatted("シーン一覧");
+  Editor::EditorDebugPlayAreaScaffold::DrawProjectPanelControls(*this);
   if (ImGui::Button("新規シーン")) {
     CreateNewSceneFile();
   }
   ImGui::SameLine();
   if (ImGui::Button("シーンを実行")) {
+    QueueEditorScenePlayViaBuildUp(ui_);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("エディタ内プレビュー")) {
+    QueueInEditorPlayRuntimeTabOnly(ui_);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("SceneBuildUp")) {
     ui_.requestSaveToDisk = true;
-    ui_.requestPlayRuntimeScene = true;
+    ui_.sceneBuildUpLaunchPath.clear();
+    ui_.requestLaunchSceneBuildUp = true;
   }
   if (ImGui::Button("起動シーンに設定")) {
-    const std::string targetPath = ui_.jsonFilePath.empty()
-                                       ? ui_.selectedScenePath
-                                       : ui_.jsonFilePath;
-    if (!targetPath.empty()) {
-      SaveToJsonPath(targetPath);
-    }
-    if (Atrum::Editor::Scene::TrySetRepositoryStartupScene(targetPath)) {
-      ui_.importStatusMessage =
-          "Release 起動シーンを launch_config.json に保存しました";
-    } else {
-      ui_.importStatusMessage =
-          "起動シーンの保存に失敗しました（パスと JSON を確認してください）";
+    EntityEditorStartupSceneSetWithoutAutosave::SetOnly(*this,
+                                                       &ui_.importStatusMessage);
+  }
+  ImGui::SameLine();
+  if (ImGui::Button("設定して BuildUp")) {
+    if (!TrySetStartupSceneAndQueueBuildUp(*this, &ui_.importStatusMessage)) {
+      // importStatusMessage は TrySet 内で設定済み
     }
   }
-  const std::string startupPath =
-      Atrum::Editor::Scene::ResolveStartupScenePath();
-  if (!startupPath.empty()) {
-    ImGui::TextDisabled("Release 起動: %s", startupPath.c_str());
+  const Atrum::Editor::LaunchConfigLoadDiagnostics::LaunchConfigResolveResult
+      startup =
+          Atrum::Editor::LaunchConfigLoadDiagnostics::
+              ResolveStartupScenePathDetailed();
+  if (!startup.startupScenePath.empty()) {
+    ImGui::TextDisabled("Release 起動: %s", startup.startupScenePath.c_str());
+    if (ImGui::Button("Release 起動で BuildUp")) {
+      if (!TryQueueBuildUpFromReleaseStartup(ui_, &ui_.importStatusMessage)) {
+        // importStatusMessage は TryQueue 内で設定済み
+      }
+    }
+  } else {
+    ImGui::TextDisabled(
+        "Release 起動: %s（%s）",
+        Atrum::Editor::LaunchConfigLoadDiagnostics::
+            DescribeLaunchConfigLoadIssueJa(startup.issue),
+        startup.configPathTried.empty() ? "—"
+                                        : startup.configPathTried.c_str());
   }
   ImGui::Separator();
 
   ImGui::TextUnformatted("ファイルドロップ（obj / png 等）");
   ImGui::TextDisabled("ウィンドウへドロップ → %s",
                       Atrum::Editor::Import::kImportedAssetsDirectory);
-  if (!ui_.lastImportedAssetPath.empty()) {
+  Atrum::Editor::EditorImportedAssetDropPolicyUi::DrawDropCollisionPolicyControls(
+      ui_);
+  if (!ui_.recentImportedAssetPaths.empty()) {
+    ImGui::Text("ドロップキュー: %zu 件（最新は末尾）",
+                ui_.recentImportedAssetPaths.size());
+    for (const std::string &importedPath : ui_.recentImportedAssetPaths) {
+      ImGui::BulletText("%s", importedPath.c_str());
+    }
+  } else if (!ui_.lastImportedAssetPath.empty()) {
     ImGui::TextWrapped("直近: %s", ui_.lastImportedAssetPath.c_str());
   }
   if (!ui_.importStatusMessage.empty()) {
     ImGui::TextWrapped("%s", ui_.importStatusMessage.c_str());
   }
+  Atrum::Editor::EditorImportedAssetBatchApplyToSelection::
+      DrawProjectPanelBatchApplyUi(*this);
+  Atrum::Editor::EditorImportedAssetProjectPanelList::DrawImportedAssetsFolderList(
+      *this);
   ImGui::Separator();
 
-  const std::vector<std::string> scenePaths =
-      Atrum::Editor::Scene::ListEditableSceneJsonFiles();
-  if (scenePaths.empty()) {
-    ImGui::TextDisabled("シーンがありません: %s / %s",
-                        Atrum::GameAssets::kScenesDirectory,
-                        Atrum::Editor::Scene::kScenesDirectory);
-  } else {
-    for (const std::string &path : scenePaths) {
-      const bool isActive =
-          !ui_.selectedScenePath.empty()
-              ? ui_.selectedScenePath == path
-              : ui_.jsonFilePath == path;
-      const std::string label =
-          Atrum::Editor::Scene::SceneDisplayNameFromPath(path) + "  |  " +
-          path;
-      if (ImGui::Selectable(label.c_str(), isActive)) {
-        ui_.selectedScenePath = path;
-      }
-    }
-  }
+  DrawEntityEditorEditableSceneList(*this);
 
   ImGui::Separator();
   if (!ui_.selectedScenePath.empty()) {
     if (ImGui::Button("シーンを開く")) {
-      OpenSceneFromPath(ui_.selectedScenePath);
+      TryOpenSceneFromPath(ui_.selectedScenePath);
     }
     ImGui::SameLine();
     if (ImGui::Button("シーンを削除")) {
@@ -595,21 +914,34 @@ void EntityEditor::DrawProjectPanel() {
   }
 
   DrawDeleteSceneConfirmPopup(*this);
+  DrawEntityEditorSceneSwitchUnsavedPrompt(*this);
 
   ImGui::Spacing();
   ImGui::TextUnformatted("プレハブ一覧 (Entity JSON)");
   ImGui::Separator();
+  Atrum::Editor::Prefab::PrefabAssetOutputCollisionPolicyUi::
+      DrawPrefabOutputCollisionPolicyControls(ui_);
 
   if (!scene_.instances.empty() &&
       ImGui::Button("選択エンティティをプレハブ JSON へ出力")) {
-    Atrum::Editor::Prefab::EnsureEntitiesPrefabDirectoryExists();
-    const std::string path = Atrum::Editor::Prefab::MakeUniquePrefabFilePath(
-        SelectedDefinition().entityName);
-    if (!path.empty()) {
-      SaveSelectedInstanceToPrefabPath(path);
+    const std::string entityName = SelectedDefinition().entityName;
+    const std::string path =
+        Atrum::Editor::Prefab::ResolvePrefabJsonOutputPath(
+            entityName, ui_.prefabOutputCollisionPolicy,
+            ui_.prefabOutputBatchNamePrefix);
+    if (!path.empty() && SaveSelectedInstanceToPrefabPath(path)) {
       ui_.selectedPrefabPath = path;
+      ui_.importStatusMessage = "プレハブ出力: " + path;
+      if (Atrum::Editor::Prefab::PrefabAssetAutoStemRenameReport::
+              UsedAutoStemIncrementRename(entityName, path)) {
+        ui_.importStatusMessage += "（自動リネーム stem_N）";
+      }
+    } else if (!path.empty()) {
+      ui_.importStatusMessage = "プレハブ出力失敗: " + path;
     }
   }
+  Atrum::Editor::Prefab::PrefabAssetOverwriteSaveUi::
+      DrawOverwriteSelectedPrefabSaveButton(*this);
   ImGui::Spacing();
 
   const std::vector<std::string> prefabPaths =
@@ -620,23 +952,48 @@ void EntityEditor::DrawProjectPanel() {
     return;
   }
 
-  for (const std::string &path : prefabPaths) {
-    const bool isActive = ui_.selectedPrefabPath == path;
-    if (ImGui::Selectable(path.c_str(), isActive)) {
-      ui_.selectedPrefabPath = path;
-    }
-  }
+  Atrum::Editor::Prefab::PrefabAssetProjectPanelList::DrawPrefabJsonFileList(
+      *this, prefabPaths);
 
   ImGui::Separator();
-  if (!ui_.selectedPrefabPath.empty() &&
-      ImGui::Button("シーンへ追加")) {
-    AddInstanceFromPrefabPath(ui_.selectedPrefabPath);
+  Atrum::Editor::Prefab::PrefabAssetBatchSpawnUi::DrawBatchSpawnControls(*this);
+  if (!ui_.selectedPrefabPath.empty()) {
+    const int count = std::max(1, ui_.prefabSpawnBatchCount);
+    const char *addLabel =
+        count > 1 ? "シーンへ追加（上記件数）" : "シーンへ追加（1 体）";
+    if (ImGui::Button(addLabel)) {
+      const int spawned =
+          EntityEditor::EntityEditorPrefabBatchSpawnFromFile::
+              AppendFromPrefabFileBatch(*this, ui_.selectedPrefabPath, count,
+                                        ui_.prefabSpawnSpacingX);
+      if (spawned > 0) {
+        ui_.importStatusMessage =
+            "プレハブ追加: " + std::to_string(spawned) + " 体";
+      }
+    }
   }
 }
 
 void EntityEditor::DrawInspectorPanel() {
+  bool scenePathChanged = false;
+  EntityEditorInspectorSceneJsonPathUi::Draw(*this, scenePathChanged);
+  if (scenePathChanged) {
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+  }
+  ImGui::Separator();
+
   if (scene_.instances.empty()) {
     ImGui::TextUnformatted("シーンにオブジェクトがありません");
+    return;
+  }
+
+  ClampSelectedInstanceIndex();
+  if (ui_.selectedInstanceIndices.size() > 1) {
+    bool batchChanged = false;
+    DrawMultiInstanceBatchPanel(*this, ui_.selectedInstanceIndices, batchChanged);
+    if (batchChanged) {
+      EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+    }
     return;
   }
 
@@ -644,8 +1001,10 @@ void EntityEditor::DrawInspectorPanel() {
   SceneEntityInstance &instance = SelectedInstance();
   EntityDefinition &document = SelectedDefinition();
 
-  ImGui::InputString("シーン JSON パス", ui_.jsonFilePath);
-  changed |= ImGui::InputString("表示名", instance.instanceName);
+  bool identityChanged = false;
+  EntityEditorInspectorInstanceIdentityUi::Draw(*this, instance, document,
+                                                identityChanged);
+  changed |= identityChanged;
 
   int parentIndex = instance.parentIndex;
   const int selfIndex = ui_.selectedInstanceIndex;
@@ -674,7 +1033,6 @@ void EntityEditor::DrawInspectorPanel() {
   }
 
   ImGui::Separator();
-  changed |= ImGui::InputString("エンティティ名", document.entityName);
 
   if (ImGui::CollapsingHeader("タグ", ImGuiTreeNodeFlags_DefaultOpen)) {
     ImGui::TextDisabled("JSON: tags + tagHashes / 実行時 std::set<uint64_t>");
@@ -753,8 +1111,7 @@ void EntityEditor::DrawInspectorPanel() {
     }
 
     if (ImGui::Button("タグをすべて解除")) {
-      document.tags.clear();
-      document.tagHashes.clear();
+      EntityEditorClearAllEntityTags::ClearAllTagsOnDefinition(document);
       changed = true;
     }
   }
@@ -775,6 +1132,11 @@ void EntityEditor::DrawInspectorPanel() {
         transformBefore.quaternion.z != transformAfter.quaternion.z ||
         transformBefore.quaternion.w != transformAfter.quaternion.w) {
       changed = true;
+    }
+    bool transformClipboardChanged = false;
+    if (EntityEditorInspectorTransformCopyPasteUi::Draw(
+            *this, document.initialTransform, transformClipboardChanged)) {
+      changed |= transformClipboardChanged;
     }
   }
 
@@ -818,24 +1180,19 @@ void EntityEditor::DrawInspectorPanel() {
       AppendKnownComponentSlot(document, entry);
       ui_.selectedComponentIndex =
           static_cast<int>(document.components.size()) - 1;
-      ui_.requestApplyPreview = true;
+      EntityEditorAuthoringDocumentEditNotify::Notify(*this);
     }
   } else {
     ImGui::TextDisabled(
         "この種別では追加できるプリセットがありません");
   }
 
+  EntityEditorInspectorImportedDropBatchApplyUi::Draw(*this);
+
+  const bool changedBeforeComponentInspector = changed;
   SyncSelectedComponentToKind(ui_, document);
   std::vector<int> kindComponentIndices =
       CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
-
-  if (!kindComponentIndices.empty() &&
-      ImGui::Button("選択中のコンポーネントを削除")) {
-    document.components.erase(
-        document.components.begin() + ui_.selectedComponentIndex);
-    SyncSelectedComponentToKind(ui_, document);
-    ui_.requestApplyPreview = true;
-  }
 
   if (kindComponentIndices.empty()) {
     ImGui::TextUnformatted(
@@ -864,13 +1221,39 @@ void EntityEditor::DrawInspectorPanel() {
     }
 
     ImGui::Separator();
+    const ComponentSlot &slotForRemove =
+        document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
+    bool componentRemoveChanged = false;
+    EntityEditorInspectorComponentRemoveBatchUi::Draw(*this, document,
+                                                      slotForRemove,
+                                                      componentRemoveChanged);
+    if (componentRemoveChanged) {
+      SyncSelectedComponentToKind(ui_, document);
+      changed = true;
+      kindComponentIndices =
+          CollectComponentIndicesForKind(document, ui_.selectedComponentKind);
+    }
+
+    if (kindComponentIndices.empty() ||
+        ui_.selectedComponentIndex < 0 ||
+        ui_.selectedComponentIndex >=
+            static_cast<int>(document.components.size())) {
+      ImGui::TextDisabled("コンポーネントはすべて削除されました");
+    } else {
     ComponentSlot &selected =
         document.components[static_cast<size_t>(ui_.selectedComponentIndex)];
 
-    int execOrder = selected.executionOrder;
-    if (ImGui::InputInt("実行順 (priority)", &execOrder)) {
-      selected.executionOrder = std::max(0, execOrder);
+    if (DrawComponentSettingsCopyPasteButtons(*this, selected)) {
+      EntityEditorAuthoringDocumentEditNotify::NotifyPreviewOnly(*this);
+    }
+
+    bool changedInComponentSectionBesidesAssetPath = false;
+    bool executionOrderChanged = false;
+    EntityEditorInspectorExecutionOrderBatchUi::Draw(*this, document, selected,
+                                                     executionOrderChanged);
+    if (executionOrderChanged) {
       changed = true;
+      changedInComponentSectionBesidesAssetPath = true;
     }
 
     if (!presetIndicesForKind.empty()) {
@@ -896,22 +1279,38 @@ void EntityEditor::DrawInspectorPanel() {
         const KnownComponentEntry &entry =
             kKnownComponents[presetIndicesForKind[static_cast<size_t>(
                 typeComboListIndex)]];
-        selected.kind = ui_.selectedComponentKind;
-        selected.typeName = entry.typeName;
-        selected.params = DefaultParamsForType(entry.typeName);
+        EntityEditorInspectorComponentTypeComboApply::
+            ApplyKnownComponentTypeFromCombo(selected, ui_.selectedComponentKind,
+                                             entry.typeName);
         changed = true;
+        changedInComponentSectionBesidesAssetPath = true;
       }
     } else {
       ImGui::TextUnformatted(selected.typeName.c_str());
     }
 
+    bool editedCmpEditorAssetPathParams = false;
     if (DrawComponentParams(selected, ui_)) {
       changed = true;
+      if (selected.typeName == "CmpEditorAssetPath") {
+        editedCmpEditorAssetPathParams = true;
+      }
     }
-  }
 
-  if (changed) {
-    ui_.requestApplyPreview = true;
+    if (changed) {
+      const bool assetPathParamsOnly =
+          editedCmpEditorAssetPathParams && !changedBeforeComponentInspector &&
+          !changedInComponentSectionBesidesAssetPath;
+      if (assetPathParamsOnly) {
+        EntityEditorAuthoringEditorAssetPathEditNotify::
+            NotifyEditorAssetPathPreviewRefresh(*this);
+      } else {
+        EntityEditorAuthoringDocumentEditNotify::Notify(*this);
+      }
+    }
+    }
+  } else if (changed) {
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }
 
@@ -976,7 +1375,7 @@ void EntityEditor::DrawTagsPanel() {
   }
 
   if (changedScene) {
-    ui_.requestApplyPreview = true;
+    EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }
 

@@ -1,7 +1,18 @@
 #include "Scene/SceneMovie.h"
 
+#include "Scene/SceneMovieReturnTarget.h"
+#include "Scene/SceneMovieTrackFailure.h"
+#include "Scene/SceneMovieVisualSetup.h"
+#include "Scene/SceneMovieAudioPolicy.h"
+#include "Scene/SceneMoviePendingTransitionUpdate.h"
+#include "Scene/SceneMovieStageLighting.h"
+#include "System/DeltaTime.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#include "imgui.h"
+#endif
+
 #include "Engine/AtrumEngine.h"
-#include "Engine/Resource/LightData.h"
+#include "Engine/EngineAccess.h"
 #include "Input/AbstractInput.h"
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
@@ -45,18 +56,6 @@ void SceneMovieRegistry::OnSceneExited(SceneMovie *scene) {
       ownedScenes_.end());
 }
 
-void SceneMovie::SetupStageLighting() {
-  Math::Vector3 lightDirection{-0.4f, -0.85f, 0.15f};
-  lightDirection.Normalize();
-  const DirectionalLightData directionalLight{
-      .color = Math::Vector3{1.0f, 1.0f, 1.0f},
-      .direction = lightDirection,
-      .intensity = 8.0f,
-      .lightModel = LightModel::HalfLambert,
-  };
-  Engine::Instance()->SetDirectionalLightData(directionalLight);
-}
-
 void SceneMovie::ClearVisuals() {
   if (skyDome_) {
     skyDome_->Finalize();
@@ -66,26 +65,31 @@ void SceneMovie::ClearVisuals() {
 
 void SceneMovie::SpawnVisuals() {
   ClearVisuals();
-  skyDome_ = EntityFactory::SkyDome(GetCamera());
+  skyDome_ = CreateSkyDomeBoundToCamera(GetCamera());
 }
 
 void SceneMovie::RequestReturnToCaller() {
-  if (hasPendingSceneChange_ || returnScene_ == nullptr) {
+  if (hasPendingSceneChange_) {
     return;
   }
 
+  Scene *const target = ResolveSceneMovieReturnTarget(returnScene_);
+  SceneMovieAudioPolicy::PrepareReturnSceneBgmBeforeFade(target);
   hasPendingSceneChange_ = true;
   CommandChangeScene::Instance()->Set(
-      returnScene_, std::make_unique<ChangeSceneFade>().release());
+      target, std::make_unique<ChangeSceneFade>().release());
 }
 
 void SceneMovie::EnterScene() {
   EnsureCommonResources();
   hasPendingSceneChange_ = false;
   trackPlaybackStarted_ = false;
+  trackLoadFailed_ = false;
+  trackLoadFailureElapsedSeconds_ = 0.0f;
+  trackLoadFailureMessage_.clear();
 
-  SpawnVisuals();
-  SetupStageLighting();
+  ApplySceneMovieStageLighting();
+  SceneMovieAudioPolicy::OnEnterScene();
 
   movieCamera_.Initialize();
   movieCamera_.SetCamera(GetCamera());
@@ -93,23 +97,34 @@ void SceneMovie::EnterScene() {
       movieCamera_.TryBeginFromJsonFile(trackJsonPath_);
 
   if (!trackPlaybackStarted_) {
-    SetupStageViewCamera();
+    trackLoadFailed_ = true;
+    trackLoadFailureMessage_ =
+        BuildSceneMovieTrackLoadFailureMessage(trackJsonPath_);
   }
+
+  SpawnVisuals();
 }
 
 void SceneMovie::Update() {
+  SceneMovieAudioPolicy::TickDuringMovie(hasPendingSceneChange_);
   if (hasPendingSceneChange_) {
+    TickSceneMovieVisualsDuringPendingTransition(
+        trackPlaybackStarted_, movieCamera_, skyDome_.get());
     return;
   }
 
-  if (returnScene_ != nullptr &&
-      ::Atrum::EnginePlayInput()->IsKeyTrigger(Input::Key::ESCAPE)) {
+  if (::Atrum::EnginePlayInput()->IsKeyTrigger(Input::Key::ESCAPE)) {
     RequestReturnToCaller();
     return;
   }
 
-  if (!trackPlaybackStarted_) {
-    RequestReturnToCaller();
+  if (trackLoadFailed_) {
+    trackLoadFailureElapsedSeconds_ +=
+        ::Atrum::EngineFrameDeltaTime()->GetDeltaTime();
+    if (trackLoadFailureElapsedSeconds_ >=
+        kSceneMovieTrackLoadFailureHoldSeconds) {
+      RequestReturnToCaller();
+    }
     return;
   }
 
@@ -128,9 +143,26 @@ void SceneMovie::DrawScene() {
   if (skyDome_) {
     skyDome_->Draw();
   }
+
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  if (trackLoadFailed_ && !trackLoadFailureMessage_.empty()) {
+    ImGui::SetNextWindowPos(ImVec2(24.0f, 24.0f), ImGuiCond_Always);
+    ImGui::SetNextWindowSize(ImVec2(520.0f, 180.0f), ImGuiCond_FirstUseEver);
+    if (ImGui::Begin("ムービートラック（読込失敗）", nullptr,
+                     ImGuiWindowFlags_NoCollapse)) {
+      ImGui::TextWrapped("%s", trackLoadFailureMessage_.c_str());
+      const float remaining =
+          kSceneMovieTrackLoadFailureHoldSeconds -
+          trackLoadFailureElapsedSeconds_;
+      ImGui::TextDisabled("自動復帰まで: %.1f 秒", std::max(0.0f, remaining));
+    }
+    ImGui::End();
+  }
+#endif
 }
 
 void SceneMovie::ExitScene() {
+  SceneMovieAudioPolicy::OnExitScene();
   ClearVisuals();
   movieCamera_.Finalize();
   SceneMovieRegistry::Instance().OnSceneExited(this);
