@@ -6,6 +6,7 @@
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFPlayerMove.h"
+#include "System/AtomF/CmpAtomFPlayerShotCooldown.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -31,6 +32,7 @@ void AppendAtomFPlayerIfScene(
   player->SetInitialTransform(initialTransform);
 
   player->AddUpdCmp<CmpAtomFPlayerMove>();
+  player->AddUpdCmp<CmpAtomFPlayerShotCooldown>();
   player->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = player->GetDrawCmp<CmpMeshSphere>();
   if (mesh != nullptr) {
