@@ -19,6 +19,20 @@ void CmpAtomFEnemyKnockback::ApplyKnockbackAlongBulletDirection(
     velocity_ = {0.0f, 0.0f, 1.0f};
   }
   velocity_ *= speedMetersPerSecond;
+  chainImpactKnockback_ = true;
+}
+
+void CmpAtomFEnemyKnockback::ApplyKnockbackAwayFromExplosionCenter(
+    const Math::Vector3 &explosionCenterWorld,
+    const float speedMetersPerSecond) {
+  Math::Vector3 away = RefOwner().GetWorldPosition() - explosionCenterWorld;
+  away.y = 0.0f;
+  ApplyKnockbackAlongBulletDirection(away, speedMetersPerSecond);
+}
+
+void CmpAtomFEnemyKnockback::ClearKnockbackVelocity() {
+  velocity_ = {};
+  chainImpactKnockback_ = false;
 }
 
 void CmpAtomFEnemyKnockback::Update() {

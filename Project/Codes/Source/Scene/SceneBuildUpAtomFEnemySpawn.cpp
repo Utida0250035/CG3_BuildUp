@@ -6,6 +6,7 @@
 #include "System/AtomF/AtomFEnemyHitAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
@@ -36,6 +37,7 @@ void AppendAtomFEnemyIfScene(
   enemy->SetInitialTransform(initialTransform);
 
   enemy->AddUpdCmp<CmpAtomFEnemyKnockback>();
+  enemy->AddUpdCmp<CmpAtomFEnemyChainExplosion>();
   enemy->AddUpdCmp<CmpAtomFEnemyWalkToPlayer>();
   enemy->AddUpdCmp<CmpAtomFEnemyPeriodicCharge>();
   enemy->AddUpdCmp<CmpAtomFEnemyTargetedPanic>();

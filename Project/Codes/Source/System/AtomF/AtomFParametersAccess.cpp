@@ -91,4 +91,12 @@ float ResolveEnemyChargeIntervalSeconds() {
   return kEnemyChargeIntervalSeconds;
 }
 
+float ResolveEnemyExplosionHitRadiusMeters() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Enemy().explosion.hitRadiusMeters;
+  }
+  return kEnemyExplosionHitRadiusMeters;
+}
+
 } // namespace Atrum::AtomF

@@ -619,6 +619,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFParametersBoot.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFPlayerSpawn.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEnemySpawn.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEntityDestroyPurge.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFFloor.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaWall.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaContainment.cpp" />
@@ -635,6 +636,9 @@
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyChainExplosion.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyArenaWallContact.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionKnockbackSpread.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletEnemyHit.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletTrail.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletTrail.cpp" />

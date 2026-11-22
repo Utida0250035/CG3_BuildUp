@@ -27,6 +27,9 @@ inline constexpr float kEnemyBodyRadiusMeters = 0.25f;
 /// parameters.json の速さb（敵吹き飛び）
 inline constexpr float kEnemyKnockbackSpeedMetersPerSecond = 1.5f;
 
+/// parameters.json の半径c（敵爆発の影響）
+inline constexpr float kEnemyExplosionHitRadiusMeters = 0.4f;
+
 /// parameters.json の速さa（敵歩行）
 inline constexpr float kEnemyMoveSpeedMetersPerSecond = 0.5f;
 

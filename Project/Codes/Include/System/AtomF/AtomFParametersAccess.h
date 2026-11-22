@@ -17,5 +17,7 @@ float ResolveEnemyKnockbackSpeedMetersPerSecond();
 /// parameters の速さa（enemy.moveSpeedMetersPerSecond）
 float ResolveEnemyMoveSpeedMetersPerSecond();
 float ResolveEnemyChargeIntervalSeconds();
+/// parameters の半径c（enemy.explosion.hitRadiusMeters）
+float ResolveEnemyExplosionHitRadiusMeters();
 
 } // namespace Atrum::AtomF

@@ -22,6 +22,7 @@
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
 #include "Scene/SceneBuildUpAtomFPlayerSpawn.h"
 #include "Scene/SceneBuildUpAtomFEnemySpawn.h"
+#include "Scene/SceneBuildUpAtomFEntityDestroyPurge.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
@@ -178,6 +179,8 @@ void SceneBuildUp::Update() {
         entity->Update();
       }
     }
+
+    PurgeDestroyedSceneEntities(entities_);
 
     TickAtomFArenaContainmentForScene(sceneJsonPath_, entities_);
 
