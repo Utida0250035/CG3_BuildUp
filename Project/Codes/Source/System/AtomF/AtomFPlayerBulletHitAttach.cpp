@@ -2,6 +2,7 @@
 
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/Entity/Components/CmpHitSphere.h"
+#include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
 
 namespace Atrum::AtomF {
@@ -24,6 +25,16 @@ void AttachPlayerBulletHitSphere(Entity &entity) {
   if (hit != nullptr) {
     hit->SetSpheres({{{}, hitRadiusMeters}});
   }
+}
+
+void SyncPlayerBulletHitRadiusA(Entity &entity) {
+  const float hitRadiusMeters = ResolvePlayerBulletRadiusMeters();
+
+  if (CmpMeshSphere *mesh = entity.GetDrawCmp<CmpMeshSphere>()) {
+    mesh->SetRadius(hitRadiusMeters);
+  }
+
+  AttachPlayerBulletHitSphere(entity);
 }
 
 } // namespace Atrum::AtomF

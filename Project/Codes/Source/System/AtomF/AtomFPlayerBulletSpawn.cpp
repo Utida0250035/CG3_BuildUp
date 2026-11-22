@@ -25,7 +25,6 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
       std::make_unique<Entity>("AtomFPlayerBullet");
   bullet->AddTag(tags.TagNameForRole("playerWeapon"));
 
-  const float radius = ResolvePlayerBulletRadiusMeters();
   Math::TransformLH initialTransform{};
   initialTransform.translate = worldSpawnPosition;
   bullet->SetInitialTransform(initialTransform);
@@ -40,13 +39,12 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
   bullet->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = bullet->GetDrawCmp<CmpMeshSphere>();
   if (mesh != nullptr) {
-    mesh->SetRadius(radius);
     mesh->SetColor(Math::Vector4{0.95f, 0.92f, 0.3f, 1.0f});
     mesh->SetSubdivision(8);
   }
 
   AttachArenaContainmentForPlayerBullet(*bullet);
-  AttachPlayerBulletHitSphere(*bullet);
+  SyncPlayerBulletHitRadiusA(*bullet);
   bullet->AddUpdCmp<CmpAtomFPlayerBulletTrail>();
   bullet->AddDrawCmp<CmpDrawAtomFPlayerBulletTrail>();
   bullet->AddUpdCmp<CmpAtomFPlayerBulletEnemyHit>();
