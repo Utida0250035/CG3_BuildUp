@@ -4,6 +4,7 @@
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
+#include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -23,6 +24,12 @@ void CmpAtomFEnemyWalkToPlayer::Update() {
   if (CmpAtomFEnemyKnockback *knockback =
           RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
       knockback != nullptr && knockback->HasActiveKnockback()) {
+    return;
+  }
+
+  if (CmpAtomFEnemyPeriodicCharge *charge =
+          RefOwner().GetUpdCmp<CmpAtomFEnemyPeriodicCharge>();
+      charge != nullptr && charge->BlocksLocomotion()) {
     return;
   }
 

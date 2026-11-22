@@ -75,4 +75,12 @@ float ResolveEnemyMoveSpeedMetersPerSecond() {
   return kEnemyMoveSpeedMetersPerSecond;
 }
 
+float ResolveEnemyChargeIntervalSeconds() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Enemy().chargeIntervalSeconds;
+  }
+  return kEnemyChargeIntervalSeconds;
+}
+
 } // namespace Atrum::AtomF

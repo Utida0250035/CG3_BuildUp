@@ -15,5 +15,6 @@ float ResolveEnemyBodyRadiusMeters();
 float ResolveEnemyKnockbackSpeedMetersPerSecond();
 /// parameters の速さa（enemy.moveSpeedMetersPerSecond）
 float ResolveEnemyMoveSpeedMetersPerSecond();
+float ResolveEnemyChargeIntervalSeconds();
 
 } // namespace Atrum::AtomF

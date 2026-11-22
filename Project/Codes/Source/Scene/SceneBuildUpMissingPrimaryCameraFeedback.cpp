@@ -67,6 +67,8 @@ bool HandleSceneBuildUpDrawWithoutPrimaryCamera(
   g_missingCameraNoticeMessage =
       BuildSceneBuildUpMissingPrimaryCameraMessage(sceneJsonPath);
   g_pendingMissingCameraNotice = true;
+#else
+  (void)sceneJsonPath;
 #endif
   DrawSceneBuildUpMissingPrimaryCameraDimOverlay(engine);
   return true;

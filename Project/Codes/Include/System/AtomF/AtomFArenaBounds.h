@@ -30,6 +30,8 @@ inline constexpr float kEnemyKnockbackSpeedMetersPerSecond = 1.5f;
 /// parameters.json の速さa（敵歩行）
 inline constexpr float kEnemyMoveSpeedMetersPerSecond = 0.5f;
 
+inline constexpr float kEnemyChargeIntervalSeconds = 5.0f;
+
 /// ワールド XZ を円形アリーナ内に収める。bodyRadius は当たり半径の余白。
 inline void ClampWorldTranslateToArenaDisc(Math::Vector3 &worldTranslate,
                                            const float bodyRadiusMeters) {

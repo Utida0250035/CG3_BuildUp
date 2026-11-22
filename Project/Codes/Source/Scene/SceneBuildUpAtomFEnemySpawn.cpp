@@ -7,6 +7,7 @@
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
+#include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
 #include "System/AtomF/CmpAtomFEnemyWalkToPlayer.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
@@ -35,6 +36,7 @@ void AppendAtomFEnemyIfScene(
 
   enemy->AddUpdCmp<CmpAtomFEnemyKnockback>();
   enemy->AddUpdCmp<CmpAtomFEnemyWalkToPlayer>();
+  enemy->AddUpdCmp<CmpAtomFEnemyPeriodicCharge>();
 
   enemy->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = enemy->GetDrawCmp<CmpMeshSphere>();
