@@ -3,6 +3,7 @@
 #include "Math/Vector3.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
+#include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
@@ -22,10 +23,20 @@ void CmpAtomFEnemyWalkToPlayer::Update() {
     return;
   }
 
-  if (CmpAtomFEnemyKnockback *knockback =
-          RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
-      knockback != nullptr && knockback->HasActiveKnockback()) {
-    return;
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
+    if (CmpAtomFEnemyChainExplosion *chain =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyChainExplosion>();
+        chain != nullptr && chain->IsDying()) {
+      return;
+    }
+  }
+
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
+        knockback != nullptr && knockback->HasActiveKnockback()) {
+      return;
+    }
   }
 
   if (CmpAtomFEnemyPeriodicCharge *charge =

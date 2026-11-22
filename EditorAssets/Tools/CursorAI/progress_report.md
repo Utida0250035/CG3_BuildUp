@@ -888,3 +888,41 @@
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 敵接触で自機ダメージ | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## 2026-11-23 ループ手動停止
+
+ユーザー指示によりループを停止しました。占有（lease）を解放済みです。
+
+---
+
+## セッション 2026-11-23（ループ tick・敵の連鎖爆発と壁・敵衝突消滅）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyChainExplosion`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵 — 自機弾や別の敵の爆発に吹き飛ばされたあと、壁や別の敵に当たると爆発し、パーティクルを散らして小さくなって消滅する
+- `CmpAtomFEnemyChainExplosion` を整え、ノックバック中のアリーナ壁接触（`AtomFEnemyArenaWallContact`）または別敵への接触で爆発パーティクル再生・周囲敵への吹き飛び伝播（`AtomFEnemyExplosionKnockbackSpread`）・メッシュ縮小フェード・`Finalize()` + `RequestDestroy()` による消滅（`PurgeDestroyedSceneEntities`）まで通る状態に仕上げた。
+- 爆発縮小中（`IsDying()`）に歩行・突進・焦りコンポーネントが再始動しないようガードを追加し、`HasUpdCmp` / `HasDrawCmp` チェックと `ResolveDependencies()` 呼び出しを補完した。
+- 併せて `Entity.h` の `GetUpdCmp()` const / 非 const オーバーロード不整合を修復し、`buildDevelopment.cmd` / `restoreDevelopmentNuGetPackages.cmd` の cp932 文字化けおよび NuGet CLI 不在時の既存パッケージ検出を修正した。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）成功（exit 0）、`Debug|x64` 成功（exit 0）。`Release|x64` は既存課題（Editor 除外に伴う 21 件の未解決外部シンボル）のみで新規エラーなし。
+
+### 2. 次
+
+- 「自機弾や別の敵の爆発に吹き飛ばされる速度は速さb」→ `feature/AtomFEnemyKnockbackSpeedB`
+
+## 推測した用途（§6.4）
+
+- **敵の連鎖爆発と消滅**
+  - 用途: 全方位シューティングにおける敵の吹き飛ばし連鎖撃破と戦闘の爽快感・負荷管理
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` の `SceneBuildUp` 戦闘中）
+  - 用途から決めた仕様: 爆発後は当たり判定を無効化して 0.6 秒かけて縮小フェードし、終了時に `PurgeDestroyedSceneEntities` でシーンから安全に破棄する
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 吹き飛ばし後の壁・敵衝突爆発と縮小消滅 | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+

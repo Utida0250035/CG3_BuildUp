@@ -3,6 +3,7 @@
 #include "Math/Vector3.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
+#include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 #include "System/DeltaTime.h"
@@ -43,14 +44,24 @@ void CmpAtomFEnemyPeriodicCharge::Update() {
     return;
   }
 
-  if (CmpAtomFEnemyKnockback *knockback =
-          RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
-      knockback != nullptr && knockback->HasActiveKnockback()) {
-    if (phase_ != Phase::Waiting) {
-      phase_ = Phase::Waiting;
-      waitTimerSeconds_ = 0.0f;
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
+    if (CmpAtomFEnemyChainExplosion *chain =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyChainExplosion>();
+        chain != nullptr && chain->IsDying()) {
+      return;
     }
-    return;
+  }
+
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
+        knockback != nullptr && knockback->HasActiveKnockback()) {
+      if (phase_ != Phase::Waiting) {
+        phase_ = Phase::Waiting;
+        waitTimerSeconds_ = 0.0f;
+      }
+      return;
+    }
   }
 
   if (CmpAtomFEnemyTargetedPanic *panic =

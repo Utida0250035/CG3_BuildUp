@@ -18,6 +18,9 @@ namespace {
 constexpr float kShrinkDurationSeconds = 0.6f;
 
 bool IsTouchingOtherEnemy(Entity &self) {
+  if (!self.HasUpdCmp<CmpHitSphere>()) {
+    return false;
+  }
   CmpHitSphere *hit = self.GetUpdCmp<CmpHitSphere>();
   if (hit == nullptr || !hit->GetIsActive()) {
     return false;
@@ -59,12 +62,16 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
 
   AtomF::SpreadEnemyExplosionKnockbackFromCenter(RefOwner(), explosionCenter);
 
-  if (CmpAtomFEnemyKnockback *knockback =
-          RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>()) {
-    knockback->ClearKnockbackVelocity();
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>()) {
+      knockback->ClearKnockbackVelocity();
+    }
   }
-  if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
-    hit->SetIsActive(false);
+  if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+    if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+      hit->SetIsActive(false);
+    }
   }
 }
 
@@ -77,11 +84,13 @@ void CmpAtomFEnemyChainExplosion::UpdateDying() {
       std::min(1.0f, shrinkElapsedSeconds_ / kShrinkDurationSeconds);
   const float scale = 1.0f - t;
 
-  if (CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
-    mesh->SetRadius(initialMeshRadius_ * scale);
-    Math::Vector4 color = Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f};
-    color.w = scale;
-    mesh->SetColor(color);
+  if (RefOwner().HasDrawCmp<CmpMeshSphere>()) {
+    if (CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
+      mesh->SetRadius(initialMeshRadius_ * scale);
+      Math::Vector4 color = Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f};
+      color.w = scale;
+      mesh->SetColor(color);
+    }
   }
 
   if (shrinkElapsedSeconds_ >= kShrinkDurationSeconds) {
@@ -100,6 +109,9 @@ void CmpAtomFEnemyChainExplosion::Update() {
     return;
   }
 
+  if (!RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    return;
+  }
   CmpAtomFEnemyKnockback *knockback =
       RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
   if (knockback == nullptr || !knockback->HasActiveKnockback() ||

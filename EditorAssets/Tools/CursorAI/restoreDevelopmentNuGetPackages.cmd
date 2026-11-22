@@ -1,6 +1,7 @@
 @echo off
+chcp 65001 >nul
 setlocal
-rem DevelopmentBuild.yml の Restore NuGet packages 相当（packages.config → Project\packages）
+rem DevelopmentBuild.yml NuGet restore (packages.config -> Project\packages)
 
 set "REPO_ROOT=%~1"
 if "%REPO_ROOT%"=="" (
@@ -26,6 +27,10 @@ if %errorlevel%==0 (
 )
 
 if not defined NUGET (
+  if exist "%SDL_TARGETS%" (
+    echo NuGet CLI not found, but SDL2 targets already exist. Skipping restore.
+    exit /b 0
+  )
   echo nuget.exe not found. Install NuGet CLI or use Visual Studio Developer Command Prompt.
   exit /b 1
 )

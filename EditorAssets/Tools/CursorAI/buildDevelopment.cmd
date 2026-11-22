@@ -1,6 +1,7 @@
 @echo off
+chcp 65001 >nul
 setlocal
-rem Development x64 — CI DevelopmentBuild.yml と同じ前段検証 + slnx 入口
+rem Development x64 - CI DevelopmentBuild.yml pre-verify + slnx entrance
 
 set "REPO_ROOT=%~dp0..\..\.."
 cd /d "%REPO_ROOT%"

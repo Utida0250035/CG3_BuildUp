@@ -5,8 +5,21 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-22T20:07:24.9701463+09:00
-- expiresAt: 2026-11-22T23:07:24.9701463+09:00
-- task: atomF XZ平面かつY座標0の床
+- updatedAt: 2026-11-23T08:39:07.7153259+09:00
+- expiresAt: 2026-11-23T11:39:07.7153259+09:00
+- task: 自機弾や別の敵の爆発に吹き飛ばされたあと、壁や別の敵に当たると爆発し、パーティクルを散らして小さくなって消滅する
 - paths:
-  - `Project/Codes/Source/System/AtomF/AtomFPlayerHealthAttach.cpp`
+  - `Project/Codes/Include/System/AtomF/`
+  - `Project/Codes/Source/System/AtomF/`
+  - `Project/Codes/Include/Scene/SceneBuildUpAtomFEntityDestroyPurge.h`
+  - `Project/Codes/Source/Scene/SceneBuildUpAtomFEntityDestroyPurge.cpp`
+  - `Project/Codes/Source/Scene/SceneBuildUp.cpp`
+  - `Project/Codes/Source/Scene/SceneBuildUpAtomFEnemySpawn.cpp`
+  - `Project/Codes/Include/System/Entity/Components/CmpHitSphere.h`
+  - `Project/Codes/Source/System/Entity/Components/CmpHitSphere.cpp`
+  - `Project/CG2_BuildUp.vcxproj`
+  - `Project/CG2_BuildUp.vcxproj.filters`
+  - `EditorAssets/Tools/CursorAI/buildDevelopment.cmd`
+  - `EditorAssets/Tools/CursorAI/restoreDevelopmentNuGetPackages.cmd`
+  - `EditorAssets/Tools/CursorAI/loop_state.json`
+  - `Project/Codes/Include/System/Entity/Entity.h`

@@ -37,10 +37,12 @@ void SpreadEnemyExplosionKnockbackFromCenter(
     if (!tags.EntityHasRole(*other, "enemy")) {
       continue;
     }
-    if (CmpAtomFEnemyChainExplosion *chain =
-            other->GetUpdCmp<CmpAtomFEnemyChainExplosion>();
-        chain != nullptr && chain->IsDying()) {
-      continue;
+    if (other->HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
+      if (CmpAtomFEnemyChainExplosion *chain =
+              other->GetUpdCmp<CmpAtomFEnemyChainExplosion>();
+          chain != nullptr && chain->IsDying()) {
+        continue;
+      }
     }
 
     const Math::Vector3 otherPos = other->GetWorldPosition();
@@ -51,9 +53,12 @@ void SpreadEnemyExplosionKnockbackFromCenter(
       continue;
     }
 
-    CmpAtomFEnemyKnockback *knockback = other->GetUpdCmp<CmpAtomFEnemyKnockback>();
-    if (knockback == nullptr) {
+    CmpAtomFEnemyKnockback *knockback = nullptr;
+    if (other->HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+      knockback = other->GetUpdCmp<CmpAtomFEnemyKnockback>();
+    } else {
       other->AddUpdCmp<CmpAtomFEnemyKnockback>();
+      other->ResolveDependencies();
       knockback = other->GetUpdCmp<CmpAtomFEnemyKnockback>();
     }
     if (knockback == nullptr) {

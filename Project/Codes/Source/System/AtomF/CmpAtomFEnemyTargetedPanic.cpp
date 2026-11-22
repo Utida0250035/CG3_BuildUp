@@ -2,6 +2,7 @@
 
 #include "System/AtomF/AtomFEnemyAimCapsuleTargetQuery.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
+#include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
@@ -27,12 +28,24 @@ void CmpAtomFEnemyTargetedPanic::Update() {
     return;
   }
 
-  if (CmpAtomFEnemyKnockback *knockback =
-          RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
-      knockback != nullptr && knockback->HasActiveKnockback()) {
-    isPanicking_ = false;
-    panicLingerSeconds_ = 0.0f;
-    return;
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
+    if (CmpAtomFEnemyChainExplosion *chain =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyChainExplosion>();
+        chain != nullptr && chain->IsDying()) {
+      isPanicking_ = false;
+      panicLingerSeconds_ = 0.0f;
+      return;
+    }
+  }
+
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>();
+        knockback != nullptr && knockback->HasActiveKnockback()) {
+      isPanicking_ = false;
+      panicLingerSeconds_ = 0.0f;
+      return;
+    }
   }
 
   const float dt = frameDeltaTime_->GetDeltaTime();
