@@ -18,6 +18,7 @@ public:
   void Update() override;
 
   float CurrentLengthMeters() const { return currentLengthMeters_; }
+  float RadiusMeters() const { return radiusMeters_; }
   Math::Vector3 CapsuleStartWorld();
   Math::Vector3 CapsuleEndWorld();
 
@@ -25,6 +26,7 @@ private:
   CmpAtomFPlayerAim *aim_ = nullptr;
   class FrameDeltaTime *frameDeltaTime_ = nullptr;
   float currentLengthMeters_ = 0.0f;
+  float radiusMeters_ = 0.25f;
 };
 
 } // namespace Atrum

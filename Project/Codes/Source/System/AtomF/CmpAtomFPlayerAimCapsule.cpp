@@ -2,6 +2,7 @@
 
 #include "System/AtomF/CmpAtomFPlayerAim.h"
 #include "System/AtomF/AtomFArenaBounds.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -21,6 +22,7 @@ float MaxAimCapsuleLengthMeters() {
 void CmpAtomFPlayerAimCapsule::ResolveDependence() {
   aim_ = RefOwner().GetUpdCmp<CmpAtomFPlayerAim>();
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
+  radiusMeters_ = AtomF::ResolvePlayerAimCapsuleRadiusMeters();
 }
 
 Math::Vector3 CmpAtomFPlayerAimCapsule::CapsuleStartWorld() {

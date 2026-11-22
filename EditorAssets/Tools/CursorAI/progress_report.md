@@ -756,3 +756,24 @@
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | エイム中にカプセルが伸びる | 有効 | プリミティブ同士の当たり判定が実装してある（カプセル当たりの前段） |
+
+---
+
+## セッション 2026-11-22（ループ tick・エイムカプセル半径b）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFAimCapsuleRadiusB`
+- `ResolvePlayerAimCapsuleRadiusMeters`（parameters 半径b）を `CmpAtomFPlayerAimCapsule` と描画幅に反映。
+- `CmpAtomFPlayerAimCapsuleHitSync` がエイム軸上に半径bの球列を `CmpHitSphere` に合成（本体球＋カプセル近似）。
+- **ビルド:** Development|x64 成功。
+
+### 2. 次
+
+- 「敵や壁に当たると衝突点が終端になる」→ `feature/AtomFAimCapsuleWallClamp`
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| カプセルの半径は半径b | 有効 | プリミティブ同士の当たり判定が実装してある |

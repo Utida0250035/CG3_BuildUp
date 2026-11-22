@@ -26,9 +26,10 @@ void CmpDrawAtomFPlayerAimCapsule::Draw() {
 
   const Math::Vector3 start = capsule_->CapsuleStartWorld();
   const Math::Vector3 end = capsule_->CapsuleEndWorld();
+  const float radius = capsule_->RadiusMeters();
   const Math::Vector4 color{0.35f, 0.75f, 1.0f, 0.55f};
   engine->DrawLine3D(WhiteTextureIndex(), color, Math::Transform{}, start, end,
-                     0.06f);
+                     radius * 2.0f);
 }
 
 } // namespace Atrum

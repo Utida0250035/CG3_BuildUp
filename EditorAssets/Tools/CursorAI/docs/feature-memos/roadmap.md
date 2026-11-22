@@ -774,7 +774,7 @@
 
 ### 自機エイムのカプセル当たり判定
 - [x] 自機がエイムを行っている最中にカプセルが伸びる（`CmpAtomFPlayerAimCapsule`・エイム入力中に伸長・非入力で縮む）
-- [ ] カプセルの半径は半径b
+- [x] カプセルの半径は半径b（`ResolvePlayerAimCapsuleRadiusMeters`・`CmpAtomFPlayerAimCapsuleHitSync`）
 - [ ] 敵や壁に当たると衝突点が終端になる
 
 ### 敵

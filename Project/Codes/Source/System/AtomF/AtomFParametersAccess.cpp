@@ -13,6 +13,14 @@ float ResolvePlayerBodyRadiusMeters() {
   return kPlayerBodyRadiusMeters;
 }
 
+float ResolvePlayerAimCapsuleRadiusMeters() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().aimCapsule.radiusMeters;
+  }
+  return kPlayerBodyRadiusMeters;
+}
+
 float ResolvePlayerBulletRadiusMeters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {
