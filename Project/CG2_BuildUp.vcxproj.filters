@@ -634,6 +634,8 @@
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletEnemyHit.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletTrail.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletTrail.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />

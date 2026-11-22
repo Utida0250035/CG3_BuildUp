@@ -6,6 +6,7 @@ namespace Atrum::AtomF {
 float ResolvePlayerBodyRadiusMeters();
 float ResolvePlayerBulletRadiusMeters();
 float ResolvePlayerBulletSpeedMetersPerSecond();
+float ResolvePlayerBulletTrailSeconds();
 float ResolveEnemyBodyRadiusMeters();
 float ResolveEnemyKnockbackSpeedMetersPerSecond();
 

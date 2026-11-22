@@ -29,6 +29,14 @@ float ResolvePlayerBulletSpeedMetersPerSecond() {
   return kPlayerBulletSpeedMetersPerSecond;
 }
 
+float ResolvePlayerBulletTrailSeconds() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().bullet.trailSeconds;
+  }
+  return kPlayerBulletTrailSeconds;
+}
+
 float ResolveEnemyBodyRadiusMeters() {
   // 敵本体の当たり半径は JSON にまだ無い
   (void)ParametersRuntime::Instance();

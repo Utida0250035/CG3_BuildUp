@@ -7,6 +7,8 @@
 #include "System/AtomF/AtomFPlayerBulletHitAttach.h"
 #include "System/AtomF/CmpAtomFPlayerBulletEnemyHit.h"
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
+#include "System/AtomF/CmpAtomFPlayerBulletTrail.h"
+#include "System/AtomF/CmpDrawAtomFPlayerBulletTrail.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -45,6 +47,8 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
 
   AttachArenaContainmentForPlayerBullet(*bullet);
   AttachPlayerBulletHitSphere(*bullet);
+  bullet->AddUpdCmp<CmpAtomFPlayerBulletTrail>();
+  bullet->AddDrawCmp<CmpDrawAtomFPlayerBulletTrail>();
   bullet->AddUpdCmp<CmpAtomFPlayerBulletEnemyHit>();
   bullet->ResolveDependencies();
   bullet->Initialize();

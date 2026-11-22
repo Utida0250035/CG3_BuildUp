@@ -1,6 +1,7 @@
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
 
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/CmpAtomFPlayerBulletTrail.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -22,6 +23,12 @@ void CmpAtomFPlayerBulletMove::SetDirection(const Math::Vector3 &directionXZUnit
 
 void CmpAtomFPlayerBulletMove::Update() {
   if (frameDeltaTime_ == nullptr) {
+    return;
+  }
+
+  if (const CmpAtomFPlayerBulletTrail *trail =
+          RefOwner().GetUpdCmp<CmpAtomFPlayerBulletTrail>();
+      trail != nullptr && trail->IsLingerPhase()) {
     return;
   }
 

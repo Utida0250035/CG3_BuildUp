@@ -15,6 +15,9 @@ inline constexpr float kPlayerBulletBodyRadiusMeters = 0.125f;
 /// parameters.json の速さb（自機弾）
 inline constexpr float kPlayerBulletSpeedMetersPerSecond = 1.5f;
 
+/// parameters.json の軌道残留（自機弾 trailSeconds）
+inline constexpr float kPlayerBulletTrailSeconds = 0.5f;
+
 /// parameters.json の半径b（自機本体・エイム）
 inline constexpr float kPlayerBodyRadiusMeters = 0.25f;
 
