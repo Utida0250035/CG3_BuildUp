@@ -7,6 +7,8 @@
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFPlayerAim.h"
+#include "System/AtomF/CmpAtomFPlayerAimCapsule.h"
+#include "System/AtomF/CmpDrawAtomFPlayerAimCapsule.h"
 #include "System/AtomF/CmpAtomFPlayerFire.h"
 #include "System/AtomF/CmpAtomFPlayerMove.h"
 #include "System/AtomF/CmpAtomFPlayerShotCooldown.h"
@@ -36,6 +38,8 @@ void AppendAtomFPlayerIfScene(
   player->SetInitialTransform(initialTransform);
 
   player->AddUpdCmp<CmpAtomFPlayerAim>();
+  player->AddUpdCmp<CmpAtomFPlayerAimCapsule>();
+  player->AddDrawCmp<CmpDrawAtomFPlayerAimCapsule>();
   player->AddUpdCmp<CmpAtomFPlayerMove>();
   player->AddUpdCmp<CmpAtomFPlayerShotCooldown>();
   player->AddUpdCmp<CmpChildEntitys>();

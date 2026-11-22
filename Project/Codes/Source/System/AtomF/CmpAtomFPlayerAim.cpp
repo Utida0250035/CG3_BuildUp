@@ -86,17 +86,20 @@ Math::Vector3 CmpAtomFPlayerAim::GetAimDirectionXZ() const {
 }
 
 void CmpAtomFPlayerAim::Update() {
+  aimInputActive_ = false;
   float newAngle = aimAngleRadians_;
 
   if (TryAimAngleFromRightStick(newAngle)) {
     aimAngleRadians_ = newAngle;
     ApplyYawToOwner(RefOwner(), aimAngleRadians_);
+    aimInputActive_ = true;
     return;
   }
 
   if (TryAimAngleFromMouse(RefOwner(), newAngle)) {
     aimAngleRadians_ = newAngle;
     ApplyYawToOwner(RefOwner(), aimAngleRadians_);
+    aimInputActive_ = true;
   }
 }
 

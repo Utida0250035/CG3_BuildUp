@@ -5,8 +5,9 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-22T18:07:15.6806441+09:00
-- expiresAt: 2026-11-22T21:07:15.6806441+09:00
+- updatedAt: 2026-11-22T18:22:16.0589042+09:00
+- expiresAt: 2026-11-22T21:22:16.0589042+09:00
 - task: atomF XZ平面かつY座標0の床
 - paths:
-  - `Project/Codes/Source/System/AtomF/AtomFPlayerBulletHitAttach.cpp`
+  - `Project/Codes/Source/Scene/SceneBuildUpAtomFPlayerSpawn.cpp`
+  - `Project/Codes/Include/System/AtomF/CmpAtomFPlayerAim.h`

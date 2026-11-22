@@ -19,8 +19,12 @@ public:
   /// XZ 平面上の単位方向（Y=0）。
   Math::Vector3 GetAimDirectionXZ() const;
 
+  /// 今フレームでマウスまたは R スティックからエイム入力があった。
+  bool IsAimInputActive() const { return aimInputActive_; }
+
 private:
   float aimAngleRadians_ = 0.0f;
+  bool aimInputActive_ = false;
 };
 
 } // namespace Atrum
