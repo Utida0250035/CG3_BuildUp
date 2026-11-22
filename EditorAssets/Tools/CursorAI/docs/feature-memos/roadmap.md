@@ -778,7 +778,7 @@
 - [x] 敵や壁に当たると衝突点が終端になる（`AtomFPlayerAimCapsuleRayClamp`・円形アリーナ壁・敵 `CmpHitSphere`）
 
 ### 敵
-- [ ] 自機に向かって速さaで歩いてくる
+- [x] 自機に向かって速さaで歩いてくる（`CmpAtomFEnemyWalkToPlayer`・`AppendAtomFEnemyIfScene`・parameters 速さa）
 - [ ] 5秒ごとに震えて突進してくる
 - [ ] 自機に狙われる（自機エイムのカプセル判定が当たる）とその場で立ち止まって焦りモーションになる
 - [ ] 自機に当たると自機にダメージを与える

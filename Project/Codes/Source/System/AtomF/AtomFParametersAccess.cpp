@@ -67,4 +67,12 @@ float ResolveEnemyKnockbackSpeedMetersPerSecond() {
   return kEnemyKnockbackSpeedMetersPerSecond;
 }
 
+float ResolveEnemyMoveSpeedMetersPerSecond() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Enemy().moveSpeedMetersPerSecond;
+  }
+  return kEnemyMoveSpeedMetersPerSecond;
+}
+
 } // namespace Atrum::AtomF

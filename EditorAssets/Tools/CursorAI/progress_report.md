@@ -799,3 +799,28 @@
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | 敵や壁で衝突点が終端 | 有効 | プリミティブ同士の当たり判定が実装してある |
+
+---
+
+## セッション 2026-11-22（ループ tick・敵が自機へ速さaで歩行）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyWalkToPlayer`
+- `AppendAtomFEnemyIfScene` で赤い敵を 1 体スポーン（XZ 8,0）。`CmpAtomFEnemyWalkToPlayer`・`ResolveEnemyMoveSpeedMetersPerSecond`（速さa）。
+- `AtomFScenePlayerLocator` で自機参照。吹き飛び速度が有効な間は歩行停止。
+- **ビルド:** Development|x64 成功。
+
+### 2. 課題
+
+- `CmpAtomFEnemyKnockback` に減衰が無く、弾ヒット後も速度が残り続ける可能性（今後の調整候補）。
+
+### 3. 次
+
+- 「5秒ごとに震えて突進」→ `feature/AtomFEnemyChargeInterval`
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵が自機へ速さaで歩く | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |

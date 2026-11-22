@@ -21,6 +21,9 @@
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
 #include "Scene/SceneBuildUpAtomFPlayerSpawn.h"
+#include "Scene/SceneBuildUpAtomFEnemySpawn.h"
+#include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
 #include "Scene/SceneBuildUpAtomFCombatCamera.h"
 #include "Scene/SceneBuildUpAtomFParametersBoot.h"
@@ -135,6 +138,7 @@ void SceneBuildUp::EnterScene() {
       loadSucceeded, document);
   AppendAtomFFloorIfScene(sceneJsonPath_, entities_);
   AppendAtomFPlayerIfScene(sceneJsonPath_, entities_);
+  AppendAtomFEnemyIfScene(sceneJsonPath_, entities_);
   if (SceneBuildUpAtomFCombatCamera::ApplyOnEnterIfAtomFScene(*this)) {
     // atomF 用カメラを適用済み
   } else {
@@ -166,6 +170,9 @@ void SceneBuildUp::Update() {
   }
 
   if (!sceneDocumentLoadFailed_) {
+    if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
+      AtomF::RefreshScenePlayerLocatorFromEntities(entities_);
+    }
     for (std::unique_ptr<Entity> &entity : entities_) {
       if (entity && entity->IsActive()) {
         entity->Update();

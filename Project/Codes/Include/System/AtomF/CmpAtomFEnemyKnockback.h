@@ -16,6 +16,10 @@ public:
   void ApplyKnockbackAlongBulletDirection(const Math::Vector3 &directionXZUnit,
                                           const float speedMetersPerSecond);
 
+  bool HasActiveKnockback() const {
+    return velocity_.LengthSquare() > 1e-8f;
+  }
+
   void Update() override;
 
 private:

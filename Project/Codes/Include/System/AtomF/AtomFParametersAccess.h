@@ -13,5 +13,7 @@ float ResolvePlayerBulletTrailSeconds();
 bool IsPlayerBulletHitShapeSphere();
 float ResolveEnemyBodyRadiusMeters();
 float ResolveEnemyKnockbackSpeedMetersPerSecond();
+/// parameters の速さa（enemy.moveSpeedMetersPerSecond）
+float ResolveEnemyMoveSpeedMetersPerSecond();
 
 } // namespace Atrum::AtomF

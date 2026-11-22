@@ -618,6 +618,7 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFCombatCamera.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFParametersBoot.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFPlayerSpawn.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEnemySpawn.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFFloor.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaWall.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaContainment.cpp" />
@@ -640,6 +641,8 @@
     <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerAimCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsuleHitSync.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimCapsuleRayClamp.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFScenePlayerLocator.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyWalkToPlayer.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
