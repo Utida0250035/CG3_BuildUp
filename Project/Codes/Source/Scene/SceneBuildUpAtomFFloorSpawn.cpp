@@ -1,6 +1,7 @@
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
 
 #include "Math/Transform.h"
+#include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFArenaWall.h"
 #include "System/AtomF/CmpAtomFFloor.h"
 #include "System/Entity/Entity.h"
@@ -8,16 +9,6 @@
 namespace Atrum {
 
 namespace {
-
-bool PathIsAtomFScene(const std::string &sceneJsonPath) {
-  constexpr const char *kFileName = "atomF.json";
-  constexpr std::size_t kFileNameLength = 10;
-  if (sceneJsonPath.size() < kFileNameLength) {
-    return false;
-  }
-  return sceneJsonPath.compare(sceneJsonPath.size() - kFileNameLength,
-                               kFileNameLength, kFileName) == 0;
-}
 
 void AppendAtomFArenaWall(std::vector<std::unique_ptr<Entity>> &entities) {
   std::unique_ptr<Entity> wall = std::make_unique<Entity>("AtomFArenaWall");
@@ -34,7 +25,7 @@ void AppendAtomFArenaWall(std::vector<std::unique_ptr<Entity>> &entities) {
 void AppendAtomFFloorIfScene(
     const std::string &sceneJsonPath,
     std::vector<std::unique_ptr<Entity>> &entities) {
-  if (!PathIsAtomFScene(sceneJsonPath)) {
+  if (!AtomF::PathEndsWithAtomFJson(sceneJsonPath)) {
     return;
   }
 

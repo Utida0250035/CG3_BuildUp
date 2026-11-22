@@ -742,7 +742,7 @@
 - [x] XZ平面かつ Y座標 0 の床（`CmpAtomFFloor`・`Assets/Scenes/atomF.json`）
 - [x] 半径 16.0f の円形の床（`CmpAtomFFloor`・半径 16m・48 分割）
 - [x] 半径 16.0f の円形の壁あるいは柵に囲まれている（見た目で分かる。`CmpAtomFArenaWall`・内径 16m・高さ 1.5m）
-- [ ] 自機、自機弾、敵はこのアリーナから出られない
+- [x] 自機、自機弾、敵はこのアリーナから出られない（`CmpAtomFArenaContainment`・タグ役割の押し戻し・半径 16m）
 
 ### 戦闘カメラ
 - [ ] 自機の斜め上から見下ろし、自機に追従する

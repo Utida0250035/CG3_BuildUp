@@ -20,6 +20,7 @@
 #include "Scene/SceneBuildUpChangeSceneDrawPolicy.h"
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
+#include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
 #endif
@@ -161,6 +162,8 @@ void SceneBuildUp::Update() {
         entity->Update();
       }
     }
+
+    TickAtomFArenaContainmentForScene(sceneJsonPath_, entities_);
 
     TickCameraRigEntities();
 
