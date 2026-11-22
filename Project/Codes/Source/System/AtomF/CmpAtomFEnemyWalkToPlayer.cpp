@@ -5,6 +5,7 @@
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
+#include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -30,6 +31,12 @@ void CmpAtomFEnemyWalkToPlayer::Update() {
   if (CmpAtomFEnemyPeriodicCharge *charge =
           RefOwner().GetUpdCmp<CmpAtomFEnemyPeriodicCharge>();
       charge != nullptr && charge->BlocksLocomotion()) {
+    return;
+  }
+
+  if (CmpAtomFEnemyTargetedPanic *panic =
+          RefOwner().GetUpdCmp<CmpAtomFEnemyTargetedPanic>();
+      panic != nullptr && panic->BlocksLocomotion()) {
     return;
   }
 
