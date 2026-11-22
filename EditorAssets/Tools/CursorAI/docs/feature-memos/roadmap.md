@@ -769,7 +769,7 @@
 - [x] 速さbで発射方向に直進する（`CmpAtomFPlayerBulletMove`・発射時 `SetDirection`・parameters 速さb）
 - [x] 敵に当たると弾が消え、弾の元の進行方向に敵が吹き飛ぶ（`CmpAtomFPlayerBulletEnemyHit`・`CmpAtomFEnemyKnockback`・parameters 吹き飛び速さb）
 - [x] 軌道エフェクトが 0.5 秒残る（`CmpAtomFPlayerBulletTrail`・`CmpDrawAtomFPlayerBulletTrail`・parameters trailSeconds）
-- [ ] 当たり判定の形状は球
+- [x] 当たり判定の形状は球（`CmpHitSphere`・parameters `hitShape: sphere`・`IsPlayerBulletHitShapeSphere`）
 - [ ] 当たり判定の大きさは半径a
 
 ### 自機エイムのカプセル当たり判定

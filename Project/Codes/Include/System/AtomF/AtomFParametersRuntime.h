@@ -6,6 +6,7 @@ namespace Atrum::AtomF {
 
 struct PlayerBulletParameters {
   float speedMetersPerSecond = 1.5f;
+  std::string hitShape = "sphere";
   float hitRadiusMeters = 0.125f;
   float trailSeconds = 0.5f;
 };

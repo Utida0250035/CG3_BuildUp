@@ -37,6 +37,14 @@ float ResolvePlayerBulletTrailSeconds() {
   return kPlayerBulletTrailSeconds;
 }
 
+bool IsPlayerBulletHitShapeSphere() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().bullet.hitShape == "sphere";
+  }
+  return true;
+}
+
 float ResolveEnemyBodyRadiusMeters() {
   // 敵本体の当たり半径は JSON にまだ無い
   (void)ParametersRuntime::Instance();

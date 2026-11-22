@@ -25,12 +25,13 @@ bool TryParsePlayer(const nlohmann::json &json, PlayerParameters &out) {
 
   const auto &bullet = json.at("bullet");
   if (!bullet.is_object() || !bullet.contains("speedMetersPerSecond") ||
-      !bullet.contains("hitRadiusMeters") ||
+      !bullet.contains("hitShape") || !bullet.contains("hitRadiusMeters") ||
       !bullet.contains("trailSeconds")) {
     return false;
   }
   out.bullet.speedMetersPerSecond =
       bullet.at("speedMetersPerSecond").get<float>();
+  out.bullet.hitShape = bullet.at("hitShape").get<std::string>();
   out.bullet.hitRadiusMeters = bullet.at("hitRadiusMeters").get<float>();
   out.bullet.trailSeconds = bullet.at("trailSeconds").get<float>();
 

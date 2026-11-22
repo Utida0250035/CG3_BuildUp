@@ -7,6 +7,10 @@
 namespace Atrum::AtomF {
 
 void AttachPlayerBulletHitSphere(Entity &entity) {
+  if (!IsPlayerBulletHitShapeSphere()) {
+    return;
+  }
+
   const float hitRadiusMeters = ResolvePlayerBulletRadiusMeters();
 
   CmpHitSphere *existing = entity.GetUpdCmp<CmpHitSphere>();

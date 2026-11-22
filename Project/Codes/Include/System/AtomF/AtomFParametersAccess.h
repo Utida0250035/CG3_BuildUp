@@ -7,6 +7,7 @@ float ResolvePlayerBodyRadiusMeters();
 float ResolvePlayerBulletRadiusMeters();
 float ResolvePlayerBulletSpeedMetersPerSecond();
 float ResolvePlayerBulletTrailSeconds();
+bool IsPlayerBulletHitShapeSphere();
 float ResolveEnemyBodyRadiusMeters();
 float ResolveEnemyKnockbackSpeedMetersPerSecond();
 
