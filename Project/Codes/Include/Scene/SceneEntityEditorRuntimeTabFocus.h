@@ -4,10 +4,10 @@
 
 namespace Atrum::EntityEditor {
 
-struct EntityEditorUi;
+struct UiState;
 
 /// 「エディタ内プレビュー」後は Runtime タブ表示とウィンドウフォーカスのみ（自動実行モードは付けない）。
-void ApplyInEditorPlayRuntimeTabFocusOnly(EntityEditorUi &ui);
+void ApplyInEditorPlayRuntimeTabFocusOnly(UiState &ui);
 
 } // namespace Atrum::EntityEditor
 

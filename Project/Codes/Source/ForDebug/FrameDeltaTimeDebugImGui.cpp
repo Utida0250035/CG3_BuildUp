@@ -2,6 +2,7 @@
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
+#include "System/DeltaTime.h"
 #include "Engine/EngineAccess.h"
 #include "ForDebug/ImGui.h"
 

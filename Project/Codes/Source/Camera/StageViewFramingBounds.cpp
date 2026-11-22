@@ -58,8 +58,13 @@ bool StageViewFramingBounds::TryParse(const nlohmann::json &j,
 }
 
 const StageViewFramingBounds &ResolveStageViewFramingBounds() {
-  return g_hasPublishedBounds ? g_activeBounds
-                              : StageViewFramingBounds::DefaultFromStageConstants();
+  if (g_hasPublishedBounds) {
+    return g_activeBounds;
+  }
+  // 未公開時も参照の寿命を呼び出し側に残す。
+  static const StageViewFramingBounds defaultBounds =
+      StageViewFramingBounds::DefaultFromStageConstants();
+  return defaultBounds;
 }
 
 void PublishStageViewFramingBounds(const StageViewFramingBounds &bounds) {

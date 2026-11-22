@@ -28,6 +28,7 @@
 #include "Scene/SceneEntityEditorAuthoringLightingPreview.h"
 #include "Scene/SceneEntityEditorExitSceneTeardown.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
+#include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneParticleEditor.h"

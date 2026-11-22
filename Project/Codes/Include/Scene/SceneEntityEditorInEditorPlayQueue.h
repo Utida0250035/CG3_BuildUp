@@ -4,10 +4,10 @@
 
 namespace Atrum::EntityEditor {
 
-struct EntityEditorUi;
+struct UiState;
 
 /// エディタ内プレビュー（Runtime タブ切替のみ。SceneBuildUp は起動しない）。
-void QueueInEditorPlayRuntimeTabOnly(EntityEditorUi &ui);
+void QueueInEditorPlayRuntimeTabOnly(UiState &ui);
 
 } // namespace Atrum::EntityEditor
 

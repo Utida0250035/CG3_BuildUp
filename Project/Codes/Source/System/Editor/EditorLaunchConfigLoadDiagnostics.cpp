@@ -1,5 +1,6 @@
 #include "System/Editor/EditorLaunchConfigLoadDiagnostics.h"
 
+#include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Editor/EditorLaunchConfigJsonDocument.h"
 #include "System/Editor/EditorLaunchConfigSchema.h"
 #include "System/Editor/EditorAssetsPaths.h"
@@ -14,7 +15,8 @@ namespace Atrum::Editor::LaunchConfigLoadDiagnostics {
 namespace fs = std::filesystem;
 
 LaunchConfigLoadIssue TryLoadLaunchConfigFromPath(
-    const std::string &configPath, Scene::LaunchConfig &outConfig) {
+    const std::string &configPath,
+    ::Atrum::Editor::Scene::LaunchConfig &outConfig) {
   outConfig = {};
   if (configPath.empty()) {
     return LaunchConfigLoadIssue::ConfigFileMissing;

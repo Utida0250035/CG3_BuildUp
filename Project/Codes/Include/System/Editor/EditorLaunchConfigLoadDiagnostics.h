@@ -1,7 +1,10 @@
 #pragma once
 
-#include "System/Editor/Scene/EditorSceneAsset.h"
 #include <string>
+
+namespace Atrum::Editor::Scene {
+struct LaunchConfig;
+}
 
 namespace Atrum::Editor::LaunchConfigLoadDiagnostics {
 
@@ -22,7 +25,7 @@ struct LaunchConfigResolveResult {
 };
 
 LaunchConfigLoadIssue TryLoadLaunchConfigFromPath(
-    const std::string &configPath, Scene::LaunchConfig &outConfig);
+    const std::string &configPath, ::Atrum::Editor::Scene::LaunchConfig &outConfig);
 
 LaunchConfigResolveResult ResolveStartupScenePathDetailed();
 

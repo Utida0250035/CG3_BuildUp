@@ -7,7 +7,7 @@
 
 namespace Atrum::EntityEditor {
 
-void ApplyInEditorPlayRuntimeTabFocusOnly(EntityEditorUi &ui) {
+void ApplyInEditorPlayRuntimeTabFocusOnly(UiState &ui) {
   Editor::EditorFrame::Instance().SetSceneViewTab(Editor::SceneViewTab::Runtime);
   ui.requestFocusRuntimeSceneView = true;
 }

@@ -6,9 +6,11 @@
 #include <filesystem>
 
 #if defined(_WIN32)
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
-#include <shellapi.h>
+#endif
 #include <windows.h>
+#include <shellapi.h>
 #endif
 
 namespace Atrum::Editor {

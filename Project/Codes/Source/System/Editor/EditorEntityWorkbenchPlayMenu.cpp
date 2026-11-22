@@ -8,7 +8,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-#include <imgui.h>
+#include <imgui/imgui.h>
 #endif
 
 namespace Atrum::Editor::EditorEntityWorkbenchPlayMenu {
@@ -23,7 +23,7 @@ void DrawMenuItems(EntityEditor::EntityEditor &editor) {
   if (ImGui::MenuItem("保存して実行（ランタイムタブ）")) {
     Atrum::EntityEditor::QueueInEditorPlayRuntimeTabOnly(ui);
     SetEntityEditorSceneMode(ui, true);
-    SelectSceneViewTab(SceneViewTab::Runtime);
+    EditorFrame::Instance().SetSceneViewTab(SceneViewTab::Runtime);
   }
   if (ImGui::MenuItem("保存して BuildUp で実行")) {
     Atrum::EntityEditor::QueueEditorScenePlayViaBuildUp(ui);

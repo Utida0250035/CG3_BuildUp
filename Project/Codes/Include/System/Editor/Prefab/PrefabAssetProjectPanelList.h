@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace Atrum::Editor::Entity {
+namespace Atrum::EntityEditor {
 class EntityEditor;
 }
 

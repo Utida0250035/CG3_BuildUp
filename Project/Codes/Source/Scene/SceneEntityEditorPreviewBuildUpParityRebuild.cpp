@@ -1,6 +1,7 @@
 #include "Scene/SceneEntityEditorPreviewBuildUpParityRebuild.h"
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Entity/Entity.h"
 
 namespace Atrum {
 

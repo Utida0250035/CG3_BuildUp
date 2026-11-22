@@ -4,10 +4,10 @@
 
 namespace Atrum::EntityEditor {
 
-struct EntityEditorUi;
+struct UiState;
 
 /// プロジェクトパネル「シーンを実行」を本番同等の SceneBuildUp フェード遷移へ載せる。
-void QueueEditorScenePlayViaBuildUp(EntityEditorUi &ui);
+void QueueEditorScenePlayViaBuildUp(UiState &ui);
 
 } // namespace Atrum::EntityEditor
 

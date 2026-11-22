@@ -12,7 +12,7 @@ void SceneEntityEditor::ApplyEditViewHoveredDebugCameraBeforeDraw() {
   if (!Editor::EditorFrame::Instance().EditViewHovered()) {
     return;
   }
-  if (CmpCamera *cmp = cameraRig_.FindPrimaryCmpCamera(this)) {
+  if (CmpCamera *cmp = cameraRig_.GetPrimaryCmpCamera(this)) {
     /// GameOrder 経路は AllowDebugCameraControl=false。Edit ホバーだけ入力を有効化。
     cmp->PrepareBeforeDraw(true);
   }

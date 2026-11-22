@@ -1,3 +1,4 @@
+#include "System/Editor/Entity/EntityEditorDefinition.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 
 #include "Math/Vector3.h"

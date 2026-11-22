@@ -3,6 +3,7 @@
 #include "Camera/StageViewFramingBounds.h"
 #include "Scene/SceneBuildUpSceneDocumentTagCatalog.h"
 #include "System/Editor/Scene/EditorSceneRuntime.h"
+#include "System/Entity/Entity.h"
 
 namespace Atrum::SceneBuildUpSceneDocumentLoad {
 

@@ -8,7 +8,7 @@
 #include <cstring>
 #include <filesystem>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::Editor::EditorImportedAssetProjectPanelList {
 
@@ -22,8 +22,10 @@ void SyncRenameBuffer(const std::string &selectedPath, char *renameBuffer,
   }
   const std::string fileName =
       std::filesystem::path(selectedPath).filename().string();
-  std::strncpy(renameBuffer, fileName.c_str(), bufferSize - 1);
-  renameBuffer[bufferSize - 1] = '\0';
+  const size_t copyCount =
+      fileName.size() < bufferSize - 1 ? fileName.size() : bufferSize - 1;
+  std::memcpy(renameBuffer, fileName.data(), copyCount);
+  renameBuffer[copyCount] = '\0';
 }
 
 } // namespace

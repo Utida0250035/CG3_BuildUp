@@ -4,7 +4,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Entity/EntityEditorRemoveComponentSlotsBatch.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::EntityEditor::EntityEditorInspectorComponentRemoveBatchUi {
 

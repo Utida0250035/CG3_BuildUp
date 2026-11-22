@@ -4,7 +4,7 @@
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-#include <imgui.h>
+#include <imgui/imgui.h>
 #endif
 
 namespace Atrum::EntityEditor {

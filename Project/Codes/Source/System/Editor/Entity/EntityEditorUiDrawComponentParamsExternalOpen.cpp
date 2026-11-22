@@ -3,7 +3,7 @@
 #include "System/Editor/EditorExternalAssetOpen.h"
 #include "System/Editor/Entity/EntityEditor.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::EntityEditor::EntityEditorUiDrawComponentParamsExternalOpen {
 

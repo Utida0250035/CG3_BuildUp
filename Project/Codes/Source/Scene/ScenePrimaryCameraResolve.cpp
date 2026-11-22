@@ -50,19 +50,9 @@ CmpCamera *ResolvePrimaryCmpCamera(
     const std::vector<std::unique_ptr<Entity>> *supplementalEntities) {
   const Entity *primaryEntity = FindPrimaryCameraEntity(rigEntities);
   if (primaryEntity != nullptr) {
-    return primaryEntity->GetUpdCmp<CmpCamera>();
+    return const_cast<CmpCamera *>(primaryEntity->GetUpdCmp<CmpCamera>());
   }
   return const_cast<CmpCamera *>(ResolveFromSupplemental(supplementalEntities));
-}
-
-const CmpCamera *ResolvePrimaryCmpCamera(
-    const std::vector<std::unique_ptr<Entity>> &rigEntities,
-    const std::vector<std::unique_ptr<Entity>> *supplementalEntities) {
-  const Entity *primaryEntity = FindPrimaryCameraEntity(rigEntities);
-  if (primaryEntity != nullptr) {
-    return primaryEntity->GetUpdCmp<CmpCamera>();
-  }
-  return ResolveFromSupplemental(supplementalEntities);
 }
 
 } // namespace Atrum

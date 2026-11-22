@@ -20,7 +20,7 @@ void Tick(Scene *returnScene) {
 
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F2)) {
     SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(
-        DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath(), returnScene);
+        Editor::DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath(), returnScene);
     return;
   }
 
@@ -40,7 +40,7 @@ void Tick(Scene *returnScene) {
 
   if (::Atrum::EnginePlayInput()->IsKeyTrigger(Atrum::Input::Key::F6)) {
     SceneBuildUpLaunchPolicy::QueueFadeToBuildUp(
-        DebugPlayAreaCombatBoundsSandbox::SceneJsonPath(), returnScene);
+        Editor::DebugPlayAreaCombatBoundsSandbox::SceneJsonPath(), returnScene);
   }
 }
 

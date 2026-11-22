@@ -39,6 +39,7 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/GameAssetsPaths.h"
 #include "System/Hash64.h"
+#include "System/Editor/EditorImGuiDeactivatedEdit.h"
 #include "ForDebug/ImGui.h"
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
@@ -819,7 +820,7 @@ void EntityEditor::DrawHierarchyPanel() {
     ImGui::TreePop();
   }
 
-  if (ImGui::IsAnyItemDeactivatedAfterEdit()) {
+  if (Atrum::Editor::WasLastDeactivatedItemEditedThisFrame()) {
     EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }
@@ -963,7 +964,7 @@ void EntityEditor::DrawProjectPanel() {
         count > 1 ? "シーンへ追加（上記件数）" : "シーンへ追加（1 体）";
     if (ImGui::Button(addLabel)) {
       const int spawned =
-          EntityEditor::EntityEditorPrefabBatchSpawnFromFile::
+          EntityEditorPrefabBatchSpawnFromFile::
               AppendFromPrefabFileBatch(*this, ui_.selectedPrefabPath, count,
                                         ui_.prefabSpawnSpacingX);
       if (spawned > 0) {
@@ -1309,7 +1310,8 @@ void EntityEditor::DrawInspectorPanel() {
       }
     }
     }
-  } else if (changed) {
+  }
+  if (kindComponentIndices.empty() && changed) {
     EntityEditorAuthoringDocumentEditNotify::Notify(*this);
   }
 }

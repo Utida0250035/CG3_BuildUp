@@ -36,7 +36,7 @@ void Draw(AtrumEngine *engine, SceneEntityEditor &scene) {
     return;
   }
 
-  const EditorSceneDocument &document = editor->SceneDocument();
+  const EntityEditor::EditorSceneDocument &document = editor->SceneDocument();
   if (document.instances.empty()) {
     return;
   }

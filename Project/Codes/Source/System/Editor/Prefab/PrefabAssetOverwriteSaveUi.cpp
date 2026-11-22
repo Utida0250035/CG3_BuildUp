@@ -3,13 +3,13 @@
 #include "System/Editor/Prefab/PrefabAssetFileOperations.h"
 #include "System/Editor/Entity/EntityEditor.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::Editor::Prefab::PrefabAssetOverwriteSaveUi {
 
 void DrawOverwriteSelectedPrefabSaveButton(EntityEditor::EntityEditor &editor) {
   EntityEditor::UiState &ui = editor.Ui();
-  const EditorSceneDocument &scene = editor.SceneDocument();
+  const EntityEditor::EditorSceneDocument &scene = editor.SceneDocument();
   if (ui.selectedPrefabPath.empty() || scene.instances.empty()) {
     return;
   }

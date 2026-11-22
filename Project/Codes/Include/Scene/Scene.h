@@ -33,11 +33,6 @@ protected:
   void ReleaseParticleEmitterManager();
 
   /// <summary>
-  /// 戦闘ステージ全体が画面に収まるようカメラを配置する
-  /// </summary>
-  void SetupStageViewCamera();
-
-  /// <summary>
   /// シーン固有の描画（PreDraw と PostDraw の間）
   /// </summary>
   virtual void DrawScene() = 0;
@@ -60,6 +55,9 @@ public:
 
   Atrum::Camera *GetCamera();
   const Atrum::Camera *GetCamera() const;
+
+  /// 戦闘ステージ全体が画面に収まるようカメラを配置する
+  void SetupStageViewCamera();
 
   /// Update 完了後・Draw 直前（GameOrder / ActiveCameraSystem から呼ぶ）
   void PrepareCamerasForDraw();

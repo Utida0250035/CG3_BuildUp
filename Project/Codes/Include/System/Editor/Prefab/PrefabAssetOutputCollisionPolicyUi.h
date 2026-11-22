@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Atrum::Editor::Entity {
+namespace Atrum::EntityEditor {
 struct UiState;
 }
 

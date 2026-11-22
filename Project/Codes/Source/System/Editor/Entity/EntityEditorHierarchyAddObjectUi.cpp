@@ -4,7 +4,7 @@
 #include "System/Editor/Entity/EntityEditorAddEmptyInstanceFromSelection.h"
 #include "System/Editor/Entity/EntityEditorSceneObjectAddPreset.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::EntityEditor::EntityEditorHierarchyAddObjectUi {
 

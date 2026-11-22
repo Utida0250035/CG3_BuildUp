@@ -4,7 +4,7 @@
 
 namespace Atrum::EntityEditor::EntityEditorClearPrefabSelectionOnSceneOpen {
 
-void OnSceneDocumentOpened(EntityEditor::UiState &ui) {
+void OnSceneDocumentOpened(UiState &ui) {
   ui.selectedPrefabPath.clear();
 }
 

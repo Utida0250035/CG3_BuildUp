@@ -3,12 +3,13 @@
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
 #include "Scene/SceneBuildUpSceneDocumentTagCatalog.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Entity/Entity.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 
 namespace Atrum::EntityEditor::EntityEditorBuildPreviewSceneBuildUpParity {
 
 std::vector<std::unique_ptr<Entity>>
-Build(const EditorSceneDocument &document, EntityEditorUi &ui,
+Build(const EditorSceneDocument &document, UiState &ui,
       std::string *importStatusMessageOut) {
   EditorSceneDocument buildDocument = document;
   SceneBuildUpSceneDocumentTagCatalog::ApplyAfterJsonLoad(buildDocument);

@@ -52,7 +52,7 @@ DevelopmentBootTarget ResolveDevelopmentBootTarget() {
   DevelopmentBootTarget target{};
   std::string sceneJsonPath = ResolveConfiguredStartupScenePath();
   const char *const featureVerificationFallback =
-      DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
+      Editor::DebugPlayAreaFeatureVerificationCanonical::SceneJsonPath();
   if (sceneJsonPath.empty()) {
     if (CanLaunchBootSceneAtPath(featureVerificationFallback)) {
       target.kind = DevelopmentBootKind::SceneBuildUp;

@@ -1,11 +1,8 @@
 #pragma once
 
+#include <nlohmann/json_fwd.hpp>
 #include <optional>
 #include <string>
-
-namespace nlohmann {
-class json;
-}
 
 namespace Atrum::EntityEditor {
 class EntityEditor;

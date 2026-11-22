@@ -3,6 +3,7 @@
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
+#include "System/GameAssetsPaths.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
@@ -19,8 +20,7 @@ bool PathIsUnderDebugPlayArea(const std::string &path) {
          path.find(EditorAssets::kDebugPlayAreaDirectory) != std::string::npos;
 }
 
-void DrawScenePathRows(EntityEditor &editor, EntityEditor::UiState &ui,
-                       const std::vector<std::string> &paths) {
+void DrawScenePathRows(UiState &ui, const std::vector<std::string> &paths) {
   for (const std::string &path : paths) {
     const bool isActive = !ui.selectedScenePath.empty()
                               ? ui.selectedScenePath == path
@@ -36,7 +36,7 @@ void DrawScenePathRows(EntityEditor &editor, EntityEditor::UiState &ui,
 } // namespace
 
 void DrawEntityEditorEditableSceneList(EntityEditor &editor) {
-  EntityEditor::UiState &ui = editor.Ui();
+  UiState &ui = editor.Ui();
 
   const std::vector<std::string> scenePaths =
       Atrum::Editor::Scene::ListEditableSceneJsonFiles();
@@ -62,7 +62,7 @@ void DrawEntityEditorEditableSceneList(EntityEditor &editor) {
   if (!otherPaths.empty()) {
     if (ImGui::TreeNodeEx("ゲーム／エディタシーン",
                           ImGuiTreeNodeFlags_DefaultOpen)) {
-      DrawScenePathRows(editor, ui, otherPaths);
+      DrawScenePathRows(ui, otherPaths);
       ImGui::TreePop();
     }
   }
@@ -71,7 +71,7 @@ void DrawEntityEditorEditableSceneList(EntityEditor &editor) {
     if (ImGui::TreeNodeEx("テスト再生エリア (DebugPlayArea)",
                           ImGuiTreeNodeFlags_DefaultOpen)) {
       ImGui::TextDisabled("scaffold 出力・FeatureTest 等はここに表示されます");
-      DrawScenePathRows(editor, ui, playAreaPaths);
+      DrawScenePathRows(ui, playAreaPaths);
       ImGui::TreePop();
     }
   }

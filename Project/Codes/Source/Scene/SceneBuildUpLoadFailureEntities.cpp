@@ -1,6 +1,7 @@
 #include "Scene/SceneBuildUpLoadFailureEntities.h"
 
 #include "Scene/SceneBuildUpSceneDocumentLoad.h"
+#include "System/Entity/Entity.h"
 
 namespace Atrum::SceneBuildUpLoadFailureEntities {
 

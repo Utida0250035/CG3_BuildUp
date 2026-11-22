@@ -19,15 +19,14 @@ namespace Atrum::Build {
 const char *ConfigurationLabel() {
 #if defined(NDEBUG) && !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   return "Release|x64 (出荷候補)";
-#endif
-#if defined(NDEBUG) && defined(DEVELOPMENT) && defined(USE_IMGUI)
+#elif defined(NDEBUG) && defined(DEVELOPMENT) && defined(USE_IMGUI)
   return "Development|x64 (エディタ日常)";
-#endif
-#if defined(_DEBUG) && defined(DEVELOPMENT) && defined(USE_IMGUI) && \
+#elif defined(_DEBUG) && defined(DEVELOPMENT) && defined(USE_IMGUI) && \
     defined(MSVC_DEBUG_CONFIGURATION)
   return "Debug|x64 (MSVC Debug CRT・非出荷)";
-#endif
+#else
   return "Unknown";
+#endif
 }
 
 bool IsShipCandidateBuild() {

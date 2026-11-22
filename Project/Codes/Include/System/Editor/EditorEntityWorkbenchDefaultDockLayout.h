@@ -1,7 +1,6 @@
 #pragma once
 
-struct ImGuiID;
-struct ImVec2;
+#include <imgui/imgui.h>
 
 namespace Atrum::Editor::EditorEntityWorkbenchDefaultDockLayout {
 

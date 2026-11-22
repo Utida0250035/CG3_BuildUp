@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Atrum::Editor::Entity {
+namespace Atrum::EntityEditor {
 struct UiState;
 }
 

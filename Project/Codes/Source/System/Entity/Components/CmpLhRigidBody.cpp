@@ -2,6 +2,7 @@
 
 #include "Engine/EngineAccess.h"
 #include "Physics/PhysicsManager.h"
+#include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
 namespace Atrum {

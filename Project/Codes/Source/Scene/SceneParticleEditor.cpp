@@ -9,6 +9,7 @@
 #include "Engine/Resource/LightData.h"
 #include "Input/AbstractInput.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
+#include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
 #include "Scene/CommandScene.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)

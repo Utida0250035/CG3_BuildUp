@@ -3,7 +3,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 
-#include <imgui.h>
+#include "ForDebug/ImGui.h"
 
 namespace Atrum::EntityEditor::EntityEditorInspectorInstanceIdentityUi {
 

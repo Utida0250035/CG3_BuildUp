@@ -12,7 +12,9 @@
 #include "System/Editor/EditorFrame.h"
 #include "Camera/Camera.h"
 #include "System/Editor/Entity/EntityEditorDefinition.h"
+#include "System/Entity/Entity.h"
 #include "System/Particle/EmitterManager.h"
+#include "System/Particle/SceneParticleServices.h"
 
 namespace Atrum::Editor {
 

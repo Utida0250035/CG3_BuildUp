@@ -5,7 +5,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::EntityEditor::EntityEditorInspectorImportedDropBatchApplyUi {
 
@@ -20,18 +20,18 @@ void Draw(EntityEditor &editor) {
   ImGui::TextUnformatted("直近ドロップ一括適用");
 
   ImGui::BeginDisabled(
-      !EditorImportedAssetApplyToEntityDefinition::IsSupportedAssetExtension(
+      !::Atrum::Editor::EditorImportedAssetApplyToEntityDefinition::IsSupportedAssetExtension(
           ui.lastImportedAssetPath));
   if (ImGui::Button("この定義の全パススロットへ適用")) {
     const int slots =
-        EditorImportedAssetApplyToEntityDefinition::
+        ::Atrum::Editor::EditorImportedAssetApplyToEntityDefinition::
             ApplyImportedPathToAllMatchingSlots(editor.SelectedDefinition(),
                                             ui.lastImportedAssetPath);
     if (slots > 0) {
       EntityEditorAuthoringDocumentEditNotify::Notify(editor);
       ui.importStatusMessage =
           "パススロット " + std::to_string(slots) + " 件へ適用";
-    } else if (EditorImportedAssetApplyToEntityDefinition::ApplyImportedPath(
+    } else if (::Atrum::Editor::EditorImportedAssetApplyToEntityDefinition::ApplyImportedPath(
                    editor.SelectedDefinition(), ui.lastImportedAssetPath)) {
       EntityEditorAuthoringDocumentEditNotify::Notify(editor);
       ui.importStatusMessage = "新規 Cmp を追加してパスを適用";

@@ -10,7 +10,7 @@ class Entity;
 namespace EntityEditor {
 
 struct EditorSceneDocument;
-class EditorSceneRuntimeBuildWarnings;
+struct EditorSceneRuntimeBuildWarnings;
 
 /// 構築後・Initialize 後に CmpEditorAssetPath → Draw プレビューを再同期する。
 void RelinkEditorAssetPathPreviewsInScene(

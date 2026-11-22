@@ -1,6 +1,7 @@
 #include "System/Editor/Entity/EntityEditorCreateNewSceneFile.h"
 
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorTagCatalog.h"
 #include "System/Editor/Entity/EntityEditorAuthoringDocumentEditNotify.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 

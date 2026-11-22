@@ -1047,6 +1047,7 @@ bool ImGui_ImplDX12_Init(ID3D12Device* device, int num_frames_in_flight, DXGI_FO
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.NodeMask = 1;
     HRESULT hr = device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&init_info.CommandQueue));
+    IM_UNUSED(hr);
     IM_ASSERT(SUCCEEDED(hr));
 
     bool ret = ImGui_ImplDX12_Init(&init_info);
@@ -1208,6 +1209,7 @@ static void ImGui_WaitForPendingOperations(ImGui_ImplDX12_ViewportData* vd)
     IM_ASSERT(hr == S_OK);
 
     hr = bd->Fence->SetEventOnCompletion(bd->FenceLastSignaledValue, bd->FenceEvent);
+    IM_UNUSED(hr);
     IM_ASSERT(hr == S_OK);
     ::WaitForSingleObject(bd->FenceEvent, INFINITE);
 }
@@ -1219,6 +1221,7 @@ static ImGui_ImplDX12_FrameContext* ImGui_WaitForNextFrameContext(ImGui_ImplDX12
     if (bd->Fence->GetCompletedValue() < frame_context->FenceValue)
     {
         HRESULT hr = bd->Fence->SetEventOnCompletion(frame_context->FenceValue, bd->FenceEvent);
+        IM_UNUSED(hr);
         IM_ASSERT(hr == S_OK);
         HANDLE waitableObjects[] = { vd->SwapChainWaitableObject, bd->FenceEvent };
         ::WaitForMultipleObjects(2, waitableObjects, TRUE, INFINITE);
@@ -1319,6 +1322,7 @@ static void ImGui_ImplDX12_RenderWindow(ImGuiViewport* viewport, void*)
     vd->CommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&cmd_list);
 
     HRESULT hr = vd->CommandQueue->Signal(bd->Fence, ++bd->FenceLastSignaledValue);
+    IM_UNUSED(hr);
     IM_ASSERT(hr == S_OK);
     frame_context->FenceValue = bd->FenceLastSignaledValue;
 }

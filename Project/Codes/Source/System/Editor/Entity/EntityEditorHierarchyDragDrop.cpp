@@ -6,7 +6,7 @@
 #include "System/Editor/Entity/EntityEditorHierarchyInstanceReorder.h"
 #include "System/Editor/Entity/EntityEditorHierarchyReparent.h"
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::EntityEditor::EntityEditorHierarchyDragDrop {
 

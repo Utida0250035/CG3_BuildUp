@@ -4,7 +4,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 
 #include <algorithm>
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::Editor::Prefab::PrefabAssetBatchSpawnUi {
 

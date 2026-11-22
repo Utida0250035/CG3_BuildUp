@@ -3,7 +3,7 @@
 #include "System/Editor/Entity/EntityEditorDefinition.h"
 #include "System/Editor/Entity/EntityEditorKnownComponentRegistry.h"
 
-#include <imgui.h>
+#include "ForDebug/ImGui.h"
 #include <nlohmann/json.hpp>
 #include <string>
 

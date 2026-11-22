@@ -198,7 +198,7 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     const float width = p.value("billboardWidth", 1.0f);
     const float height = p.value("billboardHeight", 1.0f);
     cmp->SetSize(width, height);
-    TryApplyCmpEditorTextureBillboardPath(
+    EditorSceneRuntimeDrawPreviewApply::TryApplyCmpEditorTextureBillboardPath(
         *cmp, p.value("textureFilePath", std::string{}));
     return;
   }
@@ -537,7 +537,7 @@ void DrawSceneDocumentEntities(
     if (entity->GetState() != Entity::State::Active) {
       continue;
     }
-    Entity *parent = entity->GetParent();
+    const Entity *parent = entity->GetParent();
     if (parent == nullptr || parent->GetState() != Entity::State::Active) {
       entity->Draw();
     }

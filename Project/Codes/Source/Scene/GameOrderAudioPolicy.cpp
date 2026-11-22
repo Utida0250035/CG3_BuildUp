@@ -5,7 +5,7 @@
 
 namespace Atrum {
 
-void TickGameOrderFrameAudio(Audio::Manager *audio,
+void TickGameOrderFrameAudio(Audio::AudioManager *audio,
                              CommandChangeScene *changeScene) {
   if (audio == nullptr) {
     return;

@@ -5,7 +5,7 @@
 
 namespace Atrum::SceneEntityEditorSceneViewVisualEffectsApply {
 
-void ApplyBeforeDraw(Atrum::Engine *engine) {
+void ApplyBeforeDraw(AtrumEngine *engine) {
   if (engine == nullptr) {
     return;
   }

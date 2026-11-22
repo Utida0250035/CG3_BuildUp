@@ -7,7 +7,7 @@
 
 namespace Atrum::EntityEditor {
 
-void QueueInEditorPlayRuntimeTabOnly(EntityEditorUi &ui) {
+void QueueInEditorPlayRuntimeTabOnly(UiState &ui) {
   ui.requestSaveToDisk = true;
   const std::string playPath =
       ui.jsonFilePath.empty() ? ui.selectedScenePath : ui.jsonFilePath;

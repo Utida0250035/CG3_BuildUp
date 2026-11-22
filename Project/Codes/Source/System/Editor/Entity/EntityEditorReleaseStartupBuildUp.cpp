@@ -8,7 +8,7 @@
 
 namespace Atrum::EntityEditor {
 
-bool TryQueueBuildUpFromReleaseStartup(EntityEditorUi &ui,
+bool TryQueueBuildUpFromReleaseStartup(UiState &ui,
                                        std::string *statusMessage) {
   const std::string startupPath =
       Editor::Scene::ResolveStartupScenePath();

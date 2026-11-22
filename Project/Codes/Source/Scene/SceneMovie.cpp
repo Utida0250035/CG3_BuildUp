@@ -8,7 +8,7 @@
 #include "Scene/SceneMovieStageLighting.h"
 #include "System/DeltaTime.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-#include "imgui.h"
+#include <imgui/imgui.h>
 #endif
 
 #include "Engine/AtrumEngine.h"

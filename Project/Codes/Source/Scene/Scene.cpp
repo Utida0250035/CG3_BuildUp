@@ -1,5 +1,6 @@
 #include "Scene/Scene.h"
 
+#include "Camera/Camera.h"
 #include "Camera/StageViewCamera.h"
 #include "Math/Matrix4x4.h"
 #if defined(DEVELOPMENT)

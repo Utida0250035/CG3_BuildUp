@@ -9,7 +9,7 @@ namespace Atrum::EntityEditor::SceneEntityEditorInEditorPlayTick {
 
 bool Process(EntityEditor &editor,
              const std::function<void()> &rebuildPreviewScene) {
-  EntityEditorUi &ui = editor.Ui();
+  UiState &ui = editor.Ui();
   if (!ui.requestPlayRuntimeScene) {
     return false;
   }

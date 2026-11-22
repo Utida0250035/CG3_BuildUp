@@ -4,7 +4,7 @@
 #include "System/Editor/Scene/EditorSceneJsonFileEntry.h"
 
 #include <filesystem>
-#include <imgui.h>
+#include "ForDebug/ImGui.h"
 
 namespace Atrum::EntityEditor::EntityEditorInspectorSceneJsonPathUi {
 

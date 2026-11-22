@@ -1,5 +1,6 @@
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
 
+#include "System/Editor/Entity/EntityEditorDefinition.h"
 #include "System/Editor/Entity/EntityEditorDefaultParamsCmpCamera.h"
 
 #include <ForDebug/ImGui.h>

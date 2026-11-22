@@ -3,7 +3,7 @@
 #include "System/Editor/Entity/EntityEditor.h"
 
 #include <cstring>
-#include <imgui.h>
+#include <imgui/imgui.h>
 
 namespace Atrum::Editor::Prefab::PrefabAssetOutputCollisionPolicyUi {
 
@@ -21,8 +21,12 @@ void DrawPrefabOutputCollisionPolicyControls(EntityEditor::UiState &ui) {
   if (ui.prefabOutputCollisionPolicy ==
       EntityEditor::PrefabAssetNameCollisionPolicy::BatchPrefixThenIncrement) {
     char buffer[128]{};
-    std::strncpy(buffer, ui.prefabOutputBatchNamePrefix.c_str(),
-                 sizeof(buffer) - 1);
+    const size_t copyCount =
+        ui.prefabOutputBatchNamePrefix.size() < sizeof(buffer) - 1
+            ? ui.prefabOutputBatchNamePrefix.size()
+            : sizeof(buffer) - 1;
+    std::memcpy(buffer, ui.prefabOutputBatchNamePrefix.data(), copyCount);
+    buffer[copyCount] = '\0';
     if (ImGui::InputText("接頭辞", buffer, sizeof(buffer))) {
       ui.prefabOutputBatchNamePrefix = buffer;
     }

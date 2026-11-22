@@ -51,6 +51,10 @@ public:
   Audio::Handle &SceneBgmHandle() { return sceneBgmHandle_; }
   Audio::Handle &SceneAmbientLoopHandle() { return sceneAmbientLoopSeHandle_; }
 
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  void DrawRuntimeViewContent(int width, int height);
+#endif
+
 protected:
   void DrawScene() override;
 
@@ -70,9 +74,6 @@ private:
   void TeardownEntities();
   void DrawRuntimeEntities();
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  void DrawRuntimeViewContent(int width, int height);
-#endif
 };
 
 /// 非シングルトン SceneBuildUp の生成・所有（遷移先ポインタはここが保持）
