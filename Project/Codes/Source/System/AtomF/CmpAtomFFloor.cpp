@@ -11,12 +11,15 @@
 #include "System/WhiteTexture.h"
 
 #include <array>
+#include <cmath>
 
 namespace Atrum {
 
 namespace {
 
-constexpr float kFloorHalfExtentMeters = 32.0f;
+constexpr float kFloorRadiusMeters = 16.0f;
+constexpr int kFloorSegmentCount = 48;
+constexpr float kTwoPi = 6.28318530f;
 const Math::Vector4 kFloorColor{0.34f, 0.36f, 0.32f, 1.0f};
 const Math::Vector3 kUpNormal{0.0f, 1.0f, 0.0f};
 
@@ -35,6 +38,23 @@ void DrawFloorTriangle(AtrumEngine *engine, const Math::Matrix4x4 &world,
                        world, std::array<VertexData, 3>{a, b, c}, false);
 }
 
+void DrawCircularFloor(AtrumEngine *engine, const Math::Matrix4x4 &world) {
+  const VertexData center = MakeFloorVertex(0.0f, 0.0f);
+  for (int segment = 0; segment < kFloorSegmentCount; ++segment) {
+    const float angle0 =
+        (kTwoPi * static_cast<float>(segment)) / static_cast<float>(kFloorSegmentCount);
+    const float angle1 = (kTwoPi * static_cast<float>(segment + 1)) /
+                         static_cast<float>(kFloorSegmentCount);
+    const VertexData edge0 = MakeFloorVertex(kFloorRadiusMeters * std::cos(angle0),
+                                             kFloorRadiusMeters * std::sin(angle0));
+    const VertexData edge1 = MakeFloorVertex(kFloorRadiusMeters * std::cos(angle1),
+                                             kFloorRadiusMeters * std::sin(angle1));
+    // 表裏を描き、カメラが上からでも下からでも床面が見えるようにする。
+    DrawFloorTriangle(engine, world, center, edge0, edge1);
+    DrawFloorTriangle(engine, world, center, edge1, edge0);
+  }
+}
+
 } // namespace
 
 void CmpAtomFFloor::Draw() {
@@ -44,18 +64,7 @@ void CmpAtomFFloor::Draw() {
     return;
   }
 
-  const float extent = kFloorHalfExtentMeters;
-  const VertexData leftNear = MakeFloorVertex(-extent, -extent);
-  const VertexData leftFar = MakeFloorVertex(-extent, extent);
-  const VertexData rightFar = MakeFloorVertex(extent, extent);
-  const VertexData rightNear = MakeFloorVertex(extent, -extent);
-  const Math::Matrix4x4 world = owner->GetWorldMatrix();
-
-  // 表裏を描き、カメラが上からでも下からでも床面が見えるようにする。
-  DrawFloorTriangle(engine, world, leftNear, leftFar, rightFar);
-  DrawFloorTriangle(engine, world, leftNear, rightFar, rightNear);
-  DrawFloorTriangle(engine, world, leftNear, rightFar, leftFar);
-  DrawFloorTriangle(engine, world, leftNear, rightNear, rightFar);
+  DrawCircularFloor(engine, owner->GetWorldMatrix());
 }
 
 } // namespace Atrum
