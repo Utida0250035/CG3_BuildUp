@@ -6,8 +6,10 @@
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFPlayerAim.h"
+#include "System/AtomF/CmpAtomFPlayerFire.h"
 #include "System/AtomF/CmpAtomFPlayerMove.h"
 #include "System/AtomF/CmpAtomFPlayerShotCooldown.h"
+#include "System/Entity/Components/CmpChildEntitys.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -35,6 +37,8 @@ void AppendAtomFPlayerIfScene(
   player->AddUpdCmp<CmpAtomFPlayerAim>();
   player->AddUpdCmp<CmpAtomFPlayerMove>();
   player->AddUpdCmp<CmpAtomFPlayerShotCooldown>();
+  player->AddUpdCmp<CmpChildEntitys>();
+  player->AddUpdCmp<CmpAtomFPlayerFire>();
   player->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = player->GetDrawCmp<CmpMeshSphere>();
   if (mesh != nullptr) {
@@ -44,6 +48,7 @@ void AppendAtomFPlayerIfScene(
   }
 
   AtomF::AttachArenaContainmentForPlayer(*player);
+  player->ResolveDependencies();
   player->Initialize();
   entities.push_back(std::move(player));
 }
