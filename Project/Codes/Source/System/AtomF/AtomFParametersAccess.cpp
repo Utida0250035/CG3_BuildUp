@@ -35,4 +35,12 @@ float ResolveEnemyBodyRadiusMeters() {
   return kEnemyBodyRadiusMeters;
 }
 
+float ResolveEnemyKnockbackSpeedMetersPerSecond() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Enemy().knockbackSpeedMetersPerSecond;
+  }
+  return kEnemyKnockbackSpeedMetersPerSecond;
+}
+
 } // namespace Atrum::AtomF

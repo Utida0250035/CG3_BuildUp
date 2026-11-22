@@ -21,6 +21,9 @@ inline constexpr float kPlayerBodyRadiusMeters = 0.25f;
 /// 敵本体の押し出し半径（爆発半径c とは別。当たり未実装のため半径b と同じ）。
 inline constexpr float kEnemyBodyRadiusMeters = 0.25f;
 
+/// parameters.json の速さb（敵吹き飛び）
+inline constexpr float kEnemyKnockbackSpeedMetersPerSecond = 1.5f;
+
 /// ワールド XZ を円形アリーナ内に収める。bodyRadius は当たり半径の余白。
 inline void ClampWorldTranslateToArenaDisc(Math::Vector3 &worldTranslate,
                                            const float bodyRadiusMeters) {

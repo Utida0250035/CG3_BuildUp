@@ -14,6 +14,7 @@ public:
 
   void ResolveDependence() override;
   void SetDirection(const Math::Vector3 &directionXZUnit);
+  Math::Vector3 GetDirectionXZUnit() const { return direction_; }
 
   void Update() override;
 

@@ -4,6 +4,8 @@
 #include "Math/Vector4.h"
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFPlayerBulletHitAttach.h"
+#include "System/AtomF/CmpAtomFPlayerBulletEnemyHit.h"
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
@@ -42,6 +44,9 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
   }
 
   AttachArenaContainmentForPlayerBullet(*bullet);
+  AttachPlayerBulletHitSphere(*bullet);
+  bullet->AddUpdCmp<CmpAtomFPlayerBulletEnemyHit>();
+  bullet->ResolveDependencies();
   bullet->Initialize();
   return bullet;
 }
