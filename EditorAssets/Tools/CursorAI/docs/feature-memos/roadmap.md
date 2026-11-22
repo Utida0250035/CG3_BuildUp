@@ -763,7 +763,7 @@
 - [x] 射撃は parameters.json のクールタイム 1 秒を空ける（`CmpAtomFPlayerShotCooldown`）
 - [x] マウスか R スティックで XZ 平面上のスカラー角度でエイムができる（両方を実装・`CmpAtomFPlayerAim`）
 - [x] Space（キー）かパッドの A ボタンで、エイム方向に自機弾を放てる（`CmpAtomFPlayerFire`・速さb で直進開始）
-- [ ] 当たり判定の大きさは半径b
+- [x] 当たり判定の大きさは半径b（`CmpHitSphere`・`AtomFPlayerHitAttach`・parameters 半径b）
 
 ### 自機弾
 - [ ] 速さbで発射方向に直進する

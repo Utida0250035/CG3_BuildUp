@@ -3,6 +3,7 @@
 #include "Math/Transform.h"
 #include "Math/Vector4.h"
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
+#include "System/AtomF/AtomFPlayerHitAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFPlayerAim.h"
@@ -48,6 +49,7 @@ void AppendAtomFPlayerIfScene(
   }
 
   AtomF::AttachArenaContainmentForPlayer(*player);
+  AtomF::AttachPlayerHitSphere(*player);
   player->ResolveDependencies();
   player->Initialize();
   entities.push_back(std::move(player));
