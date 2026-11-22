@@ -5,6 +5,7 @@
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/CmpAtomFPlayerAim.h"
 #include "System/AtomF/CmpAtomFPlayerMove.h"
 #include "System/AtomF/CmpAtomFPlayerShotCooldown.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
@@ -31,6 +32,7 @@ void AppendAtomFPlayerIfScene(
   initialTransform.translate = {0.0f, bodyRadius, 0.0f};
   player->SetInitialTransform(initialTransform);
 
+  player->AddUpdCmp<CmpAtomFPlayerAim>();
   player->AddUpdCmp<CmpAtomFPlayerMove>();
   player->AddUpdCmp<CmpAtomFPlayerShotCooldown>();
   player->AddDrawCmp<CmpMeshSphere>();

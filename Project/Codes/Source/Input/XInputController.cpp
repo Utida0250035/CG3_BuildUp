@@ -135,6 +135,25 @@ Math::Vector2 XInputController::GetLeftStick() const {
   return stick;
 }
 
+Math::Vector2 XInputController::GetRightStick() const {
+  if (!isConnected_ || private_ == nullptr) {
+    return {};
+  }
+
+  const XINPUT_GAMEPAD &gamepad = private_->state.Gamepad;
+  const float rawX = static_cast<float>(gamepad.sThumbRX) / 32767.0f;
+  const float rawY = static_cast<float>(gamepad.sThumbRY) / 32767.0f;
+
+  Math::Vector2 stick{ApplyCircularDeadZone(rawX, kStickDeadZoneRatio),
+                      ApplyCircularDeadZone(rawY, kStickDeadZoneRatio)};
+
+  if (stick.LengthSquare() > 1.01f) {
+    stick.Normalize();
+  }
+
+  return stick;
+}
+
 void XInputController::AddDirectionInput(Math::Vector2 &vector) const {
   if (!isConnected_) {
     return;
