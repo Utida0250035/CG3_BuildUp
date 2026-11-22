@@ -6,6 +6,7 @@ namespace Atrum::AtomF {
 float ResolvePlayerBodyRadiusMeters();
 /// parameters の半径b（player.aimCapsule.radiusMeters）
 float ResolvePlayerAimCapsuleRadiusMeters();
+float ResolvePlayerDamageVignetteSeconds();
 /// parameters の半径a（player.bullet.hitRadiusMeters）
 float ResolvePlayerBulletRadiusMeters();
 float ResolvePlayerBulletSpeedMetersPerSecond();

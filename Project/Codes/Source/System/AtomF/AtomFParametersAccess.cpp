@@ -13,6 +13,14 @@ float ResolvePlayerBodyRadiusMeters() {
   return kPlayerBodyRadiusMeters;
 }
 
+float ResolvePlayerDamageVignetteSeconds() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().damageFeedback.vignetteSeconds;
+  }
+  return kPlayerDamageVignetteSeconds;
+}
+
 float ResolvePlayerAimCapsuleRadiusMeters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {

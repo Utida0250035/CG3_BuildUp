@@ -631,6 +631,7 @@
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerMoveInput.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaContainmentAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHitAttach.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHealthAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp" />

@@ -781,7 +781,7 @@
 - [x] 自機に向かって速さaで歩いてくる（`CmpAtomFEnemyWalkToPlayer`・`AppendAtomFEnemyIfScene`・parameters 速さa）
 - [x] 5秒ごとに震えて突進してくる（`CmpAtomFEnemyPeriodicCharge`・parameters chargeInterval 5秒・速さb突進）
 - [x] 自機に狙われる（自機エイムのカプセル判定が当たる）とその場で立ち止まって焦りモーションになる（`CmpAtomFEnemyTargetedPanic`・`AtomFEnemyAimCapsuleTargetQuery`）
-- [ ] 自機に当たると自機にダメージを与える
+- [x] 自機に当たると自機にダメージを与える（`CmpHealthHit`・`AtomFPlayerHealthAttach`・敵役 ENEMY タグの Hurter）
 - [ ] 自機弾や別の敵の爆発に吹き飛ばされたあと、壁や別の敵に当たると爆発し、パーティクルを散らして小さくなって消滅する
 - [ ] 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb
 
