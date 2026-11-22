@@ -524,10 +524,13 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFFloorSpawn.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFArenaContainmentTick.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFCombatCamera.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFParametersBoot.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFFloor.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaWall.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaContainment.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaContainmentAttach.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp" />

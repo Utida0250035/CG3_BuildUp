@@ -28,6 +28,9 @@ constexpr const char *kOperatorGuidanceJson =
 constexpr const char *kGameSceneLightingProfileJson =
     "./Assets/Visual/game_scene_lighting.json";
 
+/// 全方位シューティング atomF の自機・敵パラメータ
+constexpr const char *kAtomFParametersJson = "./Assets/atomF/parameters.json";
+
 /// タイトル→本編の間に再生するサンプルカメラトラック
 constexpr const char *kTitleIntroMovieTrack = EditorAssets::kSampleMovieTrackJson;
 

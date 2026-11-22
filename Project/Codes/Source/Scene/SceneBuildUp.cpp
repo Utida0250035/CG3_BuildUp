@@ -22,6 +22,7 @@
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
 #include "Scene/SceneBuildUpAtomFCombatCamera.h"
+#include "Scene/SceneBuildUpAtomFParametersBoot.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
 #endif
@@ -111,6 +112,7 @@ void SceneBuildUp::EnterScene() {
   sceneDocumentLoadFailed_ = false;
   sceneLoadFailureMessage_.clear();
   stageViewCameraLocked_ = SceneBuildUpStageCameraLock::kDefaultLocked;
+  SyncAtomFParametersWithScenePath(sceneJsonPath_);
 
   EntityEditor::EditorSceneDocument document{};
   const bool loadSucceeded =

@@ -1,6 +1,7 @@
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
 
 #include "System/AtomF/AtomFArenaBounds.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFArenaContainment.h"
 #include "System/Entity/Entity.h"
@@ -15,19 +16,19 @@ float ContainmentBodyRadiusForEntity(const Entity &entity) {
   tags.EnsureLoaded();
 
   if (tags.EntityHasRole(entity, "player")) {
-    return AtomF::kPlayerBodyRadiusMeters;
+    return AtomF::ResolvePlayerBodyRadiusMeters();
   }
   if (tags.EntityHasRole(entity, "enemy")) {
-    return AtomF::kEnemyBodyRadiusMeters;
+    return AtomF::ResolveEnemyBodyRadiusMeters();
   }
   if (tags.EntityHasManagedBulletRole(entity)) {
-    return AtomF::kPlayerBulletBodyRadiusMeters;
+    return AtomF::ResolvePlayerBulletRadiusMeters();
   }
 
   const std::string playerWeaponTag = tags.TagNameForRole("playerWeapon");
   if (!playerWeaponTag.empty() &&
       tags.EntityHasTagName(entity, playerWeaponTag)) {
-    return AtomF::kPlayerBulletBodyRadiusMeters;
+    return AtomF::ResolvePlayerBulletRadiusMeters();
   }
 
   return -1.0f;

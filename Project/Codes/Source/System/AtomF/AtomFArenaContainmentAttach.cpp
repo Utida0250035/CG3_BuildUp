@@ -1,6 +1,6 @@
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
 
-#include "System/AtomF/AtomFArenaBounds.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/CmpAtomFArenaContainment.h"
 #include "System/Entity/Entity.h"
 
@@ -23,15 +23,15 @@ void AttachArenaContainment(Entity &entity, const float bodyRadiusMeters) {
 }
 
 void AttachArenaContainmentForPlayer(Entity &entity) {
-  AttachArenaContainment(entity, kPlayerBodyRadiusMeters);
+  AttachArenaContainment(entity, ResolvePlayerBodyRadiusMeters());
 }
 
 void AttachArenaContainmentForPlayerBullet(Entity &entity) {
-  AttachArenaContainment(entity, kPlayerBulletBodyRadiusMeters);
+  AttachArenaContainment(entity, ResolvePlayerBulletRadiusMeters());
 }
 
 void AttachArenaContainmentForEnemy(Entity &entity) {
-  AttachArenaContainment(entity, kEnemyBodyRadiusMeters);
+  AttachArenaContainment(entity, ResolveEnemyBodyRadiusMeters());
 }
 
 } // namespace Atrum::AtomF

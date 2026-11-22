@@ -756,7 +756,7 @@
 - [x] 半径a は 0.125m（player の弾）
 - [x] 半径b は 0.25m（player の当たり判定とエイムカプセル）
 - [x] 半径c は 0.4m（enemy の爆発）
-- [ ] ランタイムが parameters.json を読み、自機と敵の数値をそこから取る
+- [x] ランタイムが parameters.json を読み、自機と敵の数値をそこから取る（`AtomFParametersRuntime`・ containment 半径）
 
 ### 自機
 - [ ] W、A、S、D（キー）か L スティック（パッド）で XZ 平面上を速さaで移動できる（両方を実装）
