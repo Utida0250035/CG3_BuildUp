@@ -8,7 +8,7 @@ namespace Atrum {
 
 class Entity;
 
-/// シーン JSON が atomF のとき、Y=0 の XZ 床エンティティを実行列へ足す。
+/// シーン JSON が atomF のとき、Y=0 の円形床と、内径 16 の囲い壁を実行列へ足す。
 void AppendAtomFFloorIfScene(const std::string &sceneJsonPath,
                              std::vector<std::unique_ptr<Entity>> &entities);
 

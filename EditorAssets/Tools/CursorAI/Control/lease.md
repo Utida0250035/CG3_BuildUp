@@ -5,9 +5,14 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-22T14:52:53.1003990+09:00
-- expiresAt: 2026-11-22T15:52:53.1003990+09:00
+- updatedAt: 2026-11-22T15:08:34.3020923+09:00
+- expiresAt: 2026-11-22T18:08:34.3020923+09:00
 - task: atomF XZ平面かつY座標0の床
 - paths:
+  - `Project/Codes/Include/System/AtomF/CmpAtomFArenaWall.h`
+  - `Project/Codes/Source/System/AtomF/CmpAtomFArenaWall.cpp`
+  - `Project/Codes/Include/Scene/SceneBuildUpAtomFFloorSpawn.h`
+  - `Project/Codes/Source/Scene/SceneBuildUpAtomFFloorSpawn.cpp`
+  - `Project/CG2_BuildUp.vcxproj`
+  - `Project/CG2_BuildUp.vcxproj.filters`
   - `Project/Codes/Include/System/AtomF/CmpAtomFFloor.h`
-  - `Project/Codes/Source/System/AtomF/CmpAtomFFloor.cpp`
