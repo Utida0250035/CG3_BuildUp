@@ -21,6 +21,7 @@
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
+#include "Scene/SceneBuildUpAtomFCombatCamera.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
 #endif
@@ -130,7 +131,11 @@ void SceneBuildUp::EnterScene() {
   entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
       loadSucceeded, document);
   AppendAtomFFloorIfScene(sceneJsonPath_, entities_);
-  SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
+  if (SceneBuildUpAtomFCombatCamera::ApplyOnEnterIfAtomFScene(*this)) {
+    // atomF 用カメラを適用済み
+  } else {
+    SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
+  }
   SceneBuildUpRuntimeLightingPolicy::ApplyOnceOnEnterScene();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);
   SceneBuildUpEnterSceneEditorUiPolicy::ApplyOnEnterScene();
@@ -169,7 +174,7 @@ void SceneBuildUp::Update() {
 
     Particle::TickEmitterManagerForActiveScene(GetCamera());
   }
-  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+  SceneBuildUpAtomFCombatCamera::MaintainSceneCamera(*this);
   SceneBuildUpAudioPolicy::Tick(*this);
 }
 
@@ -219,7 +224,7 @@ void SceneBuildUp::DrawScene() {
   }
 
   engine->SetBlendModeForFrame(Atrum::BlendMode::NORMAL);
-  SceneBuildUpStageCamera::MaintainLockedStageCamera(*this);
+  SceneBuildUpAtomFCombatCamera::MaintainSceneCamera(*this);
   Atrum::Camera *const primaryCamera = GetCamera();
   if (primaryCamera == nullptr) {
     HandleSceneBuildUpDrawWithoutPrimaryCamera(engine, sceneJsonPath_);

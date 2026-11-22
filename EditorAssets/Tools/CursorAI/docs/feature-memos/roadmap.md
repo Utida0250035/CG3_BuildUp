@@ -745,7 +745,7 @@
 - [x] 自機、自機弾、敵はこのアリーナから出られない（`CmpAtomFArenaContainment`・タグ役割の押し戻し・半径 16m）
 
 ### 戦闘カメラ
-- [ ] 自機の斜め上から見下ろし、自機に追従する
+- [x] 自機の斜め上から見下ろし、自機に追従する（`SceneBuildUpAtomFCombatCamera`・player 役タグ追従）
 
 ### パラメータ（parameters.json）
 - [x] 自機のパラメータを `Project/Assets/atomF/parameters.json` の player にまとめた
