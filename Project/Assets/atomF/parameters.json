@@ -1,0 +1,37 @@
+{
+  "player": {
+    "moveSpeedId": "速さa",
+    "moveSpeedMetersPerSecond": 0.5,
+    "hitRadiusId": "半径b",
+    "hitRadiusMeters": 0.25,
+    "shotCooldownSeconds": 1.0,
+    "bullet": {
+      "speedId": "速さb",
+      "speedMetersPerSecond": 1.5,
+      "hitShape": "sphere",
+      "hitRadiusId": "半径a",
+      "hitRadiusMeters": 0.125,
+      "trailSeconds": 0.5
+    },
+    "aimCapsule": {
+      "radiusId": "半径b",
+      "radiusMeters": 0.25
+    },
+    "damageFeedback": {
+      "vignetteSeconds": 0.75,
+      "sePlayCount": 1
+    }
+  },
+  "enemy": {
+    "moveSpeedId": "速さa",
+    "moveSpeedMetersPerSecond": 0.5,
+    "chargeIntervalSeconds": 5.0,
+    "knockbackSpeedId": "速さb",
+    "knockbackSpeedMetersPerSecond": 1.5,
+    "explosion": {
+      "hitShape": "sphere",
+      "hitRadiusId": "半径c",
+      "hitRadiusMeters": 0.4
+    }
+  }
+}

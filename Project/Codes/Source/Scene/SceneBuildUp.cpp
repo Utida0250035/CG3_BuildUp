@@ -19,6 +19,7 @@
 #include "Scene/SceneBuildUpMissingPrimaryCameraFeedback.h"
 #include "Scene/SceneBuildUpChangeSceneDrawPolicy.h"
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
+#include "Scene/SceneBuildUpAtomFFloorSpawn.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
 #endif
@@ -127,6 +128,7 @@ void SceneBuildUp::EnterScene() {
   SceneBuildUpStageCamera::ApplyFramingFromSceneDocument(*this, document);
   entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
       loadSucceeded, document);
+  AppendAtomFFloorIfScene(sceneJsonPath_, entities_);
   SceneBuildUpStageCamera::ApplyStageCameraAfterSceneLoad(*this);
   SceneBuildUpRuntimeLightingPolicy::ApplyOnceOnEnterScene();
   SceneBuildUpAudioPolicy::OnEnterScene(*this);
