@@ -7,7 +7,7 @@ namespace Atrum {
 
 class CmpAtomFPlayerAim;
 
-/// atomF 自機エイム中に XZ 上へ伸びるカプセル（長さのみ。半径・衝突終端は別タスク）。
+/// atomF 自機エイム中に XZ 上へ伸びるカプセル。壁・敵 Hit で長さをクランプする。
 class CmpAtomFPlayerAimCapsule final : public ComponentUpd {
 public:
   constexpr UpdCmpGroup UpdGroup() const override {

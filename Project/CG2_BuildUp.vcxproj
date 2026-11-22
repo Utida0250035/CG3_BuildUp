@@ -547,6 +547,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerAimCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsuleHitSync.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimCapsuleRayClamp.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />

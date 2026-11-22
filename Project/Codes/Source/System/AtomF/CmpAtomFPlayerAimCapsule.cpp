@@ -3,6 +3,7 @@
 #include "System/AtomF/CmpAtomFPlayerAim.h"
 #include "System/AtomF/AtomFArenaBounds.h"
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFPlayerAimCapsuleRayClamp.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -45,10 +46,15 @@ void CmpAtomFPlayerAimCapsule::Update() {
   const float dt = frameDeltaTime_->GetDeltaTime();
   const float maxLength = MaxAimCapsuleLengthMeters();
 
+  const Math::Vector3 start = CapsuleStartWorld();
+  const Math::Vector3 dir = aim_->GetAimDirectionXZ();
+  const float clampedMax = AtomF::ResolveAimCapsuleClampedMaxLength(
+      RefOwner(), start, dir, radiusMeters_, maxLength);
+
   if (aim_->IsAimInputActive()) {
     currentLengthMeters_ += kStretchMetersPerSecond * dt;
-    if (currentLengthMeters_ > maxLength) {
-      currentLengthMeters_ = maxLength;
+    if (currentLengthMeters_ > clampedMax) {
+      currentLengthMeters_ = clampedMax;
     }
     return;
   }
@@ -61,6 +67,9 @@ void CmpAtomFPlayerAimCapsule::Update() {
   currentLengthMeters_ -= kShrinkMetersPerSecond * dt;
   if (currentLengthMeters_ < 0.0f) {
     currentLengthMeters_ = 0.0f;
+  }
+  if (currentLengthMeters_ > clampedMax) {
+    currentLengthMeters_ = clampedMax;
   }
 }
 

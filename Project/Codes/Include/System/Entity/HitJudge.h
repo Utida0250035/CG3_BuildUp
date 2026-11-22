@@ -19,6 +19,10 @@ private:
 public:
   std::vector<Entity *> IsHitOthers(CmpHitSphere *cmpHitSphere);
 
+  const std::vector<CmpHitSphere *> &RegisteredHitSpheres() const {
+    return cmpHitSpheres_;
+  }
+
   void Register(CmpHitSphere *cmpHitSphere);
   void Remove(CmpHitSphere *CmpHitSphere);
 

@@ -777,3 +777,25 @@
 | タスク | 判定 | 根拠 |
 |--------|------|------|
 | カプセルの半径は半径b | 有効 | プリミティブ同士の当たり判定が実装してある |
+
+---
+
+## セッション 2026-11-22（ループ tick・エイムカプセル壁敵クランプ）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFAimCapsuleWallClamp`
+- `AtomFPlayerAimCapsuleRayClamp` が XZ 円形アリーナ壁と敵 `CmpHitSphere` へのレイ交差で長さ上限を算出。
+- `CmpAtomFPlayerAimCapsule` の伸長・縮小後に上限を適用。`HitJudge::RegisteredHitSpheres` で敵走査。
+- **atomF › 自機エイムのカプセル当たり判定** 節の `- [ ]` はすべて完了。
+- **ビルド:** Development|x64 成功。
+
+### 2. 次
+
+- **敵** 節「自機に向かって速さaで歩いてくる」→ `feature/AtomFEnemyWalkToPlayer`
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵や壁で衝突点が終端 | 有効 | プリミティブ同士の当たり判定が実装してある |
