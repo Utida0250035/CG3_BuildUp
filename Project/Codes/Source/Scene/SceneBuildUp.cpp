@@ -20,6 +20,7 @@
 #include "Scene/SceneBuildUpChangeSceneDrawPolicy.h"
 #include "Scene/SceneBuildUpRuntimeEntityDraw.h"
 #include "Scene/SceneBuildUpAtomFFloorSpawn.h"
+#include "Scene/SceneBuildUpAtomFPlayerSpawn.h"
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
 #include "Scene/SceneBuildUpAtomFCombatCamera.h"
 #include "Scene/SceneBuildUpAtomFParametersBoot.h"
@@ -133,6 +134,7 @@ void SceneBuildUp::EnterScene() {
   entities_ = SceneBuildUpLoadFailureEntities::BuildEntitiesAfterDocumentLoad(
       loadSucceeded, document);
   AppendAtomFFloorIfScene(sceneJsonPath_, entities_);
+  AppendAtomFPlayerIfScene(sceneJsonPath_, entities_);
   if (SceneBuildUpAtomFCombatCamera::ApplyOnEnterIfAtomFScene(*this)) {
     // atomF 用カメラを適用済み
   } else {

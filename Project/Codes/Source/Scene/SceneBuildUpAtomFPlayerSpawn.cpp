@@ -1,0 +1,47 @@
+#include "Scene/SceneBuildUpAtomFPlayerSpawn.h"
+
+#include "Math/Transform.h"
+#include "Math/Vector4.h"
+#include "System/AtomF/AtomFArenaContainmentAttach.h"
+#include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/CmpAtomFPlayerMove.h"
+#include "System/Entity/Components/CmpMeshSphere.h"
+#include "System/Entity/Entity.h"
+#include "System/Entity/EntityTagRegistry.h"
+
+namespace Atrum {
+
+void AppendAtomFPlayerIfScene(
+    const std::string &sceneJsonPath,
+    std::vector<std::unique_ptr<Entity>> &entities) {
+  if (!AtomF::PathEndsWithAtomFJson(sceneJsonPath)) {
+    return;
+  }
+
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+
+  std::unique_ptr<Entity> player = std::make_unique<Entity>("AtomFPlayer");
+  player->AddTag(tags.TagNameForRole("player"));
+
+  const float bodyRadius = AtomF::ResolvePlayerBodyRadiusMeters();
+  Math::TransformLH initialTransform{};
+  initialTransform.translate = {0.0f, bodyRadius, 0.0f};
+  player->SetInitialTransform(initialTransform);
+
+  player->AddUpdCmp<CmpAtomFPlayerMove>();
+  player->AddDrawCmp<CmpMeshSphere>();
+  CmpMeshSphere *mesh = player->GetDrawCmp<CmpMeshSphere>();
+  if (mesh != nullptr) {
+    mesh->SetRadius(bodyRadius);
+    mesh->SetColor(Math::Vector4{0.25f, 0.55f, 0.95f, 1.0f});
+    mesh->SetSubdivision(12);
+  }
+
+  AtomF::AttachArenaContainmentForPlayer(*player);
+  player->Initialize();
+  entities.push_back(std::move(player));
+}
+
+} // namespace Atrum

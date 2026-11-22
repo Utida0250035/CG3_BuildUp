@@ -617,9 +617,12 @@
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFArenaContainmentTick.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFCombatCamera.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFParametersBoot.cpp" />
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFPlayerSpawn.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFFloor.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaWall.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaContainment.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerMove.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerMoveInput.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaContainmentAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
