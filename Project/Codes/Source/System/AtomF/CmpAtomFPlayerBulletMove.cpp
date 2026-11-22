@@ -1,6 +1,6 @@
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
 
-#include "System/AtomF/AtomFParametersRuntime.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -25,11 +25,7 @@ void CmpAtomFPlayerBulletMove::Update() {
     return;
   }
 
-  float speed = 1.5f;
-  const AtomF::ParametersRuntime &params = AtomF::ParametersRuntime::Instance();
-  if (params.IsLoaded()) {
-    speed = params.Player().bullet.speedMetersPerSecond;
-  }
+  const float speed = AtomF::ResolvePlayerBulletSpeedMetersPerSecond();
 
   RefOwner().RefTransform().translate +=
       direction_ * speed * frameDeltaTime_->GetDeltaTime();

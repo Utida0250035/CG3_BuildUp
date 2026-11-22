@@ -12,6 +12,9 @@ inline constexpr float kArenaInnerRadiusMeters = 16.0f;
 /// parameters.json の半径a（自機弾）
 inline constexpr float kPlayerBulletBodyRadiusMeters = 0.125f;
 
+/// parameters.json の速さb（自機弾）
+inline constexpr float kPlayerBulletSpeedMetersPerSecond = 1.5f;
+
 /// parameters.json の半径b（自機本体・エイム）
 inline constexpr float kPlayerBodyRadiusMeters = 0.25f;
 

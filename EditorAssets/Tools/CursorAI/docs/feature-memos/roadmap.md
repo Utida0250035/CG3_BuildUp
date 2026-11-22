@@ -766,7 +766,7 @@
 - [x] 当たり判定の大きさは半径b（`CmpHitSphere`・`AtomFPlayerHitAttach`・parameters 半径b）
 
 ### 自機弾
-- [ ] 速さbで発射方向に直進する
+- [x] 速さbで発射方向に直進する（`CmpAtomFPlayerBulletMove`・発射時 `SetDirection`・parameters 速さb）
 - [ ] 敵に当たると弾が消え、弾の元の進行方向に敵が吹き飛ぶ
 - [ ] 軌道エフェクトが 0.5 秒残る
 - [ ] 当たり判定の形状は球
