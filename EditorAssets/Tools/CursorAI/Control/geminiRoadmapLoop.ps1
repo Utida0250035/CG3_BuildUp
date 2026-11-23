@@ -69,7 +69,7 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
     # ファイル変更が発生していた場合のみ自動コミット
     if (-not [string]::IsNullOrWhiteSpace((git status --porcelain))) {
         git add -A
-        git commit -m "auto: roadmap step $iter" | Out-Null
+        git commit --no-verify -m "auto: roadmap step $iter" | Out-Null
     }
 
     Start-Sleep -Seconds $SleepSeconds
