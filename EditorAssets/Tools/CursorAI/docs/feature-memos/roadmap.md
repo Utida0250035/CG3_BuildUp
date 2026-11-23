@@ -790,7 +790,7 @@
 - [x] 当たり判定は半径cの球（`AtomFParametersRuntime`・`AtomFParametersAccess::IsEnemyExplosionHitShapeSphere`・`AtomFEnemyExplosionKnockbackSpread` 球交差判定）
 
 ### 敵の焦りモーション
-- [ ] 当たり判定は動かない
+- [x] 当たり判定は動かない（`CmpMeshSphere::SetDrawOffset` による見た目のみオフセット・`CmpAtomFEnemyTargetedPanic` は `RefTransform().translate` 非変更・`SceneBuildUpAtomFEnemySpawn` で移動系より先に更新）
 - [ ] その場で小刻みに震える（ぱっと見で分かる程度）
 - [ ] 天辺から汗のパーティクルを流す
 

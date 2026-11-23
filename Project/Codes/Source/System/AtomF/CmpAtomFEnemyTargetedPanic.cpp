@@ -1,10 +1,12 @@
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 
+#include "Math/Vector3.h"
 #include "System/AtomF/AtomFEnemyAimCapsuleTargetQuery.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/DeltaTime.h"
+#include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
 
 #include <cmath>
@@ -19,8 +21,33 @@ constexpr float kPanicWobbleSpeed = 62.0f;
 
 } // namespace
 
+void CmpAtomFEnemyTargetedPanic::ApplyVisualShakeOffset(const float offsetX,
+                                                        const float offsetZ) {
+  if (GetOwner() == nullptr) {
+    return;
+  }
+  Entity &owner = RefOwner();
+  if (!owner.HasDrawCmp<CmpMeshSphere>()) {
+    return;
+  }
+  if (CmpMeshSphere *mesh = owner.GetDrawCmp<CmpMeshSphere>();
+      mesh != nullptr) {
+    mesh->SetDrawOffset(Math::Vector3{offsetX, 0.0f, offsetZ});
+  }
+}
+
+void CmpAtomFEnemyTargetedPanic::ResetVisualShakeOffset() {
+  ApplyVisualShakeOffset(0.0f, 0.0f);
+}
+
 void CmpAtomFEnemyTargetedPanic::ResolveDependence() {
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
+}
+
+void CmpAtomFEnemyTargetedPanic::Finalize() {
+  isPanicking_ = false;
+  panicLingerSeconds_ = 0.0f;
+  ResetVisualShakeOffset();
 }
 
 void CmpAtomFEnemyTargetedPanic::Update() {
@@ -34,6 +61,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
         chain != nullptr && chain->IsDying()) {
       isPanicking_ = false;
       panicLingerSeconds_ = 0.0f;
+      ResetVisualShakeOffset();
       return;
     }
   }
@@ -44,6 +72,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
         knockback != nullptr && knockback->HasActiveKnockback()) {
       isPanicking_ = false;
       panicLingerSeconds_ = 0.0f;
+      ResetVisualShakeOffset();
       return;
     }
   }
@@ -57,9 +86,6 @@ void CmpAtomFEnemyTargetedPanic::Update() {
   }
 
   if (targeted) {
-    if (!isPanicking_) {
-      anchorTranslate_ = RefOwner().RefTransform().translate;
-    }
     isPanicking_ = true;
     panicLingerSeconds_ = kPanicLingerAfterAimSeconds;
   } else if (isPanicking_) {
@@ -67,20 +93,21 @@ void CmpAtomFEnemyTargetedPanic::Update() {
     if (panicLingerSeconds_ <= 0.0f) {
       isPanicking_ = false;
       panicLingerSeconds_ = 0.0f;
+      ResetVisualShakeOffset();
       return;
     }
   } else {
     return;
   }
 
+  // 当たり判定（Entity の Transform / CmpHitSphere）は動かさず、見た目だけ揺らす。
   wobblePhaseSeconds_ += dt;
-  Math::Vector3 &translate = RefOwner().RefTransform().translate;
-  translate = anchorTranslate_;
   const float wobble = std::sin(wobblePhaseSeconds_ * kPanicWobbleSpeed);
-  translate.x += wobble * kPanicShakeAmplitudeMeters;
-  translate.z +=
+  const float offsetX = wobble * kPanicShakeAmplitudeMeters;
+  const float offsetZ =
       std::cos(wobblePhaseSeconds_ * kPanicWobbleSpeed * 1.2f) *
       kPanicShakeAmplitudeMeters * 0.85f;
+  ApplyVisualShakeOffset(offsetX, offsetZ);
 }
 
 } // namespace Atrum

@@ -1005,6 +1005,35 @@
 |--------|------|------|
 | 敵爆発の当たり判定を半径cの球にする | 有効 | プリミティブ(直方体や球、円柱やカプセル、面や線)同士の当たり判定が実装してある |
 
+---
+
+## セッション 2026-11-23（ループ tick・敵焦りモーション中の当たり判定固定）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyPanicColliderStatic`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵の焦りモーション — 当たり判定は動かない
+- `Project/Codes/Include/System/Entity/Components/CmpMeshSphere.h` / `Project/Codes/Source/System/Entity/Components/CmpMeshSphere.cpp`: 見た目専用の `drawOffset_`（`SetDrawOffset` / `GetDrawOffset`）を追加し、描画時のワールド行列へ `Matrix4x4::Translate(drawOffset_)` のみ適用するようにした。
+- `Project/Codes/Include/System/AtomF/CmpAtomFEnemyTargetedPanic.h` / `Project/Codes/Source/System/AtomF/CmpAtomFEnemyTargetedPanic.cpp`: `RefOwner().RefTransform().translate` を直接揺らす処理を廃止し、`ApplyVisualShakeOffset()` / `ResetVisualShakeOffset()` で `CmpMeshSphere::SetDrawOffset` だけを更新するように分離した。これにより焦り中の `Entity::GetWorldPosition()` および `CmpHitSphere` 当たり判定が一切移動・振動しなくなった。
+- `Project/Codes/Source/Scene/SceneBuildUpAtomFEnemySpawn.cpp`: `CmpAtomFEnemyTargetedPanic` を `CmpAtomFEnemyWalkToPlayer` / `CmpAtomFEnemyPeriodicCharge` より先に登録し、狙われた初フレームから移動系より先に `BlocksLocomotion()` が有効になるようにした。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「敵の焦りモーション › その場で小刻みに震える（ぱっと見で分かる程度）」→ `feature/AtomFEnemyPanicShakeVisual`
+
+## 推測した用途（§6.4）
+
+- **敵焦りモーション中の当たり判定固定（見た目オフセット分離）**:
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` で自機エイムカプセルに敵が狙われたとき）
+  - 用途: 敵の焦りモーションによる振動をメッシュ描画の見た目オフセットのみに閉じ込め、自機弾やエイム判定・接触ダメージに用いる `CmpHitSphere` 位置がぶれないようにする。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵焦りモーション中に当たり判定を動かさない | 有効 | プリミティブ(直方体や球、円柱やカプセル、面や線)同士の当たり判定が実装してある |
+
 
 
 

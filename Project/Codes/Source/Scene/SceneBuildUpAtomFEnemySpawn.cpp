@@ -38,9 +38,9 @@ void AppendAtomFEnemyIfScene(
 
   enemy->AddUpdCmp<CmpAtomFEnemyKnockback>();
   enemy->AddUpdCmp<CmpAtomFEnemyChainExplosion>();
+  enemy->AddUpdCmp<CmpAtomFEnemyTargetedPanic>();
   enemy->AddUpdCmp<CmpAtomFEnemyWalkToPlayer>();
   enemy->AddUpdCmp<CmpAtomFEnemyPeriodicCharge>();
-  enemy->AddUpdCmp<CmpAtomFEnemyTargetedPanic>();
 
   enemy->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = enemy->GetDrawCmp<CmpMeshSphere>();

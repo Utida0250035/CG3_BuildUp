@@ -5,11 +5,13 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T09:39:00.9020056+09:00
-- expiresAt: 2026-11-23T10:39:00.9020056+09:00
-- task: 当たり判定は半径cの球
+- updatedAt: 2026-11-23T09:59:52.6701094+09:00
+- expiresAt: 2026-11-23T12:59:52.6701094+09:00
+- task: 敵の焦りモーション › 当たり判定は動かない
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`
-  - `Project/Codes/Include/System/Entity/Components/CmpHitSphere.h`
   - `EditorAssets/Tools/CursorAI/loop_state.json`
+  - `Project/Codes/Include/System/Entity/Components/CmpMeshSphere.h`
+  - `Project/Codes/Source/System/Entity/Components/CmpMeshSphere.cpp`
+  - `Project/Codes/Source/Scene/SceneBuildUpAtomFEnemySpawn.cpp`

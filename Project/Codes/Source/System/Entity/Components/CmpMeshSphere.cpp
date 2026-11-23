@@ -60,11 +60,16 @@ void CmpMeshSphere::Draw() {
   }
 
   const bool useAlphaBlend = isDepthBullet || drawColor.w < 0.999f;
+  Math::Matrix4x4 worldMatrix = owner->GetWorldMatrix();
+  if (drawOffset_.x != 0.0f || drawOffset_.y != 0.0f ||
+      drawOffset_.z != 0.0f) {
+    worldMatrix = worldMatrix * Math::Matrix4x4::Translate(drawOffset_);
+  }
   engine->SetBlendModeForFrame(
       useAlphaBlend ? BlendMode::NORMAL : BlendMode::NONE);
   engine->DrawSphere(
       WhiteTextureIndex(), drawColor, Math::Transform{},
-      owner->GetWorldMatrix(), drawRadius, subdivision_,
+      worldMatrix, drawRadius, subdivision_,
       isLightingEnabled_);
   engine->SetBlendModeForFrame(BlendMode::NONE);
 }
