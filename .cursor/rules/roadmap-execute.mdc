@@ -39,9 +39,13 @@ alwaysApply: true
 4. 実装・修正が必要なとき:
    - `branchNaming.md` でブランチ名 → **`startTaskBranchFromDevelop.ps1 -BranchName "…"`**（develop 起点、§6.5）
    - 最小 diff、Atrum 規約、既存実装の修正よりも新たな実装（新規ファイル・クラス・関数）への細分化での解決を優先
-5. **`buildDevelopment.cmd`**（§4）
-6. 成功: 該当 roadmap 行を `- [x]`、`progress_report.md` **末尾追記**（§3・上書き禁止。項目8 の査定を含む）
-7. **§2 停止** … 次の `- [ ]` へは、ユーザーが再度「ロードマップを実行して。」／「次へ」等と言うまで進めない（`/loop` 中は tick 継続）
+   - **ビルド確認は行わず、エラーになる矛盾の静的チェックのみ行う:**
+     - `buildDevelopment.cmd` や MSBuild 等によるビルドは実行しない
+     - `python EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py`（新規／削除ファイルと `Project/CG2_BuildUp.vcxproj` の整合確認）
+     - ヘッダ宣言（`.h`）と実装（`.cpp`）の名前空間・シグネチャ・型の整合、および呼び出し元・`#include` パスの実在照合
+     - プリプロセッサ分岐（`DEVELOPMENT` / `USE_IMGUI` 等）や `Release|x64` の `ExcludedFromBuild` と呼び出し元の矛盾チェック
+5. 編集・静的矛盾チェック完了: 該当 roadmap 行を `- [x]`、`progress_report.md` **末尾追記**（§3・上書き禁止。項目8 の査定および「ビルド未実施・静的矛盾チェック済み」を明記）
+6. **§2 停止** … 次の `- [ ]` へは、ユーザーが再度「ロードマップを実行して。」／「次へ」等と言うまで進めない（`/loop` 中は tick 継続）
 
 ## Git・コミット
 

@@ -1211,6 +1211,52 @@
 
 - 2026-11-23 16:56: ユーザー指示によりループ（`roadmap-dev`）を停止し、占有（`lease.md`）を解放（`feature/EntityEditorInputIntExecOrderBatch` に未コミット作業あり）。
 
+---
+
+## セッション 2026-11-23 17:26（§6.2 既実装確認・EntityEditorUi › InputInt で実行順が 1 スロットのみ）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ブランチ:** `develop`（最新コミット `cdc7830` / `811b84d` を確認。コード変更不要の §6.2 完了判定のため新規作業ブランチ作成・コード実装はスキップ）
+- **対象 roadmap 行:** `EntityEditorUi` › `InputInt で実行順が 1 スロットのみ`
+- `Project/Codes/Include/System/Editor/Entity/EntityEditorInspectorMultiSlotExecutionOrderUi.h` / `Project/Codes/Source/System/Editor/Entity/EntityEditorInspectorMultiSlotExecutionOrderUi.cpp` および `Project/Codes/Source/System/Editor/Entity/EntityEditorInspectorExecutionOrderBatchUi.cpp`・`Project/CG2_BuildUp.vcxproj` を確認し、以下がすでに `develop` 上で実装済みであることを確認した：
+  - 選択中インスタンス内の同型・同種別一括適用および 0 からの連番整列（`EntityEditorInspectorExecutionOrderBatchUi`）
+  - 折りたたみツリー「複数スロット実行順一括編集」での各スロット個別 `InputInt` 直接編集、チェック選択スロットへの「チェック中へ適用」および `-1` / `+1` 一括シフト
+  - 複数インスタンス選択時の「選択中 N 体の同型へ実行順を適用」
+- `EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md`: 当該行を `- [x]` に更新した。
+- **ビルド確認:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64`（MSBuild `Project/CG2_BuildUp.slnx`）ともに成功（exit 0）。ランタイム手動確認は未実施。
+
+### 2. 発生した課題または設計上の選択肢
+
+- `roadmap.md` の `EntityEditorUi` 節には類似項目（`実行順 InputInt が単体` や既に完了済みの項目など）が残っているため、次回以降に §6.1 / §6.2 に基づき順次確認・整理する。
+
+### 3. 次に実行すべきステップの提案
+
+- 人間レビュー／指示待ち（「ロードマップを実行して。」またはコミット指示）。
+- 次候補: `EntityEditorUi` › `Selectable はパス選択のみで即開かない`（`EditorImportedAssetProjectPanelList.cpp` / `PrefabAssetProjectPanelList.cpp` / `EntityEditorUiEditableSceneList.cpp` 等の一覧 `ImGui::Selectable` でダブルクリック等による即開き対応を検討）。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- `EntityEditorUi › InputInt で実行順が 1 スロットのみ`: `EntityEditorInspectorExecutionOrderBatchUi.cpp` と `EntityEditorInspectorMultiSlotExecutionOrderUi.cpp` により複数スロット一括 `InputInt`・`±1` シフト・各行インライン編集・複数インスタンス同型適用がすでに実装済みであり、`Development|x64` / `Debug|x64` ビルドも通過したため `- [x]` に更新。
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（本セッションは §6.2 コード確認による `[x]` 更新のみで新規コード変更なし。なお既存実装の用途は自作エディタのインスペクタにおける複数スロット・複数エンティティ間の実行順一括調整）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| InputInt で実行順が 1 スロットのみ | 有効 | 各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる |
+
 
 
 

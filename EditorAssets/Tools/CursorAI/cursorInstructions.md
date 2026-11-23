@@ -32,8 +32,8 @@
 
 ## 4. 完了の定義（このリポジトリ）
 
-- **ビルド:** `EditorAssets/Tools/CursorAI/buildDevelopment.cmd`（`Project/CG2_BuildUp.vcxproj`、Configuration=Development、Platform=x64）
-- **テスト:** 自動テストは未整備。ランタイム確認が必要な変更は `progress_report.md` に「未実施／実施済み」を明記する。
+- **ビルド／静的チェック:** 通常時は `EditorAssets/Tools/CursorAI/buildDevelopment.cmd`（`Project/CG2_BuildUp.vcxproj`、Configuration=Development、Platform=x64）および全構成確認を行う。ただし **ロードマップ実行時（「ロードマップを実行して。」等）はビルド確認を行わず、ファイルの編集（＋ §6.5 の作業ブランチ作成）とエラーになる矛盾の静的チェック（`verify_vcxproj_coverage.py`、宣言／定義／呼び出し元／`#include`／構成・マクロ分岐の照合）のみ**を行う。
+- **テスト:** 自動テストは未整備。ランタイム確認やビルド確認が未実施の変更は `progress_report.md` に「ビルド未実施（静的矛盾チェック済み）」等を明記する。
 - **サブタスクの粒度:** 原則 1 ビルド単位・少数ファイル。新 API やレンダパス全体の差し替えは分割する。
 
 ## 5. Git とチェック
@@ -69,9 +69,9 @@
 2. **`startTaskBranchFromDevelop.ps1 -BranchName "feature/…"`** を実行する（`develop` を pull したうえで新規ブランチ作成・push）。
 3. `progress_report.md` に **着手ブランチ名** と **対応する roadmap 行** を 1 行書く。
 
-**完了後（ビルド成功・§4）**
+**完了後（編集・静的矛盾チェック完了・§4）**
 
-- **通常:** `finishTaskGit.ps1`（§8）。
+- **通常:** `finishTaskGit.ps1`（§8）。（ロードマップ実行時はビルドを行わず、ファイル編集＋静的矛盾チェック＋報告更新までで完了としてよい）
 - **`/loop`:** `loopMergeTickToDevelop.ps1 -CommitMessage "…" -NextBranchName "feature/…"` … マージ後は **完了したブランチを削除** し、**次タスク用に既に `-NextBranchName` を切っている** 状態で次 tick／次タスクへ進む。
 
 **次ブランチ名**
