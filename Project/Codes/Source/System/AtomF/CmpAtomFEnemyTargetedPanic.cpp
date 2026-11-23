@@ -2,14 +2,17 @@
 
 #include "Math/Vector3.h"
 #include "System/AtomF/AtomFEnemyAimCapsuleTargetQuery.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
+#include "System/Particle/GameCombatParticleEffects.h"
 
 #include <cmath>
+#include <cstdint>
 
 namespace Atrum {
 
@@ -20,6 +23,7 @@ constexpr float kPanicLingerAfterAimSeconds = 0.35f;
 constexpr float kPanicShakeAmplitudeHorizontalMeters = 0.12f;
 constexpr float kPanicShakeAmplitudeVerticalMeters = 0.045f;
 constexpr float kPanicWobbleSpeed = 76.0f;
+constexpr float kPanicSweatEmitIntervalSeconds = 0.14f;
 
 /// 焦り中の見た目専用小刻み震えオフセットを算出する（地面に沈まないよう Y >= 0）。
 Math::Vector3 ComputePanicVisualShakeOffset(const float phaseSeconds) {
@@ -56,6 +60,23 @@ void CmpAtomFEnemyTargetedPanic::ResetVisualShakeOffset() {
   ApplyVisualShakeOffset(Math::Vector3{0.0f, 0.0f, 0.0f});
 }
 
+void CmpAtomFEnemyTargetedPanic::EmitSweatFromTopIfDue(
+    const float deltaSeconds, const Math::Vector3 &visualOffset) {
+  sweatEmitCooldownSeconds_ -= deltaSeconds;
+  if (sweatEmitCooldownSeconds_ > 0.0f) {
+    return;
+  }
+  sweatEmitCooldownSeconds_ = kPanicSweatEmitIntervalSeconds;
+
+  const float topOffsetY = AtomF::ResolveEnemyBodyRadiusMeters();
+  const Math::Vector3 topWorldPos =
+      RefOwner().GetWorldPosition() + visualOffset +
+      Math::Vector3{0.0f, topOffsetY, 0.0f};
+  static uint32_t sweatSequence = 0U;
+  ++sweatSequence;
+  Particle::Combat::PlayEnemyPanicSweatEffect(topWorldPos, sweatSequence);
+}
+
 void CmpAtomFEnemyTargetedPanic::ResolveDependence() {
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 }
@@ -63,6 +84,7 @@ void CmpAtomFEnemyTargetedPanic::ResolveDependence() {
 void CmpAtomFEnemyTargetedPanic::Finalize() {
   isPanicking_ = false;
   panicLingerSeconds_ = 0.0f;
+  sweatEmitCooldownSeconds_ = 0.0f;
   ResetVisualShakeOffset();
 }
 
@@ -77,6 +99,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
         chain != nullptr && chain->IsDying()) {
       isPanicking_ = false;
       panicLingerSeconds_ = 0.0f;
+      sweatEmitCooldownSeconds_ = 0.0f;
       ResetVisualShakeOffset();
       return;
     }
@@ -88,6 +111,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
         knockback != nullptr && knockback->HasActiveKnockback()) {
       isPanicking_ = false;
       panicLingerSeconds_ = 0.0f;
+      sweatEmitCooldownSeconds_ = 0.0f;
       ResetVisualShakeOffset();
       return;
     }
@@ -104,6 +128,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
   if (targeted) {
     if (!isPanicking_) {
       wobblePhaseSeconds_ = 0.0f;
+      sweatEmitCooldownSeconds_ = 0.0f;
     }
     isPanicking_ = true;
     panicLingerSeconds_ = kPanicLingerAfterAimSeconds;
@@ -112,6 +137,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
     if (panicLingerSeconds_ <= 0.0f) {
       isPanicking_ = false;
       panicLingerSeconds_ = 0.0f;
+      sweatEmitCooldownSeconds_ = 0.0f;
       ResetVisualShakeOffset();
       return;
     }
@@ -121,7 +147,10 @@ void CmpAtomFEnemyTargetedPanic::Update() {
 
   // 当たり判定（Entity の Transform / CmpHitSphere）は動かさず、見た目だけ小刻みに震わせる。
   wobblePhaseSeconds_ += dt;
-  ApplyVisualShakeOffset(ComputePanicVisualShakeOffset(wobblePhaseSeconds_));
+  const Math::Vector3 visualOffset =
+      ComputePanicVisualShakeOffset(wobblePhaseSeconds_);
+  ApplyVisualShakeOffset(visualOffset);
+  EmitSweatFromTopIfDue(dt, visualOffset);
 }
 
 } // namespace Atrum

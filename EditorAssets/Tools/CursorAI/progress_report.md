@@ -1063,6 +1063,35 @@
 |--------|------|------|
 | 敵が焦りモーションで小刻みに震える視認性を整える | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・敵焦りモーション天辺からの汗パーティクル）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyPanicSweatParticles`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵の焦りモーション — 天辺から汗のパーティクルを流す
+- `Project/Assets/Particles/enemy_panic_sweat.json`: 水色の水滴球（`BUILTIN_SPHERE`・`CIRCLE_XZ` 放射拡散＋重力 `-5.8`）を放出して下に流れ落ちながら消える汗パーティクル定義を追加した。
+- `Project/Codes/Include/System/Particle/GameCombatParticleEffects.h` / `Project/Codes/Source/System/Particle/GameCombatParticleEffects.cpp`: `PlayEnemyPanicSweatEffect(worldPosition, sequenceId)` を追加した。
+- `Project/Codes/Include/System/AtomF/CmpAtomFEnemyTargetedPanic.h` / `Project/Codes/Source/System/AtomF/CmpAtomFEnemyTargetedPanic.cpp`: `EmitSweatFromTopIfDue()` を追加し、焦りモーション中は敵球の天辺座標（`GetWorldPosition() + visualOffset + {0, bodyRadius, 0}`）から `0.14s` 間隔で汗パーティクルを連続発生させるようにした（ノックバック・死亡・焦り解除時はタイマーをリセット）。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「自機がダメージを受けたときの演出 › 赤いビネットが画面端に 0.75 秒出る」→ `feature/AtomFPlayerDamageVignette`
+
+## 推測した用途（§6.4）
+
+- **敵焦りモーションの汗パーティクル**:
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` で自機エイムカプセルに敵が狙われている間）
+  - 用途: 小刻みな震えと合わせて敵頭頂部から汗しずくを流すことで、狙われた敵の焦り状態を視覚的に分かりやすく伝える。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵の天辺から焦り汗パーティクルを流す | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
 
 
 

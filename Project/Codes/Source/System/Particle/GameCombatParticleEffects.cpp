@@ -18,6 +18,8 @@ inline constexpr const char *kPlayerHitEnemyBulletParticleJson =
     "./Assets/Particles/player_hit_enemy_bullet.json";
 inline constexpr const char *kBossDeathExplosionParticleJson =
     "./Assets/Particles/boss_death_explosion.json";
+inline constexpr const char *kEnemyPanicSweatParticleJson =
+    "./Assets/Particles/enemy_panic_sweat.json";
 
 inline constexpr const char *kParryReflectEmitterNamePrefix =
     "combat_parry_reflect_";
@@ -28,6 +30,8 @@ inline constexpr const char *kBossDeathExplosionEmitterNamePrefix =
     "combat_boss_death_explosion_";
 inline constexpr const char *kPlayerDeathDamageEmitterNamePrefix =
     "combat_player_death_damage_";
+inline constexpr const char *kEnemyPanicSweatEmitterNamePrefix =
+    "combat_enemy_panic_sweat_";
 
 Particle::Emitter::EmitterManager *CombatEmitterManager() {
   Atrum::Scene *sceneNow = Atrum::CommandScene::Instance()->GetSceneNow();
@@ -79,6 +83,12 @@ void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,
   PlayOneShotEffect(kBossDeathExplosionEmitterNamePrefix,
                     kBossDeathExplosionParticleJson, worldPosition,
                     sequenceId);
+}
+
+void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
+                               const uint32_t sequenceId) {
+  PlayOneShotEffect(kEnemyPanicSweatEmitterNamePrefix,
+                    kEnemyPanicSweatParticleJson, worldPosition, sequenceId);
 }
 
 void SetEffectCamera(Camera *camera) {

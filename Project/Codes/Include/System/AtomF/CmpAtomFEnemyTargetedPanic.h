@@ -21,11 +21,14 @@ public:
 private:
   void ApplyVisualShakeOffset(const Math::Vector3 &offset);
   void ResetVisualShakeOffset();
+  void EmitSweatFromTopIfDue(float deltaSeconds,
+                             const Math::Vector3 &visualOffset);
 
   class FrameDeltaTime *frameDeltaTime_ = nullptr;
   bool isPanicking_ = false;
   float panicLingerSeconds_ = 0.0f;
   float wobblePhaseSeconds_ = 0.0f;
+  float sweatEmitCooldownSeconds_ = 0.0f;
 };
 
 } // namespace Atrum

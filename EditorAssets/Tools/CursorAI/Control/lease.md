@@ -5,12 +5,14 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T10:19:01.9310321+09:00
-- expiresAt: 2026-11-23T11:19:01.9310321+09:00
-- task: 敵の焦りモーション › その場で小刻みに震える（ぱっと見で分かる程度）
+- updatedAt: 2026-11-23T10:40:13.3515150+09:00
+- expiresAt: 2026-11-23T13:40:13.3515150+09:00
+- task: 敵の焦りモーション › 天辺から汗のパーティクルを流す
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`
-  - `Project/Codes/Include/System/Entity/Components/CmpMeshSphere.h`
-  - `Project/Codes/Source/System/Entity/Components/CmpMeshSphere.cpp`
+  - `Project/Codes/Source/Scene/SceneBuildUpAtomFEnemySpawn.cpp`
   - `EditorAssets/Tools/CursorAI/loop_state.json`
+  - `Project/Codes/Include/System/Particle/GameCombatParticleEffects.h`
+  - `Project/Codes/Source/System/Particle/GameCombatParticleEffects.cpp`
+  - `Project/Assets/Particles/enemy_panic_sweat.json`

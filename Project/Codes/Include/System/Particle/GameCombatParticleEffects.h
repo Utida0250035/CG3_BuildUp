@@ -34,6 +34,12 @@ void PlayPlayerDeathDamageScatterEffect(const Math::Vector3 &worldPosition,
 void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,
                                   uint32_t sequenceId);
 
+/// <summary>
+/// 敵の焦りモーション中に天辺から流す汗パーティクル（sequenceId でエミッタ名を一意化）
+/// </summary>
+void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
+                               uint32_t sequenceId);
+
 void SetEffectCamera(Camera *camera);
 void UpdateCombatParticleEffects();
 void DrawCombatParticleEffects();
