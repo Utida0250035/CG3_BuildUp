@@ -7,6 +7,7 @@ float ResolvePlayerBodyRadiusMeters();
 /// parameters の半径b（player.aimCapsule.radiusMeters）
 float ResolvePlayerAimCapsuleRadiusMeters();
 float ResolvePlayerDamageVignetteSeconds();
+int ResolvePlayerDamageSePlayCount();
 /// parameters の半径a（player.bullet.hitRadiusMeters）
 float ResolvePlayerBulletRadiusMeters();
 float ResolvePlayerBulletSpeedMetersPerSecond();

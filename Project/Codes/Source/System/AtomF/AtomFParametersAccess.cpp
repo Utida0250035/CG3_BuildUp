@@ -21,6 +21,14 @@ float ResolvePlayerDamageVignetteSeconds() {
   return kPlayerDamageVignetteSeconds;
 }
 
+int ResolvePlayerDamageSePlayCount() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().damageFeedback.sePlayCount;
+  }
+  return 1;
+}
+
 float ResolvePlayerAimCapsuleRadiusMeters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {

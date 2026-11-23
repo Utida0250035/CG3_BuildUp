@@ -1121,6 +1121,36 @@
 |--------|------|------|
 | 自機被弾時に画面端へ 0.75 秒赤いビネットを出す | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・自機被弾時の効果音 1 回再生）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFPlayerDamageSeOnce`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 自機がダメージを受けたときの演出 — 効果音が 1 回鳴る（本件で `atomF` 節の全タスク完了）
+- `Project/Codes/Include/System/PlaySe.h`: `PreloadSeCandidates()` を追加し、再生せずに候補音声を事前読み込みできるようにした。
+- `Project/Codes/Include/System/AtomF/AtomFParametersAccess.h` / `Project/Codes/Source/System/AtomF/AtomFParametersAccess.cpp`: `ResolvePlayerDamageSePlayCount()` を追加し、`parameters.json` の `player.damageFeedback.sePlayCount`（`1`）を取得できるようにした。
+- `Project/Codes/Source/System/AtomF/AtomFPlayerHealthAttach.cpp`: 自機アタッチ時に `sePlayerDamage.mp3` を事前読み込みし、初回被弾時の遅延を防止した。
+- `Project/Codes/Source/System/Entity/Components/CmpHealthHit.cpp`: 自機被弾時、`AtomF::ParametersRuntime::Instance().IsLoaded()` の場合は `ResolvePlayerDamageSePlayCount()`（`1` 回）分 `PlayPlayerDamageSe()` を呼び、無敵時間（`0.75s`）と合わせて被弾 1 回につき効果音が 1 回だけ鳴るように整合させた。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「EntityEditorUi › ヒット球は選択 1 球のみ編集」→ `feature/EntityEditorMultiHitSpheres`
+
+## 推測した用途（§6.4）
+
+- **自機被弾時の効果音 1 回再生**:
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` で自機が敵接触等でダメージを受けたとき）
+  - 用途: `parameters.json` の `sePlayCount`（`1`）および事前読み込みにより、被弾の瞬間に遅延なく 1 回だけ被弾音を鳴らし、連続ヒットの多重再生を防ぐ。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 自機被弾時に効果音を 1 回鳴らす | 有効 | mp4やwavなど代表的な拡張子の音源ファイルを読み込める／ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
 
 
 

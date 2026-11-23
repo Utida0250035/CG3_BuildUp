@@ -796,7 +796,7 @@
 
 ### 自機がダメージを受けたときの演出
 - [x] 赤いビネットが画面端に 0.75 秒出る（`PlayerDamageScreenVignette::RequestShow(durationSeconds)`・`CmpHealthHit` が `AtomF::ParametersRuntime` 読込時に `0.75s` を指定・`SceneBuildUp` で Reset/Update/Draw）
-- [ ] 効果音が 1 回鳴る
+- [x] 効果音が 1 回鳴る（`PlaySe::PreloadSeCandidates`・`AtomFPlayerHealthAttach` 事前読込・`AtomFParametersAccess::ResolvePlayerDamageSePlayCount`・`CmpHealthHit` で無敵時間付き 1 回再生）
 
 ## GapScan（索引）
 

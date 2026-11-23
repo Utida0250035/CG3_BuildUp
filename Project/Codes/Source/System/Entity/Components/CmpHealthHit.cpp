@@ -11,6 +11,8 @@
 #include "System/Particle/GameCombatParticleEffects.h"
 #include "System/PlaySe.h"
 
+#include <algorithm>
+
 namespace Atrum {
 
 namespace {
@@ -93,9 +95,16 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 		invincibleTimer_ = invincibleTime_;
 	}
 	if (tags.EntityHasRole(RefOwner(), "player")) {
-		PlayPlayerDamageSe();
+		const bool atomFLoaded = AtomF::ParametersRuntime::Instance().IsLoaded();
+		const int sePlayCount = atomFLoaded
+		                            ? std::clamp(AtomF::ResolvePlayerDamageSePlayCount(),
+		                                         0, 8)
+		                            : 1;
+		for (int i = 0; i < sePlayCount; ++i) {
+			PlayPlayerDamageSe();
+		}
 		CombatCameraShake::Instance().RequestPlayerHitShake();
-		if (AtomF::ParametersRuntime::Instance().IsLoaded()) {
+		if (atomFLoaded) {
 			PlayerDamageScreenVignette::Instance().RequestShow(
 			    AtomF::ResolvePlayerDamageVignetteSeconds());
 		} else {

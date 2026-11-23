@@ -5,15 +5,12 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T10:59:28.3304061+09:00
-- expiresAt: 2026-11-23T13:59:28.3304061+09:00
-- task: 自機がダメージを受けたときの演出 › 赤いビネットが画面端に 0.75 秒出る
+- updatedAt: 2026-11-23T11:19:08.5432649+09:00
+- expiresAt: 2026-11-23T12:19:08.5432649+09:00
+- task: 自機がダメージを受けたときの演出 › 効果音が 1 回鳴る
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`
-  - `Project/Codes/Include/System/Entity/Components/CmpHealthHit.h`
   - `Project/Codes/Source/System/Entity/Components/CmpHealthHit.cpp`
-  - `Project/Codes/Source/Scene/SceneBuildUp.cpp`
+  - `Project/Codes/Include/System/PlaySe.h`
   - `EditorAssets/Tools/CursorAI/loop_state.json`
-  - `Project/Codes/Include/Camera/PlayerDamageScreenVignette.h`
-  - `Project/Codes/Source/Camera/PlayerDamageScreenVignette.cpp`

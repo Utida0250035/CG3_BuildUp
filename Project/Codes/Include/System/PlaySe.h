@@ -33,6 +33,18 @@ inline Audio::Handle PlaySe(const std::string &path) {
   return ::Atrum::EngineAudioManager()->Play(index);
 }
 
+/// Assets / Resources など複数候補から存在する SE を事前読込（再生はしない）
+inline void PreloadSeCandidates(
+    const std::initializer_list<const char *> candidatePaths) {
+  const std::string path =
+      PlaySeDetail::ResolveExistingSePath(candidatePaths);
+  if (path.empty()) {
+    return;
+  }
+
+  (void)PlaySeDetail::GetOrLoadSeIndex(path);
+}
+
 /// Assets / Resources など複数候補から存在する SE を再生
 inline Audio::Handle PlaySeCandidates(
     const std::initializer_list<const char *> candidatePaths) {
