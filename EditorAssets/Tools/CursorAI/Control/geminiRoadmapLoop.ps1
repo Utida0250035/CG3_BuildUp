@@ -1,7 +1,7 @@
 ﻿param(
     [int]$MaxIterations = 100,
     [int]$TimeoutSeconds = 600,
-    [int]$SleepSeconds = 600
+    [int]$SleepSeconds = 60
 )
 
 $ErrorActionPreference = "Continue"
