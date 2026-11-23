@@ -925,4 +925,30 @@
 |--------|------|------|
 | 吹き飛ばし後の壁・敵衝突爆発と縮小消滅 | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・敵吹き飛び速度 速さb の確認）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyKnockbackSpeedB`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵 — 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb
+- §6.2 コード確認により、自機弾ヒット（`CmpAtomFPlayerBulletEnemyHit`）と別敵爆発の伝播（`AtomFEnemyExplosionKnockbackSpread`）の双方が `AtomF::ResolveEnemyKnockbackSpeedMetersPerSecond()` を参照し、`Project/Assets/atomF/parameters.json` の `enemy.knockbackSpeedMetersPerSecond`（`1.5` m/s = 速さb）で `CmpAtomFEnemyKnockback` を駆動していることを確認した。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）成功（exit 0）。
+
+### 2. 次
+
+- 「敵の爆発 › この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ」→ `feature/AtomFEnemyExplosionKnockbackDirection`
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb（`ResolveEnemyKnockbackSpeedMetersPerSecond`・`CmpAtomFPlayerBulletEnemyHit`・`AtomFEnemyExplosionKnockbackSpread`・`CmpAtomFEnemyKnockback`）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵の吹き飛び速度を速さbとする | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+
 

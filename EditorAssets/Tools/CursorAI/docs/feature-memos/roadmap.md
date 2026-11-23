@@ -783,7 +783,7 @@
 - [x] 自機に狙われる（自機エイムのカプセル判定が当たる）とその場で立ち止まって焦りモーションになる（`CmpAtomFEnemyTargetedPanic`・`AtomFEnemyAimCapsuleTargetQuery`）
 - [x] 自機に当たると自機にダメージを与える（`CmpHealthHit`・`AtomFPlayerHealthAttach`・敵役 ENEMY タグの Hurter）
 - [x] 自機弾や別の敵の爆発に吹き飛ばされたあと、壁や別の敵に当たると爆発し、パーティクルを散らして小さくなって消滅する（`CmpAtomFEnemyChainExplosion`・`AtomFEnemyArenaWallContact`・`AtomFEnemyExplosionKnockbackSpread`・`PurgeDestroyedSceneEntities`）
-- [ ] 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb
+- [x] 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb（`ResolveEnemyKnockbackSpeedMetersPerSecond`・`CmpAtomFPlayerBulletEnemyHit`・`AtomFEnemyExplosionKnockbackSpread`・parameters 速さb）
 
 ### 敵の爆発
 - [ ] この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ
