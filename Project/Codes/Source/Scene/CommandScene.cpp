@@ -1,4 +1,4 @@
-﻿#include "Scene/CommandScene.h"
+#include "Scene/CommandScene.h"
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/CommandSceneDevelopmentBoot.h"
@@ -16,15 +16,22 @@ namespace Atrum {
 /// </summary>
 CommandScene::CommandScene() {
 
+}
+
+bool CommandScene::Initialize() {
+
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  const DevelopmentBootTarget bootTarget = ResolveDevelopmentBootTarget();
-  sceneNow_ = CreateInitialSceneForDevelopmentBoot(bootTarget);
+	const DevelopmentBootTarget bootTarget = ResolveDevelopmentBootTarget();
+	sceneNow_ = CreateInitialSceneForDevelopmentBoot(bootTarget);
 #else
-  sceneNow_ = CreateInitialSceneForReleaseBoot();
+	sceneNow_ = CreateInitialSceneForReleaseBoot();
 #endif
 
-  sceneNow_ = PrepareInitialSceneBeforeEnter(sceneNow_);
-  EnterInitialSceneNow(sceneNow_);
+	sceneNow_ = PrepareInitialSceneBeforeEnter(sceneNow_);
+	EnterInitialSceneNow(sceneNow_);
+
+	return true;
+
 }
 
 } // namespace Atrum

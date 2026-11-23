@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Scene/CommandSceneBootLaunchPathGate.h"
 #include <string>
 
 namespace Atrum {
@@ -20,8 +21,5 @@ struct DevelopmentBootTarget {
 
 /// EditorScenePlayRequest / launch_config から Development 起動先を決める
 DevelopmentBootTarget ResolveDevelopmentBootTarget();
-
-/// Release 起動用: パスが読める Scene JSON か検証する
-bool IsValidBootSceneJsonPath(const std::string &sceneJsonPath);
 
 } // namespace Atrum

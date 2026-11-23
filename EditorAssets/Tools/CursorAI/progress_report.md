@@ -1257,6 +1257,30 @@
 |--------|------|------|
 | InputInt で実行順が 1 スロットのみ | 有効 | 各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる |
 
+---
+
+## セッション 2026-11-23 18:55（Release|x64 未解決外部シンボル 21 件の解消）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **ブランチ:** `fix/ExecuteRoadmap`
+- **内容:** `Release|x64` リンク時に発生していた 21 件の `LNK2001`（未解決の外部参照）を解消した。
+  - `Project/Codes/Include/Scene/CommandSceneBootLaunchPathGate.h` / `Project/Codes/Source/Scene/CommandSceneBootLaunchPathGate.cpp` / `Project/Codes/Include/Scene/CommandSceneDevelopmentBoot.h` / `Project/Codes/Source/Scene/CommandSceneDevelopmentBoot.cpp`: `IsValidBootSceneJsonPath` を `CommandSceneBootLaunchPathGate` 側へ移設し、`Release|x64` の `CommandSceneBootEnterApply.cpp` からも解決できるようにした。
+  - `Project/Codes/Source/Scene/SceneMovieAudioPolicy.cpp`: `SceneEntityEditor::Instance()` のインクルードと参照を `#if defined(DEVELOPMENT) && defined(USE_IMGUI)` でガードした（`SceneMovieReturnTarget.cpp` 等と同契約）。
+  - `Project/CG2_BuildUp.vcxproj`: ImGui に一切依存せず `Release|x64` のランタイム（`EntityEditorDefinition.cpp`・`EditorSceneAsset.cpp`・`EditorSceneRuntime.cpp`・`CmpAtomFPlayerAim.cpp`・`SceneBuildUpRuntimeSubviewDrawCamera.cpp`）から直接参照されているデータ／ユーティリティ実装 17 ファイル（`EditorFrameFitCameraPerspectiveParams.cpp`・`StageViewCameraTuning.cpp`・`EditorEditViewScreenRay.cpp`・`EntityEditorComponentSlotParamsNormalize.cpp`・`EntityEditorDefaultParamsCmpCamera.cpp`・`EntityEditorComponentSlotKindResolve.cpp`・`EntityEditorKnownComponentRegistry.cpp`・`EditorSceneRuntimeDrawPreviewApply.cpp`・`EditorSceneRuntimeEntityHasComponentForSlot.cpp`・`EditorSceneRuntimeEditorAssetPathPreviewLink.cpp`・`EditorSceneRuntimeEditorAssetPathPreviewRelink.cpp`・`EditorSceneRuntimeMainCameraSupplement.cpp`・`EditorSceneRuntimeBuildWarnings.cpp`・`EditorLaunchConfigLoadDiagnostics.cpp`・`EditorLaunchConfigJsonDocument.cpp`・`EditorLaunchConfigStartupPathNormalize.cpp`・`EditorScenePlayRequestStaging.cpp`）の `Release|x64` `ExcludedFromBuild` を解除した。
+- **検証・ビルド確認:** `verify_vcxproj_coverage.py` OK。`Development|x64`・`Debug|x64`・`Release|x64` の全 3 構成すべてでコンパイルおよびリンクが成功（exit 0）することを確認した。
+
+## 推測した用途（§6.4）
+
+- **Release|x64 構成でのランタイムシーン読込・カメラ・エイム・起動構成解決のリンク整合**:
+  - 使用場面: ゲーム配布用の `Release|x64` ランタイムビルドおよび実行時（`launch_config.json` からの起動シーン解決、`EditorSceneRuntime` によるシーン JSON からのエンティティ生成、`atomF` マウスエイム平面ピック、ビューポート FOV 解決）。
+  - 用途: エディタ UI（ImGui）を除外した配布用 `Release|x64` でも、シーン JSON 読込・起動設定・ゲームプレイ用数学ユーティリティが欠落せずビルド・動作するようにする。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| Release\|x64 の未解決外部シンボル 21 件の解消 | 有効 | シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
 
 

@@ -36,18 +36,6 @@ bool IsRuntimePlayScenePath(const std::string &sceneJsonPath) {
 
 } // namespace
 
-bool IsValidBootSceneJsonPath(const std::string &sceneJsonPath) {
-  if (sceneJsonPath.empty()) {
-    return false;
-  }
-  namespace fs = std::filesystem;
-  if (!fs::exists(sceneJsonPath)) {
-    return false;
-  }
-  EntityEditor::EditorSceneDocument document{};
-  return EntityEditor::TryLoadSceneDocument(sceneJsonPath, document);
-}
-
 DevelopmentBootTarget ResolveDevelopmentBootTarget() {
   DevelopmentBootTarget target{};
   std::string sceneJsonPath = ResolveConfiguredStartupScenePath();

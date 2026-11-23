@@ -17,7 +17,7 @@ namespace Atrum {
 		/// <summary>
 		/// 現在シーン
 		/// </summary>
-		Scene* sceneNow_;
+		Scene* sceneNow_ = nullptr;
 
 	private:
 
@@ -32,6 +32,8 @@ namespace Atrum {
 		~CommandScene() = default; // 空
 
 	public:
+
+		bool Initialize();
 
 		/// <summary>
 		/// コピーコンストラクタの削除

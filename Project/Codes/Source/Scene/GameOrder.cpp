@@ -13,6 +13,10 @@ namespace Atrum {
 	/// </summary>
 	GameOrder::GameOrder() {
 
+	}
+
+	bool GameOrder::Initialize() {
+
 		frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
 		audio_ = ::Atrum::EngineAudioManager();
 
@@ -22,6 +26,10 @@ namespace Atrum {
 		commandChangeScene_ = CommandChangeScene::Instance();
 
 		AbstractInput::Instance()->Initialize();
+
+		commandScene_->Initialize();
+
+		return true;
 
 	}
 

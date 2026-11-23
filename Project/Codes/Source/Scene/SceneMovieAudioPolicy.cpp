@@ -1,7 +1,9 @@
 #include "Scene/SceneMovieAudioPolicy.h"
 
 #include "Scene/CommandChangeScene.h"
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneEntityEditor.h"
+#endif
 #include "Scene/SceneGame.h"
 #include "Scene/SceneTitle.h"
 
@@ -37,10 +39,12 @@ void SceneMovieAudioPolicy::PrepareReturnSceneBgmBeforeFade(Scene *returnScene) 
         {"./Assets/Audios/bgmTitle.mp3", "./Resources/bgmTitle.mp3"});
     return;
   }
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
   if (returnScene == SceneEntityEditor::Instance()) {
     // エディタ作業シーン: ループ BGM なし
     return;
   }
+#endif
 }
 
 void SceneMovieAudioPolicy::OnExitScene() {

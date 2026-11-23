@@ -51,6 +51,8 @@ namespace Atrum {
 
 	public:
 
+		bool Initialize();
+
 		/// <summary>
 		/// 実行部分
 		/// </summary>
