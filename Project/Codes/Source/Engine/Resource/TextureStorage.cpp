@@ -283,19 +283,18 @@ namespace Atrum {
 		// 現在のフレームが「いつ終わるか」を Signal
 		// 「次に使う予定のアロケータ」が解放されているかを確認して Wait する
 
+		const uint32_t currentBackBufferIndex = pSwapChain_->GetBackBufferIndex();
+
 		// 現在のフレームに完了番号を割り振って Signal
-		pFence_->Signal(pCommandContextDirect_->GetCommandQueue(), pSwapChain_->GetBackBufferIndex());
+		pFence_->Signal(pCommandContextDirect_->GetCommandQueue(), currentBackBufferIndex);
 
-		// 次のフレームのインデックスを取得する
-		pSwapChain_->UpdateBackBufferIndex();
+		// このテクスチャ転送が終わるまで待機してからアロケータをリセットする
+		pFence_->WaitForNextBuffer(currentBackBufferIndex);
 
-		// これから使うアロケータが前回の実行を終えているか確認
-		pFence_->WaitForNextBuffer(pSwapChain_->GetBackBufferIndex());
-
-		// 次のフレーム用のアロケータとリストをリセット
-		hr = pCommandContextDirect_->GetCommandAllocator(pSwapChain_->GetBackBufferIndex())->Reset();
+		// 同じバックバッファのアロケータとリストをリセット
+		hr = pCommandContextDirect_->GetCommandAllocator(currentBackBufferIndex)->Reset();
 		assert(SUCCEEDED(hr));
-		hr = pCommandContextDirect_->GetCommandList()->Reset(pCommandContextDirect_->GetCommandAllocator(pSwapChain_->GetBackBufferIndex()), nullptr);
+		hr = pCommandContextDirect_->GetCommandList()->Reset(pCommandContextDirect_->GetCommandAllocator(currentBackBufferIndex), nullptr);
 		assert(SUCCEEDED(hr));
 
 		// 実際にShaderResourceViewを作る

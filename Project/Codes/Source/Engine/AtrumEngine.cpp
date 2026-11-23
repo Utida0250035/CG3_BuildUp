@@ -906,6 +906,9 @@ void AtrumEngine::PostDraw() {
   commandContextDirect_->GetCommandQueue()->ExecuteCommandLists(1,
                                                                 commandLists);
 
+  // GPUとOSに画面の交換を行なうよう通知する
+  swapChainManager_->GetSwapChain()->Present(1, 0);
+
   fenceManager_->Signal(commandContextDirect_->GetCommandQueue(),
                         swapChainManager_->GetBackBufferIndex());
 
@@ -919,9 +922,6 @@ void AtrumEngine::PostDraw() {
     // フレーム内で作成した中間リソースを全て解放
     temporaryResources_.clear();
   }
-
-  // GPUとOSに画面の交換を行なうよう通知する
-  swapChainManager_->GetSwapChain()->Present(1, 0);
 
   // 次のフレーム用のコマンドリストを準備
 

@@ -1,8 +1,12 @@
 ﻿param(
     [int]$MaxIterations = 50,      # 最大ループ回数（暴走防止）
-    [int]$TimeoutSeconds = 600,    # 1回あたりのタイムアウト（10分）
-    [int]$SleepSeconds = 5         # 次の実行までの待機秒数
+    [int]$TimeoutSeconds = 1200,    # 1回あたりのタイムアウト（20分）
+    [int]$SleepSeconds = 900       # 次の実行までの待機秒数
 )
+
+[Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
 $ErrorActionPreference = "Stop"
 
@@ -20,6 +24,8 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
     # 毎回新規プロセスで実行（コンテキスト蓄積ゼロ）
     $job = Start-Job -ScriptBlock {
         param($dir)
+        [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+        $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
         Set-Location $dir
         cursor-agent -p --force --model "gemini-4-hydrogen-high" "ロードマップを実行して。"
     } -ArgumentList $ProjectRoot
@@ -37,22 +43,13 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
     $jobState = $job.State
     Remove-Job $job
 
+
     Write-Host $output
 
     if ($jobState -ne "Completed") {
         Write-Host "エラーが発生したため停止しました。" -ForegroundColor Red
         exit 1
     }
-
-    # リポジトリ内にファイル変更が発生しなくなったら全完了とみなして終了
-    if ([string]::IsNullOrWhiteSpace((git status --porcelain))) {
-        Write-Host "`n変更が発生しなくなったため終了します。" -ForegroundColor Green
-        break
-    }
-
-    # 1回ごとに自動コミット
-    git add -A
-    git commit -m "auto: roadmap step $iter" | Out-Null
 
     Start-Sleep -Seconds $SleepSeconds
 }

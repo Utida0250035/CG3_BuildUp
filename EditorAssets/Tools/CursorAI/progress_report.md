@@ -1282,5 +1282,55 @@
 |--------|------|------|
 | Release\|x64 の未解決外部シンボル 21 件の解消 | 有効 | シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-24 07:20（着手前確認・ブランチ整理待ちで一時停止）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/ExecuteRoadmap`（`origin/fix/ExecuteRoadmap` より ahead 1 の `4f56e5c 仮コミット` ＋ 未コミット変更 7 ファイルあり）
+- **対象 roadmap 行:** `EntityEditorUi` › `Selectable が path 全文`（ファイル順最初の `- [ ]`）
+- **§6.2 コード確認結果:** `Project/Codes/Source/System/Editor/Prefab/PrefabAssetProjectPanelList.cpp`（49行目）および `Project/Codes/Source/System/Editor/EditorImportedAssetProjectPanelList.cpp`（47行目）の `ImGui::Selectable` は依然としてパス全文（`path.c_str()`）をそのままラベル表示しているため未実装と確認（`EntityEditorUiEditableSceneList.cpp` は `SceneDisplayNameFromPath(path) + "  |  " + path`）。
+- **§6.7 最終目標査定:** 有効かつ矛盾なし（下記「最終目標との査定（§6.7）」参照）。
+- **ブランチ作成・コード編集:** `fix/ExecuteRoadmap` 上の未コミット変更（`EditorAssets/Tools/CursorAI/Control/cursorRoadmapLoop.ps1`、`EditorAssets/Tools/CursorAI/Control/geminiRoadmapLoop.ps1`、`Project/Codes/Include/Scene/SceneBuildUpDedicatedRuntimeViewWindow.h`、`Project/Codes/Source/Engine/AtrumEngine.cpp`、`Project/Codes/Source/Engine/Resource/TextureStorage.cpp`、`Project/Codes/Source/Scene/SceneBuildUp.cpp`、`Project/Codes/Source/Scene/SceneBuildUpDedicatedRuntimeViewWindow.cpp`）が存在するため、`startTaskBranchFromDevelop.ps1`（`develop` 以外の未コミット変更がある場合はエラー停止）および無断コミット／破棄禁止ルールにより新規作業ブランチ（`fix/EntityEditorSelectableShortLabel`）への切替・コード編集を行わず停止した。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- **課題:** 現在の `fix/ExecuteRoadmap` に別作業の未コミット変更 7 ファイルと `4f56e5c 仮コミット` が残っているため、§6.5 の `develop` 起点での新規作業ブランチ作成へ進めない。
+- **選択肢:**
+  - **A. `fix/ExecuteRoadmap` をコミット・`develop` へマージ・元ブランチ削除後、`develop` から `fix/EntityEditorSelectableShortLabel` を作成して続行**
+    - メリット: 現在の作業内容を失わず `develop` に統合した上でクリーンに次タスクへ進める。
+    - デメリット: 現在の未コミット変更がビルド可能・マージ可能な状態であることを前提とする。
+  - **B. 未コミット変更を `git stash` に退避し、`develop` から `fix/EntityEditorSelectableShortLabel` を作成して続行**
+    - メリット: `fix/ExecuteRoadmap` の作業を一旦そのまま残し、次タスクを独立ブランチで進められる。
+    - デメリット: 後で `fix/ExecuteRoadmap` へ戻って stash を復元・整理する必要がある。
+
+### 3. 次に実行すべきステップの提案
+
+- `fix/ExecuteRoadmap` の未コミット変更 7 ファイルおよび `4f56e5c 仮コミット` の扱い（コミットして `develop` マージするか、`git stash` 退避するか、手動整理するか）を人間から指示いただいた後、`startTaskBranchFromDevelop.ps1 -BranchName "fix/EntityEditorSelectableShortLabel"` でブランチを作成し、`EntityEditorUi › Selectable が path 全文` の実装に進む。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし（`roadmap.md` の該当行は `- [ ]` のまま維持）
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（コード未編集・ブランチ整理待ちで停止）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorUi › Selectable が path 全文 | 有効 | ・エンティティをプレハブ化してjsonデータとしてアセット保存することができる / ・ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている |
+
+
 
 

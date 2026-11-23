@@ -279,12 +279,14 @@ void SceneBuildUp::Draw() {
   } else {
     DrawSceneBuildUpMissingPrimaryCameraNoticeIfPending();
   }
+  // ImGui::Render の前に ImGui ウィジェットを構築する
+  SceneBuildUpDedicatedRuntimeViewWindow::LayoutView(*this);
 #endif
 #ifdef USE_IMGUI
   engine->ImGuiRender();
 #endif
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  SceneBuildUpDedicatedRuntimeViewWindow::LayoutAndRenderViews(*this);
+  SceneBuildUpDedicatedRuntimeViewWindow::RenderViews(*this);
 #endif
   engine->PostDraw();
 }

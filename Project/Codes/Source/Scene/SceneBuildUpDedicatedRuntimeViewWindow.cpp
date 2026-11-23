@@ -12,14 +12,16 @@
 
 namespace Atrum::SceneBuildUpDedicatedRuntimeViewWindow {
 
-void LayoutAndRenderViews(SceneBuildUp &scene) {
+void LayoutView(SceneBuildUp &scene) {
   static std::string statusLineStorage;
   statusLineStorage = BuildSceneBuildUpRuntimeViewStatusLine(scene);
 
   LayoutDedicatedSceneViewWindow(
       kWindowTitle, Editor::SceneViewTab::Runtime, statusLineStorage.c_str(),
       "F1: 戻る");
+}
 
+void RenderViews(SceneBuildUp &scene) {
   Atrum::Engine *const engine = ::Atrum::EngineInstance();
   if (engine == nullptr) {
     return;
@@ -33,6 +35,11 @@ void LayoutAndRenderViews(SceneBuildUp &scene) {
         }
         scene.DrawRuntimeViewContent(width, height);
       });
+}
+
+void LayoutAndRenderViews(SceneBuildUp &scene) {
+  LayoutView(scene);
+  RenderViews(scene);
 }
 
 } // namespace Atrum::SceneBuildUpDedicatedRuntimeViewWindow

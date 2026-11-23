@@ -11,6 +11,8 @@ namespace SceneBuildUpDedicatedRuntimeViewWindow {
 
 constexpr const char *kWindowTitle = "機能検証 BuildUp";
 
+void LayoutView(SceneBuildUp &scene);
+void RenderViews(SceneBuildUp &scene);
 void LayoutAndRenderViews(SceneBuildUp &scene);
 
 } // namespace SceneBuildUpDedicatedRuntimeViewWindow
