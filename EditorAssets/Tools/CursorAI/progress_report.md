@@ -1034,6 +1034,35 @@
 |--------|------|------|
 | 敵焦りモーション中に当たり判定を動かさない | 有効 | プリミティブ(直方体や球、円柱やカプセル、面や線)同士の当たり判定が実装してある |
 
+---
+
+## セッション 2026-11-23（ループ tick・敵焦りモーションの小刻みな震え視覚調整）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyPanicShakeVisual`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵の焦りモーション — その場で小刻みに震える（ぱっと見で分かる程度）
+- `Project/Codes/Include/System/AtomF/CmpAtomFEnemyTargetedPanic.h` / `Project/Codes/Source/System/AtomF/CmpAtomFEnemyTargetedPanic.cpp`:
+  - `ApplyVisualShakeOffset(const Math::Vector3 &)` へ拡張し、`ComputePanicVisualShakeOffset()` を切り出した。
+  - 斜め俯瞰カメラ（距離約 14m）からの視認性を踏まえ、敵直径 `0.5m` に対してぱっと見で分かる水準（水平振幅 `0.12m`、上方向のみ微小バウンス `0.045m`、角速度 `76.0 rad/s`）へ調整し、狙われ開始時に位相をリセットして即座に小刻み振動が始まるようにした。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「敵の焦りモーション › 天辺から汗のパーティクルを流す」→ `feature/AtomFEnemyPanicSweatParticles`
+
+## 推測した用途（§6.4）
+
+- **敵焦りモーションの小刻み震え**:
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` で自機エイムカプセルに敵が狙われたとき）
+  - 用途: 俯瞰視点のゲームプレイ中に「この敵が自機に狙われて焦って立ち止まっている」ことをプレイヤーが一目で識別できる視覚フィードバックを与える。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵が焦りモーションで小刻みに震える視認性を整える | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
 
 
 

@@ -791,7 +791,7 @@
 
 ### 敵の焦りモーション
 - [x] 当たり判定は動かない（`CmpMeshSphere::SetDrawOffset` による見た目のみオフセット・`CmpAtomFEnemyTargetedPanic` は `RefTransform().translate` 非変更・`SceneBuildUpAtomFEnemySpawn` で移動系より先に更新）
-- [ ] その場で小刻みに震える（ぱっと見で分かる程度）
+- [x] その場で小刻みに震える（ぱっと見で分かる程度）（`CmpAtomFEnemyTargetedPanic::ComputePanicVisualShakeOffset` 水平 `0.12m`/垂直 `0.045m`/角速度 `76.0`）
 - [ ] 天辺から汗のパーティクルを流す
 
 ### 自機がダメージを受けたときの演出

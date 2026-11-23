@@ -16,13 +16,29 @@ namespace Atrum {
 namespace {
 
 constexpr float kPanicLingerAfterAimSeconds = 0.35f;
-constexpr float kPanicShakeAmplitudeMeters = 0.08f;
-constexpr float kPanicWobbleSpeed = 62.0f;
+// 斜め俯瞰カメラ（距離約14m）からでも敵半径0.25mに対してぱっと見で分かる振幅・周波数。
+constexpr float kPanicShakeAmplitudeHorizontalMeters = 0.12f;
+constexpr float kPanicShakeAmplitudeVerticalMeters = 0.045f;
+constexpr float kPanicWobbleSpeed = 76.0f;
+
+/// 焦り中の見た目専用小刻み震えオフセットを算出する（地面に沈まないよう Y >= 0）。
+Math::Vector3 ComputePanicVisualShakeOffset(const float phaseSeconds) {
+  const float x =
+      std::sin(phaseSeconds * kPanicWobbleSpeed) *
+      kPanicShakeAmplitudeHorizontalMeters;
+  const float z =
+      std::cos(phaseSeconds * kPanicWobbleSpeed * 1.27f) *
+      (kPanicShakeAmplitudeHorizontalMeters * 0.85f);
+  const float y =
+      std::abs(std::sin(phaseSeconds * kPanicWobbleSpeed * 1.65f)) *
+      kPanicShakeAmplitudeVerticalMeters;
+  return Math::Vector3{x, y, z};
+}
 
 } // namespace
 
-void CmpAtomFEnemyTargetedPanic::ApplyVisualShakeOffset(const float offsetX,
-                                                        const float offsetZ) {
+void CmpAtomFEnemyTargetedPanic::ApplyVisualShakeOffset(
+    const Math::Vector3 &offset) {
   if (GetOwner() == nullptr) {
     return;
   }
@@ -32,12 +48,12 @@ void CmpAtomFEnemyTargetedPanic::ApplyVisualShakeOffset(const float offsetX,
   }
   if (CmpMeshSphere *mesh = owner.GetDrawCmp<CmpMeshSphere>();
       mesh != nullptr) {
-    mesh->SetDrawOffset(Math::Vector3{offsetX, 0.0f, offsetZ});
+    mesh->SetDrawOffset(offset);
   }
 }
 
 void CmpAtomFEnemyTargetedPanic::ResetVisualShakeOffset() {
-  ApplyVisualShakeOffset(0.0f, 0.0f);
+  ApplyVisualShakeOffset(Math::Vector3{0.0f, 0.0f, 0.0f});
 }
 
 void CmpAtomFEnemyTargetedPanic::ResolveDependence() {
@@ -86,6 +102,9 @@ void CmpAtomFEnemyTargetedPanic::Update() {
   }
 
   if (targeted) {
+    if (!isPanicking_) {
+      wobblePhaseSeconds_ = 0.0f;
+    }
     isPanicking_ = true;
     panicLingerSeconds_ = kPanicLingerAfterAimSeconds;
   } else if (isPanicking_) {
@@ -100,14 +119,9 @@ void CmpAtomFEnemyTargetedPanic::Update() {
     return;
   }
 
-  // 当たり判定（Entity の Transform / CmpHitSphere）は動かさず、見た目だけ揺らす。
+  // 当たり判定（Entity の Transform / CmpHitSphere）は動かさず、見た目だけ小刻みに震わせる。
   wobblePhaseSeconds_ += dt;
-  const float wobble = std::sin(wobblePhaseSeconds_ * kPanicWobbleSpeed);
-  const float offsetX = wobble * kPanicShakeAmplitudeMeters;
-  const float offsetZ =
-      std::cos(wobblePhaseSeconds_ * kPanicWobbleSpeed * 1.2f) *
-      kPanicShakeAmplitudeMeters * 0.85f;
-  ApplyVisualShakeOffset(offsetX, offsetZ);
+  ApplyVisualShakeOffset(ComputePanicVisualShakeOffset(wobblePhaseSeconds_));
 }
 
 } // namespace Atrum

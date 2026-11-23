@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Vector3.h"
 #include "System/Entity/ComponentUpd.h"
 
 namespace Atrum {
@@ -18,7 +19,7 @@ public:
   bool BlocksLocomotion() const { return isPanicking_; }
 
 private:
-  void ApplyVisualShakeOffset(float offsetX, float offsetZ);
+  void ApplyVisualShakeOffset(const Math::Vector3 &offset);
   void ResetVisualShakeOffset();
 
   class FrameDeltaTime *frameDeltaTime_ = nullptr;

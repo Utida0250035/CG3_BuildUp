@@ -5,13 +5,12 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T09:59:52.6701094+09:00
-- expiresAt: 2026-11-23T12:59:52.6701094+09:00
-- task: 敵の焦りモーション › 当たり判定は動かない
+- updatedAt: 2026-11-23T10:19:01.9310321+09:00
+- expiresAt: 2026-11-23T11:19:01.9310321+09:00
+- task: 敵の焦りモーション › その場で小刻みに震える（ぱっと見で分かる程度）
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`
-  - `EditorAssets/Tools/CursorAI/loop_state.json`
   - `Project/Codes/Include/System/Entity/Components/CmpMeshSphere.h`
   - `Project/Codes/Source/System/Entity/Components/CmpMeshSphere.cpp`
-  - `Project/Codes/Source/Scene/SceneBuildUpAtomFEnemySpawn.cpp`
+  - `EditorAssets/Tools/CursorAI/loop_state.json`
