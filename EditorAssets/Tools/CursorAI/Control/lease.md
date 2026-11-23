@@ -5,10 +5,11 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T09:19:01.0562723+09:00
-- expiresAt: 2026-11-23T10:19:01.0562723+09:00
-- task: この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ
+- updatedAt: 2026-11-23T09:39:00.9020056+09:00
+- expiresAt: 2026-11-23T10:39:00.9020056+09:00
+- task: 当たり判定は半径cの球
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`
+  - `Project/Codes/Include/System/Entity/Components/CmpHitSphere.h`
   - `EditorAssets/Tools/CursorAI/loop_state.json`

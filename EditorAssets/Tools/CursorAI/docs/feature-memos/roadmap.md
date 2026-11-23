@@ -787,7 +787,7 @@
 
 ### 敵の爆発
 - [x] この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ（`AtomFEnemyExplosionKnockbackSpread`・`CmpAtomFEnemyKnockback::ApplyKnockbackAwayFromExplosionCenter`）
-- [ ] 当たり判定は半径cの球
+- [x] 当たり判定は半径cの球（`AtomFParametersRuntime`・`AtomFParametersAccess::IsEnemyExplosionHitShapeSphere`・`AtomFEnemyExplosionKnockbackSpread` 球交差判定）
 
 ### 敵の焦りモーション
 - [ ] 当たり判定は動かない

@@ -976,6 +976,35 @@
 |--------|------|------|
 | 爆発に当たった敵を爆心地と反対方向へ吹き飛ばす | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・敵爆発の当たり判定 半径cの球）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyExplosionHitRadiusC`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵の爆発 — 当たり判定は半径cの球
+- `Project/Codes/Include/System/AtomF/AtomFParametersRuntime.h` / `Project/Codes/Source/System/AtomF/AtomFParametersRuntime.cpp`: `EnemyExplosionParameters` に `hitShape`（既定 `"sphere"`）を追加し、`parameters.json` の `enemy.explosion.hitShape` を読み込むようにした。
+- `Project/Codes/Include/System/AtomF/AtomFParametersAccess.h` / `Project/Codes/Source/System/AtomF/AtomFParametersAccess.cpp`: `IsEnemyExplosionHitShapeSphere()` を追加した。
+- `Project/Codes/Source/System/AtomF/AtomFEnemyExplosionKnockbackSpread.cpp`: `IsEnemyExplosionHitShapeSphere()` 確認と `hitSphere->GetIsActive()`・`other->IsActive()` チェックを追加し、`IsExplosionSphereIntersectingTarget()` で爆心地（半径c = `ResolveEnemyExplosionHitRadiusMeters()` = `0.4m`）と他敵 `CmpHitSphere` の各球（`target.GetWorldPosition() + sphere.localOffset`、半径合算 `explosionRadiusMeters + sphere.radius`）の 3D 球交差判定へ改めた。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「敵の焦りモーション › 当たり判定は動かない」→ `feature/AtomFEnemyPanicColliderStatic`
+
+## 推測した用途（§6.4）
+
+- **敵爆発の当たり判定（半径cの球）**:
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` プレイ中の連鎖爆発発生時）
+  - 用途: `parameters.json` の `enemy.explosion.hitShape` と `hitRadiusMeters`（半径c = `0.4m`）に従い、爆心地を中心とする球と他敵の `CmpHitSphere` との球交差で吹き飛び伝播先を判定する。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 敵爆発の当たり判定を半径cの球にする | 有効 | プリミティブ(直方体や球、円柱やカプセル、面や線)同士の当たり判定が実装してある |
+
 
 
 

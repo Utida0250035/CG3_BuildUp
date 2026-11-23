@@ -74,6 +74,9 @@ bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {
   if (!explosion.is_object() || !explosion.contains("hitRadiusMeters")) {
     return false;
   }
+  if (explosion.contains("hitShape") && explosion.at("hitShape").is_string()) {
+    out.explosion.hitShape = explosion.at("hitShape").get<std::string>();
+  }
   out.explosion.hitRadiusMeters =
       explosion.at("hitRadiusMeters").get<float>();
 

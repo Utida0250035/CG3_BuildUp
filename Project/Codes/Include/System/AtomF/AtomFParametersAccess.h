@@ -19,5 +19,6 @@ float ResolveEnemyMoveSpeedMetersPerSecond();
 float ResolveEnemyChargeIntervalSeconds();
 /// parameters の半径c（enemy.explosion.hitRadiusMeters）
 float ResolveEnemyExplosionHitRadiusMeters();
+bool IsEnemyExplosionHitShapeSphere();
 
 } // namespace Atrum::AtomF

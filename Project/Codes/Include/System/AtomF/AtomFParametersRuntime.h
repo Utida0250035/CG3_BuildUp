@@ -30,6 +30,7 @@ struct PlayerParameters {
 };
 
 struct EnemyExplosionParameters {
+  std::string hitShape = "sphere";
   float hitRadiusMeters = 0.4f;
 };
 

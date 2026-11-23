@@ -99,4 +99,12 @@ float ResolveEnemyExplosionHitRadiusMeters() {
   return kEnemyExplosionHitRadiusMeters;
 }
 
+bool IsEnemyExplosionHitShapeSphere() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Enemy().explosion.hitShape == "sphere";
+  }
+  return true;
+}
+
 } // namespace Atrum::AtomF

@@ -12,8 +12,39 @@
 
 namespace Atrum::AtomF {
 
+namespace {
+
+/// 爆心地を中心とする半径cの球と、敵側の各 HitSphere が交差するかを判定する。
+bool IsExplosionSphereIntersectingTarget(const Math::Vector3 &centerWorld,
+                                         const float explosionRadiusMeters,
+                                         const Entity &target,
+                                         const CmpHitSphere &targetHitSphere) {
+  if (explosionRadiusMeters <= 0.0f) {
+    return false;
+  }
+
+  const Math::Vector3 targetBasePos = target.GetWorldPosition();
+  for (const HitSphere &sphere : targetHitSphere.GetSpheres()) {
+    if (sphere.radius < 0.0f) {
+      continue;
+    }
+    const Math::Vector3 sphereCenter = targetBasePos + sphere.localOffset;
+    const float sumRadius = explosionRadiusMeters + sphere.radius;
+    if ((sphereCenter - centerWorld).LengthSquare() <= sumRadius * sumRadius) {
+      return true;
+    }
+  }
+  return false;
+}
+
+} // namespace
+
 void SpreadEnemyExplosionKnockbackFromCenter(
     const Entity &explodingEnemy, const Math::Vector3 &centerWorld) {
+  if (!IsEnemyExplosionHitShapeSphere()) {
+    return;
+  }
+
   HitJudge *judge = HitJudge::Instance();
   if (judge == nullptr) {
     return;
@@ -23,15 +54,14 @@ void SpreadEnemyExplosionKnockbackFromCenter(
   tags.EnsureLoaded();
 
   const float radiusMeters = ResolveEnemyExplosionHitRadiusMeters();
-  const float radiusSq = radiusMeters * radiusMeters;
   const float speed = ResolveEnemyKnockbackSpeedMetersPerSecond();
 
   for (CmpHitSphere *hitSphere : judge->RegisteredHitSpheres()) {
-    if (hitSphere == nullptr) {
+    if (hitSphere == nullptr || !hitSphere->GetIsActive()) {
       continue;
     }
     Entity *other = &hitSphere->RefOwner();
-    if (other == &explodingEnemy) {
+    if (other == &explodingEnemy || !other->IsActive()) {
       continue;
     }
     if (!tags.EntityHasRole(*other, "enemy")) {
@@ -45,11 +75,8 @@ void SpreadEnemyExplosionKnockbackFromCenter(
       }
     }
 
-    const Math::Vector3 otherPos = other->GetWorldPosition();
-    Math::Vector3 delta = otherPos - centerWorld;
-    delta.y = 0.0f;
-    const float distSq = delta.x * delta.x + delta.z * delta.z;
-    if (distSq > radiusSq) {
+    if (!IsExplosionSphereIntersectingTarget(centerWorld, radiusMeters, *other,
+                                             *hitSphere)) {
       continue;
     }
 
