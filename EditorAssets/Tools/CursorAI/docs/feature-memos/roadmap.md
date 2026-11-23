@@ -232,7 +232,7 @@
 - [x] ユーザーに操作を丸投げしない（`player_friendly_camera_policy.md`・検証スクリプト・Scene 注記）
 
 ### エンティティカメラ（CmpCamera / CmpDebugCamera）
-- [~] 段階実装（正本・チェックリスト: **spec: `entity_camera_components.md`**）
+- [x] 段階実装（正本・チェックリスト: **spec: `entity_camera_components.md`**）
 
 
 ### ギャップスキャン追補（P0/P1）
