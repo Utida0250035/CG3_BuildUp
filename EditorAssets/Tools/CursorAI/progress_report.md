@@ -1092,6 +1092,35 @@
 |--------|------|------|
 | 敵の天辺から焦り汗パーティクルを流す | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・自機被弾時の赤いビネット 0.75 秒表示）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFPlayerDamageVignette`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 自機がダメージを受けたときの演出 — 赤いビネットが画面端に 0.75 秒出る
+- `Project/Codes/Include/Camera/PlayerDamageScreenVignette.h` / `Project/Codes/Source/Camera/PlayerDamageScreenVignette.cpp`: 指定秒数で表示できる `RequestShow(float durationSeconds)` オーバーロードを追加し、描画後に `BlendMode::NONE` へ戻すようにした（既定 `0.48s` の既存呼出と互換維持）。
+- `Project/Codes/Source/System/Entity/Components/CmpHealthHit.cpp`: 自機被弾時、`AtomF::ParametersRuntime::Instance().IsLoaded()` が真なら `AtomF::ResolvePlayerDamageVignetteSeconds()`（`0.75` 秒）を `PlayerDamageScreenVignette::RequestShow(durationSeconds)` へ渡すようにした。
+- `Project/Codes/Source/Scene/SceneBuildUp.cpp`: `EnterScene()` / `ExitScene()` の `Reset()`、`Update()` の `Update(dt)`、および `DrawScene()` / `DrawRuntimeViewContent()` の双方で `PlayerDamageScreenVignette::Draw(engine)` を呼ぶように統合した。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「自機がダメージを受けたときの演出 › 効果音が 1 回鳴る」→ `feature/AtomFPlayerDamageSeOnce`
+
+## 推測した用途（§6.4）
+
+- **自機被弾時の画面端赤ビネット（0.75 秒）**:
+  - 使用場面: ランタイム（`Assets/Scenes/atomF.json` で自機が敵接触等でダメージを受けたとき）
+  - 用途: 無敵時間と同期した `0.75` 秒の画面端赤ビネット表示により、プレイヤーが被弾した瞬間と残りの警戒時間を直感的に視認できるようにする。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 自機被弾時に画面端へ 0.75 秒赤いビネットを出す | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
 
 
 

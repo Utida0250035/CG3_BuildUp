@@ -1,5 +1,6 @@
 #include "Scene/SceneBuildUp.h"
 
+#include "Camera/PlayerDamageScreenVignette.h"
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
 #include "Scene/SceneBuildUpSceneDisplayNameResolve.h"
@@ -37,6 +38,7 @@
 #include "Input/PlayInput.h"
 #include "Scene/ChangeSceneFade.h"
 #include "Scene/CommandChangeScene.h"
+#include "System/DeltaTime.h"
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Entity/Entity.h"
 #include "System/Particle/SceneParticleServices.h"
@@ -113,6 +115,7 @@ void SceneBuildUp::DrawRuntimeEntities() {
 void SceneBuildUp::EnterScene() {
   EnsureCommonResources();
   TeardownEntities();
+  PlayerDamageScreenVignette::Instance().Reset();
 
   sceneDocumentLoadFailed_ = false;
   sceneLoadFailureMessage_.clear();
@@ -187,6 +190,10 @@ void SceneBuildUp::Update() {
     TickCameraRigEntities();
 
     Particle::TickEmitterManagerForActiveScene(GetCamera());
+
+    if (FrameDeltaTime *const frameDelta = ::Atrum::EngineFrameDeltaTime()) {
+      PlayerDamageScreenVignette::Instance().Update(frameDelta->GetDeltaTime());
+    }
   }
   SceneBuildUpAtomFCombatCamera::MaintainSceneCamera(*this);
   SceneBuildUpAudioPolicy::Tick(*this);
@@ -222,6 +229,8 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
+  engine->SetCamera(camera);
+  PlayerDamageScreenVignette::Instance().Draw(engine);
 }
 
 #endif
@@ -248,6 +257,8 @@ void SceneBuildUp::DrawScene() {
   DrawRuntimeEntities();
   Particle::DrawEmitterManagerForActiveScene();
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
+  engine->SetCamera(primaryCamera);
+  PlayerDamageScreenVignette::Instance().Draw(engine);
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   if (showsNextSceneHint_) {
@@ -279,6 +290,7 @@ void SceneBuildUp::Draw() {
 }
 
 void SceneBuildUp::ExitScene() {
+  PlayerDamageScreenVignette::Instance().Reset();
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
   Editor::Scene::ClearStagedEditorPlayScenePath();
   SceneBuildUpExitSceneEditorUiRestore::ApplyOnExitScene();

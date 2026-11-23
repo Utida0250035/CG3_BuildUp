@@ -1,5 +1,7 @@
 #include "Camera/CombatCameraShake.h"
 #include "Camera/PlayerDamageScreenVignette.h"
+#include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFParametersRuntime.h"
 #include "System/Entity/Components/CmpHealthHit.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpLhRigidBody.h"
@@ -93,7 +95,12 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 	if (tags.EntityHasRole(RefOwner(), "player")) {
 		PlayPlayerDamageSe();
 		CombatCameraShake::Instance().RequestPlayerHitShake();
-		PlayerDamageScreenVignette::Instance().RequestShow();
+		if (AtomF::ParametersRuntime::Instance().IsLoaded()) {
+			PlayerDamageScreenVignette::Instance().RequestShow(
+			    AtomF::ResolvePlayerDamageVignetteSeconds());
+		} else {
+			PlayerDamageScreenVignette::Instance().RequestShow();
+		}
 	} else if (tags.EntityHasRole(RefOwner(), "enemy")) {
 		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});
 		CombatCameraShake::Instance().RequestBossHitShake();

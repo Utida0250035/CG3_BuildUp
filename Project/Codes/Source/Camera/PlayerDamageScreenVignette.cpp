@@ -56,8 +56,16 @@ void PlayerDamageScreenVignette::Reset() {
 }
 
 void PlayerDamageScreenVignette::RequestShow() {
-  duration_ = kVignetteDurationSeconds;
-  timer_ = kVignetteDurationSeconds;
+  RequestShow(kVignetteDurationSeconds);
+}
+
+void PlayerDamageScreenVignette::RequestShow(const float durationSeconds) {
+  if (durationSeconds <= 0.0f) {
+    Reset();
+    return;
+  }
+  duration_ = durationSeconds;
+  timer_ = durationSeconds;
 }
 
 void PlayerDamageScreenVignette::Update(const float deltaTimeSeconds) {
@@ -118,6 +126,7 @@ void PlayerDamageScreenVignette::Draw(AtrumEngine *engine) {
     DrawEdgeGradientBand(engine, baseColor, alpha, xRight, 0.0f, bandHeight,
                          screenHeight);
   }
+  engine->SetBlendModeForFrame(BlendMode::NONE);
 }
 
 } // namespace Atrum

@@ -5,14 +5,15 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T10:40:13.3515150+09:00
-- expiresAt: 2026-11-23T13:40:13.3515150+09:00
-- task: 敵の焦りモーション › 天辺から汗のパーティクルを流す
+- updatedAt: 2026-11-23T10:59:28.3304061+09:00
+- expiresAt: 2026-11-23T13:59:28.3304061+09:00
+- task: 自機がダメージを受けたときの演出 › 赤いビネットが画面端に 0.75 秒出る
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`
-  - `Project/Codes/Source/Scene/SceneBuildUpAtomFEnemySpawn.cpp`
+  - `Project/Codes/Include/System/Entity/Components/CmpHealthHit.h`
+  - `Project/Codes/Source/System/Entity/Components/CmpHealthHit.cpp`
+  - `Project/Codes/Source/Scene/SceneBuildUp.cpp`
   - `EditorAssets/Tools/CursorAI/loop_state.json`
-  - `Project/Codes/Include/System/Particle/GameCombatParticleEffects.h`
-  - `Project/Codes/Source/System/Particle/GameCombatParticleEffects.cpp`
-  - `Project/Assets/Particles/enemy_panic_sweat.json`
+  - `Project/Codes/Include/Camera/PlayerDamageScreenVignette.h`
+  - `Project/Codes/Source/Camera/PlayerDamageScreenVignette.cpp`

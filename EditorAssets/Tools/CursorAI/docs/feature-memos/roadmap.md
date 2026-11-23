@@ -795,7 +795,7 @@
 - [x] 天辺から汗のパーティクルを流す（`Project/Assets/Particles/enemy_panic_sweat.json`・`GameCombatParticleEffects::PlayEnemyPanicSweatEffect`・`CmpAtomFEnemyTargetedPanic::EmitSweatFromTopIfDue`）
 
 ### 自機がダメージを受けたときの演出
-- [ ] 赤いビネットが画面端に 0.75 秒出る
+- [x] 赤いビネットが画面端に 0.75 秒出る（`PlayerDamageScreenVignette::RequestShow(durationSeconds)`・`CmpHealthHit` が `AtomF::ParametersRuntime` 読込時に `0.75s` を指定・`SceneBuildUp` で Reset/Update/Draw）
 - [ ] 効果音が 1 回鳴る
 
 ## GapScan（索引）
