@@ -786,7 +786,7 @@
 - [x] 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb（`ResolveEnemyKnockbackSpeedMetersPerSecond`・`CmpAtomFPlayerBulletEnemyHit`・`AtomFEnemyExplosionKnockbackSpread`・parameters 速さb）
 
 ### 敵の爆発
-- [ ] この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ
+- [x] この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ（`AtomFEnemyExplosionKnockbackSpread`・`CmpAtomFEnemyKnockback::ApplyKnockbackAwayFromExplosionCenter`）
 - [ ] 当たり判定は半径cの球
 
 ### 敵の焦りモーション

@@ -5,9 +5,9 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T08:58:51.8716999+09:00
-- expiresAt: 2026-11-23T09:58:51.8716999+09:00
-- task: 自機弾や別の敵の爆発に吹き飛ばされる速度は速さb
+- updatedAt: 2026-11-23T09:19:01.0562723+09:00
+- expiresAt: 2026-11-23T10:19:01.0562723+09:00
+- task: この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ
 - paths:
   - `Project/Codes/Include/System/AtomF/`
   - `Project/Codes/Source/System/AtomF/`

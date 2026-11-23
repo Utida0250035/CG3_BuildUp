@@ -950,5 +950,32 @@
 |--------|------|------|
 | 敵の吹き飛び速度を速さbとする | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・敵爆発の反対方向吹き飛び確認）
+
+### 1. 完了
+
+- **ブランチ:** `feature/AtomFEnemyExplosionKnockbackDirection`
+- **roadmap:** 全方位シューティングゲーム「atomF」 › 敵の爆発 — この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ
+- §6.2 コード確認により、`CmpAtomFEnemyChainExplosion::BeginDyingExplosion()` から `AtomF::SpreadEnemyExplosionKnockbackFromCenter()` を呼び出し、影響範囲内の生存している他敵へ `CmpAtomFEnemyKnockback::ApplyKnockbackAwayFromExplosionCenter()` を適用していることを確認した。
+- `ApplyKnockbackAwayFromExplosionCenter` は `RefOwner().GetWorldPosition() - explosionCenterWorld`（XZ 平面で爆心地から外向きのベクトル）を正規化し、速さb で吹き飛びと連鎖爆発フラグ（`chainImpactKnockback_`）を付与している。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）成功（exit 0）。
+
+### 2. 次
+
+- 「敵の爆発 › 当たり判定は半径cの球」→ `feature/AtomFEnemyExplosionHitRadiusC`（爆発球半径c と他敵 `CmpHitSphere` 半径・`IsActive`・`hitShape: sphere` 整合を精査予定）
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+- この爆発に当たると敵が爆心地と反対方向に吹き飛ぶ（`AtomFEnemyExplosionKnockbackSpread`・`CmpAtomFEnemyKnockback::ApplyKnockbackAwayFromExplosionCenter`）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 爆発に当たった敵を爆心地と反対方向へ吹き飛ばす | 有効 | ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+
 
 
