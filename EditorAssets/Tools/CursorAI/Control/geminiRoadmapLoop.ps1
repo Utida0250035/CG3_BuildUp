@@ -4,7 +4,6 @@
     [int]$SleepSeconds = 15
 )
 
-# 外部CLIの標準エラー出力(stderr)メッセージでスクリプトが強制終了しないようにする
 $ErrorActionPreference = "Continue"
 
 # プロジェクトルートへ移動
@@ -15,14 +14,35 @@ if (-not $ProjectRoot) {
 }
 Set-Location $ProjectRoot
 
+$RoadmapFile = "./EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md"
+
 for ($iter = 1; $iter -le $MaxIterations; $iter++) {
-    Write-Host "`n=== [$iter / $MaxIterations] ロードマップ実行中 ===" -ForegroundColor Cyan
+    if (-not (Test-Path -LiteralPath $RoadmapFile)) {
+        Write-Error "roadmap.md が見つかりません: $RoadmapFile"
+        exit 1
+    }
+
+    $lines = Get-Content -LiteralPath $RoadmapFile -Encoding UTF8
+
+    # 行のどこかに「・」または「- [ ]」が含まれており、かつ「[x]」「[X]」が含まれていない行を未完了として抽出
+    $uncompleted = @(
+        $lines | Where-Object {
+            ($_ -match "(・|-\s*\[\s*\])") -and ($_ -notmatch "\[[xX]\]")
+        }
+    )
+
+    if ($uncompleted.Count -eq 0) {
+        Write-Host "`nすべての小見出しが [x] になったため終了します。" -ForegroundColor Green
+        break
+    }
+
+    Write-Host "`n=== [$iter / $MaxIterations] ロードマップ実行中（残り未完了: $($uncompleted.Count) 件） ===" -ForegroundColor Cyan
+    Write-Host "次の対象候補: $($uncompleted[0].Trim())" -ForegroundColor DarkGray
 
     $job = Start-Job -ScriptBlock {
         param($dir)
         $ErrorActionPreference = "Continue"
         Set-Location $dir
-        # 2>&1 で stderr の案内文を通常出力として受け取る
         gemini -y -p ".cursor/rules を読み込んで厳守したうえで、ロードマップを実行して。" 2>&1
     } -ArgumentList $ProjectRoot
 
@@ -39,7 +59,6 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
     $jobState = $job.State
     Remove-Job $job
 
-    # 出力を表示（ErrorRecord型が混ざっていても文字列として安全に出力）
     $output | ForEach-Object { $_.ToString() }
 
     if ($jobState -ne "Completed") {
@@ -47,14 +66,11 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
         exit 1
     }
 
-    # リポジトリ内にファイル変更が発生しなくなったら全完了とみなして終了
-    if ([string]::IsNullOrWhiteSpace((git status --porcelain))) {
-        Write-Host "`n変更が発生しなくなったため終了します。" -ForegroundColor Green
-        break
+    # ファイル変更が発生していた場合のみ自動コミット
+    if (-not [string]::IsNullOrWhiteSpace((git status --porcelain))) {
+        git add -A
+        git commit -m "auto: roadmap step $iter" | Out-Null
     }
-
-    git add -A
-    git commit -m "auto: roadmap step $iter" | Out-Null
 
     Start-Sleep -Seconds $SleepSeconds
 }
