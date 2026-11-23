@@ -666,7 +666,7 @@
 - [x] InputInt で実行順が 1 スロットのみ
 - [x] Selectable はパス選択のみで即開かない
 - [x] 選択中コンポーネントのみ削除
-- [ ] 型 Combo で params 初期化
+- [x] 型 Combo で params 初期化
 - [ ] 複製ボタンが無い
 - [ ] 実行順 InputInt が単体
 - [ ] Selectable が path 全文
