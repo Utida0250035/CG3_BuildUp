@@ -1,7 +1,7 @@
 ﻿param(
-    [int]$MaxIterations = 50,
+    [int]$MaxIterations = 100,
     [int]$TimeoutSeconds = 600,
-    [int]$SleepSeconds = 15
+    [int]$SleepSeconds = 600
 )
 
 $ErrorActionPreference = "Continue"
@@ -43,7 +43,7 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
         param($dir)
         $ErrorActionPreference = "Continue"
         Set-Location $dir
-        gemini -y -p ".cursor/rules を読み込んで厳守したうえで、ロードマップを実行して。" 2>&1
+        gemini -m "gemini-2.5-flash" -y -p "まず ./EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md と ./.cursor/rules 内のルールファイルをすべて直接読み込んでください。その後、ルールに厳密に従ってロードマップの未完了項目を1つだけ実装し、roadmap.md の該当項目を [x] に更新してください。" 2>&1
     } -ArgumentList $ProjectRoot
 
     $completed = Wait-Job $job -Timeout $TimeoutSeconds
