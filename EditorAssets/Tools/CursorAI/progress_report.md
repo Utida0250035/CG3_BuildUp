@@ -1180,6 +1180,35 @@
 |--------|------|------|
 | ヒット球は選択 1 球のみ編集（複数球の選択・一括編集対応） | 有効 | 各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる |
 
+---
+
+## セッション 2026-11-23（ループ tick・未対応コンポーネント向け汎用 JSON フォールバックエディタ）
+
+### 1. 完了
+
+- **ブランチ:** `feature/EntityEditorUnsupportedComponentNotice`
+- **roadmap:** EntityEditorUi › 未対応コンポーネントは警告表示のみ
+- `Project/Codes/Include/System/Editor/Entity/EntityEditorUiDrawComponentParamsFallbackJson.h` / `Project/Codes/Source/System/Editor/Entity/EntityEditorUiDrawComponentParamsFallbackJson.cpp`: 専用インスペクタを持たないコンポーネントが警告表示のみで終わらないよう、ツリー形式の再帰 JSON エディタ（スカラー・配列・ネストオブジェクトの編集／要素追加・削除）、新規キー追加（型選択）、既定 `params` リセットボタン、および `ImGui::InputTextMultiline` を用いた生 JSON テキスト直接編集（例外なしの安全パース・構文エラー表示付き）を新規ファイルとして実装した。
+- `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp`: 警告テキストのみで `return false;` していた分岐を `EntityEditorUiDrawComponentParamsFallbackJson::DrawFallbackComponentParams()` 呼び出しへ置き換えた。
+- `Project/CG2_BuildUp.vcxproj`: 新規ヘッダ・ソース（`Release|x64` は除外）を登録し、`verify_vcxproj_coverage.py` を通過させた。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「EntityEditorUi › InputInt で実行順が 1 スロットのみ」→ `feature/EntityEditorInputIntExecOrderBatch`
+
+## 推測した用途（§6.4）
+
+- **未対応コンポーネント向け汎用 JSON フォールバックエディタ**:
+  - 使用場面: 自作エディタ（`SceneEntityEditor`）のインスペクタで、専用 UI がまだ実装されていないコンポーネント（または既知型だが汎用フォールバックに落ちたスロット）の `params` を確認・調整するとき
+  - 用途: 警告表示だけで行き止まりにせず、エディタ上で直接キー／配列／生 JSON を編集・保存してゲーム開発を継続できるようにする。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| 未対応コンポーネントは警告表示のみ（汎用 JSON フォールバック編集対応） | 有効 | 各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる |
+
 
 
 

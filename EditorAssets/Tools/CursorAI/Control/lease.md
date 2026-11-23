@@ -5,14 +5,12 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T11:44:59.5865037+09:00
-- expiresAt: 2026-11-23T14:44:59.5865037+09:00
+- updatedAt: 2026-11-23T11:59:51.9086034+09:00
+- expiresAt: 2026-11-23T14:59:51.9086034+09:00
 - task: EntityEditorUi › ヒット球は選択 1 球のみ編集
 - paths:
-  - `Project/Codes/Include/System/Editor/`
-  - `Project/Codes/Source/System/Editor/`
-  - `EditorAssets/Tools/CursorAI/loop_state.json`
-  - `Project/CG2_BuildUp.vcxproj`
-  - `Project/Codes/Include/System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.h`
-  - `Project/Codes/Source/System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.cpp`
   - `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp`
+  - `Project/Codes/Source/System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.cpp`
+  - `Project/Codes/Include/System/Editor/Entity/EntityEditorUiDrawComponentParamsFallbackJson.h`
+  - `Project/Codes/Source/System/Editor/Entity/EntityEditorUiDrawComponentParamsFallbackJson.cpp`
+  - `Project/CG2_BuildUp.vcxproj`

@@ -5,6 +5,7 @@
 #include "System/Editor/Entity/EntityEditorAuthoringEditorAssetPathEditNotify.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsFallbackJson.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
@@ -481,8 +482,10 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
     return genericChanged;
   }
 
-  ImGui::TextDisabled("未対応コンポーネント: %s", slot.typeName.c_str());
-  return false;
+  bool fallbackChanged = false;
+  EntityEditorUiDrawComponentParamsFallbackJson::DrawFallbackComponentParams(
+      slot, fallbackChanged);
+  return fallbackChanged;
 }
 
 int ComponentSlotKindToKindComboIndex(const ComponentSlotKind kind) {
