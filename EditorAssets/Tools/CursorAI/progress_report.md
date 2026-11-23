@@ -1151,6 +1151,35 @@
 |--------|------|------|
 | 自機被弾時に効果音を 1 回鳴らす | 有効 | mp4やwavなど代表的な拡張子の音源ファイルを読み込める／ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 
+---
+
+## セッション 2026-11-23（ループ tick・CmpHitSphere 複数球選択・一括編集 UI）
+
+### 1. 完了
+
+- **ブランチ:** `feature/EntityEditorMultiHitSpheres`
+- **roadmap:** EntityEditorUi › ヒット球は選択 1 球のみ編集
+- `Project/Codes/Include/System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.h` / `Project/Codes/Source/System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.cpp`: `CmpHitSphere` 用のインスペクタ UI を新規ファイルへ分離・実装し、Ctrl/Shift クリックや「全球選択」「選択を先頭のみに戻す」による複数球選択、選択中の複数球に対する「半径を一括適用」「オフセットを加算」の一括編集、「選択球を複製」、最低 1 球を維持する複数球一括削除、および選択中すべての球の `localOffset`・`radius` 同時編集に対応した。
+- `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp`: 既存の `CmpHitSphere` 単一選択インスペクタコードを `EntityEditorUiDrawComponentParamsHitSphere::TryDrawCmpHitSphereComponentParams()` 呼び出しへ置き換えた。
+- `Project/CG2_BuildUp.vcxproj`: 新規ヘッダ・ソース（`Release|x64` は除外）を登録し、`verify_vcxproj_coverage.py` を通過させた。
+- **ビルド:** `Development|x64`（`buildDevelopment.cmd`）・`Debug|x64` ともに成功（exit 0）。
+
+### 2. 次
+
+- 「EntityEditorUi › 未対応コンポーネントは警告表示のみ」→ `feature/EntityEditorUnsupportedComponentNotice`
+
+## 推測した用途（§6.4）
+
+- **CmpHitSphere 複数球選択・一括編集 UI**:
+  - 使用場面: 自作エディタ（`SceneEntityEditor`）のインスペクタで、複数の当たり判定球を持つエンティティを編集するとき
+  - 用途: 1 球ずつ切り替えながら編集する手間をなくし、複数選択した球の同時展開・複製・一括削除・半径一括設定・オフセット一括調整を素早く行えるようにする。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定 | 根拠 |
+|--------|------|------|
+| ヒット球は選択 1 球のみ編集（複数球の選択・一括編集対応） | 有効 | 各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる |
+
 
 
 

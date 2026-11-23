@@ -6,6 +6,7 @@
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsBallSplit.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
 #include "System/Editor/Entity/EntityEditorComponentSlotParamsNormalize.h"
@@ -468,70 +469,10 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
     return changed;
   }
 
-  if (slot.typeName == "CmpHitSphere") {
-    bool active = p.value("isActive", true);
-    if (ImGui::Checkbox("isActive", &active)) {
-      p["isActive"] = active;
-      changed = true;
-    }
-    if (!p.contains("spheres") || !p.at("spheres").is_array()) {
-      p["spheres"] = nlohmann::json::array();
-    }
-    nlohmann::json &spheres = p.at("spheres");
-    if (spheres.empty()) {
-      spheres.push_back(
-          {{"localOffset", Math::Vector3::Zero()}, {"radius", 0.5f}});
-    }
-
-    static int selectedSphereIndex = 0;
-    const int sphereCount = static_cast<int>(spheres.size());
-    selectedSphereIndex =
-        std::clamp(selectedSphereIndex, 0, std::max(0, sphereCount - 1));
-
-    if (ImGui::Button("球を追加")) {
-      spheres.push_back(
-          {{"localOffset", Math::Vector3::Zero()}, {"radius", 0.5f}});
-      selectedSphereIndex = sphereCount;
-      changed = true;
-    }
-    ImGui::SameLine();
-    if (sphereCount > 1 &&
-        ImGui::Button("選択した球を削除")) {
-      spheres.erase(spheres.begin() + selectedSphereIndex);
-      selectedSphereIndex =
-          std::clamp(selectedSphereIndex, 0,
-                     std::max(0, static_cast<int>(spheres.size()) - 1));
-      changed = true;
-    }
-
-    for (int i = 0; i < sphereCount; ++i) {
-      const std::string label = "spheres[" + std::to_string(i) + "]";
-      if (ImGui::Selectable(label.c_str(), selectedSphereIndex == i)) {
-        selectedSphereIndex = i;
-      }
-    }
-
-    if (!spheres.empty()) {
-      nlohmann::json &sphere = spheres.at(static_cast<size_t>(selectedSphereIndex));
-      const std::string indexSuffix =
-          "[" + std::to_string(selectedSphereIndex) + "]";
-
-      Math::Vector3 offset =
-          sphere.value("localOffset", Math::Vector3::Zero());
-      const std::string offsetLabel = "localOffset" + indexSuffix;
-      if (ImGui::DragFloat3(offsetLabel.c_str(), &offset.x, 0.02f)) {
-        sphere["localOffset"] = offset;
-        changed = true;
-      }
-      float radius = sphere.value("radius", 0.5f);
-      const std::string radiusLabel = "radius" + indexSuffix;
-      if (ImGui::DragFloat(radiusLabel.c_str(), &radius, 0.02f, 0.01f,
-                           64.0f)) {
-        sphere["radius"] = radius;
-        changed = true;
-      }
-    }
-    return changed;
+  bool hitSphereChanged = false;
+  if (EntityEditorUiDrawComponentParamsHitSphere::
+          TryDrawCmpHitSphereComponentParams(slot, hitSphereChanged)) {
+    return hitSphereChanged;
   }
 
   bool genericChanged = false;

@@ -5,12 +5,14 @@
 
 ## roadmap-dev
 - inTick: true
-- updatedAt: 2026-11-23T11:19:08.5432649+09:00
-- expiresAt: 2026-11-23T12:19:08.5432649+09:00
-- task: 自機がダメージを受けたときの演出 › 効果音が 1 回鳴る
+- updatedAt: 2026-11-23T11:44:59.5865037+09:00
+- expiresAt: 2026-11-23T14:44:59.5865037+09:00
+- task: EntityEditorUi › ヒット球は選択 1 球のみ編集
 - paths:
-  - `Project/Codes/Include/System/AtomF/`
-  - `Project/Codes/Source/System/AtomF/`
-  - `Project/Codes/Source/System/Entity/Components/CmpHealthHit.cpp`
-  - `Project/Codes/Include/System/PlaySe.h`
+  - `Project/Codes/Include/System/Editor/`
+  - `Project/Codes/Source/System/Editor/`
   - `EditorAssets/Tools/CursorAI/loop_state.json`
+  - `Project/CG2_BuildUp.vcxproj`
+  - `Project/Codes/Include/System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.h`
+  - `Project/Codes/Source/System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.cpp`
+  - `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp`
