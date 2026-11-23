@@ -2,6 +2,7 @@
 
 #include "System/Editor/Entity/EntityEditor.h"
 #include "System/Editor/Entity/EntityEditorExecutionOrderBatch.h"
+#include "System/Editor/Entity/EntityEditorInspectorMultiSlotExecutionOrderUi.h"
 
 #include <imgui/imgui.h>
 
@@ -52,6 +53,9 @@ void Draw(EntityEditor &editor, EntityDefinition &document,
       outChanged = true;
     }
   }
+
+  EntityEditorInspectorMultiSlotExecutionOrderUi::Draw(editor, document,
+                                                       selectedSlot, outChanged);
 }
 
 } // namespace Atrum::EntityEditor::EntityEditorInspectorExecutionOrderBatchUi
