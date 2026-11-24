@@ -733,6 +733,7 @@
     <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiEditableSceneList.cpp" />
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneSwitchUnsavedPrompt.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
@@ -1573,6 +1574,7 @@
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetFileOperations.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.h" />
     <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetCollisionPolicy.h" />

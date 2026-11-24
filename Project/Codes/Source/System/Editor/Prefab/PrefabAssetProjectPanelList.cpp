@@ -3,6 +3,7 @@
 #include "System/Editor/Prefab/PrefabAssetFileOperations.h"
 #include "System/Editor/Prefab/PrefabAssetUiPathScrub.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorProjectPanelSelectableLabel.h"
 
 #include <cstring>
 #include <filesystem>
@@ -46,10 +47,15 @@ void DrawPrefabJsonFileList(EntityEditor::EntityEditor &editor,
   if (ImGui::BeginChild("PrefabJsonFileList", ImVec2(0.0f, 140.0f), true)) {
     for (const std::string &path : prefabPaths) {
       const bool isActive = ui.selectedPrefabPath == path;
-      if (ImGui::Selectable(path.c_str(), isActive)) {
+      const std::string label =
+          Atrum::EntityEditor::ProjectPanelSelectableLabel::
+              BuildPrefabSelectableLabel(path);
+      if (ImGui::Selectable(label.c_str(), isActive)) {
         ui.selectedPrefabPath = path;
         SyncRenameBuffer(ui.selectedPrefabPath, renameBuffer, sizeof(renameBuffer));
       }
+      Atrum::EntityEditor::ProjectPanelSelectableLabel::DrawFullPathHoverTooltip(
+          path);
     }
   }
   ImGui::EndChild();

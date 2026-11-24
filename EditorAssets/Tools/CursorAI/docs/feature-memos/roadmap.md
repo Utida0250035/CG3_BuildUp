@@ -669,8 +669,8 @@
 - [x] 型 Combo で params 初期化
 - [x] 複製ボタンが無い
 - [x] 実行順 InputInt が単体
-- [ ] Selectable が path 全文
-- [ ] タグ全解除は選択 1 件
+- [x] Selectable が path 全文
+- [x] タグ全解除は選択 1 件
 
 ### EntityEditorHierarchy
 - [ ] ヒエラルキーがタグでフィルタ／一括選択できない

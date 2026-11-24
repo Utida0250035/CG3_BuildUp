@@ -1331,6 +1331,330 @@
 |--------|----------------------------------------|------------------------------|
 | EntityEditorUi › Selectable が path 全文 | 有効 | ・エンティティをプレハブ化してjsonデータとしてアセット保存することができる / ・ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている |
 
+---
 
+## セッション 2026-11-24 07:24（EntityEditorUi › Selectable が path 全文）
 
+### 1. 現在の進捗状況と完了したこと
+
+- **着手ブランチ:** `fix/EntityEditorSelectableShortLabel`（`develop` 起点で `startTaskBranchFromDevelop.ps1` により作成・push）
+- **対応する roadmap 行:** `EntityEditorUi` › `Selectable が path 全文`（`roadmap.md` で `- [x]` に更新）
+- **実装内容:**
+  - `Project/Codes/Include/System/Editor/Entity/EntityEditorProjectPanelSelectableLabel.h` / `Project/Codes/Source/System/Editor/Entity/EntityEditorProjectPanelSelectableLabel.cpp` を新規作成し、`BuildPrefabSelectableLabel`（拡張子 `.json` を除いた `stem`＋`##フルパス`）、`BuildImportedAssetSelectableLabel`（拡張子付き `filename`＋`##フルパス`）、およびホバー時に完全な相対パスを表示する `DrawFullPathHoverTooltip` を実装した。
+  - `Project/Codes/Source/System/Editor/Prefab/PrefabAssetProjectPanelList.cpp` の `DrawPrefabJsonFileList` で `ImGui::Selectable` に `BuildPrefabSelectableLabel` と `DrawFullPathHoverTooltip` を適用し、フルパス直表示を短縮表示＋ID一意化＋ツールチップ確認へ改善した。
+  - `Project/Codes/Source/System/Editor/EditorImportedAssetProjectPanelList.cpp` の `DrawImportedAssetsFolderList` でも同様に `BuildImportedAssetSelectableLabel` と `DrawFullPathHoverTooltip` を適用した。
+  - `Project/CG2_BuildUp.vcxproj` および `Project/CG2_BuildUp.vcxproj.filters` へ新規ヘッダ／ソース（`Release|x64` は `ExcludedFromBuild=true`、`Development|x64` は `false`）を登録した。
+- **検証状況:** **ビルド未実施・静的矛盾チェック済み**
+  - `python EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py`: OK
+  - `python EditorAssets/Tools/CursorAI/verify_prefab_json_rename_delete.py`: OK
+  - ヘッダ宣言・実装・呼び出し元の名前空間（`Atrum::EntityEditor::ProjectPanelSelectableLabel` 完全修飾）・シグネチャ・`#include` パス・`DEVELOPMENT && USE_IMGUI` 分岐および `Release|x64` 除外の整合を目視照合済み。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- プレハブ一覧の短縮表示は拡張子 `.json` を除いた `stem`（同名別階層での ID 衝突防止のため `##フルパス` 付き）、Imported アセット一覧は `.png`/`.obj`/`.gltf` 等の拡張子識別のために `filename`（拡張子付き）＋`##フルパス` とした。フルパス確認が必要なケース向けにホバーツールチップを付与している。
+
+### 3. 次に実行すべきステップの提案
+
+- 人間レビュー／指示待ち（コミット・プッシュ許可、または次の roadmap タスク実行指示）。
+- 次候補: `EntityEditorUi` › `タグ全解除は選択 1 件`（想定ブランチ名: `feature/EntityEditorBatchClearTags` または `fix/EntityEditorBatchClearTags`）。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+- **EntityEditorUi › Selectable が path 全文（プレハブ／Imported 一覧の短縮ラベル表示）**:
+  - 用途: 自作エディタ（`SceneEntityEditor`）のプロジェクトパネルで、大量のプレハブ JSON や Imported アセットから対象を素早く識別・選択し、複製・一括追加・一括適用・改名・削除を行う。
+  - 使用場面: 制作（エディタ専用 UI）
+  - 用途から決めた仕様: プレハブは `.json` 固定のため `stem`、Imported アセットは拡張子識別のために `filename` を表示ラベルとし、`##フルパス` で ImGui ID を一意化しつつホバーツールチップでフルパスを参照可能にした。`Release|x64` からは `ExcludedFromBuild` で除外し、ランタイムコストに影響させない。
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorUi › Selectable が path 全文 | 有効 | ・エンティティをプレハブ化してjsonデータとしてアセット保存することができる / ・ファイル内部の編集とは別の、ファイルの新規作成や削除、名前変更などが行えるようになっている |
+
+---
+
+## セッション 2026-11-24 07:33（§6.2 既実装確認・EntityEditorUi › タグ全解除は選択 1 件）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/EntityEditorSelectableShortLabel`（前タスクの未コミット変更が残っているため、§6.2 の既存実装確認・チェック更新のみを実施し、新規コード変更およびブランチ作成はスキップ）
+- **対応する roadmap 行:** `EntityEditorUi` › `タグ全解除は選択 1 件`（`roadmap.md` で `- [x]` に更新）
+- **コード確認結果:**
+  - `Project/Codes/Include/System/Editor/Entity/EntityEditorClearAllEntityTags.h` / `Project/Codes/Source/System/Editor/Entity/EntityEditorClearAllEntityTags.cpp` に、複数インデックスへ一括でタグおよび `tagHashes` をクリアする `ClearAllTagsOnInstanceIndices` と単体用 `ClearAllTagsOnDefinition` がすでに実装されていることを確認。
+  - `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp` の `DrawInspectorPanel`（936〜943行目）にて複数選択時（`ui_.selectedInstanceIndices.size() > 1`）に `DrawMultiInstanceBatchPanel` が呼ばれ、646〜655行目の「タグをすべて解除（選択全体）」ボタンから `ClearAllTagsOnInstanceIndices(scene, selection)` が実行されることを確認。
+  - `implementation_gaps_index.json` 上の先行完了項目「タグをすべて解除が選択 1 体のみ」（`[x]`）と同趣旨の重複ギャップ（629-632行時点の `document.tags.clear()` 単体問題）であり、要件を満たしていると判断した。
+- **検証状況:** ビルド未実施・静的矛盾チェック済み（コード変更なしのため `verify_vcxproj_coverage.py` のみ確認）
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- 現在 `fix/EntityEditorSelectableShortLabel` 上に前タスク（`Selectable が path 全文`）および `cursorRoadmapLoop.ps1` の未コミット変更が残っている。次タスク（`EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない`）へ進む際は、`startTaskBranchFromDevelop.ps1` の前提を満たすために現在の変更のコミット／develop マージまたは退避が必要。
+
+### 3. 次に実行すべきステップの提案
+
+- 人間レビュー／指示待ち（現在の未コミット変更のコミット・`develop` マージ許可、または次タスク実行指示）。
+- 次候補: `EntityEditorHierarchy` › `ヒエラルキーがタグでフィルタ／一括選択できない`（想定ブランチ名: `feature/EntityEditorHierarchyTagFilter`）。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+| roadmap の文言 | 根拠（パス・シーン・API） | 判定 |
+|----------------|---------------------------|------|
+| EntityEditorUi › タグ全解除は選択 1 件 | `EntityEditorClearAllEntityTags::ClearAllTagsOnInstanceIndices`（`EntityEditorClearAllEntityTags.h` / `.cpp`）および `EntityEditorUi.cpp`（646〜655行目「タグをすべて解除（選択全体）」・936〜943行目複数選択分岐）により複数選択インスタンスの一括タグ解除が実装済み | 万全 |
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（本セッションは §6.2 コード確認による `[x]` 更新のみで新規コード変更なし。既存実装の用途は自作エディタでの複数選択エンティティに対するテスト用・分類用タグの一括リセット）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorUi › タグ全解除は選択 1 件 | 有効 | ・各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる |
+
+---
+
+## セッション 2026-11-24 07:50（着手前査定・ブランチ整理確認待ちで停止）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/EntityEditorSelectableShortLabel`（前タスクの未コミット変更 9 ファイルが残存）
+- **対象 roadmap 行:** `EntityEditorHierarchy` › `ヒエラルキーがタグでフィルタ／一括選択できない`（ファイル出現順最初の `- [ ]`）
+- **§6.2 コード確認結果:** `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp` の `DrawHierarchyPanel`（722〜770行目）および `DrawHierarchyNode`（674〜702行目）は全インスタンスを無条件列挙しており、タグによる絞り込みおよび一致インスタンスの一括選択 UI は未実装であることを確認した。
+- **§6.7 最終目標査定:** 有効かつ矛盾なし（下記「最終目標との査定（§6.7）」参照）。
+- **ブランチ確認待ち:** 現在の `fix/EntityEditorSelectableShortLabel` 上に別タスク（`Selectable が path 全文`・`タグ全解除は選択 1 件`・`cursorRoadmapLoop.ps1`）の未コミット変更が存在し、次タスクは別趣旨（想定ブランチ名: `feature/EntityEditorHierarchyTagFilter`）のため、無断コミット・退避・ブランチ流用を行わずユーザーへ対応方針を確認する状態で停止した。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- **課題:** `fix/EntityEditorSelectableShortLabel` 上の未コミット変更を先に整理（コミット＆`develop` マージ＆ブランチ削除、または `git stash` 退避）しないと、§6.5 の `startTaskBranchFromDevelop.ps1` で `feature/EntityEditorHierarchyTagFilter` を作成できない。
+
+### 3. 次に実行すべきステップの提案
+
+- ユーザーへ現在の未コミット変更の扱い（`finishTaskGit.ps1` でコミット・`develop` マージ・元ブランチ削除して次ブランチ作成するか、`git stash` 退避するか、手動整理するか）を確認し、指示に応じて `feature/EntityEditorHierarchyTagFilter` で実装を開始する。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし（`roadmap.md` の該当行は `- [ ]` のまま維持）
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（コード未編集・ブランチ整理確認待ちで停止。想定用途は制作：エディタ専用 UI にて同一タグを持つエンティティ群をヒエラルキーで絞り込み／一括選択し、一括編集・削除・タグ操作の反復手間を削減する）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない | 有効 | ・各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる / ・シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-24 08:06（ロードマップ確認・ブランチ整理指示待ちで停止）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/EntityEditorSelectableShortLabel`（前タスク等の未コミット変更 9 ファイルが残存）
+- **対象 roadmap 行:** `EntityEditorHierarchy` › `ヒエラルキーがタグでフィルタ／一括選択できない`（ファイル出現順最初の `- [ ]`）
+- **§6.2 コード確認結果:** `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp` の `DrawHierarchyPanel`（722〜770行目）および `DrawHierarchyNode`（674〜702行目）を再確認し、タグによる絞り込みおよび一致インスタンスの一括選択 UI が未実装であることを確認した。
+- **§6.7 最終目標査定:** 有効かつ矛盾なし（下記「最終目標との査定（§6.7）」参照）。
+- **停止理由:** 新規タスク（想定ブランチ名: `feature/EntityEditorHierarchyTagFilter`）へ進むには `startTaskBranchFromDevelop.ps1` で `develop` から作業ブランチを新規作成する必要があるが、現在の `fix/EntityEditorSelectableShortLabel` 上に別タスクの未コミット変更（`Selectable が path 全文`、`タグ全解除は選択 1 件`、`cursorRoadmapLoop.ps1` 等）が残っているため、無断コミット・退避・ブランチ流用を行わずユーザーへ対応方針を確認する状態で停止した。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- **課題:** `fix/EntityEditorSelectableShortLabel` に未コミット変更が残っている状態では、`startTaskBranchFromDevelop.ps1` が前提チェックで停止する。
+- **選択肢:**
+  1. 現在の変更をコミット・`develop` へマージ・元ブランチ削除（`finishTaskGit.ps1`）した上で `feature/EntityEditorHierarchyTagFilter` を作成する（ただし `cursorRoadmapLoop.ps1` の変更も含めるか分離するか要確認）。
+  2. 現在の変更を一時的に `git stash` へ退避してから `feature/EntityEditorHierarchyTagFilter` を作成する。
+  3. ユーザー側で手動整理（コミット／マージ等）が完了するまで待機する。
+
+### 3. 次に実行すべきステップの提案
+
+- ユーザーに現在の未コミット変更（`fix/EntityEditorSelectableShortLabel` 上の 9 ファイル）の扱いを指示してもらい、整理完了後に `feature/EntityEditorHierarchyTagFilter` を作成して `EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない` の実装に着手する。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし（`roadmap.md` の該当行は `- [ ]` のまま維持）
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（コード未編集・ブランチ整理確認待ちで停止。想定用途は制作：エディタ専用 UI にて同一タグを持つエンティティ群をヒエラルキーで絞り込み／一括選択し、一括編集・削除・タグ操作の反復手間を削減する）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない | 有効 | ・各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる / ・シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-24 08:22（着手前査定・未コミット変更整理の指示待ちで停止）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/EntityEditorSelectableShortLabel`（未コミット変更 9 ファイルが残存）
+- **対象 roadmap 行:** `EntityEditorHierarchy` › `ヒエラルキーがタグでフィルタ／一括選択できない`（ファイル出現順最初の `- [ ]`）
+- **§6.2 コード確認結果:** `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp` の `DrawHierarchyNode`（674〜702行目）および `DrawHierarchyPanel`（722〜770行目）にて、タグフィルタおよび一致インスタンスの一括選択 UI が未実装であることを確認した。
+- **§6.7 最終目標査定:** 有効かつ矛盾なし（下記「最終目標との査定（§6.7）」参照）。
+- **停止理由:** 新規タスク（想定ブランチ名: `feature/EntityEditorHierarchyTagFilter`）へ進むには `startTaskBranchFromDevelop.ps1` で `develop` から新規作業ブランチを切る必要があるが、現在の `fix/EntityEditorSelectableShortLabel` 上に別タスクの未コミット変更（`Selectable が path 全文`、`タグ全解除は選択 1 件`、`cursorRoadmapLoop.ps1` 等 9 ファイル）が残っており、無断コミット・退避・別ブランチ流用を行えないためユーザーへ整理方針を確認する状態で停止した。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- **課題:** `fix/EntityEditorSelectableShortLabel` に未コミット変更があるため `startTaskBranchFromDevelop.ps1` が前提チェックで停止する。
+- **選択肢:**
+  1. 現在の変更（9ファイルすべて、または `cursorRoadmapLoop.ps1` を除いた8ファイル）を `finishTaskGit.ps1` でコミット・`develop` へマージ・元ブランチ削除し、次ブランチ `feature/EntityEditorHierarchyTagFilter` を作成する。
+  2. 現在の変更を一時的に `git stash` で退避した上で `feature/EntityEditorHierarchyTagFilter` を作成する。
+  3. ユーザー側で手動整理（コミット／マージ等）が完了するまで待機する。
+
+### 3. 次に実行すべきステップの提案
+
+- ユーザーに現在の未コミット変更（`fix/EntityEditorSelectableShortLabel` 上の 9 ファイル）の扱いを選択してもらい、整理完了後に `feature/EntityEditorHierarchyTagFilter` を作成して `EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない` に着手する。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし（`roadmap.md` の該当行は `- [ ]` のまま維持）
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（コード未編集・ブランチ整理確認待ちで停止。想定用途は制作：エディタ専用 UI で同一タグを持つエンティティ群をヒエラルキー上で絞り込み／一括選択し、一括編集・削除・タグ操作の手間を削減する）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない | 有効 | ・各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる / ・シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-24 08:39（着手前査定・ブランチ整理の確認待ちで停止）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/EntityEditorSelectableShortLabel`（未コミット変更 9 ファイルが残存）
+- **対象 roadmap 行:** `EntityEditorHierarchy` › `ヒエラルキーがタグでフィルタ／一括選択できない`（ファイル出現順最初の `- [ ]`）
+- **§6.2 コード確認結果:** `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp` の `DrawHierarchyNode`（674〜702行目）および `DrawHierarchyPanel`（722〜770行目）にて、タグによる絞り込みおよび一致インスタンスの一括選択 UI が未実装であることを確認した。
+- **§6.7 最終目標査定:** 有効かつ矛盾なし（下記「最終目標との査定（§6.7）」参照）。
+- **停止理由:** 新規タスク（想定ブランチ名: `feature/EntityEditorHierarchyTagFilter`）へ進むには `startTaskBranchFromDevelop.ps1` で `develop` から新規作業ブランチを作成する必要があるが、現在の `fix/EntityEditorSelectableShortLabel` に前タスク関連（8ファイル）および `cursorRoadmapLoop.ps1`（1ファイル）の未コミット変更が残っている。整理方針の確認質問がスキップされたため、無断コミット・マージ・`git stash`・別ブランチ流用を行わず停止した。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- **課題:** `fix/EntityEditorSelectableShortLabel` に未コミット変更があるため `startTaskBranchFromDevelop.ps1` が前提チェックで停止する。
+- **選択肢:**
+  1. 前タスク8ファイルのみを `finishTaskGit.ps1` でコミット・`develop` へマージ・元ブランチ削除し、`cursorRoadmapLoop.ps1` を一時 `stash` 退避した上で `feature/EntityEditorHierarchyTagFilter` を作成する（推奨）。
+  2. 全9ファイルをまとめて `finishTaskGit.ps1` でコミット・`develop` へマージ・元ブランチ削除し、`feature/EntityEditorHierarchyTagFilter` を作成する。
+  3. 全9ファイルを一時的に `git stash` で退避した上で `feature/EntityEditorHierarchyTagFilter` を作成する。
+  4. ユーザー側で手動整理（コミット／マージ等）が完了するまで待機する。
+
+### 3. 次に実行すべきステップの提案
+
+- ユーザーから上記 1〜4 のいずれか（例:「前タスク8ファイルをコミット・マージして次へ」または「stashして次へ」）の指示を受けた上で、`feature/EntityEditorHierarchyTagFilter` を作成し `EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない` の実装に着手する。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし（`roadmap.md` の該当行は `- [ ]` のまま維持）
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（コード未編集・ブランチ整理確認待ちで停止。想定用途は制作：エディタ専用 UI で同一タグを持つエンティティ群をヒエラルキー上で絞り込み／一括選択し、一括編集・削除・タグ操作の手間を削減する）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない | 有効 | ・各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる / ・シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
+
+---
+
+## セッション 2026-11-24 08:55（着手前査定・ブランチ整理の確認待ちで停止）
+
+### 1. 現在の進捗状況と完了したこと
+
+- **現在ブランチ:** `fix/EntityEditorSelectableShortLabel`（未コミット変更 9 ファイルが残存）
+- **対象 roadmap 行:** `EntityEditorHierarchy` › `ヒエラルキーがタグでフィルタ／一括選択できない`（ファイル出現順最初の `- [ ]`）
+- **§6.2 コード確認結果:** `Project/Codes/Source/System/Editor/Entity/EntityEditorUi.cpp` の `DrawHierarchyNode`（674〜702行目）および `DrawHierarchyPanel`（722〜770行目）にて、タグフィルタおよび一致インスタンスの一括選択 UI が未実装であることを確認した。
+- **§6.7 最終目標査定:** 有効かつ矛盾なし（下記「最終目標との査定（§6.7）」参照）。
+- **停止理由:** 新規タスク（想定ブランチ名: `feature/EntityEditorHierarchyTagFilter`）へ進むには `startTaskBranchFromDevelop.ps1` で `develop` から新規作業ブランチを切る必要があるが、現在の `fix/EntityEditorSelectableShortLabel` 上に前タスク関連（8 ファイル）および `cursorRoadmapLoop.ps1`（1 ファイル）の未コミット変更が残っている。ブランチ整理方針の確認質問がスキップされたため、無断コミット・マージ・`git stash`・別ブランチ流用を行わず停止した。
+
+### 2. 発生した課題または設計上の選択肢（メリット・デメリット）
+
+- **課題:** `fix/EntityEditorSelectableShortLabel` に未コミット変更が残っているため、`startTaskBranchFromDevelop.ps1` が前提チェックで停止する。
+- **選択肢:**
+  1. 前タスク 8 ファイルのみを `finishTaskGit.ps1` でコミット・`develop` へマージ・元ブランチ削除し、`cursorRoadmapLoop.ps1` を一時 `stash` 退避した上で `feature/EntityEditorHierarchyTagFilter` を作成する（推奨）。
+  2. 全 9 ファイルをまとめて `finishTaskGit.ps1` でコミット・`develop` へマージ・元ブランチ削除し、`feature/EntityEditorHierarchyTagFilter` を作成する。
+  3. 全 9 ファイルを一時的に `git stash` で退避した上で `feature/EntityEditorHierarchyTagFilter` を作成する。
+  4. ユーザー側で手動整理（コミット／マージ等）が完了するまで待機する。
+
+### 3. 次に実行すべきステップの提案
+
+- ユーザーから上記いずれかの指示（例: 前タスク 8 ファイルのコミット・マージ許可、全 9 ファイルのコミット・マージ許可、`git stash` 退避指示、または手動整理）を受けた上で、`feature/EntityEditorHierarchyTagFilter` を作成し `EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない` の実装に着手する。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし（`roadmap.md` の該当行は `- [ ]` のまま維持）
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+なし（コード未編集・ブランチ整理確認待ちで停止。想定用途は制作：エディタ専用 UI で同一タグを持つエンティティ群をヒエラルキー上で絞り込み／一括選択し、一括編集・削除・タグ操作の手間を削減する）
+
+## 最終目標との査定（§6.7）
+
+| タスク | 判定（有効／矛盾／寄与なし／査定不能） | 根拠（完成形の説明の・行） |
+|--------|----------------------------------------|------------------------------|
+| EntityEditorHierarchy › ヒエラルキーがタグでフィルタ／一括選択できない | 有効 | ・各エンティティのコンポーネント構成やコンポーネント内部のパラメータをjsonデータとして作成/保存/編集/削除することができる / ・シーンの構成を保存することと、ゲーム中にエディタ上でのプレイとゲーム配布のランタイム環境上でのプレイを可能にしてある |
 

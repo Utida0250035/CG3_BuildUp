@@ -1,7 +1,8 @@
 ﻿param(
     [int]$MaxIterations = 50,      # 最大ループ回数（暴走防止）
     [int]$TimeoutSeconds = 1200,    # 1回あたりのタイムアウト（20分）
-    [int]$SleepSeconds = 900       # 次の実行までの待機秒数
+    [int]$SleepSeconds = 900,       # 次の実行までの待機秒数
+    [string]$RoadmapPath = "./EditorAssets/Tools/CursorAI/docs/feature-memos/roadmap.md"
 )
 
 [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false)
@@ -19,7 +20,8 @@ if (-not $ProjectRoot) {
 Set-Location $ProjectRoot
 
 for ($iter = 1; $iter -le $MaxIterations; $iter++) {
-    Write-Host "`n=== [$iter / $MaxIterations] ロードマップ実行中 ===" -ForegroundColor Cyan
+    $rem = @(Select-String -Path $RoadmapPath -Pattern '^\s*[-*]\s*\[[ ~]\]').Count # 追加
+    Write-Host "`n=== [$iter / $MaxIterations] ロードマップ実行中 (残り: $rem 件) ===" -ForegroundColor Cyan
 
     # 毎回新規プロセスで実行（コンテキスト蓄積ゼロ）
     $job = Start-Job -ScriptBlock {
@@ -50,6 +52,9 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
         Write-Host "エラーが発生したため停止しました。" -ForegroundColor Red
         exit 1
     }
+
+    $remAfter = @(Select-String -Path $RoadmapPath -Pattern '^\s*[-*]\s*\[[ ~]\]').Count # 追加
+    Write-Host "[$iter / $MaxIterations] 実行後の残り件数: $remAfter 件" -ForegroundColor Yellow # 追加
 
     Start-Sleep -Seconds $SleepSeconds
 }

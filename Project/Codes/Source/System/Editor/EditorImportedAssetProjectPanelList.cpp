@@ -4,6 +4,7 @@
 #include "System/Editor/EditorImportedAssetBatchApplyToSelection.h"
 #include "System/Editor/EditorImportedAssetUiPathScrub.h"
 #include "System/Editor/Entity/EntityEditor.h"
+#include "System/Editor/Entity/EntityEditorProjectPanelSelectableLabel.h"
 
 #include <cstring>
 #include <filesystem>
@@ -44,11 +45,16 @@ void DrawImportedAssetsFolderList(EntityEditor::EntityEditor &editor) {
   if (ImGui::BeginChild("ImportedFolderList", ImVec2(0.0f, 120.0f), true)) {
     for (const std::string &path : importedFiles) {
       const bool selected = selectedListPath == path;
-      if (ImGui::Selectable(path.c_str(), selected)) {
+      const std::string label =
+          Atrum::EntityEditor::ProjectPanelSelectableLabel::
+              BuildImportedAssetSelectableLabel(path);
+      if (ImGui::Selectable(label.c_str(), selected)) {
         selectedListPath = path;
         ui.lastImportedAssetPath = path;
         SyncRenameBuffer(selectedListPath, renameBuffer, sizeof(renameBuffer));
       }
+      Atrum::EntityEditor::ProjectPanelSelectableLabel::DrawFullPathHoverTooltip(
+          path);
     }
   }
   ImGui::EndChild();
