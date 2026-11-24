@@ -1,8 +1,8 @@
 @echo off
 cd /d %~dp0
 
-py casePatternChecker.py ../../../../..
+py ./casePatternChecker.py ..\..\..\..\..
 
-pause
-
-exit
+echo 300•bŒã‚ÉŽ©“®‚Å•Â‚¶‚Ü‚·...
+timeout /t 300 /nobreak >nul
+exit /b

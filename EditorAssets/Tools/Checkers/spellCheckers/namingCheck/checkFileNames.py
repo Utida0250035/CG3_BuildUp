@@ -188,8 +188,6 @@ def main():
             f"希少単語を含む): |{anomaly['type']}|\033[32m($ProjectDir)\{relative_path}\033[0m\n\033[33m{anomaly['rare_words']}\033[0m\n"
         )
 
-    input("\nEnterキーを押して終了...")
-
 
 if __name__ == "__main__":
     main()

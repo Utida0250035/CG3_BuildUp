@@ -42,10 +42,8 @@ echo node_modules\ found.
 
 echo [4/4]run checkers...
 
-:: different process
 start "" "%TOOLS_DIR%\spellCheckers\run.cmd"
 
-:: spell check(mainProcess)
 call npm run lint:spell >&2
 
 exit /b %errorlevel%

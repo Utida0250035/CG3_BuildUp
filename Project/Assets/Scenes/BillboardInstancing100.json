@@ -7,6 +7,14 @@
                         "executionOrder": 0,
                         "kind": 1,
                         "params": {
+                            "baseColor": {
+                                "w": 1.0,
+                                "x": 1.0,
+                                "y": 1.0,
+                                "z": 1.0
+                            },
+                            "billboardHeight": 0.8500000238418579,
+                            "billboardWidth": 0.8500000238418579,
                             "cellFill": 0.78,
                             "checkerColorA": {
                                 "w": 1.0,
@@ -52,9 +60,9 @@
                         "z": 1.0
                     },
                     "translate": {
-                        "x": 0.0,
+                        "x": 0.2322998046875,
                         "y": 0.800000011920929,
-                        "z": 0.0
+                        "z": -2.384185791015625e-07
                     }
                 },
                 "tagHashes": [
