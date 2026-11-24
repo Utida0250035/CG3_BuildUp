@@ -1,9 +1,8 @@
 #include "Scene/CommandScene.h"
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#if defined(DEVELOPMENT)
 #include "Scene/CommandSceneDevelopmentBoot.h"
 #include "Scene/CommandSceneDevelopmentBootApply.h"
-#include "Scene/SceneBuildUpLaunchPolicy.h"
 #else
 #include "Scene/CommandSceneReleaseBootApply.h"
 #endif
@@ -20,7 +19,7 @@ CommandScene::CommandScene() {
 
 bool CommandScene::Initialize() {
 
-#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+#if defined(DEVELOPMENT)
 	const DevelopmentBootTarget bootTarget = ResolveDevelopmentBootTarget();
 	sceneNow_ = CreateInitialSceneForDevelopmentBoot(bootTarget);
 #else

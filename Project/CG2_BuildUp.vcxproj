@@ -381,6 +381,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
 
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentEditorBootPolicy.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+
+    </ClCompile>
     <ClCompile Include="Codes\Source\Scene\CommandSceneReleaseBootApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandSceneBootLaunchPathGate.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandSceneBootEnterApply.cpp" />
@@ -1288,6 +1293,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\Scene\CommandScene.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBoot.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentBootApply.h" />
+    <ClInclude Include="Codes\Include\Scene\CommandSceneDevelopmentEditorBootPolicy.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneReleaseBootApply.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneBootLaunchPathGate.h" />
     <ClInclude Include="Codes\Include\Scene\CommandSceneBootEnterApply.h" />

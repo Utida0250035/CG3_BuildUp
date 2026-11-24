@@ -29,7 +29,7 @@ for ($iter = 1; $iter -le $MaxIterations; $iter++) {
         [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
         $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
         Set-Location $dir
-        cursor-agent -p --force --model "gemini-4-hydrogen-high" "ロードマップを実行して。"
+        cursor-agent -p --force --model "composer-2.5" "ロードマップを実行して。"
     } -ArgumentList $ProjectRoot
 
     $completed = Wait-Job $job -Timeout $TimeoutSeconds

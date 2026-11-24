@@ -11,7 +11,7 @@ Scene *PrepareInitialSceneBeforeEnter(Scene *sceneNow) {
     return SceneTitle::Instance();
   }
 
-#if !defined(DEVELOPMENT) || !defined(USE_IMGUI)
+#if !defined(DEVELOPMENT)
   SceneBuildUp *const buildUp = dynamic_cast<SceneBuildUp *>(sceneNow);
   if (buildUp != nullptr &&
       !IsValidBootSceneJsonPath(buildUp->SceneJsonPath())) {
