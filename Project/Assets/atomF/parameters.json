@@ -1,37 +1,76 @@
 {
+  "arena": {
+    "innerRadiusMeters": 16.0,
+    "wallThicknessMeters": 0.4,
+    "wallHeightMeters": 1.5,
+    "meshSegmentCount": 48,
+    "groundHeightMeters": 0.0
+  },
   "player": {
     "moveSpeedId": "速さa",
-    "moveSpeedMetersPerSecond": 0.5,
+    "moveSpeedMetersPerSecond": 1.5,
     "hitRadiusId": "半径b",
     "hitRadiusMeters": 0.25,
     "shotCooldownSeconds": 1.0,
+    "initialHealthCount": 99,
     "bullet": {
       "speedId": "速さb",
-      "speedMetersPerSecond": 1.5,
+      "speedMetersPerSecond": 2.25,
       "hitShape": "sphere",
-      "hitRadiusId": "半径a",
-      "hitRadiusMeters": 0.125,
+      "hitRadiusId": "半径弾",
+      "hitRadiusMeters": 0.25,
       "trailSeconds": 0.5
     },
     "aimCapsule": {
-      "radiusId": "半径b",
-      "radiusMeters": 0.25
+      "radiusId": "半径エイム",
+      "radiusMeters": 0.1
     },
     "damageFeedback": {
       "vignetteSeconds": 0.75,
       "sePlayCount": 1
     }
   },
+  "camera": {
+    "followEyeOffset": {
+      "offsetXMeters": 0.0,
+      "offsetYMeters": 11.0,
+      "offsetZMeters": -7.0
+    },
+    "framing": {
+      "leftEndXMeters": -16.0,
+      "rightEndXMeters": 16.0,
+      "groundHeightMeters": 0.0,
+      "barrageSpawnTopYMeters": 4.0,
+      "pivotZMeters": 0.0
+    }
+  },
   "enemy": {
-    "moveSpeedId": "速さa",
-    "moveSpeedMetersPerSecond": 0.5,
+    "hitRadiusMeters": 0.25,
+    "moveSpeedId": "速さ歩行",
+    "moveSpeedMetersPerSecond": 1.0,
     "chargeIntervalSeconds": 5.0,
-    "knockbackSpeedId": "速さb",
-    "knockbackSpeedMetersPerSecond": 1.5,
+    "knockbackSpeedId": "速さ吹き飛び",
+    "knockbackSpeedMetersPerSecond": 2.5,
     "explosion": {
       "hitShape": "sphere",
       "hitRadiusId": "半径c",
       "hitRadiusMeters": 0.4
+    },
+    "panic": {
+      "lingerAfterAimSeconds": 0.35,
+      "shakeAmplitudeHorizontalMeters": 0.12,
+      "shakeAmplitudeVerticalMeters": 0.045,
+      "wobbleSpeed": 76.0,
+      "sweatEmitIntervalSeconds": 0.14
+    },
+    "periodicCharge": {
+      "shakeDurationSeconds": 0.45,
+      "chargeDurationSeconds": 0.75,
+      "shakeAmplitudeMeters": 0.1,
+      "shakeAngularSpeed": 48.0
+    },
+    "chainExplosion": {
+      "shrinkDurationSeconds": 0.6
     }
   }
 }

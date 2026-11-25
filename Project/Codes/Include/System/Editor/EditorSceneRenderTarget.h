@@ -8,6 +8,7 @@
 #include <d3d12.h>
 #include <functional>
 #include <memory>
+#include <vector>
 #include <wrl/client.h>
 
 namespace Atrum {
@@ -24,8 +25,13 @@ public:
   ImTextureRef ImGuiTexture() const;
   bool HasTexture() const;
 
+  /// PostDraw 後に呼び、遅延キューに積んだ SRV を解放する
+  void FlushDeferredSrvReleases(Atrum::AtrumEngine *engine);
+
 private:
-  void ReleaseSrv(Atrum::AtrumEngine *engine);
+  /// ImGui が参照し終えるまで descriptor を保持し、PostDraw 後に解放する
+  void QueueSrvForDeferredRelease();
+  void FreeDeferredSrvReleases(Atrum::AtrumEngine *engine);
   void CreateSrv(Atrum::AtrumEngine *engine);
 
   int width_ = 0;
@@ -34,6 +40,8 @@ private:
   Microsoft::WRL::ComPtr<ID3D12Resource> depthResource_{};
   Atrum::DescriptorAllocator::DescriptorHandle srv_{};
   bool srvAllocated_ = false;
+  std::vector<Atrum::DescriptorAllocator::DescriptorHandle>
+      deferredSrvReleases_{};
   std::unique_ptr<Atrum::DescriptorAllocator> rtvAllocator_{};
   std::unique_ptr<Atrum::DescriptorAllocator> dsvAllocator_{};
   D3D12_CPU_DESCRIPTOR_HANDLE colorRtvCpu_{};
@@ -50,6 +58,9 @@ public:
   void RenderSceneViews(
       Atrum::AtrumEngine *engine,
       const std::function<void(SceneViewTab tab, int width, int height)> &drawFn);
+
+  /// PostDraw 完了後に呼ぶ（同一フレームの ImGui::Image が参照した SRV を解放）
+  void FlushDeferredSrvReleases(Atrum::AtrumEngine *engine);
 
   ImTextureRef ImGuiTexture(const SceneViewTab tab) const;
 

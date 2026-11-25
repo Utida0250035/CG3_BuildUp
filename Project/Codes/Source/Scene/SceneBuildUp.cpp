@@ -25,12 +25,14 @@
 #include "Scene/SceneBuildUpAtomFEnemySpawn.h"
 #include "Scene/SceneBuildUpAtomFEntityDestroyPurge.h"
 #include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "Scene/SceneBuildUpAtomFArenaContainmentTick.h"
 #include "Scene/SceneBuildUpAtomFCombatCamera.h"
 #include "Scene/SceneBuildUpAtomFParametersBoot.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
+#include "System/Editor/EditorSceneRenderTarget.h"
 #endif
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
@@ -100,6 +102,7 @@ void SceneBuildUpRegistry::OnSceneExited(SceneBuildUp *scene) {
 }
 
 void SceneBuildUp::TeardownEntities() {
+  AtomF::ClearSceneEntityAdoptQueue();
   for (std::unique_ptr<Entity> &entity : entities_) {
     if (entity) {
       entity->Finalize();
@@ -183,6 +186,9 @@ void SceneBuildUp::Update() {
       }
     }
 
+    // 更新中に撃たれた独立弾などを、走査後にシーンへ採用する。
+    AtomF::FlushSceneEntityAdoptQueue(entities_);
+
     PurgeDestroyedSceneEntities(entities_);
 
     TickAtomFArenaContainmentForScene(sceneJsonPath_, entities_);
@@ -191,8 +197,11 @@ void SceneBuildUp::Update() {
 
     Particle::TickEmitterManagerForActiveScene(GetCamera());
 
-    if (FrameDeltaTime *const frameDelta = ::Atrum::EngineFrameDeltaTime()) {
-      PlayerDamageScreenVignette::Instance().Update(frameDelta->GetDeltaTime());
+    if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
+      if (FrameDeltaTime *const frameDelta = ::Atrum::EngineFrameDeltaTime()) {
+        PlayerDamageScreenVignette::Instance().Update(
+            frameDelta->GetDeltaTime());
+      }
     }
   }
   SceneBuildUpAtomFCombatCamera::MaintainSceneCamera(*this);
@@ -230,7 +239,9 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   Particle::DrawEmitterManagerForActiveScene();
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
   engine->SetCamera(camera);
-  PlayerDamageScreenVignette::Instance().Draw(engine);
+  if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
+    PlayerDamageScreenVignette::Instance().Draw(engine);
+  }
 }
 
 #endif
@@ -258,7 +269,9 @@ void SceneBuildUp::DrawScene() {
   Particle::DrawEmitterManagerForActiveScene();
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
   engine->SetCamera(primaryCamera);
-  PlayerDamageScreenVignette::Instance().Draw(engine);
+  if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
+    PlayerDamageScreenVignette::Instance().Draw(engine);
+  }
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   if (showsNextSceneHint_) {
@@ -289,6 +302,10 @@ void SceneBuildUp::Draw() {
   SceneBuildUpDedicatedRuntimeViewWindow::RenderViews(*this);
 #endif
   engine->PostDraw();
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  Editor::EditorSceneRenderTargetHub::Instance().FlushDeferredSrvReleases(
+      engine);
+#endif
 }
 
 void SceneBuildUp::ExitScene() {

@@ -27,8 +27,8 @@ void CmpAtomFPlayerBulletTrail::CompleteLingerDestroyIfReady() {
     return;
   }
   destroyRequested_ = true;
-  RefOwner().SetParent(nullptr);
   RefOwner().Finalize();
+  RefOwner().RequestDestroy();
 }
 
 void CmpAtomFPlayerBulletTrail::Update() {

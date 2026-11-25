@@ -1,9 +1,9 @@
 #include "System/AtomF/CmpAtomFPlayerBulletEnemyHit.h"
 
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFPlayerBulletConsume.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
-#include "System/AtomF/CmpAtomFPlayerBulletTrail.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -22,16 +22,7 @@ void CmpAtomFPlayerBulletEnemyHit::DestroyBulletAfterHit() {
     return;
   }
   consumed_ = true;
-  if (hitSphere_ != nullptr) {
-    hitSphere_->SetIsActive(false);
-  }
-  if (CmpAtomFPlayerBulletTrail *trail =
-          RefOwner().GetUpdCmp<CmpAtomFPlayerBulletTrail>()) {
-    trail->BeginLingerPhase();
-    return;
-  }
-  RefOwner().SetParent(nullptr);
-  RefOwner().Finalize();
+  AtomF::ConsumePlayerBulletAfterHit(RefOwner());
 }
 
 void CmpAtomFPlayerBulletEnemyHit::Update() {

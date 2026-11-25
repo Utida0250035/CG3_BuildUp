@@ -31,24 +31,66 @@
 
 namespace Atrum::EntityEditor {
 
+namespace {
+
+void EnsureAtLeastOneSceneInstance(EditorSceneDocument &scene) {
+  if (!scene.instances.empty()) {
+    return;
+  }
+  SceneEntityInstance instance{};
+  instance.instanceName = "Entity_0";
+  instance.definition = MakeDefaultEntityDefinition("Entity_0");
+  scene.instances.push_back(std::move(instance));
+}
+
+int ClampedSelectedInstanceIndex(const EditorSceneDocument &scene,
+                                 const int selectedIndex) {
+  if (scene.instances.empty()) {
+    return 0;
+  }
+  const int maxIndex = static_cast<int>(scene.instances.size()) - 1;
+  return std::clamp(selectedIndex, 0, maxIndex);
+}
+
+} // namespace
+
 EntityDefinition &EntityEditor::SelectedDefinition() {
   ClampSelectedInstanceIndex();
+  if (scene_.instances.empty()) {
+    static EntityDefinition kEmptySceneEditBuffer{};
+    return kEmptySceneEditBuffer;
+  }
   return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)]
       .definition;
 }
 
 const EntityDefinition &EntityEditor::SelectedDefinition() const {
-  return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)]
-      .definition;
+  if (scene_.instances.empty()) {
+    static const EntityDefinition kEmptyScene{};
+    return kEmptyScene;
+  }
+  const size_t index = static_cast<size_t>(ClampedSelectedInstanceIndex(
+      scene_, ui_.selectedInstanceIndex));
+  return scene_.instances[index].definition;
 }
 
 SceneEntityInstance &EntityEditor::SelectedInstance() {
   ClampSelectedInstanceIndex();
+  if (scene_.instances.empty()) {
+    static SceneEntityInstance kEmptySceneEditBuffer{};
+    return kEmptySceneEditBuffer;
+  }
   return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)];
 }
 
 const SceneEntityInstance &EntityEditor::SelectedInstance() const {
-  return scene_.instances[static_cast<size_t>(ui_.selectedInstanceIndex)];
+  if (scene_.instances.empty()) {
+    static const SceneEntityInstance kEmptyScene{};
+    return kEmptyScene;
+  }
+  const size_t index = static_cast<size_t>(ClampedSelectedInstanceIndex(
+      scene_, ui_.selectedInstanceIndex));
+  return scene_.instances[index];
 }
 
 void EntityEditor::ClampSelectedInstanceIndex() {
@@ -122,6 +164,7 @@ void EntityEditor::ApplySceneDocumentLoadedFromDisk(
   const EntityEditorRestoreSelectionAfterSceneLoad::SelectionSnapshot snapshot =
       EntityEditorRestoreSelectionAfterSceneLoad::Capture(*this);
   scene_ = std::move(document);
+  EnsureAtLeastOneSceneInstance(scene_);
   MergeTagCatalogFromRegistry(scene_);
   SyncAllEntityDefinitionTags(scene_);
   SyncTagCatalogFromInstances(scene_);

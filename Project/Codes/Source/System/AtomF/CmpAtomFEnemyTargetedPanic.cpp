@@ -1,9 +1,8 @@
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 
 #include "Math/Vector3.h"
-#include "System/AtomF/AtomFEnemyAimCapsuleTargetQuery.h"
+#include "System/AtomF/AtomFEnemyPredictCapsuleTargetQuery.h"
 #include "System/AtomF/AtomFParametersAccess.h"
-#include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/DeltaTime.h"
@@ -15,31 +14,6 @@
 #include <cstdint>
 
 namespace Atrum {
-
-namespace {
-
-constexpr float kPanicLingerAfterAimSeconds = 0.35f;
-// 斜め俯瞰カメラ（距離約14m）からでも敵半径0.25mに対してぱっと見で分かる振幅・周波数。
-constexpr float kPanicShakeAmplitudeHorizontalMeters = 0.12f;
-constexpr float kPanicShakeAmplitudeVerticalMeters = 0.045f;
-constexpr float kPanicWobbleSpeed = 76.0f;
-constexpr float kPanicSweatEmitIntervalSeconds = 0.14f;
-
-/// 焦り中の見た目専用小刻み震えオフセットを算出する（地面に沈まないよう Y >= 0）。
-Math::Vector3 ComputePanicVisualShakeOffset(const float phaseSeconds) {
-  const float x =
-      std::sin(phaseSeconds * kPanicWobbleSpeed) *
-      kPanicShakeAmplitudeHorizontalMeters;
-  const float z =
-      std::cos(phaseSeconds * kPanicWobbleSpeed * 1.27f) *
-      (kPanicShakeAmplitudeHorizontalMeters * 0.85f);
-  const float y =
-      std::abs(std::sin(phaseSeconds * kPanicWobbleSpeed * 1.65f)) *
-      kPanicShakeAmplitudeVerticalMeters;
-  return Math::Vector3{x, y, z};
-}
-
-} // namespace
 
 void CmpAtomFEnemyTargetedPanic::ApplyVisualShakeOffset(
     const Math::Vector3 &offset) {
@@ -60,13 +34,26 @@ void CmpAtomFEnemyTargetedPanic::ResetVisualShakeOffset() {
   ApplyVisualShakeOffset(Math::Vector3{0.0f, 0.0f, 0.0f});
 }
 
+Math::Vector3 CmpAtomFEnemyTargetedPanic::ComputePanicVisualShakeOffset(
+    const float phaseSeconds) const {
+  const float x = std::sin(phaseSeconds * panicParams_.wobbleSpeed) *
+                  panicParams_.shakeAmplitudeHorizontalMeters;
+  const float z =
+      std::cos(phaseSeconds * panicParams_.wobbleSpeed * 1.27f) *
+      (panicParams_.shakeAmplitudeHorizontalMeters * 0.85f);
+  const float y =
+      std::abs(std::sin(phaseSeconds * panicParams_.wobbleSpeed * 1.65f)) *
+      panicParams_.shakeAmplitudeVerticalMeters;
+  return Math::Vector3{x, y, z};
+}
+
 void CmpAtomFEnemyTargetedPanic::EmitSweatFromTopIfDue(
     const float deltaSeconds, const Math::Vector3 &visualOffset) {
   sweatEmitCooldownSeconds_ -= deltaSeconds;
   if (sweatEmitCooldownSeconds_ > 0.0f) {
     return;
   }
-  sweatEmitCooldownSeconds_ = kPanicSweatEmitIntervalSeconds;
+  sweatEmitCooldownSeconds_ = panicParams_.sweatEmitIntervalSeconds;
 
   const float topOffsetY = AtomF::ResolveEnemyBodyRadiusMeters();
   const Math::Vector3 topWorldPos =
@@ -79,6 +66,7 @@ void CmpAtomFEnemyTargetedPanic::EmitSweatFromTopIfDue(
 
 void CmpAtomFEnemyTargetedPanic::ResolveDependence() {
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
+  panicParams_ = AtomF::ResolveEnemyPanicParameters();
 }
 
 void CmpAtomFEnemyTargetedPanic::Finalize() {
@@ -118,12 +106,10 @@ void CmpAtomFEnemyTargetedPanic::Update() {
   }
 
   const float dt = frameDeltaTime_->GetDeltaTime();
-  Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
-  bool targeted = false;
-  if (player != nullptr && player->IsActive()) {
-    targeted =
-        AtomF::IsEnemyTargetedByPlayerAimCapsule(RefOwner(), *player);
-  }
+  AtomF::EnemyPredictTargetInfo predictInfo{};
+  const bool targeted =
+      AtomF::TryResolveEnemyPredictTarget(RefOwner(), predictInfo) &&
+      predictInfo.targeted;
 
   if (targeted) {
     if (!isPanicking_) {
@@ -131,7 +117,7 @@ void CmpAtomFEnemyTargetedPanic::Update() {
       sweatEmitCooldownSeconds_ = 0.0f;
     }
     isPanicking_ = true;
-    panicLingerSeconds_ = kPanicLingerAfterAimSeconds;
+    panicLingerSeconds_ = panicParams_.lingerAfterAimSeconds;
   } else if (isPanicking_) {
     panicLingerSeconds_ -= dt;
     if (panicLingerSeconds_ <= 0.0f) {
@@ -145,7 +131,6 @@ void CmpAtomFEnemyTargetedPanic::Update() {
     return;
   }
 
-  // 当たり判定（Entity の Transform / CmpHitSphere）は動かさず、見た目だけ小刻みに震わせる。
   wobblePhaseSeconds_ += dt;
   const Math::Vector3 visualOffset =
       ComputePanicVisualShakeOffset(wobblePhaseSeconds_);

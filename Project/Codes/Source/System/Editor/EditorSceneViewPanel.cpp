@@ -114,11 +114,11 @@ void LayoutDedicatedSceneViewWindow(
       const bool hovered = ImGui::IsItemHovered();
       SubViewportRect renderRect = frame.SceneViewRect(tab);
       frame.SetSceneViewRect(tab, renderRect, hovered);
-      if (tab == SceneViewTab::Edit) {
+      {
         const ImVec2 rectMin = ImGui::GetItemRectMin();
         const ImVec2 rectMax = ImGui::GetItemRectMax();
-        frame.SetEditViewImageScreenBounds(rectMin.x, rectMin.y, rectMax.x,
-                                           rectMax.y);
+        frame.SetSceneViewImageScreenBounds(tab, rectMin.x, rectMin.y, rectMax.x,
+                                            rectMax.y);
       }
       if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
         frame.SetSceneViewTab(tab);

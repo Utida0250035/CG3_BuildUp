@@ -1,5 +1,13 @@
 #pragma once
 #include <memory>
+
+extern "C" {
+#include <lauxlib.h>
+#include <lua.h>
+#include <lualib.h>
+#include <luajit.h>
+}
+
 #include <sol/sol.hpp>
 #include <string>
 #include <vector>

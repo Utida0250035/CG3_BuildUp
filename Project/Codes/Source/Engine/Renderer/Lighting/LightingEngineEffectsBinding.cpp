@@ -1,28 +1,20 @@
 #include "Engine/Renderer/Lighting/LightingEngineEffectsBinding.h"
 
-#include "Engine/AtrumEngine.h"
-#include "Engine/EngineAccess.h"
-
 namespace Atrum::Visual::LightingEngineEffectsBinding {
 
-AtrumEngine *OwnerEngine() { return ::Atrum::EngineInstance(); }
-
 VolumetricFog &SharedVolumetricFog() {
-  AtrumEngine *engine = OwnerEngine();
-  static VolumetricFog kFallback{};
-  return engine != nullptr ? engine->RefVolumetricFog() : kFallback;
+  static VolumetricFog kDetached{};
+  return kDetached;
 }
 
 GodRays &SharedGodRays() {
-  AtrumEngine *engine = OwnerEngine();
-  static GodRays kFallback{};
-  return engine != nullptr ? engine->RefGodRays() : kFallback;
+  static GodRays kDetached{};
+  return kDetached;
 }
 
 DirectionalShadow &SharedDirectionalShadow() {
-  AtrumEngine *engine = OwnerEngine();
-  static DirectionalShadow kFallback{};
-  return engine != nullptr ? engine->RefDirectionalShadow() : kFallback;
+  static DirectionalShadow kDetached{};
+  return kDetached;
 }
 
 } // namespace Atrum::Visual::LightingEngineEffectsBinding

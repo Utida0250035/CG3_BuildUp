@@ -58,6 +58,12 @@ void Apply(EntityEditor &editor, const SelectionSnapshot &snapshot) {
   ui.selectedInstanceIndex = restored.empty() ? 0 : restored.front();
   editor.ClampSelectedInstanceIndex();
 
+  if (scene.instances.empty()) {
+    ui.selectedComponentIndex = 0;
+    ui.selectedComponentKind = snapshot.selectedComponentKind;
+    return;
+  }
+
   const EntityDefinition &definition = editor.SelectedDefinition();
   if (definition.components.empty()) {
     ui.selectedComponentIndex = 0;

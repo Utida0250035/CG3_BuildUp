@@ -3,9 +3,6 @@
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
 #include "Engine/Resource/LightData.h"
-#include "Engine/Renderer/Lighting/DirectionalShadow.h"
-#include "Engine/Renderer/Lighting/GodRays.h"
-#include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "System/Editor/EditorAssetsPaths.h"
 #include "System/GameAssetsPaths.h"
 
@@ -19,9 +16,6 @@ using Atrum::DirectionalLightData;
 using Atrum::Engine;
 using Atrum::LightModel;
 using Atrum::Math::Vector3;
-using Atrum::Visual::DirectionalShadowSettings;
-using Atrum::Visual::GodRaySettings;
-using Atrum::Visual::VolumetricFogSettings;
 
 bool TryReadVector3(const nlohmann::json &node, const char *key, Vector3 &out) {
   if (!node.contains(key) || !node[key].is_array() || node[key].size() < 3) {
@@ -59,37 +53,6 @@ DirectionalLightData BuildDefaultDirectional() {
       .rimPower = 3.0f,
       .rimEnabled = 1u,
   };
-}
-
-VolumetricFogSettings BuildDefaultFog() {
-  VolumetricFogSettings fog{};
-  fog.enabled = 1u;
-  fog.density = 0.022f;
-  fog.heightFalloff = 0.28f;
-  fog.heightOffset = 0.0f;
-  fog.maxDistance = 90.0f;
-  fog.inScatterIntensity = 0.18f;
-  return fog;
-}
-
-GodRaySettings BuildDefaultGodRays() {
-  GodRaySettings rays{};
-  rays.enabled = 1u;
-  rays.intensity = 0.12f;
-  rays.angularPower = 8.0f;
-  rays.fogCoupling = 0.9f;
-  return rays;
-}
-
-DirectionalShadowSettings BuildDefaultShadow() {
-  DirectionalShadowSettings shadow{};
-  shadow.shadeEnabled = 1u;
-  shadow.shadeDarkness = 0.42f;
-  shadow.groundPlaneY = 0.0f;
-  shadow.contactHeight = 3.0f;
-  shadow.planarEnabled = 1u;
-  shadow.planarAlpha = 0.32f;
-  return shadow;
 }
 
 bool TryLoadJsonFile(const std::string &path, nlohmann::json &out) {
@@ -145,93 +108,11 @@ void MergeDirectionalFromJson(const nlohmann::json &root,
   }
 }
 
-void MergeFogFromJson(const nlohmann::json &root, VolumetricFogSettings &fog) {
-  if (!root.contains("volumetricFog") || !root["volumetricFog"].is_object()) {
-    return;
-  }
-  const nlohmann::json &node = root["volumetricFog"];
-  TryReadVector3(node, "color", fog.color);
-  if (node.contains("enabled")) {
-    fog.enabled = node["enabled"].get<uint32_t>();
-  }
-  if (node.contains("density")) {
-    fog.density = node["density"].get<float>();
-  }
-  if (node.contains("heightFalloff")) {
-    fog.heightFalloff = node["heightFalloff"].get<float>();
-  }
-  if (node.contains("heightOffset")) {
-    fog.heightOffset = node["heightOffset"].get<float>();
-  }
-  if (node.contains("startDistance")) {
-    fog.startDistance = node["startDistance"].get<float>();
-  }
-  if (node.contains("maxDistance")) {
-    fog.maxDistance = node["maxDistance"].get<float>();
-  }
-  if (node.contains("inScatterIntensity")) {
-    fog.inScatterIntensity = node["inScatterIntensity"].get<float>();
-  }
-}
-
-void MergeGodRaysFromJson(const nlohmann::json &root, GodRaySettings &rays) {
-  if (!root.contains("godRays") || !root["godRays"].is_object()) {
-    return;
-  }
-  const nlohmann::json &node = root["godRays"];
-  TryReadVector3(node, "color", rays.color);
-  if (node.contains("enabled")) {
-    rays.enabled = node["enabled"].get<uint32_t>();
-  }
-  if (node.contains("intensity")) {
-    rays.intensity = node["intensity"].get<float>();
-  }
-  if (node.contains("angularPower")) {
-    rays.angularPower = node["angularPower"].get<float>();
-  }
-  if (node.contains("fogCoupling")) {
-    rays.fogCoupling = node["fogCoupling"].get<float>();
-  }
-}
-
-void MergeShadowFromJson(const nlohmann::json &root,
-                         DirectionalShadowSettings &shadow) {
-  if (!root.contains("directionalShadow") ||
-      !root["directionalShadow"].is_object()) {
-    return;
-  }
-  const nlohmann::json &node = root["directionalShadow"];
-  if (node.contains("shadeEnabled")) {
-    shadow.shadeEnabled = node["shadeEnabled"].get<uint32_t>();
-  }
-  if (node.contains("shadeDarkness")) {
-    shadow.shadeDarkness = node["shadeDarkness"].get<float>();
-  }
-  if (node.contains("groundPlaneY")) {
-    shadow.groundPlaneY = node["groundPlaneY"].get<float>();
-  }
-  if (node.contains("contactHeight")) {
-    shadow.contactHeight = node["contactHeight"].get<float>();
-  }
-  if (node.contains("planarEnabled")) {
-    shadow.planarEnabled = node["planarEnabled"].get<uint32_t>();
-  }
-  if (node.contains("planarAlpha")) {
-    shadow.planarAlpha = node["planarAlpha"].get<float>();
-  }
-}
-
-void PushToEngine(const DirectionalLightData &directional,
-                  const VolumetricFogSettings &fog, const GodRaySettings &rays,
-                  const DirectionalShadowSettings &shadow) {
+void PushDirectionalToEngine(const DirectionalLightData &directional) {
   Engine *const engine = Engine::Instance();
   if (engine == nullptr) {
     return;
   }
-  // Fog / GodRays / Shadow を先に格納してから SetDirectionalLightData→Flush へ渡す
-  engine->RefVolumetricFog().SetSettings(fog);
-  engine->RefGodRays().SetSettings(rays);
-  engine->RefDirectionalShadow().SetSettings(shadow);
   ::Atrum::EngineSetDirectionalLightData(directional);
   engine->FlushDirectionalLightConstantBuffer();
 }
@@ -240,18 +121,12 @@ void PushToEngine(const DirectionalLightData &directional,
 
 bool ApplySceneGameLightingFromProfile() {
   DirectionalLightData directional = BuildDefaultDirectional();
-  VolumetricFogSettings fog = BuildDefaultFog();
-  GodRaySettings rays = BuildDefaultGodRays();
-  DirectionalShadowSettings shadow = BuildDefaultShadow();
 
   nlohmann::json root;
   if (TryResolveProfileJson(root)) {
     MergeDirectionalFromJson(root, directional);
-    MergeFogFromJson(root, fog);
-    MergeGodRaysFromJson(root, rays);
-    MergeShadowFromJson(root, shadow);
   }
 
-  PushToEngine(directional, fog, rays, shadow);
+  PushDirectionalToEngine(directional);
   return true;
 }

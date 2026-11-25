@@ -2,9 +2,6 @@
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 
-#include "Engine/AtrumEngine.h"
-#include "Engine/EngineAccess.h"
-#include "Engine/Renderer/Lighting/LightingEffectsImGuiPanel.h"
 #include "ForDebug/ImGui.h"
 
 namespace Atrum::Debug {
@@ -39,13 +36,9 @@ void DrawLightingEffectsDebugWindow() {
     return;
   }
 
-  AtrumEngine *engine = ::Atrum::EngineInstance();
-  if (engine != nullptr) {
-    Visual::DrawLightingEffectsImGuiPanel(engine->RefVolumetricFog(),
-                                          engine->RefGodRays(),
-                                          engine->RefDirectionalShadow());
-    engine->FlushDirectionalLightConstantBuffer();
-  }
+  ImGui::TextDisabled(
+      "VolumetricFog / GodRays / DirectionalShadow は実行経路から除外済みです。"
+      "\n方向性ライトは game_scene_lighting.json の directionalLight を参照。");
 
   ImGui::End();
 }

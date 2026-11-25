@@ -27,7 +27,9 @@
 #include "System/Entity/Components/CmpCamera.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
+#include "System/Entity/Components/CmpScriptUpd.h"
 #include "System/Entity/Components/CmpScroll.h"
+#include "System/Entity/UpdCmpGroupUtil.h"
 #include "System/Entity/Entity.h"
 #include <algorithm>
 #include <fstream>
@@ -118,6 +120,10 @@ bool TryAddEmptyComponent(Entity &entity, const ComponentSlot &slot) {
     entity.AddUpdCmp<CmpBallBounceImpactFx>();
     return true;
   }
+  if (slot.typeName == "CmpScriptUpd" && slot.kind == ComponentSlotKind::Upd) {
+    entity.AddUpdCmp<CmpScriptUpd>();
+    return true;
+  }
   if (slot.typeName == "CmpEditorAssetPath" &&
       slot.kind == ComponentSlotKind::Data) {
     entity.AddDataCmp<CmpEditorAssetPath>();
@@ -150,6 +156,9 @@ void ApplySlotExecutionOrder(Entity &entity, const ComponentSlot &slot) {
     } else if (slot.typeName == "CmpHitSphere" &&
                entity.HasUpdCmp<CmpHitSphere>()) {
       entity.SetUpdCmpPriority(entity.GetUpdCmp<CmpHitSphere>(), priority);
+    } else if (slot.typeName == "CmpScriptUpd" &&
+               entity.HasUpdCmp<CmpScriptUpd>()) {
+      entity.SetUpdCmpPriority(entity.GetUpdCmp<CmpScriptUpd>(), priority);
     }
     return;
   }
@@ -412,6 +421,31 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetImpactJsonPath(
         p.value("impactJsonPath", std::string{"demos/ball_wall_shockwave.json"}));
     cmp->SetImpactCooldownSeconds(p.value("impactCooldownSeconds", 0.12f));
+    return;
+  }
+
+  if (slot.typeName == "CmpScriptUpd") {
+    if (!entity.HasUpdCmp<CmpScriptUpd>()) {
+      return;
+    }
+    CmpScriptUpd *cmp = entity.GetUpdCmp<CmpScriptUpd>();
+    cmp->SetScriptPath(p.value("scriptPath", std::string{}));
+
+    const std::string mode =
+        p.value("updGroupPriorityMode", std::string("enum"));
+    const bool useNumeric = (mode == "numeric");
+    const UpdCmpGroup defaultGroup = UpdCmpGroup::MOVEMENT;
+    UpdCmpGroup enumGroup = defaultGroup;
+    const std::string enumName = p.value("updCmpGroup", std::string("MOVEMENT"));
+    if (const std::optional<UpdCmpGroup> parsed =
+            TryParseUpdCmpGroupName(enumName)) {
+      enumGroup = *parsed;
+    }
+    const uint64_t numericPriority = p.value(
+        "updGroupPriority", static_cast<uint64_t>(defaultGroup));
+
+    cmp->ConfigureUpdGroup(useNumeric, enumGroup, numericPriority);
+    cmp->SyncUpdSortPriorityToEntity();
     return;
   }
 }

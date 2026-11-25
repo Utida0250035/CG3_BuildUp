@@ -51,6 +51,11 @@ public:
 
   bool EditViewHovered() const { return editViewHovered_; }
 
+  void SetSceneViewImageScreenBounds(SceneViewTab tab, float minX, float minY,
+                                     float maxX, float maxY);
+  bool TryMapMouseToSceneViewLocal(SceneViewTab tab, float &outLocalX,
+                                   float &outLocalY) const;
+
   void SetEditViewImageScreenBounds(float minX, float minY, float maxX,
                                     float maxY);
   bool TryMapMouseToEditViewLocal(float &outLocalX, float &outLocalY) const;
@@ -62,6 +67,7 @@ public:
   void DrawRenderDiagnosticsMainMenuBar();
 
 private:
+  bool SceneViewHovered(SceneViewTab tab) const;
   SubViewportRect editView_{};
   SubViewportRect gameView_{};
   SubViewportRect runtimeView_{};
@@ -69,11 +75,13 @@ private:
   SceneViewDisplaySize gameDisplay_{};
   SceneViewDisplaySize runtimeDisplay_{};
   bool editViewHovered_ = false;
-  float editViewImageMinX_ = 0.0f;
-  float editViewImageMinY_ = 0.0f;
-  float editViewImageMaxX_ = 0.0f;
-  float editViewImageMaxY_ = 0.0f;
-  bool editViewImageBoundsValid_ = false;
+  bool gameViewHovered_ = false;
+  bool runtimeViewHovered_ = false;
+  float sceneViewImageMinX_[3] = {};
+  float sceneViewImageMinY_[3] = {};
+  float sceneViewImageMaxX_[3] = {};
+  float sceneViewImageMaxY_[3] = {};
+  bool sceneViewImageBoundsValid_[3] = {};
   SceneViewTab sceneViewTab_ = SceneViewTab::Edit;
 };
 

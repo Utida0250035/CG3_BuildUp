@@ -3,6 +3,8 @@
 #include "Cast/StaticCast.h"
 #include "Engine/Alias/CoreAlias.h"
 #include "Engine/AtrumEngine.h"
+
+#include "System/Scripting/LuaJitScriptHost.h"
 #include "System/Build/BuildConfigurationContract.h"
 #if defined(DEVELOPMENT)
 #include "ForDebug/SubsystemFrameProfiler.h"
@@ -120,6 +122,10 @@ Input::PlayInput *EnginePlayInput() {
 
 Audio::AudioManager *EngineAudioManager() {
 	return AtrumEngine::Instance()->GetAudioManager();
+}
+
+Script::LuaJitScriptHost *EngineLuaScriptHost() {
+	return AtrumEngine::Instance()->GetLuaScriptHost();
 }
 
 Physics::PhysicsManager *EnginePhysicsManager() {
@@ -462,6 +468,12 @@ void AtrumEngine::Initialize(const std::string &windowLabel,
 
   audioManager_ = std::make_unique<Audio::AudioManager>(Audio::AudioManager::Token{});
   audioManager_->Initialize();
+
+  luaScriptHost_ = std::make_unique<Script::LuaJitScriptHost>();
+  if (!luaScriptHost_->Initialize()) {
+    D::LogFile::Instance()->Log(
+        "LuaJitScriptHost initialization failed (lua51.lib / lua51.dll).");
+  }
 
   /* 初期化完了のログ出力 */
 
@@ -1299,9 +1311,6 @@ void AtrumEngine::FlushDirectionalLightConstantBuffer() {
   if (draw_ != nullptr && draw_->camera_ != nullptr) {
     directionalLightData_.cameraWorldPosition = draw_->camera_->GetTranslate();
   }
-  volumetricFog_.ApplyTo(directionalLightData_);
-  godRays_.ApplyTo(directionalLightData_);
-  directionalShadow_.ApplyTo(directionalLightData_);
   if (directionalLightBuffer_ != nullptr) {
     directionalLightBuffer_->SetData(directionalLightData_);
   }

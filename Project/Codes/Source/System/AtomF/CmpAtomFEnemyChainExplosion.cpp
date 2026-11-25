@@ -15,8 +15,6 @@ namespace Atrum {
 
 namespace {
 
-constexpr float kShrinkDurationSeconds = 0.6f;
-
 bool IsTouchingOtherEnemy(Entity &self) {
   if (!self.HasUpdCmp<CmpHitSphere>()) {
     return false;
@@ -45,6 +43,8 @@ bool IsTouchingOtherEnemy(Entity &self) {
 void CmpAtomFEnemyChainExplosion::ResolveDependence() {
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
   initialMeshRadius_ = AtomF::ResolveEnemyBodyRadiusMeters();
+  shrinkDurationSeconds_ =
+      AtomF::ResolveEnemyChainExplosionParameters().shrinkDurationSeconds;
 }
 
 void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
@@ -81,7 +81,7 @@ void CmpAtomFEnemyChainExplosion::UpdateDying() {
   }
   shrinkElapsedSeconds_ += frameDeltaTime_->GetDeltaTime();
   const float t =
-      std::min(1.0f, shrinkElapsedSeconds_ / kShrinkDurationSeconds);
+      std::min(1.0f, shrinkElapsedSeconds_ / shrinkDurationSeconds_);
   const float scale = 1.0f - t;
 
   if (RefOwner().HasDrawCmp<CmpMeshSphere>()) {
@@ -93,7 +93,7 @@ void CmpAtomFEnemyChainExplosion::UpdateDying() {
     }
   }
 
-  if (shrinkElapsedSeconds_ >= kShrinkDurationSeconds) {
+  if (shrinkElapsedSeconds_ >= shrinkDurationSeconds_) {
     RefOwner().Finalize();
     RefOwner().RequestDestroy();
   }

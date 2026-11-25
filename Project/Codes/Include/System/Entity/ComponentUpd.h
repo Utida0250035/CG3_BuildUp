@@ -25,7 +25,7 @@ private:
 public:
   virtual ~ComponentUpd() = default;
 
-  virtual constexpr UpdCmpGroup UpdGroup() const = 0;
+  virtual UpdCmpGroup UpdGroup() const = 0;
 
   virtual void Initialize() {}
 

@@ -1,6 +1,6 @@
 #include "System/AtomF/AtomFPlayerAimCapsuleRayClamp.h"
 
-#include "System/AtomF/AtomFArenaBounds.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -76,8 +76,8 @@ bool TryMaxAimCapsuleLengthToArenaWall(const Math::Vector3 &startWorld,
                                        const Math::Vector3 &dirUnitXZ,
                                        const float capsuleRadiusMeters,
                                        float &outMaxLengthMeters) {
-  const float wallRadius =
-      kArenaInnerRadiusMeters - std::max(capsuleRadiusMeters, 0.0f);
+  const float wallRadius = ResolveArenaInnerRadiusMeters() -
+                           std::max(capsuleRadiusMeters, 0.0f);
   if (wallRadius <= 0.0f) {
     return false;
   }

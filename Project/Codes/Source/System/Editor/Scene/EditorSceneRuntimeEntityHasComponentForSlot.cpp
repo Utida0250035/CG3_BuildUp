@@ -17,6 +17,7 @@
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Components/CmpRotator.h"
 #include "System/Entity/Components/CmpRuntimeTexturePath.h"
+#include "System/Entity/Components/CmpScriptUpd.h"
 #include "System/Entity/Components/CmpScroll.h"
 #include "System/Entity/Entity.h"
 
@@ -67,6 +68,9 @@ bool EntityHasComponentForSlot(const Entity &entity, const ComponentSlot &slot) 
     }
     if (slot.typeName == "CmpBallBounceImpactFx") {
       return entity.HasUpdCmp<CmpBallBounceImpactFx>();
+    }
+    if (slot.typeName == "CmpScriptUpd") {
+      return entity.HasUpdCmp<CmpScriptUpd>();
     }
   }
   if (slot.kind == ComponentSlotKind::Data) {

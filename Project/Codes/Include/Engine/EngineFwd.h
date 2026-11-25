@@ -39,4 +39,8 @@ class AudioManager;
 using Manager = AudioManager;
 } // namespace Audio
 
+namespace Script {
+class LuaJitScriptHost;
+} // namespace Script
+
 } // namespace Atrum

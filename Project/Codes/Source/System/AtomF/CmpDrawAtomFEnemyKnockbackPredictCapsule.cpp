@@ -1,0 +1,35 @@
+#include "System/AtomF/CmpDrawAtomFEnemyKnockbackPredictCapsule.h"
+
+#include "Engine/AtrumEngine.h"
+#include "Engine/EngineAccess.h"
+#include "Math/Transform.h"
+#include "Math/Vector4.h"
+#include "System/AtomF/CmpAtomFEnemyKnockbackPredictCapsule.h"
+#include "System/Entity/Entity.h"
+#include "System/WhiteTexture.h"
+
+namespace Atrum {
+
+void CmpDrawAtomFEnemyKnockbackPredictCapsule::ResolveDependence() {
+  capsule_ = RefOwner().GetUpdCmp<CmpAtomFEnemyKnockbackPredictCapsule>();
+}
+
+void CmpDrawAtomFEnemyKnockbackPredictCapsule::Draw() {
+  if (capsule_ == nullptr || capsule_->CurrentLengthMeters() <= 1e-4f) {
+    return;
+  }
+
+  AtrumEngine *engine = EngineInstance();
+  if (engine == nullptr) {
+    return;
+  }
+
+  const Math::Vector3 start = capsule_->CapsuleStartWorld();
+  const Math::Vector3 end = capsule_->CapsuleEndWorld();
+  const float radius = capsule_->RadiusMeters();
+  const Math::Vector4 color{1.0f, 0.45f, 0.35f, 0.5f};
+  engine->DrawLine3D(WhiteTextureIndex(), color, Math::Transform{}, start, end,
+                     radius * 2.0f);
+}
+
+} // namespace Atrum

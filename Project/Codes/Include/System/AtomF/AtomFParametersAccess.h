@@ -1,13 +1,22 @@
 #pragma once
 
+#include "System/AtomF/AtomFParametersRuntime.h"
+
 namespace Atrum::AtomF {
 
 /// parameters.json を読み込んでいればそこから、未読ならフォールバック定数から半径等を取る。
+float ResolveArenaInnerRadiusMeters();
+float ResolveArenaWallThicknessMeters();
+float ResolveArenaWallHeightMeters();
+int ResolveArenaMeshSegmentCount();
+float ResolveArenaGroundHeightMeters();
+
 float ResolvePlayerBodyRadiusMeters();
 /// parameters の半径b（player.aimCapsule.radiusMeters）
 float ResolvePlayerAimCapsuleRadiusMeters();
 float ResolvePlayerDamageVignetteSeconds();
 int ResolvePlayerDamageSePlayCount();
+int ResolvePlayerInitialHealthCount();
 /// parameters の半径a（player.bullet.hitRadiusMeters）
 float ResolvePlayerBulletRadiusMeters();
 float ResolvePlayerBulletSpeedMetersPerSecond();
@@ -21,5 +30,13 @@ float ResolveEnemyChargeIntervalSeconds();
 /// parameters の半径c（enemy.explosion.hitRadiusMeters）
 float ResolveEnemyExplosionHitRadiusMeters();
 bool IsEnemyExplosionHitShapeSphere();
+
+const EnemyPanicParameters &ResolveEnemyPanicParameters();
+const EnemyPeriodicChargeTimingParameters &
+ResolveEnemyPeriodicChargeTimingParameters();
+const EnemyChainExplosionParameters &ResolveEnemyChainExplosionParameters();
+
+/// 見下ろし追従カメラ。parameters 未読込時は struct 既定値。
+CombatCameraParameters ResolveCombatCameraParameters();
 
 } // namespace Atrum::AtomF

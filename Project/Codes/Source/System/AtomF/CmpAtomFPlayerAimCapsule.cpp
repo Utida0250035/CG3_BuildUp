@@ -15,7 +15,7 @@ constexpr float kStretchMetersPerSecond = 10.0f;
 constexpr float kShrinkMetersPerSecond = 14.0f;
 
 float MaxAimCapsuleLengthMeters() {
-  return AtomF::kArenaInnerRadiusMeters * 2.0f;
+  return AtomF::ResolveArenaInnerRadiusMeters() * 2.0f;
 }
 
 } // namespace

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Math/Vector3.h"
+#include "System/AtomF/AtomFParametersRuntime.h"
 #include "System/Entity/ComponentUpd.h"
 
 namespace Atrum {
@@ -32,6 +33,7 @@ private:
   float waitTimerSeconds_ = 0.0f;
   float phaseElapsedSeconds_ = 0.0f;
   float chargeIntervalSeconds_ = 5.0f;
+  AtomF::EnemyPeriodicChargeTimingParameters chargeTiming_{};
   Math::Vector3 anchorTranslate_{};
 };
 

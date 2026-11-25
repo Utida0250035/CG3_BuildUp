@@ -23,6 +23,7 @@ private:
   class FrameDeltaTime *frameDeltaTime_ = nullptr;
   bool isDying_ = false;
   float shrinkElapsedSeconds_ = 0.0f;
+  float shrinkDurationSeconds_ = 0.6f;
   float initialMeshRadius_ = 0.25f;
 };
 

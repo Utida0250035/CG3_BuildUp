@@ -5,6 +5,7 @@
 #include "Camera/StageViewFramingBounds.h"
 #include "Scene/SceneBuildUp.h"
 #include "Scene/SceneBuildUpStageCameraFraming.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -15,11 +16,6 @@
 namespace Atrum::SceneBuildUpAtomFCombatCamera {
 
 namespace {
-
-/// 斜め上から見下ろすオフセット（ローカル LH: Y 上、Z を手前に）
-constexpr float kEyeHeightAbovePivotY = 11.0f;
-constexpr float kEyeSideOffsetX = -5.0f;
-constexpr float kEyeOffsetZ = -7.0f;
 
 const Entity *FindPlayerEntity(
     const std::vector<std::unique_ptr<Entity>> &entities) {
@@ -46,11 +42,14 @@ Math::Vector3 ResolveCameraPivot(
   return {0.0f, 0.5f, 0.0f};
 }
 
-StageViewCameraPose ComputeAtomFFollowPose(const Math::Vector3 &pivot) {
+StageViewCameraPose ComputeAtomFFollowPose(
+    const Math::Vector3 &pivot,
+    const AtomF::CombatCameraFollowEyeOffset &eyeOffset) {
   StageViewCameraPose pose{};
   pose.pivot = pivot;
-  pose.eye = {pivot.x + kEyeSideOffsetX, pivot.y + kEyeHeightAbovePivotY,
-              pivot.z + kEyeOffsetZ};
+  pose.eye = {pivot.x + eyeOffset.offsetXMeters,
+              pivot.y + eyeOffset.offsetYMeters,
+              pivot.z + eyeOffset.offsetZMeters};
   return pose;
 }
 
@@ -66,9 +65,23 @@ void ApplyFollowPose(SceneBuildUp &scene) {
       entities != nullptr ? ResolveCameraPivot(*entities)
                           : Math::Vector3{0.0f, 0.5f, 0.0f};
 
-  ApplyStageViewCameraPose(camera, ComputeAtomFFollowPose(pivot));
+  const AtomF::CombatCameraParameters cameraParams =
+      AtomF::ResolveCombatCameraParameters();
+  ApplyStageViewCameraPose(
+      camera, ComputeAtomFFollowPose(pivot, cameraParams.followEyeOffset));
   PublishStageViewFramingBounds(scene.GetStageViewFramingBounds());
   scene.PrepareCamerasForDraw();
+}
+
+StageViewFramingBounds BuildFramingBoundsFromParameters(
+    const AtomF::CombatCameraFraming &framing) {
+  StageViewFramingBounds bounds{};
+  bounds.leftEndX = framing.leftEndXMeters;
+  bounds.rightEndX = framing.rightEndXMeters;
+  bounds.groundHeight = framing.groundHeightMeters;
+  bounds.barrageSpawnTopY = framing.barrageSpawnTopYMeters;
+  bounds.pivotZ = framing.pivotZMeters;
+  return bounds;
 }
 
 } // namespace
@@ -78,13 +91,10 @@ bool ApplyOnEnterIfAtomFScene(SceneBuildUp &scene) {
     return false;
   }
 
-  StageViewFramingBounds bounds{};
-  bounds.leftEndX = -16.0f;
-  bounds.rightEndX = 16.0f;
-  bounds.groundHeight = 0.0f;
-  bounds.barrageSpawnTopY = 4.0f;
-  bounds.pivotZ = 0.0f;
-  scene.SetStageViewFramingBounds(bounds);
+  const AtomF::CombatCameraParameters cameraParams =
+      AtomF::ResolveCombatCameraParameters();
+  scene.SetStageViewFramingBounds(
+      BuildFramingBoundsFromParameters(cameraParams.framing));
   ApplyFollowPose(scene);
   return true;
 }

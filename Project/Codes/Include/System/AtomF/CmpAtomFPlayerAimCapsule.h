@@ -26,7 +26,7 @@ private:
   CmpAtomFPlayerAim *aim_ = nullptr;
   class FrameDeltaTime *frameDeltaTime_ = nullptr;
   float currentLengthMeters_ = 0.0f;
-  float radiusMeters_ = 0.25f;
+  float radiusMeters_ = 0.1f;
 };
 
 } // namespace Atrum
