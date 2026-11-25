@@ -32,6 +32,7 @@
 #include "Scene/SceneBuildUpAtomFParametersBoot.h"
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
 #include "Scene/SceneBuildUpDedicatedRuntimeViewWindow.h"
+#include "System/Editor/EditorSceneRenderTarget.h"
 #endif
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
@@ -301,6 +302,10 @@ void SceneBuildUp::Draw() {
   SceneBuildUpDedicatedRuntimeViewWindow::RenderViews(*this);
 #endif
   engine->PostDraw();
+#if defined(DEVELOPMENT) && defined(USE_IMGUI)
+  Editor::EditorSceneRenderTargetHub::Instance().FlushDeferredSrvReleases(
+      engine);
+#endif
 }
 
 void SceneBuildUp::ExitScene() {

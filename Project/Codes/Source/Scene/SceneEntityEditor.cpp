@@ -263,7 +263,7 @@ void SceneEntityEditor::Draw() {
 #endif
 
 #if defined(DEVELOPMENT) && defined(USE_IMGUI)
-  // ImGui::Render の後に RT を更新（レイアウト済みディスクリプタを同一フレームで破棄しない）
+  // ImGui::Render の後に RT を更新。旧 SRV の解放は PostDraw 後の FlushDeferredSrvReleases
   Editor::EditorSceneRenderTargetHub::Instance().RenderSceneViews(
       engine, [this](const Editor::SceneViewTab tab, const int width,
                      const int height) {
@@ -272,6 +272,7 @@ void SceneEntityEditor::Draw() {
 #endif
 
   engine->PostDraw();
+  Editor::EditorSceneRenderTargetHub::Instance().FlushDeferredSrvReleases(engine);
 }
 
 void SceneEntityEditor::DrawPreviewEntities() {

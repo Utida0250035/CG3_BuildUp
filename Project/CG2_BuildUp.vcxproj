@@ -167,7 +167,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DEVELOPMENT;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>DEVELOPMENT;USE_IMGUI;_WINDOWS;%(PreprocessorDefinitions);NOMINMAX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 /FS %(AdditionalOptions)</AdditionalOptions>
@@ -309,47 +309,38 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\DebugCamera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\ForDebug\Log.cpp" />
     <ClCompile Include="Codes\Source\Geometry\AABB.cpp" />
@@ -381,17 +372,14 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBoot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentBootApply.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\CommandSceneDevelopmentEditorBootPolicy.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\CommandSceneReleaseBootApply.cpp" />
     <ClCompile Include="Codes\Source\Scene\CommandSceneBootLaunchPathGate.cpp" />
@@ -415,12 +403,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneParticleEditorAllowDebugPolicy.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp" />
@@ -434,82 +420,66 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformDrag.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformGizmoDraw.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAuthoringLightingPreview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayQueue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayTick.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewDebugCameraDraw.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewRenderCameraBind.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAfterBuildUpExit.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewBuildUpParityRebuild.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -530,7 +500,6 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\SceneEntityEditorClearRuntimeFocusRequest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFFloorSpawn.cpp" />
@@ -630,18 +599,15 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -807,27 +773,22 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportPathQueue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportRequestPreview.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSaveEntityDefinitionBody.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -872,7 +833,6 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneObjectAddPreset.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -885,22 +845,18 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRemoveSelectedInstances.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTickPendingRequests.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRestoreSelectionAfterSceneLoad.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorClearPrefabSelectionOnSceneOpen.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -909,48 +865,39 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDeleteSceneOpenSuccessor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorCreateNewSceneFile.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSaveSelectedInstanceToPrefab.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameStreamingDiagnostics.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorFrameFrameDeltaDiagnostics.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -958,64 +905,52 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorEditViewScreenRay.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Camera\EditorStageViewCameraTuningHotReloadTick.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorDebugPlayAreaScaffold.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\DebugPlayAreaScaffoldPersonalize.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
@@ -1034,22 +969,18 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiEditableSceneList.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -1058,17 +989,14 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneSwitchUnsavedPrompt.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorReferenceGrid.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Particle\ParticleEditorUi.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\String\ConvertString.cpp" />
     <ClCompile Include="Codes\Source\System\PlaySeDetailCache.cpp" />
@@ -1117,12 +1045,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Editor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Editor\Inspector\InspectorEntity.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\Entity\BehaviorBox.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpHealthHit.cpp" />
@@ -1140,7 +1066,6 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Json\JsonTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
-
     </ClCompile>
     <ClCompile Include="Codes\Source\System\SimulationSpace.cpp" />
     <ClCompile Include="Codes\Source\System\Particle\EmitterManager.cpp" />

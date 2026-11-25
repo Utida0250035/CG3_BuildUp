@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Codes\Source\Application\main.cpp">
@@ -1493,136 +1493,627 @@
     <ClInclude Include="Externals\imgui\misc\cpp\imgui_stdlib.h">
       <Filter>Externals\imgui\misc\cpp</Filter>
     </ClInclude>
-    <ClInclude Include="Codes\Include\Audio\AudioStreamingDebugStats.h" />
-    <ClInclude Include="Codes\Include\Camera\ActiveCameraSystem.h" />
-    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h" />
-    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h" />
-    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h" />
-    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.h" />
-    <ClInclude Include="Codes\Include\Engine\Resource\ParticleGpuData.h" />
-    <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h" />
-    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h" />
-    <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h" />
-    <ClInclude Include="Codes\Include\ForDebug\SubsystemFrameProfiler.h" />
-    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h" />
-    <ClInclude Include="Codes\Include\ForDebug\DirectionalShadowApplyDebugLog.h" />
-    <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h" />
-    <ClInclude Include="Codes\Include\Motion\MotionBlender.h" />
-    <ClInclude Include="Codes\Include\Motion\MotionClip.h" />
-    <ClInclude Include="Codes\Include\Motion\MotionKeyframe.h" />
-    <ClInclude Include="Codes\Include\Motion\MotionCrossfade.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneDebugCameraInputPolicy.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneStageCameraLockDefaults.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallAxisAlignedBounce.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallBounceImpactFx.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallKinematics.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h" />
-    <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h" />
-    <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorScenePlayBuildUpRoute.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorDebugHotkeys.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeTabFocus.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewCameraSetup.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeViewCameraDraw.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayQueue.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayTick.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewDebugCameraDraw.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewRenderCameraBind.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewVisualEffectsApply.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorExitSceneTeardown.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneJsonPathResolve.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLaunchPolicy.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRegistryLaunchDedupe.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpReturnTarget.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentLoad.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentTagCatalog.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAllowDebugCameraContract.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpExitSceneEditorUiRestore.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeLightingPolicy.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeViewStatusText.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpDedicatedRuntimeViewWindow.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeEntityDraw.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpEnterSceneEditorUiPolicy.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpMissingPrimaryCameraFeedback.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDisplayNameResolve.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpChangeSceneDrawPolicy.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpF1ReturnRequest.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneTitleBgmMaintain.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneTitleVisualApply.h" />
-    <ClInclude Include="Codes\Include\Scene\SceneTitleSubmitTransition.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorFrameLightingDiagnostics.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorFrameStreamingDiagnostics.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFrameDeltaDiagnostics.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Camera\StageViewCameraTuning.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeFunctionalViewDraw.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h" />
-    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldGuidance.h" />
-    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaRuntimePreviewGuidance.h" />
-    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldPersonalize.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetFileOperations.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetCollisionPolicy.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.h" />
-    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeMainCameraSupplement.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeEntityInitializePolicy.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeInstanceNamePolicy.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpColliderAabb.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorAssetPath.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpRuntimeTexturePath.h" />
-    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorTextureBillboard.h" />
-    <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h" />
-    <ClInclude Include="Codes\Include\System\GameAssetsPaths.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaCombatBoundsSandbox.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigFeatureVerificationDefaults.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigLoadDiagnostics.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigSchema.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigJsonDocument.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorEditableSceneJsonRoots.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigStartupPathNormalize.h" />
-    <ClInclude Include="Codes\Include\System\Editor\EditorScenePlayRequestMetadata.h" />
-    <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h" />
-    <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h" />
+    <ClInclude Include="Codes\Include\Audio\AudioStreamingDebugStats.h">
+      <Filter>Codes\Include\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Camera\ActiveCameraSystem.h">
+      <Filter>Codes\Include\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\VolumetricFog.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\GodRays.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadow.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.h">
+      <Filter>Codes\Include\Engine\Renderer\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Engine\Resource\ParticleGpuData.h">
+      <Filter>Codes\Include\Engine\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\ImGuiJapaneseFont.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugImGui.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\FrameDeltaTimeDebugImGui.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\SubsystemFrameProfiler.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\AudioStreamingDebugLog.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\DirectionalShadowApplyDebugLog.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\ForDebug\LightingEffectsDebugImGui.h">
+      <Filter>Codes\Include\ForDebug</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Motion\MotionBlender.h">
+      <Filter>Codes\Include\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Motion\MotionClip.h">
+      <Filter>Codes\Include\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Motion\MotionKeyframe.h">
+      <Filter>Codes\Include\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Motion\MotionCrossfade.h">
+      <Filter>Codes\Include\Motion</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneCameraRig.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneDebugCameraInputPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneStageCameraLockDefaults.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneReleaseCarousel.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBillboardInstancedGrid.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallAxisAlignedBounce.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallBounceImpactFx.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBallKinematics.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpBounceBall.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpParticleEmitter.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\SceneParticleServices.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Particle\ParticleSampleCarouselSlots.h">
+      <Filter>Codes\Include\System\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditor.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorScenePlayBuildUpRoute.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorDebugHotkeys.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeTabFocus.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewCameraSetup.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorRuntimeViewCameraDraw.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayQueue.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorInEditorPlayTick.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewDebugCameraDraw.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewRenderCameraBind.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorSceneViewVisualEffectsApply.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorExitSceneTeardown.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUp.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpPlayerSilhouetteDraw.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeVisualApply.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneJsonPathResolve.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLaunchPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRegistryLaunchDedupe.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraFraming.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpReturnTarget.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneLoadFailure.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentLoad.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDocumentTagCatalog.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAllowDebugCameraContract.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpExitSceneEditorUiRestore.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeLightingPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeViewStatusText.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpDedicatedRuntimeViewWindow.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeEntityDraw.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpEnterSceneEditorUiPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpMissingPrimaryCameraFeedback.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpSceneDisplayNameResolve.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpChangeSceneDrawPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpLoadFailureEntities.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpRuntimeSubviewDrawCamera.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpStageCameraLock.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpF1ReturnRequest.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneBuildUpAudioPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneTitleBgmMaintain.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneTitleVisualApply.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneTitleSubmitTransition.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditor.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefinition.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTagCatalog.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrame.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameLightingDiagnostics.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameStreamingDiagnostics.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFrameDeltaDiagnostics.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneViewPanel.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRenderTarget.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorInfiniteGrid.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbench.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Camera\StageViewCameraTuning.h">
+      <Filter>Codes\Include\System\Editor\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeFunctionalViewDraw.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRunStatus.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorLuaScriptScaffold.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaScaffold.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldGuidance.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaRuntimePreviewGuidance.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\DebugPlayAreaScaffoldPersonalize.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAsset.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAsset.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetFileOperations.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetProjectPanelList.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetUiPathScrub.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetCollisionPolicy.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneAsset.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntime.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeMainCameraSupplement.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeEntityInitializePolicy.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorSceneRuntimeInstanceNamePolicy.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpColliderAabb.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorAssetPath.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpRuntimeTexturePath.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpEditorTextureBillboard.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\EntityTagRegistry.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\GameAssetsPaths.h">
+      <Filter>Codes\Include\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorAssetsPaths.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaFeatureVerificationCanonical.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorDebugPlayAreaCombatBoundsSandbox.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigFeatureVerificationDefaults.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigLoadDiagnostics.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigSchema.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigJsonDocument.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEditableSceneJsonRoots.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorLaunchConfigStartupPathNormalize.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorScenePlayRequestMetadata.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Visual\PlayerTerrainSilhouette.h">
+      <Filter>Codes\Include\Visual</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\UX\OperatorGuidanceSystem.h">
+      <Filter>Codes\Include\UX</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorAuthoringLightingPreview.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewTransformDrag.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEditViewTransformGizmoDraw.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorEnterSceneDocumentLoadPolicy.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewBuildUpParityRebuild.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewEditorAssetPathRelink.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\SceneEntityEditorPreviewStageViewCameraFallback.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEditViewScreenRay.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchDefaultDockLayout.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchLightPostWindow.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorEntityWorkbenchPlayMenu.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorExternalAssetOpen.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorFrameFitCameraPerspectiveParams.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetApplyToEntityDefinition.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetAutoStemRenameReport.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetBatchApplyToSelection.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetCollisionPolicy.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetDropPolicyUi.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetProjectPanelList.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\EditorImportedAssetUiPathScrub.h">
+      <Filter>Codes\Include\System\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorClearAllEntityTags.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorClearPrefabSelectionOnSceneOpen.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSettingsCopyPaste.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSlotKindResolve.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorComponentSlotParamsNormalize.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorCreateNewSceneFile.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDefaultParamsCmpCamera.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDeleteSceneOpenSuccessor.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportPathQueue.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportRequestPreview.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateInstanceKeyboardShortcut.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorExecutionOrderBatch.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyAddObjectUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyDragDrop.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorHierarchyReparent.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorComponentRemoveBatchUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorComponentTypeComboApply.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorExecutionOrderBatchUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorImportedDropBatchApplyUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorInstanceIdentityUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorMultiSlotExecutionOrderUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorSceneJsonPathUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorInspectorTransformCopyPasteUi.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorKnownComponentRegistry.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabBatchSpawnFromFile.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSaveEntityDefinitionBody.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveComponentSlotsBatch.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRemoveSelectedInstances.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorRestoreSelectionAfterSceneLoad.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSaveSelectedInstanceToPrefab.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorSceneObjectAddPreset.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTickPendingRequests.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorTransformCopyPaste.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsBallSplit.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpCamera.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsExternalOpen.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsFallbackJson.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsGenericJson.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsHitSphere.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiEditableSceneList.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Prefab\PrefabAssetBatchSpawnUi.h">
+      <Filter>Codes\Include\System\Editor\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneJsonFileEntry.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewRelink.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEntityHasComponentForSlot.h">
+      <Filter>Codes\Include\System\Editor\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Codes">
@@ -1864,6 +2355,51 @@
     </Filter>
     <Filter Include="Codes\Source\System\Entity\Components">
       <UniqueIdentifier>{76e5bafd-8811-43d6-8a27-2708d2b5c4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Motion">
+      <UniqueIdentifier>{afc0eecf-1bb5-46a0-8a00-f15cf691080a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor\Camera">
+      <UniqueIdentifier>{ecc130cb-8fdf-49b6-819b-e3fb32c75b57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor\Entity">
+      <UniqueIdentifier>{64a6034e-bab4-417e-8e21-55be59dc07c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor\Prefab">
+      <UniqueIdentifier>{430dccb6-07e0-4c46-a37e-1740f0f9da24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Editor\Scene">
+      <UniqueIdentifier>{78f9d510-7504-4aad-8dc4-b555ae386d95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\UX">
+      <UniqueIdentifier>{2be0c01b-83b4-4766-b8d6-fcb3da9df4d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Motion">
+      <UniqueIdentifier>{d3968c50-9ec9-4d56-95b6-a72bb8923140}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\AtomF">
+      <UniqueIdentifier>{dfddc923-6d1d-4fc6-95e2-0778097ec796}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Camera">
+      <UniqueIdentifier>{2f8011b2-b36c-4966-a142-48db58342997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Entity">
+      <UniqueIdentifier>{cef320bf-794f-4051-afc8-6229ff9f9289}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Prefab">
+      <UniqueIdentifier>{4277ce9e-1f36-4c14-8614-91b694a77720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Editor\Scene">
+      <UniqueIdentifier>{4cfa9d60-c747-4d96-ad79-c7d1c677656a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\UX">
+      <UniqueIdentifier>{e3d4277f-7cae-44a9-82f5-0f9f08b8fd6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\Physics">
+      <UniqueIdentifier>{5aa11ab0-454c-4cdc-8686-7e1f006aeff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\Physics">
+      <UniqueIdentifier>{62456163-1567-45c3-a8b2-c692defc542c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

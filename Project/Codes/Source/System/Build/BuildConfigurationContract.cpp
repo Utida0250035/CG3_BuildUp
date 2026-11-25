@@ -5,10 +5,11 @@ namespace Atrum::Build {
 #if defined(NDEBUG) && !defined(DEVELOPMENT) && !defined(USE_IMGUI) && \
     !defined(_DEBUG) && !defined(MSVC_DEBUG_CONFIGURATION)
 // Release|x64 … 出荷候補
-#elif defined(NDEBUG) && defined(DEVELOPMENT) && defined(USE_IMGUI) && \
+#elif defined(DEVELOPMENT) && defined(USE_IMGUI) && \
     !defined(_DEBUG) && !defined(MSVC_DEBUG_CONFIGURATION)
-// Development|x64 … エディタ日常（buildDevelopment.cmd / CI DevelopmentBuild）
-#elif defined(_DEBUG) && defined(DEVELOPMENT) && defined(USE_IMGUI) && \
+// Development|x64 アプリケーション開発(非出荷)
+
+#elif defined(_DEBUG) && defined(USE_IMGUI) && \
     defined(MSVC_DEBUG_CONFIGURATION)
 // Debug|x64 … MSVC Debug CRT + エディタ（非出荷・CI DebugBuild）
 #else

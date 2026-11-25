@@ -26,16 +26,29 @@ int ToTabIndex(const SceneViewTab tab) {
 
 } // namespace
 
-void EditorSceneRenderTarget::ReleaseSrv(AtrumEngine *engine) {
-  if (!srvAllocated_ || engine == nullptr) {
+void EditorSceneRenderTarget::QueueSrvForDeferredRelease() {
+  if (!srvAllocated_) {
+    return;
+  }
+  deferredSrvReleases_.push_back(srv_);
+  srv_ = {};
+  srvAllocated_ = false;
+}
+
+void EditorSceneRenderTarget::FreeDeferredSrvReleases(AtrumEngine *engine) {
+  if (engine == nullptr || deferredSrvReleases_.empty()) {
     return;
   }
   Atrum::DescriptorAllocator *allocator = engine->GetSrvAllocator();
-  if (allocator != nullptr) {
-    allocator->Free(srv_.index);
+  if (allocator == nullptr) {
+    deferredSrvReleases_.clear();
+    return;
   }
-  srv_ = {};
-  srvAllocated_ = false;
+  for (const Atrum::DescriptorAllocator::DescriptorHandle &handle :
+       deferredSrvReleases_) {
+    allocator->Free(handle.index);
+  }
+  deferredSrvReleases_.clear();
 }
 
 void EditorSceneRenderTarget::CreateSrv(AtrumEngine *engine) {
@@ -64,11 +77,15 @@ bool EditorSceneRenderTarget::Ensure(AtrumEngine *engine, const int width,
   if (engine == nullptr || width <= 0 || height <= 0) {
     return false;
   }
-  if (width_ == width && height_ == height && colorResource_ != nullptr) {
-    return true;
+  if (width_ == width && height_ == height && colorResource_ != nullptr &&
+      rtvReady_) {
+    if (!srvAllocated_) {
+      CreateSrv(engine);
+    }
+    return srvAllocated_;
   }
 
-  ReleaseSrv(engine);
+  QueueSrvForDeferredRelease();
   colorResource_.Reset();
   depthResource_.Reset();
   rtvAllocator_.reset();
@@ -219,6 +236,20 @@ void EditorSceneRenderTargetHub::RenderSceneViews(
 ImTextureRef EditorSceneRenderTargetHub::ImGuiTexture(const SceneViewTab tab) const {
   const int index = ToTabIndex(tab);
   return targets_[index].ImGuiTexture();
+}
+
+void EditorSceneRenderTarget::FlushDeferredSrvReleases(AtrumEngine *engine) {
+  FreeDeferredSrvReleases(engine);
+}
+
+void EditorSceneRenderTargetHub::FlushDeferredSrvReleases(
+    AtrumEngine *engine) {
+  if (engine == nullptr) {
+    return;
+  }
+  for (EditorSceneRenderTarget &target : targets_) {
+    target.FlushDeferredSrvReleases(engine);
+  }
 }
 
 } // namespace Atrum::Editor
