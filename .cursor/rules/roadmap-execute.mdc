@@ -38,7 +38,7 @@ alwaysApply: true
 3. **§6.7** … `ultimateGoal.md` と矛盾が無いか、その内容に有効かを査定する。**有効かつ矛盾なし**のときだけ次へ。それ以外は実装せず、他の `- [ ]` があれば査定し直す
 4. 実装・修正が必要なとき:
    - `branchNaming.md` でブランチ名 → **`startTaskBranchFromDevelop.ps1 -BranchName "…"`**（develop 起点、§6.5）
-   - 最小 diff、Atrum 規約、既存実装の修正よりも新たな実装（新規ファイル・クラス・関数）への細分化での解決を優先
+   - 最小 diff、Atrum 規約に従う
    - **ビルド確認は行わず、エラーになる矛盾の静的チェックのみ行う:**
      - `buildDevelopment.cmd` や MSBuild 等によるビルドは実行しない
      - `python EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py`（新規／削除ファイルと `Project/CG2_BuildUp.vcxproj` の整合確認）

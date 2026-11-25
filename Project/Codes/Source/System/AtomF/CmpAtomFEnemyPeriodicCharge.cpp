@@ -13,18 +13,10 @@
 
 namespace Atrum {
 
-namespace {
-
-constexpr float kShakeDurationSeconds = 0.45f;
-constexpr float kChargeDurationSeconds = 0.75f;
-constexpr float kShakeAmplitudeMeters = 0.1f;
-constexpr float kShakeAngularSpeed = 48.0f;
-
-} // namespace
-
 void CmpAtomFEnemyPeriodicCharge::ResolveDependence() {
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
   chargeIntervalSeconds_ = AtomF::ResolveEnemyChargeIntervalSeconds();
+  chargeTiming_ = AtomF::ResolveEnemyPeriodicChargeTimingParameters();
 }
 
 void CmpAtomFEnemyPeriodicCharge::BeginShaking() {
@@ -84,14 +76,17 @@ void CmpAtomFEnemyPeriodicCharge::Update() {
   phaseElapsedSeconds_ += dt;
 
   if (phase_ == Phase::Shaking) {
-    const float wobble = std::sin(phaseElapsedSeconds_ * kShakeAngularSpeed);
+    const float wobble =
+        std::sin(phaseElapsedSeconds_ * chargeTiming_.shakeAngularSpeed);
     Math::Vector3 &translate = RefOwner().RefTransform().translate;
     translate = anchorTranslate_;
-    translate.x += wobble * kShakeAmplitudeMeters;
-    translate.z += std::cos(phaseElapsedSeconds_ * kShakeAngularSpeed * 1.3f) *
-                     kShakeAmplitudeMeters * 0.7f;
+    translate.x += wobble * chargeTiming_.shakeAmplitudeMeters;
+    translate.z +=
+        std::cos(phaseElapsedSeconds_ * chargeTiming_.shakeAngularSpeed *
+                 1.3f) *
+        (chargeTiming_.shakeAmplitudeMeters * 0.7f);
 
-    if (phaseElapsedSeconds_ >= kShakeDurationSeconds) {
+    if (phaseElapsedSeconds_ >= chargeTiming_.shakeDurationSeconds) {
       BeginCharging();
     }
     return;
@@ -113,7 +108,7 @@ void CmpAtomFEnemyPeriodicCharge::Update() {
       }
     }
 
-    if (phaseElapsedSeconds_ >= kChargeDurationSeconds) {
+    if (phaseElapsedSeconds_ >= chargeTiming_.chargeDurationSeconds) {
       phase_ = Phase::Waiting;
       phaseElapsedSeconds_ = 0.0f;
     }

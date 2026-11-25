@@ -24,7 +24,7 @@ void AttachPlayerHealthHit(Entity &entity) {
   EntityTagRegistry &tags = EntityTagRegistry::Instance();
   tags.EnsureLoaded();
   existing->SetHurterTagHashes(tags.PlayerDamageHurterTagHashes());
-  existing->SetInitialHealthCount(99);
+  existing->SetInitialHealthCount(ResolvePlayerInitialHealthCount());
   existing->SetInvincibleTime(ResolvePlayerDamageVignetteSeconds());
 }
 

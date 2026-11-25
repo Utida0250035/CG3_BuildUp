@@ -7,6 +7,7 @@
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpCamera.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsFallbackJson.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsGenericJson.h"
+#include "System/Editor/Entity/EntityEditorUiDrawComponentParamsCmpScriptUpd.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsHitSphere.h"
 #include "System/Editor/Entity/EntityEditorUiDrawComponentParamsExternalOpen.h"
 #include "System/Editor/Entity/EntityEditorComponentSettingsCopyPaste.h"
@@ -90,6 +91,7 @@ constexpr KnownComponentEntry kKnownComponents[] = {
     {"CmpBallAxisAlignedBounce", ComponentSlotKind::Upd},
     {"CmpBallBounceImpactFx", ComponentSlotKind::Upd},
     {"CmpBillboardInstancedGrid", ComponentSlotKind::Draw},
+    {"CmpScriptUpd", ComponentSlotKind::Upd},
 };
 
 void AppendKnownComponentSlot(EntityDefinition &definition,
@@ -327,6 +329,10 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
       p["isLightingEnabled"] = lighting;
       changed = true;
     }
+    return changed;
+  }
+
+  if (EntityEditorUiDrawComponentParamsCmpScriptUpd::TryDraw(slot, changed)) {
     return changed;
   }
 

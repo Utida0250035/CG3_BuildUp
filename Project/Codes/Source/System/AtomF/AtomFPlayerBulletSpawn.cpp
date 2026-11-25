@@ -5,9 +5,12 @@
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFPlayerBulletHitAttach.h"
+#include "System/AtomF/CmpAtomFPlayerBulletArenaWallHit.h"
 #include "System/AtomF/CmpAtomFPlayerBulletEnemyHit.h"
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
+#include "System/AtomF/CmpAtomFPlayerBulletPredictCapsule.h"
 #include "System/AtomF/CmpAtomFPlayerBulletTrail.h"
+#include "System/AtomF/CmpDrawAtomFPlayerBulletPredictCapsule.h"
 #include "System/AtomF/CmpDrawAtomFPlayerBulletTrail.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
@@ -16,8 +19,8 @@
 namespace Atrum::AtomF {
 
 std::unique_ptr<Entity> CreatePlayerBulletEntity(
-    const Math::Vector3 &worldSpawnPosition,
-    const Math::Vector3 &aimDirectionXZUnit) {
+    const Math::Vector3 &aimDirectionXZUnit,
+    const Math::Vector3 &worldSpawnPosition) {
   EntityTagRegistry &tags = EntityTagRegistry::Instance();
   tags.EnsureLoaded();
 
@@ -39,15 +42,20 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
   bullet->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = bullet->GetDrawCmp<CmpMeshSphere>();
   if (mesh != nullptr) {
+    mesh->SetRadius(ResolvePlayerBulletRadiusMeters());
     mesh->SetColor(Math::Vector4{0.95f, 0.92f, 0.3f, 1.0f});
     mesh->SetSubdivision(8);
+    mesh->SetLightingEnabled(false);
   }
 
   AttachArenaContainmentForPlayerBullet(*bullet);
   SyncPlayerBulletHitRadiusA(*bullet);
+  bullet->AddUpdCmp<CmpAtomFPlayerBulletPredictCapsule>();
+  bullet->AddDrawCmp<CmpDrawAtomFPlayerBulletPredictCapsule>();
   bullet->AddUpdCmp<CmpAtomFPlayerBulletTrail>();
   bullet->AddDrawCmp<CmpDrawAtomFPlayerBulletTrail>();
   bullet->AddUpdCmp<CmpAtomFPlayerBulletEnemyHit>();
+  bullet->AddUpdCmp<CmpAtomFPlayerBulletArenaWallHit>();
   bullet->ResolveDependencies();
   bullet->Initialize();
   return bullet;

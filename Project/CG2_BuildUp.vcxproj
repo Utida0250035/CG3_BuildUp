@@ -98,8 +98,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\LuaJIT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -109,6 +109,7 @@
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"
+if exist "$(ProjectDir)Externals\LuaJIT\bin\lua51.dll" (copy /Y "$(ProjectDir)Externals\LuaJIT\bin\lua51.dll" "$(TargetDir)") else if exist "$(ProjectDir)Externals\LuaJIT\lib\lua51.dll" (copy /Y "$(ProjectDir)Externals\LuaJIT\lib\lua51.dll" "$(TargetDir)")
 xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
 xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
@@ -140,6 +141,8 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\LuaJIT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -149,6 +152,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"
+if exist "$(ProjectDir)Externals\LuaJIT\bin\lua51.dll" (copy /Y "$(ProjectDir)Externals\LuaJIT\bin\lua51.dll" "$(TargetDir)") else if exist "$(ProjectDir)Externals\LuaJIT\lib\lua51.dll" (copy /Y "$(ProjectDir)Externals\LuaJIT\lib\lua51.dll" "$(TargetDir)")
 xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
 xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
@@ -181,6 +185,8 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
       <LinkTimeCodeGeneration />
+      <AdditionalLibraryDirectories>$(ProjectDir)Externals\LuaJIT\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>lua51.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ShaderModel>6.8</ShaderModel>
@@ -190,6 +196,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <PostBuildEvent>
       <Command>copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)"
 copy /Y "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)"
+if exist "$(ProjectDir)Externals\LuaJIT\bin\lua51.dll" (copy /Y "$(ProjectDir)Externals\LuaJIT\bin\lua51.dll" "$(TargetDir)") else if exist "$(ProjectDir)Externals\LuaJIT\lib\lua51.dll" (copy /Y "$(ProjectDir)Externals\LuaJIT\lib\lua51.dll" "$(TargetDir)")
 xcopy /E /I /Y "$(ProjectDir)Assets" "$(TargetDir)Assets\"
 xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Command>
     </PostBuildEvent>
@@ -539,6 +546,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerMove.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerShotCooldown.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAim.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimMousePick.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerFire.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletMove.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletSpawn.cpp" />
@@ -553,17 +561,26 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyArenaWallContact.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionKnockbackSpread.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletEnemyHit.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletArenaWallHit.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletConsume.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletTrail.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletTrail.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletPredictCapsule.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletPredictCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerAimCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsuleHitSync.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimCapsuleRayClamp.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFScenePlayerLocator.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFSceneEntityAdoptQueue.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyWalkToPlayer.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyPeriodicCharge.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyTargetedPanic.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackPredictCapsule.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFEnemyKnockbackPredictCapsule.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyAimCapsuleTargetQuery.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyPredictCapsuleTargetQuery.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaBounds.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
     <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
@@ -716,6 +733,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSlotKindResolve.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorKnownComponentRegistry.cpp" />
     <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpCamera.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpScriptUpd.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -1081,6 +1102,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpOrbiter.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpReflectAbleBullet.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpScriptUpd.cpp" />
+    <ClCompile Include="Codes\Source\System\Entity\UpdCmpGroupUtil.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaJitScriptHost.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\LuaSystem.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpCamera.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
@@ -1537,6 +1562,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpParry.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpReflectAbleBullet.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpRotator.h" />
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpScriptUpd.h" />
+    <ClInclude Include="Codes\Include\System\Entity\UpdCmpGroupUtil.h" />
+    <ClInclude Include="Codes\Include\System\Scripting\LuaJitScriptHost.h" />
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpScriptUpd.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionBlend.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpMotionCrossfade.h" />

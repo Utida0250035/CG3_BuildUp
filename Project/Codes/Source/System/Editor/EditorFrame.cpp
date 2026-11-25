@@ -49,33 +49,73 @@ void EditorFrame::ResetPerFrame() {
   gameDisplay_ = {};
   runtimeDisplay_ = {};
   editViewHovered_ = false;
-  editViewImageBoundsValid_ = false;
+  gameViewHovered_ = false;
+  runtimeViewHovered_ = false;
+  for (bool &valid : sceneViewImageBoundsValid_) {
+    valid = false;
+  }
+}
+
+namespace {
+
+size_t SceneViewTabIndex(const SceneViewTab tab) {
+  return static_cast<size_t>(tab);
+}
+
+} // namespace
+
+bool EditorFrame::SceneViewHovered(const SceneViewTab tab) const {
+  switch (tab) {
+  case SceneViewTab::Edit:
+    return editViewHovered_;
+  case SceneViewTab::Game:
+    return gameViewHovered_;
+  case SceneViewTab::Runtime:
+    return runtimeViewHovered_;
+  }
+  return false;
+}
+
+void EditorFrame::SetSceneViewImageScreenBounds(const SceneViewTab tab,
+                                                const float minX,
+                                                const float minY,
+                                                const float maxX,
+                                                const float maxY) {
+  const size_t index = SceneViewTabIndex(tab);
+  sceneViewImageMinX_[index] = minX;
+  sceneViewImageMinY_[index] = minY;
+  sceneViewImageMaxX_[index] = maxX;
+  sceneViewImageMaxY_[index] = maxY;
+  sceneViewImageBoundsValid_[index] = maxX > minX && maxY > minY;
+}
+
+bool EditorFrame::TryMapMouseToSceneViewLocal(const SceneViewTab tab,
+                                              float &outLocalX,
+                                              float &outLocalY) const {
+  const size_t index = SceneViewTabIndex(tab);
+  if (!SceneViewHovered(tab) || !sceneViewImageBoundsValid_[index]) {
+    return false;
+  }
+  const ImVec2 mouse = ImGui::GetIO().MousePos;
+  outLocalX = mouse.x - sceneViewImageMinX_[index];
+  outLocalY = mouse.y - sceneViewImageMinY_[index];
+  const float w = sceneViewImageMaxX_[index] - sceneViewImageMinX_[index];
+  const float h = sceneViewImageMaxY_[index] - sceneViewImageMinY_[index];
+  if (outLocalX < 0.0f || outLocalY < 0.0f || outLocalX > w || outLocalY > h) {
+    return false;
+  }
+  return true;
 }
 
 void EditorFrame::SetEditViewImageScreenBounds(const float minX, const float minY,
                                                const float maxX,
                                                const float maxY) {
-  editViewImageMinX_ = minX;
-  editViewImageMinY_ = minY;
-  editViewImageMaxX_ = maxX;
-  editViewImageMaxY_ = maxY;
-  editViewImageBoundsValid_ = maxX > minX && maxY > minY;
+  SetSceneViewImageScreenBounds(SceneViewTab::Edit, minX, minY, maxX, maxY);
 }
 
 bool EditorFrame::TryMapMouseToEditViewLocal(float &outLocalX,
                                              float &outLocalY) const {
-  if (!editViewHovered_ || !editViewImageBoundsValid_) {
-    return false;
-  }
-  const ImVec2 mouse = ImGui::GetIO().MousePos;
-  outLocalX = mouse.x - editViewImageMinX_;
-  outLocalY = mouse.y - editViewImageMinY_;
-  const float w = editViewImageMaxX_ - editViewImageMinX_;
-  const float h = editViewImageMaxY_ - editViewImageMinY_;
-  if (outLocalX < 0.0f || outLocalY < 0.0f || outLocalX > w || outLocalY > h) {
-    return false;
-  }
-  return true;
+  return TryMapMouseToSceneViewLocal(SceneViewTab::Edit, outLocalX, outLocalY);
 }
 
 void EditorFrame::SetSceneViewRect(const SceneViewTab tab,
@@ -88,9 +128,11 @@ void EditorFrame::SetSceneViewRect(const SceneViewTab tab,
     break;
   case SceneViewTab::Game:
     gameView_ = rect;
+    gameViewHovered_ = hovered;
     break;
   case SceneViewTab::Runtime:
     runtimeView_ = rect;
+    runtimeViewHovered_ = hovered;
     break;
   }
 }

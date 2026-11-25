@@ -7,6 +7,7 @@
 
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
+#include "System/Entity/ComponentUpd.h"
 #include <algorithm>
 #include <nlohmann/json.hpp>
 
@@ -92,6 +93,13 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"autoCarousel", false},
             {"carouselIntervalSeconds", 5.0f},
             {"followOwnerTransform", true}};
+  }
+  if (typeName == "CmpScriptUpd") {
+    return {{"scriptPath", ""},
+            {"updGroupPriorityMode", "enum"},
+            {"updCmpGroup", "MOVEMENT"},
+            {"updGroupPriority",
+             static_cast<uint64_t>(UpdCmpGroup::MOVEMENT)}};
   }
   if (typeName == "CmpBillboardInstancedGrid") {
     return {{"textureFilePath", "./Assets/Images/white4x4.png"},

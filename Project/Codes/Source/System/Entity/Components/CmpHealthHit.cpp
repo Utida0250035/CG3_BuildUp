@@ -104,11 +104,10 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 			PlayPlayerDamageSe();
 		}
 		CombatCameraShake::Instance().RequestPlayerHitShake();
+		// atomF の被弾演出のみ（他シーンでは画面端ビネットを出さない）
 		if (atomFLoaded) {
 			PlayerDamageScreenVignette::Instance().RequestShow(
 			    AtomF::ResolvePlayerDamageVignetteSeconds());
-		} else {
-			PlayerDamageScreenVignette::Instance().RequestShow();
 		}
 	} else if (tags.EntityHasRole(RefOwner(), "enemy")) {
 		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});

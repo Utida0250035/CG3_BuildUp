@@ -16,7 +16,7 @@ constexpr const char *kParticlesDirectory = "./Assets/Particles";
 /// Release 起動時に読むスタートアップシーン指定
 constexpr const char *kLaunchConfigPath = "./Assets/launch_config.json";
 
-/// Release 用シーン巡回リスト（Space / パッド A）
+/// Release 用シーン巡回リスト（Enter / パッド A）
 constexpr const char *kReleaseSceneCarouselPath =
     "./Assets/release_scene_carousel.json";
 

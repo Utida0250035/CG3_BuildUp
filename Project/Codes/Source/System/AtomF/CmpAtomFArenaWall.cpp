@@ -6,20 +6,18 @@
 #include "Math/Transform.h"
 #include "Math/Vector3.h"
 #include "Math/Vector4.h"
+#include "System/AtomF/AtomFParametersAccess.h"
 #include "System/Entity/Entity.h"
 #include "System/WhiteTexture.h"
 
 #include <array>
+#include <algorithm>
 #include <cmath>
 
 namespace Atrum {
 
 namespace {
 
-constexpr float kArenaInnerRadiusMeters = 16.0f;
-constexpr float kWallThicknessMeters = 0.4f;
-constexpr float kWallHeightMeters = 1.5f;
-constexpr int kWallSegmentCount = 48;
 constexpr float kTwoPi = 6.28318530f;
 const Math::Vector4 kWallColor{0.75f, 0.62f, 0.38f, 1.0f};
 const Math::Vector3 kUpNormal{0.0f, 1.0f, 0.0f};
@@ -49,27 +47,40 @@ void DrawWallQuad(AtrumEngine *engine, const Math::Matrix4x4 &world,
 }
 
 void DrawArenaWallRing(AtrumEngine *engine, const Math::Matrix4x4 &world) {
-  const float innerRadius = kArenaInnerRadiusMeters;
-  const float outerRadius = kArenaInnerRadiusMeters + kWallThicknessMeters;
-  const float height = kWallHeightMeters;
-  for (int segment = 0; segment < kWallSegmentCount; ++segment) {
+  const float innerRadius = AtomF::ResolveArenaInnerRadiusMeters();
+  const float wallThickness = AtomF::ResolveArenaWallThicknessMeters();
+  const float height = AtomF::ResolveArenaWallHeightMeters();
+  const float groundY = AtomF::ResolveArenaGroundHeightMeters();
+  const int segmentCount =
+      std::max(3, AtomF::ResolveArenaMeshSegmentCount());
+  const float outerRadius = innerRadius + wallThickness;
+  for (int segment = 0; segment < segmentCount; ++segment) {
     const float angle0 =
-        (kTwoPi * static_cast<float>(segment)) / static_cast<float>(kWallSegmentCount);
+        (kTwoPi * static_cast<float>(segment)) /
+        static_cast<float>(segmentCount);
     const float angle1 = (kTwoPi * static_cast<float>(segment + 1)) /
-                         static_cast<float>(kWallSegmentCount);
+                         static_cast<float>(segmentCount);
     const float cos0 = std::cos(angle0);
     const float sin0 = std::sin(angle0);
     const float cos1 = std::cos(angle1);
     const float sin1 = std::sin(angle1);
 
-    const VertexData innerBottom0 = MakeWallVertex(innerRadius * cos0, 0.0f, innerRadius * sin0);
-    const VertexData innerBottom1 = MakeWallVertex(innerRadius * cos1, 0.0f, innerRadius * sin1);
-    const VertexData innerTop0 = MakeWallVertex(innerRadius * cos0, height, innerRadius * sin0);
-    const VertexData innerTop1 = MakeWallVertex(innerRadius * cos1, height, innerRadius * sin1);
-    const VertexData outerBottom0 = MakeWallVertex(outerRadius * cos0, 0.0f, outerRadius * sin0);
-    const VertexData outerBottom1 = MakeWallVertex(outerRadius * cos1, 0.0f, outerRadius * sin1);
-    const VertexData outerTop0 = MakeWallVertex(outerRadius * cos0, height, outerRadius * sin0);
-    const VertexData outerTop1 = MakeWallVertex(outerRadius * cos1, height, outerRadius * sin1);
+    const VertexData innerBottom0 =
+        MakeWallVertex(innerRadius * cos0, groundY, innerRadius * sin0);
+    const VertexData innerBottom1 =
+        MakeWallVertex(innerRadius * cos1, groundY, innerRadius * sin1);
+    const VertexData innerTop0 =
+        MakeWallVertex(innerRadius * cos0, groundY + height, innerRadius * sin0);
+    const VertexData innerTop1 =
+        MakeWallVertex(innerRadius * cos1, groundY + height, innerRadius * sin1);
+    const VertexData outerBottom0 =
+        MakeWallVertex(outerRadius * cos0, groundY, outerRadius * sin0);
+    const VertexData outerBottom1 =
+        MakeWallVertex(outerRadius * cos1, groundY, outerRadius * sin1);
+    const VertexData outerTop0 =
+        MakeWallVertex(outerRadius * cos0, groundY + height, outerRadius * sin0);
+    const VertexData outerTop1 =
+        MakeWallVertex(outerRadius * cos1, groundY + height, outerRadius * sin1);
 
     DrawWallQuad(engine, world, innerBottom0, innerBottom1, innerTop1, innerTop0);
     DrawWallQuad(engine, world, outerBottom0, outerTop0, outerTop1, outerBottom1);

@@ -2,36 +2,41 @@
 
 #include "Math/Vector3.h"
 
-#include <cmath>
-
 namespace Atrum::AtomF {
 
-/// アリーナ内径。床・壁と同じ 16m（parameters.json のアリーナ記述と一致）。
+/// parameters 未読込時のフォールバック（`parameters.json` の `arena` と揃える）。
 inline constexpr float kArenaInnerRadiusMeters = 16.0f;
+inline constexpr float kArenaWallThicknessMeters = 0.4f;
+inline constexpr float kArenaWallHeightMeters = 1.5f;
+inline constexpr int kArenaMeshSegmentCount = 48;
+inline constexpr float kArenaGroundHeightMeters = 0.0f;
 
-/// parameters.json の半径a（自機弾）
-inline constexpr float kPlayerBulletBodyRadiusMeters = 0.125f;
+/// game_atomF.md の自機弾半径（0.25m）
+inline constexpr float kPlayerBulletBodyRadiusMeters = 0.25f;
 
-/// parameters.json の速さb（自機弾）
-inline constexpr float kPlayerBulletSpeedMetersPerSecond = 1.5f;
+/// game_atomF.md の自機弾速さ（0.75m/s）
+inline constexpr float kPlayerBulletSpeedMetersPerSecond = 0.75f;
 
 /// parameters.json の軌道残留（自機弾 trailSeconds）
 inline constexpr float kPlayerBulletTrailSeconds = 0.5f;
 
-/// parameters.json の半径b（自機本体・エイム）
+/// 自機本体の押し出し半径。エイム予測カプセルは別（0.1m）。
 inline constexpr float kPlayerBodyRadiusMeters = 0.25f;
 
-/// 敵本体の押し出し半径（爆発半径c とは別。当たり未実装のため半径b と同じ）。
+/// game_atomF.md のエイム予測カプセル半径（0.1m）
+inline constexpr float kPlayerAimCapsuleRadiusMeters = 0.1f;
+
+/// 敵本体の押し出し／予測カプセル半径。
 inline constexpr float kEnemyBodyRadiusMeters = 0.25f;
 
-/// parameters.json の速さb（敵吹き飛び）
-inline constexpr float kEnemyKnockbackSpeedMetersPerSecond = 1.5f;
+/// game_atomF.md の敵吹き飛び速さ（1.0m/s）
+inline constexpr float kEnemyKnockbackSpeedMetersPerSecond = 1.0f;
 
 /// parameters.json の半径c（敵爆発の影響）
 inline constexpr float kEnemyExplosionHitRadiusMeters = 0.4f;
 
-/// parameters.json の速さa（敵歩行）
-inline constexpr float kEnemyMoveSpeedMetersPerSecond = 0.5f;
+/// game_atomF.md の敵歩行速さ（0.3m/s）
+inline constexpr float kEnemyMoveSpeedMetersPerSecond = 0.3f;
 
 inline constexpr float kEnemyChargeIntervalSeconds = 5.0f;
 
@@ -39,31 +44,11 @@ inline constexpr float kEnemyChargeIntervalSeconds = 5.0f;
 inline constexpr float kPlayerDamageVignetteSeconds = 0.75f;
 
 /// ワールド XZ を円形アリーナ内に収める。bodyRadius は当たり半径の余白。
-inline void ClampWorldTranslateToArenaDisc(Math::Vector3 &worldTranslate,
-                                           const float bodyRadiusMeters) {
-  const float maxRadius = kArenaInnerRadiusMeters - bodyRadiusMeters;
-  if (maxRadius <= 0.0f) {
-    worldTranslate.x = 0.0f;
-    worldTranslate.z = 0.0f;
-    return;
-  }
+void ClampWorldTranslateToArenaDisc(Math::Vector3 &worldTranslate,
+                                    const float bodyRadiusMeters);
 
-  const float x = worldTranslate.x;
-  const float z = worldTranslate.z;
-  const float distSq = x * x + z * z;
-  const float maxSq = maxRadius * maxRadius;
-  if (distSq <= maxSq) {
-    return;
-  }
-
-  const float dist = std::sqrt(distSq);
-  if (dist <= 0.0f) {
-    return;
-  }
-
-  const float scale = maxRadius / dist;
-  worldTranslate.x = x * scale;
-  worldTranslate.z = z * scale;
-}
+/// 円形アリーナの壁に当たり半径分の余白を見て接触しているか。
+bool IsWorldXZTouchingArenaWall(const float x, const float z,
+                                const float bodyRadiusMeters);
 
 } // namespace Atrum::AtomF

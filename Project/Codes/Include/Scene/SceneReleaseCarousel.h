@@ -11,7 +11,7 @@ namespace Atrum::SceneFlow {
 
 struct ReleaseCarouselEntry;
 
-/// Release ビルド専用: Space / パッド A で登録シーンを順番・ループ遷移
+/// Release ビルド専用: Enter / パッド A で登録シーンを順番
 class SceneReleaseCarousel final {
 public:
   static SceneReleaseCarousel &Instance();

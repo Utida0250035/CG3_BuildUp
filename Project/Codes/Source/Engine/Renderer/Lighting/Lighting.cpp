@@ -1,7 +1,6 @@
 #include "Engine/Renderer/Lighting/Lighting.h"
 
 #include "Engine/Renderer/Lighting/LightingEngineEffectsBinding.h"
-#include "Engine/Renderer/Lighting/LightingEffectsImGuiPanel.h"
 
 namespace Atrum::Visual {
 
@@ -31,10 +30,7 @@ const DirectionalShadow &Lighting::GetDirectionalShadow() const {
 
 #ifdef USE_IMGUI
 
-void Lighting::ImGui() {
-  DrawLightingEffectsImGuiPanel(RefVolumetricFog(), RefGodRays(),
-                                RefDirectionalShadow());
-}
+void Lighting::ImGui() {}
 
 #endif
 

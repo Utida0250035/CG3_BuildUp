@@ -11,7 +11,9 @@ namespace {
 namespace I = Atrum::Input;
 
 void ApplyKeyboardInput(I::PlayInput *input, Atrum::InputData &data) {
-  if (input->IsKeyTrigger(I::Key::SPACE)) {
+  // シーン遷移の決定は Enter。Space は atomF 射撃など他用途と共有するため submit にしない。
+  if (input->IsKeyTrigger(I::Key::RETURN) ||
+      input->IsKeyTrigger(I::Key::ENTER)) {
     data.isSubmitTrigger = true;
   }
 

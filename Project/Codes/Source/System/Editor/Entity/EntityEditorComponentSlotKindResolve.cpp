@@ -18,7 +18,7 @@ TryDefaultKindForRegisteredType(const std::string &typeName) {
       typeName == "CmpHitSphere" || typeName == "CmpCamera" ||
       typeName == "CmpParticleEmitter" || typeName == "CmpBounceBall" ||
       typeName == "CmpBallKinematics" || typeName == "CmpBallAxisAlignedBounce" ||
-      typeName == "CmpBallBounceImpactFx") {
+      typeName == "CmpBallBounceImpactFx" || typeName == "CmpScriptUpd") {
     return ComponentSlotKind::Upd;
   }
   if (typeName == "CmpEditorAssetPath" || typeName == "CmpRuntimeTexturePath" ||

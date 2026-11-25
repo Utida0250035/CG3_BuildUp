@@ -10,10 +10,11 @@ class Entity;
 
 namespace AtomF {
 
-/// 自機の子として自機弾を1発出す（所有権は呼び出し側の CmpChildEntitys）。
+/// 自機とは独立した自機弾エンティティを1発作る（所有権は呼び出し側）。
+/// worldSpawnPosition は発射時点の自機ワールド座標。
 std::unique_ptr<Entity> CreatePlayerBulletEntity(
-    const Math::Vector3 &worldSpawnPosition,
-    const Math::Vector3 &aimDirectionXZUnit);
+    const Math::Vector3 &aimDirectionXZUnit,
+    const Math::Vector3 &worldSpawnPosition);
 
 } // namespace AtomF
 

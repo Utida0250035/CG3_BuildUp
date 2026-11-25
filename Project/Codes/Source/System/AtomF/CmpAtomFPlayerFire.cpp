@@ -6,9 +6,9 @@
 #include "Input/PlayInput.h"
 #include "Input/XInputController.h"
 #include "System/AtomF/AtomFPlayerBulletSpawn.h"
+#include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
 #include "System/AtomF/CmpAtomFPlayerAim.h"
 #include "System/AtomF/CmpAtomFPlayerShotCooldown.h"
-#include "System/Entity/Components/CmpChildEntitys.h"
 #include "System/Entity/Entity.h"
 
 namespace Atrum {
@@ -16,11 +16,10 @@ namespace Atrum {
 void CmpAtomFPlayerFire::ResolveDependence() {
   aim_ = RefOwner().GetUpdCmp<CmpAtomFPlayerAim>();
   shotCooldown_ = RefOwner().GetUpdCmp<CmpAtomFPlayerShotCooldown>();
-  childHolder_ = RefOwner().GetUpdCmp<CmpChildEntitys>();
 }
 
 void CmpAtomFPlayerFire::Update() {
-  if (aim_ == nullptr || shotCooldown_ == nullptr || childHolder_ == nullptr) {
+  if (aim_ == nullptr || shotCooldown_ == nullptr) {
     return;
   }
 
@@ -42,16 +41,15 @@ void CmpAtomFPlayerFire::Update() {
   }
 
   const Math::Vector3 direction = aim_->GetAimDirectionXZ();
-  const Math::Vector3 spawnPos = RefOwner().GetWorldPosition();
+  const Math::Vector3 spawnWorld = RefOwner().GetWorldPosition();
 
   std::unique_ptr<Entity> bullet =
-      AtomF::CreatePlayerBulletEntity(spawnPos, direction);
+      AtomF::CreatePlayerBulletEntity(direction, spawnWorld);
   if (bullet == nullptr) {
     return;
   }
 
-  Entity *bulletRaw = bullet.release();
-  childHolder_->AddChilds({bulletRaw});
+  AtomF::EnqueueSceneEntityAdopt(std::move(bullet));
 }
 
 } // namespace Atrum

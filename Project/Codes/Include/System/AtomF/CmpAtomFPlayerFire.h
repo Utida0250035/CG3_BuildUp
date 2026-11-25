@@ -6,9 +6,8 @@ namespace Atrum {
 
 class CmpAtomFPlayerAim;
 class CmpAtomFPlayerShotCooldown;
-class CmpChildEntitys;
 
-/// atomF 自機の射撃入力（Space / パッド A）。エイム方向へ弾を出す。
+/// atomF 自機の射撃入力（Space / パッド A）。エイム方向へ独立弾を出す。
 class CmpAtomFPlayerFire final : public ComponentUpd {
 public:
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -21,7 +20,6 @@ public:
 private:
   CmpAtomFPlayerAim *aim_ = nullptr;
   CmpAtomFPlayerShotCooldown *shotCooldown_ = nullptr;
-  CmpChildEntitys *childHolder_ = nullptr;
 };
 
 } // namespace Atrum

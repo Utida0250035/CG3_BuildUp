@@ -2,8 +2,6 @@
 
 #include "Engine/AtrumEngine.h"
 #include "Engine/EngineAccess.h"
-#include "Engine/Renderer/Lighting/GodRays.h"
-#include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "Engine/Resource/LightData.h"
 
 namespace Atrum {
@@ -22,27 +20,6 @@ void ApplySceneMovieStageLighting() {
       .rimEnabled = 1u,
   };
   ::Atrum::EngineSetDirectionalLightData(directionalLight);
-
-  Engine *const engine = Engine::Instance();
-  if (engine == nullptr) {
-    return;
-  }
-
-  Visual::VolumetricFogSettings movieFog{};
-  movieFog.enabled = 1u;
-  movieFog.density = 0.018f;
-  movieFog.heightFalloff = 0.26f;
-  movieFog.heightOffset = 0.0f;
-  movieFog.maxDistance = 96.0f;
-  movieFog.inScatterIntensity = 0.16f;
-  engine->RefVolumetricFog().SetSettings(movieFog);
-
-  Visual::GodRaySettings movieGodRays{};
-  movieGodRays.enabled = 1u;
-  movieGodRays.intensity = 0.1f;
-  movieGodRays.angularPower = 7.5f;
-  movieGodRays.fogCoupling = 0.85f;
-  engine->RefGodRays().SetSettings(movieGodRays);
 }
 
 } // namespace Atrum
