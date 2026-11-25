@@ -85,6 +85,8 @@ struct UiState {
   std::string importBatchNamePrefix{};
 
   std::string tagSearchFilter{};
+  /// ヒエラルキー表示のタグ絞り込み（空なら全表示）
+  std::string hierarchyTagFilter{};
   std::string selectedCatalogTag{};
   std::string newCatalogTagName{};
   std::string renameCatalogTagName{};

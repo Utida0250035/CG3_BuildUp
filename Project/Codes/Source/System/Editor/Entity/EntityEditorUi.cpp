@@ -677,11 +677,68 @@ void DrawMultiInstanceBatchPanel(EntityEditor &editor,
   }
 }
 
+bool DefinitionHasTagName(const EntityDefinition &definition,
+                          const std::string &tagName) {
+  if (tagName.empty()) {
+    return true;
+  }
+  return std::find(definition.tags.begin(), definition.tags.end(), tagName) !=
+         definition.tags.end();
+}
+
+bool InstanceOrDescendantMatchesHierarchyTag(
+    const EditorSceneDocument &scene, const int nodeIndex,
+    const std::string &tagFilter) {
+  if (tagFilter.empty()) {
+    return true;
+  }
+  if (nodeIndex < 0 ||
+      nodeIndex >= static_cast<int>(scene.instances.size())) {
+    return false;
+  }
+  if (DefinitionHasTagName(
+          scene.instances[static_cast<size_t>(nodeIndex)].definition,
+          tagFilter)) {
+    return true;
+  }
+  for (int i = 0; i < static_cast<int>(scene.instances.size()); ++i) {
+    if (scene.instances[static_cast<size_t>(i)].parentIndex == nodeIndex &&
+        InstanceOrDescendantMatchesHierarchyTag(scene, i, tagFilter)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void SelectAllInstancesWithTag(UiState &ui, const EditorSceneDocument &scene,
+                               const std::string &tagName) {
+  ui.selectedInstanceIndices.clear();
+  if (tagName.empty()) {
+    ui.selectedInstanceIndex = 0;
+    return;
+  }
+  for (int i = 0; i < static_cast<int>(scene.instances.size()); ++i) {
+    if (DefinitionHasTagName(scene.instances[static_cast<size_t>(i)].definition,
+                             tagName)) {
+      ui.selectedInstanceIndices.push_back(i);
+    }
+  }
+  if (ui.selectedInstanceIndices.empty()) {
+    ui.selectedInstanceIndex = 0;
+    return;
+  }
+  ui.selectedInstanceIndex = ui.selectedInstanceIndices.front();
+}
+
 void DrawHierarchyNode(EntityEditor &editor, const int nodeIndex) {
   EditorSceneDocument &scene = editor.SceneDocument();
   UiState &ui = editor.Ui();
   if (nodeIndex < 0 ||
       nodeIndex >= static_cast<int>(scene.instances.size())) {
+    return;
+  }
+  if (!InstanceOrDescendantMatchesHierarchyTag(scene, nodeIndex,
+                                               ui.hierarchyTagFilter)) {
     return;
   }
   SceneEntityInstance &instance =
@@ -757,6 +814,41 @@ void EntityEditor::DrawHierarchyPanel() {
   }
 
   ImGui::Separator();
+  {
+    const char *filterPreview = ui_.hierarchyTagFilter.empty()
+                                    ? "（フィルタなし）"
+                                    : ui_.hierarchyTagFilter.c_str();
+    if (ImGui::BeginCombo("タグフィルタ", filterPreview)) {
+      if (ImGui::Selectable("（フィルタなし）",
+                            ui_.hierarchyTagFilter.empty())) {
+        ui_.hierarchyTagFilter.clear();
+      }
+      for (const std::string &tagName : scene_.tagCatalog) {
+        const bool selected = ui_.hierarchyTagFilter == tagName;
+        if (ImGui::Selectable(tagName.c_str(), selected)) {
+          ui_.hierarchyTagFilter = tagName;
+        }
+      }
+      ImGui::EndCombo();
+    }
+    ImGui::BeginDisabled(ui_.hierarchyTagFilter.empty());
+    if (ImGui::Button("このタグで一括選択")) {
+      SelectAllInstancesWithTag(ui_, scene_, ui_.hierarchyTagFilter);
+      if (ui_.selectedInstanceIndices.empty()) {
+        ui_.importStatusMessage =
+            "タグ「" + ui_.hierarchyTagFilter + "」のエンティティは無い";
+      } else {
+        ui_.importStatusMessage =
+            "タグ「" + ui_.hierarchyTagFilter + "」で " +
+            std::to_string(ui_.selectedInstanceIndices.size()) + " 体を選択";
+      }
+    }
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) {
+      ImGui::SetTooltip("タグフィルタで選んだタグを持つインスタンスをすべて選択");
+    }
+    ImGui::EndDisabled();
+  }
+
   ImGui::TextDisabled(
       "ドラッグ&ドロップ: 親変更 | Shift+ドロップ: 並べ替え | Ctrl+ドロップ: 複製");
   if (ImGui::TreeNodeEx(scene_.sceneName.c_str(),

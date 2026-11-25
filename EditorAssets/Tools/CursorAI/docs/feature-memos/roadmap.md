@@ -673,7 +673,7 @@
 - [x] タグ全解除は選択 1 件
 
 ### EntityEditorHierarchy
-- [ ] ヒエラルキーがタグでフィルタ／一括選択できない
+- [x] ヒエラルキーがタグでフィルタ／一括選択できない
 - [ ] Selectable が単一 instanceIndex のみ
 
 ### EditorSceneAsset
