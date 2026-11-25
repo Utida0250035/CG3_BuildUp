@@ -674,7 +674,7 @@
 
 ### EntityEditorHierarchy
 - [x] ヒエラルキーがタグでフィルタ／一括選択できない
-- [ ] Selectable が単一 instanceIndex のみ
+- [x] Selectable が単一 instanceIndex のみ
 
 ### EditorSceneAsset
 - [ ] シーン JSON は新規作成と削除だけで、ファイル名の変更が無い
