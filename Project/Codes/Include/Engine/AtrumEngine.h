@@ -10,9 +10,6 @@
 #include "Engine/Pipeline/PipelineState.h"
 #include "Engine/Pipeline/RootSignature.h"
 #include "Engine/Platform/Window/Window.h"
-#include "Engine/Renderer/Lighting/DirectionalShadow.h"
-#include "Engine/Renderer/Lighting/GodRays.h"
-#include "Engine/Renderer/Lighting/VolumetricFog.h"
 #include "Engine/Renderer/Shader/ShaderCompiler.h"
 #include "Engine/Resource/AssetModel.h"
 #include "Engine/Resource/ConstantBuffer.h"
@@ -141,9 +138,6 @@ namespace Atrum {
 		std::unique_ptr<SingleConstantBuffer<DirectionalLightData>>
 			directionalLightBuffer_ = nullptr;
 		DirectionalLightData directionalLightData_{};
-		Visual::VolumetricFog volumetricFog_{};
-		Visual::GodRays godRays_{};
-		Visual::DirectionalShadow directionalShadow_{};
 
 		/* depthStencil */
 
@@ -188,6 +182,8 @@ namespace Atrum {
 		/* 音源再生 */
 
 		std::unique_ptr<Audio::AudioManager> audioManager_;
+
+		std::unique_ptr<Script::LuaJitScriptHost> luaScriptHost_;
 
 		/**/
 
@@ -540,17 +536,6 @@ namespace Atrum {
 
 		void SetDirectionalLightData(const DirectionalLightData& data);
 
-		Visual::VolumetricFog& RefVolumetricFog() { return volumetricFog_; }
-		const Visual::VolumetricFog& GetVolumetricFog() const { return volumetricFog_; }
-
-		Visual::GodRays& RefGodRays() { return godRays_; }
-		const Visual::GodRays& GetGodRays() const { return godRays_; }
-
-		Visual::DirectionalShadow& RefDirectionalShadow() { return directionalShadow_; }
-		const Visual::DirectionalShadow& GetDirectionalShadow() const {
-			return directionalShadow_;
-		}
-
 		void FlushDirectionalLightConstantBuffer();
 
 		/// Object3D 描画用のヒープ・PSO・VB/IB・ルート CBV（PreDraw 後半と同等）
@@ -586,6 +571,13 @@ namespace Atrum {
 		Audio::AudioManager *GetAudioManager() { return audioManager_.get(); }
 		const Audio::AudioManager *GetAudioManager() const {
 			return audioManager_.get();
+		}
+
+		Script::LuaJitScriptHost *GetLuaScriptHost() {
+			return luaScriptHost_.get();
+		}
+		const Script::LuaJitScriptHost *GetLuaScriptHost() const {
+			return luaScriptHost_.get();
 		}
 
 		void SetCamera(Camera* camera);

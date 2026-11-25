@@ -21,6 +21,10 @@ namespace Audio {
 class AudioManager;
 }
 
+namespace Script {
+class LuaJitScriptHost;
+}
+
 namespace Physics {
 class PhysicsManager;
 }
@@ -33,6 +37,7 @@ AtrumEngine *EngineInstance();
 FrameDeltaTime *EngineFrameDeltaTime();
 Input::PlayInput *EnginePlayInput();
 Audio::AudioManager *EngineAudioManager();
+Script::LuaJitScriptHost *EngineLuaScriptHost();
 Physics::PhysicsManager *EnginePhysicsManager();
 TextureStorage *EngineTextureStorage();
 
