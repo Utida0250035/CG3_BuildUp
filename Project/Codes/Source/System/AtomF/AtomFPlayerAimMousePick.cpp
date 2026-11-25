@@ -17,6 +17,39 @@ namespace Atrum::AtomF {
 namespace {
 
 constexpr float kMinScreenAimDistSq = 1e-6f;
+constexpr float kMinPlayInputCursorDeltaSq = 0.25f;
+constexpr float kMinEditorAimSampleMoveSq = 0.25f;
+
+bool HasPlayInputCursorMovedThisFrame(const Input::PlayInput *input) {
+  if (input == nullptr) {
+    return false;
+  }
+  return input->GetCursorDelta().LengthSquare() >= kMinPlayInputCursorDeltaSq;
+}
+
+/// エディタ Scene ビュー上のカーソル局所座標が前回サンプルから動いたときだけ true（初回は false）。
+bool EditorSceneViewAimCursorMoved(const float localX, const float localY) {
+  static float lastLocalX = 0.0f;
+  static float lastLocalY = 0.0f;
+  static bool hasLastSample = false;
+
+  if (!hasLastSample) {
+    lastLocalX = localX;
+    lastLocalY = localY;
+    hasLastSample = true;
+    return false;
+  }
+
+  const float dx = localX - lastLocalX;
+  const float dy = localY - lastLocalY;
+  if (dx * dx + dy * dy < kMinEditorAimSampleMoveSq) {
+    return false;
+  }
+
+  lastLocalX = localX;
+  lastLocalY = localY;
+  return true;
+}
 
 float DirectionToAngleRadians(const float dirX, const float dirZ) {
   return std::atan2(dirX, dirZ);
@@ -68,6 +101,10 @@ bool TryAimFromEditorSceneViewImage(float &outAngleRadians) {
       continue;
     }
 
+    if (!EditorSceneViewAimCursorMoved(localX, localY)) {
+      return false;
+    }
+
     if (TryAimAngleFromScreenCenterToCursor(localX, localY, display.width,
                                           display.height, outAngleRadians)) {
       return true;
@@ -114,6 +151,10 @@ bool TryResolveAimAngleFromMouse(const Entity &owner, float &outAngleRadians) {
     return true;
   }
 #endif
+
+  if (!HasPlayInputCursorMovedThisFrame(input)) {
+    return false;
+  }
 
   const Math::Vector2 cursor = input->GetCursorPos();
   return TryAimFromClientViewport(cursor, outAngleRadians);

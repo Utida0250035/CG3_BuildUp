@@ -110,6 +110,8 @@ namespace Atrum {
 
 std::unique_ptr<AtrumEngine> AtrumEngine::instance_ = nullptr;
 
+AtrumEngine::~AtrumEngine() = default;
+
 AtrumEngine *EngineInstance() { return AtrumEngine::Instance(); }
 
 FrameDeltaTime *EngineFrameDeltaTime() {

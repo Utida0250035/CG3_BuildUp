@@ -574,188 +574,768 @@
     <ClCompile Include="Externals\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>Externals\imgui\misc\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp" />
-    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp" />
-    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp" />
-    <ClCompile Include="Codes\Source\Motion\MotionBlender.cpp" />
-    <ClCompile Include="Codes\Source\Motion\MotionClipLoader.cpp" />
-    <ClCompile Include="Codes\Source\Motion\MotionCrossfade.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallAxisAlignedBounce.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallBounceImpactFx.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallKinematics.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp" />
-    <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp" />
-    <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformDrag.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformGizmoDraw.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAuthoringLightingPreview.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayQueue.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayTick.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewDebugCameraDraw.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewRenderCameraBind.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAfterBuildUpExit.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorClearRuntimeFocusRequest.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFFloorSpawn.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFArenaContainmentTick.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFCombatCamera.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFParametersBoot.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFPlayerSpawn.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEnemySpawn.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEntityDestroyPurge.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFFloor.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaWall.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaContainment.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerMove.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerShotCooldown.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAim.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerFire.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletMove.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletSpawn.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerMoveInput.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaContainmentAttach.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHitAttach.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHealthAttach.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletHitAttach.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyChainExplosion.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyArenaWallContact.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionKnockbackSpread.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletEnemyHit.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletArenaWallHit.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletConsume.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletTrail.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletTrail.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletPredictCapsule.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletPredictCapsule.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsule.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerAimCapsule.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsuleHitSync.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimCapsuleRayClamp.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFScenePlayerLocator.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFSceneEntityAdoptQueue.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyWalkToPlayer.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyPeriodicCharge.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyTargetedPanic.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackPredictCapsule.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFEnemyKnockbackPredictCapsule.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyAimCapsuleTargetQuery.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyPredictCapsuleTargetQuery.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaBounds.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp" />
-    <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLaunchPolicy.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRegistryLaunchDedupe.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpReturnTarget.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentLoad.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentTagCatalog.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLoadFailureEntities.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeSubviewDrawCamera.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraLock.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpF1ReturnRequest.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpExitSceneEditorUiRestore.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeLightingPolicy.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeViewStatusText.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpDedicatedRuntimeViewWindow.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeEntityDraw.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpEnterSceneEditorUiPolicy.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpMissingPrimaryCameraFeedback.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDisplayNameResolve.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpChangeSceneDrawPolicy.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp" />
-    <ClCompile Include="Codes\Source\Scene\SceneTitleSubmitTransition.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDragDrop.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyReparent.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorFrameStreamingDiagnostics.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFrameDeltaDiagnostics.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorEditViewScreenRay.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorDebugPlayAreaScaffold.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\DebugPlayAreaScaffoldPersonalize.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetFileOperations.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetProjectPanelList.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetUiPathScrub.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetCollisionPolicy.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeMainCameraSupplement.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigJsonDocument.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigStartupPathNormalize.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\EditorScenePlayRequestStaging.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiEditableSceneList.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.cpp" />
-    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneSwitchUnsavedPrompt.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpColliderAabb.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorAssetPath.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpRuntimeTexturePath.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorTextureBillboard.cpp" />
-    <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp" />
-    <ClCompile Include="Codes\Source\Visual\PlayerTerrainSilhouette.cpp" />
-    <ClCompile Include="Codes\Source\UX\OperatorGuidanceSystem.cpp" />
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\VolumetricFog.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\GodRays.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadow.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Engine\Renderer\Lighting\DirectionalShadowApplyDiagnostics.cpp">
+      <Filter>Codes\Source\Engine\Renderer\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugImGui.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\FrameDeltaTimeDebugImGui.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfiler.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\SubsystemFrameProfilerImGui.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\AudioStreamingDebugLog.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\DirectionalShadowApplyDebugLog.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\LightingEffectsDebugImGui.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\ForDebug\ImGuiJapaneseFont.cpp">
+      <Filter>Codes\Source\ForDebug</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Motion\MotionBlender.cpp">
+      <Filter>Codes\Source\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Motion\MotionClipLoader.cpp">
+      <Filter>Codes\Source\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Motion\MotionCrossfade.cpp">
+      <Filter>Codes\Source\Motion</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneReleaseCarousel.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBillboardInstancedGrid.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallAxisAlignedBounce.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallBounceImpactFx.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBallKinematics.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpBounceBall.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpParticleEmitter.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\SceneParticleServices.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Particle\ParticleSampleCarouselSlots.cpp">
+      <Filter>Codes\Source\System\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditor.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorScenePlayBuildUpRoute.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorDebugHotkeys.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformDrag.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewTransformGizmoDraw.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAuthoringLightingPreview.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeTabFocus.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewCameraSetup.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorRuntimeViewCameraDraw.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayQueue.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorInEditorPlayTick.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEditViewDebugCameraDraw.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewRenderCameraBind.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorSceneViewVisualEffectsApply.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorExitSceneTeardown.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorAfterBuildUpExit.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorClearRuntimeFocusRequest.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUp.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFFloorSpawn.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFArenaContainmentTick.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFCombatCamera.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFParametersBoot.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFPlayerSpawn.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEnemySpawn.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAtomFEntityDestroyPurge.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFFloor.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaWall.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFArenaContainment.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerMove.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerShotCooldown.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAim.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerFire.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletMove.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletSpawn.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerMoveInput.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaContainmentAttach.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHitAttach.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHealthAttach.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletHitAttach.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyChainExplosion.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyArenaWallContact.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionKnockbackSpread.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletEnemyHit.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletArenaWallHit.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletConsume.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletTrail.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletTrail.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerBulletPredictCapsule.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerBulletPredictCapsule.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsule.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFPlayerAimCapsule.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerAimCapsuleHitSync.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimCapsuleRayClamp.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFScenePlayerLocator.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFSceneEntityAdoptQueue.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyWalkToPlayer.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyPeriodicCharge.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyTargetedPanic.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackPredictCapsule.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFEnemyKnockbackPredictCapsule.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyAimCapsuleTargetQuery.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyPredictCapsuleTargetQuery.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaBounds.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersRuntime.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFParametersAccess.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpPlayerSilhouetteDraw.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeVisualApply.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneJsonPathResolve.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLaunchPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRegistryLaunchDedupe.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraFraming.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpReturnTarget.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneLoadFailure.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentLoad.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDocumentTagCatalog.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpLoadFailureEntities.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeSubviewDrawCamera.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpStageCameraLock.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpF1ReturnRequest.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpExitSceneEditorUiRestore.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeLightingPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeViewStatusText.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpDedicatedRuntimeViewWindow.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpRuntimeEntityDraw.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpEnterSceneEditorUiPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpMissingPrimaryCameraFeedback.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpSceneDisplayNameResolve.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpChangeSceneDrawPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneBuildUpAudioPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneTitleBgmMaintain.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneTitleVisualApply.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneTitleSubmitTransition.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditor.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefinition.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateSelectedInstance.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDragDrop.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyDuplicateAsChild.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyInstanceReorder.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyReparent.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringDocumentEditNotify.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorBuildPreviewSceneBuildUpParity.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneDocumentLoadFromPath.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTagCatalog.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrame.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameLightingDiagnostics.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameStreamingDiagnostics.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFrameDeltaDiagnostics.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneViewPanel.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRenderTarget.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorInfiniteGrid.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEditViewScreenRay.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuning.cpp">
+      <Filter>Codes\Source\System\Editor\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Camera\StageViewCameraTuningPanel.cpp">
+      <Filter>Codes\Source\System\Editor\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbench.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchFeatureTestMenuLaunch.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRunStatus.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeFunctionalViewDraw.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLuaScriptScaffold.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorDebugPlayAreaScaffold.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\DebugPlayAreaScaffoldPersonalize.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAsset.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAsset.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetFileOperations.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetProjectPanelList.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetUiPathScrub.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOverwriteSaveUi.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetCollisionPolicy.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetOutputCollisionPolicyUi.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetAutoStemRenameReport.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneAsset.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntime.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeDrawPreviewApply.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewLink.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeMainCameraSupplement.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeBuildWarnings.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeEntityInitializePolicy.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorSceneRuntimeInstanceNamePolicy.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigLoadDiagnostics.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigJsonDocument.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorLaunchConfigStartupPathNormalize.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorScenePlayRequestStaging.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorReleaseStartupBuildUp.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EditorScenePlayRequestBuildUpQueue.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiEditableSceneList.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorProjectPanelSelectableLabel.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneSwitchUnsavedPrompt.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionBlend.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpMotionCrossfade.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpColliderAabb.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorAssetPath.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpRuntimeTexturePath.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpEditorTextureBillboard.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\EntityTagRegistry.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Visual\PlayerTerrainSilhouette.cpp">
+      <Filter>Codes\Source\Visual</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\UX\OperatorGuidanceSystem.cpp">
+      <Filter>Codes\Source\UX</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeCliParse.cpp">
+      <Filter>Codes\Source\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Application\ReleaseStartupSmokeFrameBudgetResolve.cpp">
+      <Filter>Codes\Source\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorEnterSceneDocumentLoadPolicy.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewBuildUpParityRebuild.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewEditorAssetPathRelink.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\SceneEntityEditorPreviewStageViewCameraFallback.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerAimMousePick.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Camera\EditorStageViewCameraTuningHotReloadTick.cpp">
+      <Filter>Codes\Source\System\Editor\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchDefaultDockLayout.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchLightPostWindow.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorEntityWorkbenchPlayMenu.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorExternalAssetOpen.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorFrameFitCameraPerspectiveParams.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetApplyToEntityDefinition.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetAutoStemRenameReport.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetBatchApplyToSelection.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetCollisionPolicy.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetDropPolicyUi.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetFileOperations.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetList.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetProjectPanelList.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\EditorImportedAssetUiPathScrub.cpp">
+      <Filter>Codes\Source\System\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAddEmptyInstanceFromSelection.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorAuthoringEditorAssetPathEditNotify.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorClearAllEntityTags.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorClearPrefabSelectionOnSceneOpen.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSettingsCopyPaste.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSlotKindResolve.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorComponentSlotParamsNormalize.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorCreateNewSceneFile.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDefaultParamsCmpCamera.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDeleteSceneOpenSuccessor.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportPathQueue.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportRequestPreview.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDroppedImportSpawnSceneInstances.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorDuplicateInstanceKeyboardShortcut.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorExecutionOrderBatch.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorHierarchyAddObjectUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorComponentRemoveBatchUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorComponentTypeComboApply.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorExecutionOrderBatchUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorImportedDropBatchApplyUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorInstanceIdentityUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorMultiSlotExecutionOrderUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorSceneJsonPathUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorInspectorTransformCopyPasteUi.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorKnownComponentRegistry.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabBatchSpawnFromFile.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSaveEntityDefinitionBody.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorPrefabSpawnFirstInstanceRoot.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRemoveComponentSlotsBatch.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRemoveSelectedInstances.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorRestoreSelectionAfterSceneLoad.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSaveSelectedInstanceToPrefab.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorSceneObjectAddPreset.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorStartupSceneSetWithoutAutosave.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTickPendingRequests.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorTransformCopyPaste.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsBallSplit.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpCamera.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpScriptUpd.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsExternalOpen.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsFallbackJson.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsGenericJson.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Entity\EntityEditorUiDrawComponentParamsHitSphere.cpp">
+      <Filter>Codes\Source\System\Editor\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Prefab\PrefabAssetBatchSpawnUi.cpp">
+      <Filter>Codes\Source\System\Editor\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEditorAssetPathPreviewRelink.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Editor\Scene\EditorSceneRuntimeEntityHasComponentForSlot.cpp">
+      <Filter>Codes\Source\System\Editor\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\Components\CmpScriptUpd.cpp">
+      <Filter>Codes\Source\System\Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Entity\UpdCmpGroupUtil.cpp">
+      <Filter>Codes\Source\System\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\LuaJitScriptHost.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\LuaSystem.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
@@ -2114,6 +2694,18 @@
     <ClInclude Include="Codes\Include\System\Editor\Scene\EditorSceneRuntimeEntityHasComponentForSlot.h">
       <Filter>Codes\Include\System\Editor\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpScriptUpd.h">
+      <Filter>Codes\Include\System\Editor\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\Components\CmpScriptUpd.h">
+      <Filter>Codes\Include\System\Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Entity\UpdCmpGroupUtil.h">
+      <Filter>Codes\Include\System\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\LuaJitScriptHost.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Codes">
@@ -2400,6 +2992,12 @@
     </Filter>
     <Filter Include="Codes\Source\Physics">
       <UniqueIdentifier>{62456163-1567-45c3-a8b2-c692defc542c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\Scripting">
+      <UniqueIdentifier>{f0309336-c041-440a-8ebe-46b80ed4dca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Source\System\Scripting">
+      <UniqueIdentifier>{fd0e54f7-d251-49af-a14c-1fcc8d5a6d21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

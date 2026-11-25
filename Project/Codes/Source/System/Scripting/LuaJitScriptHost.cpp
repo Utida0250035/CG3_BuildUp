@@ -12,6 +12,10 @@
 #include <sstream>
 #include <unordered_map>
 
+namespace {
+    namespace D = Atrum::Debug;
+}
+
 namespace Atrum::Script {
 
 namespace {

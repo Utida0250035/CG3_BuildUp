@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include <imgui.h>
+#include <imgui/imgui.h>
 #include <nlohmann/json.hpp>
 
 namespace Atrum::EntityEditor::EntityEditorUiDrawComponentParamsCmpScriptUpd {

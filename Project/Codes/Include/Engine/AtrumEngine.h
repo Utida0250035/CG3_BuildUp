@@ -197,7 +197,7 @@ namespace Atrum {
 		/// <summary>
 		/// デストラクタ
 		/// </summary>
-		~AtrumEngine() = default;
+		~AtrumEngine();
 
 	private:
 

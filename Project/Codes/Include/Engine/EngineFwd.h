@@ -44,3 +44,5 @@ class LuaJitScriptHost;
 } // namespace Script
 
 } // namespace Atrum
+
+#include "System/Scripting/LuaJitScriptHost.h"

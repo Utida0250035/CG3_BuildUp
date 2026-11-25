@@ -8,7 +8,7 @@
 #include "System/Scripting/LuaJitScriptHost.h"
 
 #ifdef USE_IMGUI
-#include <imgui.h>
+#include <imgui/imgui.h>
 #endif
 
 namespace Atrum {
