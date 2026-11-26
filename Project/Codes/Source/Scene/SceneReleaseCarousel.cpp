@@ -210,6 +210,14 @@ bool SceneReleaseCarousel::TryAdvanceOnSubmit() {
   if (!AbstractInput::Instance()->GetData().isSubmitTrigger) {
     return false;
   }
+  // 巡回リストに載っていないシーン（atomF のタイトル／リザルト等、
+  // Lua が自前で遷移を管理するもの）では Enter / A を横取りしない。
+  if (const auto *buildUp = dynamic_cast<SceneBuildUp *>(
+          CommandScene::Instance()->GetSceneNow())) {
+    if (!HasBuildUpEntry(buildUp->SceneJsonPath())) {
+      return false;
+    }
+  }
   SyncIndexFromActiveScene(CommandScene::Instance()->GetSceneNow());
   return AdvanceToNextScene();
 }

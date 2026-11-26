@@ -2230,3 +2230,43 @@ release_scene_carousel.json の先頭を ./Assets/Scenes/atomF.json に変更。
   - 用途: 配布前に、ビルドした exe が起動して描画ループまで進むことを自動で確かめる
   - 使用場面: ビルド・配布
   - 用途から決めた仕様: 引数か環境変数があるときだけ上限フレーム数で終了し、通常のプレイは変えない
+
+
+---
+
+## atomF タイトル／リザルトシーン（Lua 駆動の SceneBuildUp 化）
+
+### 最終目標との査定（§6.7）
+
+- 判定: 有効・矛盾なし
+- 根拠にした `・` 行: 「シーン遷移の条件(処理の呼び出し)をスクリプトに記述して実行することができる」
+
+### 1. 実施内容（ビルド未実施・静的矛盾チェック済み）
+
+- **Lua 基盤（C++）**: これまで Lua からエンジン機能を呼べる binder が 0 件だったため、最小の基本 API を追加した。
+  - `EngineLuaBinder`: `Input.anyTrigger/confirmTrigger/upTrigger/downTrigger/stickY`、`SceneFlow.change/isChanging/countByRole/healthByRole`、`Ui.image`
+  - `ScriptSceneContext`: 実行中 SceneBuildUp のエンティティ列・returnScene を Lua 側へ橋渡し
+  - `ScriptUiSprite`: `Ui.image` が積む 2D スプライトの即時モードキュー。SceneBuildUp が毎フレーム Update 先頭で破棄し、DrawScene 末尾で描画する
+- **シーン（JSON）**: `Assets/Scenes/atomFTitle.json` / `atomFResult.json` を新規作成。`atomF.json` に `CmpScriptUpd`（`atomF/game_flow.lua`）を追加。
+- **ロジック（Lua）**: `Assets/Scripts/atomF/` に `title_flow.lua`（ロゴ・Press any to start・何かキー／ボタンで本編へ）、`result_flow.lua`（リトライ／タイトルへ・Space/A/Enter で決定）、`game_flow.lua`（敵全滅 or 自機 Hp 0 で 1 秒後にリザルトへ）、`scene_paths.lua`。
+- **演出**: 既存 `ChangeSceneFade` の暗転フェードに加え、タイトルは押下後の点滅・ロゴ拡大、リザルトは UI フェードインと決定時の点滅を Lua で実装。
+- **画像**: `Assets/Images/atomF/` に白文字 PNG 5 枚（実行時に色を乗算）。IPAGothic / Inter Bold から生成。
+- **起動設定**: `launch_config.json` の startupScenePath を `atomFTitle.json` へ変更。`release_scene_carousel.json` から atomF を除外し、`SceneReleaseCarousel::TryAdvanceOnSubmit` は巡回リスト外の BuildUp シーンで Enter/A を横取りしないようにした。
+- `CG2_BuildUp.vcxproj` に新規 .cpp/.h を 6 件登録。
+
+### 2. 要確認
+
+- 実機ビルド・動作確認は未実施（Windows/MSVC 環境が必要）。
+- atomF 本編の Hp 0／敵全滅は、既存の C++ 同様に「自機の体力は `CmpHealthHit`」前提で判定している。
+- Development（エディタ）では起動シーンがタイトルになる。atomF 単体で試すときはエディタから atomF.json を開く。
+
+## 推測した用途（§6.4）
+
+- **Lua 基本 API（Input / SceneFlow / Ui）**
+  - 用途: ゲームロジック（シーン遷移条件・メニュー操作・簡易 UI）を C++ に書かず Lua で記述する
+  - 使用場面: ランタイムのゲームプレイ
+  - 用途から決めた仕様: Update 中に呼ぶ即時モード。毎フレーム呼び出しのコストが小さい関数だけ公開
+- **atomF タイトル／リザルト**
+  - 用途: 配布するゲームの導線（起動→本編→結果→再挑戦／タイトル）
+  - 使用場面: ランタイムのゲームプレイ
+  - 用途から決めた仕様: 連打で即決定されないよう入力ロックアウトを設ける

@@ -1033,6 +1033,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpScriptUpd.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\UpdCmpGroupUtil.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\EngineLuaBinder.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\ScriptSceneContext.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\ScriptUiSprite.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\LuaJitScriptHost.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\LuaSystem.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpCamera.cpp" />
@@ -1490,6 +1493,9 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpRotator.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpScriptUpd.h" />
     <ClInclude Include="Codes\Include\System\Entity\UpdCmpGroupUtil.h" />
+    <ClInclude Include="Codes\Include\System\Scripting\EngineLuaBinder.h" />
+    <ClInclude Include="Codes\Include\System\Scripting\ScriptSceneContext.h" />
+    <ClInclude Include="Codes\Include\System\Scripting\ScriptUiSprite.h" />
     <ClInclude Include="Codes\Include\System\Scripting\LuaJitScriptHost.h" />
     <ClInclude Include="Codes\Include\System\Editor\Entity\EntityEditorUiDrawComponentParamsCmpScriptUpd.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpCamera.h" />

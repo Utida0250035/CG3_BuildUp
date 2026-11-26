@@ -2,10 +2,6 @@
   "entries": [
     {
       "type": "buildUp",
-      "sceneJsonPath": "./Assets/Scenes/atomF.json"
-    },
-    {
-      "type": "buildUp",
       "sceneJsonPath": "./Assets/Scenes/ParticleDemo.json"
     },
     {

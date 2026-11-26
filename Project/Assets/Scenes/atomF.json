@@ -2,7 +2,19 @@
     "entities": [
         {
             "definition": {
-                "components": [],
+                "components": [
+                    {
+                        "executionOrder": 0,
+                        "kind": "Upd",
+                        "params": {
+                            "scriptPath": "atomF/game_flow.lua",
+                            "updGroupPriorityMode": "enum",
+                            "updCmpGroup": "MOVEMENT",
+                            "updGroupPriority": 0
+                        },
+                        "typeName": "CmpScriptUpd"
+                    }
+                ],
                 "entityName": "Entity_0",
                 "initialTransform": {
                     "quaternion": {
