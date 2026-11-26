@@ -12,7 +12,7 @@
     "hitRadiusId": "半径b",
     "hitRadiusMeters": 0.25,
     "shotCooldownSeconds": 1.0,
-    "initialHealthCount": 99,
+    "initialHealthCount": 3,
     "bullet": {
       "speedId": "速さb",
       "speedMetersPerSecond": 2.25,
@@ -29,6 +29,12 @@
     "damageFeedback": {
       "vignetteSeconds": 0.75,
       "sePlayCount": 1
+    },
+    "invincibility": {
+      "seconds": 1.0,
+      "blinkPulseSeconds": 0.3,
+      "blinkPulseCount": 3,
+      "blinkMinAlpha": 0.2
     }
   },
   "camera": {

@@ -2270,3 +2270,57 @@ release_scene_carousel.json の先頭を ./Assets/Scenes/atomF.json に変更。
   - 用途: 配布するゲームの導線（起動→本編→結果→再挑戦／タイトル）
   - 使用場面: ランタイムのゲームプレイ
   - 用途から決めた仕様: 連打で即決定されないよう入力ロックアウトを設ける
+
+---
+
+## セッション 2026-11-26（atomF 自機 HP・HP アイコン・無敵点滅）
+
+ユーザーの直接依頼（ロードマップ実行ではない）。ブランチは環境指定の `claude/atomf-player-hp-invincibility-bievzk`。**ビルド未実施・静的矛盾チェック済み**（Linux 環境のため MSBuild 不可。`vcxproj` 登録と `vcxproj.filters` 同期、宣言・実装・呼び出し元・include の照合のみ）。
+
+### 1. 実施内容
+
+- 最大 HP を 3 に変更（`Project/Assets/atomF/parameters.json` の `player.initialHealthCount`: 99 → 3）。
+- 無敵時間を 1.0 秒に変更。`player.invincibility`（`seconds` / `blinkPulseSeconds` / `blinkPulseCount` / `blinkMinAlpha`）を新設。従来は `damageFeedback.vignetteSeconds`（0.75 秒）を無敵時間に流用していたため、`AttachPlayerHealthHit` の参照先を差し替えた（ビネット表示時間は据え置き）。
+- 無敵中の点滅: 新規 `CmpAtomFPlayerInvincibleBlink`。無敵開始 0 秒から 0.3 秒かけて不透明度が 1.0 → 0.2 へ下がる周期を 3 回。最後の 0.1 秒は演出なし（アルファ 1.0）。
+- HP アイコン: 新規 `AtomFPlayerHealthIconDraw`。自機球の上端をカメラの viewProjection で画面へ投影し、その真上にハートを最大 HP 個、中央揃えで描く（残り HP は水色、失った分は暗色）。`SceneBuildUp::DrawScene` と `DrawRuntimeViewContent` の atomF 時にビネット直前で呼ぶ。ハート描画は `SceneGameBattleHud` から `ScreenHeartIconDraw` へ切り出して共用した（見た目は変更なし）。
+- 敵に当たる: 既存の `CmpHealthHit`（ENEMY / ENEMY_WEAPON タグで被弾）をそのまま使用。
+- 爆発に当たる: `CmpAtomFEnemyChainExplosion::BeginDyingExplosion` で `ApplyEnemyExplosionDamageToPlayer` を呼び、爆心から半径c（`enemy.explosion.hitRadiusMeters`）の球が自機の当たりに触れていれば `CmpHealthHit::TryTakeDamageUnconditional()` で HP を 1 減らす。球交差判定は `IsExplosionSphereIntersectingTarget` を公開して敵の連鎖吹き飛ばしと共用。
+
+### 2. 最終目標との査定（§6.7）と方針の例外
+
+- 査定: **寄与なし（矛盾なし）**。根拠は「完成形の説明」のどの `・` 行にも atomF の自機 HP を直接進める行が無いため。ユーザーが明示的に依頼したので実装した。
+- `game-logic-via-script.md`: HP・無敵・点滅は本来 Lua で書くゲームロジック。ただし Lua ランタイムが未整備（`Project/Assets/Scripts/README.md` の Phase 2、`Project/Codes` に Lua VM 呼び出しなし）で、atomF の既存挙動もすべて C++ コンポーネントのため、既存パターンに合わせて C++ で実装した。値は `parameters.json` に出し、将来 Lua へ移す際に差し替えやすくしてある。
+
+### 3. 未確認・注意
+
+- 実機での目視確認（点滅の見え方、アイコン位置、爆発の当たり）は未実施。
+- 爆発ダメージは爆発の瞬間（連鎖爆発開始時）の 1 回判定。爆発中に居座ってもダメージは続かない。無敵中に爆発に当たってもダメージは入らない。
+- 点滅は `CmpMeshSphere` のアルファに依存するため、自機メッシュの描画がアルファ合成されることが前提（敵の消滅演出と同じ方式）。
+
+### 4. 次に実行すべきステップの提案（指示待ち）
+
+1. Windows で `buildDevelopment.cmd` を実行してビルド確認し、atomF を起動して HP・点滅・アイコンを確認する。
+2. 問題がなければコミット許可を出す。
+
+## 実装済みと判断した項目（コード確認・即時 [x]）
+
+なし
+
+## 保留・着手見送り（§6.3）
+
+なし
+
+## 用途不明で確認待ち（§6.4）
+
+なし
+
+## 推測した用途（§6.4）
+
+- **自機 HP・HP アイコン**
+  - 用途: トップビュー全方位シューティング atomF で、被弾回数の上限を決めて緊張感を作り、残り HP をプレイ中に一目で読めるようにする
+  - 使用場面: ランタイムのゲームプレイ
+  - 用途から決めた仕様: アイコンは視線が集まる自機の真上に置く。最大 HP は 3 で、失った分も暗色で残して最大値が分かるようにする
+- **被弾後の無敵時間と点滅**
+  - 用途: 密集した敵や連鎖爆発での連続被弾を防ぎ、被弾したことと無敵の残りをプレイヤーに伝える
+  - 使用場面: ランタイムのゲームプレイ
+  - 用途から決めた仕様: 無敵 1 秒のうち前半 0.9 秒だけ点滅し、最後の 0.1 秒は通常表示に戻して「もうすぐ当たる」ことが分かるようにする。値は `parameters.json` で調整できる

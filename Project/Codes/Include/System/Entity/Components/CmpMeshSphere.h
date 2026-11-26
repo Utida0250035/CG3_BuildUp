@@ -30,6 +30,7 @@ public:
   /// 設定すると球の代わりに、半径 1 基準で作ったモデルを半径倍して描く。
   void SetModel(std::shared_ptr<AssetModel> model) { model_ = std::move(model); }
   void SetColor(const Math::Vector4 &color) { colorVec_ = color; }
+  const Math::Vector4 &GetColor() const { return colorVec_; }
   void SetDrawOffset(const Math::Vector3 &offset) { drawOffset_ = offset; }
   const Math::Vector3 &GetDrawOffset() const { return drawOffset_; }
   void SetRadius(const float radius) { radius_ = radius; }

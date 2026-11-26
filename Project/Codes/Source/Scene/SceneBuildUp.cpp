@@ -1,6 +1,7 @@
 #include "Scene/SceneBuildUp.h"
 
 #include "Camera/PlayerDamageScreenVignette.h"
+#include "Engine/Platform/Window/Window.h"
 #include "Scene/SceneBuildUpPlayerSilhouetteDraw.h"
 #include "Scene/SceneBuildUpSceneJsonPathResolve.h"
 #include "Scene/SceneBuildUpSceneDisplayNameResolve.h"
@@ -24,6 +25,7 @@
 #include "Scene/SceneBuildUpAtomFPlayerSpawn.h"
 #include "Scene/SceneBuildUpAtomFEnemySpawn.h"
 #include "Scene/SceneBuildUpAtomFEntityDestroyPurge.h"
+#include "System/AtomF/AtomFPlayerHealthIconDraw.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
 #include "System/AtomF/AtomFScenePlayerLocator.h"
@@ -248,6 +250,8 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
   engine->SetCamera(camera);
   if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
+    AtomF::DrawPlayerHealthIconsAbovePlayer(
+        engine, *camera, static_cast<float>(width), static_cast<float>(height));
     PlayerDamageScreenVignette::Instance().Draw(engine);
   }
   Script::UiSprite::Draw(engine, static_cast<float>(width),
@@ -280,6 +284,10 @@ void SceneBuildUp::DrawScene() {
   SceneBuildUpPlayerSilhouette::DrawAfterRuntimeEntities(engine, entities_);
   engine->SetCamera(primaryCamera);
   if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
+    AtomF::DrawPlayerHealthIconsAbovePlayer(
+        engine, *primaryCamera,
+        static_cast<float>(Window::kDefaultClientWidth),
+        static_cast<float>(Window::kDefaultClientHeight));
     PlayerDamageScreenVignette::Instance().Draw(engine);
   }
   Script::UiSprite::Draw(

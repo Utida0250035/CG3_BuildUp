@@ -31,6 +31,7 @@ float ResolveEnemyKnockbackSpeedMetersPerSecond();
 float ResolveEnemyMoveSpeedMetersPerSecond();
 float ResolveEnemyChargeIntervalSeconds();
 /// parameters の半径c（enemy.explosion.hitRadiusMeters）
+const PlayerInvincibilityParameters &ResolvePlayerInvincibilityParameters();
 float ResolveEnemyExplosionHitRadiusMeters();
 bool IsEnemyExplosionHitShapeSphere();
 

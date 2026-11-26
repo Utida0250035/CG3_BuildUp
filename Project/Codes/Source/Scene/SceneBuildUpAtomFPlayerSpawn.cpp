@@ -13,6 +13,7 @@
 #include "System/AtomF/CmpAtomFPlayerAimCapsuleHitSync.h"
 #include "System/AtomF/CmpDrawAtomFPlayerAimCapsule.h"
 #include "System/AtomF/CmpAtomFPlayerFire.h"
+#include "System/AtomF/CmpAtomFPlayerInvincibleBlink.h"
 #include "System/AtomF/CmpAtomFPlayerMove.h"
 #include "System/AtomF/CmpAtomFPlayerShotCooldown.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
@@ -61,6 +62,7 @@ void AppendAtomFPlayerIfScene(
   AtomF::AttachArenaContainmentForPlayer(*player);
   AtomF::AttachPlayerHitSphere(*player);
   AtomF::AttachPlayerHealthHit(*player);
+  player->AddUpdCmp<CmpAtomFPlayerInvincibleBlink>();
   player->ResolveDependencies();
   player->Initialize();
   entities.push_back(std::move(player));
