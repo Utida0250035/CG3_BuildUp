@@ -48,7 +48,7 @@ description: roadmap 正本に沿った実装・修正。「ロードマップ�
 
 ## Git・コミット
 
-- **コミット・develop マージ・作業ブランチ削除**は、ユーザーが **コミット／プッシュ許可** したとき **`finishTaskGit.ps1`**（§8）。次ブランチ名は **次の `- [ ]`** から `branchNaming.md`。
+- **コミット・push・develop マージ・作業ブランチ削除**は、タスク完了時に **許可を待たず自動で** **`finishTaskGit.ps1`**（§8）。次ブランチ名は **次の `- [ ]`** から `branchNaming.md`。
 - `/loop` 成功 tick のみ §5 例外で `loopMergeTickToDevelop.ps1`（確認不要）。
 
 ## 中断

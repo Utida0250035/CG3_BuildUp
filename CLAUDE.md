@@ -37,7 +37,7 @@
 - ユーザー向けの説明は日本語。名前空間は `Atrum`（またはその内側）。
 - ゲーム用リソースは `Project/Assets/`、開発時専用は `EditorAssets/`。
 - ゲームロジックは Lua（`Project/Assets/Scripts/`）、C++（`Project/Codes/`）はエンジン・エディタ・スクリプト基盤。
-- 統合先は `develop`。`master` へのマージ・force push はしない。コミットはユーザーが明示したときのみ（pre-commit で cspell）。
+- 統合先は `develop`。`master` へのマージ・force push はしない。タスク完了時はコミット・push・`develop` マージを自動で行う（pre-commit で cspell。例外・手順は `claudeInstructions.md` §5・§8）。
 - ビルド: `EditorAssets/Tools/ClaudeAI/buildDevelopment.cmd`（Development|x64）。ロードマップ実行時はビルドせず静的チェックのみ。
 
 ## ループと補足
