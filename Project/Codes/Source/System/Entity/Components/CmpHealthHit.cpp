@@ -88,6 +88,21 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 		return false;
 	}
 
+	ApplyDamage(attacker, isStackedReflectedBullet);
+	return true;
+}
+
+bool CmpHealthHit::TryTakeDamageUnconditional() {
+	if (healthCount_ <= 0 || invincibleTimer_ > 0.0f) {
+		return false;
+	}
+	ApplyDamage(nullptr, false);
+	return true;
+}
+
+void CmpHealthHit::ApplyDamage(const Entity *attacker,
+                               const bool isStackedReflectedBullet) {
+	const EntityTagRegistry &tags = Tags();
 	isHurt_ = true;
 	healthCount_--;
 	hurtFlashTimer_ = kHealthHitHurtFlashSeconds;
@@ -115,12 +130,11 @@ bool CmpHealthHit::TryTakeDamageFrom(const Entity *attacker) {
 	} else {
 		PlaySeCandidates({"./Assets/Audios/seHit.mp3", "./Resources/seHit.mp3"});
 	}
-	if (tags.EntityHasRole(*attacker, "enemyWeapon") &&
+	if (attacker != nullptr && tags.EntityHasRole(*attacker, "enemyWeapon") &&
 	    !attacker->HasUpdCmp<CmpLhRigidBody>()) {
 		Particle::Combat::PlayPlayerHitByEnemyBulletEffect(
 		    attacker->GetWorldPosition());
 	}
-	return true;
 }
 
 void CmpHealthHit::Update() {

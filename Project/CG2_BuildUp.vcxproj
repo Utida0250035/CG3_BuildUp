@@ -523,6 +523,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\AtomF\AtomFArenaContainmentAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHealthAttach.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHealthIconDraw.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerInvincibleBlink.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionPlayerDamage.cpp" />
+    <ClCompile Include="Codes\Source\Scene\ScreenHeartIconDraw.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFMeshModelAttach.cpp" />
@@ -1498,6 +1502,10 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpScroll.h" />
     <ClInclude Include="Codes\Include\Visual\CmpSkyDome.h" />
     <ClInclude Include="Codes\Include\System\AtomF\AtomFMeshModelAttach.h" />
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFPlayerHealthIconDraw.h" />
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFPlayerInvincibleBlink.h" />
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFEnemyExplosionPlayerDamage.h" />
+    <ClInclude Include="Codes\Include\Scene\ScreenHeartIconDraw.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpSwing.h" />
     <ClInclude Include="Codes\Include\System\DataComponent.h" />
     <ClInclude Include="Codes\Include\System\DrawComponent.h" />

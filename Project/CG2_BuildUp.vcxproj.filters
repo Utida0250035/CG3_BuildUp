@@ -1339,6 +1339,18 @@
     <ClCompile Include="Codes\Source\System\AtomF\AtomFMeshModelAttach.cpp">
       <Filter>Codes\Source\System\AtomF</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\Scene\ScreenHeartIconDraw.cpp">
+      <Filter>Codes\Source\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionPlayerDamage.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerHealthIconDraw.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerInvincibleBlink.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
@@ -2710,6 +2722,18 @@
       <Filter>Codes\Include\System\Scripting</Filter>
     </ClInclude>
     <ClInclude Include="Codes\Include\System\AtomF\AtomFMeshModelAttach.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\Scene\ScreenHeartIconDraw.h">
+      <Filter>Codes\Include\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFEnemyExplosionPlayerDamage.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFPlayerHealthIconDraw.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFPlayerInvincibleBlink.h">
       <Filter>Codes\Include\System\AtomF</Filter>
     </ClInclude>
   </ItemGroup>

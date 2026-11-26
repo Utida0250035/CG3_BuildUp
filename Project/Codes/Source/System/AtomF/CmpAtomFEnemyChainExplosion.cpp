@@ -2,6 +2,7 @@
 
 #include "System/AtomF/AtomFEnemyArenaWallContact.h"
 #include "System/AtomF/AtomFEnemyExplosionKnockbackSpread.h"
+#include "System/AtomF/AtomFEnemyExplosionPlayerDamage.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/DeltaTime.h"
@@ -61,6 +62,7 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
                                                  explosionSequence);
 
   AtomF::SpreadEnemyExplosionKnockbackFromCenter(RefOwner(), explosionCenter);
+  AtomF::ApplyEnemyExplosionDamageToPlayer(explosionCenter);
 
   if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
     if (CmpAtomFEnemyKnockback *knockback =

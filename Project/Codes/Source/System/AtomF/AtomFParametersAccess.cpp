@@ -165,6 +165,15 @@ float ResolveEnemyChargeIntervalSeconds() {
   return kEnemyChargeIntervalSeconds;
 }
 
+const PlayerInvincibilityParameters &ResolvePlayerInvincibilityParameters() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().invincibility;
+  }
+  static const PlayerInvincibilityParameters kFallback{};
+  return kFallback;
+}
+
 float ResolveEnemyExplosionHitRadiusMeters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {

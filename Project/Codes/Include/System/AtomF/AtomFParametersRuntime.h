@@ -30,6 +30,15 @@ struct PlayerDamageFeedbackParameters {
   int sePlayCount = 1;
 };
 
+/// 被弾後の無敵時間と点滅演出。点滅は無敵開始から pulseSeconds × pulseCount だけ行い、残りは演出なし。
+struct PlayerInvincibilityParameters {
+  float seconds = 1.0f;
+  float blinkPulseSeconds = 0.3f;
+  int blinkPulseCount = 3;
+  /// 1 周期の終端で到達する最小アルファ（周期の頭で 1.0）。
+  float blinkMinAlpha = 0.2f;
+};
+
 struct PlayerParameters {
   float moveSpeedMetersPerSecond = 0.5f;
   float hitRadiusMeters = 0.25f;
@@ -38,6 +47,7 @@ struct PlayerParameters {
   PlayerBulletParameters bullet{};
   PlayerAimCapsuleParameters aimCapsule{};
   PlayerDamageFeedbackParameters damageFeedback{};
+  PlayerInvincibilityParameters invincibility{};
 };
 
 struct EnemyExplosionParameters {

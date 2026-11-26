@@ -12,8 +12,6 @@
 
 namespace Atrum::AtomF {
 
-namespace {
-
 /// 爆心地を中心とする半径cの球と、敵側の各 HitSphere が交差するかを判定する。
 bool IsExplosionSphereIntersectingTarget(const Math::Vector3 &centerWorld,
                                          const float explosionRadiusMeters,
@@ -36,8 +34,6 @@ bool IsExplosionSphereIntersectingTarget(const Math::Vector3 &centerWorld,
   }
   return false;
 }
-
-} // namespace
 
 void SpreadEnemyExplosionKnockbackFromCenter(
     const Entity &explodingEnemy, const Math::Vector3 &centerWorld) {

@@ -55,6 +55,18 @@ bool TryParsePlayer(const nlohmann::json &json, PlayerParameters &out) {
       feedback.at("vignetteSeconds").get<float>();
   out.damageFeedback.sePlayCount = feedback.at("sePlayCount").get<int>();
 
+  if (json.contains("invincibility") && json.at("invincibility").is_object()) {
+    const auto &inv = json.at("invincibility");
+    out.invincibility.seconds =
+        std::max(0.0f, inv.value("seconds", out.invincibility.seconds));
+    out.invincibility.blinkPulseSeconds = std::max(
+        0.01f, inv.value("blinkPulseSeconds", out.invincibility.blinkPulseSeconds));
+    out.invincibility.blinkPulseCount =
+        std::max(0, inv.value("blinkPulseCount", out.invincibility.blinkPulseCount));
+    out.invincibility.blinkMinAlpha = std::clamp(
+        inv.value("blinkMinAlpha", out.invincibility.blinkMinAlpha), 0.0f, 1.0f);
+  }
+
   return true;
 }
 

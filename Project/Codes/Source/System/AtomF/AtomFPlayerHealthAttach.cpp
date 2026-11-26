@@ -25,7 +25,7 @@ void AttachPlayerHealthHit(Entity &entity) {
   tags.EnsureLoaded();
   existing->SetHurterTagHashes(tags.PlayerDamageHurterTagHashes());
   existing->SetInitialHealthCount(ResolvePlayerInitialHealthCount());
-  existing->SetInvincibleTime(ResolvePlayerDamageVignetteSeconds());
+  existing->SetInvincibleTime(ResolvePlayerInvincibilityParameters().seconds);
 }
 
 } // namespace Atrum::AtomF
