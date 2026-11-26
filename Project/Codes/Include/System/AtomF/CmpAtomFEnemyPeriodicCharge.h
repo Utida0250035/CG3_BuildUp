@@ -33,6 +33,7 @@ private:
   float waitTimerSeconds_ = 0.0f;
   float phaseElapsedSeconds_ = 0.0f;
   float chargeIntervalSeconds_ = 5.0f;
+  bool chargeEnabled_ = true;
   AtomF::EnemyPeriodicChargeTimingParameters chargeTiming_{};
   Math::Vector3 anchorTranslate_{};
 };

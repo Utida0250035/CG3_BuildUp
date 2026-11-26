@@ -79,6 +79,12 @@
     },
     "chainExplosion": {
       "shrinkDurationSeconds": 0.6
-    }
+    },
+    "variants": [
+      { "name": "walker", "moveSpeedMultiplier": 1.0, "chargeEnabled": true, "color": [0.92, 0.28, 0.25] },
+      { "name": "runner", "moveSpeedMultiplier": 1.9, "chargeEnabled": false, "color": [0.98, 0.85, 0.2] },
+      { "name": "weaver", "moveSpeedMultiplier": 1.2, "chargeEnabled": false, "weaveAmplitudeMeters": 1.2, "weaveHz": 0.45, "color": [0.7, 0.35, 0.95] },
+      { "name": "charger", "moveSpeedMultiplier": 0.6, "chargeEnabled": true, "chargeIntervalSeconds": 2.5, "color": [0.95, 0.55, 0.15] }
+    ]
   }
 }

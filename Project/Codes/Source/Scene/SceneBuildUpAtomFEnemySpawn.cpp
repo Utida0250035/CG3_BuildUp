@@ -13,6 +13,7 @@
 #include "System/AtomF/CmpAtomFEnemyKnockbackPredictCapsule.h"
 #include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
+#include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/AtomF/CmpAtomFEnemyWalkToPlayer.h"
 #include "System/AtomF/CmpDrawAtomFEnemyKnockbackPredictCapsule.h"
 #include "System/Entity/Components/CmpChildEntitys.h"
@@ -48,6 +49,17 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
                                 std::sin(spawnAngleRadians) * spawnRadiusMeters};
   enemy->SetInitialTransform(initialTransform);
 
+  // 種類（variants）を index % 件数 で割り当てる。未定義なら従来の単一種。
+  AtomF::EnemyVariantParameters variant{};
+  if (AtomF::ParametersRuntime::Instance().IsLoaded()) {
+    const auto &variants = AtomF::ParametersRuntime::Instance().Enemy().variants;
+    if (!variants.empty()) {
+      variant = variants[static_cast<std::size_t>(index) % variants.size()];
+    }
+  }
+  enemy->AddUpdCmp<CmpAtomFEnemyVariant>();
+  enemy->GetUpdCmp<CmpAtomFEnemyVariant>()->SetParameters(variant);
+
   enemy->AddUpdCmp<CmpAtomFEnemyKnockback>();
   enemy->AddUpdCmp<CmpAtomFEnemyChainExplosion>();
   enemy->AddUpdCmp<CmpAtomFEnemyTargetedPanic>();
@@ -60,7 +72,7 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
   CmpMeshSphere *mesh = enemy->GetDrawCmp<CmpMeshSphere>();
   if (mesh != nullptr) {
     mesh->SetRadius(bodyRadius);
-    mesh->SetColor(Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f});
+    mesh->SetColor(Math::Vector4{variant.colorR, variant.colorG, variant.colorB, 1.0f});
     mesh->SetSubdivision(10);
     mesh->SetLightingEnabled(false);
     AtomF::AttachMeshModel(*mesh, AtomF::ResolveEnemyModelName());

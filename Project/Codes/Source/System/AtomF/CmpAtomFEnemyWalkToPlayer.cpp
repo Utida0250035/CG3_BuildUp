@@ -7,6 +7,7 @@
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
+#include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -67,9 +68,29 @@ void CmpAtomFEnemyWalkToPlayer::Update() {
 
   toPlayer *= (1.0f / std::sqrt(distSq));
 
-  const float speed = AtomF::ResolveEnemyMoveSpeedMetersPerSecond();
+  float speed = AtomF::ResolveEnemyMoveSpeedMetersPerSecond();
   const float dt = frameDeltaTime_->GetDeltaTime();
-  RefOwner().RefTransform().translate += toPlayer * speed * dt;
+  Math::Vector3 move = toPlayer * speed;
+
+  if (const CmpAtomFEnemyVariant *variant =
+          RefOwner().GetUpdCmp<CmpAtomFEnemyVariant>();
+      variant != nullptr) {
+    const AtomF::EnemyVariantParameters &v = variant->Parameters();
+    speed *= v.moveSpeedMultiplier;
+    move = toPlayer * speed;
+    if (v.weaveAmplitudeMeters > 0.0f && v.weaveHz > 0.0f) {
+      // 蛇行: 進行方向に垂直な横速度を正弦波で足す（振幅 = 横方向の最大変位）。
+      constexpr float kTwoPi = 6.28318530718f;
+      weaveTimeSeconds_ += dt;
+      const float omega = kTwoPi * v.weaveHz;
+      const float lateralSpeed =
+          v.weaveAmplitudeMeters * omega *
+          std::cos(weaveTimeSeconds_ * omega);
+      move += Math::Vector3{-toPlayer.z, 0.0f, toPlayer.x} * lateralSpeed;
+    }
+  }
+
+  RefOwner().RefTransform().translate += move * dt;
 }
 
 } // namespace Atrum

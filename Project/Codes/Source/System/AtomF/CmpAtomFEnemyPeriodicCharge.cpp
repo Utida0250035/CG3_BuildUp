@@ -6,6 +6,7 @@
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
+#include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
 
@@ -17,6 +18,15 @@ void CmpAtomFEnemyPeriodicCharge::ResolveDependence() {
   frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
   chargeIntervalSeconds_ = AtomF::ResolveEnemyChargeIntervalSeconds();
   chargeTiming_ = AtomF::ResolveEnemyPeriodicChargeTimingParameters();
+  if (const CmpAtomFEnemyVariant *variant =
+          RefOwner().GetUpdCmp<CmpAtomFEnemyVariant>();
+      variant != nullptr) {
+    const AtomF::EnemyVariantParameters &v = variant->Parameters();
+    chargeEnabled_ = v.chargeEnabled;
+    if (v.chargeIntervalSeconds > 0.0f) {
+      chargeIntervalSeconds_ = v.chargeIntervalSeconds;
+    }
+  }
 }
 
 void CmpAtomFEnemyPeriodicCharge::BeginShaking() {
@@ -65,6 +75,9 @@ void CmpAtomFEnemyPeriodicCharge::Update() {
   const float dt = frameDeltaTime_->GetDeltaTime();
 
   if (phase_ == Phase::Waiting) {
+    if (!chargeEnabled_) {
+      return;
+    }
     waitTimerSeconds_ += dt;
     if (waitTimerSeconds_ >= chargeIntervalSeconds_) {
       waitTimerSeconds_ = 0.0f;

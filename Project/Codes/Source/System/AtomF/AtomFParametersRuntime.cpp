@@ -160,6 +160,30 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
     out.chainExplosion.shrinkDurationSeconds = chain.value(
         "shrinkDurationSeconds", out.chainExplosion.shrinkDurationSeconds);
   }
+
+  if (enemyJson.contains("variants") && enemyJson.at("variants").is_array()) {
+    out.variants.clear();
+    for (const auto &v : enemyJson.at("variants")) {
+      if (!v.is_object()) {
+        continue;
+      }
+      EnemyVariantParameters variant{};
+      variant.name = v.value("name", variant.name);
+      variant.moveSpeedMultiplier =
+          std::max(0.0f, v.value("moveSpeedMultiplier", 1.0f));
+      variant.chargeIntervalSeconds = v.value("chargeIntervalSeconds", 0.0f);
+      variant.chargeEnabled = v.value("chargeEnabled", true);
+      variant.weaveAmplitudeMeters = v.value("weaveAmplitudeMeters", 0.0f);
+      variant.weaveHz = v.value("weaveHz", 0.0f);
+      if (v.contains("color") && v.at("color").is_array() &&
+          v.at("color").size() >= 3) {
+        variant.colorR = v.at("color").at(0).get<float>();
+        variant.colorG = v.at("color").at(1).get<float>();
+        variant.colorB = v.at("color").at(2).get<float>();
+      }
+      out.variants.push_back(variant);
+    }
+  }
 }
 
 bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {

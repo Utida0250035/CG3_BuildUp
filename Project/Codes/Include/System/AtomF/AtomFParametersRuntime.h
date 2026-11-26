@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace Atrum::AtomF {
 
@@ -74,6 +75,22 @@ struct EnemyChainExplosionParameters {
   float shrinkDurationSeconds = 0.6f;
 };
 
+/// 雑魚敵の種類。全種 Hp1・耐久系能力なし（挙動と見た目だけが違う）。
+struct EnemyVariantParameters {
+  std::string name = "walker";
+  /// enemy.moveSpeedMetersPerSecond への倍率。
+  float moveSpeedMultiplier = 1.0f;
+  /// 突進間隔。0 以下なら enemy.chargeIntervalSeconds を使い、chargeEnabled が false なら突進しない。
+  float chargeIntervalSeconds = 0.0f;
+  bool chargeEnabled = true;
+  /// 進行方向に垂直な蛇行（0 で直進）。
+  float weaveAmplitudeMeters = 0.0f;
+  float weaveHz = 0.0f;
+  float colorR = 0.92f;
+  float colorG = 0.28f;
+  float colorB = 0.25f;
+};
+
 struct EnemyParameters {
   float hitRadiusMeters = 0.25f;
   float moveSpeedMetersPerSecond = 0.3f;
@@ -83,6 +100,8 @@ struct EnemyParameters {
   EnemyPanicParameters panic{};
   EnemyPeriodicChargeTimingParameters periodicCharge{};
   EnemyChainExplosionParameters chainExplosion{};
+  /// 空なら従来の単一種（walker）のみ。スポーンは index % size で割り当てる。
+  std::vector<EnemyVariantParameters> variants;
   /// 表示モデル名（Assets/Objects/<名前>/<名前>.obj）。空なら球。
   std::string modelName;
 };
