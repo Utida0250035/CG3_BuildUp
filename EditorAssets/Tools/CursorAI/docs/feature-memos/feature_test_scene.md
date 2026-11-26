@@ -17,7 +17,3 @@
 - `template_test_play_area.scene.json` … scaffold 専用（正本ではない）
 - `LoopTick13Demo.scene.json` … 歴史的デモ用（正本ではない）
 
-## CI
-
-- `verify_feature_test_scene_canonical.py`
-- `verify_launch_config_feature_startup.py`

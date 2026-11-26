@@ -15,7 +15,6 @@
 | `combat_bounds_sandbox.scene.json` | `kDebugPlayAreaCombatBoundsSandboxScene` | `StageBounds` 境界マーカー |
 | `Tools/DebugPlayAreaGenerator/scaffold_play_area.py` | — | 名前指定でテンプレ複製 |
 
-検証: `verify_editor_assets_paths_debug_play_area.py`
 
 ## フロー
 

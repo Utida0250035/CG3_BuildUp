@@ -10,16 +10,17 @@ if errorlevel 1 (
   exit /b 1
 )
 
-set "PREFLIGHT=EditorAssets\Tools\CursorAI\verify_vcxproj_coverage.py"
+rem vcxproj.filters sync (same as SolutionExplorer\sync_run.cmd, without pause)
+set "PREFLIGHT=EditorAssets\Tools\SolutionExplorer\sync_vcxproj_filters.py"
 where python >nul 2>&1
 if %errorlevel%==0 (
-  python "%PREFLIGHT%"
+  python "%PREFLIGHT%" --write
 ) else (
   where py >nul 2>&1
   if %errorlevel%==0 (
-    py -3 "%PREFLIGHT%"
+    py -3 "%PREFLIGHT%" --write
   ) else (
-    echo python not found for vcxproj pre-verify.
+    echo python not found for vcxproj.filters sync.
     exit /b 1
   )
 )

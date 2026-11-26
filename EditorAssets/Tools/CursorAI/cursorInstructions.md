@@ -32,7 +32,7 @@
 
 ## 4. 完了の定義（このリポジトリ）
 
-- **ビルド／静的チェック:** 通常時は `EditorAssets/Tools/CursorAI/buildDevelopment.cmd`（`Project/CG2_BuildUp.vcxproj`、Configuration=Development、Platform=x64）および全構成確認を行う。ただし **ロードマップ実行時（「ロードマップを実行して。」等）はビルド確認を行わず、ファイルの編集（＋ §6.5 の作業ブランチ作成）とエラーになる矛盾の静的チェック（`verify_vcxproj_coverage.py`、宣言／定義／呼び出し元／`#include`／構成・マクロ分岐の照合）のみ**を行う。
+- **ビルド／静的チェック:** 通常時は `EditorAssets/Tools/CursorAI/buildDevelopment.cmd`（`Project/CG2_BuildUp.vcxproj`、Configuration=Development、Platform=x64）および全構成確認を行う。ただし **ロードマップ実行時（「ロードマップを実行して。」等）はビルド確認を行わず、ファイルの編集（＋ §6.5 の作業ブランチ作成）とエラーになる矛盾の静的チェック（vcxproj 登録、宣言／定義／呼び出し元／`#include`／構成・マクロ分岐の照合）のみ**を行う。
 - **テスト:** 自動テストは未整備。ランタイム確認やビルド確認が未実施の変更は `progress_report.md` に「ビルド未実施（静的矛盾チェック済み）」等を明記する。
 - **サブタスクの粒度:** 原則 1 ビルド単位・少数ファイル。新 API やレンダパス全体の差し替えは分割する。
 

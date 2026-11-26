@@ -50,7 +50,7 @@
 - [x] `ActiveCameraSystem` + `GameOrder` 描画直前 Prepare
 - [x] `Scene::GetCamera()` → primary `CmpCamera` 委譲
 - [x] エディタ登録（`EntityEditorDefinition` / `EditorSceneRuntime` / `kKnownComponents`）
-- [x] vcxproj 登録（`verify_vcxproj_coverage.py` OK）
+- [x] vcxproj 登録
 - [x] **報告:** 手動確認 **未実施**、段階末 **未検証あり**（progress_report 参照）
 
 ### P2 — エンジン複数カメラ（切替）

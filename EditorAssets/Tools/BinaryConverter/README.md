@@ -26,7 +26,6 @@ python3 batch_obj_to_amesh.py path/to/obj_folder --output-root path/to/out --rec
 Windows では `batch_obj_to_amesh.cmd` を同じ引数で呼べる。
 
 - `--skip-up-to-date` … 出力が入力より新しければスキップ（制作パイプラインの差分ビルド用）
-- CI スモーク: リポジトリルートで `python3 EditorAssets/Tools/CursorAI/verify_binary_converter.py`
 
 ## 今後
 

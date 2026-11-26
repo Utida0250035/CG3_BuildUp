@@ -54,7 +54,7 @@
 
 ## UC-Ship（ビルド・配布）
 
-- **SHP-DevBuild-001** — `Development | x64` ビルドが CI／ローカル手順で再現可能に成功する（spec: `feature-memos/cloud_build_vcxproj_check.md`）。
+- **SHP-DevBuild-001** — `Development | x64` ビルドが CI／ローカル手順で再現可能に成功する。
 - **SHP-Release-001** — Release 相当設定で不要なデバッグ UI・開発専用コードパスが出荷物に漏れない。
 - **SHP-AssetPack-001** — 配布に必要なアセットがパイプラインから漏れず同梱される。
 - **SHP-Config-001** — 本番と開発で意図したコンパイル／リンク差分のみが有効になる。

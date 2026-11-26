@@ -29,7 +29,3 @@
 - **Update / Draw が重い（本番疑い）:** 手順 B の Release で再計測
 - **ImGui / エディタが重い:** 手順 A のオーバーレイで ImGuiPrep / GfxSceneDraw を確認
 - **最適化差の疑似再現:** 手順 A の `buildDevelopmentProfile.cmd`（`ClCompile_Optimization=MinSpace`）
-
-## CI
-
-- `verify_development_opt_profile.py` … 本ドキュメントと `buildDevelopmentProfile.cmd` の存在・キーワード

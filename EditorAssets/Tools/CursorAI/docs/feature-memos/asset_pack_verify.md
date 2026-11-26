@@ -14,10 +14,6 @@
 
 ## 検査
 
-```bash
-python3 EditorAssets/Tools/CursorAI/verify_asset_pack_paths.py
-```
-
 - `GameAssetsPaths.h`・`EditorAssetsPaths.h`・`main.cpp` の文字列リテラルを収集
 - `PlaySe` の `./Resources/...` は任意フォールバック（存在しなくても可）
 - `CG2_BuildUp.vcxproj` の PostBuild `xcopy`（Assets / EditorAssets）を確認

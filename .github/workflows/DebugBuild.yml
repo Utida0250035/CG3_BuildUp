@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Verify vcxproj and shader coverage
-        run: python3 EditorAssets/Tools/CursorAI/verify_vcxproj_coverage.py
+      - name: Verify vcxproj and filters in sync
+        run: python3 EditorAssets/Tools/SolutionExplorer/verify_vcxproj_filters.py
 
   build:
     needs: vcxproj-coverage

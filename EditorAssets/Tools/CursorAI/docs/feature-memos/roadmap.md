@@ -504,7 +504,7 @@
 ## Repository
 
 ### GitHubでのクラウドビルド
-- [x] 除外パスによるビルド穴の自動確認（`verify_vcxproj_coverage.py`・CI 前置ジョブ）
+- [x] 除外パスによるビルド穴の自動確認
 
 
 ### ギャップスキャン追補（P0/P1）
@@ -533,13 +533,13 @@
 - [x] Release リンク設定で GenerateDebugInformation が true
 
 ### verify_config_matrix
-- [x] コンパイル定義と Release 除外の期待マトリクス検証が無い（spec: feature-memos/cloud_build_vcxproj_check.md）
+- [x] コンパイル定義と Release 除外の期待マトリクス検証が無い
 
 ### JsonTest
 - [x] JsonTest デバッグパネル用 TU が Release ビルドから除外されていない
 
 ### cloud_dev_build
-- [x] Cloud Linux 上で Development ビルド再現手段が未定義（spec: feature-memos/cloud_build_vcxproj_check.md）
+- [x] Cloud Linux 上で Development ビルド再現手段が未定義
 
 ### main
 - [x] スモーク起動用 CLI（例: フレーム数上限）が main に無い

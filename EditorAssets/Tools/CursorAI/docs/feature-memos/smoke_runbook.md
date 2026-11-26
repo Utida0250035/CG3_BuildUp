@@ -46,7 +46,7 @@ Development ビルドの機能検証は `DebugPlayArea` README（FeatureTest / F
 |------|------|
 | exe 無し | ビルドログ、`Generated/Outputs/Release/` |
 | SDL / DLL エラー | `Project/packages` の復元、`sdl2.redist.targets` |
-| 起動直後終了 | `verify_asset_pack_paths.py`（同梱パス）、出力先の `Assets` 有無 |
+| 起動直後終了 | 出力先の `Assets` 有無 |
 | スモークのみ失敗 | `runReleaseStartupSmoke.ps1` の exit code、フレーム数を増やして再試行 |
 
 ## 5. CI
