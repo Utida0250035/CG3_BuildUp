@@ -365,6 +365,7 @@ void ApplyComponentParams(Entity &entity, const ComponentSlot &slot) {
     cmp->SetAutoCarousel(p.value("autoCarousel", false));
     cmp->SetCarouselIntervalSeconds(p.value("carouselIntervalSeconds", 5.0f));
     cmp->SetFollowOwnerTransform(p.value("followOwnerTransform", true));
+    cmp->SetInheritOwnerMatrix(p.value("inheritOwnerMatrix", false));
     return;
   }
 

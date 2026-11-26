@@ -72,6 +72,14 @@ void CmpParticleEmitter::RebuildFromJson(const std::string &resolvedPath) {
     emitter->SetCamera(scene->GetCamera());
   }
   emitter->Initialize(resolvedPath.c_str());
+  if (emitCircleRadiusOverride_ > 0.0f) {
+    std::vector<Visual::Particle::Param> params = emitter->ExportParams();
+    for (Visual::Particle::Param &param : params) {
+      param.emitCircle.radius = emitCircleRadiusOverride_;
+    }
+    emitter->InitializeFromParams(params);
+  }
+  emitter->SetContinuousEmitEnabled(emitEnabled_);
   manager->Register(emitterName, std::move(emitter));
   manager->SetRetainInactiveByName(emitterName, true);
   if (Visual::Particle::Emitter *live = manager->Find(emitterName)) {
@@ -92,11 +100,33 @@ void CmpParticleEmitter::SyncEmitterTransform() {
   }
   if (Visual::Particle::Emitter *emitter =
           manager->Find(ResolvedEmitterName())) {
-    Math::TransformLH transform{};
-    transform.translate = RefOwner().GetWorldPosition();
-    emitter->SetTransform(transform);
+    if (inheritOwnerMatrix_) {
+      // 親子: ローカル変換 × 所有エンティティのワールド行列（回転・スケール込み）
+      emitter->SetTransform(localTransform_);
+      emitter->SetParentWorldMatrix(RefOwner().GetWorldMatrix());
+    } else {
+      // 従来動作: ワールド位置のみ追従（localTransform_ はオフセット／向きとして加算）
+      Math::TransformLH transform = localTransform_;
+      emitter->ClearParentWorldMatrix();
+      transform.translate += RefOwner().GetWorldPosition();
+      emitter->SetTransform(transform);
+    }
     if (Scene *scene = CommandScene::Instance()->GetSceneNow()) {
       emitter->SetCamera(scene->GetCamera());
+    }
+  }
+}
+
+void CmpParticleEmitter::SetEmitEnabled(const bool enabled) {
+  emitEnabled_ = enabled;
+  if (!emitterRegistered_) {
+    return;
+  }
+  if (Particle::Emitter::EmitterManager *manager =
+          Particle::EmitterManagerForActiveScene()) {
+    if (Visual::Particle::Emitter *emitter =
+            manager->Find(ResolvedEmitterName())) {
+      emitter->SetContinuousEmitEnabled(enabled);
     }
   }
 }
@@ -122,6 +152,12 @@ void CmpParticleEmitter::Update() {
           (carouselIndex_ + 1) % static_cast<int>(samplePaths_.size());
       RebuildFromJson(ActiveJsonPath());
     }
+  }
+
+  // Initialize 時にシーンのエミッタ管理がまだ無かった場合（スポーン直後など）の再試行
+  if (!emitterRegistered_ && !autoCarousel_ &&
+      Particle::EmitterManagerForActiveScene() != nullptr) {
+    EnsureEmitterRegistered();
   }
 
   SyncEmitterTransform();

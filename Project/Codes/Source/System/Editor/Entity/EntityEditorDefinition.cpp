@@ -92,7 +92,8 @@ nlohmann::json DefaultParamsForType(const std::string &typeName) {
             {"samplePaths", nlohmann::json::array()},
             {"autoCarousel", false},
             {"carouselIntervalSeconds", 5.0f},
-            {"followOwnerTransform", true}};
+            {"followOwnerTransform", true},
+            {"inheritOwnerMatrix", false}};
   }
   if (typeName == "CmpScriptUpd") {
     return {{"scriptPath", ""},

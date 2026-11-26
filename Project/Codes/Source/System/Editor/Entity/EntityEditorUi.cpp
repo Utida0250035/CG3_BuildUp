@@ -433,6 +433,12 @@ bool DrawComponentParams(ComponentSlot &slot, UiState &ui) {
       p["followOwnerTransform"] = follow;
       changed = true;
     }
+    bool inheritMatrix = p.value("inheritOwnerMatrix", false);
+    if (ImGui::Checkbox("inheritOwnerMatrix", &inheritMatrix)) {
+      p["inheritOwnerMatrix"] = inheritMatrix;
+      changed = true;
+    }
+    ImGui::TextDisabled("親子: 所有エンティティの回転・スケールもエミッタに継承");
     const int sampleCount =
         p.contains("samplePaths") && p.at("samplePaths").is_array()
             ? static_cast<int>(p.at("samplePaths").size())

@@ -87,7 +87,21 @@ namespace {
 		velocity *= factor;
 	}
 
+	// 行列の回転・スケール成分だけで方向ベクトルを変換する（平行移動は無視）
+	MH::Vector3 TransformDirection(const MH::Matrix4x4 &matrix,
+	                               const MH::Vector3 &v) {
+		return {
+		    v.x * matrix.m[0][0] + v.y * matrix.m[1][0] + v.z * matrix.m[2][0],
+		    v.x * matrix.m[0][1] + v.y * matrix.m[1][1] + v.z * matrix.m[2][1],
+		    v.x * matrix.m[0][2] + v.y * matrix.m[1][2] + v.z * matrix.m[2][2]};
+	}
+
 } // namespace
+
+	Math::Matrix4x4 Emitter::MakeEmitterWorldMatrix() const {
+		const Math::Matrix4x4 local = transform_.MakeWorldMatrix();
+		return hasParentWorld_ ? local * parentWorld_ : local;
+	}
 
 	void Emitter::ConfigureLayerResources(Layer& layer) {
 		layer.model = nullptr;
@@ -228,7 +242,7 @@ namespace {
 			isLayerAnyParticleActive = false;
 
 			const float deltaTime = frameDeltaTime_->GetDeltaTime();
-			const M::Matrix4x4 emitterWorld = transform_.MakeWorldMatrix();
+			const M::Matrix4x4 emitterWorld = MakeEmitterWorldMatrix();
 			const M::Matrix4x4 emitterWorldInverse = emitterWorld.Inversed();
 
 			for (auto& p : layerParticles) {
@@ -340,7 +354,7 @@ namespace {
 		Emitter::ResolveSimulationSpace(SimulationSpace& simulationSpaceFromEmitter,
 			Math::Vector3 localPos) {
 		if (simulationSpaceFromEmitter == SimulationSpace::WORLD) {
-			return transform_.MakeWorldMatrix().Transform(localPos);
+			return MakeEmitterWorldMatrix().Transform(localPos);
 		} else {
 			return localPos;
 		}
@@ -400,6 +414,13 @@ namespace {
 				break;
 		}
 
+		// WORLD シミュレーションでは速度方向もエミッタ（親子含む）の向きに合わせる。
+		// 加速度は重力など世界固定の力を想定して回転させない。
+		if (layer.param.simulationSpaceFromEmitter == SimulationSpace::WORLD) {
+			particle.velocity =
+				TransformDirection(MakeEmitterWorldMatrix(), particle.velocity);
+		}
+
 		particle.lifeTimePassed = 0.0f;
 
 		particle.startColor = layer.param.startColor;
@@ -447,6 +468,9 @@ namespace {
 	void Emitter::ResolveContinuousEmit(const size_t layerIndex) {
 
 		auto& layer = layers_[layerIndex];
+
+		if (!continuousEmitEnabled_)
+			return;
 
 		if (layer.elapsedSeconds >= layer.param.duration && !layer.param.isLooping)
 			return;
