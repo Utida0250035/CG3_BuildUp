@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "status": "completed",
+  "scanId": "SCAN-20261118-080410",
+  "keyword": "ギャップスキャンを実行して",
+  "source": "goal",
+  "sourceLabel": "完成形の説明",
+  "order": 7,
+  "headingBig": "クラス分け",
+  "headingMid": "部品単位のクラス分け",
+  "primaryUseCase": "UC-Play",
+  "useCaseLabel": "Play",
+  "scenarioId": "UG-G-b9f501e7",
+  "scenarioText": "機能として成り立つ最小単位の部品がそれぞれクラスに分けられ整理されている",
+  "spec": "docs/ultimateGoal.md",
+  "areaHint": "Runtime",
+  "searchHints": [
+    "クラス分け",
+    "部品単位のクラス分け"
+  ],
+  "priorityScore": 1000,
+  "priorityReasons": [
+    "source=goal",
+    "pass=初回",
+    "fileOrder"
+  ],
+  "plannedAt": "2026-11-18T08:04:10.285833+09:00",
+  "tickInstructions": [
+    "cursorInstructions.md §6.6 に従い、scenarioText の・行 1 件だけをコードと突合する。",
+    "[] と 〇 は対象にしない。source が baseline のときも、その 1 行だけを見る。",
+    "新規 GAP は implementation_gaps_index.json の scopeToId で重複禁止。",
+    "完了後: recordGapScanTick.py を実行し、必要なら syncImplementationGapsMd.py。",
+    "progress_report.md に scanId・source・scenarioId・newIds 件数を追記。",
+    "本 tick はビルド不要。Git 作業ブランチ不要（ドキュメントのみ）。"
+  ],
+  "alternates": [
+    {
+      "scenarioId": "UG-G-a668342c",
+      "source": "goal",
+      "order": 1
+    },
+    {
+      "scenarioId": "UG-G-274394f0",
+      "source": "goal",
+      "order": 2
+    },
+    {
+      "scenarioId": "UG-G-9c2c9771",
+      "source": "goal",
+      "order": 3
+    }
+  ],
+  "completedAt": "2026-11-18T08:05:05.521913+09:00",
+  "recorded": {
+    "scanId": "SCAN-20261118-080410",
+    "at": "2026-11-18T08:05:05.521913+09:00",
+    "mode": "incremental",
+    "primaryUseCase": "UC-Play",
+    "scenarioId": "UG-G-b9f501e7",
+    "areaHint": "Runtime",
+    "priorityScore": 1000,
+    "newIds": [
+      "GAP-Runtime-CmpBounceBall-001"
+    ],
+    "updatedIds": [],
+    "closedIds": []
+  }
+}
