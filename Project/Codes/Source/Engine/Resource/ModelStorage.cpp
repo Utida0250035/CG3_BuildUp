@@ -8,6 +8,7 @@
 #include "System/Hash64.h"
 
 #include <DirectXTex/d3dx12.h>
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -675,6 +676,18 @@ namespace Atrum {
 
 		// モデルデータを参照元へ戻す
 		return assetModelData;
+
+	}
+
+	void ModelStorage::RetainModel(const std::shared_ptr<AssetModel>& model) {
+
+		if (model == nullptr ||
+		    std::find(retainedModels_.begin(), retainedModels_.end(), model) !=
+		        retainedModels_.end()) {
+			return;
+		}
+
+		retainedModels_.push_back(model);
 
 	}
 

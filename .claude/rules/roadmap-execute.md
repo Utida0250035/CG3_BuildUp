@@ -1,0 +1,56 @@
+---
+description: roadmap 正本に沿った実装・修正。「ロードマップを実行して。」で起動（1 メッセージ＝1 サブタスク）
+---
+
+# ロードマップ実行
+
+ユーザーが **「ロードマップを実行して。」** と送ったとき（表記ゆれ例: 「ロードマップを実行して」「ロードマップを実行」「roadmapを実行して」）、`claudeInstructions.md` の半自律フローに従い、**この 1 メッセージで roadmap 上の未完了 1 件分** まで進める。
+
+## いつ他モードと重なるか
+
+- **`/loop`** が動いているときは §7.1 を優先（成功 tick で `loopMergeTickToDevelop.ps1` 可）。tick の最初と最後は占有宣言（`loop-lease.md`・§7.1.5）。
+- **「ギャップスキャンを実行して」** だけが来たときは `gap-scan.md` を優先（実装は行わない）。
+
+## 必須参照（着手直後に Read）
+
+1. `EditorAssets/Tools/ClaudeAI/claudeInstructions.md`（§4 ビルド、§6 タスク順・手入れ、§6.5 ブランチ、§3 報告）
+2. `EditorAssets/Tools/ClaudeAI/progress_report.md`
+3. `EditorAssets/Tools/ClaudeAI/task_backlog.md`
+4. `EditorAssets/Tools/ClaudeAI/docs/feature-memos/roadmap.md`（`roadmap_rough.md` に下書きがあれば §6.0 起こし後に正本へ）
+5. `EditorAssets/Tools/ClaudeAI/branchNaming.md`
+6. `.claude/rules/game-dev-purpose.md`（用途 §6.4）
+7. `EditorAssets/Tools/ClaudeAI/docs/ultimateGoal.md`（着手前の査定 §6.7。本文は書き換えない）
+
+## タスクの取り出し（上から順）
+
+`claudeInstructions.md` §6 の順序を厳守する。
+
+1. `task_backlog.md` の **未完了を上から 1 件**
+2. なければ `roadmap_rough.md` → §6.0 起こし → §6.1 構造手入れ
+3. 手入れ後の `roadmap.md` で **ファイル出現順の最初の `- [ ]` 1 行のみ**（`- [x]` / `- [-]` はスキップ）
+4. 親見出しごと一括実装・複数 `- [ ]` の同時着手は禁止
+
+## 1 サブタスクの手順
+
+1. **§6.2** … コード確認で要件を満たしていれば `- [x]` のみ（実装スキップ可。`progress_report` 項目4 必須）
+2. **§6.3 / §6.4** … 保留 `[-]` または用途不明は実装せず、他の `- [ ]` があれば次候補を報告
+3. **§6.7** … `ultimateGoal.md` と矛盾が無いか、その内容に有効かを査定する。**有効かつ矛盾なし**のときだけ次へ。それ以外は実装せず、他の `- [ ]` があれば査定し直す
+4. 実装・修正が必要なとき:
+   - `branchNaming.md` でブランチ名 → **`startTaskBranchFromDevelop.ps1 -BranchName "…"`**（develop 起点、§6.5）
+   - 最小 diff、Atrum 規約に従う
+   - **ビルド確認は行わず、エラーになる矛盾の静的チェックのみ行う:**
+     - `buildDevelopment.cmd` や MSBuild 等によるビルドは実行しない
+     - 新規／削除ファイルを `Project/CG2_BuildUp.vcxproj` に登録・削除する（`vcxproj.filters` はビルド時とコミット時に自動同期される）
+     - ヘッダ宣言（`.h`）と実装（`.cpp`）の名前空間・シグネチャ・型の整合、および呼び出し元・`#include` パスの実在照合
+     - プリプロセッサ分岐（`DEVELOPMENT` / `USE_IMGUI` 等）や `Release|x64` の `ExcludedFromBuild` と呼び出し元の矛盾チェック
+5. 編集・静的矛盾チェック完了: 該当 roadmap 行を `- [x]`、`progress_report.md` **末尾追記**（§3・上書き禁止。項目8 の査定および「ビルド未実施・静的矛盾チェック済み」を明記）
+6. **§2 停止** … 次の `- [ ]` へは、ユーザーが再度「ロードマップを実行して。」／「次へ」等と言うまで進めない（`/loop` 中は tick 継続）
+
+## Git・コミット
+
+- **コミット・develop マージ・作業ブランチ削除**は、ユーザーが **コミット／プッシュ許可** したとき **`finishTaskGit.ps1`**（§8）。次ブランチ名は **次の `- [ ]`** から `branchNaming.md`。
+- `/loop` 成功 tick のみ §5 例外で `loopMergeTickToDevelop.ps1`（確認不要）。
+
+## 中断
+
+「半自律終了」「通常モード」「ストップ」「ループ停止」と同様に中断可。`progress_report.md` に 1 行追記してよい。

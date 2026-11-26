@@ -1336,6 +1336,9 @@
     <ClCompile Include="Codes\Source\System\Scripting\LuaSystem.cpp">
       <Filter>Codes\Source\System\Scripting</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFMeshModelAttach.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
@@ -2706,6 +2709,9 @@
     <ClInclude Include="Codes\Include\System\Scripting\LuaJitScriptHost.h">
       <Filter>Codes\Include\System\Scripting</Filter>
     </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFMeshModelAttach.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Codes">
@@ -2998,6 +3004,9 @@
     </Filter>
     <Filter Include="Codes\Source\System\Scripting">
       <UniqueIdentifier>{fd0e54f7-d251-49af-a14c-1fcc8d5a6d21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Codes\Include\System\AtomF">
+      <UniqueIdentifier>{27592751-c9c7-4161-9894-e4f648cf0e93}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

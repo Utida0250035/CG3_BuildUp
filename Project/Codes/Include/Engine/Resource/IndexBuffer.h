@@ -17,8 +17,14 @@ namespace Atrum {
 		// IndexBufferView
 		D3D12_INDEX_BUFFER_VIEW indexBufferView_{};
 
-		// 頂点インデックスデータ
+		// 頂点インデックスデータ（現在のフレームスロットの先頭）
 		uint32_t* indexData_ = nullptr;
+
+		// Map した領域全体の先頭
+		uint32_t* mappedBase_ = nullptr;
+
+		// GPU 実行中のフレームと書き込み領域が重ならないよう、フレームスロット数ぶん確保する
+		uint32_t frameSlotCount_ = 1;
 
 		// 頂点インデックスカウント
 		uint32_t indexDrewCount_ = 0;
@@ -27,14 +33,22 @@ namespace Atrum {
 
 	public:
 
-		void CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device);
+		/// <param name="frameSlotCount"> 同時に GPU 実行され得るフレーム数（通常はバックバッファ数） </param>
+		void CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device,
+			const uint32_t frameSlotCount = 1);
+
+		/// <summary>
+		/// 書き込み・描画に使うフレームスロットを切り替える（GPU がそのスロットを使い終えた後に呼ぶ）
+		/// </summary>
+		void SetFrameSlot(const uint32_t frameSlot);
 
 		void UnMap() {
 
-			if (indexResource_ && indexData_) {
+			if (indexResource_ && mappedBase_) {
 
 				indexResource_->Unmap(0, nullptr);
 
+				mappedBase_ = nullptr;
 				indexData_ = nullptr;
 
 			}
@@ -60,7 +74,9 @@ namespace Atrum {
 
 		uint32_t GetDrewCount() const { return indexDrewCount_; }
 
-		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return indexResource_->GetGPUVirtualAddress(); }
+		uint32_t GetMaxCount() const { return indexMaxCount_; }
+
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return indexBufferView_.BufferLocation; }
 
 		D3D12_INDEX_BUFFER_VIEW* PGetBufferView() { return &indexBufferView_; }
 

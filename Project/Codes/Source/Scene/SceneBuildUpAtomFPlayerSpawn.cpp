@@ -3,6 +3,7 @@
 #include "Math/Transform.h"
 #include "Math/Vector4.h"
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
+#include "System/AtomF/AtomFMeshModelAttach.h"
 #include "System/AtomF/AtomFPlayerHealthAttach.h"
 #include "System/AtomF/AtomFPlayerHitAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
@@ -29,6 +30,9 @@ void AppendAtomFPlayerIfScene(
 
   EntityTagRegistry &tags = EntityTagRegistry::Instance();
   tags.EnsureLoaded();
+
+  // 初回の発射で読込待ちが出ないよう、自機弾のモデルはシーン入場時に読む。
+  AtomF::LoadMeshModel(AtomF::ResolvePlayerBulletModelName());
 
   std::unique_ptr<Entity> player = std::make_unique<Entity>("AtomFPlayer");
   player->AddTag(tags.TagNameForRole("player"));

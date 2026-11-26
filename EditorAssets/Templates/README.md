@@ -25,4 +25,4 @@
 
 ## 関連
 
-- `EditorAssets/Tools/CursorAI/docs/feature-memos/text_code_templates.md`
+- `EditorAssets/Tools/ClaudeAI/docs/feature-memos/text_code_templates.md`

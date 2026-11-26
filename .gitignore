@@ -379,5 +379,5 @@ imgui.ini
 .cspellcache
 /nul
 
-# Cursor
-EditorAssets/Tools/CursorAI/**/*.py
+# Claude Code 半自律ツール
+EditorAssets/Tools/ClaudeAI/**/*.py

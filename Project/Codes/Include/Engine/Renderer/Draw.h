@@ -70,6 +70,9 @@ namespace Atrum {
 		// 今フレームでインスタンスバッファに書き込み済みの要素数（GPU 実行前に上書きしないため前詰めで使う）
 		uint32_t particleInstanceWriteCount_ = 0;
 
+		// 現在のフレームスロットに割り当てたインスタンスバッファ領域の先頭要素
+		uint32_t particleInstanceSlotBase_ = 0;
+
 		// PreDraw 時点のブレンドに対応する Object3d PSO / パーティクル用 PSO
 		std::array<ID3D12PipelineState *,
 		           static_cast<size_t>(BlendMode::MODE_COUNT)>
@@ -177,6 +180,18 @@ namespace Atrum {
 		/// 初期化処理 IndexBufferの生成
 		/// </summary>
 		void CreateIndexBuffer();
+
+		/// <summary>
+		/// フレームごとに書き換えるアップロードバッファの書き込み先を切り替える。
+		/// バックバッファ番号のフェンス待ち後（そのスロットを GPU が使い終えた後）に呼ぶ。
+		/// </summary>
+		void SetFrameSlot(const uint32_t frameSlot);
+
+		/// <summary>
+		/// 今フレームの頂点・インデックスバッファに追記できる残量があるか
+		/// </summary>
+		bool HasBatchCapacity(const uint32_t vertexCount,
+			const uint32_t indexCount) const;
 
 		inline static constexpr uint32_t kMaxDrawCount = 4096;
 

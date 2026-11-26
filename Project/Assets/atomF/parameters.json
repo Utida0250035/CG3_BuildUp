@@ -19,7 +19,8 @@
       "hitShape": "sphere",
       "hitRadiusId": "半径弾",
       "hitRadiusMeters": 0.25,
-      "trailSeconds": 0.5
+      "trailSeconds": 0.5,
+      "modelName": "atomFPlayerBullet"
     },
     "aimCapsule": {
       "radiusId": "半径エイム",
@@ -45,6 +46,7 @@
     }
   },
   "enemy": {
+    "modelName": "atomFEnemy",
     "hitRadiusMeters": 0.25,
     "moveSpeedId": "速さ歩行",
     "moveSpeedMetersPerSecond": 1.0,

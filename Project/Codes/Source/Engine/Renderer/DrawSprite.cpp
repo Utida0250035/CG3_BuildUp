@@ -1,6 +1,7 @@
 #include "Engine/Renderer/DrawSprite.h"
 
 #include "Engine/Command/CommandContext.h"
+#include "Engine/Device/SwapChain.h"
 #include "Engine/Resource/DescriptorAllocator.h"
 #include "Engine/Resource/IndexBuffer.h"
 #include "Engine/Resource/VertexBuffer.h"
@@ -50,7 +51,19 @@ namespace Atrum {
 
 		vertexBuffer_ = std::make_unique<VertexBuffer>();
 
-		vertexBuffer_->CreateVertexBuffer(kVertexMaxDrawCount, pDevice_);
+		vertexBuffer_->CreateVertexBuffer(kVertexMaxDrawCount, pDevice_,
+			SwapChain::kBackBufferCount);
+
+	}
+
+	void DrawSprite::SetFrameSlot(const uint32_t frameSlot) {
+
+		const uint32_t slot = frameSlot % SwapChain::kBackBufferCount;
+
+		vertexBuffer_->SetFrameSlot(slot);
+		indexBuffer_->SetFrameSlot(slot);
+		materialBuffer_->SetFrameSlot(slot);
+		transformationBuffer_->SetFrameSlot(slot);
 
 	}
 
@@ -58,7 +71,8 @@ namespace Atrum {
 
 		indexBuffer_ = std::make_unique<IndexBuffer>();
 
-		indexBuffer_->CreateIndexBuffer(kVertexMaxDrawCount, pDevice_);
+		indexBuffer_->CreateIndexBuffer(kVertexMaxDrawCount, pDevice_,
+			SwapChain::kBackBufferCount);
 
 	}
 
@@ -66,7 +80,8 @@ namespace Atrum {
 
 		materialBuffer_ = std::make_unique<MultiConstantBuffer<MaterialData>>();
 
-		materialBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		materialBuffer_->CreateBuffer(pDevice_, kMaxDrawCount,
+			SwapChain::kBackBufferCount);
 
 	}
 
@@ -74,7 +89,8 @@ namespace Atrum {
 
 		transformationBuffer_ = std::make_unique<MultiConstantBuffer<TransformationData>>();
 
-		transformationBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		transformationBuffer_->CreateBuffer(pDevice_, kMaxDrawCount,
+			SwapChain::kBackBufferCount);
 
 	}
 

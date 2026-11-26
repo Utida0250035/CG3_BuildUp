@@ -18,8 +18,14 @@ namespace Atrum {
 		// VertexBufferView
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_{};
 
-		// 頂点データ
+		// 頂点データ（現在のフレームスロットの先頭）
 		VertexData* vertexData_ = nullptr;
+
+		// Map した領域全体の先頭
+		VertexData* mappedBase_ = nullptr;
+
+		// GPU 実行中のフレームと書き込み領域が重ならないよう、フレームスロット数ぶん確保する
+		uint32_t frameSlotCount_ = 1;
 
 		// 画面上に描画済みの頂点の数
 		uint32_t vertexDrewCount_ = 0;
@@ -28,13 +34,21 @@ namespace Atrum {
 
 	public:
 
-		void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device);
-		
+		/// <param name="frameSlotCount"> 同時に GPU 実行され得るフレーム数（通常はバックバッファ数） </param>
+		void CreateVertexBuffer(const uint32_t vertexMaxCount, ID3D12Device* device,
+			const uint32_t frameSlotCount = 1);
+
+		/// <summary>
+		/// 書き込み・描画に使うフレームスロットを切り替える（GPU がそのスロットを使い終えた後に呼ぶ）
+		/// </summary>
+		void SetFrameSlot(const uint32_t frameSlot);
+
 		void UnMap() {
 
-			if (vertexResource_ && vertexData_) {
+			if (vertexResource_ && mappedBase_) {
 
 				vertexResource_->Unmap(0, nullptr);
+				mappedBase_ = nullptr;
 				vertexData_ = nullptr;
 
 			}
@@ -60,7 +74,9 @@ namespace Atrum {
 
 		uint32_t GetDrewCount() const { return vertexDrewCount_; }
 
-		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return vertexResource_->GetGPUVirtualAddress(); }
+		uint32_t GetMaxCount() const { return vertexMaxCount_; }
+
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return vertexBufferView_.BufferLocation; }
 
 		D3D12_VERTEX_BUFFER_VIEW* PGetVertexBufferView() { return &vertexBufferView_; }
 

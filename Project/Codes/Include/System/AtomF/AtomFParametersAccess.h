@@ -22,6 +22,9 @@ float ResolvePlayerBulletRadiusMeters();
 float ResolvePlayerBulletSpeedMetersPerSecond();
 float ResolvePlayerBulletTrailSeconds();
 bool IsPlayerBulletHitShapeSphere();
+/// 表示モデル名（player.bullet.modelName / enemy.modelName）。未指定は空。
+std::string ResolvePlayerBulletModelName();
+std::string ResolveEnemyModelName();
 float ResolveEnemyBodyRadiusMeters();
 float ResolveEnemyKnockbackSpeedMetersPerSecond();
 /// parameters の速さa（enemy.moveSpeedMetersPerSecond）

@@ -8,7 +8,7 @@ MSBuild は `$(ProjectDir)Externals\LuaJIT\lib\lua51.lib` と
 リポジトリルートから:
 
 ```bat
-EditorAssets\Tools\CursorAI\buildLuaJitLib.cmd
+EditorAssets\Tools\ClaudeAI\buildLuaJitLib.cmd
 ```
 
 LuaJIT ソースを取得して `lib\lua51.lib` と `bin\lua51.dll` を生成します。

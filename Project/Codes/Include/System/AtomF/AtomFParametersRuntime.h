@@ -17,6 +17,8 @@ struct PlayerBulletParameters {
   std::string hitShape = "sphere";
   float hitRadiusMeters = 0.25f;
   float trailSeconds = 0.5f;
+  /// 表示モデル名（Assets/Objects/<名前>/<名前>.obj）。空なら球。
+  std::string modelName;
 };
 
 struct PlayerAimCapsuleParameters {
@@ -71,6 +73,8 @@ struct EnemyParameters {
   EnemyPanicParameters panic{};
   EnemyPeriodicChargeTimingParameters periodicCharge{};
   EnemyChainExplosionParameters chainExplosion{};
+  /// 表示モデル名（Assets/Objects/<名前>/<名前>.obj）。空なら球。
+  std::string modelName;
 };
 
 /// 斜め見下ろし追従カメラ（`parameters.json` の `camera`）。

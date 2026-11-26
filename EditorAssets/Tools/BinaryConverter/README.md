@@ -13,7 +13,7 @@ python3 obj_to_amesh.py input.obj output.amesh
 ```
 
 - 対応: `v` / `vt` / `vn` / 三角形 `f`（`位置/uv/法線` 形式）
-- 仕様: `EditorAssets/Tools/CursorAI/docs/feature-memos/atr_mesh_binary_format.md`
+- 仕様: `EditorAssets/Tools/ClaudeAI/docs/feature-memos/atr_mesh_binary_format.md`
 
 ### バッチ変換
 
