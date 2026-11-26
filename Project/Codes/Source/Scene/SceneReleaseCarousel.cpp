@@ -46,9 +46,6 @@ void LoadDefaultEntries(std::vector<Entry> &out) {
   out = {
       Entry{EntryKind::BuildUp, {},
             NormalizePathKey(std::string(GameAssets::kScenesDirectory) +
-                             "/ParticleDemo.json")},
-      Entry{EntryKind::BuildUp, {},
-            NormalizePathKey(std::string(GameAssets::kScenesDirectory) +
                              "/BillboardInstancing100.json")},
   };
 }

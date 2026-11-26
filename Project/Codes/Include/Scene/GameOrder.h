@@ -99,14 +99,7 @@ namespace Atrum {
 				    Atrum::Debug::SubsystemFrameId::SceneUpdate);
 #endif
 				if (commandChangeScene_->AllowsCurrentSceneUpdate()) {
-#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
-					if (!Atrum::SceneFlow::SceneReleaseCarousel::Instance()
-					        .TryAdvanceOnSubmit()) {
-						sceneNow->Update();
-					}
-#else
 					sceneNow->Update();
-#endif
 				}
 			}
 

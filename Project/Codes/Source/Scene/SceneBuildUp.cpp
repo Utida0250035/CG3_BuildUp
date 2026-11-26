@@ -163,15 +163,6 @@ void SceneBuildUp::EnterScene() {
   SceneBuildUpAudioPolicy::OnEnterScene(*this);
   SceneBuildUpEnterSceneEditorUiPolicy::ApplyOnEnterScene();
 
-#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
-  showsNextSceneHint_ =
-      SceneFlow::SceneReleaseCarousel::Instance().HasBuildUpEntry(
-          sceneJsonPath_);
-  if (showsNextSceneHint_) {
-    SceneScreenUi::PreloadReleaseCarouselUiTextures();
-  }
-#endif
-
 }
 
 void SceneBuildUp::Update() {
@@ -294,11 +285,6 @@ void SceneBuildUp::DrawScene() {
       engine, static_cast<float>(Window::kDefaultClientWidth),
       static_cast<float>(Window::kDefaultClientHeight));
 
-#if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
-  if (showsNextSceneHint_) {
-    SceneScreenUi::DrawReleaseCarouselHowToNextSceneUi(engine, GetCamera());
-  }
-#endif
 }
 
 void SceneBuildUp::Draw() {
