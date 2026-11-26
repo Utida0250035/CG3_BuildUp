@@ -80,6 +80,12 @@ namespace Atrum {
 		/// </summary>
 		void DrawSpriteCall(const uint32_t& textureIndex);
 
+		/// <summary>
+		/// フレームごとに書き換えるアップロードバッファの書き込み先を切り替える。
+		/// バックバッファ番号のフェンス待ち後（そのスロットを GPU が使い終えた後）に呼ぶ。
+		/// </summary>
+		void SetFrameSlot(const uint32_t frameSlot);
+
 		ID3D12Device* pDevice_ = nullptr;
 		CommandContext* pCommandContextDirect_ = nullptr;
 		DescriptorAllocator* pSrvAllocator_ = nullptr;

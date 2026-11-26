@@ -26,6 +26,9 @@ namespace Atrum {
 
 		uint32_t defaultTextureSrvIndex_ = 1;
 
+		// RetainModel で保持するモデル（解放はこのストレージの破棄時）
+		std::vector<std::shared_ptr<AssetModel>> retainedModels_{};
+
 		ModelStorage() = default;
 
 	public:
@@ -56,6 +59,10 @@ namespace Atrum {
 		std::shared_ptr<AssetModel> CreateModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
 
 		std::shared_ptr<AssetModel> GetModel(const std::string& directoryPathObj, const std::string& objFileName, const std::string& directoryPathMtl, const std::string& mtlFileName);
+
+		/// ゲーム中に生成・破棄を繰り返すエンティティ用。GPU が参照中の頂点バッファが
+		/// 最後のエンティティ破棄で解放されないよう、ストレージが終了まで保持する。
+		void RetainModel(const std::shared_ptr<AssetModel>& model);
 
 		ModelStorage operator=(const ModelStorage& source) = delete;
 		ModelStorage(const ModelStorage& source) = delete;

@@ -1,8 +1,10 @@
 #include "System/AtomF/AtomFPlayerBulletSpawn.h"
 
+#include "Math/Quaternion.h"
 #include "Math/Transform.h"
 #include "Math/Vector4.h"
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
+#include "System/AtomF/AtomFMeshModelAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFPlayerBulletHitAttach.h"
 #include "System/AtomF/CmpAtomFPlayerBulletArenaWallHit.h"
@@ -15,6 +17,8 @@
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
+
+#include <cmath>
 
 namespace Atrum::AtomF {
 
@@ -30,6 +34,10 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
 
   Math::TransformLH initialTransform{};
   initialTransform.translate = worldSpawnPosition;
+  // モデルの先端（+Z）を飛ぶ向きへ合わせる。
+  initialTransform.quaternion = Math::Quaternion::FromAxisAngle(
+      Math::Vector3{0.0f, 1.0f, 0.0f},
+      std::atan2(aimDirectionXZUnit.x, aimDirectionXZUnit.z));
   bullet->SetInitialTransform(initialTransform);
 
   bullet->AddUpdCmp<CmpAtomFPlayerBulletMove>();
@@ -46,6 +54,7 @@ std::unique_ptr<Entity> CreatePlayerBulletEntity(
     mesh->SetColor(Math::Vector4{0.95f, 0.92f, 0.3f, 1.0f});
     mesh->SetSubdivision(8);
     mesh->SetLightingEnabled(false);
+    AttachMeshModel(*mesh, ResolvePlayerBulletModelName());
   }
 
   AttachArenaContainmentForPlayerBullet(*bullet);

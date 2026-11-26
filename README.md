@@ -6,4 +6,4 @@
 
 ## Release 最小起動スモーク
 
-配布候補（`Release|x64`）のビルドと起動確認手順は **[smoke_runbook.md](EditorAssets/Tools/CursorAI/docs/feature-memos/smoke_runbook.md)** を参照。自動スモークは `EditorAssets/Tools/CursorAI/runReleaseStartupSmoke.ps1`（CI と同一）。
+配布候補（`Release|x64`）のビルドと起動確認手順は **[smoke_runbook.md](EditorAssets/Tools/ClaudeAI/docs/feature-memos/smoke_runbook.md)** を参照。自動スモークは `EditorAssets/Tools/ClaudeAI/runReleaseStartupSmoke.ps1`（CI と同一）。

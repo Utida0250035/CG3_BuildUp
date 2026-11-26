@@ -109,3 +109,5 @@ AtomF
 knockback
 WASD
 Entitys
+msvcbuild
+memset

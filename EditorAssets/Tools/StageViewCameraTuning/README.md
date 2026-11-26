@@ -10,7 +10,7 @@ python3 preview_poses.py --json ../../Camera/stage_view_camera_tuning.json
 python3 preview_poses.py --focus 0 2 0 --focus-half 1.2 1.2
 ```
 
-出力は `eye` / `pivot` の3成分。設計メモ: `EditorAssets/Tools/CursorAI/docs/feature-memos/odyssey_style_stage_camera.md`
+出力は `eye` / `pivot` の3成分。設計メモ: `EditorAssets/Tools/ClaudeAI/docs/feature-memos/odyssey_style_stage_camera.md`
 
 ## ポリシー検証
 

@@ -38,6 +38,7 @@ bool TryParsePlayer(const nlohmann::json &json, PlayerParameters &out) {
   out.bullet.hitShape = bullet.at("hitShape").get<std::string>();
   out.bullet.hitRadiusMeters = bullet.at("hitRadiusMeters").get<float>();
   out.bullet.trailSeconds = bullet.at("trailSeconds").get<float>();
+  out.bullet.modelName = bullet.value("modelName", std::string{});
 
   const auto &aim = json.at("aimCapsule");
   if (!aim.is_object() || !aim.contains("radiusMeters")) {
@@ -184,6 +185,7 @@ bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {
       explosion.at("hitRadiusMeters").get<float>();
 
   ApplyEnemyPresentationFromJson(json, out);
+  out.modelName = json.value("modelName", std::string{});
 
   return true;
 }

@@ -4,6 +4,7 @@
 #include "Math/Vector4.h"
 #include "System/AtomF/AtomFArenaContainmentAttach.h"
 #include "System/AtomF/AtomFEnemyHitAttach.h"
+#include "System/AtomF/AtomFMeshModelAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
@@ -59,6 +60,7 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
     mesh->SetColor(Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f});
     mesh->SetSubdivision(10);
     mesh->SetLightingEnabled(false);
+    AtomF::AttachMeshModel(*mesh, AtomF::ResolveEnemyModelName());
   }
 
   AtomF::AttachArenaContainmentForEnemy(*enemy);

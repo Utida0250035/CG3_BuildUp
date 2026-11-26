@@ -96,17 +96,39 @@ namespace Atrum {
 	void Draw::CreateParticleGpuResources() {
 		particleFrameBuffer_ =
 		    std::make_unique<MultiConstantBuffer<ParticleFrameGpuData>>();
-		particleFrameBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		particleFrameBuffer_->CreateBuffer(pDevice_, kMaxDrawCount,
+		                                   SwapChain::kBackBufferCount);
 
+		// 1 フレームあたりの上限。GPU 実行中フレームと重ならないようスロット数ぶん確保する
 		particleInstanceCapacity_ = kMaxParticleInstances;
+		const size_t totalInstances =
+		    particleInstanceCapacity_ * SwapChain::kBackBufferCount;
 		particleInstanceBufferResource_ = CreateUploadBuffer(
-		    sizeof(ParticleInstanceGpuData) * particleInstanceCapacity_,
-		    pDevice_);
+		    sizeof(ParticleInstanceGpuData) * totalInstances, pDevice_);
 		particleInstanceBufferResource_->Map(
 		    0, nullptr, reinterpret_cast<void **>(&particleInstanceData_));
 		std::memset(particleInstanceData_, 0,
-		            sizeof(ParticleInstanceGpuData) *
-		                particleInstanceCapacity_);
+		            sizeof(ParticleInstanceGpuData) * totalInstances);
+	}
+
+	void Draw::SetFrameSlot(const uint32_t frameSlot) {
+		const uint32_t slot = frameSlot % SwapChain::kBackBufferCount;
+
+		vertexBuffer_->SetFrameSlot(slot);
+		indexBuffer_->SetFrameSlot(slot);
+		materialBuffer_->SetFrameSlot(slot);
+		transformationBuffer_->SetFrameSlot(slot);
+		particleFrameBuffer_->SetFrameSlot(slot);
+		particleInstanceSlotBase_ =
+		    static_cast<uint32_t>(particleInstanceCapacity_) * slot;
+	}
+
+	bool Draw::HasBatchCapacity(const uint32_t vertexCount,
+	                            const uint32_t indexCount) const {
+		return vertexBuffer_->GetDrewCount() + vertexCount <=
+		           vertexBuffer_->GetMaxCount() &&
+		       indexBuffer_->GetDrewCount() + indexCount <=
+		           indexBuffer_->GetMaxCount();
 	}
 
 	void Draw::CreateParticleInstanceSrv() {
@@ -118,8 +140,9 @@ namespace Atrum {
 		srvDesc.Shader4ComponentMapping =
 		    D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvDesc.Buffer.FirstElement = 0;
-		srvDesc.Buffer.NumElements =
-		    static_cast<uint32_t>(particleInstanceCapacity_);
+		// 全フレームスロットを 1 つの SRV で覆い、スロット先頭は instanceBufferBase で渡す
+		srvDesc.Buffer.NumElements = static_cast<uint32_t>(
+		    particleInstanceCapacity_ * SwapChain::kBackBufferCount);
 		srvDesc.Buffer.StructureByteStride =
 		    sizeof(ParticleInstanceGpuData);
 		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
@@ -132,7 +155,7 @@ namespace Atrum {
 	    const std::vector<ParticleInstanceGpuData> &instances,
 	    uint32_t &outInstanceBase) {
 
-		outInstanceBase = particleInstanceWriteCount_;
+		outInstanceBase = particleInstanceSlotBase_ + particleInstanceWriteCount_;
 
 		const size_t remaining =
 		    particleInstanceCapacity_ - particleInstanceWriteCount_;
@@ -142,7 +165,7 @@ namespace Atrum {
 			return 0;
 		}
 
-		std::memcpy(particleInstanceData_ + particleInstanceWriteCount_,
+		std::memcpy(particleInstanceData_ + outInstanceBase,
 		            instances.data(),
 		            sizeof(ParticleInstanceGpuData) * writeCount);
 		particleInstanceWriteCount_ += writeCount;
@@ -484,6 +507,11 @@ namespace Atrum {
 			return;
 		}
 
+		if (!HasBatchCapacity(subdivision * subdivision * 4,
+		                      subdivision * subdivision * 6)) {
+			return;
+		}
+
 		const uint32_t geomVertexStart = vertexBuffer_->GetDrewCount();
 		const uint32_t geomIndexStart = indexBuffer_->GetDrewCount();
 		uint32_t sphereVertexCount = 0;
@@ -521,6 +549,10 @@ namespace Atrum {
 		const uint32_t instanceCount =
 		    WriteParticleInstancesToFrameBuffer(instances, instanceBase);
 		if (instanceCount == 0) {
+			return;
+		}
+
+		if (!HasBatchCapacity(kQuadVertexCount, kQuadIndexCount)) {
 			return;
 		}
 
@@ -579,21 +611,24 @@ namespace Atrum {
 
 		vertexBuffer_ = std::make_unique<VertexBuffer>();
 
-		vertexBuffer_->CreateVertexBuffer(kVertexMaxDrawCount, pDevice_);
+		vertexBuffer_->CreateVertexBuffer(kVertexMaxDrawCount, pDevice_,
+		                                  SwapChain::kBackBufferCount);
 	}
 
 	void Draw::CreateIndexBuffer() {
 
 		indexBuffer_ = std::make_unique<IndexBuffer>();
 
-		indexBuffer_->CreateIndexBuffer(kVertexMaxDrawCount, pDevice_);
+		indexBuffer_->CreateIndexBuffer(kVertexMaxDrawCount, pDevice_,
+		                                SwapChain::kBackBufferCount);
 	}
 
 	void Draw::CreateMaterialBuffer() {
 
 		materialBuffer_ = std::make_unique<MultiConstantBuffer<MaterialData>>();
 
-		materialBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		materialBuffer_->CreateBuffer(pDevice_, kMaxDrawCount,
+		                              SwapChain::kBackBufferCount);
 	}
 
 	void Draw::CreateTransformationBuffer() {
@@ -601,13 +636,19 @@ namespace Atrum {
 		transformationBuffer_ =
 			std::make_unique<MultiConstantBuffer<TransformationData>>();
 
-		transformationBuffer_->CreateBuffer(pDevice_, kMaxDrawCount);
+		transformationBuffer_->CreateBuffer(pDevice_, kMaxDrawCount,
+		                                    SwapChain::kBackBufferCount);
 	}
 
 	void Draw::DrawTriangleCall(const uint32_t& textureIndex,
 		D3D12_GPU_VIRTUAL_ADDRESS directionalLightAddress) {
 
 		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
+
+		// 容量外の書き込みは SetVertexData/SetIndexData が捨てているので描画しない
+		if (!HasBatchCapacity(3, 3)) {
 			return;
 		}
 
@@ -665,6 +706,11 @@ namespace Atrum {
 			return;
 		}
 
+		// 容量外の書き込みは SetVertexData/SetIndexData が捨てているので描画しない
+		if (!HasBatchCapacity(vertexCountInInstance, indexDataCountInInstance)) {
+			return;
+		}
+
 		assert(constantBufferCount_ + 1 < kMaxDrawCount &&
 			"constantBufferCount over maxCount(Sphere)");
 
@@ -718,6 +764,11 @@ namespace Atrum {
 		}
 
 		if (constantBufferCount_ + 1 >= kMaxDrawCount) {
+			return;
+		}
+
+		// 容量外の書き込みは SetVertexData が捨てているので描画しない
+		if (!HasBatchCapacity(vertexCountInInstance, 0)) {
 			return;
 		}
 

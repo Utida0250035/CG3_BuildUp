@@ -67,10 +67,18 @@ void CmpMeshSphere::Draw() {
   }
   engine->SetBlendModeForFrame(
       useAlphaBlend ? BlendMode::NORMAL : BlendMode::NONE);
-  engine->DrawSphere(
-      WhiteTextureIndex(), drawColor, Math::Transform{},
-      worldMatrix, drawRadius, subdivision_,
-      isLightingEnabled_);
+  if (model_ == nullptr) {
+    engine->DrawSphere(
+        WhiteTextureIndex(), drawColor, Math::Transform{},
+        worldMatrix, drawRadius, subdivision_,
+        isLightingEnabled_);
+  } else if (drawRadius > 0.0f) {
+    engine->DrawModel(
+        model_.get(),
+        Math::Matrix4x4::Scale({drawRadius, drawRadius, drawRadius}) *
+            worldMatrix,
+        isLightingEnabled_, drawColor);
+  }
   engine->SetBlendModeForFrame(BlendMode::NONE);
 }
 

@@ -14,4 +14,4 @@ python3 verify_movie_camera_track_json.py
 
 CI: `.github/workflows/BuildCoverageCheck.yml`
 
-設計: `EditorAssets/Tools/CursorAI/docs/feature-memos/movie_camera_controller.md`
+設計: `EditorAssets/Tools/ClaudeAI/docs/feature-memos/movie_camera_controller.md`

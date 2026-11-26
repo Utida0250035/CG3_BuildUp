@@ -10,6 +10,9 @@ constexpr const char *kTagRegistryJson = "./Assets/Tags/tagRegistry.json";
 /// Release でも読むシーン JSON
 constexpr const char *kScenesDirectory = "./Assets/Scenes";
 
+/// Release でも読む 3D モデル（`<名前>/<名前>.obj` の基準）
+constexpr const char *kObjectsDirectory = "./Assets/Objects";
+
 /// Release でも読むパーティクル JSON（相対パスの基準）
 constexpr const char *kParticlesDirectory = "./Assets/Particles";
 

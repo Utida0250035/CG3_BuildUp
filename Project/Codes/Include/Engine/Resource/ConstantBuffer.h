@@ -67,26 +67,59 @@ namespace Atrum {
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> resource_ = nullptr;
 
+		// 現在のフレームスロットの先頭
 		T* data_ = nullptr;
+
+		// Map した領域全体の先頭
+		T* mappedBase_ = nullptr;
+
+		size_t resourceCount_ = 0;
+
+		// GPU 実行中のフレームと書き込み領域が重ならないよう、フレームスロット数ぶん確保する
+		uint32_t frameSlotCount_ = 1;
+
+		D3D12_GPU_VIRTUAL_ADDRESS slotGpuAddress_ = 0;
 
 	public:
 
-		void CreateBuffer(ID3D12Device* device, const size_t resourceCount) {
+		/// <param name="frameSlotCount"> 同時に GPU 実行され得るフレーム数（通常はバックバッファ数） </param>
+		void CreateBuffer(ID3D12Device* device, const size_t resourceCount,
+			const uint32_t frameSlotCount = 1) {
 
-			// Data1つ分 * resourceCountのサイズを用意
-			resource_ = CreateUploadBuffer(resourceCount * sizeof(T), device);
+			resourceCount_ = resourceCount;
+			frameSlotCount_ = frameSlotCount > 0 ? frameSlotCount : 1;
+
+			// Data1つ分 * resourceCount * フレームスロット数のサイズを用意
+			resource_ = CreateUploadBuffer(
+				resourceCount * sizeof(T) * frameSlotCount_, device);
 
 			// データを書き込むためのアドレスを取得
-			resource_->Map(0, nullptr, reinterpret_cast<void**>(&data_));
+			resource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedBase_));
+
+			SetFrameSlot(0);
+
+		}
+
+		/// <summary>
+		/// 書き込み・描画に使うフレームスロットを切り替える（GPU がそのスロットを使い終えた後に呼ぶ）
+		/// </summary>
+		void SetFrameSlot(const uint32_t frameSlot) {
+
+			const size_t slotOffset =
+				static_cast<size_t>(frameSlot % frameSlotCount_) * resourceCount_;
+
+			data_ = mappedBase_ + slotOffset;
+			slotGpuAddress_ = resource_->GetGPUVirtualAddress() + slotOffset * sizeof(T);
 
 		}
 
 		void UnMap() {
 
-			if (resource_ && data_) {
+			if (resource_ && mappedBase_) {
 
 				resource_->Unmap(0, nullptr);
 
+				mappedBase_ = nullptr;
 				data_ = nullptr;
 
 			}
@@ -95,11 +128,16 @@ namespace Atrum {
 
 		/* ゲッター */
 
-		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return resource_->GetGPUVirtualAddress(); }
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress() const { return slotGpuAddress_; }
 
 		/* セッター */
 
-		void SetData(const T& data, const size_t index) { data_[index] = data; }
+		void SetData(const T& data, const size_t index) {
+			if (index >= resourceCount_) {
+				return;
+			}
+			data_[index] = data;
+		}
 
 		/* デストラクタ */
 

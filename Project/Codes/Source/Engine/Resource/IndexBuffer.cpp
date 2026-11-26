@@ -6,33 +6,38 @@
 
 namespace Atrum {
 
-	void IndexBuffer::CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device) {
+	void IndexBuffer::CreateIndexBuffer(const uint32_t indexMaxCount, ID3D12Device* device,
+		const uint32_t frameSlotCount) {
 
 		indexMaxCount_ = indexMaxCount;
+		frameSlotCount_ = frameSlotCount > 0 ? frameSlotCount : 1;
 
-		indexResource_ = CreateUploadBuffer(sizeof(uint32_t) * indexMaxCount, device);
+		indexResource_ = CreateUploadBuffer(
+			sizeof(uint32_t) * indexMaxCount * frameSlotCount_, device);
 
-		indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+		indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedBase_));
 
-		// リソースの先頭のアドレスから使う
-		indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-
-		// 使用するリソースのサイズは 頂点3つ分 * triangleMaxCount のサイズ
-		indexBufferView_.SizeInBytes = sizeof(uint32_t) * indexMaxCount;
-
-		// 1頂点当たりのサイズ
-		indexBufferView_.SizeInBytes = sizeof(uint32_t);
-
-		// リソースの先頭のアドレスから使う
-		indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-
-		// 使用するリソースのサイズ 大雑把に三角形の描画上限数*3 本来は頂点数
+		// 使用するリソースのサイズは 1 スロット分（indexMaxCount 個）
 		indexBufferView_.SizeInBytes = sizeof(uint32_t) * indexMaxCount;
 
 		// 1番号当たりのサイズ
 		indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
+		SetFrameSlot(0);
+
 		D::LogFile::Instance()->Log("Created IndexBuffer");
+
+	}
+
+	void IndexBuffer::SetFrameSlot(const uint32_t frameSlot) {
+
+		const uint32_t slot = frameSlot % frameSlotCount_;
+		const size_t slotOffset = static_cast<size_t>(slot) * indexMaxCount_;
+
+		indexData_ = mappedBase_ + slotOffset;
+
+		indexBufferView_.BufferLocation =
+			indexResource_->GetGPUVirtualAddress() + slotOffset * sizeof(uint32_t);
 
 	}
 

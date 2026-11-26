@@ -8,7 +8,11 @@ extern "C" {
 #include <luajit.h>
 }
 
+// sol.hpp 内の u8"\xF0..." リテラルが C5321 を出し、TreatWarningAsError でビルドが止まるため外部ヘッダに限り抑止
+#pragma warning(push)
+#pragma warning(disable : 5321)
 #include <sol/sol.hpp>
+#pragma warning(pop)
 #include <string>
 #include <vector>
 
@@ -25,8 +29,10 @@ private:
   std::vector<std::unique_ptr<ILuaBinder>> binders_{};
 
 public:
-  LuaSystem() = default;
-  ~LuaSystem() = default;
+  // ILuaBinder が不完全型のため、コンストラクタ／デストラクタの定義は
+  // ILuaBinder.h を含む .cpp 側に置く（MSVC はコンストラクタでもメンバ破棄を実体化する）
+  LuaSystem();
+  ~LuaSystem();
 
   // solなどの初期化
   bool Initialize();

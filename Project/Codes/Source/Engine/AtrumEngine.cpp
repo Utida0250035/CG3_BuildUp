@@ -317,6 +317,10 @@ void AtrumEngine::InitRenderer() {
   drawSprite_->Initialize(renderDevice_->GetDevice(),
                           commandContextDirect_.get(), srvAllocator_.get(),
                           textureStorage_.get());
+
+  // 最初のフレームの書き込み先を現在のバックバッファ番号に合わせる
+  draw_->SetFrameSlot(swapChainManager_->GetBackBufferIndex());
+  drawSprite_->SetFrameSlot(swapChainManager_->GetBackBufferIndex());
 }
 
 void AtrumEngine::InitPlayInput() {
@@ -933,6 +937,9 @@ void AtrumEngine::PostDraw() {
 
   if (!temporaryResources_.empty()) {
 
+    // 直前に Execute したフレームが転送元として使い終えるまで待つ
+    fenceManager_->ForceSyncGPU(commandContextDirect_->GetCommandQueue());
+
     // フレーム内で作成した中間リソースを全て解放
     temporaryResources_.clear();
   }
@@ -1001,6 +1008,11 @@ void AtrumEngine::PostDraw() {
 
   // パーティクルインスタンスの書き込み位置をリセット
   draw_->particleInstanceWriteCount_ = 0;
+
+  // 次フレームの書き込み先を、フェンス待ちで GPU が使い終えたスロットへ切り替える。
+  // 直前に Execute したフレームはまだ GPU 実行中の可能性があるため、同じ領域へは書かない。
+  draw_->SetFrameSlot(swapChainManager_->GetBackBufferIndex());
+  drawSprite_->SetFrameSlot(swapChainManager_->GetBackBufferIndex());
 }
 
 void AtrumEngine::Finalize() {

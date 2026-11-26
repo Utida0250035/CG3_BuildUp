@@ -117,6 +117,22 @@ bool IsPlayerBulletHitShapeSphere() {
   return true;
 }
 
+std::string ResolvePlayerBulletModelName() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Player().bullet.modelName;
+  }
+  return {};
+}
+
+std::string ResolveEnemyModelName() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Enemy().modelName;
+  }
+  return {};
+}
+
 float ResolveEnemyBodyRadiusMeters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {
