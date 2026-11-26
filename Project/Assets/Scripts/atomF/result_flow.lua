@@ -1,0 +1,78 @@
+-- atomF リザルトシーン: 「リザルト」テキストと「リトライ」「タイトルへ」の選択 UI。
+-- Space / A で決定。リトライ→本編、タイトルへ→タイトル。
+local Paths = require("atomF.scene_paths")
+
+local M = {}
+
+local INPUT_LOCKOUT_SECONDS = 0.6   -- 本編の連打（Space）で即決定されないように
+local FADE_IN_SECONDS       = 0.6
+local DECIDE_FLASH_SECONDS  = 0.3
+local STICK_THRESHOLD       = 0.6
+
+local OPTIONS = {
+  { image = Paths.IMG_RETRY,    target = Paths.GAME,  y = 0.58 },
+  { image = Paths.IMG_TO_TITLE, target = Paths.TITLE, y = 0.73 },
+}
+
+local elapsed = 0.0
+local selected = 1
+local decidedAt = nil
+local stickWasTilted = false
+
+local function moveSelection(delta)
+  selected = ((selected - 1 + delta) % #OPTIONS) + 1
+end
+
+local function pollSelectionInput()
+  if Input.upTrigger() then
+    moveSelection(-1)
+  elseif Input.downTrigger() then
+    moveSelection(1)
+  end
+
+  -- 左スティックの上下（倒した瞬間だけ 1 回移動）
+  local y = Input.stickY()
+  local tilted = math.abs(y) >= STICK_THRESHOLD
+  if tilted and not stickWasTilted then
+    moveSelection(y > 0 and -1 or 1)
+  end
+  stickWasTilted = tilted
+end
+
+function M.onUpdate(dt)
+  elapsed = elapsed + dt
+  local alpha = math.min(elapsed / FADE_IN_SECONDS, 1.0)
+
+  if decidedAt == nil and elapsed >= INPUT_LOCKOUT_SECONDS then
+    pollSelectionInput()
+    if Input.confirmTrigger() then
+      decidedAt = elapsed
+    end
+  end
+
+  Ui.image(Paths.IMG_RESULT, 0.5, 0.25, { scale = 1.3, a = alpha })
+
+  for index, option in ipairs(OPTIONS) do
+    local isSelected = index == selected
+    local scale = 1.0
+    local r, g, b, a = 0.6, 0.6, 0.6, 0.8
+
+    if isSelected then
+      -- 選択中は黄色く、ゆっくり脈動させる
+      scale = 1.12 + 0.04 * math.sin(elapsed * 6.0)
+      r, g, b, a = 1.0, 0.9, 0.35, 1.0
+      if decidedAt ~= nil then
+        local t = elapsed - decidedAt
+        a = (math.floor(t * 20.0) % 2 == 0) and 1.0 or 0.25
+      end
+    end
+
+    Ui.image(option.image, 0.5, option.y, { scale = scale, r = r, g = g, b = b, a = a * alpha })
+  end
+
+  if decidedAt ~= nil and elapsed - decidedAt >= DECIDE_FLASH_SECONDS then
+    SceneFlow.change(OPTIONS[selected].target)
+  end
+end
+
+return M

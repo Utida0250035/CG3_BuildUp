@@ -1,0 +1,53 @@
+{
+    "entities": [
+        {
+            "definition": {
+                "components": [
+                    {
+                        "executionOrder": 0,
+                        "kind": "Upd",
+                        "params": {
+                            "scriptPath": "atomF/title_flow.lua",
+                            "updGroupPriorityMode": "enum",
+                            "updCmpGroup": "MOVEMENT",
+                            "updGroupPriority": 0
+                        },
+                        "typeName": "CmpScriptUpd"
+                    }
+                ],
+                "entityName": "TitleFlow",
+                "initialTransform": {
+                    "quaternion": {
+                        "w": 1.0,
+                        "x": 0.0,
+                        "y": 0.0,
+                        "z": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0,
+                        "z": 1.0
+                    },
+                    "translate": {
+                        "x": 0.004911839962005615,
+                        "y": 0.0,
+                        "z": 0.0
+                    }
+                },
+                "tagHashes": [],
+                "tags": []
+            },
+            "instanceName": "TitleFlow",
+            "parentIndex": -1
+        }
+    ],
+    "sceneName": "atomFTitle",
+    "tagCatalog": [
+        "ENEMY",
+        "ENEMY_ITEM",
+        "ENEMY_WEAPON",
+        "PLAYER",
+        "PLAYER_ITEM",
+        "PLAYER_WEAPON"
+    ]
+}

@@ -44,6 +44,9 @@
 #include "System/Editor/Scene/EditorSceneAsset.h"
 #include "System/Entity/Entity.h"
 #include "System/Particle/SceneParticleServices.h"
+#include "System/Scripting/ScriptSceneContext.h"
+#include "System/Scripting/ScriptUiSprite.h"
+#include "Engine/Platform/Window/Window.h"
 
 #include <algorithm>
 
@@ -120,6 +123,9 @@ void SceneBuildUp::EnterScene() {
   TeardownEntities();
   PlayerDamageScreenVignette::Instance().Reset();
 
+  Script::SceneContext::Bind(this, &entities_, returnScene_);
+  Script::UiSprite::BeginFrame();
+
   sceneDocumentLoadFailed_ = false;
   sceneLoadFailureMessage_.clear();
   stageViewCameraLocked_ = SceneBuildUpStageCameraLock::kDefaultLocked;
@@ -177,6 +183,8 @@ void SceneBuildUp::Update() {
   }
 
   if (!sceneDocumentLoadFailed_) {
+    // Lua の Ui.image は毎フレーム積み直す（即時モード）
+    Script::UiSprite::BeginFrame();
     if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
       AtomF::RefreshScenePlayerLocatorFromEntities(entities_);
     }
@@ -242,6 +250,8 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
     PlayerDamageScreenVignette::Instance().Draw(engine);
   }
+  Script::UiSprite::Draw(engine, static_cast<float>(width),
+                         static_cast<float>(height));
 }
 
 #endif
@@ -272,6 +282,9 @@ void SceneBuildUp::DrawScene() {
   if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
     PlayerDamageScreenVignette::Instance().Draw(engine);
   }
+  Script::UiSprite::Draw(
+      engine, static_cast<float>(Window::kDefaultClientWidth),
+      static_cast<float>(Window::kDefaultClientHeight));
 
 #if !defined(DEVELOPMENT) && !defined(USE_IMGUI)
   if (showsNextSceneHint_) {
@@ -316,6 +329,8 @@ void SceneBuildUp::ExitScene() {
 #endif
   SceneBuildUpAudioPolicy::OnExitScene(*this);
   TeardownEntities();
+  Script::UiSprite::BeginFrame();
+  Script::SceneContext::Unbind(this);
   ReleaseCommonResources();
   SceneBuildUpRegistry::Instance().OnSceneExited(this);
 }
