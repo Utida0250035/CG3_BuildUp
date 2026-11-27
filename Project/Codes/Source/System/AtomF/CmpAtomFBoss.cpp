@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -171,6 +171,13 @@ constexpr float kTideSpeed = 3.0f;
 constexpr float kTideHalfArcRad = 1.2f;
 constexpr float kTideCycles = 1.5f;
 constexpr float kTideTelegraphSeconds = 1.0f;
+/// 稲妻: 自機方向へ向けて弾列を左右に折り返しながら撃ち、ジグザグの弾の道を作る。
+constexpr int kZigzagShotCount = 32;
+constexpr float kZigzagShotIntervalSeconds = 0.09f;
+constexpr float kZigzagHalfArcRad = 0.7f;
+constexpr int kZigzagPeriodShots = 8;
+constexpr float kZigzagSpeed = 3.4f;
+constexpr float kZigzagTelegraphSeconds = 1.0f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1096,6 +1103,26 @@ void CmpAtomFBoss::FireTideShot() {
   }
 }
 
+void CmpAtomFBoss::FireZigzagShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int shot = kZigzagShotCount - fanWavesLeft_;
+  const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+  // 三角波（-1〜1）で左右に折り返す。急に向きが反転するため、直線で避けにくい。
+  const int phase = shot % kZigzagPeriodShots;
+  const float half = static_cast<float>(kZigzagPeriodShots) * 0.5f;
+  const float tri = std::fabs(static_cast<float>(phase) - half) / (half * 0.5f) - 1.0f;
+  const float angle = center + kZigzagHalfArcRad * tri;
+  const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+  AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, kZigzagSpeed,
+                              params_.ringBulletRadiusMeters,
+                              Math::Vector4{0.95f, 0.9f, 0.3f, 1.0f});
+  if ((shot % 4) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1283,6 +1310,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Pincer: duration = kPincerTelegraphSeconds; break;
   case Skill::Carousel: duration = kCarouselTelegraphSeconds; break;
   case Skill::Tide: duration = kTideTelegraphSeconds; break;
+  case Skill::Zigzag: duration = kZigzagTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1401,6 +1429,22 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                     Math::Vector4{0.3f, 0.5f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse});
       telegraph->AddRing(ground, radius_ + 0.5f + 5.0f * progress, locked ? 0.16f : 0.1f,
                     Math::Vector4{0.5f, 0.9f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse});
+      break;
+    }
+    case Skill::Zigzag: {
+      // 折り返しの両端と中央を結ぶジグザグの折れ線を予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      const Math::Vector4 tint{0.95f, 0.9f, 0.3f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      Math::Vector3 prev = ground + Math::Vector3{std::cos(center), 0.0f, std::sin(center)} * (radius_ + 0.5f);
+      for (int i = 1; i <= 6; ++i) {
+        const float side = (i % 2 == 0) ? -1.0f : 1.0f;
+        const float angle = center + kZigzagHalfArcRad * side * 0.5f;
+        const float dist = radius_ + 0.5f + 1.2f * static_cast<float>(i);
+        const Math::Vector3 point = ground + Math::Vector3{std::cos(angle), 0.0f, std::sin(angle)} * dist;
+        telegraph->AddLine(prev, point, locked ? 0.2f : 0.1f, tint);
+        prev = point;
+      }
       break;
     }
     case Skill::Pendulum: {
@@ -1800,6 +1844,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCarouselShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Zigzag:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kZigzagShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Tide:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1957,6 +2007,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireCarouselShot();
     --fanWavesLeft_;
     volleyTimer_ = kCarouselShotIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Zigzag) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireZigzagShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kZigzagShotIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

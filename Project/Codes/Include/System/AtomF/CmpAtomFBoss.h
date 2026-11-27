@@ -53,7 +53,8 @@ public:
     Downpour,
     Pincer,
     Carousel,
-    Tide
+    Tide,
+    Zigzag
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -125,6 +126,7 @@ private:
   void FirePincerShot();
   void FireCarouselShot();
   void FireTideShot();
+  void FireZigzagShot();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();

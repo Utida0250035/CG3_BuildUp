@@ -2771,3 +2771,11 @@ develop を基に、ボスの新スキル **潮汐**（`Skill::Tide`。外周の
 
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128d`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス稲妻・bolter/zapper 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **稲妻**（`Skill::Zigzag`。自機方向へ弾列を三角波で左右（±約 40°）に折り返しながら 32 発・0.09 秒間隔で撃ち、ジグザグの弾の道を作る。予備動作は折り返しを示す黄色のジグザグ線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **bolter**（高速横揺れ突進）と **zapper**（距離を保ち速い小弾を短間隔で撃つ）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**（switch・宣言/実装を静的確認）。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 推測した用途: 向きが急反転する弾列で、直線的な回避を封じ小刻みな位置調整を求めるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128e`（develop から作成）。
