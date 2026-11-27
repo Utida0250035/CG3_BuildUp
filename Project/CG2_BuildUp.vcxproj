@@ -529,6 +529,11 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\Scene\ScreenHeartIconDraw.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFPlayerBulletHitAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyHitAttach.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemySpawn.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFBossSpawn.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFBoss.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFBoss.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFStageDirector.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFMeshModelAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackFx.cpp" />

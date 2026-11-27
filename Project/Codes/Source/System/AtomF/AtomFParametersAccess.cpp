@@ -218,6 +218,24 @@ const EnemyChainExplosionParameters &ResolveEnemyChainExplosionParameters() {
   return kFallback;
 }
 
+const BossParameters &ResolveBossParameters() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Boss();
+  }
+  static const BossParameters kFallback{};
+  return kFallback;
+}
+
+const StageParameters &ResolveStageParameters() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Stage();
+  }
+  static const StageParameters kFallback{};
+  return kFallback;
+}
+
 CombatCameraParameters ResolveCombatCameraParameters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {

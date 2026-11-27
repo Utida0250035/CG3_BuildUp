@@ -86,5 +86,30 @@
       { "name": "weaver", "moveSpeedMultiplier": 1.2, "chargeEnabled": false, "weaveAmplitudeMeters": 1.2, "weaveHz": 0.45, "color": [0.7, 0.35, 0.95] },
       { "name": "charger", "moveSpeedMultiplier": 0.6, "chargeEnabled": true, "chargeIntervalSeconds": 2.5, "color": [0.95, 0.55, 0.15] }
     ]
+  },
+  "stage": {
+    "waveEnemyCounts": [8, 10],
+    "waveStartDelaySeconds": 1.5,
+    "bossAppearDelaySeconds": 1.5,
+    "waveSpawnRadiusMeters": 11.0
+  },
+  "boss": {
+    "maxHealth": 128,
+    "bodyRadiusMeters": 1.2,
+    "moveSpeedMetersPerSecond": 0.4,
+    "skillIntervalSeconds": 2.0,
+    "appearSeconds": 2.2,
+    "deathSeconds": 3.2,
+    "bulletDamage": 2,
+    "explosionDamage": 12,
+    "stunSeconds": 2.8,
+    "stunDamageMultiplier": 2.0,
+    "enrageHealthRatio": 0.5,
+    "enrageIntervalMultiplier": 0.6,
+    "maxMinions": 10,
+    "color": [0.07, 0.07, 0.13],
+    "charge": { "telegraphSeconds": 1.0, "durationSeconds": 0.9, "speedMetersPerSecond": 4.5 },
+    "summon": { "telegraphSeconds": 1.0, "count": 4, "ringRadiusMeters": 2.4 },
+    "nova": { "telegraphSeconds": 1.3, "radiusMeters": 4.0, "knockbackSpeedMetersPerSecond": 2.0 }
   }
 }

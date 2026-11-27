@@ -40,6 +40,10 @@ const EnemyPeriodicChargeTimingParameters &
 ResolveEnemyPeriodicChargeTimingParameters();
 const EnemyChainExplosionParameters &ResolveEnemyChainExplosionParameters();
 
+/// ボスとステージ進行。parameters 未読込時は struct 既定値。
+const BossParameters &ResolveBossParameters();
+const StageParameters &ResolveStageParameters();
+
 /// 見下ろし追従カメラ。parameters 未読込時は struct 既定値。
 CombatCameraParameters ResolveCombatCameraParameters();
 

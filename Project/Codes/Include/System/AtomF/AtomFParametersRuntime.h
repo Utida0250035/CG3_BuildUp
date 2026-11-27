@@ -106,6 +106,51 @@ struct EnemyParameters {
   std::string modelName;
 };
 
+/// ボス（Hp128・耐久系パッシブなし）。ダメージは自機弾の直撃と雑魚の爆発のみ。
+struct BossParameters {
+  int maxHealth = 128;
+  float bodyRadiusMeters = 1.2f;
+  float moveSpeedMetersPerSecond = 0.4f;
+  /// 技と技の間の待ち時間（歩いて自機へ近づく）。
+  float skillIntervalSeconds = 2.0f;
+  float appearSeconds = 2.2f;
+  float deathSeconds = 3.2f;
+  int bulletDamage = 2;
+  int explosionDamage = 12;
+  /// 突進が壁に当たった後の目眩（特殊アクション）。この間は被ダメージ倍率が上がる。
+  float stunSeconds = 2.8f;
+  float stunDamageMultiplier = 2.0f;
+  /// Hp 割合がこれ以下で第 2 形態（技の間隔が短くなる）。
+  float enrageHealthRatio = 0.5f;
+  float enrageIntervalMultiplier = 0.6f;
+  /// 場に出ている雑魚がこの数以上なら召喚を選ばない。
+  int maxMinions = 10;
+  float colorR = 0.07f;
+  float colorG = 0.07f;
+  float colorB = 0.13f;
+
+  float chargeTelegraphSeconds = 1.0f;
+  float chargeDurationSeconds = 0.9f;
+  float chargeSpeedMetersPerSecond = 4.5f;
+
+  float summonTelegraphSeconds = 1.0f;
+  int summonCount = 4;
+  float summonRingRadiusMeters = 2.4f;
+
+  float novaTelegraphSeconds = 1.3f;
+  float novaRadiusMeters = 4.0f;
+  float novaKnockbackSpeedMetersPerSecond = 2.0f;
+};
+
+/// ステージ進行。最初の群れ（シーン生成時）が全滅するごとに waves の次の群れが出て、
+/// 最後の群れが全滅するとボスが出現する。
+struct StageParameters {
+  std::vector<int> waveEnemyCounts{8, 10};
+  float waveStartDelaySeconds = 1.5f;
+  float bossAppearDelaySeconds = 1.5f;
+  float waveSpawnRadiusMeters = 11.0f;
+};
+
 /// 斜め見下ろし追従カメラ（`parameters.json` の `camera`）。
 struct CombatCameraFollowEyeOffset {
   float offsetXMeters = 0.0f;
@@ -145,12 +190,18 @@ public:
 
   const CombatCameraParameters &Camera() const { return camera_; }
 
+  const BossParameters &Boss() const { return boss_; }
+
+  const StageParameters &Stage() const { return stage_; }
+
 private:
   bool loaded_ = false;
   ArenaParameters arena_{};
   PlayerParameters player_{};
   EnemyParameters enemy_{};
   CombatCameraParameters camera_{};
+  BossParameters boss_{};
+  StageParameters stage_{};
 };
 
 } // namespace Atrum::AtomF

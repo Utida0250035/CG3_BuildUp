@@ -186,6 +186,83 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
   }
 }
 
+void ApplyBossFromJson(const nlohmann::json &root, BossParameters &out) {
+  if (!root.contains("boss") || !root.at("boss").is_object()) {
+    return;
+  }
+  const auto &b = root.at("boss");
+  out.maxHealth = std::max(1, b.value("maxHealth", out.maxHealth));
+  out.bodyRadiusMeters =
+      std::max(0.1f, b.value("bodyRadiusMeters", out.bodyRadiusMeters));
+  out.moveSpeedMetersPerSecond =
+      b.value("moveSpeedMetersPerSecond", out.moveSpeedMetersPerSecond);
+  out.skillIntervalSeconds =
+      b.value("skillIntervalSeconds", out.skillIntervalSeconds);
+  out.appearSeconds = std::max(0.1f, b.value("appearSeconds", out.appearSeconds));
+  out.deathSeconds = std::max(0.1f, b.value("deathSeconds", out.deathSeconds));
+  out.bulletDamage = b.value("bulletDamage", out.bulletDamage);
+  out.explosionDamage = b.value("explosionDamage", out.explosionDamage);
+  out.stunSeconds = b.value("stunSeconds", out.stunSeconds);
+  out.stunDamageMultiplier =
+      b.value("stunDamageMultiplier", out.stunDamageMultiplier);
+  out.enrageHealthRatio = b.value("enrageHealthRatio", out.enrageHealthRatio);
+  out.enrageIntervalMultiplier =
+      b.value("enrageIntervalMultiplier", out.enrageIntervalMultiplier);
+  out.maxMinions = b.value("maxMinions", out.maxMinions);
+  if (b.contains("color") && b.at("color").is_array() &&
+      b.at("color").size() >= 3) {
+    out.colorR = b.at("color").at(0).get<float>();
+    out.colorG = b.at("color").at(1).get<float>();
+    out.colorB = b.at("color").at(2).get<float>();
+  }
+  if (b.contains("charge") && b.at("charge").is_object()) {
+    const auto &c = b.at("charge");
+    out.chargeTelegraphSeconds =
+        c.value("telegraphSeconds", out.chargeTelegraphSeconds);
+    out.chargeDurationSeconds =
+        c.value("durationSeconds", out.chargeDurationSeconds);
+    out.chargeSpeedMetersPerSecond =
+        c.value("speedMetersPerSecond", out.chargeSpeedMetersPerSecond);
+  }
+  if (b.contains("summon") && b.at("summon").is_object()) {
+    const auto &c = b.at("summon");
+    out.summonTelegraphSeconds =
+        c.value("telegraphSeconds", out.summonTelegraphSeconds);
+    out.summonCount = c.value("count", out.summonCount);
+    out.summonRingRadiusMeters =
+        c.value("ringRadiusMeters", out.summonRingRadiusMeters);
+  }
+  if (b.contains("nova") && b.at("nova").is_object()) {
+    const auto &c = b.at("nova");
+    out.novaTelegraphSeconds =
+        c.value("telegraphSeconds", out.novaTelegraphSeconds);
+    out.novaRadiusMeters = c.value("radiusMeters", out.novaRadiusMeters);
+    out.novaKnockbackSpeedMetersPerSecond = c.value(
+        "knockbackSpeedMetersPerSecond", out.novaKnockbackSpeedMetersPerSecond);
+  }
+}
+
+void ApplyStageFromJson(const nlohmann::json &root, StageParameters &out) {
+  if (!root.contains("stage") || !root.at("stage").is_object()) {
+    return;
+  }
+  const auto &s = root.at("stage");
+  if (s.contains("waveEnemyCounts") && s.at("waveEnemyCounts").is_array()) {
+    out.waveEnemyCounts.clear();
+    for (const auto &n : s.at("waveEnemyCounts")) {
+      if (n.is_number_integer()) {
+        out.waveEnemyCounts.push_back(std::max(0, n.get<int>()));
+      }
+    }
+  }
+  out.waveStartDelaySeconds =
+      s.value("waveStartDelaySeconds", out.waveStartDelaySeconds);
+  out.bossAppearDelaySeconds =
+      s.value("bossAppearDelaySeconds", out.bossAppearDelaySeconds);
+  out.waveSpawnRadiusMeters =
+      s.value("waveSpawnRadiusMeters", out.waveSpawnRadiusMeters);
+}
+
 bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {
   if (!json.is_object()) {
     return false;
@@ -239,6 +316,8 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
   camera_ = CombatCameraParameters{};
+  boss_ = BossParameters{};
+  stage_ = StageParameters{};
 
   std::ifstream stream(path);
   if (!stream) {
@@ -268,6 +347,8 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   enemy_ = parsedEnemy;
   ApplyArenaFromJson(json, arena_);
   ApplyCombatCameraFromJson(json, camera_);
+  ApplyBossFromJson(json, boss_);
+  ApplyStageFromJson(json, stage_);
   loaded_ = true;
   return true;
 }
@@ -278,6 +359,8 @@ void ParametersRuntime::Unload() {
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
   camera_ = CombatCameraParameters{};
+  boss_ = BossParameters{};
+  stage_ = StageParameters{};
 }
 
 } // namespace Atrum::AtomF
