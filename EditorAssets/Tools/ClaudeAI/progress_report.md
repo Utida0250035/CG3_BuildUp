@@ -2743,3 +2743,10 @@ develop を基に、ボスの新スキル **驟雨**（`Skill::Downpour`。外�
 - 未実施: 実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 推測した用途: 全方位から時間差で飛来する弾で、自機の位置取りを継続的に動かさせるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-27（atomF: ボス挟撃・flanker/pincerer 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **挟撃**（`Skill::Pincer`。自機の方位から左右 ±90° の外周を発射点に、交互に自機の現在位置（±0.5m のばらつき）を狙う桃色の弾を 0.14 秒間隔で 24 発撃ち込む弾幕。予備動作は左右 2 つの発射点から自機へ伸びる線と狭まる輪、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **flanker**（周回しつつ横揺れ突進）と **pincerer**（距離を保ち横揺れしつつ射撃）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: 実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

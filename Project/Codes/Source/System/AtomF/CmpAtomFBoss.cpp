@@ -49,7 +49,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -65,7 +65,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -146,6 +146,14 @@ constexpr float kDownpourSourceRadiusRatio = 0.95f;
 constexpr float kDownpourSpeed = 2.6f;
 constexpr float kDownpourJitterMeters = 0.8f;
 constexpr float kDownpourTelegraphSeconds = 1.0f;
+
+/// 挟撃: 自機を挟む左右両側の外周から、交互に自機の現在位置へ弾を撃ち込む弾幕。
+constexpr int kPincerShotCount = 24;
+constexpr float kPincerShotIntervalSeconds = 0.14f;
+constexpr float kPincerSourceRadiusRatio = 0.95f;
+constexpr float kPincerSpeed = 3.0f;
+constexpr float kPincerJitterMeters = 0.5f;
+constexpr float kPincerTelegraphSeconds = 1.0f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -968,6 +976,36 @@ void CmpAtomFBoss::FireDownpourShot() {
   }
 }
 
+void CmpAtomFBoss::FirePincerShot() {
+  // 自機の方位から ±90° の外周を発射点とし、発射ごとに左右を入れ替えて現在位置を狙う。
+  Math::Vector3 target = slamTarget_;
+  if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+      player != nullptr && player->IsActive()) {
+    target = GroundPoint(player->GetWorldPosition());
+  }
+  const int shot = kPincerShotCount - fanWavesLeft_;
+  const float side = (shot % 2 == 0) ? 1.0f : -1.0f;
+  const float playerAngle = std::atan2(target.z, target.x);
+  const float angle = playerAngle + side * (kPi * 0.5f) + (Rand01() * 2.0f - 1.0f) * 0.12f;
+  const float sourceRadius = AtomF::ResolveArenaInnerRadiusMeters() * kPincerSourceRadiusRatio;
+  const Math::Vector3 source{std::cos(angle) * sourceRadius, 0.0f, std::sin(angle) * sourceRadius};
+  target.x += (Rand01() * 2.0f - 1.0f) * kPincerJitterMeters;
+  target.z += (Rand01() * 2.0f - 1.0f) * kPincerJitterMeters;
+  Math::Vector3 dir = target - source;
+  const float len = std::sqrt(dir.x * dir.x + dir.z * dir.z);
+  if (len < 1e-4f) {
+    return;
+  }
+  dir = {dir.x / len, 0.0f, dir.z / len};
+  AtomF::SpawnEnemyProjectile(source, dir, kPincerSpeed, params_.ringBulletRadiusMeters,
+                              Math::Vector4{1.0f, 0.55f, 0.75f, 1.0f});
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", source);
+  if (shot % 4 == 0) {
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1151,6 +1189,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Scatter: duration = kScatterTelegraphSeconds; break;
   case Skill::Crescent: duration = kCrescentTelegraphSeconds; break;
   case Skill::Downpour: duration = kDownpourTelegraphSeconds; break;
+  case Skill::Pincer: duration = kPincerTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1163,7 +1202,8 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
 
-  if ((skill_ == Skill::Slam || skill_ == Skill::Converge || skill_ == Skill::Downpour) && !locked) {
+  if ((skill_ == Skill::Slam || skill_ == Skill::Converge || skill_ == Skill::Downpour ||
+       skill_ == Skill::Pincer) && !locked) {
     if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
         player != nullptr && player->IsActive()) {
       slamTarget_ = GroundPoint(player->GetWorldPosition());
@@ -1300,6 +1340,19 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       const Math::Vector4 tint{0.4f, 0.85f, 1.0f, locked ? 0.7f : 0.25f + 0.25f * pulse};
       telegraph->AddRing(Math::Vector3{0.0f, 0.0f, 0.0f}, rim, locked ? 0.2f : 0.1f, tint);
       telegraph->AddRing(slamTarget_, 2.0f * (1.0f - progress) + 0.4f, 0.1f, tint);
+      break;
+    }
+    case Skill::Pincer: {
+      // 自機を挟む左右 2 つの発射点から自機へ伸びる線を予告する。確定後は太く濃くなる。
+      const float rim = AtomF::ResolveArenaInnerRadiusMeters() * kPincerSourceRadiusRatio;
+      const float playerAngle = std::atan2(slamTarget_.z, slamTarget_.x);
+      const Math::Vector4 tint{1.0f, 0.55f, 0.75f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      for (int k = -1; k <= 1; k += 2) {
+        const float a = playerAngle + static_cast<float>(k) * kPi * 0.5f;
+        const Math::Vector3 src{std::cos(a) * rim, 0.0f, std::sin(a) * rim};
+        telegraph->AddLine(src, slamTarget_, locked ? 0.2f : 0.1f, tint);
+      }
+      telegraph->AddRing(slamTarget_, 1.5f * (1.0f - progress) + 0.4f, 0.1f, tint);
       break;
     }
     case Skill::Crescent: {
@@ -1615,6 +1668,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kDownpourShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Pincer:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kPincerShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Crescent:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1740,6 +1799,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireDownpourShot();
     --fanWavesLeft_;
     volleyTimer_ = kDownpourShotIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Pincer) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FirePincerShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kPincerShotIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
