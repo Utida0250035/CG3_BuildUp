@@ -2757,3 +2757,10 @@ develop を基に、ボスの新スキル **回転木馬**（`Skill::Carousel`�
 
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128b`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス護衛召喚・escort/retainer 追加・スケジュール実行）
+
+develop を基に、ボスの召喚スキル **護衛召喚**（`Skill::SummonGuard`。ボス自身の周囲 2.6m の輪に雑魚 6 体を等間隔で召喚し、本体への接近を阻む。予備動作は既存の召喚と同じ出現点リングで桃色）を `CmpAtomFBoss` に追加し、通常・狂暴化の両行動順へ組み込んだ。雑魚 **escort**（近距離を周回しつつ突進と射撃を併用）と **retainer**（近めの距離を保ち横揺れしつつ連射）を `parameters.json` に追加し、肥大化した最終ウェーブを避けて第 5 ウェーブ（hunter の波）へ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、該当ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128c`（develop から作成）。

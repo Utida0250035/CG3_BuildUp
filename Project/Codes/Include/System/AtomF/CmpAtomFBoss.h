@@ -31,6 +31,7 @@ public:
     SummonFlank,
     SummonCutoff,
     SummonVanguard,
+    SummonGuard,
     Dash,
     Spiral,
     GapRing,

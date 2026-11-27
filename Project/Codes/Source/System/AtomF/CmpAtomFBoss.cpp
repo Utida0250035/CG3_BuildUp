@@ -44,6 +44,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::SummonCutoff, CmpAtomFBoss::Skill::SummonVanguard,
+    CmpAtomFBoss::Skill::SummonGuard,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
@@ -59,6 +60,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::SummonSurround, CmpAtomFBoss::Skill::Spiral,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
     CmpAtomFBoss::Skill::SummonCutoff, CmpAtomFBoss::Skill::SummonVanguard,
+    CmpAtomFBoss::Skill::SummonGuard,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
@@ -237,6 +239,9 @@ constexpr int kVanguardRows = 3;
 constexpr float kVanguardFirstDistance = 2.6f;
 constexpr float kVanguardRowSpacing = 1.4f;
 constexpr float kVanguardSideSpacing = 1.3f;
+/// 護衛召喚: ボス自身の周囲へ輪状に召喚し、本体への接近を阻む。
+constexpr int kGuardCount = 6;
+constexpr float kGuardRadius = 2.6f;
 
 float Rand01() {
   static uint32_t state = 0x1234ABCDu;
@@ -531,6 +536,24 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     }
   }
 
+  if (skill == Skill::SummonGuard) {
+    // ボス自身を中心にした輪の上へ等間隔で召喚する（アリーナ内へ収める）。
+    summonPoints_.clear();
+    const Math::Vector3 origin = GroundPoint(RefOwner().GetWorldPosition());
+    const float arena = AtomF::ResolveArenaInnerRadiusMeters() * 0.9f;
+    const float offset = Rand01() * kTwoPi;
+    for (int i = 0; i < kGuardCount; ++i) {
+      const float angle = offset + kTwoPi * static_cast<float>(i) / static_cast<float>(kGuardCount);
+      Math::Vector3 point{origin.x + std::cos(angle) * kGuardRadius, 0.0f,
+                          origin.z + std::sin(angle) * kGuardRadius};
+      const float len = std::sqrt(point.x * point.x + point.z * point.z);
+      if (len > arena && len > 1e-4f) {
+        point = {point.x * arena / len, 0.0f, point.z * arena / len};
+      }
+      summonPoints_.push_back(point);
+    }
+  }
+
   if (skill == Skill::SummonCutoff) {
     // 自機の背後に横一列で召喚し、後ろへ逃げる動きを塞ぐ（アリーナ内へ収める）。
     summonPoints_.clear();
@@ -707,6 +730,9 @@ void CmpAtomFBoss::ExecuteSummon() {
   } else if (skill_ == Skill::SummonVanguard) {
     nameA = "cadet";
     nameB = "knight";
+  } else if (skill_ == Skill::SummonGuard) {
+    nameA = "escort";
+    nameB = "retainer";
   }
   const AtomF::EnemyVariantParameters *a = AtomF::FindEnemyVariantByName(nameA);
   const AtomF::EnemyVariantParameters *b = AtomF::FindEnemyVariantByName(nameB);
@@ -1203,6 +1229,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::SummonFlank:
   case Skill::SummonCutoff:
   case Skill::SummonVanguard:
+  case Skill::SummonGuard:
     duration = params_.summonTelegraphSeconds;
     break;
   case Skill::Dash:
@@ -1584,7 +1611,8 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     case Skill::SummonSurround:
     case Skill::SummonFlank:
     case Skill::SummonCutoff:
-    case Skill::SummonVanguard: {
+    case Skill::SummonVanguard:
+    case Skill::SummonGuard: {
       // 種類ごとに色を変える（散開=水色 / 囲む=黄 / 両翼=赤橙 / 退路封鎖=紫 / 前衛=緑）。
       const Math::Vector4 tint =
           skill_ == Skill::SummonSurround
@@ -1595,7 +1623,9 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                             ? Math::Vector4{0.8f, 0.4f, 1.0f, 1.0f}
                             : (skill_ == Skill::SummonVanguard
                                    ? Math::Vector4{0.4f, 1.0f, 0.55f, 1.0f}
-                                   : Math::Vector4{0.5f, 0.9f, 1.0f, 1.0f})));
+                                   : (skill_ == Skill::SummonGuard
+                                          ? Math::Vector4{1.0f, 0.75f, 0.85f, 1.0f}
+                                          : Math::Vector4{0.5f, 0.9f, 1.0f, 1.0f}))));
       const Math::Vector3 ground = GroundPoint(origin);
       for (const Math::Vector3 &point : summonPoints_) {
         telegraph->AddRing(point, 0.9f - 0.5f * progress, 0.08f,
@@ -1656,6 +1686,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::SummonFlank:
   case Skill::SummonCutoff:
   case Skill::SummonVanguard:
+  case Skill::SummonGuard:
     ExecuteSummon();
     FinishSkill();
     break;
