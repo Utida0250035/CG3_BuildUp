@@ -2735,3 +2735,11 @@ develop を基に、ボスの新スキル **三日月**（`Skill::Crescent`。�
 - 未実施: 実機確認、ボス戦 BGM 切替、第 7 ウェーブの難度確認。
 - 推測した用途: 広い円弧の弾幕で「端へ逃げず中央の速い弾の間を抜ける」判断を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-28（atomF: ボス驟雨・drizzler/stomper 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **驟雨**（`Skill::Downpour`。外周のランダムな位置から、発射のたびに自機の現在位置（±0.8m のばらつき）を狙い直した水色の弾を 0.12 秒間隔で 26 発降らせる弾幕。予備動作は外周を縁取る輪と自機へ狭まる輪、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **drizzler**（距離を保ち横揺れしつつ速い小弾を撃つ）と **stomper**（周回しつつ短間隔で突進）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: 実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 推測した用途: 全方位から時間差で飛来する弾で、自機の位置取りを継続的に動かさせるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

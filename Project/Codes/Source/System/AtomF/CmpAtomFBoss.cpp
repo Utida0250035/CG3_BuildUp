@@ -49,7 +49,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -65,7 +65,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -138,6 +138,14 @@ constexpr float kCrescentBaseSpeed = 2.2f;
 constexpr float kCrescentCenterSpeedBonus = 1.2f;
 constexpr float kCrescentWaveIntervalSeconds = 0.6f;
 constexpr float kCrescentTelegraphSeconds = 1.0f;
+
+/// 驟雨: 外周のランダムな位置から、自機の現在位置へ向けて 1 発ずつ時間差で降らせる弾幕。
+constexpr int kDownpourShotCount = 26;
+constexpr float kDownpourShotIntervalSeconds = 0.12f;
+constexpr float kDownpourSourceRadiusRatio = 0.95f;
+constexpr float kDownpourSpeed = 2.6f;
+constexpr float kDownpourJitterMeters = 0.8f;
+constexpr float kDownpourTelegraphSeconds = 1.0f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -933,6 +941,33 @@ void CmpAtomFBoss::FireCrescentWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.1f);
 }
 
+void CmpAtomFBoss::FireDownpourShot() {
+  // 発射のたびに自機の現在位置を狙い直す。発射点は外周のランダムな角度。
+  Math::Vector3 target = slamTarget_;
+  if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+      player != nullptr && player->IsActive()) {
+    target = GroundPoint(player->GetWorldPosition());
+  }
+  const float sourceRadius = AtomF::ResolveArenaInnerRadiusMeters() * kDownpourSourceRadiusRatio;
+  const float angle = Rand01() * kTwoPi;
+  const Math::Vector3 source{std::cos(angle) * sourceRadius, 0.0f, std::sin(angle) * sourceRadius};
+  target.x += (Rand01() * 2.0f - 1.0f) * kDownpourJitterMeters;
+  target.z += (Rand01() * 2.0f - 1.0f) * kDownpourJitterMeters;
+  Math::Vector3 dir = target - source;
+  const float len = std::sqrt(dir.x * dir.x + dir.z * dir.z);
+  if (len < 1e-4f) {
+    return;
+  }
+  dir = {dir.x / len, 0.0f, dir.z / len};
+  AtomF::SpawnEnemyProjectile(source, dir, kDownpourSpeed, params_.ringBulletRadiusMeters,
+                              Math::Vector4{0.4f, 0.85f, 1.0f, 1.0f});
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", source);
+  if ((kDownpourShotCount - fanWavesLeft_) % 4 == 0) {
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1115,6 +1150,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Curtain: duration = kCurtainTelegraphSeconds; break;
   case Skill::Scatter: duration = kScatterTelegraphSeconds; break;
   case Skill::Crescent: duration = kCrescentTelegraphSeconds; break;
+  case Skill::Downpour: duration = kDownpourTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1127,7 +1163,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
 
-  if ((skill_ == Skill::Slam || skill_ == Skill::Converge) && !locked) {
+  if ((skill_ == Skill::Slam || skill_ == Skill::Converge || skill_ == Skill::Downpour) && !locked) {
     if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
         player != nullptr && player->IsActive()) {
       slamTarget_ = GroundPoint(player->GetWorldPosition());
@@ -1256,6 +1292,14 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
         }
         prev = point;
       }
+      break;
+    }
+    case Skill::Downpour: {
+      // 外周を縁取る薄い輪と、自機を中心に狭まる輪を予告する。確定後は濃くなる。
+      const float rim = AtomF::ResolveArenaInnerRadiusMeters() * kDownpourSourceRadiusRatio;
+      const Math::Vector4 tint{0.4f, 0.85f, 1.0f, locked ? 0.7f : 0.25f + 0.25f * pulse};
+      telegraph->AddRing(Math::Vector3{0.0f, 0.0f, 0.0f}, rim, locked ? 0.2f : 0.1f, tint);
+      telegraph->AddRing(slamTarget_, 2.0f * (1.0f - progress) + 0.4f, 0.1f, tint);
       break;
     }
     case Skill::Crescent: {
@@ -1565,6 +1609,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kPendulumShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Downpour:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kDownpourShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Crescent:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1677,6 +1727,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireLatticeWave();
     --fanWavesLeft_;
     volleyTimer_ = kLatticeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Downpour) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireDownpourShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kDownpourShotIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
