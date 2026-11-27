@@ -43,7 +43,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Summon,
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
-    CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
+    CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -52,7 +53,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::SummonSurround, CmpAtomFBoss::Skill::Spiral,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
-    CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Slam,   CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -73,6 +74,16 @@ constexpr float kSweepIntervalSeconds = 0.06f;
 constexpr float kSweepHalfArcRadians = 1.05f;
 constexpr float kSweepTelegraphSeconds = 1.0f;
 constexpr float kSweepBulletSpeed = 2.6f;
+
+/// 跳躍叩きつけ: 自機の足元へ跳び、着地点で小さな衝撃波を起こす（近接）。
+constexpr float kSlamTelegraphSeconds = 1.0f;
+constexpr float kSlamLeapSeconds = 0.65f;
+constexpr float kSlamArcHeight = 2.6f;
+constexpr float kSlamShockRadius = 4.2f;
+constexpr float kSlamShockSpeed = 6.0f;
+constexpr float kSlamShockBand = 0.3f;
+constexpr float kSlamRecoverSeconds = 1.1f;
+constexpr float kSlamTargetRadius = 1.6f;
 
 /// 自機を囲む召喚の数・半径、両翼召喚の数・間隔。
 constexpr int kSurroundCount = 5;
@@ -248,10 +259,14 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
   stateElapsed_ = 0.0f;
   lockedDirection_ = DirectionToPlayerXZ();
 
-  if (skill == Skill::Dash) {
+  if (skill == Skill::Dash || skill == Skill::Slam) {
     AtomF::PlayBossMeleeWarnSe();
   } else {
     AtomF::PlayBossBulletWarnSe();
+  }
+
+  if (skill == Skill::Slam) {
+    slamTarget_ = GroundPoint(RefOwner().GetWorldPosition());
   }
 
   if (skill == Skill::Spiral) {
@@ -352,6 +367,45 @@ void CmpAtomFBoss::EndDash() {
   CombatCameraShake::Instance().RequestCustomShake(0.32f, 0.55f);
   state_ = State::Recover;
   stateElapsed_ = 0.0f;
+}
+
+void CmpAtomFBoss::BeginLeap() {
+  state_ = State::Leap;
+  stateElapsed_ = 0.0f;
+  leapStart_ = RefOwner().GetWorldPosition();
+  ClearTelegraph();
+  SetDrawJitter(0.0f, 0.0f);
+  AtomF::PlayBossShotSe();
+  // 跳び立つ位置の土煙。
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_dash_trail.json",
+                                           GroundPoint(leapStart_));
+}
+
+void CmpAtomFBoss::UpdateLeap(const float dt) {
+  (void)dt;
+  const float duration = std::max(0.2f, kSlamLeapSeconds);
+  const float t = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
+  const float ease = t * t * (3.0f - 2.0f * t);
+  Math::Vector3 &translate = RefOwner().RefTransform().translate;
+  translate.x = leapStart_.x + (slamTarget_.x - leapStart_.x) * ease;
+  translate.z = leapStart_.z + (slamTarget_.z - leapStart_.z) * ease;
+  translate.y = radius_ + kSlamArcHeight * 4.0f * t * (1.0f - t);
+  if (t >= 1.0f) {
+    translate.y = radius_;
+    EndLeap();
+  }
+}
+
+void CmpAtomFBoss::EndLeap() {
+  const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
+  AtomF::SpawnBossShockwave(ground, kSlamShockRadius, kSlamShockSpeed,
+                            kSlamShockBand);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_slam.json", ground);
+  AtomF::PlayBossDeathBoomSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.25f, 0.45f);
+  state_ = State::Recover;
+  stateElapsed_ = 0.0f;
+  recoverOverrideSeconds_ = kSlamRecoverSeconds;
 }
 
 void CmpAtomFBoss::ExecuteRing() {
@@ -556,6 +610,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Spiral: duration = kSpiralTelegraphSeconds; break;
   case Skill::GapRing: duration = kGapRingTelegraphSeconds; break;
   case Skill::Sweep: duration = kSweepTelegraphSeconds; break;
+  case Skill::Slam: duration = kSlamTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
@@ -563,6 +618,13 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
 
   if ((skill_ == Skill::Volley || skill_ == Skill::Dash) && !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
+  }
+
+  if (skill_ == Skill::Slam && !locked) {
+    if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+        player != nullptr && player->IsActive()) {
+      slamTarget_ = GroundPoint(player->GetWorldPosition());
+    }
   }
 
   SetDrawJitter(0.02f + 0.08f * progress, stateElapsed_);
@@ -686,6 +748,24 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       break;
     }
+    case Skill::Slam: {
+      // 着地点を縮む輪と十字で示す。確定後は赤く太くなる。
+      const Math::Vector4 tone = locked ? Math::Vector4{1.0f, 0.1f, 0.05f, 0.75f}
+                                        : Math::Vector4{1.0f, 0.55f, 0.15f, 0.4f};
+      telegraph->AddRing(slamTarget_, kSlamTargetRadius, 0.14f, tone);
+      telegraph->AddRing(slamTarget_,
+                    kSlamTargetRadius * (1.0f - 0.7f * progress), 0.1f,
+                    Math::Vector4{1.0f, 0.3f, 0.1f, 0.3f + 0.4f * pulse});
+      telegraph->AddRing(slamTarget_, kSlamShockRadius, 0.06f,
+                    Math::Vector4{1.0f, 0.4f, 0.2f, 0.18f});
+      telegraph->AddLine(slamTarget_ + Math::Vector3{-kSlamTargetRadius, 0.0f, 0.0f},
+                    slamTarget_ + Math::Vector3{kSlamTargetRadius, 0.0f, 0.0f},
+                    0.08f, tone);
+      telegraph->AddLine(slamTarget_ + Math::Vector3{0.0f, 0.0f, -kSlamTargetRadius},
+                    slamTarget_ + Math::Vector3{0.0f, 0.0f, kSlamTargetRadius},
+                    0.08f, tone);
+      break;
+    }
     case Skill::Dash:
       telegraph->AddLine(origin, origin + lockedDirection_ * 14.0f,
                     radius_ * 1.7f,
@@ -724,6 +804,9 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     break;
   case Skill::Dash:
     BeginDash();
+    break;
+  case Skill::Slam:
+    BeginLeap();
     break;
   case Skill::Spiral:
     state_ = State::Execute;
@@ -800,7 +883,10 @@ void CmpAtomFBoss::UpdateDash(const float dt) {
 
 void CmpAtomFBoss::UpdateRecover(const float dt) {
   (void)dt;
-  if (stateElapsed_ >= params_.recoverSeconds) {
+  const float recoverSeconds =
+      recoverOverrideSeconds_ >= 0.0f ? recoverOverrideSeconds_ : params_.recoverSeconds;
+  if (stateElapsed_ >= recoverSeconds) {
+    recoverOverrideSeconds_ = -1.0f;
     FinishSkill();
   }
 }
@@ -842,6 +928,8 @@ void CmpAtomFBoss::BeginDying() {
   stateElapsed_ = 0.0f;
   deathEffectTimer_ = 0.0f;
   deathBurstCount_ = 0;
+  RefOwner().RefTransform().translate.y = radius_;
+  recoverOverrideSeconds_ = -1.0f;
   deathAnchor_ = RefOwner().RefTransform().translate;
   ClearTelegraph();
   SetDrawJitter(0.0f, 0.0f);
@@ -983,6 +1071,7 @@ void CmpAtomFBoss::Update() {
   case State::Telegraph: UpdateTelegraph(dt); break;
   case State::Execute: UpdateExecute(dt); break;
   case State::Dash: UpdateDash(dt); break;
+  case State::Leap: UpdateLeap(dt); break;
   case State::Recover: UpdateRecover(dt); break;
   case State::Dying: UpdateDying(dt); break;
   }
