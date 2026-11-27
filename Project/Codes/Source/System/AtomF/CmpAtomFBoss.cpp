@@ -43,7 +43,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Summon,
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
-    CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -51,7 +51,8 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
     CmpAtomFBoss::Skill::SummonSurround, CmpAtomFBoss::Skill::Spiral,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
-    CmpAtomFBoss::Skill::GapRing, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
+    CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -65,6 +66,13 @@ constexpr int kGapRingBulletCount = 28;
 constexpr float kGapRingHalfWidthRadians = 0.42f;
 constexpr float kGapRingTelegraphSeconds = 1.1f;
 constexpr float kGapRingBulletSpeed = 2.3f;
+
+/// 薙ぎ払い: 自機方向を中心に扇状へ弾列を振る。
+constexpr int kSweepShotCount = 22;
+constexpr float kSweepIntervalSeconds = 0.06f;
+constexpr float kSweepHalfArcRadians = 1.05f;
+constexpr float kSweepTelegraphSeconds = 1.0f;
+constexpr float kSweepBulletSpeed = 2.6f;
 
 /// 自機を囲む召喚の数・半径、両翼召喚の数・間隔。
 constexpr int kSurroundCount = 5;
@@ -254,6 +262,13 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     // 自機の向きから左右どちらかへ 90° ずらした方向に隙間を作る（自機は隙間へ動く必要がある）。
     const float toPlayer = std::atan2(lockedDirection_.z, lockedDirection_.x);
     gapAngle_ = toPlayer + (Rand01() < 0.5f ? -0.5f : 0.5f) * kPi;
+  }
+
+  if (skill == Skill::Sweep) {
+    // 自機方向を中心に、左右どちらから振り始めるかを決める。
+    sweepDirection_ = Rand01() < 0.5f ? -1.0f : 1.0f;
+    sweepStartAngle_ = std::atan2(lockedDirection_.z, lockedDirection_.x) -
+                       sweepDirection_ * kSweepHalfArcRadians;
   }
 
   if (skill == Skill::SummonSurround) {
@@ -505,6 +520,27 @@ void CmpAtomFBoss::UpdateIdle(const float dt) {
   }
 }
 
+void CmpAtomFBoss::FireSweepShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int fired = kSweepShotCount - sweepShotsLeft_;
+  const float t = static_cast<float>(fired) / static_cast<float>(kSweepShotCount - 1);
+  const float angle = sweepStartAngle_ + sweepDirection_ * t * 2.0f * kSweepHalfArcRadians;
+  const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+  // 弾列を 2 本（速度違い）にして、薙ぎ払いの壁に厚みを持たせる。
+  AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                              kSweepBulletSpeed, params_.ringBulletRadiusMeters,
+                              Math::Vector4{0.9f, 0.3f, 1.0f, 1.0f});
+  AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                              kSweepBulletSpeed * 0.7f,
+                              params_.ringBulletRadiusMeters,
+                              Math::Vector4{0.9f, 0.3f, 1.0f, 1.0f});
+  if ((sweepShotsLeft_ % 4) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_shot_muzzle.json",
+                                             origin + dir * (radius_ + 0.1f));
+    AtomF::PlayBossShotSe();
+  }
+}
+
 void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   (void)dt;
   float duration = params_.ringTelegraphSeconds;
@@ -519,6 +555,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Dash: duration = params_.dashTelegraphSeconds; break;
   case Skill::Spiral: duration = kSpiralTelegraphSeconds; break;
   case Skill::GapRing: duration = kGapRingTelegraphSeconds; break;
+  case Skill::Sweep: duration = kSweepTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
@@ -568,6 +605,36 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       telegraph->AddRing(ground, radius_ + 0.3f + 1.2f * progress, 0.1f,
                     Math::Vector4{1.0f, 0.5f, 0.15f, 0.35f + 0.35f * pulse});
+      break;
+    }
+    case Skill::Sweep: {
+      // 扇の両端を淡い紫の線で、振り始める端を強い線で示す。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float endAngle =
+          sweepStartAngle_ + sweepDirection_ * 2.0f * kSweepHalfArcRadians;
+      const Math::Vector3 startDir{std::cos(sweepStartAngle_), 0.0f,
+                                   std::sin(sweepStartAngle_)};
+      const Math::Vector3 endDir{std::cos(endAngle), 0.0f, std::sin(endAngle)};
+      telegraph->AddLine(ground + startDir * (radius_ + 0.2f),
+                    ground + startDir * 9.0f, 0.22f,
+                    Math::Vector4{1.0f, 0.2f, 0.9f, 0.3f + 0.4f * progress});
+      telegraph->AddLine(ground + endDir * (radius_ + 0.2f),
+                    ground + endDir * 9.0f, 0.12f,
+                    Math::Vector4{0.8f, 0.4f, 1.0f, 0.25f});
+      constexpr int kArcSegments = 8;
+      for (int i = 0; i < kArcSegments; ++i) {
+        const float a0 = sweepStartAngle_ + sweepDirection_ * 2.0f *
+                                                kSweepHalfArcRadians *
+                                                static_cast<float>(i) / kArcSegments;
+        const float a1 = sweepStartAngle_ + sweepDirection_ * 2.0f *
+                                                kSweepHalfArcRadians *
+                                                static_cast<float>(i + 1) / kArcSegments;
+        const float reach = radius_ + 3.0f + 3.0f * progress;
+        telegraph->AddLine(
+            ground + Math::Vector3{std::cos(a0), 0.0f, std::sin(a0)} * reach,
+            ground + Math::Vector3{std::cos(a1), 0.0f, std::sin(a1)} * reach,
+            0.1f, Math::Vector4{0.9f, 0.3f, 1.0f, 0.3f + 0.3f * pulse});
+      }
       break;
     }
     case Skill::GapRing: {
@@ -664,6 +731,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     spiralShotsLeft_ = kSpiralShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Sweep:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    sweepShotsLeft_ = kSweepShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   }
 }
 
@@ -681,7 +754,20 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     }
     return;
   }
-  // Execute に長く留まるのは連射とスパイラル。
+  if (skill_ == Skill::Sweep) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireSweepShot();
+    --sweepShotsLeft_;
+    volleyTimer_ = kSweepIntervalSeconds;
+    if (sweepShotsLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  // Execute に長く留まるのは連射・スパイラル・薙ぎ払い。
   volleyTimer_ -= dt;
   if (volleyTimer_ > 0.0f) {
     return;
