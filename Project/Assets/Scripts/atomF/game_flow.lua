@@ -63,6 +63,50 @@ local function drawOverlays(dt, playerHealth)
   end
 end
 
+-- ボスの Hp ゲージ（画面上部）。白 4x4 画像を並べた分割バー。
+-- Ui.image は一様スケールのみのため、細かい正方形セグメントで長さを表す。
+-- ボス最大 Hp は parameters.json の boss.maxHealth（128）に合わせる。
+local BOSS_MAX_HEALTH = 128
+local BAR_SEGMENTS    = 32
+local BAR_SEG_STEP    = 0.0115
+local BAR_SEG_SCALE   = 3.4
+local BAR_Y           = 0.07
+local bossBarAlpha    = 0.0
+local bossBarShown    = 0
+
+local function drawBossBar(dt, bossHealth)
+  local present = bossHealth >= 0
+  -- 登場でフェードイン、消滅でフェードアウト
+  local target = present and 1.0 or 0.0
+  bossBarAlpha = bossBarAlpha + (target - bossBarAlpha) * math.min(dt * 6.0, 1.0)
+  if bossBarAlpha < 0.01 then
+    bossBarShown = 0
+    return
+  end
+  if present then
+    local ratio = math.max(0.0, math.min(bossHealth / BOSS_MAX_HEALTH, 1.0))
+    -- 表示セグメント数は滑らかに追従（減る時だけ少し遅れて見せる）
+    local want = ratio * BAR_SEGMENTS
+    bossBarShown = bossBarShown + (want - bossBarShown) * math.min(dt * 8.0, 1.0)
+  end
+
+  local x0 = 0.5 - (BAR_SEGMENTS - 1) * BAR_SEG_STEP * 0.5
+  local enraged = bossBarShown / BAR_SEGMENTS <= 0.4
+  for i = 1, BAR_SEGMENTS do
+    local x = x0 + (i - 1) * BAR_SEG_STEP
+    Ui.image(Paths.IMG_WHITE, x, BAR_Y, { scale = BAR_SEG_SCALE, r = 0.05, g = 0.02, b = 0.08, a = 0.6 * bossBarAlpha })
+    local fill = math.max(0.0, math.min(bossBarShown - (i - 1), 1.0))
+    if fill > 0.0 then
+      local pulse = enraged and (0.8 + 0.2 * math.sin(sceneTime * 12.0)) or 1.0
+      if enraged then
+        Ui.image(Paths.IMG_WHITE, x, BAR_Y, { scale = BAR_SEG_SCALE * fill, r = 1.0, g = 0.25, b = 0.2, a = pulse * bossBarAlpha })
+      else
+        Ui.image(Paths.IMG_WHITE, x, BAR_Y, { scale = BAR_SEG_SCALE * fill, r = 0.75, g = 0.3, b = 0.95, a = bossBarAlpha })
+      end
+    end
+  end
+end
+
 local function drawFlash(dt)
   if flashTime == nil then
     return
@@ -77,6 +121,7 @@ end
 
 function M.onUpdate(dt)
   drawFlash(dt)
+  drawBossBar(dt, SceneFlow.healthByRole("boss"))
   drawOverlays(dt, SceneFlow.healthByRole("player"))
   if SceneFlow.isChanging() then
     return
