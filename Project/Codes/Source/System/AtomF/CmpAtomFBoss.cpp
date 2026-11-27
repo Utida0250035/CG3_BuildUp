@@ -44,7 +44,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
-    CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
+    CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -54,7 +55,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
-    CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -68,6 +69,13 @@ constexpr int kGapRingBulletCount = 28;
 constexpr float kGapRingHalfWidthRadians = 0.42f;
 constexpr float kGapRingTelegraphSeconds = 1.1f;
 constexpr float kGapRingBulletSpeed = 2.3f;
+
+/// 風車: 4 本の腕で回転しながら撃ち、途中で回転方向が反転する。
+constexpr int kPinwheelShotCount = 40;
+constexpr float kPinwheelIntervalSeconds = 0.08f;
+constexpr float kPinwheelTurnPerShot = 0.22f;
+constexpr float kPinwheelTelegraphSeconds = 1.0f;
+constexpr float kPinwheelBulletSpeed = 2.2f;
 
 /// 薙ぎ払い: 自機方向を中心に扇状へ弾列を振る。
 constexpr int kSweepShotCount = 22;
@@ -280,6 +288,11 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
 
   if (skill == Skill::Spiral) {
     spiralAngle_ = Rand01() * kTwoPi;
+  }
+
+  if (skill == Skill::Pinwheel) {
+    spiralAngle_ = Rand01() * kTwoPi;
+    sweepDirection_ = Rand01() < 0.5f ? -1.0f : 1.0f;
   }
 
   if (skill == Skill::GapRing) {
@@ -524,6 +537,28 @@ void CmpAtomFBoss::FireSpiralShot() {
   }
 }
 
+void CmpAtomFBoss::FirePinwheelShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  for (int arm = 0; arm < 4; ++arm) {
+    const float angle = spiralAngle_ + kPi * 0.5f * static_cast<float>(arm);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                kPinwheelBulletSpeed,
+                                params_.ringBulletRadiusMeters,
+                                Math::Vector4{0.3f, 0.85f, 1.0f, 1.0f});
+  }
+  // 折り返しで回転方向を反転する（腕の間を抜ける軌道を読ませない）。
+  const int fired = kPinwheelShotCount - spiralShotsLeft_;
+  const float dirSign = fired < kPinwheelShotCount / 2 ? sweepDirection_
+                                                       : -sweepDirection_;
+  spiralAngle_ += dirSign * kPinwheelTurnPerShot;
+  if ((spiralShotsLeft_ % 8) == 0 || fired == kPinwheelShotCount / 2) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+  }
+}
+
 void CmpAtomFBoss::FireFanWave() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   // 波ごとに自機を狙い直す。奇数波は弾数を 1 つ減らして隙間の位置をずらす。
@@ -643,6 +678,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Sweep: duration = kSweepTelegraphSeconds; break;
   case Skill::Slam: duration = kSlamTelegraphSeconds; break;
   case Skill::Fan: duration = kFanTelegraphSeconds; break;
+  case Skill::Pinwheel: duration = kPinwheelTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
@@ -704,6 +740,23 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       telegraph->AddRing(ground, radius_ + 0.3f + 1.0f * progress, 0.1f,
                     Math::Vector4{0.7f, 1.0f, 0.2f, 0.35f + 0.3f * pulse});
+      break;
+    }
+    case Skill::Pinwheel: {
+      // 回り始める 4 本の腕（水色）と、回転方向を示す外周リングを予告する。
+      const Math::Vector3 ground = GroundPoint(origin);
+      for (int arm = 0; arm < 4; ++arm) {
+        const float angle = spiralAngle_ + kPi * 0.5f * static_cast<float>(arm) +
+                            sweepDirection_ * progress * 0.6f;
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f),
+                      ground + dir * (radius_ + 1.5f + 3.5f * progress),
+                      locked ? 0.2f : 0.12f,
+                      Math::Vector4{0.3f, 0.85f, 1.0f,
+                                    locked ? 0.7f : 0.3f + 0.3f * pulse});
+      }
+      telegraph->AddRing(ground, radius_ + 0.3f + 1.2f * progress, 0.1f,
+                    Math::Vector4{0.3f, 0.85f, 1.0f, 0.35f + 0.35f * pulse});
       break;
     }
     case Skill::Spiral: {
@@ -866,6 +919,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kFanWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Pinwheel:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    spiralShotsLeft_ = kPinwheelShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Spiral:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -890,6 +949,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireSpiralShot();
     --spiralShotsLeft_;
     volleyTimer_ = kSpiralIntervalSeconds;
+    if (spiralShotsLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Pinwheel) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FirePinwheelShot();
+    --spiralShotsLeft_;
+    volleyTimer_ = kPinwheelIntervalSeconds;
     if (spiralShotsLeft_ <= 0) {
       FinishSkill();
     }
