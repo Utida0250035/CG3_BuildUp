@@ -16,6 +16,9 @@ public:
 
   bool IsDying() const { return isDying_; }
 
+  /// 爆風・ノックバック・自機ダメージなしで縮小消滅する（ボス撃破時の雑魚掃除用）。
+  void BeginSilentVanish();
+
 private:
   void BeginDyingExplosion();
   void UpdateDying();

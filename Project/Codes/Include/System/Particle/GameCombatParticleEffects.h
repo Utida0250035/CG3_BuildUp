@@ -40,6 +40,10 @@ void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,
 void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
                                uint32_t sequenceId);
 
+/// 任意のパーティクル JSON（./Assets/Particles/...）を 1 回だけ再生する（atomF ボス演出など）。
+void PlayOneShotParticleFile(const char *jsonFilePath,
+                             const Math::Vector3 &worldPosition);
+
 void SetEffectCamera(Camera *camera);
 void UpdateCombatParticleEffects();
 void DrawCombatParticleEffects();

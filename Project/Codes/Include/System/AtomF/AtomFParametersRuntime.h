@@ -106,6 +106,41 @@ struct EnemyParameters {
   std::string modelName;
 };
 
+/// ボス（Hp128・耐久系パッシブなし）。数値は `parameters.json` の `boss`。
+struct BossParameters {
+  float hitRadiusMeters = 1.2f;
+  int maxHealth = 128;
+  /// 自機弾の直撃 / 雑魚の爆発 1 回あたりのダメージ。
+  int bulletDamage = 4;
+  int explosionDamage = 8;
+  /// 壁激突スタン中の被ダメージ倍率。
+  float stunDamageMultiplier = 2.0f;
+  float moveSpeedMetersPerSecond = 0.5f;
+  float appearSeconds = 2.5f;
+  float deathSeconds = 3.2f;
+  float roarSeconds = 1.6f;
+  /// 残り Hp 割合がこれ以下で第 2 形態（咆哮 → スキル強化）。
+  float phase2HealthRatio = 0.5f;
+  float idleSecondsPhase1 = 3.0f;
+  float idleSecondsPhase2 = 1.8f;
+  float hitFlashSeconds = 0.12f;
+  float stunSeconds = 3.5f;
+
+  int summonCountPhase1 = 3;
+  int summonCountPhase2 = 5;
+  float summonTelegraphSeconds = 0.9f;
+  float summonRingRadiusMeters = 3.0f;
+
+  float shockwaveTelegraphSeconds = 1.1f;
+  float shockwaveRadiusPhase1Meters = 4.5f;
+  float shockwaveRadiusPhase2Meters = 6.0f;
+
+  float dashTelegraphSeconds = 1.0f;
+  float dashSpeedMetersPerSecond = 6.0f;
+  float dashMaxSeconds = 1.8f;
+  float dashRecoverSeconds = 0.8f;
+};
+
 /// 斜め見下ろし追従カメラ（`parameters.json` の `camera`）。
 struct CombatCameraFollowEyeOffset {
   float offsetXMeters = 0.0f;
@@ -145,12 +180,15 @@ public:
 
   const CombatCameraParameters &Camera() const { return camera_; }
 
+  const BossParameters &Boss() const { return boss_; }
+
 private:
   bool loaded_ = false;
   ArenaParameters arena_{};
   PlayerParameters player_{};
   EnemyParameters enemy_{};
   CombatCameraParameters camera_{};
+  BossParameters boss_{};
 };
 
 } // namespace Atrum::AtomF

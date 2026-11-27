@@ -25,6 +25,7 @@
 #include "Scene/SceneBuildUpAtomFPlayerSpawn.h"
 #include "Scene/SceneBuildUpAtomFEnemySpawn.h"
 #include "Scene/SceneBuildUpAtomFEntityDestroyPurge.h"
+#include "System/AtomF/AtomFBossHealthBarDraw.h"
 #include "System/AtomF/AtomFPlayerHealthIconDraw.h"
 #include "System/AtomF/AtomFScenePath.h"
 #include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
@@ -153,7 +154,6 @@ void SceneBuildUp::EnterScene() {
       loadSucceeded, document);
   AppendAtomFFloorIfScene(sceneJsonPath_, entities_);
   AppendAtomFPlayerIfScene(sceneJsonPath_, entities_);
-  AppendAtomFEnemyIfScene(sceneJsonPath_, entities_);
   if (SceneBuildUpAtomFCombatCamera::ApplyOnEnterIfAtomFScene(*this)) {
     // atomF 用カメラを適用済み
   } else {
@@ -243,6 +243,8 @@ void SceneBuildUp::DrawRuntimeViewContent(const int width, const int height) {
   if (AtomF::PathEndsWithAtomFJson(sceneJsonPath_)) {
     AtomF::DrawPlayerHealthIconsAbovePlayer(
         engine, *camera, static_cast<float>(width), static_cast<float>(height));
+    AtomF::DrawBossHealthBar(engine, static_cast<float>(width),
+                             static_cast<float>(height));
     PlayerDamageScreenVignette::Instance().Draw(engine);
   }
   Script::UiSprite::Draw(engine, static_cast<float>(width),
@@ -278,6 +280,9 @@ void SceneBuildUp::DrawScene() {
     AtomF::DrawPlayerHealthIconsAbovePlayer(
         engine, *primaryCamera,
         static_cast<float>(Window::kDefaultClientWidth),
+        static_cast<float>(Window::kDefaultClientHeight));
+    AtomF::DrawBossHealthBar(
+        engine, static_cast<float>(Window::kDefaultClientWidth),
         static_cast<float>(Window::kDefaultClientHeight));
     PlayerDamageScreenVignette::Instance().Draw(engine);
   }

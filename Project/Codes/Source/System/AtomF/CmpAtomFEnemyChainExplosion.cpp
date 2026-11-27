@@ -77,6 +77,25 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
   }
 }
 
+void CmpAtomFEnemyChainExplosion::BeginSilentVanish() {
+  if (isDying_) {
+    return;
+  }
+  isDying_ = true;
+  shrinkElapsedSeconds_ = 0.0f;
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>()) {
+      knockback->ClearKnockbackVelocity();
+    }
+  }
+  if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+    if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+      hit->SetIsActive(false);
+    }
+  }
+}
+
 void CmpAtomFEnemyChainExplosion::UpdateDying() {
   if (frameDeltaTime_ == nullptr) {
     return;
@@ -89,7 +108,7 @@ void CmpAtomFEnemyChainExplosion::UpdateDying() {
   if (RefOwner().HasDrawCmp<CmpMeshSphere>()) {
     if (CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
       mesh->SetRadius(initialMeshRadius_ * scale);
-      Math::Vector4 color = Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f};
+      Math::Vector4 color = mesh->GetColor(); // 種類ごとの色を保つ
       color.w = scale;
       mesh->SetColor(color);
     }

@@ -4,7 +4,9 @@
 #include "Input/XInputController.h"
 #include "Engine/EngineAccess.h"
 #include "Scene/CommandChangeScene.h"
+#include "Scene/SceneBuildUpAtomFEnemySpawn.h"
 #include "Scene/SceneBuildUpLaunchPolicy.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/Entity/Components/CmpHealthHit.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
@@ -143,6 +145,12 @@ int HealthOfFirstByRole(const std::string &role) {
   return -1;
 }
 
+/// ボスの Hp。ボスが居なければ -1（撃破演出中は 0）。
+int BossHealth() {
+  const CmpAtomFBoss *const boss = CmpAtomFBoss::Active();
+  return boss != nullptr ? boss->Health() : -1;
+}
+
 void PushUiImage(const std::string &path, const float x, const float y,
                  const sol::optional<sol::table> options) {
   UiSprite::Entry entry{};
@@ -175,6 +183,10 @@ void EngineLuaBinder::Register(sol::state &lua) {
   sceneFlow.set_function("isChanging", &IsChangingScene);
   sceneFlow.set_function("countByRole", &CountActiveByRole);
   sceneFlow.set_function("healthByRole", &HealthOfFirstByRole);
+  // atomF のステージ進行用: 雑魚（変種名・位置 XZ）とボスの出現、ボス Hp。
+  sceneFlow.set_function("spawnEnemy", &EnqueueAtomFEnemy);
+  sceneFlow.set_function("spawnBoss", &EnqueueAtomFBoss);
+  sceneFlow.set_function("bossHealth", &BossHealth);
 
   sol::table ui = lua.create_named_table("Ui");
   ui.set_function("image", &PushUiImage);

@@ -86,5 +86,38 @@
       { "name": "weaver", "moveSpeedMultiplier": 1.2, "chargeEnabled": false, "weaveAmplitudeMeters": 1.2, "weaveHz": 0.45, "color": [0.7, 0.35, 0.95] },
       { "name": "charger", "moveSpeedMultiplier": 0.6, "chargeEnabled": true, "chargeIntervalSeconds": 2.5, "color": [0.95, 0.55, 0.15] }
     ]
+  },
+  "boss": {
+    "hitRadiusMeters": 1.2,
+    "maxHealth": 128,
+    "bulletDamage": 4,
+    "explosionDamage": 8,
+    "stunDamageMultiplier": 2.0,
+    "moveSpeedMetersPerSecond": 0.5,
+    "appearSeconds": 2.5,
+    "deathSeconds": 3.2,
+    "roarSeconds": 1.6,
+    "phase2HealthRatio": 0.5,
+    "idleSecondsPhase1": 3.0,
+    "idleSecondsPhase2": 1.8,
+    "hitFlashSeconds": 0.12,
+    "stunSeconds": 3.5,
+    "summon": {
+      "telegraphSeconds": 0.9,
+      "countPhase1": 3,
+      "countPhase2": 5,
+      "ringRadiusMeters": 3.0
+    },
+    "shockwave": {
+      "telegraphSeconds": 1.1,
+      "radiusPhase1Meters": 4.5,
+      "radiusPhase2Meters": 6.0
+    },
+    "dash": {
+      "telegraphSeconds": 1.0,
+      "speedMetersPerSecond": 6.0,
+      "maxSeconds": 1.8,
+      "recoverSeconds": 0.8
+    }
   }
 }
