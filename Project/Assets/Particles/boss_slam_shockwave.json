@@ -1,0 +1,123 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "CIRCLE_XZ",
+    "emitCircle": {
+      "center": {
+        "x": 0,
+        "y": 0.05,
+        "z": 0
+      },
+      "radius": 0.5
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 90,
+    "duration": 0.7,
+    "minLifeDuration": 0.35,
+    "maxLifeDuration": 0.6,
+    "baseVelocity": {
+      "x": 0,
+      "y": 0.3,
+      "z": 0
+    },
+    "velocityRandom": {
+      "x": 8.5,
+      "y": 0.5,
+      "z": 8.5
+    },
+    "acceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "startScale": {
+      "x": 0.32,
+      "y": 0.32,
+      "z": 0.32
+    },
+    "endScale": {
+      "x": 0.05,
+      "y": 0.05,
+      "z": 0.05
+    },
+    "startColor": {
+      "x": 1.5,
+      "y": 0.8,
+      "z": 0.25,
+      "w": 1
+    },
+    "endColor": {
+      "x": 1.1,
+      "y": 0.2,
+      "z": 0.05,
+      "w": 0
+    },
+    "renderMode": "BUILTIN_SPHERE",
+    "maxCount": 96,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  },
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "POINT",
+    "emitPointPos": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 24,
+    "duration": 0.5,
+    "minLifeDuration": 0.25,
+    "maxLifeDuration": 0.5,
+    "baseVelocity": {
+      "x": 0,
+      "y": 6.5,
+      "z": 0
+    },
+    "velocityRandom": {
+      "x": 3.0,
+      "y": 2.0,
+      "z": 3.0
+    },
+    "acceleration": {
+      "x": 0,
+      "y": -14,
+      "z": 0
+    },
+    "startScale": {
+      "x": 0.45,
+      "y": 0.45,
+      "z": 0.45
+    },
+    "endScale": {
+      "x": 0.06,
+      "y": 0.06,
+      "z": 0.06
+    },
+    "startColor": {
+      "x": 1.4,
+      "y": 1.1,
+      "z": 0.5,
+      "w": 1
+    },
+    "endColor": {
+      "x": 0.9,
+      "y": 0.3,
+      "z": 0.1,
+      "w": 0
+    },
+    "renderMode": "BUILTIN_SPHERE",
+    "maxCount": 28,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  }
+]

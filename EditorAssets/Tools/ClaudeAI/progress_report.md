@@ -2438,3 +2438,31 @@ release_scene_carousel.json の先頭を ./Assets/Scenes/atomF.json に変更。
   - 用途: ステージ進行・ウェーブ・ギミックを Lua で書き、敵や弾などをプレハブから生成・探索・破棄・移動させる
   - 使用場面: ランタイムのゲームプレイ（スクリプト）
   - 用途から決めた仕様: 生成は走査後採用（反復中の破壊を避ける）。破棄済みハンドルは安全に無害化（クラッシュさせない）。互換のため `self` は末尾引数
+
+## セッション 2026-11-27（atomF: 雑魚バリエーション拡充 → ボス → 演出、ステージ 1 を作り込み）
+
+ユーザー依頼（スケジュール実行）。ブランチは環境指定の `claude/epic-faraday-6g70v7`（develop 起点）。**ビルド未実施**（Linux 環境で MSBuild 不可）。代わりに clang++ `-fsyntax-only -Wall -Wextra -Wshadow -Wconversion` で追加・変更した全 .cpp を検査し、自コード由来の診断が 0 件であることを確認した（Entity.h 等の既存ヘッダ由来のエラーは MSVC 前提の既存分）。Windows での `buildDevelopment.cmd` と実機確認は未実施。
+
+### 1. 実施内容
+
+- **雑魚（全種 Hp1・耐久なし）**: 既存 4 種に **shooter**（距離を保ち、発光＋照準線の予備動作のあと弾を撃つ）と **orbiter**（自機の周りを回り、一定間隔で突進）を追加。突進の進路帯・射撃の照準線を描く `CmpDrawAtomFEnemyTelegraph`、出現時に膨らむ `CmpAtomFEnemySpawnIn`、敵弾 `CmpAtomFEnemyProjectile`（ENEMY_WEAPON）を新設。
+- **ボス** `CmpAtomFBoss`（`parameters.json` の `boss`）: 最大 Hp128、耐久系パッシブ無し（被ダメージ軽減・回復・シールドなし。むしろ気絶中は被ダメージ 2 倍）。自機弾 2・敵の爆発 10 のダメージ。アクティブスキル: 全方位弾幕 / 子分召喚 / 叩きつけ（予告円→跳躍→衝撃波）。特殊アクション: 壁まで突進→衝突で気絶。Hp 半分以下で第 2 形態。撃破演出（連続爆発→縮小消滅）と残敵の静かな誘爆。
+- **ステージ進行は Lua**（`game-logic-via-script.md` 準拠）: `Scripts/atomF/game_flow.lua` + `stage_data.lua`。ウェーブ 1〜4 → ボス警告 → ボス戦 → クリア。C++ は Lua API（新規 `AtomFLuaBinder`: `AtomF.spawnEnemy / spawnBoss / variantNames / playerPosition / bossHealth / bossState …`）のみ。固定 6 体のスポーン（`AppendAtomFEnemyIfScene`）は廃止し、`EnqueueAtomFEnemy` / `EnqueueAtomFBoss` に置換。
+- **演出**: パーティクル JSON 7 種（マズルフラッシュ・雑魚出現・ボス出現・衝撃波・溜め・砂煙・壁衝突）、ボスの予告描画 `CmpDrawAtomFBossTelegraph`、WAVE バナー・ボス警告の赤点滅・白フラッシュ・ボス Hp ゲージ（Lua `Ui.image`）、クリア／敗北の見出し画像（`Images/atomF/*.png`）。ライティングは既存の平行光源プロファイルのまま（追加なし）。
+- 連鎖爆発の縮小時の色を、種類ごとの色に追従するよう修正（従来は赤固定）。
+
+### 2. 最終目標との査定（§6.7）
+
+- 査定: **寄与なし（矛盾なし）**。ユーザーが明示依頼した atomF 実装。ゲームロジックの「いつ何を出すか」は Lua、C++ は敵・ボスのコンポーネントと API。
+- `game-logic-via-script.md`: ボス・敵の挙動本体は既存の atomF 方針（C++ コンポーネント＋ JSON）に揃えた。ステージ進行・HUD は Lua。
+
+### 3. 未確認・次の候補
+
+- **Windows でのビルドと実機確認が必要**。ボスの各数値（`boss.*`、弾速、予告時間）は机上値で、遊んで調整する前提。
+- 弾幕の初弾の向きは自機狙い。ボス HUD の横位置は 1280px 前提（`game_flow.lua` の `SCREEN_W`）。
+- 次: ボスの接地影・ライティング有効化（平行光源でのメッシュ陰影）、被弾 SE、ボス BGM。
+
+## 推測した用途（§6.4）
+
+- **ボスの気絶（壁突進）**: 用途: 耐久パッシブ無しのボスに「攻める窓」を作る。使用場面: ボス戦で、突進を誘導して壁にぶつけさせる。仕様: 気絶中は被ダメージ倍率 2.0（`stunDamageMultiplier`）。
+- **敵の爆発でボスにダメージ**: 用途: atomF の核（敵を弾いて連鎖爆発）をボス戦でも使わせる。仕様: 爆発 1 回 = 10 ダメージ、自機弾の直撃は 2。

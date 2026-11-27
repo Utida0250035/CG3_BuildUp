@@ -1351,6 +1351,45 @@
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerInvincibleBlink.cpp">
       <Filter>Codes\Source\System\AtomF</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyProjectileSpawn.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFBoss.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackFx.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyProjectile.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyShooter.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemySpawnIn.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFBossTelegraph.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpDrawAtomFEnemyTelegraph.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\AtomFLuaBinder.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\EngineLuaBinder.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\EntityLuaBinder.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\ScriptSceneContext.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\ScriptUiSprite.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
@@ -2735,6 +2774,42 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFPlayerInvincibleBlink.h">
       <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFEnemyProjectileSpawn.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFBoss.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFEnemyProjectile.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFEnemyShooter.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFEnemySpawnIn.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpDrawAtomFBossTelegraph.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpDrawAtomFEnemyTelegraph.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\AtomFLuaBinder.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\EngineLuaBinder.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\EntityLuaBinder.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\ScriptSceneContext.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\ScriptUiSprite.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

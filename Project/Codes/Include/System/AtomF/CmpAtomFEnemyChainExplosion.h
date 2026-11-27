@@ -16,6 +16,9 @@ public:
 
   bool IsDying() const { return isDying_; }
 
+  /// ボス撃破時の一掃用。爆発の見た目だけ出して縮小消滅し、自機へのダメージ・他敵への吹き飛ばしは行わない。
+  void BeginSilentDefeat();
+
 private:
   void BeginDyingExplosion();
   void UpdateDying();

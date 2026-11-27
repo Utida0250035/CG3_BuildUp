@@ -175,6 +175,9 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
       variant.chargeEnabled = v.value("chargeEnabled", true);
       variant.weaveAmplitudeMeters = v.value("weaveAmplitudeMeters", 0.0f);
       variant.weaveHz = v.value("weaveHz", 0.0f);
+      variant.shootIntervalSeconds = v.value("shootIntervalSeconds", 0.0f);
+      variant.keepDistanceMeters = v.value("keepDistanceMeters", 0.0f);
+      variant.orbitDistanceMeters = v.value("orbitDistanceMeters", 0.0f);
       if (v.contains("color") && v.at("color").is_array() &&
           v.at("color").size() >= 3) {
         variant.colorR = v.at("color").at(0).get<float>();
@@ -183,6 +186,82 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
       }
       out.variants.push_back(variant);
     }
+  }
+}
+
+void ApplyEnemyProjectileFromJson(const nlohmann::json &enemyJson,
+                                  EnemyProjectileParameters &out) {
+  if (!enemyJson.contains("projectile") ||
+      !enemyJson.at("projectile").is_object()) {
+    return;
+  }
+  const auto &p = enemyJson.at("projectile");
+  out.speedMetersPerSecond =
+      std::max(0.1f, p.value("speedMetersPerSecond", out.speedMetersPerSecond));
+  out.radiusMeters = std::max(0.02f, p.value("radiusMeters", out.radiusMeters));
+  out.lifetimeSeconds =
+      std::max(0.5f, p.value("lifetimeSeconds", out.lifetimeSeconds));
+}
+
+void ApplyBossFromJson(const nlohmann::json &json, BossParameters &out) {
+  if (!json.contains("boss") || !json.at("boss").is_object()) {
+    return;
+  }
+  const auto &b = json.at("boss");
+  out.maxHealth = std::max(1, b.value("maxHealth", out.maxHealth));
+  out.bodyRadiusMeters =
+      std::max(0.2f, b.value("bodyRadiusMeters", out.bodyRadiusMeters));
+  out.moveSpeedMetersPerSecond = std::max(
+      0.0f, b.value("moveSpeedMetersPerSecond", out.moveSpeedMetersPerSecond));
+  out.playerBulletDamage =
+      std::max(1, b.value("playerBulletDamage", out.playerBulletDamage));
+  out.explosionDamage =
+      std::max(1, b.value("explosionDamage", out.explosionDamage));
+  out.stunDamageMultiplier = std::max(
+      1.0f, b.value("stunDamageMultiplier", out.stunDamageMultiplier));
+  out.phase2HealthRatio = b.value("phase2HealthRatio", out.phase2HealthRatio);
+  out.skillIntervalSeconds =
+      std::max(0.2f, b.value("skillIntervalSeconds", out.skillIntervalSeconds));
+  out.phase2SkillIntervalSeconds = std::max(
+      0.2f,
+      b.value("phase2SkillIntervalSeconds", out.phase2SkillIntervalSeconds));
+  out.appearSeconds =
+      std::max(0.5f, b.value("appearSeconds", out.appearSeconds));
+  out.deathSeconds = std::max(0.5f, b.value("deathSeconds", out.deathSeconds));
+  out.ringBulletCount =
+      std::max(3, b.value("ringBulletCount", out.ringBulletCount));
+  out.phase2RingBulletCount =
+      std::max(3, b.value("phase2RingBulletCount", out.phase2RingBulletCount));
+  out.ringBurstCount =
+      std::max(1, b.value("ringBurstCount", out.ringBurstCount));
+  out.ringTelegraphSeconds = std::max(
+      0.2f, b.value("ringTelegraphSeconds", out.ringTelegraphSeconds));
+  out.ringBurstIntervalSeconds = std::max(
+      0.1f, b.value("ringBurstIntervalSeconds", out.ringBurstIntervalSeconds));
+  out.summonCount = std::max(1, b.value("summonCount", out.summonCount));
+  out.phase2SummonCount =
+      std::max(1, b.value("phase2SummonCount", out.phase2SummonCount));
+  out.summonTelegraphSeconds = std::max(
+      0.2f, b.value("summonTelegraphSeconds", out.summonTelegraphSeconds));
+  out.slamTelegraphSeconds = std::max(
+      0.3f, b.value("slamTelegraphSeconds", out.slamTelegraphSeconds));
+  out.slamRadiusMeters =
+      std::max(0.5f, b.value("slamRadiusMeters", out.slamRadiusMeters));
+  out.slamRecoverSeconds =
+      std::max(0.1f, b.value("slamRecoverSeconds", out.slamRecoverSeconds));
+  out.dashTelegraphSeconds = std::max(
+      0.3f, b.value("dashTelegraphSeconds", out.dashTelegraphSeconds));
+  out.dashSpeedMetersPerSecond = std::max(
+      1.0f, b.value("dashSpeedMetersPerSecond", out.dashSpeedMetersPerSecond));
+  out.dashStunSeconds =
+      std::max(0.5f, b.value("dashStunSeconds", out.dashStunSeconds));
+  out.dashEveryNSkills =
+      std::max(1, b.value("dashEveryNSkills", out.dashEveryNSkills));
+  if (b.contains("color") && b.at("color").is_array() &&
+      b.at("color").size() >= 3) {
+    out.colorR = b.at("color").at(0).get<float>();
+    out.colorG = b.at("color").at(1).get<float>();
+    out.colorB = b.at("color").at(2).get<float>();
   }
 }
 
@@ -221,6 +300,7 @@ bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {
       explosion.at("hitRadiusMeters").get<float>();
 
   ApplyEnemyPresentationFromJson(json, out);
+  ApplyEnemyProjectileFromJson(json, out.projectile);
   out.modelName = json.value("modelName", std::string{});
 
   return true;
@@ -238,6 +318,7 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   arena_ = ArenaParameters{};
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
+  boss_ = BossParameters{};
   camera_ = CombatCameraParameters{};
 
   std::ifstream stream(path);
@@ -266,6 +347,7 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
 
   player_ = parsedPlayer;
   enemy_ = parsedEnemy;
+  ApplyBossFromJson(json, boss_);
   ApplyArenaFromJson(json, arena_);
   ApplyCombatCameraFromJson(json, camera_);
   loaded_ = true;
@@ -277,6 +359,7 @@ void ParametersRuntime::Unload() {
   arena_ = ArenaParameters{};
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
+  boss_ = BossParameters{};
   camera_ = CombatCameraParameters{};
 }
 

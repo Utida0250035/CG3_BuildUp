@@ -1,6 +1,7 @@
 -- atomF リザルトシーン: 「リザルト」テキストと「リトライ」「タイトルへ」の選択 UI。
 -- Space / A で決定。リトライ→本編、タイトルへ→タイトル。
 local Paths = require("atomF.scene_paths")
+local Outcome = require("atomF.outcome")
 
 local M = {}
 
@@ -50,7 +51,12 @@ function M.onUpdate(dt)
     end
   end
 
-  Ui.image(Paths.IMG_RESULT, 0.5, 0.25, { scale = 1.3, a = alpha })
+  -- 勝敗で見出しを切り替える（クリア: 金色 / 敗北: 赤）
+  if Outcome.cleared then
+    Ui.image(Paths.IMG_CLEAR, 0.5, 0.25, { scale = 1.0, r = 1.0, g = 0.88, b = 0.35, a = alpha })
+  else
+    Ui.image(Paths.IMG_GAME_OVER, 0.5, 0.25, { scale = 1.0, r = 1.0, g = 0.3, b = 0.3, a = alpha })
+  end
 
   for index, option in ipairs(OPTIONS) do
     local isSelected = index == selected

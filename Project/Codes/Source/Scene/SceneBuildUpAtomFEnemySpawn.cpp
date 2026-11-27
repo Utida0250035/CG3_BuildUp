@@ -7,33 +7,40 @@
 #include "System/AtomF/AtomFMeshModelAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyKnockbackFx.h"
 #include "System/AtomF/CmpAtomFEnemyKnockbackPredictCapsule.h"
 #include "System/AtomF/CmpAtomFEnemyPeriodicCharge.h"
+#include "System/AtomF/CmpAtomFEnemyShooter.h"
+#include "System/AtomF/CmpAtomFEnemySpawnIn.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 #include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/AtomF/CmpAtomFEnemyWalkToPlayer.h"
+#include "System/AtomF/CmpDrawAtomFBossTelegraph.h"
 #include "System/AtomF/CmpDrawAtomFEnemyKnockbackPredictCapsule.h"
+#include "System/AtomF/CmpDrawAtomFEnemyTelegraph.h"
 #include "System/Entity/Components/CmpChildEntitys.h"
+#include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
+#include "System/Particle/GameCombatParticleEffects.h"
 
-#include <cmath>
+#include <string>
+#include <vector>
 
 namespace Atrum {
 
 namespace {
 
-constexpr int kAtomFEnemySpawnCount = 6;
-
-void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
-                        const float spawnAngleRadians,
-                        const float spawnRadiusMeters,
-                        const int index) {
+/// 雑魚 1 体を組み立てる（Initialize 済み）。index は名前の一意化用。
+std::unique_ptr<Entity> CreateAtomFEnemy(
+    const AtomF::EnemyVariantParameters &variant, const float x, const float z,
+    const int index) {
   EntityTagRegistry &tags = EntityTagRegistry::Instance();
   tags.EnsureLoaded();
 
@@ -44,19 +51,9 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
   enemy->AddTag(tags.TagNameForRole("enemy"));
 
   Math::TransformLH initialTransform{};
-  initialTransform.translate = {std::cos(spawnAngleRadians) * spawnRadiusMeters,
-                                bodyRadius,
-                                std::sin(spawnAngleRadians) * spawnRadiusMeters};
+  initialTransform.translate = {x, bodyRadius, z};
   enemy->SetInitialTransform(initialTransform);
 
-  // 種類（variants）を index % 件数 で割り当てる。未定義なら従来の単一種。
-  AtomF::EnemyVariantParameters variant{};
-  if (AtomF::ParametersRuntime::Instance().IsLoaded()) {
-    const auto &variants = AtomF::ParametersRuntime::Instance().Enemy().variants;
-    if (!variants.empty()) {
-      variant = variants[static_cast<std::size_t>(index) % variants.size()];
-    }
-  }
   enemy->AddUpdCmp<CmpAtomFEnemyVariant>();
   enemy->GetUpdCmp<CmpAtomFEnemyVariant>()->SetParameters(variant);
 
@@ -67,6 +64,9 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
   enemy->AddDrawCmp<CmpDrawAtomFEnemyKnockbackPredictCapsule>();
   enemy->AddUpdCmp<CmpAtomFEnemyWalkToPlayer>();
   enemy->AddUpdCmp<CmpAtomFEnemyPeriodicCharge>();
+  enemy->AddUpdCmp<CmpAtomFEnemyShooter>();
+  enemy->AddUpdCmp<CmpAtomFEnemySpawnIn>();
+  enemy->AddDrawCmp<CmpDrawAtomFEnemyTelegraph>();
 
   enemy->AddDrawCmp<CmpMeshSphere>();
   CmpMeshSphere *mesh = enemy->GetDrawCmp<CmpMeshSphere>();
@@ -112,26 +112,78 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
 
   enemy->ResolveDependencies();
   enemy->Initialize();
-  entities.push_back(std::move(enemy));
+  return enemy;
+}
+
+const AtomF::EnemyVariantParameters &FindVariant(const std::string &name) {
+  static const AtomF::EnemyVariantParameters kDefault{};
+  const AtomF::ParametersRuntime &runtime = AtomF::ParametersRuntime::Instance();
+  if (!runtime.IsLoaded() || runtime.Enemy().variants.empty()) {
+    return kDefault;
+  }
+  const std::vector<AtomF::EnemyVariantParameters> &variants =
+      runtime.Enemy().variants;
+  for (const AtomF::EnemyVariantParameters &variant : variants) {
+    if (variant.name == name) {
+      return variant;
+    }
+  }
+  return variants.front();
 }
 
 } // namespace
 
-void AppendAtomFEnemyIfScene(
-    const std::string &sceneJsonPath,
-    std::vector<std::unique_ptr<Entity>> &entities) {
-  if (!AtomF::PathEndsWithAtomFJson(sceneJsonPath)) {
+void EnqueueAtomFEnemy(const std::string &variantName, const float x,
+                       const float z) {
+  static int sequence = 0;
+  std::unique_ptr<Entity> enemy =
+      CreateAtomFEnemy(FindVariant(variantName), x, z, sequence++);
+  if (enemy == nullptr) {
     return;
   }
+  Particle::Combat::PlayEnemySpawnPopEffect(
+      Math::Vector3{x, AtomF::ResolveEnemyBodyRadiusMeters(), z});
+  AtomF::EnqueueSceneEntityAdopt(std::move(enemy));
+}
 
-  // 円周上に複数配置し、連鎖爆発が起きやすい配置にする。
-  constexpr float kSpawnRadiusMeters = 8.0f;
-  constexpr float kTwoPi = 6.28318530718f;
-  for (int i = 0; i < kAtomFEnemySpawnCount; ++i) {
-    const float angle =
-        (kTwoPi * static_cast<float>(i)) / static_cast<float>(kAtomFEnemySpawnCount);
-    SpawnOneAtomFEnemy(entities, angle, kSpawnRadiusMeters, i);
+void EnqueueAtomFBoss(const float x, const float z) {
+  if (CmpAtomFBoss::Active() != nullptr) {
+    return;
   }
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+
+  const AtomF::BossParameters &params = AtomF::ResolveBossParameters();
+  const float radius = params.bodyRadiusMeters;
+
+  std::unique_ptr<Entity> boss = std::make_unique<Entity>("AtomFBoss");
+  boss->AddTag(tags.TagNameForRole("enemy"));
+
+  Math::TransformLH initialTransform{};
+  initialTransform.translate = {x, radius, z};
+  boss->SetInitialTransform(initialTransform);
+
+  boss->AddUpdCmp<CmpAtomFBoss>();
+
+  boss->AddDrawCmp<CmpMeshSphere>();
+  if (CmpMeshSphere *mesh = boss->GetDrawCmp<CmpMeshSphere>()) {
+    mesh->SetRadius(radius);
+    mesh->SetColor(
+        Math::Vector4{params.colorR, params.colorG, params.colorB, 1.0f});
+    mesh->SetSubdivision(24);
+    mesh->SetLightingEnabled(false);
+  }
+
+  AtomF::AttachArenaContainment(*boss, radius);
+  boss->AddUpdCmp<CmpHitSphere>();
+  if (CmpHitSphere *hit = boss->GetUpdCmp<CmpHitSphere>()) {
+    hit->SetSpheres({{{}, radius}});
+  }
+  boss->AddDrawCmp<CmpDrawAtomFBossTelegraph>();
+
+  boss->ResolveDependencies();
+  boss->Initialize();
+  AtomF::EnqueueSceneEntityAdopt(std::move(boss));
 }
 
 } // namespace Atrum

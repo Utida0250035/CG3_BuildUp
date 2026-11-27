@@ -5,6 +5,7 @@
 #include "System/AtomF/AtomFEnemyExplosionPlayerDamage.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
+#include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
@@ -77,6 +78,31 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
   }
 }
 
+void CmpAtomFEnemyChainExplosion::BeginSilentDefeat() {
+  if (isDying_) {
+    return;
+  }
+  isDying_ = true;
+  shrinkElapsedSeconds_ = 0.0f;
+
+  static uint32_t silentSequence = 300000U;
+  ++silentSequence;
+  Particle::Combat::PlayBossDeathExplosionEffect(RefOwner().GetWorldPosition(),
+                                                 silentSequence);
+
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>()) {
+      knockback->ClearKnockbackVelocity();
+    }
+  }
+  if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+    if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+      hit->SetIsActive(false);
+    }
+  }
+}
+
 void CmpAtomFEnemyChainExplosion::UpdateDying() {
   if (frameDeltaTime_ == nullptr) {
     return;
@@ -90,6 +116,14 @@ void CmpAtomFEnemyChainExplosion::UpdateDying() {
     if (CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
       mesh->SetRadius(initialMeshRadius_ * scale);
       Math::Vector4 color = Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f};
+      if (RefOwner().HasUpdCmp<CmpAtomFEnemyVariant>()) {
+        if (const CmpAtomFEnemyVariant *variant =
+                RefOwner().GetUpdCmp<CmpAtomFEnemyVariant>()) {
+          color = Math::Vector4{variant->Parameters().colorR,
+                                variant->Parameters().colorG,
+                                variant->Parameters().colorB, 1.0f};
+        }
+      }
       color.w = scale;
       mesh->SetColor(color);
     }

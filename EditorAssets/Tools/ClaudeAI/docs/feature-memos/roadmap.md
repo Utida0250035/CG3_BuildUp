@@ -794,6 +794,31 @@
 - [x] その場で小刻みに震える（ぱっと見で分かる程度）（`CmpAtomFEnemyTargetedPanic::ComputePanicVisualShakeOffset` 水平 `0.12m`/垂直 `0.045m`/角速度 `76.0`）
 - [x] 天辺から汗のパーティクルを流す（`Project/Assets/Particles/enemy_panic_sweat.json`・`GameCombatParticleEffects::PlayEnemyPanicSweatEffect`・`CmpAtomFEnemyTargetedPanic::EmitSweatFromTopIfDue`）
 
+### 雑魚のバリエーション（全種 Hp1・耐久系能力なし。`parameters.json` の `enemy.variants`）
+- [x] walker / runner / weaver / charger（速度・蛇行・突進間隔・色。`CmpAtomFEnemyVariant`）
+- [x] shooter: 一定距離を保ち、狙いを定めてから自機へ弾を撃つ（`CmpAtomFEnemyShooter`・`AtomFEnemyProjectileSpawn`）
+- [x] orbiter: 自機の周りを回り、一定間隔で突進する（`CmpAtomFEnemyWalkToPlayer` の orbit）
+- [x] 予備動作の予告線: 突進の進路帯・射撃の照準線（`CmpDrawAtomFEnemyTelegraph`）
+
+### ボス（`parameters.json` の `boss`。最大 Hp128・耐久系パッシブ無し）
+- [x] 最大 Hp128。自機弾 2・敵の爆発 10 のダメージ（`CmpAtomFBoss::TakeDamage`）。吹き飛ばない
+- [x] アクティブスキル: 全方位弾幕 / 子分の召喚 / 叩きつけ（予告円 → 跳躍 → 衝撃波）
+- [x] 特殊アクション: 壁まで突進して衝突 → 気絶（被ダメージ増）
+- [x] Hp 半分以下で第 2 形態（スキル間隔短縮・弾数増加・怒りの波紋）
+- [x] 撃破で残りの雑魚を静かに誘爆させて一掃（`CmpAtomFEnemyChainExplosion::BeginSilentDefeat`）
+
+### ステージ 1 の進行（Lua）
+- [x] ウェーブ 1〜4 → ボス警告 → ボス戦 → クリア（`Scripts/atomF/game_flow.lua`・`stage_data.lua`・Lua API `AtomF.*`）
+- [x] 勝敗をリザルトへ渡す（`outcome.lua`・`result_flow.lua`）
+
+### 演出（平行光源のみ。既存の `game_scene_lighting.json`）
+- [x] 敵弾・射撃の予備動作（発光・照準線）とマズルフラッシュ（`enemy_muzzle_flash.json`）
+- [x] 雑魚の出現演出（膨らむ・パーティクル。`CmpAtomFEnemySpawnIn`・`enemy_spawn_pop.json`）
+- [x] ボスの出現（落下・着地の衝撃波）と撃破（連続爆発→縮小消滅。`boss_appear.json`・`boss_death_explosion.json`）
+- [x] ボスの予備動作・攻撃エフェクト（放射線・召喚位置・予告円・突進進路・衝撃波・砂煙・壁衝突）
+- [x] シーン遷移まわり: WAVE バナー・ボス警告の赤点滅・登場／撃破の白フラッシュ・クリア／敗北の見出し・ボス Hp ゲージ
+- [ ] ランタイム（Windows）での見た目確認・数値調整（未実施: Linux 環境でビルド不可）
+
 ### 自機がダメージを受けたときの演出
 - [x] 赤いビネットが画面端に 0.75 秒出る（`PlayerDamageScreenVignette::RequestShow(durationSeconds)`・`CmpHealthHit` が `AtomF::ParametersRuntime` 読込時に `0.75s` を指定・`SceneBuildUp` で Reset/Update/Draw）
 - [x] 効果音が 1 回鳴る（`PlaySe::PreloadSeCandidates`・`AtomFPlayerHealthAttach` 事前読込・`AtomFParametersAccess::ResolvePlayerDamageSePlayCount`・`CmpHealthHit` で無敵時間付き 1 回再生）

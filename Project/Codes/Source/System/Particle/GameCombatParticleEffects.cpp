@@ -91,6 +91,31 @@ void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
                     kEnemyPanicSweatParticleJson, worldPosition, sequenceId);
 }
 
+#define ATOMF_DEFINE_ONE_SHOT_EFFECT(FuncName, Prefix, JsonPath)            \
+  void FuncName(const Math::Vector3 &worldPosition) {                       \
+    static uint32_t sequence = 0;                                           \
+    PlayOneShotEffect(Prefix, JsonPath, worldPosition, ++sequence);         \
+  }
+
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayEnemyMuzzleFlashEffect,
+                             "combat_enemy_muzzle_",
+                             "./Assets/Particles/enemy_muzzle_flash.json")
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayEnemySpawnPopEffect, "combat_enemy_spawn_",
+                             "./Assets/Particles/enemy_spawn_pop.json")
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayBossAppearEffect, "combat_boss_appear_",
+                             "./Assets/Particles/boss_appear.json")
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayBossSlamShockwaveEffect,
+                             "combat_boss_slam_",
+                             "./Assets/Particles/boss_slam_shockwave.json")
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayBossChargeAuraEffect, "combat_boss_charge_",
+                             "./Assets/Particles/boss_charge_aura.json")
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayBossDashDustEffect, "combat_boss_dust_",
+                             "./Assets/Particles/boss_dash_dust.json")
+ATOMF_DEFINE_ONE_SHOT_EFFECT(PlayBossWallImpactEffect, "combat_boss_wall_",
+                             "./Assets/Particles/boss_wall_impact.json")
+
+#undef ATOMF_DEFINE_ONE_SHOT_EFFECT
+
 void SetEffectCamera(Camera *camera) {
   if (Particle::Emitter::EmitterManager *manager = CombatEmitterManager()) {
     manager->SetCamera(camera);

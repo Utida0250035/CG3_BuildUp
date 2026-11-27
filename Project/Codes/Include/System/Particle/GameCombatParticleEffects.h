@@ -40,6 +40,15 @@ void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,
 void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
                                uint32_t sequenceId);
 
+/// atomF の雑魚・ボス演出。いずれもワールド座標で 1 回だけ再生する。
+void PlayEnemyMuzzleFlashEffect(const Math::Vector3 &worldPosition);
+void PlayEnemySpawnPopEffect(const Math::Vector3 &worldPosition);
+void PlayBossAppearEffect(const Math::Vector3 &worldPosition);
+void PlayBossSlamShockwaveEffect(const Math::Vector3 &worldPosition);
+void PlayBossChargeAuraEffect(const Math::Vector3 &worldPosition);
+void PlayBossDashDustEffect(const Math::Vector3 &worldPosition);
+void PlayBossWallImpactEffect(const Math::Vector3 &worldPosition);
+
 void SetEffectCamera(Camera *camera);
 void UpdateCombatParticleEffects();
 void DrawCombatParticleEffects();

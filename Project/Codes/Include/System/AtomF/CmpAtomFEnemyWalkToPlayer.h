@@ -17,6 +17,7 @@ public:
 private:
   class FrameDeltaTime *frameDeltaTime_ = nullptr;
   float weaveTimeSeconds_ = 0.0f;
+  float orbitSign_ = 1.0f;
 };
 
 } // namespace Atrum

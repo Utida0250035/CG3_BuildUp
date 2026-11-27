@@ -153,7 +153,6 @@ void SceneBuildUp::EnterScene() {
       loadSucceeded, document);
   AppendAtomFFloorIfScene(sceneJsonPath_, entities_);
   AppendAtomFPlayerIfScene(sceneJsonPath_, entities_);
-  AppendAtomFEnemyIfScene(sceneJsonPath_, entities_);
   if (SceneBuildUpAtomFCombatCamera::ApplyOnEnterIfAtomFScene(*this)) {
     // atomF 用カメラを適用済み
   } else {
