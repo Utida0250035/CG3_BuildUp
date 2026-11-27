@@ -3,6 +3,7 @@
 #include "Math/Vector4.h"
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
+#include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/AtomF/CmpDrawAtomFTelegraph.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Components/CmpHitSphere.h"
@@ -69,8 +70,19 @@ void CmpAtomFEnemySpawnIn::Update() {
       if (t < 1.0f) {
         Math::Vector3 center = RefOwner().GetWorldPosition();
         center.y = 0.0f;
+        // 種類色を薄めて使う（どの種類が出てくるか実体化前に分かる）。
+        Math::Vector4 ringColor{0.5f, 0.9f, 1.0f, 0.8f * (1.0f - t)};
+        if (RefOwner().HasUpdCmp<CmpAtomFEnemyVariant>()) {
+          if (const CmpAtomFEnemyVariant *variant =
+                  RefOwner().GetUpdCmp<CmpAtomFEnemyVariant>()) {
+            const AtomF::EnemyVariantParameters &vp = variant->Parameters();
+            ringColor.x = 0.4f * 0.5f + 0.6f * vp.colorR;
+            ringColor.y = 0.4f * 0.9f + 0.6f * vp.colorG;
+            ringColor.z = 0.4f * 1.0f + 0.6f * vp.colorB;
+          }
+        }
         telegraph->AddRing(center, fullRadius_ * (2.8f - 1.8f * t), 0.05f,
-                      Math::Vector4{0.5f, 0.9f, 1.0f, 0.8f * (1.0f - t)});
+                           ringColor);
       }
     }
   }
