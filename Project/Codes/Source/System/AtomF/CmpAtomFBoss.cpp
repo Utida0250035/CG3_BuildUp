@@ -46,8 +46,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::SummonCutoff,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
-    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Converge,
-    CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
+    CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -59,7 +59,8 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
-    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
+    CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -80,6 +81,13 @@ constexpr float kPinwheelIntervalSeconds = 0.08f;
 constexpr float kPinwheelTurnPerShot = 0.22f;
 constexpr float kPinwheelTelegraphSeconds = 1.0f;
 constexpr float kPinwheelBulletSpeed = 2.2f;
+
+/// 二重螺旋: 時計回りと反時計回りの 2 組（各 2 腕）が交差しながら広がる弾幕。
+constexpr int kHelixShotCount = 36;
+constexpr float kHelixIntervalSeconds = 0.09f;
+constexpr float kHelixTurnPerShot = 0.2f;
+constexpr float kHelixTelegraphSeconds = 1.0f;
+constexpr float kHelixBulletSpeed = 2.3f;
 
 /// 十字砲火: 8 方向へ全方位に撃ち、波ごとに半ピッチずらして市松状の隙間を作る。
 constexpr int kCrossfireWaveCount = 5;
@@ -331,6 +339,10 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
   if (skill == Skill::Pinwheel) {
     spiralAngle_ = Rand01() * kTwoPi;
     sweepDirection_ = Rand01() < 0.5f ? -1.0f : 1.0f;
+  }
+
+  if (skill == Skill::Helix) {
+    spiralAngle_ = Rand01() * kTwoPi;
   }
 
   if (skill == Skill::GapRing) {
@@ -622,6 +634,28 @@ void CmpAtomFBoss::FirePinwheelShot() {
   }
 }
 
+void CmpAtomFBoss::FireHelixShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  // 組 A は spiralAngle_ から時計回り、組 B は逆向きに回る（各組は正反対の 2 腕）。
+  for (int arm = 0; arm < 4; ++arm) {
+    const bool groupB = arm >= 2;
+    const float base = groupB ? -spiralAngle_ : spiralAngle_;
+    const float angle = base + kPi * static_cast<float>(arm % 2);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                kHelixBulletSpeed,
+                                params_.ringBulletRadiusMeters,
+                                groupB ? Math::Vector4{1.0f, 0.6f, 0.2f, 1.0f}
+                                       : Math::Vector4{0.4f, 1.0f, 0.5f, 1.0f});
+  }
+  spiralAngle_ += kHelixTurnPerShot;
+  if ((spiralShotsLeft_ % 9) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+  }
+}
+
 void CmpAtomFBoss::FireCrossfireWave() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int wave = kCrossfireWaveCount - fanWavesLeft_;
@@ -794,6 +828,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Slam: duration = kSlamTelegraphSeconds; break;
   case Skill::Fan: duration = kFanTelegraphSeconds; break;
   case Skill::Pinwheel: duration = kPinwheelTelegraphSeconds; break;
+  case Skill::Helix: duration = kHelixTelegraphSeconds; break;
   case Skill::Crossfire: duration = kCrossfireTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
@@ -912,6 +947,25 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       telegraph->AddRing(ground, radius_ + 0.3f + 1.2f * progress, 0.1f,
                     Math::Vector4{0.3f, 0.85f, 1.0f, 0.35f + 0.35f * pulse});
+      break;
+    }
+    case Skill::Helix: {
+      // 逆向きに回り始める 2 組の腕（緑=時計回り / 橙=反時計回り）を予告する。
+      const Math::Vector3 ground = GroundPoint(origin);
+      for (int arm = 0; arm < 4; ++arm) {
+        const bool groupB = arm >= 2;
+        const float base = (groupB ? -spiralAngle_ : spiralAngle_) +
+                           (groupB ? -1.0f : 1.0f) * progress * 0.5f;
+        const float angle = base + kPi * static_cast<float>(arm % 2);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f),
+                      ground + dir * (radius_ + 1.5f + 3.5f * progress),
+                      locked ? 0.2f : 0.12f,
+                      groupB ? Math::Vector4{1.0f, 0.6f, 0.2f, locked ? 0.7f : 0.3f + 0.3f * pulse}
+                             : Math::Vector4{0.4f, 1.0f, 0.5f, locked ? 0.7f : 0.3f + 0.3f * pulse});
+      }
+      telegraph->AddRing(ground, radius_ + 0.3f + 1.2f * progress, 0.1f,
+                    Math::Vector4{0.7f, 1.0f, 0.5f, 0.35f + 0.35f * pulse});
       break;
     }
     case Skill::Spiral: {
@@ -1090,6 +1144,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kConvergeWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Helix:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    spiralShotsLeft_ = kHelixShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Pinwheel:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1120,6 +1180,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireSpiralShot();
     --spiralShotsLeft_;
     volleyTimer_ = kSpiralIntervalSeconds;
+    if (spiralShotsLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Helix) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireHelixShot();
+    --spiralShotsLeft_;
+    volleyTimer_ = kHelixIntervalSeconds;
     if (spiralShotsLeft_ <= 0) {
       FinishSkill();
     }
