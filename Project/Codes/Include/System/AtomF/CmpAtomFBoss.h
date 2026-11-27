@@ -65,6 +65,7 @@ public:
     Kaleidoscope,
     Whirlpool,
     Cobweb,
+    Fireworks,
     Quake
   };
 
@@ -148,6 +149,7 @@ private:
   void FireKaleidoscopeShot();
   void FireWhirlpoolShot();
   void FireCobwebShot();
+  void FireFireworksShot();
   void FireQuakeStomp();
   void FirePendulumShot();
   void FireCrossfireWave();

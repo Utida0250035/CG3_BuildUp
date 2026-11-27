@@ -2860,3 +2860,10 @@ develop を基に、ボスの新スキル **蜘蛛の巣**（`Skill::Cobweb`。8
 
 - 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128j`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス花火・sparkler/rocketeer 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボスの周囲 5 点を星形の順に 0.45 秒間隔で打ち上げ、各点で 14 発の全方位リングを炸裂させる弾幕。予備動作は 5 つの炸裂点を示す橙の輪、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の行動順へ組み込んだ。雑魚 `sparkler`（突進型）・`rocketeer`（射撃型）を `parameters.json` に追加し最終ウェーブへ各 2 体配置（いずれも最大 Hp1・耐久能力なし）。JSON 構文と enum・宣言・実装・switch 分岐の整合のみ静的確認。
+
+- 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128k`（develop から作成）。
