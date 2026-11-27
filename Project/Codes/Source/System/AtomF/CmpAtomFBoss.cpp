@@ -47,6 +47,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
+    CmpAtomFBoss::Skill::Echo,
     CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -60,7 +61,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
-    CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -88,6 +89,14 @@ constexpr float kHelixIntervalSeconds = 0.09f;
 constexpr float kHelixTurnPerShot = 0.2f;
 constexpr float kHelixTelegraphSeconds = 1.0f;
 constexpr float kHelixBulletSpeed = 2.3f;
+
+/// 残響: 波ごとに速さが上がる全方位リングを連続で放ち、後続の波が前の波に追いつく。
+constexpr int kEchoWaveCount = 5;
+constexpr int kEchoArmCount = 14;
+constexpr float kEchoWaveIntervalSeconds = 0.45f;
+constexpr float kEchoTelegraphSeconds = 1.0f;
+constexpr float kEchoBaseBulletSpeed = 1.5f;
+constexpr float kEchoSpeedStepPerWave = 0.45f;
 
 /// 十字砲火: 8 方向へ全方位に撃ち、波ごとに半ピッチずらして市松状の隙間を作る。
 constexpr int kCrossfireWaveCount = 5;
@@ -325,6 +334,10 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     // 自機の向きを基準に 8 方向を切る（自機はまっすぐ撃たれず、隣り合う線の間へ入る）。
     spiralAngle_ = std::atan2(lockedDirection_.z, lockedDirection_.x) +
                    kPi / static_cast<float>(kCrossfireArmCount);
+  }
+
+  if (skill == Skill::Echo) {
+    spiralAngle_ = Rand01() * kTwoPi;
   }
 
   if (skill == Skill::Converge) {
@@ -675,6 +688,26 @@ void CmpAtomFBoss::FireCrossfireWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
 
+void CmpAtomFBoss::FireEchoWave() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kEchoWaveCount - fanWavesLeft_;
+  const float step = kTwoPi / static_cast<float>(kEchoArmCount);
+  const float offset = step * 0.5f * static_cast<float>(wave % 2);
+  const float speed = kEchoBaseBulletSpeed + kEchoSpeedStepPerWave * static_cast<float>(wave);
+  const float t = static_cast<float>(wave) / static_cast<float>(kEchoWaveCount - 1);
+  // 波が進むほど青緑から白へ寄せ、速い（追いつく）波を見分けやすくする。
+  const Math::Vector4 color{0.3f + 0.7f * t, 0.8f + 0.2f * t, 1.0f, 1.0f};
+  for (int arm = 0; arm < kEchoArmCount; ++arm) {
+    const float angle = spiralAngle_ + offset + step * static_cast<float>(arm);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed,
+                                params_.ringBulletRadiusMeters, color);
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+}
+
 void CmpAtomFBoss::FireConvergeWave() {
   // 波ごとに自機の現在位置を狙い直す。奇数波は発射点を半ピッチずらす。
   Math::Vector3 target = slamTarget_;
@@ -830,6 +863,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Pinwheel: duration = kPinwheelTelegraphSeconds; break;
   case Skill::Helix: duration = kHelixTelegraphSeconds; break;
   case Skill::Crossfire: duration = kCrossfireTelegraphSeconds; break;
+  case Skill::Echo: duration = kEchoTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -909,6 +943,17 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       telegraph->AddRing(ground, radius_ + 2.5f * (1.0f - progress) + 0.3f, 0.1f,
                     Math::Vector4{1.0f, 0.45f, 0.75f, 0.35f + 0.35f * pulse});
+      break;
+    }
+    case Skill::Echo: {
+      // 内側から外側へ段々に広がる 3 重のリング（水色）を予告する。確定後は濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      for (int i = 0; i < 3; ++i) {
+        const float r = radius_ + 0.4f + (0.8f * static_cast<float>(i) + 2.0f * progress);
+        telegraph->AddRing(ground, r, locked ? 0.16f : 0.09f,
+                      Math::Vector4{0.3f + 0.2f * static_cast<float>(i), 0.9f, 1.0f,
+                                    locked ? 0.7f : 0.3f + 0.3f * pulse});
+      }
       break;
     }
     case Skill::Converge: {
@@ -1138,6 +1183,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCrossfireWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Echo:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kEchoWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Converge:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1219,6 +1270,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireConvergeWave();
     --fanWavesLeft_;
     volleyTimer_ = kConvergeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Echo) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireEchoWave();
+    --fanWavesLeft_;
+    volleyTimer_ = kEchoWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

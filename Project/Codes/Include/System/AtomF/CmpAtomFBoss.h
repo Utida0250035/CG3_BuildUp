@@ -9,7 +9,7 @@
 namespace Atrum {
 
 /// atomF のボス。Hp は `parameters.json` の boss.maxHealth（耐久系パッシブなし）。
-/// アクティブスキル: 全方位弾 / 狙い撃ち連射 / 雑魚召喚（散開 / 自機を囲む射手 / 両翼の突進型 / 自機の背後を塞ぐ横一列の 4 種）/ スパイラル弾幕 / 薙ぎ払い（自機方向を中心に扇状へ弾列を振る。向きは毎回左右ランダム）/ 十字砲火（8 方向を波ごとに半ピッチずらして撃つ）/ 風車（4 腕で回転し途中で反転する弾幕）/ 扇弾3連（自機狙いの扇状の弾を毎波狙い直して3波）/ 二重螺旋（時計回り・反時計回りの 2 組の腕が交差しながら広がる弾幕）/ 包囲収束（外周の 9 点から自機へ収束する弾を 3 波）/ 隙間リング（一方向だけ弾の無い隙間を空けた全方位弾。狂暴化後は専用の行動順）。近接: 突進→着地衝撃波→硬直 / 跳躍叩きつけ（自機の足元へ跳び、着地点の小さな衝撃波＋硬直）。
+/// アクティブスキル: 全方位弾 / 狙い撃ち連射 / 雑魚召喚（散開 / 自機を囲む射手 / 両翼の突進型 / 自機の背後を塞ぐ横一列の 4 種）/ スパイラル弾幕 / 薙ぎ払い（自機方向を中心に扇状へ弾列を振る。向きは毎回左右ランダム）/ 十字砲火（8 方向を波ごとに半ピッチずらして撃つ）/ 風車（4 腕で回転し途中で反転する弾幕）/ 扇弾3連（自機狙いの扇状の弾を毎波狙い直して3波）/ 二重螺旋（時計回り・反時計回りの 2 組の腕が交差しながら広がる弾幕）/ 残響（波ごとに速さが上がる全方位リングを 5 連発し、後続が前の波に追いつく）/ 包囲収束（外周の 9 点から自機へ収束する弾を 3 波）/ 隙間リング（一方向だけ弾の無い隙間を空けた全方位弾。狂暴化後は専用の行動順）。近接: 突進→着地衝撃波→硬直 / 跳躍叩きつけ（自機の足元へ跳び、着地点の小さな衝撃波＋硬直）。
 /// 自機弾・雑魚の爆発で ApplyDamage される。Hp 0 で撃破演出に入る。
 class CmpAtomFBoss final : public ComponentUpd {
 public:
@@ -39,7 +39,8 @@ public:
     Pinwheel,
     Crossfire,
     Converge,
-    Helix
+    Helix,
+    Echo
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -101,6 +102,7 @@ private:
   void FireFanWave();
   void FirePinwheelShot();
   void FireHelixShot();
+  void FireEchoWave();
   void FireCrossfireWave();
   void FireConvergeWave();
   void MoveToward(const Math::Vector3 &targetXZ, float speed, float dt);
