@@ -789,7 +789,7 @@ void CmpAtomFBoss::ExecuteRing() {
                                 params_.ringBulletSpeedMetersPerSecond,
                                 params_.ringBulletRadiusMeters, color);
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json",
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ringshot_burst.json",
                                            origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.12f, 0.3f);
@@ -815,7 +815,7 @@ void CmpAtomFBoss::ExecuteGapRing() {
                                 kGapRingBulletSpeed,
                                 params_.ringBulletRadiusMeters, color);
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_gapring_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.12f, 0.3f);
 }
@@ -849,7 +849,7 @@ void CmpAtomFBoss::ExecuteSummon() {
     AtomF::EnqueueSceneEntityAdopt(AtomF::CreateEnemyEntity(
         variant != nullptr ? *variant : fallback, summonPoints_[i], ++serial));
     // 出現点に白い閃光の輪。
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json",
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_summon_burst.json",
                                              summonPoints_[i]);
   }
   AtomF::PlayBossShotSe();
@@ -908,7 +908,7 @@ void CmpAtomFBoss::FirePinwheelShot() {
                                                        : -sweepDirection_;
   spiralAngle_ += dirSign * kPinwheelTurnPerShot;
   if ((spiralShotsLeft_ % 8) == 0 || fired == kPinwheelShotCount / 2) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_pinwheel_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
   }
@@ -930,7 +930,7 @@ void CmpAtomFBoss::FireHelixShot() {
   }
   spiralAngle_ += kHelixTurnPerShot;
   if ((spiralShotsLeft_ % 9) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_helix_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
   }

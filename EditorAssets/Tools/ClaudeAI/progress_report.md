@@ -2895,3 +2895,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1127-o2`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス基本技の専用バーストパーティクル・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。汎用の `atomf_boss_ring_burst.json` を流用していたボスの基本技 5 種（リング=桃、隙間リング=水色、召喚の出現点=白、風車弾=水色、二重螺旋=黄緑）に、3 層構成（中心の閃光＋破片の殻＋残り火）の専用 `atomf_boss_ringshot_burst.json` / `gapring_burst` / `summon_burst` / `pinwheel_burst` / `helix_burst` を追加し、`CmpAtomFBoss.cpp` の再生先を差し替えた。これでボスの全スキルの炸裂が専用パーティクルになった。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128o`（develop から作成）。
