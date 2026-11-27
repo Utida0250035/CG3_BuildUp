@@ -2867,3 +2867,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128k`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 花火の専用バーストパーティクル・演出の複雑化・スケジュール実行）
+
+ボス・雑魚のバリエーションが十分に揃ったため、優先順の次段である演出の複雑化に着手した。花火スキル（`Skill::Fireworks`）の炸裂が汎用の `atomf_boss_bloom_burst.json` を流用していたため、3 層構成の専用 `atomf_boss_fireworks_burst.json`（中心の閃光＋金色の火花の殻＋重力で落ちる残り火）を追加し、`FireFireworksShot` の再生先を差し替えた。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128l`（develop から作成）。

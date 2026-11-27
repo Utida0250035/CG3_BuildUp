@@ -1441,7 +1441,7 @@ void CmpAtomFBoss::FireFireworksShot() {
     const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
     AtomF::SpawnEnemyProjectile(center + dir * 0.2f, dir, kFireworksBulletSpeed, params_.ringBulletRadiusMeters, tint);
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_bloom_burst.json", center);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fireworks_burst.json", center);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.04f, 0.1f);
 }
