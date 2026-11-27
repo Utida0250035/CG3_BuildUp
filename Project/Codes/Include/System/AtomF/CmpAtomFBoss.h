@@ -50,7 +50,8 @@ public:
     Scatter,
     Crescent,
     Downpour,
-    Pincer
+    Pincer,
+    Carousel
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -120,6 +121,7 @@ private:
   void FireCrescentWave();
   void FireDownpourShot();
   void FirePincerShot();
+  void FireCarouselShot();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();
@@ -157,6 +159,7 @@ private:
   float sweepStartAngle_ = 0.0f;
   float sweepDirection_ = 1.0f;
   Math::Vector3 slamTarget_{};
+  float carouselBaseAngle_ = 0.0f;
   Math::Vector3 leapStart_{};
   float recoverOverrideSeconds_ = -1.0f;
   Math::Vector3 lockedDirection_{0.0f, 0.0f, 1.0f};

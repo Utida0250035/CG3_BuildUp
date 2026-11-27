@@ -2750,3 +2750,10 @@ develop を基に、ボスの新スキル **挟撃**（`Skill::Pincer`。自機�
 
 - 未実施: 実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-28（atomF: ボス回転木馬・rotator/whirler 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **回転木馬**（`Skill::Carousel`。外周の発射点が自機の方位を起点に 1 周しながら、発射のたびに自機の現在位置を狙う緑の弾を 0.1 秒間隔で 30 発撃つ弾幕。予備動作は外周を縁取る輪・起点から自機へ伸びる線・狭まる輪、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **rotator**（周回しつつ突進）と **whirler**（距離を保ち横揺れしつつ射撃）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128b`（develop から作成）。
