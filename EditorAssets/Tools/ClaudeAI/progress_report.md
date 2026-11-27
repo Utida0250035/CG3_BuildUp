@@ -2727,3 +2727,11 @@ develop を基に、ボスの新スキル **散弾**（`Skill::Scatter`。自機
 
 - 未実施: 実機確認、ボス戦 BGM 切替、分割後のウェーブ難度バランス確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-28（atomF: ボス三日月・crescenter/hurdler 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **三日月**（`Skill::Crescent`。自機方向へ幅約 126° の円弧状の弾列（15 発）を 4 波連続で放ち、波ごとに中央の速さを変えて円弧の形をずらす弾幕。予備動作は円弧の両端と中央の線＋端を結ぶ折れ線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **crescenter**（距離を保ち横揺れしつつ射撃）と **hurdler**（高速周回しつつ短間隔で突進）を `parameters.json` に追加し第 7 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: 実機確認、ボス戦 BGM 切替、第 7 ウェーブの難度確認。
+- 推測した用途: 広い円弧の弾幕で「端へ逃げず中央の速い弾の間を抜ける」判断を求めるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

@@ -47,7 +47,8 @@ public:
     Lattice,
     Pendulum,
     Curtain,
-    Scatter
+    Scatter,
+    Crescent
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -114,6 +115,7 @@ private:
   void FireLatticeWave();
   void FireCurtainWave();
   void FireScatterBurst();
+  void FireCrescentWave();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();
