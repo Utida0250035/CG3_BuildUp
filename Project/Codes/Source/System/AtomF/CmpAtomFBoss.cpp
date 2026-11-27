@@ -402,7 +402,7 @@ void CmpAtomFBoss::FireSpiralShot() {
   }
   spiralAngle_ += kSpiralTurnPerShot;
   if ((spiralShotsLeft_ % 6) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_shot_muzzle.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_spiral_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.06f, 0.15f);
   }
