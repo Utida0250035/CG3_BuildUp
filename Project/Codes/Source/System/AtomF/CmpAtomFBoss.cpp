@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -239,6 +239,14 @@ constexpr float kKaleidoscopeWaveIntervalSeconds = 0.11f;
 constexpr float kKaleidoscopeTurnPerWaveRad = 0.16f;
 constexpr float kKaleidoscopeBulletSpeed = 2.9f;
 constexpr float kKaleidoscopeTelegraphSeconds = 1.0f;
+/// 渦潮: 3 本の腕が回りながら弾を放ち、弾速が波ごとに遅くなるため先に出た弾が外へ、後の弾が内に残って渦の縞を描く弾幕。
+constexpr int kWhirlpoolWaveCount = 36;
+constexpr int kWhirlpoolArms = 3;
+constexpr float kWhirlpoolWaveIntervalSeconds = 0.08f;
+constexpr float kWhirlpoolTurnPerWaveRad = 0.22f;
+constexpr float kWhirlpoolStartSpeed = 4.2f;
+constexpr float kWhirlpoolSpeedDropPerWave = 0.06f;
+constexpr float kWhirlpoolTelegraphSeconds = 1.0f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1362,6 +1370,24 @@ void CmpAtomFBoss::FireKaleidoscopeShot() {
   }
 }
 
+void CmpAtomFBoss::FireWhirlpoolShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kWhirlpoolWaveCount - fanWavesLeft_;
+  const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x) + static_cast<float>(wave) * kWhirlpoolTurnPerWaveRad;
+  const float speed = std::max(1.6f, kWhirlpoolStartSpeed - kWhirlpoolSpeedDropPerWave * static_cast<float>(wave));
+  const Math::Vector4 tint{0.25f, 0.8f, 0.95f, 1.0f};
+  for (int arm = 0; arm < kWhirlpoolArms; ++arm) {
+    const float angle = baseAngle + 2.0f * kPi * static_cast<float>(arm) / static_cast<float>(kWhirlpoolArms);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed, params_.ringBulletRadiusMeters, tint);
+  }
+  if ((wave % 9) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1558,6 +1584,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Windmill: duration = kWindmillTelegraphSeconds; break;
   case Skill::Rosette: duration = kRosetteTelegraphSeconds; break;
   case Skill::Kaleidoscope: duration = kKaleidoscopeTelegraphSeconds; break;
+  case Skill::Whirlpool: duration = kWhirlpoolTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1569,7 +1596,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
        skill_ == Skill::Cascade || skill_ == Skill::Hourglass ||
        skill_ == Skill::Pentacle || skill_ == Skill::Snowflake ||
        skill_ == Skill::Windmill || skill_ == Skill::Rosette ||
-       skill_ == Skill::Kaleidoscope) &&
+       skill_ == Skill::Kaleidoscope || skill_ == Skill::Whirlpool) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1796,6 +1823,19 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x);
       for (int axis = 0; axis < kKaleidoscopeAxes; ++axis) {
         const float angle = baseAngle + 2.0f * kPi * static_cast<float>(axis) / static_cast<float>(kKaleidoscopeAxes);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 8.0f,
+                           locked ? 0.15f : 0.08f, tint);
+      }
+      break;
+    }
+    case Skill::Whirlpool: {
+      // 3 本の腕の初期位置（水色の線）を予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const Math::Vector4 tint{0.25f, 0.8f, 0.95f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      for (int arm = 0; arm < kWhirlpoolArms; ++arm) {
+        const float angle = baseAngle + 2.0f * kPi * static_cast<float>(arm) / static_cast<float>(kWhirlpoolArms);
         const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
         telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 8.0f,
                            locked ? 0.15f : 0.08f, tint);
@@ -2235,6 +2275,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kRosetteWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Whirlpool:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kWhirlpoolWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Kaleidoscope:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -2475,6 +2521,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireRosetteShot();
     --fanWavesLeft_;
     volleyTimer_ = kRosetteWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Whirlpool) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireWhirlpoolShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kWhirlpoolWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

@@ -62,7 +62,8 @@ public:
     Snowflake,
     Windmill,
     Rosette,
-    Kaleidoscope
+    Kaleidoscope,
+    Whirlpool
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -143,6 +144,7 @@ private:
   void FireWindmillShot();
   void FireRosetteShot();
   void FireKaleidoscopeShot();
+  void FireWhirlpoolShot();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();

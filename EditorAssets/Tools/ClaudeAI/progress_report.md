@@ -2837,3 +2837,11 @@ develop を基に、ボスの新スキル **万華鏡**（`Skill::Kaleidoscope`�
 
 - 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128i`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス渦潮・eddy/maelstrom 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **渦潮**（`Skill::Whirlpool`。3 本の腕が回りながら 0.08 秒間隔で 36 波・水色の弾を放ち、弾速が波ごとに遅くなるため内側に残る弾と外へ抜ける弾で渦の縞を描く弾幕。予備動作は 3 本の腕の初期位置を示す水色の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の行動順へ組み込んだ。雑魚 `eddy`（突進型）・`maelstrom`（射撃型）を `parameters.json` に追加し最終ウェーブへ各 2 体配置（いずれも最大 Hp1・耐久能力なし）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
+- 推測した用途: 弾速差で時間とともに形が変わる渦を読ませ、安全地帯を探す状況判断を求めるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/bold-lamport-p8d1c0`（develop から作成）。
