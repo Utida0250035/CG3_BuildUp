@@ -40,6 +40,10 @@ void PlayBossDeathExplosionEffect(const Math::Vector3 &worldPosition,
 void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
                                uint32_t sequenceId);
 
+/// Assets/Particles 直下の JSON（ファイル名のみ指定）を 1 回再生する（atomF の演出用）。
+void PlayNamedOneShotEffect(const char *particleJsonFileName,
+                            const Math::Vector3 &worldPosition);
+
 void SetEffectCamera(Camera *camera);
 void UpdateCombatParticleEffects();
 void DrawCombatParticleEffects();

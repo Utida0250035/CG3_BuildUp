@@ -5,7 +5,8 @@
     "PLAYER_WEAPON",
     "ENEMY_WEAPON",
     "PLAYER_ITEM",
-    "ENEMY_ITEM"
+    "ENEMY_ITEM",
+    "BOSS"
   ],
   "roles": {
     "player": "PLAYER",
@@ -13,7 +14,8 @@
     "playerWeapon": "PLAYER_WEAPON",
     "enemyWeapon": "ENEMY_WEAPON",
     "playerItem": "PLAYER_ITEM",
-    "enemyItem": "ENEMY_ITEM"
+    "enemyItem": "ENEMY_ITEM",
+    "boss": "BOSS"
   },
   "combat": {
     "managedBulletTags": ["ENEMY_WEAPON", "PLAYER_ITEM"],

@@ -89,6 +89,17 @@ struct EnemyVariantParameters {
   float colorR = 0.92f;
   float colorG = 0.28f;
   float colorB = 0.25f;
+  /// >0 で自機の周りを回りながら近づく（周回半径。時間とともに orbitShrinkPerSecond で縮む）。
+  float orbitRadiusMeters = 0.0f;
+  float orbitShrinkPerSecond = 0.25f;
+  float orbitMinRadiusMeters = 0.8f;
+  /// >0 でこの距離まで近づいたら立ち止まる（射手用）。
+  float keepDistanceMeters = 0.0f;
+  /// >0 で射手になる。予備動作（震え＋照準線）の後、自機へ向けて弾を撃つ間隔。
+  float shotIntervalSeconds = 0.0f;
+  float shotTelegraphSeconds = 0.7f;
+  float shotSpeedMetersPerSecond = 2.4f;
+  float shotRadiusMeters = 0.14f;
 };
 
 struct EnemyParameters {
@@ -104,6 +115,75 @@ struct EnemyParameters {
   std::vector<EnemyVariantParameters> variants;
   /// 表示モデル名（Assets/Objects/<名前>/<名前>.obj）。空なら球。
   std::string modelName;
+};
+
+/// ボス（Hp 固定・耐久系パッシブなし）。数値はすべて `parameters.json` の `boss`。
+struct BossParameters {
+  int maxHealth = 128;
+  float hitRadiusMeters = 1.1f;
+  float moveSpeedMetersPerSecond = 0.55f;
+  /// 自機とこの距離（中心間）以内では前進せず待機する。
+  float holdDistanceMeters = 3.0f;
+  float colorR = 0.55f;
+  float colorG = 0.12f;
+  float colorB = 0.75f;
+  /// 自機弾 1 発・敵爆発 1 回あたりのダメージ。
+  int bulletDamage = 2;
+  int explosionDamage = 8;
+  /// 突進後の硬直中に受けるダメージ倍率。
+  float recoverDamageMultiplier = 1.5f;
+  float entranceSeconds = 2.6f;
+  float deathSeconds = 3.2f;
+  float skillCooldownSeconds = 2.0f;
+  /// Hp 割合がこれ以下で行動間隔が enrageCooldownMultiplier 倍になる（耐久ではなく攻撃の激化）。
+  float enrageHealthRatio = 0.4f;
+  float enrageCooldownMultiplier = 0.6f;
+
+  // スキル: 全方位弾
+  int ringBulletCount = 18;
+  float ringTelegraphSeconds = 1.0f;
+  float ringBulletSpeedMetersPerSecond = 2.0f;
+  float ringBulletRadiusMeters = 0.17f;
+  // スキル: 狙い撃ち連射
+  int volleyShotCount = 6;
+  float volleyTelegraphSeconds = 0.9f;
+  float volleyIntervalSeconds = 0.2f;
+  float volleyBulletSpeedMetersPerSecond = 3.2f;
+  // スキル: 雑魚召喚
+  int summonCount = 3;
+  float summonTelegraphSeconds = 1.1f;
+  std::string summonVariantA = "runner";
+  std::string summonVariantB = "weaver";
+  // 特殊アクション: 突進→着地衝撃波→硬直
+  float dashTelegraphSeconds = 1.2f;
+  float dashSpeedMetersPerSecond = 8.0f;
+  float dashMaxSeconds = 1.0f;
+  float recoverSeconds = 2.0f;
+  float shockwaveMaxRadiusMeters = 6.0f;
+  float shockwaveSpeedMetersPerSecond = 5.0f;
+  float shockwaveBandHalfWidthMeters = 0.3f;
+  // 戦闘中の増援（雑魚は爆発で本体にダメージを与える弾になる）
+  float reinforcementIntervalSeconds = 8.0f;
+  int reinforcementCount = 2;
+};
+
+struct StageWaveSpawn {
+  std::string variantName = "walker";
+  int count = 1;
+};
+
+struct StageWave {
+  /// 前のウェーブの開始（最初は演目開始）からの待ち秒。
+  float delaySeconds = 0.0f;
+  /// 前ウェーブの生存数がこれ以下になったら（delay 無視で）次を出す。
+  int advanceWhenAliveAtMost = 0;
+  std::vector<StageWaveSpawn> spawns;
+};
+
+struct StageParameters {
+  float spawnRadiusMeters = 12.0f;
+  float bossAppearDelaySeconds = 2.0f;
+  std::vector<StageWave> waves;
 };
 
 /// 斜め見下ろし追従カメラ（`parameters.json` の `camera`）。
@@ -145,12 +225,18 @@ public:
 
   const CombatCameraParameters &Camera() const { return camera_; }
 
+  const BossParameters &Boss() const { return boss_; }
+
+  const StageParameters &Stage() const { return stage_; }
+
 private:
   bool loaded_ = false;
   ArenaParameters arena_{};
   PlayerParameters player_{};
   EnemyParameters enemy_{};
   CombatCameraParameters camera_{};
+  BossParameters boss_{};
+  StageParameters stage_{};
 };
 
 } // namespace Atrum::AtomF

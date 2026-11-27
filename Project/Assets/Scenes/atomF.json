@@ -43,6 +43,7 @@
     ],
     "sceneName": "atomF",
     "tagCatalog": [
+        "BOSS",
         "ENEMY",
         "ENEMY_ITEM",
         "ENEMY_WEAPON",

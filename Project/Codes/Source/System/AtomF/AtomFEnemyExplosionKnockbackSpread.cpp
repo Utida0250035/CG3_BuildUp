@@ -1,6 +1,7 @@
 #include "System/AtomF/AtomFEnemyExplosionKnockbackSpread.h"
 
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/Entity/Components/CmpHitSphere.h"
@@ -61,6 +62,10 @@ void SpreadEnemyExplosionKnockbackFromCenter(
       continue;
     }
     if (!tags.EntityHasRole(*other, "enemy")) {
+      continue;
+    }
+    // ボスは爆風で吹き飛ばない（ダメージは ApplyEnemyExplosionDamageToBoss 側）。
+    if (other->HasUpdCmp<CmpAtomFBoss>()) {
       continue;
     }
     if (other->HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
