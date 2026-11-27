@@ -2853,3 +2853,10 @@ develop を基に、ボスの新しい近接スキル **震脚**（`Skill::Quake
 - 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。静的チェックとして宣言・実装・enum・switch 分岐の整合のみ確認した。
 - 推測した用途: 突進・跳躍と異なる「その場で連続して広がる衝撃波」を飛び越える／距離を取る判断を求め、近接技の種類を増やすため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。指定の develop 基点で作業ブランチ `claude/serene-hypatia-kfbrgp` を使用した。
+
+## セッション 2026-11-28（atomF: ボス蜘蛛の巣・weaver/spinner 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **蜘蛛の巣**（`Skill::Cobweb`。8 本の放射状の糸を 0.5 秒間隔で 10 波放ち、波ごとに半ピッチずらし弾速を交互に変えて網目状の白銀の弾幕を織る。予備動作は 8 本の糸の初期位置を示す白銀の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の行動順へ組み込んだ。雑魚 `weaver`（突進型）・`spinner`（射撃型）を `parameters.json` に追加し最終ウェーブへ各 2 体配置（いずれも最大 Hp1・耐久能力なし）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128j`（develop から作成）。
