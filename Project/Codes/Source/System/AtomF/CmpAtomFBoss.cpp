@@ -1,0 +1,684 @@
+#include "System/AtomF/CmpAtomFBoss.h"
+
+#include "Camera/CombatCameraShake.h"
+#include "Math/Vector4.h"
+#include "System/AtomF/AtomFArenaBounds.h"
+#include "System/AtomF/AtomFBossShockwave.h"
+#include "System/AtomF/AtomFEnemyFactory.h"
+#include "System/AtomF/AtomFEnemyProjectileSpawn.h"
+#include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
+#include "System/AtomF/AtomFScenePlayerLocator.h"
+#include "System/AtomF/AtomFSe.h"
+#include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
+#include "System/AtomF/CmpDrawAtomFTelegraph.h"
+#include "System/DeltaTime.h"
+#include "System/Entity/Components/CmpHitSphere.h"
+#include "System/Entity/Components/CmpMeshSphere.h"
+#include "System/Entity/Entity.h"
+#include "System/Entity/EntityTagRegistry.h"
+#include "System/Entity/HitJudge.h"
+#include "System/Particle/GameCombatParticleEffects.h"
+
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+
+namespace Atrum {
+
+namespace {
+
+constexpr float kPi = 3.14159265359f;
+constexpr float kTwoPi = 6.28318530718f;
+/// 突進・連射の狙いを固定する、発動直前の秒数。
+constexpr float kAimLockSeconds = 0.25f;
+constexpr float kBossHitFlashSeconds = 0.12f;
+
+CmpAtomFBoss *g_currentBoss = nullptr;
+
+/// 行動の順番（固定）。種類を散らしつつ、突進を挟んで位置取りを崩す。
+constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
+    CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
+    CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Summon,
+    CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
+    CmpAtomFBoss::Skill::Volley};
+
+float Rand01() {
+  static uint32_t state = 0x1234ABCDu;
+  state = state * 1664525u + 1013904223u;
+  return static_cast<float>((state >> 8) & 0xFFFFu) / 65535.0f;
+}
+
+float EaseOutBack(const float t) {
+  constexpr float c1 = 1.70158f;
+  constexpr float c3 = c1 + 1.0f;
+  const float u = t - 1.0f;
+  return 1.0f + c3 * u * u * u + c1 * u * u;
+}
+
+Math::Vector4 Lerp(const Math::Vector4 &a, const Math::Vector4 &b,
+                   const float t) {
+  return a + (b - a) * std::clamp(t, 0.0f, 1.0f);
+}
+
+CmpMeshSphere *MeshOf(Entity &owner) {
+  return owner.HasDrawCmp<CmpMeshSphere>() ? owner.GetDrawCmp<CmpMeshSphere>()
+                                           : nullptr;
+}
+
+CmpDrawAtomFTelegraph *TelegraphOf(Entity &owner) {
+  return owner.HasDrawCmp<CmpDrawAtomFTelegraph>()
+             ? owner.GetDrawCmp<CmpDrawAtomFTelegraph>()
+             : nullptr;
+}
+
+Math::Vector3 GroundPoint(const Math::Vector3 &p) { return {p.x, 0.0f, p.z}; }
+
+} // namespace
+
+CmpAtomFBoss *CmpAtomFBoss::Current() { return g_currentBoss; }
+
+void CmpAtomFBoss::ResolveDependence() {
+  frameDeltaTime_ = ::Atrum::EngineFrameDeltaTime();
+  params_ = AtomF::ParametersRuntime::Instance().Boss();
+  radius_ = params_.hitRadiusMeters;
+}
+
+CmpAtomFBoss::~CmpAtomFBoss() {
+  if (g_currentBoss == this) {
+    g_currentBoss = nullptr;
+  }
+}
+
+void CmpAtomFBoss::Initialize() {
+  health_ = params_.maxHealth;
+  displayedHealthRatio_ = 1.0f;
+  state_ = State::Entrance;
+  stateElapsed_ = 0.0f;
+  entranceEffectPlayed_ = false;
+  barGlowPlayed_ = false;
+  if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+    if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+      hit->SetIsActive(false);
+    }
+  }
+}
+
+void CmpAtomFBoss::Finalize() {
+  if (g_currentBoss == this) {
+    g_currentBoss = nullptr;
+  }
+}
+
+float CmpAtomFBoss::HpBarReveal01() const {
+  if (state_ != State::Entrance) {
+    return 1.0f;
+  }
+  const float span = std::max(0.1f, params_.entranceSeconds * 0.8f);
+  return std::clamp(stateElapsed_ / span, 0.0f, 1.0f);
+}
+
+Math::Vector3 CmpAtomFBoss::DirectionToPlayerXZ() const {
+  Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+  if (player == nullptr || !player->IsActive()) {
+    return lockedDirection_;
+  }
+  const Entity *self = GetOwner();
+  Math::Vector3 toPlayer = player->GetWorldPosition() - self->GetWorldPosition();
+  toPlayer.y = 0.0f;
+  const float lengthSq = toPlayer.LengthSquare();
+  if (lengthSq < 1e-6f) {
+    return lockedDirection_;
+  }
+  return toPlayer * (1.0f / std::sqrt(lengthSq));
+}
+
+void CmpAtomFBoss::MoveToward(const Math::Vector3 &targetXZ, const float speed,
+                              const float dt) {
+  Math::Vector3 &translate = RefOwner().RefTransform().translate;
+  Math::Vector3 to = targetXZ - translate;
+  to.y = 0.0f;
+  const float lengthSq = to.LengthSquare();
+  if (lengthSq < 1e-6f) {
+    return;
+  }
+  translate += to * (speed * dt / std::sqrt(lengthSq));
+  translate.y = radius_;
+}
+
+bool CmpAtomFBoss::ApplyDamage(const int baseAmount,
+                               const Math::Vector3 &hitPosition) {
+  if (!IsDamageable() || health_ <= 0) {
+    return false;
+  }
+  const float multiplier =
+      state_ == State::Recover ? params_.recoverDamageMultiplier : 1.0f;
+  const int amount = std::max(
+      1, static_cast<int>(std::lround(static_cast<float>(baseAmount) * multiplier)));
+  health_ = std::max(0, health_ - amount);
+  hitFlashSeconds_ = kBossHitFlashSeconds;
+
+  Particle::Combat::PlayBossHitByReflectedBulletEffect(hitPosition);
+  AtomF::PlayBossHitSe();
+  CombatCameraShake::Instance().RequestBossHitShake();
+
+  if (!enraged_ &&
+      static_cast<float>(health_) <=
+          static_cast<float>(params_.maxHealth) * params_.enrageHealthRatio) {
+    enraged_ = true;
+    AtomF::PlayBossBulletWarnSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.22f, 0.7f);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_enrage.json",
+                                             RefOwner().GetWorldPosition());
+  }
+
+  if (health_ <= 0) {
+    BeginDying();
+  }
+  return true;
+}
+
+void CmpAtomFBoss::ClearTelegraph() {
+  if (CmpDrawAtomFTelegraph *telegraph = TelegraphOf(RefOwner())) {
+    telegraph->Clear();
+  }
+}
+
+void CmpAtomFBoss::SetDrawJitter(const float amplitude, const float time) {
+  if (CmpMeshSphere *mesh = MeshOf(RefOwner())) {
+    if (amplitude <= 0.0f) {
+      mesh->SetDrawOffset(Math::Vector3{});
+      return;
+    }
+    mesh->SetDrawOffset(Math::Vector3{std::sin(time * 83.0f) * amplitude, 0.0f,
+                                      std::cos(time * 71.0f) * amplitude});
+  }
+}
+
+void CmpAtomFBoss::FinishSkill() {
+  state_ = State::Idle;
+  stateElapsed_ = 0.0f;
+  const float multiplier = enraged_ ? params_.enrageCooldownMultiplier : 1.0f;
+  idleTimer_ = params_.skillCooldownSeconds * multiplier;
+  ClearTelegraph();
+  SetDrawJitter(0.0f, 0.0f);
+}
+
+void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
+  state_ = State::Telegraph;
+  skill_ = skill;
+  stateElapsed_ = 0.0f;
+  lockedDirection_ = DirectionToPlayerXZ();
+
+  if (skill == Skill::Dash) {
+    AtomF::PlayBossMeleeWarnSe();
+  } else {
+    AtomF::PlayBossBulletWarnSe();
+  }
+
+  if (skill == Skill::Summon) {
+    summonPoints_.clear();
+    Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+    const Math::Vector3 playerPos =
+        player != nullptr ? player->GetWorldPosition() : Math::Vector3{};
+    const float arena = AtomF::ResolveArenaInnerRadiusMeters();
+    for (int i = 0; i < params_.summonCount; ++i) {
+      Math::Vector3 point{};
+      for (int attempt = 0; attempt < 8; ++attempt) {
+        const float angle = Rand01() * kTwoPi;
+        const float dist = arena * (0.35f + 0.5f * Rand01());
+        point = {std::cos(angle) * dist, 0.0f, std::sin(angle) * dist};
+        const float dx = point.x - playerPos.x;
+        const float dz = point.z - playerPos.z;
+        if (dx * dx + dz * dz >= 9.0f) {
+          break;
+        }
+      }
+      summonPoints_.push_back(point);
+    }
+  }
+}
+
+void CmpAtomFBoss::BeginDash() {
+  state_ = State::Dash;
+  stateElapsed_ = 0.0f;
+  ClearTelegraph();
+  SetDrawJitter(0.0f, 0.0f);
+}
+
+void CmpAtomFBoss::EndDash() {
+  const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
+  AtomF::SpawnBossShockwave(ground, params_.shockwaveMaxRadiusMeters,
+                            params_.shockwaveSpeedMetersPerSecond,
+                            params_.shockwaveBandHalfWidthMeters);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_slam.json", ground);
+  AtomF::PlayBossDeathBoomSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.32f, 0.55f);
+  state_ = State::Recover;
+  stateElapsed_ = 0.0f;
+}
+
+void CmpAtomFBoss::ExecuteRing() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const float offset = Rand01() * kTwoPi;
+  const Math::Vector4 color{1.0f, 0.3f, 0.85f, 1.0f};
+  for (int i = 0; i < params_.ringBulletCount; ++i) {
+    const float angle =
+        offset + kTwoPi * static_cast<float>(i) /
+                     static_cast<float>(params_.ringBulletCount);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                params_.ringBulletSpeedMetersPerSecond,
+                                params_.ringBulletRadiusMeters, color);
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json",
+                                           origin);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.12f, 0.3f);
+}
+
+void CmpAtomFBoss::ExecuteSummon() {
+  static int serial = 5000;
+  const AtomF::EnemyVariantParameters *a =
+      AtomF::FindEnemyVariantByName(params_.summonVariantA);
+  const AtomF::EnemyVariantParameters *b =
+      AtomF::FindEnemyVariantByName(params_.summonVariantB);
+  AtomF::EnemyVariantParameters fallback{};
+  for (std::size_t i = 0; i < summonPoints_.size(); ++i) {
+    const AtomF::EnemyVariantParameters *variant = (i % 2 == 0) ? a : b;
+    AtomF::EnqueueSceneEntityAdopt(AtomF::CreateEnemyEntity(
+        variant != nullptr ? *variant : fallback, summonPoints_[i], ++serial));
+  }
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.1f, 0.25f);
+}
+
+void CmpAtomFBoss::FireVolleyShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  Math::Vector3 dir = DirectionToPlayerXZ();
+  // 連射の後半ほど少しずつ左右へ散らす。
+  const int shotIndex = params_.volleyShotCount - volleyShotsLeft_;
+  const float spread = ((shotIndex % 3) - 1) * 0.12f;
+  dir = Math::Vector3{dir.x * std::cos(spread) - dir.z * std::sin(spread), 0.0f,
+                      dir.x * std::sin(spread) + dir.z * std::cos(spread)};
+  AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                              params_.volleyBulletSpeedMetersPerSecond,
+                              params_.ringBulletRadiusMeters,
+                              Math::Vector4{1.0f, 0.4f, 0.2f, 1.0f});
+  Particle::Combat::PlayNamedOneShotEffect("atomf_shot_muzzle.json",
+                                           origin + dir * (radius_ + 0.1f));
+  AtomF::PlayBossShotSe();
+}
+
+void CmpAtomFBoss::UpdateEntrance(const float dt) {
+  (void)dt;
+  const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
+  if (!entranceEffectPlayed_) {
+    entranceEffectPlayed_ = true;
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_spawn.json", ground);
+    AtomF::PlayBossDeathBoomSe();
+    CombatCameraShake::Instance().RequestCustomShake(
+        0.2f, params_.entranceSeconds * 0.7f);
+  }
+  const float t = std::clamp(stateElapsed_ / params_.entranceSeconds, 0.0f, 1.0f);
+  if (!barGlowPlayed_ && t >= 0.35f) {
+    barGlowPlayed_ = true;
+    AtomF::PlayBossHpBarGlowSe();
+  }
+  if (CmpDrawAtomFTelegraph *telegraph = TelegraphOf(RefOwner())) {
+    telegraph->Clear();
+    // 魔法陣: 外側から収束する 3 重の輪。
+    for (int i = 0; i < 3; ++i) {
+      const float phase = std::fmod(t * 1.6f + static_cast<float>(i) / 3.0f, 1.0f);
+      telegraph->AddRing(ground, radius_ * (4.5f - 3.5f * phase), 0.1f,
+                    Math::Vector4{0.8f, 0.3f, 1.0f, 0.75f * (1.0f - t)});
+    }
+  }
+  if (t >= 1.0f) {
+    ClearTelegraph();
+    if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+      if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+        hit->SetIsActive(true);
+      }
+    }
+    state_ = State::Idle;
+    stateElapsed_ = 0.0f;
+    idleTimer_ = 1.2f;
+  }
+}
+
+void CmpAtomFBoss::UpdateIdle(const float dt) {
+  Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+  if (player != nullptr && player->IsActive()) {
+    const Math::Vector3 playerPos = player->GetWorldPosition();
+    Math::Vector3 to = playerPos - RefOwner().GetWorldPosition();
+    to.y = 0.0f;
+    if (to.LengthSquare() > params_.holdDistanceMeters * params_.holdDistanceMeters) {
+      MoveToward(playerPos, params_.moveSpeedMetersPerSecond, dt);
+    }
+  }
+  idleTimer_ -= dt;
+  if (idleTimer_ <= 0.0f) {
+    const std::size_t count = sizeof(kSkillSequence) / sizeof(kSkillSequence[0]);
+    BeginTelegraph(kSkillSequence[skillCursor_ % count]);
+    ++skillCursor_;
+  }
+}
+
+void CmpAtomFBoss::UpdateTelegraph(const float dt) {
+  (void)dt;
+  float duration = params_.ringTelegraphSeconds;
+  switch (skill_) {
+  case Skill::Ring: duration = params_.ringTelegraphSeconds; break;
+  case Skill::Volley: duration = params_.volleyTelegraphSeconds; break;
+  case Skill::Summon: duration = params_.summonTelegraphSeconds; break;
+  case Skill::Dash: duration = params_.dashTelegraphSeconds; break;
+  }
+  duration = std::max(0.1f, duration);
+  const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
+  const bool locked = stateElapsed_ >= duration - kAimLockSeconds;
+
+  if ((skill_ == Skill::Volley || skill_ == Skill::Dash) && !locked) {
+    lockedDirection_ = DirectionToPlayerXZ();
+  }
+
+  SetDrawJitter(0.02f + 0.08f * progress, stateElapsed_);
+
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  if (CmpDrawAtomFTelegraph *telegraph = TelegraphOf(RefOwner())) {
+    telegraph->Clear();
+    const float pulse = 0.5f + 0.5f * std::sin(stateElapsed_ * 18.0f);
+    switch (skill_) {
+    case Skill::Ring: {
+      const Math::Vector3 ground = GroundPoint(origin);
+      telegraph->AddRing(ground, radius_ + 0.4f + 2.2f * progress, 0.12f,
+                    Math::Vector4{1.0f, 0.35f, 0.9f, 0.4f + 0.4f * pulse});
+      constexpr int kSpokeCount = 12;
+      for (int i = 0; i < kSpokeCount; ++i) {
+        const float angle = kTwoPi * static_cast<float>(i) / kSpokeCount;
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f),
+                      ground + dir * (radius_ + 1.2f + 2.0f * progress), 0.1f,
+                      Math::Vector4{1.0f, 0.3f, 0.7f, 0.5f});
+      }
+      break;
+    }
+    case Skill::Volley:
+      telegraph->AddLine(origin, origin + lockedDirection_ * 9.0f,
+                    locked ? 0.3f : 0.18f,
+                    locked ? Math::Vector4{1.0f, 0.1f, 0.1f, 0.7f}
+                           : Math::Vector4{1.0f, 0.55f, 0.2f, 0.35f});
+      break;
+    case Skill::Summon:
+      for (const Math::Vector3 &point : summonPoints_) {
+        telegraph->AddRing(point, 0.9f - 0.5f * progress, 0.08f,
+                      Math::Vector4{0.5f, 0.9f, 1.0f, 0.5f + 0.4f * pulse});
+        telegraph->AddRing(point, 0.3f, 0.06f,
+                      Math::Vector4{0.5f, 0.9f, 1.0f, 0.8f});
+      }
+      break;
+    case Skill::Dash:
+      telegraph->AddLine(origin, origin + lockedDirection_ * 14.0f,
+                    radius_ * 1.7f,
+                    locked ? Math::Vector4{1.0f, 0.1f, 0.05f, 0.5f}
+                           : Math::Vector4{1.0f, 0.5f, 0.15f, 0.22f});
+      break;
+    }
+  }
+
+  if (stateElapsed_ < duration) {
+    return;
+  }
+
+  ClearTelegraph();
+  SetDrawJitter(0.0f, 0.0f);
+  switch (skill_) {
+  case Skill::Ring:
+    ExecuteRing();
+    FinishSkill();
+    break;
+  case Skill::Summon:
+    ExecuteSummon();
+    FinishSkill();
+    break;
+  case Skill::Volley:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    volleyShotsLeft_ = params_.volleyShotCount;
+    volleyTimer_ = 0.0f;
+    break;
+  case Skill::Dash:
+    BeginDash();
+    break;
+  }
+}
+
+void CmpAtomFBoss::UpdateExecute(const float dt) {
+  // 現状 Execute に長く留まるのは連射のみ。
+  volleyTimer_ -= dt;
+  if (volleyTimer_ > 0.0f) {
+    return;
+  }
+  FireVolleyShot();
+  --volleyShotsLeft_;
+  volleyTimer_ = params_.volleyIntervalSeconds;
+  if (volleyShotsLeft_ <= 0) {
+    FinishSkill();
+  }
+}
+
+void CmpAtomFBoss::UpdateDash(const float dt) {
+  Math::Vector3 &translate = RefOwner().RefTransform().translate;
+  translate += lockedDirection_ * (params_.dashSpeedMetersPerSecond * dt);
+  translate.y = radius_;
+
+  // 軌跡の残光。
+  if (std::fmod(stateElapsed_, 0.08f) < dt) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_dash_trail.json",
+                                             GroundPoint(translate));
+  }
+
+  const bool touchedWall =
+      AtomF::IsWorldXZTouchingArenaWall(translate.x, translate.z, radius_);
+  if (touchedWall || stateElapsed_ >= params_.dashMaxSeconds) {
+    EndDash();
+  }
+}
+
+void CmpAtomFBoss::UpdateRecover(const float dt) {
+  (void)dt;
+  if (stateElapsed_ >= params_.recoverSeconds) {
+    FinishSkill();
+  }
+}
+
+void CmpAtomFBoss::DestroyHostileEntitiesOnDeath() {
+  HitJudge *judge = HitJudge::Instance();
+  if (judge == nullptr) {
+    return;
+  }
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+
+  // 走査中に登録が変わらないよう、先に対象を集める。
+  std::vector<Entity *> owners;
+  for (CmpHitSphere *hit : judge->RegisteredHitSpheres()) {
+    if (hit == nullptr) {
+      continue;
+    }
+    Entity *owner = &hit->RefOwner();
+    if (owner != &RefOwner()) {
+      owners.push_back(owner);
+    }
+  }
+  for (Entity *owner : owners) {
+    if (tags.EntityHasRole(*owner, "enemyWeapon")) {
+      owner->RequestDestroy();
+    } else if (tags.EntityHasRole(*owner, "enemy") &&
+               owner->HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
+      if (CmpAtomFEnemyChainExplosion *chain =
+              owner->GetUpdCmp<CmpAtomFEnemyChainExplosion>()) {
+        chain->BeginDyingSilently();
+      }
+    }
+  }
+}
+
+void CmpAtomFBoss::BeginDying() {
+  state_ = State::Dying;
+  stateElapsed_ = 0.0f;
+  deathEffectTimer_ = 0.0f;
+  deathBurstCount_ = 0;
+  deathAnchor_ = RefOwner().RefTransform().translate;
+  ClearTelegraph();
+  SetDrawJitter(0.0f, 0.0f);
+  if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+    if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+      hit->SetIsActive(false);
+    }
+  }
+  DestroyHostileEntitiesOnDeath();
+  AtomF::PlayBossDeathBoomSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.3f, 0.8f);
+}
+
+void CmpAtomFBoss::UpdateDying(const float dt) {
+  const float duration = std::max(0.5f, params_.deathSeconds);
+  const float t = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
+
+  // 震えながら位置を保つ（吹き飛ばさない）。
+  RefOwner().RefTransform().translate = deathAnchor_;
+  SetDrawJitter(0.05f + 0.25f * t, stateElapsed_);
+
+  // 終盤ほど間隔が詰まる連続爆発。
+  deathEffectTimer_ -= dt;
+  if (deathEffectTimer_ <= 0.0f && t < 1.0f) {
+    deathEffectTimer_ = 0.38f - 0.28f * t;
+    const float angle = Rand01() * kTwoPi;
+    const float dist = Rand01() * radius_ * 0.9f;
+    const Math::Vector3 point = deathAnchor_ + Math::Vector3{std::cos(angle) * dist,
+                                                             (Rand01() - 0.5f) * radius_,
+                                                             std::sin(angle) * dist};
+    static uint32_t sequence = 200000U;
+    Particle::Combat::PlayBossDeathExplosionEffect(point, ++sequence);
+    CombatCameraShake::Instance().RequestCustomShake(0.12f + 0.2f * t, 0.3f);
+    if ((++deathBurstCount_ % 3) == 0) {
+      AtomF::PlayBossDeathBoomSe();
+    }
+  }
+
+  if (CmpDrawAtomFTelegraph *telegraph = TelegraphOf(RefOwner())) {
+    telegraph->Clear();
+    // 崩壊前に広がる輪。
+    telegraph->AddRing(GroundPoint(deathAnchor_), radius_ * (1.0f + 3.0f * t), 0.12f,
+                  Math::Vector4{1.0f, 0.7f, 0.3f, 0.6f * (1.0f - t)});
+  }
+
+  if (stateElapsed_ >= duration) {
+    // フィナーレ: 大爆発して消える。
+    ClearTelegraph();
+    static uint32_t finaleSequence = 300000U;
+    for (int i = 0; i < 6; ++i) {
+      const float angle = kTwoPi * static_cast<float>(i) / 6.0f;
+      Particle::Combat::PlayBossDeathExplosionEffect(
+          deathAnchor_ + Math::Vector3{std::cos(angle) * radius_ * 0.7f, 0.0f,
+                                       std::sin(angle) * radius_ * 0.7f},
+          ++finaleSequence);
+    }
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_finale.json",
+                                             deathAnchor_);
+    AtomF::PlayBossDeathBoomSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.45f, 0.9f);
+    RefOwner().Finalize();
+    RefOwner().RequestDestroy();
+  }
+}
+
+void CmpAtomFBoss::ApplyVisual(const float dt) {
+  CmpMeshSphere *mesh = MeshOf(RefOwner());
+  if (mesh == nullptr) {
+    return;
+  }
+
+  if (hitFlashSeconds_ > 0.0f) {
+    hitFlashSeconds_ = std::max(0.0f, hitFlashSeconds_ - dt);
+  }
+  const float healthRatio =
+      static_cast<float>(health_) / static_cast<float>(params_.maxHealth);
+  displayedHealthRatio_ =
+      std::max(healthRatio, displayedHealthRatio_ - 0.5f * dt);
+
+  Math::Vector4 base{params_.colorR, params_.colorG, params_.colorB, 1.0f};
+  if (enraged_) {
+    base = Lerp(base, Math::Vector4{1.0f, 0.15f, 0.2f, 1.0f}, 0.45f);
+  }
+
+  Math::Vector4 color = base;
+  float meshRadius = radius_;
+
+  switch (state_) {
+  case State::Entrance: {
+    const float t = std::clamp(stateElapsed_ / params_.entranceSeconds, 0.0f, 1.0f);
+    const float grow = std::clamp((t - 0.25f) / 0.75f, 0.0f, 1.0f);
+    meshRadius = radius_ * std::max(0.0f, EaseOutBack(grow));
+    color.w = 0.35f + 0.65f * grow;
+    break;
+  }
+  case State::Telegraph: {
+    const float pulse = 0.5f + 0.5f * std::sin(stateElapsed_ * 16.0f);
+    color = Lerp(base, Math::Vector4{1.0f, 0.35f, 0.15f, 1.0f}, 0.3f + 0.4f * pulse);
+    break;
+  }
+  case State::Recover: {
+    const float pulse = 0.5f + 0.5f * std::sin(stateElapsed_ * 9.0f);
+    color = Lerp(base * 0.5f, Math::Vector4{0.9f, 0.9f, 1.0f, 1.0f}, 0.25f * pulse);
+    color.w = 1.0f;
+    break;
+  }
+  case State::Dying: {
+    const float t = std::clamp(stateElapsed_ / std::max(0.5f, params_.deathSeconds), 0.0f, 1.0f);
+    const float flicker = 0.5f + 0.5f * std::sin(stateElapsed_ * (14.0f + 30.0f * t));
+    color = Lerp(base, Math::Vector4{1.0f, 0.95f, 0.8f, 1.0f}, flicker);
+    meshRadius = radius_ * (1.0f + 0.25f * t * t);
+    break;
+  }
+  default:
+    break;
+  }
+
+  if (hitFlashSeconds_ > 0.0f) {
+    color = Lerp(color, Math::Vector4{1.0f, 1.0f, 1.0f, 1.0f},
+                 hitFlashSeconds_ / kBossHitFlashSeconds);
+  }
+  color.w = std::min(color.w, 1.0f);
+  mesh->SetColor(color);
+  mesh->SetRadius(meshRadius);
+}
+
+void CmpAtomFBoss::Update() {
+  if (frameDeltaTime_ == nullptr) {
+    return;
+  }
+  // シーンへ採用されて初めて「現在のボス」になる（採用待ちのまま破棄されても残らない）。
+  g_currentBoss = this;
+  const float dt = frameDeltaTime_->GetDeltaTime();
+  stateElapsed_ += dt;
+
+  switch (state_) {
+  case State::Entrance: UpdateEntrance(dt); break;
+  case State::Idle: UpdateIdle(dt); break;
+  case State::Telegraph: UpdateTelegraph(dt); break;
+  case State::Execute: UpdateExecute(dt); break;
+  case State::Dash: UpdateDash(dt); break;
+  case State::Recover: UpdateRecover(dt); break;
+  case State::Dying: UpdateDying(dt); break;
+  }
+
+  // 撃破演出の終了で自身が破棄された後は描画更新しない。
+  if (state_ == State::Dying && !RefOwner().IsActive()) {
+    return;
+  }
+  ApplyVisual(dt);
+}
+
+} // namespace Atrum

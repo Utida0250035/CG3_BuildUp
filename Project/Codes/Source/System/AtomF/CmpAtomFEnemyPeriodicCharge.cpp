@@ -5,6 +5,8 @@
 #include "System/AtomF/AtomFScenePlayerLocator.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
+#include "System/AtomF/CmpAtomFEnemyShooter.h"
+#include "System/AtomF/CmpAtomFEnemySpawnIn.h"
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 #include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/DeltaTime.h"
@@ -46,6 +48,15 @@ void CmpAtomFEnemyPeriodicCharge::Update() {
     return;
   }
 
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyShooter>()) {
+    if (const CmpAtomFEnemyShooter *shooter =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyShooter>();
+        shooter != nullptr && shooter->BlocksLocomotion() &&
+        phase_ == Phase::Waiting) {
+      return;
+    }
+  }
+
   if (RefOwner().HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
     if (CmpAtomFEnemyChainExplosion *chain =
             RefOwner().GetUpdCmp<CmpAtomFEnemyChainExplosion>();
@@ -70,6 +81,14 @@ void CmpAtomFEnemyPeriodicCharge::Update() {
           RefOwner().GetUpdCmp<CmpAtomFEnemyTargetedPanic>();
       panic != nullptr && panic->BlocksLocomotion()) {
     return;
+  }
+
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemySpawnIn>()) {
+    if (const CmpAtomFEnemySpawnIn *spawnIn =
+            RefOwner().GetUpdCmp<CmpAtomFEnemySpawnIn>();
+        spawnIn != nullptr && spawnIn->BlocksLocomotion()) {
+      return;
+    }
   }
 
   const float dt = frameDeltaTime_->GetDeltaTime();

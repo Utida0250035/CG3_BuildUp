@@ -15,6 +15,8 @@ public:
 
   void RequestBossHitShake();
   void RequestPlayerHitShake();
+  /// 演出用の任意シェイク（振幅 m・秒）。より大きい揺れが進行中なら上書きしない。
+  void RequestCustomShake(float amplitude, float durationSeconds);
 
   void Update(float deltaTimeSeconds);
   void ApplyStageBattleView(Camera *camera);

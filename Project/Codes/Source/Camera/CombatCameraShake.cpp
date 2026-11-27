@@ -34,6 +34,15 @@ void CombatCameraShake::RequestPlayerHitShake() {
   Trigger(0.38f, 0.42f);
 }
 
+void CombatCameraShake::RequestCustomShake(const float amplitude,
+                                           const float durationSeconds) {
+  const float currentStrength = duration_ > 0.0f ? amplitude_ * (timer_ / duration_) : 0.0f;
+  if (timer_ > 0.0f && currentStrength > amplitude) {
+    return;
+  }
+  Trigger(amplitude, durationSeconds);
+}
+
 void CombatCameraShake::Update(const float deltaTimeSeconds) {
   if (timer_ <= 0.0f) {
     return;

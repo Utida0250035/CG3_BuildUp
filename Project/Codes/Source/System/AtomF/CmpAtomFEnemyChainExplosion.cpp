@@ -48,12 +48,44 @@ void CmpAtomFEnemyChainExplosion::ResolveDependence() {
       AtomF::ResolveEnemyChainExplosionParameters().shrinkDurationSeconds;
 }
 
+void CmpAtomFEnemyChainExplosion::BeginDyingSilently() {
+  if (isDying_) {
+    return;
+  }
+  isDying_ = true;
+  shrinkElapsedSeconds_ = 0.0f;
+  if (RefOwner().HasDrawCmp<CmpMeshSphere>()) {
+    if (const CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
+      initialMeshColor_ = mesh->GetColor();
+    }
+  }
+  static uint32_t silentSequence = 100000U;
+  Particle::Combat::PlayBossDeathExplosionEffect(RefOwner().GetWorldPosition(),
+                                                 ++silentSequence);
+  if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
+    if (CmpAtomFEnemyKnockback *knockback =
+            RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>()) {
+      knockback->ClearKnockbackVelocity();
+    }
+  }
+  if (RefOwner().HasUpdCmp<CmpHitSphere>()) {
+    if (CmpHitSphere *hit = RefOwner().GetUpdCmp<CmpHitSphere>()) {
+      hit->SetIsActive(false);
+    }
+  }
+}
+
 void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
   if (isDying_) {
     return;
   }
   isDying_ = true;
   shrinkElapsedSeconds_ = 0.0f;
+  if (RefOwner().HasDrawCmp<CmpMeshSphere>()) {
+    if (const CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
+      initialMeshColor_ = mesh->GetColor();
+    }
+  }
 
   const Math::Vector3 explosionCenter = RefOwner().GetWorldPosition();
   static uint32_t explosionSequence = 0U;
@@ -63,6 +95,7 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
 
   AtomF::SpreadEnemyExplosionKnockbackFromCenter(RefOwner(), explosionCenter);
   AtomF::ApplyEnemyExplosionDamageToPlayer(explosionCenter);
+  AtomF::ApplyEnemyExplosionDamageToBoss(explosionCenter);
 
   if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
     if (CmpAtomFEnemyKnockback *knockback =
@@ -89,7 +122,7 @@ void CmpAtomFEnemyChainExplosion::UpdateDying() {
   if (RefOwner().HasDrawCmp<CmpMeshSphere>()) {
     if (CmpMeshSphere *mesh = RefOwner().GetDrawCmp<CmpMeshSphere>()) {
       mesh->SetRadius(initialMeshRadius_ * scale);
-      Math::Vector4 color = Math::Vector4{0.92f, 0.28f, 0.25f, 1.0f};
+      Math::Vector4 color = initialMeshColor_;
       color.w = scale;
       mesh->SetColor(color);
     }

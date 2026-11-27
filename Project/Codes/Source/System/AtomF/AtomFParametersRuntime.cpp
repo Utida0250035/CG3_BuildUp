@@ -181,8 +181,132 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
         variant.colorG = v.at("color").at(1).get<float>();
         variant.colorB = v.at("color").at(2).get<float>();
       }
+      variant.orbitRadiusMeters = v.value("orbitRadiusMeters", 0.0f);
+      variant.orbitShrinkPerSecond =
+          v.value("orbitShrinkPerSecond", variant.orbitShrinkPerSecond);
+      variant.orbitMinRadiusMeters =
+          v.value("orbitMinRadiusMeters", variant.orbitMinRadiusMeters);
+      variant.keepDistanceMeters = v.value("keepDistanceMeters", 0.0f);
+      variant.shotIntervalSeconds = v.value("shotIntervalSeconds", 0.0f);
+      variant.shotTelegraphSeconds =
+          v.value("shotTelegraphSeconds", variant.shotTelegraphSeconds);
+      variant.shotSpeedMetersPerSecond = v.value(
+          "shotSpeedMetersPerSecond", variant.shotSpeedMetersPerSecond);
+      variant.shotRadiusMeters =
+          v.value("shotRadiusMeters", variant.shotRadiusMeters);
       out.variants.push_back(variant);
     }
+  }
+}
+
+void ApplyBossFromJson(const nlohmann::json &json, BossParameters &out) {
+  if (!json.contains("boss") || !json.at("boss").is_object()) {
+    return;
+  }
+  const auto &b = json.at("boss");
+  out.maxHealth = std::max(1, b.value("maxHealth", out.maxHealth));
+  out.hitRadiusMeters = b.value("hitRadiusMeters", out.hitRadiusMeters);
+  out.moveSpeedMetersPerSecond =
+      b.value("moveSpeedMetersPerSecond", out.moveSpeedMetersPerSecond);
+  out.holdDistanceMeters = b.value("holdDistanceMeters", out.holdDistanceMeters);
+  if (b.contains("color") && b.at("color").is_array() &&
+      b.at("color").size() >= 3) {
+    out.colorR = b.at("color").at(0).get<float>();
+    out.colorG = b.at("color").at(1).get<float>();
+    out.colorB = b.at("color").at(2).get<float>();
+  }
+  out.bulletDamage = std::max(1, b.value("bulletDamage", out.bulletDamage));
+  out.explosionDamage =
+      std::max(1, b.value("explosionDamage", out.explosionDamage));
+  out.recoverDamageMultiplier =
+      b.value("recoverDamageMultiplier", out.recoverDamageMultiplier);
+  out.entranceSeconds = b.value("entranceSeconds", out.entranceSeconds);
+  out.deathSeconds = b.value("deathSeconds", out.deathSeconds);
+  out.skillCooldownSeconds =
+      b.value("skillCooldownSeconds", out.skillCooldownSeconds);
+  out.enrageHealthRatio = b.value("enrageHealthRatio", out.enrageHealthRatio);
+  out.enrageCooldownMultiplier =
+      b.value("enrageCooldownMultiplier", out.enrageCooldownMultiplier);
+  out.reinforcementIntervalSeconds = b.value(
+      "reinforcementIntervalSeconds", out.reinforcementIntervalSeconds);
+  out.reinforcementCount =
+      b.value("reinforcementCount", out.reinforcementCount);
+
+  if (b.contains("ring") && b.at("ring").is_object()) {
+    const auto &r = b.at("ring");
+    out.ringBulletCount = std::max(1, r.value("bulletCount", out.ringBulletCount));
+    out.ringTelegraphSeconds = r.value("telegraphSeconds", out.ringTelegraphSeconds);
+    out.ringBulletSpeedMetersPerSecond =
+        r.value("bulletSpeedMetersPerSecond", out.ringBulletSpeedMetersPerSecond);
+    out.ringBulletRadiusMeters =
+        r.value("bulletRadiusMeters", out.ringBulletRadiusMeters);
+  }
+  if (b.contains("volley") && b.at("volley").is_object()) {
+    const auto &r = b.at("volley");
+    out.volleyShotCount = std::max(1, r.value("shotCount", out.volleyShotCount));
+    out.volleyTelegraphSeconds =
+        r.value("telegraphSeconds", out.volleyTelegraphSeconds);
+    out.volleyIntervalSeconds =
+        r.value("intervalSeconds", out.volleyIntervalSeconds);
+    out.volleyBulletSpeedMetersPerSecond = r.value(
+        "bulletSpeedMetersPerSecond", out.volleyBulletSpeedMetersPerSecond);
+  }
+  if (b.contains("summon") && b.at("summon").is_object()) {
+    const auto &r = b.at("summon");
+    out.summonCount = std::max(1, r.value("count", out.summonCount));
+    out.summonTelegraphSeconds =
+        r.value("telegraphSeconds", out.summonTelegraphSeconds);
+    out.summonVariantA = r.value("variantA", out.summonVariantA);
+    out.summonVariantB = r.value("variantB", out.summonVariantB);
+  }
+  if (b.contains("dash") && b.at("dash").is_object()) {
+    const auto &r = b.at("dash");
+    out.dashTelegraphSeconds =
+        r.value("telegraphSeconds", out.dashTelegraphSeconds);
+    out.dashSpeedMetersPerSecond =
+        r.value("speedMetersPerSecond", out.dashSpeedMetersPerSecond);
+    out.dashMaxSeconds = r.value("maxSeconds", out.dashMaxSeconds);
+    out.recoverSeconds = r.value("recoverSeconds", out.recoverSeconds);
+    out.shockwaveMaxRadiusMeters =
+        r.value("shockwaveMaxRadiusMeters", out.shockwaveMaxRadiusMeters);
+    out.shockwaveSpeedMetersPerSecond = r.value(
+        "shockwaveSpeedMetersPerSecond", out.shockwaveSpeedMetersPerSecond);
+    out.shockwaveBandHalfWidthMeters = r.value(
+        "shockwaveBandHalfWidthMeters", out.shockwaveBandHalfWidthMeters);
+  }
+}
+
+void ApplyStageFromJson(const nlohmann::json &json, StageParameters &out) {
+  if (!json.contains("stage") || !json.at("stage").is_object()) {
+    return;
+  }
+  const auto &st = json.at("stage");
+  out.spawnRadiusMeters = st.value("spawnRadiusMeters", out.spawnRadiusMeters);
+  out.bossAppearDelaySeconds =
+      st.value("bossAppearDelaySeconds", out.bossAppearDelaySeconds);
+  if (!st.contains("waves") || !st.at("waves").is_array()) {
+    return;
+  }
+  out.waves.clear();
+  for (const auto &w : st.at("waves")) {
+    if (!w.is_object()) {
+      continue;
+    }
+    StageWave wave{};
+    wave.delaySeconds = w.value("delaySeconds", 0.0f);
+    wave.advanceWhenAliveAtMost = w.value("advanceWhenAliveAtMost", 0);
+    if (w.contains("spawns") && w.at("spawns").is_array()) {
+      for (const auto &sp : w.at("spawns")) {
+        if (!sp.is_object()) {
+          continue;
+        }
+        StageWaveSpawn spawn{};
+        spawn.variantName = sp.value("variant", spawn.variantName);
+        spawn.count = std::max(1, sp.value("count", 1));
+        wave.spawns.push_back(spawn);
+      }
+    }
+    out.waves.push_back(std::move(wave));
   }
 }
 
@@ -239,6 +363,8 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
   camera_ = CombatCameraParameters{};
+  boss_ = BossParameters{};
+  stage_ = StageParameters{};
 
   std::ifstream stream(path);
   if (!stream) {
@@ -268,6 +394,8 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   enemy_ = parsedEnemy;
   ApplyArenaFromJson(json, arena_);
   ApplyCombatCameraFromJson(json, camera_);
+  ApplyBossFromJson(json, boss_);
+  ApplyStageFromJson(json, stage_);
   loaded_ = true;
   return true;
 }
@@ -278,6 +406,8 @@ void ParametersRuntime::Unload() {
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
   camera_ = CombatCameraParameters{};
+  boss_ = BossParameters{};
+  stage_ = StageParameters{};
 }
 
 } // namespace Atrum::AtomF

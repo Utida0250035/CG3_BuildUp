@@ -8,7 +8,7 @@
 
 namespace Atrum {
 
-/// atomF シーンに敵をスポーンする。
+/// atomF シーンにステージ進行役（ウェーブ・ボス登場）を置く。敵の生成はそこから行う。
 void AppendAtomFEnemyIfScene(const std::string &sceneJsonPath,
                              std::vector<std::unique_ptr<Entity>> &entities);
 

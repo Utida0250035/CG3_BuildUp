@@ -2,6 +2,7 @@
 
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFPlayerBulletConsume.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
 #include "System/Entity/Components/CmpHitSphere.h"
@@ -41,6 +42,19 @@ void CmpAtomFPlayerBulletEnemyHit::Update() {
 
   for (Entity *other : hitSphere_->GetHitEntitys()) {
     if (other == nullptr || !tags_->EntityHasRole(*other, "enemy")) {
+      continue;
+    }
+
+    // ボスは吹き飛ばず、弾 1 発ぶんのダメージを受ける。
+    if (other->HasUpdCmp<CmpAtomFBoss>()) {
+      CmpAtomFBoss *boss = other->GetUpdCmp<CmpAtomFBoss>();
+      if (boss != nullptr && boss->IsDamageable()) {
+        boss->ApplyDamage(
+            AtomF::ParametersRuntime::Instance().Boss().bulletDamage,
+            RefOwner().GetWorldPosition());
+        DestroyBulletAfterHit();
+        return;
+      }
       continue;
     }
 

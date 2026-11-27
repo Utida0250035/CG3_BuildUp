@@ -84,7 +84,50 @@
       { "name": "walker", "moveSpeedMultiplier": 1.0, "chargeEnabled": true, "color": [0.92, 0.28, 0.25] },
       { "name": "runner", "moveSpeedMultiplier": 1.9, "chargeEnabled": false, "color": [0.98, 0.85, 0.2] },
       { "name": "weaver", "moveSpeedMultiplier": 1.2, "chargeEnabled": false, "weaveAmplitudeMeters": 1.2, "weaveHz": 0.45, "color": [0.7, 0.35, 0.95] },
-      { "name": "charger", "moveSpeedMultiplier": 0.6, "chargeEnabled": true, "chargeIntervalSeconds": 2.5, "color": [0.95, 0.55, 0.15] }
+      { "name": "charger", "moveSpeedMultiplier": 0.6, "chargeEnabled": true, "chargeIntervalSeconds": 2.5, "color": [0.95, 0.55, 0.15] },
+      { "name": "orbiter", "moveSpeedMultiplier": 1.2, "chargeEnabled": false, "orbitRadiusMeters": 5.0, "orbitShrinkPerSecond": 0.35, "orbitMinRadiusMeters": 1.0, "color": [0.2, 0.85, 0.9] },
+      { "name": "shooter", "moveSpeedMultiplier": 0.8, "chargeEnabled": false, "keepDistanceMeters": 6.0, "shotIntervalSeconds": 3.5, "shotTelegraphSeconds": 0.8, "shotSpeedMetersPerSecond": 3.0, "shotRadiusMeters": 0.14, "color": [0.3, 0.9, 0.4] }
+    ]
+  },
+  "boss": {
+    "maxHealth": 128,
+    "hitRadiusMeters": 1.1,
+    "moveSpeedMetersPerSecond": 0.55,
+    "holdDistanceMeters": 3.0,
+    "color": [0.55, 0.12, 0.75],
+    "bulletDamage": 2,
+    "explosionDamage": 8,
+    "recoverDamageMultiplier": 1.5,
+    "entranceSeconds": 2.6,
+    "deathSeconds": 3.2,
+    "skillCooldownSeconds": 2.0,
+    "enrageHealthRatio": 0.4,
+    "enrageCooldownMultiplier": 0.6,
+    "reinforcementIntervalSeconds": 8.0,
+    "reinforcementCount": 2,
+    "ring": { "bulletCount": 18, "telegraphSeconds": 1.0, "bulletSpeedMetersPerSecond": 2.0, "bulletRadiusMeters": 0.17 },
+    "volley": { "shotCount": 6, "telegraphSeconds": 0.9, "intervalSeconds": 0.2, "bulletSpeedMetersPerSecond": 3.2 },
+    "summon": { "count": 3, "telegraphSeconds": 1.1, "variantA": "runner", "variantB": "weaver" },
+    "dash": {
+      "telegraphSeconds": 1.2,
+      "speedMetersPerSecond": 8.0,
+      "maxSeconds": 1.0,
+      "recoverSeconds": 2.0,
+      "shockwaveMaxRadiusMeters": 6.0,
+      "shockwaveSpeedMetersPerSecond": 5.0,
+      "shockwaveBandHalfWidthMeters": 0.3
+    }
+  },
+  "stage": {
+    "spawnRadiusMeters": 12.0,
+    "bossAppearDelaySeconds": 2.0,
+    "waves": [
+      { "delaySeconds": 1.5, "spawns": [ { "variant": "walker", "count": 3 } ] },
+      { "delaySeconds": 9.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "runner", "count": 3 } ] },
+      { "delaySeconds": 10.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "weaver", "count": 2 }, { "variant": "walker", "count": 2 } ] },
+      { "delaySeconds": 10.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "charger", "count": 2 }, { "variant": "orbiter", "count": 2 } ] },
+      { "delaySeconds": 11.0, "advanceWhenAliveAtMost": 2, "spawns": [ { "variant": "shooter", "count": 2 }, { "variant": "runner", "count": 2 }, { "variant": "weaver", "count": 1 } ] },
+      { "delaySeconds": 12.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "walker", "count": 2 }, { "variant": "orbiter", "count": 2 }, { "variant": "shooter", "count": 2 }, { "variant": "charger", "count": 2 } ] }
     ]
   }
 }
