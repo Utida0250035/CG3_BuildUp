@@ -30,6 +30,7 @@ public:
     SummonSurround,
     SummonFlank,
     SummonCutoff,
+    SummonVanguard,
     Dash,
     Spiral,
     GapRing,

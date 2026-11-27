@@ -2698,3 +2698,11 @@ develop を基に、ボスの新スキル **振り子**（`Skill::Pendulum`。�
 - 未実施: 実機確認、ボス戦 BGM 切替。
 - 推測した用途: 連射の向きが時間で動く弾幕で、先読みと待ちの判断を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-27（atomF: ボス前衛召喚・cadet/knight 追加・スケジュール実行）
+
+develop を基に、ボスの召喚スキル **前衛召喚**（`Skill::SummonVanguard`。ボスと自機の間に V 字の 3 列隊形で雑魚を召喚し、前進してくる壁を作る。予備動作は既存の召喚と同じ出現点リングで緑色）を `CmpAtomFBoss` に追加し、通常・狂暴化の両行動順へ組み込んだ。雑魚 **cadet**（距離を保ち横揺れしつつ連射）と **knight**（周回しながら突進と射撃を併用）を `parameters.json` に追加し最終ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: 実機確認、ボス戦 BGM 切替。
+- 推測した用途: 召喚の配置を「囲む/両翼/背後」に加え「正面の壁」にし、押し返される圧を作るため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
