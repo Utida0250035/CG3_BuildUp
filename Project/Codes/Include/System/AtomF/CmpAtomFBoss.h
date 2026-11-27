@@ -56,7 +56,8 @@ public:
     Tide,
     Zigzag,
     Comet,
-    Cascade
+    Cascade,
+    Hourglass
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -131,6 +132,7 @@ private:
   void FireZigzagShot();
   void FireCometShot();
   void FireCascadeShot();
+  void FireHourglassShot();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();

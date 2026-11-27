@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -191,6 +191,14 @@ constexpr float kCascadeLaneSpacing = 1.1f;
 constexpr float kCascadeWaveIntervalSeconds = 0.38f;
 constexpr float kCascadeSpeed = 3.6f;
 constexpr float kCascadeTelegraphSeconds = 1.1f;
+/// 砂時計: 自機の方向とその正反対へ同時に扇を放ち、扇の向きが波ごとに交互に振れる（上下の砂が落ちる形の弾幕）。
+constexpr int kHourglassWaveCount = 16;
+constexpr int kHourglassBulletsPerFan = 5;
+constexpr float kHourglassFanHalfSpreadRad = 0.6f;
+constexpr float kHourglassSwayRad = 0.35f;
+constexpr float kHourglassWaveIntervalSeconds = 0.3f;
+constexpr float kHourglassSpeed = 3.4f;
+constexpr float kHourglassTelegraphSeconds = 1.1f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1179,6 +1187,30 @@ void CmpAtomFBoss::FireCascadeShot() {
   }
 }
 
+void CmpAtomFBoss::FireHourglassShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kHourglassWaveCount - fanWavesLeft_;
+  // 扇の中心は波ごとに左右へ交互に振れる。前方扇と後方扇は逆向きに振れて砂時計の括れを作る。
+  const float sway = (wave % 2 == 0 ? 1.0f : -1.0f) * kHourglassSwayRad;
+  const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x);
+  for (int fan = 0; fan < 2; ++fan) {
+    const float center = baseAngle + (fan == 0 ? sway : -sway) + kPi * static_cast<float>(fan);
+    for (int i = 0; i < kHourglassBulletsPerFan; ++i) {
+      const float t = static_cast<float>(i) / static_cast<float>(kHourglassBulletsPerFan - 1) - 0.5f;
+      const float angle = center + t * 2.0f * kHourglassFanHalfSpreadRad;
+      const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+      AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, kHourglassSpeed,
+                                  params_.ringBulletRadiusMeters,
+                                  Math::Vector4{0.75f, 0.5f, 1.0f, 1.0f});
+    }
+  }
+  if ((wave % 3) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1369,6 +1401,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Zigzag: duration = kZigzagTelegraphSeconds; break;
   case Skill::Comet: duration = kCometTelegraphSeconds; break;
   case Skill::Cascade: duration = kCascadeTelegraphSeconds; break;
+  case Skill::Hourglass: duration = kHourglassTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1377,7 +1410,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
 
   if ((skill_ == Skill::Volley || skill_ == Skill::Dash ||
        skill_ == Skill::Rampage || skill_ == Skill::Fan || skill_ == Skill::Comet ||
-       skill_ == Skill::Cascade) &&
+       skill_ == Skill::Cascade || skill_ == Skill::Hourglass) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1526,6 +1559,22 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       for (int i = -kCascadeLaneHalfCount; i <= kCascadeLaneHalfCount; ++i) {
         const Math::Vector3 start = ground + lockedDirection_ * (radius_ + 0.3f) + side * (kCascadeLaneSpacing * static_cast<float>(i));
         telegraph->AddLine(start, start + lockedDirection_ * 9.0f, locked ? 0.15f : 0.08f, tint);
+      }
+      break;
+    }
+    case Skill::Hourglass: {
+      // 前方と後方の扇の両端を紫の線で予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const Math::Vector4 tint{0.75f, 0.5f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      for (int fan = 0; fan < 2; ++fan) {
+        for (int edge = -1; edge <= 1; edge += 2) {
+          const float angle = baseAngle + kPi * static_cast<float>(fan) +
+                              static_cast<float>(edge) * (kHourglassFanHalfSpreadRad + kHourglassSwayRad);
+          const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+          telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 8.0f,
+                             locked ? 0.15f : 0.08f, tint);
+        }
       }
       break;
     }
@@ -1938,6 +1987,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCascadeWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Hourglass:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kHourglassWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Zigzag:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -2127,6 +2182,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireCascadeShot();
     --fanWavesLeft_;
     volleyTimer_ = kCascadeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Hourglass) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireHourglassShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kHourglassWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

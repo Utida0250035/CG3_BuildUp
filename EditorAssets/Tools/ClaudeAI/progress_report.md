@@ -2793,3 +2793,10 @@ develop を基に、ボスの新スキル **滝**（`Skill::Cascade`。自機方
 
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128f`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス砂時計・sandglass/dusker 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **砂時計**（`Skill::Hourglass`。自機方向とその正反対へ 5 発ずつの扇を同時に 16 波放ち、扇の中心が波ごとに左右へ交互に振れて括れを作る紫の弾幕。予備動作は両扇の端を示す紫の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **sandglass**（周回突進）/ **dusker**（距離を保つ射撃）を `parameters.json` に追加し最終ウェーブへ各 2 体加えた（いずれも最大 Hp1・耐久能力なし）。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、最終ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128g`（develop から作成）。
