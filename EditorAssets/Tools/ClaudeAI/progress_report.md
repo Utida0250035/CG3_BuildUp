@@ -2823,3 +2823,10 @@ develop を基に、ボスの新スキル **風車**（`Skill::Windmill`。4 本
 - 未実施: ビルド（Windows/DirectX 環境外のため）、実機確認、最終ウェーブの難度確認。
 - 推測した用途: 回転方向が反転する渦で、安全地帯の読みを途中で切り替えさせるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128h`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス薔薇窓・rosette/corolla 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **薔薇窓**（`Skill::Rosette`。3 方向へ 0.1 秒間隔で 30 波、向きの揺れと弾速が位相をずらして脈打つ桃色の弾幕。予備動作は 3 本の花弁の軸を示す桃色の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の両行動順に組み込んだ。雑魚は **rosette**（突進型）と **corolla**（遠距離射撃型）を `parameters.json` に追加（最大 Hp1・耐久系能力なし）し、最終ウェーブに配置した。
+
+- 未実施: ビルド（Windows/DirectX 環境外のため）、実機確認、最終ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/epic-faraday-jpjk1k`（develop から作成）。
