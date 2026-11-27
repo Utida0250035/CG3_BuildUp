@@ -42,7 +42,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Summon,
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
-    CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
+    CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -50,7 +51,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
     CmpAtomFBoss::Skill::SummonSurround, CmpAtomFBoss::Skill::Spiral,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
-    CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::GapRing, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -58,6 +59,12 @@ constexpr float kSpiralIntervalSeconds = 0.07f;
 constexpr float kSpiralTurnPerShot = 0.38f;
 constexpr float kSpiralTelegraphSeconds = 1.0f;
 constexpr float kSpiralBulletSpeed = 2.4f;
+
+/// 隙間リング: 全方位弾のうち、自機の向きから 90° ずれた一方向だけ弾を空ける。
+constexpr int kGapRingBulletCount = 28;
+constexpr float kGapRingHalfWidthRadians = 0.42f;
+constexpr float kGapRingTelegraphSeconds = 1.1f;
+constexpr float kGapRingBulletSpeed = 2.3f;
 
 /// 自機を囲む召喚の数・半径、両翼召喚の数・間隔。
 constexpr int kSurroundCount = 5;
@@ -243,6 +250,12 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     spiralAngle_ = Rand01() * kTwoPi;
   }
 
+  if (skill == Skill::GapRing) {
+    // 自機の向きから左右どちらかへ 90° ずらした方向に隙間を作る（自機は隙間へ動く必要がある）。
+    const float toPlayer = std::atan2(lockedDirection_.z, lockedDirection_.x);
+    gapAngle_ = toPlayer + (Rand01() < 0.5f ? -0.5f : 0.5f) * kPi;
+  }
+
   if (skill == Skill::SummonSurround) {
     // 自機を囲む輪の上に等間隔で召喚する（アリーナ内へ収める）。
     summonPoints_.clear();
@@ -341,6 +354,31 @@ void CmpAtomFBoss::ExecuteRing() {
   }
   Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json",
                                            origin);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.12f, 0.3f);
+}
+
+void CmpAtomFBoss::ExecuteGapRing() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const Math::Vector4 color{0.45f, 0.85f, 1.0f, 1.0f};
+  for (int i = 0; i < kGapRingBulletCount; ++i) {
+    const float angle = kTwoPi * static_cast<float>(i) / kGapRingBulletCount;
+    // -π〜π に正規化した差で隙間内か判定する。
+    float diff = std::fmod(angle - gapAngle_, kTwoPi);
+    if (diff > kPi) {
+      diff -= kTwoPi;
+    } else if (diff < -kPi) {
+      diff += kTwoPi;
+    }
+    if (std::fabs(diff) < kGapRingHalfWidthRadians) {
+      continue;
+    }
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                kGapRingBulletSpeed,
+                                params_.ringBulletRadiusMeters, color);
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.12f, 0.3f);
 }
@@ -480,6 +518,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     break;
   case Skill::Dash: duration = params_.dashTelegraphSeconds; break;
   case Skill::Spiral: duration = kSpiralTelegraphSeconds; break;
+  case Skill::GapRing: duration = kGapRingTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
@@ -531,6 +570,33 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                     Math::Vector4{1.0f, 0.5f, 0.15f, 0.35f + 0.35f * pulse});
       break;
     }
+    case Skill::GapRing: {
+      // 弾の出る方向は水色の線、空く隙間は緑の太い線で示す。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float reach = radius_ + 1.0f + 3.0f * progress;
+      for (int i = 0; i < kGapRingBulletCount; i += 2) {
+        const float angle = kTwoPi * static_cast<float>(i) / kGapRingBulletCount;
+        float diff = std::fmod(angle - gapAngle_, kTwoPi);
+        if (diff > kPi) {
+          diff -= kTwoPi;
+        } else if (diff < -kPi) {
+          diff += kTwoPi;
+        }
+        if (std::fabs(diff) < kGapRingHalfWidthRadians) {
+          continue;
+        }
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f), ground + dir * reach,
+                      0.1f, Math::Vector4{0.4f, 0.8f, 1.0f, 0.35f + 0.3f * pulse});
+      }
+      const Math::Vector3 gapDir{std::cos(gapAngle_), 0.0f, std::sin(gapAngle_)};
+      telegraph->AddLine(ground + gapDir * (radius_ + 0.2f),
+                    ground + gapDir * (radius_ + 5.0f), 0.5f,
+                    Math::Vector4{0.3f, 1.0f, 0.5f, 0.25f + 0.3f * progress});
+      telegraph->AddRing(ground, radius_ + 0.4f + 1.8f * progress, 0.1f,
+                    Math::Vector4{0.4f, 0.8f, 1.0f, 0.4f + 0.3f * pulse});
+      break;
+    }
     case Skill::Summon:
     case Skill::SummonSurround:
     case Skill::SummonFlank: {
@@ -571,6 +637,10 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   switch (skill_) {
   case Skill::Ring:
     ExecuteRing();
+    FinishSkill();
+    break;
+  case Skill::GapRing:
+    ExecuteGapRing();
     FinishSkill();
     break;
   case Skill::Summon:

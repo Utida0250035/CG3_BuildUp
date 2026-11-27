@@ -9,7 +9,7 @@
 namespace Atrum {
 
 /// atomF のボス。Hp は `parameters.json` の boss.maxHealth（耐久系パッシブなし）。
-/// アクティブスキル: 全方位弾 / 狙い撃ち連射 / 雑魚召喚（散開 / 自機を囲む射手 / 両翼の突進型の 3 種）/ スパイラル弾幕（狂暴化後は専用の行動順）。特殊アクション: 突進→着地衝撃波→硬直。
+/// アクティブスキル: 全方位弾 / 狙い撃ち連射 / 雑魚召喚（散開 / 自機を囲む射手 / 両翼の突進型の 3 種）/ スパイラル弾幕 / 隙間リング（一方向だけ弾の無い隙間を空けた全方位弾。狂暴化後は専用の行動順）。特殊アクション: 突進→着地衝撃波→硬直。
 /// 自機弾・雑魚の爆発で ApplyDamage される。Hp 0 で撃破演出に入る。
 class CmpAtomFBoss final : public ComponentUpd {
 public:
@@ -29,7 +29,8 @@ public:
     SummonSurround,
     SummonFlank,
     Dash,
-    Spiral
+    Spiral,
+    GapRing
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -80,6 +81,7 @@ private:
   void EndDash();
   void FinishSkill();
   void ExecuteRing();
+  void ExecuteGapRing();
   void ExecuteSummon();
   void FireVolleyShot();
   void FireSpiralShot();
@@ -108,6 +110,7 @@ private:
   int volleyShotsLeft_ = 0;
   float volleyTimer_ = 0.0f;
   int spiralShotsLeft_ = 0;
+  float gapAngle_ = 0.0f;
   float spiralAngle_ = 0.0f;
   Math::Vector3 lockedDirection_{0.0f, 0.0f, 1.0f};
   std::vector<Math::Vector3> summonPoints_;

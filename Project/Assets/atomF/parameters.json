@@ -91,7 +91,8 @@
       { "name": "drifter", "moveSpeedMultiplier": 0.9, "chargeEnabled": false, "weaveAmplitudeMeters": 2.4, "weaveHz": 0.25, "color": [0.35, 0.5, 0.98] },
       { "name": "sniper", "moveSpeedMultiplier": 0.6, "chargeEnabled": false, "keepDistanceMeters": 9.0, "shotIntervalSeconds": 4.5, "shotTelegraphSeconds": 1.2, "shotSpeedMetersPerSecond": 5.0, "shotRadiusMeters": 0.1, "color": [0.95, 0.95, 0.95] },
       { "name": "sentinel", "moveSpeedMultiplier": 0.9, "chargeEnabled": false, "orbitRadiusMeters": 8.0, "orbitShrinkPerSecond": 0.2, "orbitMinRadiusMeters": 2.5, "color": [0.15, 0.6, 0.55] },
-      { "name": "dasher", "moveSpeedMultiplier": 0.8, "chargeEnabled": true, "chargeIntervalSeconds": 1.2, "color": [0.85, 0.2, 0.1] }
+      { "name": "dasher", "moveSpeedMultiplier": 0.8, "chargeEnabled": true, "chargeIntervalSeconds": 1.2, "color": [0.85, 0.2, 0.1] },
+      { "name": "zigzagger", "moveSpeedMultiplier": 1.5, "chargeEnabled": true, "chargeIntervalSeconds": 3.0, "weaveAmplitudeMeters": 0.8, "weaveHz": 1.1, "color": [0.95, 0.4, 0.95] }
     ]
   },
   "boss": {
@@ -133,7 +134,7 @@
       { "delaySeconds": 10.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "charger", "count": 2 }, { "variant": "orbiter", "count": 2 } ] },
       { "delaySeconds": 11.0, "advanceWhenAliveAtMost": 2, "spawns": [ { "variant": "shooter", "count": 2 }, { "variant": "runner", "count": 2 }, { "variant": "drifter", "count": 2 } ] },
       { "delaySeconds": 11.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "rusher", "count": 3 }, { "variant": "sniper", "count": 2 }, { "variant": "weaver", "count": 1 } ] },
-      { "delaySeconds": 12.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "walker", "count": 2 }, { "variant": "orbiter", "count": 2 }, { "variant": "sniper", "count": 1 }, { "variant": "rusher", "count": 2 } ] },
+      { "delaySeconds": 12.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "walker", "count": 2 }, { "variant": "orbiter", "count": 2 }, { "variant": "sniper", "count": 1 }, { "variant": "zigzagger", "count": 2 } ] },
       { "delaySeconds": 12.0, "advanceWhenAliveAtMost": 1, "spawns": [ { "variant": "sentinel", "count": 3 }, { "variant": "dasher", "count": 3 }, { "variant": "shooter", "count": 2 } ] }
     ]
   }
