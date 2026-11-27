@@ -49,7 +49,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -64,7 +65,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -119,6 +120,15 @@ constexpr int kCurtainGapWidth = 3;
 constexpr float kCurtainWaveIntervalSeconds = 0.7f;
 constexpr float kCurtainTelegraphSeconds = 1.0f;
 constexpr float kCurtainBulletSpeed = 2.4f;
+
+/// 散弾: 自機方向へ速さと角度がばらつく弾を一度に撒く散弾を連続で放つ。最も速い弾は先に届く。
+constexpr int kScatterBurstCount = 4;
+constexpr int kScatterPelletsPerBurst = 11;
+constexpr float kScatterHalfSpreadRad = 0.42f;
+constexpr float kScatterMinSpeed = 1.8f;
+constexpr float kScatterMaxSpeed = 3.8f;
+constexpr float kScatterBurstIntervalSeconds = 0.8f;
+constexpr float kScatterTelegraphSeconds = 0.9f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -870,6 +880,29 @@ void CmpAtomFBoss::FireCurtainWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.04f, 0.1f);
 }
 
+void CmpAtomFBoss::FireScatterBurst() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int burst = kScatterBurstCount - fanWavesLeft_;
+  const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+  for (int i = 0; i < kScatterPelletsPerBurst; ++i) {
+    // 乱数を使わず、弾番号と波番号から決まる擬似的なばらつきにする（再現性のため）。
+    const float seed = static_cast<float>(burst * 31 + i * 17 + 5);
+    const float ra = std::sin(seed * 12.9898f) * 43758.5453f;
+    const float rb = std::sin(seed * 78.233f) * 12345.6789f;
+    const float u = ra - std::floor(ra);
+    const float v = rb - std::floor(rb);
+    const float angle = center + kScatterHalfSpreadRad * (2.0f * u - 1.0f);
+    const float speed = kScatterMinSpeed + (kScatterMaxSpeed - kScatterMinSpeed) * v;
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.2f), dir, speed,
+                                params_.ringBulletRadiusMeters,
+                                Math::Vector4{1.0f, 0.5f, 0.35f, 1.0f});
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.06f, 0.12f);
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1050,6 +1083,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Lattice: duration = kLatticeTelegraphSeconds; break;
   case Skill::Pendulum: duration = kPendulumTelegraphSeconds; break;
   case Skill::Curtain: duration = kCurtainTelegraphSeconds; break;
+  case Skill::Scatter: duration = kScatterTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1190,6 +1224,20 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                         Math::Vector4{1.0f, 0.7f, 0.2f, locked ? 0.6f : 0.25f});
         }
         prev = point;
+      }
+      break;
+    }
+    case Skill::Scatter: {
+      // 散らばりの両端と中央を示す 3 本の線を予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      for (int k = -1; k <= 1; ++k) {
+        const float angle = center + kScatterHalfSpreadRad * static_cast<float>(k);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        const bool mid = (k == 0);
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f), ground + dir * (radius_ + 6.0f),
+                           locked ? (mid ? 0.14f : 0.22f) : (mid ? 0.07f : 0.11f),
+                           Math::Vector4{1.0f, 0.5f, 0.3f, locked ? 0.75f : 0.3f + 0.3f * pulse});
       }
       break;
     }
@@ -1465,6 +1513,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kPendulumShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Scatter:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kScatterBurstCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Curtain:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1565,6 +1619,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireLatticeWave();
     --fanWavesLeft_;
     volleyTimer_ = kLatticeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Scatter) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireScatterBurst();
+    --fanWavesLeft_;
+    volleyTimer_ = kScatterBurstIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
