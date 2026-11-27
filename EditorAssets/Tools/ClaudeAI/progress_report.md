@@ -2713,3 +2713,10 @@ develop を基に、ボスの十字砲火・残響・花弁・格子のマズル
 
 - 未実施: 実機確認、ボス戦 BGM 切替、ボス撃破スローモーション（エンジン変更が必要）。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-27（atomF: ボス緞帳・bulwark/streaker 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **緞帳**（`Skill::Curtain`。自機方向へ横一列 13 発の弾の壁を 5 波連続で放ち、波ごとに隙間（幅約 3m）の位置を中央→右→左→さらに外へずらす弾幕。予備動作は壁の幅を示す 2 本の縦線と迫る横線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **bulwark**（大きな遅い弾を撃つ遠距離型）と **streaker**（高速横揺れ＋突進）を `parameters.json` に追加した（全種 Hp1・耐久系なし）。最終ウェーブが肥大化しているため、新雑魚は第 7 ウェーブ（skirmisher の波）へ配置した。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: 実機確認、ボス戦 BGM 切替。最終ウェーブの敵数過多（約 60 体）の再配分は要レビュー。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

@@ -45,7 +45,8 @@ public:
     Rampage,
     Bloom,
     Lattice,
-    Pendulum
+    Pendulum,
+    Curtain
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -110,6 +111,7 @@ private:
   void FireEchoWave();
   void FireBloomWave();
   void FireLatticeWave();
+  void FireCurtainWave();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();
