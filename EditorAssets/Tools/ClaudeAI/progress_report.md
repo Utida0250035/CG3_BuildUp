@@ -2706,3 +2706,10 @@ develop を基に、ボスの召喚スキル **前衛召喚**（`Skill::SummonVa
 - 未実施: 実機確認、ボス戦 BGM 切替。
 - 推測した用途: 召喚の配置を「囲む/両翼/背後」に加え「正面の壁」にし、押し返される圧を作るため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-27（atomF: ボス弾幕の専用バースト演出・スケジュール実行）
+
+develop を基に、ボスの十字砲火・残響・花弁・格子のマズル演出を共用の `atomf_boss_ring_burst.json` から専用パーティクル（`atomf_boss_crossfire_burst` / `atomf_boss_echo_burst` / `atomf_boss_bloom_burst` / `atomf_boss_lattice_slow` / `atomf_boss_lattice_fast`）へ差し替えた（C++ は各 Fire*Wave の文字列のみ変更。格子は速い層/遅い層で色を分ける）。雑魚・ボス本体の仕様は変更なし。**Linux 環境のためビルド・実機確認は未実施**（JSON 構文のみ検証）。
+
+- 未実施: 実機確認、ボス戦 BGM 切替、ボス撃破スローモーション（エンジン変更が必要）。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

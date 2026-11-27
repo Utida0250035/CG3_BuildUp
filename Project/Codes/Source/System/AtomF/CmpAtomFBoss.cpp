@@ -766,7 +766,7 @@ void CmpAtomFBoss::FireCrossfireWave() {
                                 params_.ringBulletRadiusMeters,
                                 Math::Vector4{1.0f, 0.45f, 0.75f, 1.0f});
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_crossfire_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
@@ -786,7 +786,7 @@ void CmpAtomFBoss::FireEchoWave() {
     AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed,
                                 params_.ringBulletRadiusMeters, color);
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_echo_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
@@ -811,7 +811,7 @@ void CmpAtomFBoss::FireBloomWave() {
                                   params_.ringBulletRadiusMeters, color);
     }
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_bloom_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
@@ -832,7 +832,8 @@ void CmpAtomFBoss::FireLatticeWave() {
     AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed,
                                 params_.ringBulletRadiusMeters, color);
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect(
+      fast ? "atomf_boss_lattice_fast.json" : "atomf_boss_lattice_slow.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
