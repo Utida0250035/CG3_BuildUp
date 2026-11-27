@@ -2888,3 +2888,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128n`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 残りの汎用バーストを専用 3 層パーティクルへ置換・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。汎用の `atomf_boss_fan_burst.json` を流用していた幕・散弾・三日月・豪雨・鋏・回転木馬・潮・稲妻・彗星・滝・砂時計・振り子（`Fire*` 11 + 振り子）の炸裂に、スキル弾色に合わせた 3 層構成（中心の閃光＋破片の殻＋残り火。個数・速度・重力・閃光の大きさをスキルごとに変えた）の専用 `atomf_boss_{curtain,scatter,crescent,downpour,pincer,carousel,tide,zigzag,comet,cascade,hourglass,pendulum}_burst.json` を追加し、各 `Fire*` の再生先を差し替えた。扇（`FireFanWave`）は `atomf_boss_fan_burst.json` を緑の 3 層構成へ作り直した（これで汎用バーストの流用は無くなった）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1127-o2`（develop から作成）。
