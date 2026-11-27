@@ -9,6 +9,9 @@ local Paths = {
   IMG_RESULT     = "./Assets/Images/atomF/result_text.png",
   IMG_RETRY      = "./Assets/Images/atomF/retry.png",
   IMG_TO_TITLE   = "./Assets/Images/atomF/to_title.png",
+  IMG_CLEAR      = "./Assets/Images/atomF/clear.png",     -- 白地に透過（r,g,b で着色）
+  IMG_GAME_OVER  = "./Assets/Images/atomF/game_over.png",
+  IMG_WHITE      = "./Assets/Images/white4x4.png",        -- 4x4 の白。scale で拡大して全画面フラッシュに使う
 }
 
 return Paths

@@ -4,6 +4,7 @@
 --   CmpAtomFStageDirector）が parameters.json の stage / boss に従って行い、
 --   ここでは「ボスが登場し、その後居なくなった」ことを撃破として検知する。
 local Paths = require("atomF.scene_paths")
+local Outcome = require("atomF.outcome") -- 勝敗をリザルトへ渡す
 
 local M = {}
 
@@ -15,8 +16,27 @@ local seenBoss = false
 local seenPlayer = false
 local endTimer = nil   -- nil: 決着前 / 数値: 決着後の経過秒
 local endDelay = 0.0
+local flashTime = nil  -- 白フラッシュの経過（nil: なし）
+local FLASH_SECONDS = 0.6
+
+local function startFlash()
+  flashTime = 0.0
+end
+
+local function drawFlash(dt)
+  if flashTime == nil then
+    return
+  end
+  flashTime = flashTime + dt
+  if flashTime >= FLASH_SECONDS then
+    flashTime = nil
+    return
+  end
+  Ui.image(Paths.IMG_WHITE, 0.5, 0.5, { scale = 400.0, a = 0.7 * (1.0 - flashTime / FLASH_SECONDS) })
+end
 
 function M.onUpdate(dt)
+  drawFlash(dt)
   if SceneFlow.isChanging() then
     return
   end
@@ -32,8 +52,9 @@ function M.onUpdate(dt)
   local bossCount = SceneFlow.countByRole("boss")
   local playerHealth = SceneFlow.healthByRole("player") -- 自機が居なければ -1
 
-  if bossCount > 0 then
+  if bossCount > 0 and not seenBoss then
     seenBoss = true
+    startFlash() -- ボス登場の白フラッシュ
   end
   if playerHealth >= 0 then
     seenPlayer = true
@@ -44,9 +65,12 @@ function M.onUpdate(dt)
 
   -- 同時なら相打ちではなく自機の敗北を優先する。
   if playerDead then
+    Outcome.cleared = false
     endTimer = 0.0
     endDelay = LOSE_DELAY_SECONDS
   elseif bossDefeated then
+    Outcome.cleared = true
+    startFlash()
     endTimer = 0.0
     endDelay = WIN_DELAY_SECONDS
   end
