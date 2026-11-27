@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <string>
 
 namespace Atrum {
 
@@ -41,14 +42,15 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Summon,
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
-    CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Spiral, CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
-    CmpAtomFBoss::Skill::Summon, CmpAtomFBoss::Skill::Spiral,
-    CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::SummonSurround, CmpAtomFBoss::Skill::Spiral,
+    CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
+    CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -56,6 +58,13 @@ constexpr float kSpiralIntervalSeconds = 0.07f;
 constexpr float kSpiralTurnPerShot = 0.38f;
 constexpr float kSpiralTelegraphSeconds = 1.0f;
 constexpr float kSpiralBulletSpeed = 2.4f;
+
+/// 自機を囲む召喚の数・半径、両翼召喚の数・間隔。
+constexpr int kSurroundCount = 5;
+constexpr float kSurroundRadius = 4.2f;
+constexpr int kFlankPerSide = 2;
+constexpr float kFlankSideOffset = 3.2f;
+constexpr float kFlankSpacing = 1.6f;
 
 float Rand01() {
   static uint32_t state = 0x1234ABCDu;
@@ -234,6 +243,47 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     spiralAngle_ = Rand01() * kTwoPi;
   }
 
+  if (skill == Skill::SummonSurround) {
+    // 自機を囲む輪の上に等間隔で召喚する（アリーナ内へ収める）。
+    summonPoints_.clear();
+    Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+    const Math::Vector3 playerPos =
+        player != nullptr ? player->GetWorldPosition() : Math::Vector3{};
+    const float arena = AtomF::ResolveArenaInnerRadiusMeters() * 0.9f;
+    const float offset = Rand01() * kTwoPi;
+    for (int i = 0; i < kSurroundCount; ++i) {
+      const float angle =
+          offset + kTwoPi * static_cast<float>(i) / kSurroundCount;
+      Math::Vector3 point{playerPos.x + std::cos(angle) * kSurroundRadius, 0.0f,
+                          playerPos.z + std::sin(angle) * kSurroundRadius};
+      const float len = std::sqrt(point.x * point.x + point.z * point.z);
+      if (len > arena && len > 1e-4f) {
+        point = {point.x * arena / len, 0.0f, point.z * arena / len};
+      }
+      summonPoints_.push_back(point);
+    }
+  } else if (skill == Skill::SummonFlank) {
+    // ボスの両脇（ボス→自機の向きに直交）へ縦隊で召喚する。
+    summonPoints_.clear();
+    const Math::Vector3 origin = GroundPoint(RefOwner().GetWorldPosition());
+    const Math::Vector3 forward = lockedDirection_;
+    const Math::Vector3 side{-forward.z, 0.0f, forward.x};
+    const float arena = AtomF::ResolveArenaInnerRadiusMeters() * 0.9f;
+    for (int sign = -1; sign <= 1; sign += 2) {
+      for (int i = 0; i < kFlankPerSide; ++i) {
+        Math::Vector3 point =
+            origin + side * (static_cast<float>(sign) * kFlankSideOffset) +
+            forward * (kFlankSpacing * static_cast<float>(i));
+        point.y = 0.0f;
+        const float len = std::sqrt(point.x * point.x + point.z * point.z);
+        if (len > arena && len > 1e-4f) {
+          point = {point.x * arena / len, 0.0f, point.z * arena / len};
+        }
+        summonPoints_.push_back(point);
+      }
+    }
+  }
+
   if (skill == Skill::Summon) {
     summonPoints_.clear();
     Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
@@ -297,15 +347,26 @@ void CmpAtomFBoss::ExecuteRing() {
 
 void CmpAtomFBoss::ExecuteSummon() {
   static int serial = 5000;
-  const AtomF::EnemyVariantParameters *a =
-      AtomF::FindEnemyVariantByName(params_.summonVariantA);
-  const AtomF::EnemyVariantParameters *b =
-      AtomF::FindEnemyVariantByName(params_.summonVariantB);
+  // スキルごとに召喚する種類を変える（散開 / 囲む射手 / 両翼の突進型）。
+  std::string nameA = params_.summonVariantA;
+  std::string nameB = params_.summonVariantB;
+  if (skill_ == Skill::SummonSurround) {
+    nameA = "shooter";
+    nameB = "sniper";
+  } else if (skill_ == Skill::SummonFlank) {
+    nameA = "rusher";
+    nameB = "dasher";
+  }
+  const AtomF::EnemyVariantParameters *a = AtomF::FindEnemyVariantByName(nameA);
+  const AtomF::EnemyVariantParameters *b = AtomF::FindEnemyVariantByName(nameB);
   AtomF::EnemyVariantParameters fallback{};
   for (std::size_t i = 0; i < summonPoints_.size(); ++i) {
     const AtomF::EnemyVariantParameters *variant = (i % 2 == 0) ? a : b;
     AtomF::EnqueueSceneEntityAdopt(AtomF::CreateEnemyEntity(
         variant != nullptr ? *variant : fallback, summonPoints_[i], ++serial));
+    // 出現点に白い閃光の輪。
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json",
+                                             summonPoints_[i]);
   }
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.1f, 0.25f);
@@ -412,7 +473,11 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   switch (skill_) {
   case Skill::Ring: duration = params_.ringTelegraphSeconds; break;
   case Skill::Volley: duration = params_.volleyTelegraphSeconds; break;
-  case Skill::Summon: duration = params_.summonTelegraphSeconds; break;
+  case Skill::Summon:
+  case Skill::SummonSurround:
+  case Skill::SummonFlank:
+    duration = params_.summonTelegraphSeconds;
+    break;
   case Skill::Dash: duration = params_.dashTelegraphSeconds; break;
   case Skill::Spiral: duration = kSpiralTelegraphSeconds; break;
   }
@@ -467,13 +532,27 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       break;
     }
     case Skill::Summon:
+    case Skill::SummonSurround:
+    case Skill::SummonFlank: {
+      // 種類ごとに色を変える（散開=水色 / 囲む=黄 / 両翼=赤橙）。
+      const Math::Vector4 tint =
+          skill_ == Skill::SummonSurround
+              ? Math::Vector4{1.0f, 0.9f, 0.3f, 1.0f}
+              : (skill_ == Skill::SummonFlank
+                     ? Math::Vector4{1.0f, 0.45f, 0.2f, 1.0f}
+                     : Math::Vector4{0.5f, 0.9f, 1.0f, 1.0f});
+      const Math::Vector3 ground = GroundPoint(origin);
       for (const Math::Vector3 &point : summonPoints_) {
         telegraph->AddRing(point, 0.9f - 0.5f * progress, 0.08f,
-                      Math::Vector4{0.5f, 0.9f, 1.0f, 0.5f + 0.4f * pulse});
+                      Math::Vector4{tint.x, tint.y, tint.z, 0.5f + 0.4f * pulse});
         telegraph->AddRing(point, 0.3f, 0.06f,
-                      Math::Vector4{0.5f, 0.9f, 1.0f, 0.8f});
+                      Math::Vector4{tint.x, tint.y, tint.z, 0.8f});
+        // ボスから出現点へ伸びる細い線で「どこへ呼ぶか」を示す。
+        telegraph->AddLine(ground, point, 0.05f,
+                      Math::Vector4{tint.x, tint.y, tint.z, 0.15f + 0.25f * progress});
       }
       break;
+    }
     case Skill::Dash:
       telegraph->AddLine(origin, origin + lockedDirection_ * 14.0f,
                     radius_ * 1.7f,
@@ -495,6 +574,8 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     FinishSkill();
     break;
   case Skill::Summon:
+  case Skill::SummonSurround:
+  case Skill::SummonFlank:
     ExecuteSummon();
     FinishSkill();
     break;
