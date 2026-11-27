@@ -2916,3 +2916,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1127-run`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス激昂・突進軌跡・吹き飛び軌跡/オーラの多層化・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。単層だった `atomf_boss_enrage.json`（地を走る衝撃輪＋炎柱＋中心の閃光＋舞い上がる火の粉の 4 層）、`atomf_boss_dash_trail.json`（紫の煙＋白紫の芯の閃光＋火花の 3 層）、`atomf_knockback_trail.json`（炎＋煙＋火花の 3 層）、`atomf_knockback_aura.json`（光の粒＋外周の輪＋金の火花の 3 層）を多層構成へ作り直した（再生コードは変更なし。吹き飛び軌跡は `SetEmitCircleRadiusOverride` が全層に適用される）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128q`（develop から作成）。
