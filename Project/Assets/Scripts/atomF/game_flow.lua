@@ -42,8 +42,35 @@ local function drawFullScreen(r, g, b, a)
   end
 end
 
+-- シネマ帯: 開始時に上下の黒帯が引いていき、ボス撃破（クリア余韻）では再び寄ってくる。
+local INTRO_BAR_SECONDS = 1.4
+local BAR_MAX_THICK = 0.12
+
+local function drawCinemaBars(thick)
+  if thick <= 0.001 then
+    return
+  end
+  -- Ui.image は一様スケールのため、細かい正方形を横に並べて帯にする
+  for i = 0, 24 do
+    local x = i / 24.0
+    local scale = 4.0 + 60.0 * thick
+    Ui.image(Paths.IMG_WHITE, x, thick * 0.5, { scale = scale, r = 0.0, g = 0.0, b = 0.0, a = 1.0 })
+    Ui.image(Paths.IMG_WHITE, x, 1.0 - thick * 0.5, { scale = scale, r = 0.0, g = 0.0, b = 0.0, a = 1.0 })
+  end
+end
+
 local function drawOverlays(dt, playerHealth, bossHealth)
   sceneTime = sceneTime + dt
+  local barThick = 0.0
+  if sceneTime < INTRO_BAR_SECONDS then
+    local k = 1.0 - sceneTime / INTRO_BAR_SECONDS
+    barThick = BAR_MAX_THICK * k * k
+  end
+  if endTimer ~= nil and Outcome.cleared and endDelay > 0.0 then
+    local k = math.min(endTimer / (endDelay * 0.5), 1.0)
+    barThick = math.max(barThick, BAR_MAX_THICK * k)
+  end
+  drawCinemaBars(barThick)
   if sceneTime < FADE_IN_SECONDS then
     drawFullScreen(0.0, 0.0, 0.0, 1.0 - sceneTime / FADE_IN_SECONDS)
   end
