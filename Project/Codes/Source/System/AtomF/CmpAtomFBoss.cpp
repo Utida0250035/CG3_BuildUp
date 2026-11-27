@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -163,6 +163,14 @@ constexpr float kCarouselShotIntervalSeconds = 0.1f;
 constexpr float kCarouselSourceRadiusRatio = 0.95f;
 constexpr float kCarouselSpeed = 2.8f;
 constexpr float kCarouselTelegraphSeconds = 1.0f;
+/// 潮汐: 外周の発射点が自機の方位を中心に ±70° を往復しつつ、予告時点の自機位置へ弾を撃ち込む。
+constexpr int kTideShotCount = 28;
+constexpr float kTideShotIntervalSeconds = 0.11f;
+constexpr float kTideSourceRadiusRatio = 0.95f;
+constexpr float kTideSpeed = 3.0f;
+constexpr float kTideHalfArcRad = 1.2f;
+constexpr float kTideCycles = 1.5f;
+constexpr float kTideTelegraphSeconds = 1.0f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1066,6 +1074,28 @@ void CmpAtomFBoss::FireCarouselShot() {
   }
 }
 
+void CmpAtomFBoss::FireTideShot() {
+  // 発射点は自機方位を中心に往復する。狙いは予告確定時点の自機位置で固定（往復する線を抜ける動きを求める）。
+  const int shot = kTideShotCount - fanWavesLeft_;
+  const float phase = (2.0f * kPi) * kTideCycles * static_cast<float>(shot) / static_cast<float>(kTideShotCount);
+  const float angle = carouselBaseAngle_ + kTideHalfArcRad * std::sin(phase);
+  const float sourceRadius = AtomF::ResolveArenaInnerRadiusMeters() * kTideSourceRadiusRatio;
+  const Math::Vector3 source{std::cos(angle) * sourceRadius, 0.0f, std::sin(angle) * sourceRadius};
+  Math::Vector3 dir = slamTarget_ - source;
+  const float len = std::sqrt(dir.x * dir.x + dir.z * dir.z);
+  if (len < 1e-4f) {
+    return;
+  }
+  dir = {dir.x / len, 0.0f, dir.z / len};
+  AtomF::SpawnEnemyProjectile(source, dir, kTideSpeed, params_.ringBulletRadiusMeters,
+                              Math::Vector4{0.4f, 0.8f, 1.0f, 1.0f});
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", source);
+  if (shot % 5 == 0) {
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1252,6 +1282,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Downpour: duration = kDownpourTelegraphSeconds; break;
   case Skill::Pincer: duration = kPincerTelegraphSeconds; break;
   case Skill::Carousel: duration = kCarouselTelegraphSeconds; break;
+  case Skill::Tide: duration = kTideTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1265,7 +1296,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   }
 
   if ((skill_ == Skill::Slam || skill_ == Skill::Converge || skill_ == Skill::Downpour ||
-       skill_ == Skill::Pincer || skill_ == Skill::Carousel) && !locked) {
+       skill_ == Skill::Pincer || skill_ == Skill::Carousel || skill_ == Skill::Tide) && !locked) {
     if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
         player != nullptr && player->IsActive()) {
       slamTarget_ = GroundPoint(player->GetWorldPosition());
@@ -1426,6 +1457,18 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       telegraph->AddRing(Math::Vector3{0.0f, 0.0f, 0.0f}, rim, locked ? 0.2f : 0.1f, tint);
       telegraph->AddLine(start, slamTarget_, locked ? 0.2f : 0.1f, tint);
       telegraph->AddRing(slamTarget_, 1.5f * (1.0f - progress) + 0.4f, 0.1f, tint);
+      break;
+    }
+    case Skill::Tide: {
+      // 往復範囲の両端と中央の発射点から、固定された狙い位置へ伸びる線を予告する。確定後は太く濃くなる。
+      const float rim = AtomF::ResolveArenaInnerRadiusMeters() * kTideSourceRadiusRatio;
+      const Math::Vector4 tint{0.4f, 0.8f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      for (int k = -1; k <= 1; ++k) {
+        const float a = carouselBaseAngle_ + kTideHalfArcRad * static_cast<float>(k);
+        const Math::Vector3 src{std::cos(a) * rim, 0.0f, std::sin(a) * rim};
+        telegraph->AddLine(src, slamTarget_, locked ? 0.2f : 0.1f, tint);
+      }
+      telegraph->AddRing(slamTarget_, 1.2f * (1.0f - progress) + 0.4f, 0.1f, tint);
       break;
     }
     case Skill::Crescent: {
@@ -1757,6 +1800,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCarouselShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Tide:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kTideShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Crescent:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1908,6 +1957,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireCarouselShot();
     --fanWavesLeft_;
     volleyTimer_ = kCarouselShotIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Tide) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireTideShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kTideShotIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

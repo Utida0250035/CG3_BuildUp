@@ -2764,3 +2764,10 @@ develop を基に、ボスの召喚スキル **護衛召喚**（`Skill::SummonGu
 
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、該当ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128c`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス潮汐・tidal/ebber 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **潮汐**（`Skill::Tide`。外周の発射点が自機の方位を中心に ±約 70° を 1.5 往復しつつ、予告確定時点の自機位置へ固定の狙いで水色の弾を 0.11 秒間隔で 28 発撃ち込む弾幕。予備動作は往復範囲の両端と中央から狙い位置へ伸びる線と狭まる輪、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **tidal**（周回しつつ突進）と **ebber**（距離を保ち横揺れしつつ射撃）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128d`（develop から作成）。
