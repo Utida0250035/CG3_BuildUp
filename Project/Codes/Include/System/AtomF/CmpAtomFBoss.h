@@ -40,7 +40,8 @@ public:
     Crossfire,
     Converge,
     Helix,
-    Echo
+    Echo,
+    Rampage
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -134,6 +135,8 @@ private:
   float spiralAngle_ = 0.0f;
   int sweepShotsLeft_ = 0;
   int fanWavesLeft_ = 0;
+  /// 連続突進の残り回数。
+  int rampageDashesLeft_ = 0;
   float sweepStartAngle_ = 0.0f;
   float sweepDirection_ = 1.0f;
   Math::Vector3 slamTarget_{};

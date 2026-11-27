@@ -47,7 +47,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
-    CmpAtomFBoss::Skill::Echo,
+    CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -61,7 +61,8 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
-    CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
+    CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -97,6 +98,10 @@ constexpr float kEchoWaveIntervalSeconds = 0.45f;
 constexpr float kEchoTelegraphSeconds = 1.0f;
 constexpr float kEchoBaseBulletSpeed = 1.5f;
 constexpr float kEchoSpeedStepPerWave = 0.45f;
+
+/// 連続突進: 自機を狙い直しながら 3 回突進する近接スキル（途中の再予告は短い）。
+constexpr int kRampageDashCount = 3;
+constexpr float kRampageRetelegraphSeconds = 0.45f;
 
 /// 十字砲火: 8 方向へ全方位に撃ち、波ごとに半ピッチずらして市松状の隙間を作る。
 constexpr int kCrossfireWaveCount = 5;
@@ -316,7 +321,7 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
   stateElapsed_ = 0.0f;
   lockedDirection_ = DirectionToPlayerXZ();
 
-  if (skill == Skill::Dash || skill == Skill::Slam) {
+  if (skill == Skill::Dash || skill == Skill::Slam || skill == Skill::Rampage) {
     AtomF::PlayBossMeleeWarnSe();
   } else {
     AtomF::PlayBossBulletWarnSe();
@@ -338,6 +343,10 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
 
   if (skill == Skill::Echo) {
     spiralAngle_ = Rand01() * kTwoPi;
+  }
+
+  if (skill == Skill::Rampage) {
+    rampageDashesLeft_ = kRampageDashCount;
   }
 
   if (skill == Skill::Converge) {
@@ -465,6 +474,18 @@ void CmpAtomFBoss::BeginDash() {
 }
 
 void CmpAtomFBoss::EndDash() {
+  if (skill_ == Skill::Rampage && --rampageDashesLeft_ > 0) {
+    // 連続突進の途中: 衝撃波は出さず、壁際の砂煙だけ残して自機を狙い直す。
+    const Math::Vector3 mid = GroundPoint(RefOwner().GetWorldPosition());
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_dash_trail.json", mid);
+    CombatCameraShake::Instance().RequestCustomShake(0.12f, 0.2f);
+    AtomF::PlayBossMeleeWarnSe();
+    lockedDirection_ = DirectionToPlayerXZ();
+    state_ = State::Telegraph;
+    const float full = std::max(0.1f, params_.dashTelegraphSeconds);
+    stateElapsed_ = std::max(0.0f, full - kRampageRetelegraphSeconds);
+    return;
+  }
   const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
   AtomF::SpawnBossShockwave(ground, params_.shockwaveMaxRadiusMeters,
                             params_.shockwaveSpeedMetersPerSecond,
@@ -854,7 +875,8 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::SummonCutoff:
     duration = params_.summonTelegraphSeconds;
     break;
-  case Skill::Dash: duration = params_.dashTelegraphSeconds; break;
+  case Skill::Dash:
+  case Skill::Rampage: duration = params_.dashTelegraphSeconds; break;
   case Skill::Spiral: duration = kSpiralTelegraphSeconds; break;
   case Skill::GapRing: duration = kGapRingTelegraphSeconds; break;
   case Skill::Sweep: duration = kSweepTelegraphSeconds; break;
@@ -871,7 +893,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   const bool locked = stateElapsed_ >= duration - kAimLockSeconds;
 
   if ((skill_ == Skill::Volley || skill_ == Skill::Dash ||
-       skill_ == Skill::Fan) &&
+       skill_ == Skill::Rampage || skill_ == Skill::Fan) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1129,6 +1151,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       break;
     }
     case Skill::Dash:
+    case Skill::Rampage:
       telegraph->AddLine(origin, origin + lockedDirection_ * 14.0f,
                     radius_ * 1.7f,
                     locked ? Math::Vector4{1.0f, 0.1f, 0.05f, 0.5f}
@@ -1166,6 +1189,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     volleyTimer_ = 0.0f;
     break;
   case Skill::Dash:
+  case Skill::Rampage:
     BeginDash();
     break;
   case Skill::Slam:
