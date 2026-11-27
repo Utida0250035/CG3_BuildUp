@@ -2923,3 +2923,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128q`（develop から作成）。
+
+## セッション 2026-11-27（atomF: 残りの単層バーストを 3 層化・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。単層のまま残っていた十字砲火・残響・螺旋の炸裂（`atomf_boss_{crossfire,echo,spiral}_burst.json`）と格子（`atomf_boss_lattice_{fast,slow}.json`）を、中心の閃光＋既存の破片の殻（縮小）＋落ちる残り火の 3 層構成へ作り直した（再生コードは変更なし）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1127-run0b`（develop から作成）。
