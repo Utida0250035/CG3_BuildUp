@@ -1351,6 +1351,30 @@
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFPlayerInvincibleBlink.cpp">
       <Filter>Codes\Source\System\AtomF</Filter>
     </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFBossHealthBarDraw.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\AtomFBossSpawn.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFBoss.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackFx.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFStageDirector.cpp">
+      <Filter>Codes\Source\System\AtomF</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\EngineLuaBinder.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\ScriptSceneContext.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="Codes\Source\System\Scripting\ScriptUiSprite.cpp">
+      <Filter>Codes\Source\System\Scripting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codes\Include\Audio\Audio.h">
@@ -2735,6 +2759,27 @@
     </ClInclude>
     <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFPlayerInvincibleBlink.h">
       <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFBossHealthBarDraw.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\AtomFBossSpawn.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFBoss.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\AtomF\CmpAtomFStageDirector.h">
+      <Filter>Codes\Include\System\AtomF</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\EngineLuaBinder.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\ScriptSceneContext.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="Codes\Include\System\Scripting\ScriptUiSprite.h">
+      <Filter>Codes\Include\System\Scripting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

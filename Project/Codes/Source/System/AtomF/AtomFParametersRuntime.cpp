@@ -186,6 +186,85 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
   }
 }
 
+void ApplyBossFromJson(const nlohmann::json &root, BossParameters &out) {
+  if (!root.contains("boss") || !root.at("boss").is_object()) {
+    return;
+  }
+  const auto &b = root.at("boss");
+  out.maxHp = std::max(1, b.value("maxHp", out.maxHp));
+  out.bodyRadiusMeters =
+      std::max(0.1f, b.value("bodyRadiusMeters", out.bodyRadiusMeters));
+  out.moveSpeedMetersPerSecond =
+      b.value("moveSpeedMetersPerSecond", out.moveSpeedMetersPerSecond);
+  out.bulletDamage = std::max(1, b.value("bulletDamage", out.bulletDamage));
+  out.explosionDamage =
+      std::max(1, b.value("explosionDamage", out.explosionDamage));
+  out.stunDamageMultiplier =
+      std::max(1.0f, b.value("stunDamageMultiplier", out.stunDamageMultiplier));
+  out.appearSeconds = std::max(0.1f, b.value("appearSeconds", out.appearSeconds));
+  out.deathSeconds = std::max(0.1f, b.value("deathSeconds", out.deathSeconds));
+  out.enrageHpRatio =
+      std::clamp(b.value("enrageHpRatio", out.enrageHpRatio), 0.0f, 1.0f);
+  out.enrageSeconds =
+      std::max(0.1f, b.value("enrageSeconds", out.enrageSeconds));
+  out.enrageSpeedMultiplier =
+      std::max(1.0f, b.value("enrageSpeedMultiplier", out.enrageSpeedMultiplier));
+  out.skillIntervalSeconds =
+      std::max(0.1f, b.value("skillIntervalSeconds", out.skillIntervalSeconds));
+  out.enragedSkillIntervalMultiplier = std::clamp(
+      b.value("enragedSkillIntervalMultiplier",
+              out.enragedSkillIntervalMultiplier),
+      0.1f, 1.0f);
+  out.spawnZMeters = b.value("spawnZMeters", out.spawnZMeters);
+  out.appearDelayAfterMinionsSeconds =
+      std::max(0.0f, b.value("appearDelayAfterMinionsSeconds",
+                             out.appearDelayAfterMinionsSeconds));
+  if (b.contains("color") && b.at("color").is_array() &&
+      b.at("color").size() >= 3) {
+    out.colorR = b.at("color").at(0).get<float>();
+    out.colorG = b.at("color").at(1).get<float>();
+    out.colorB = b.at("color").at(2).get<float>();
+  }
+  if (b.contains("summon") && b.at("summon").is_object()) {
+    const auto &s = b.at("summon");
+    out.summon.telegraphSeconds =
+        std::max(0.1f, s.value("telegraphSeconds", out.summon.telegraphSeconds));
+    out.summon.count = std::max(1, s.value("count", out.summon.count));
+    out.summon.enragedCount =
+        std::max(1, s.value("enragedCount", out.summon.enragedCount));
+    out.summon.spawnRingRadiusMeters = std::max(
+        0.5f, s.value("spawnRingRadiusMeters", out.summon.spawnRingRadiusMeters));
+  }
+  if (b.contains("shockwave") && b.at("shockwave").is_object()) {
+    const auto &s = b.at("shockwave");
+    out.shockwave.telegraphSeconds = std::max(
+        0.1f, s.value("telegraphSeconds", out.shockwave.telegraphSeconds));
+    out.shockwave.expandSeconds =
+        std::max(0.1f, s.value("expandSeconds", out.shockwave.expandSeconds));
+    out.shockwave.maxRadiusMeters = std::max(
+        1.0f, s.value("maxRadiusMeters", out.shockwave.maxRadiusMeters));
+    out.shockwave.spokeCount =
+        std::max(2, s.value("spokeCount", out.shockwave.spokeCount));
+    out.shockwave.enragedSpokeCount = std::max(
+        2, s.value("enragedSpokeCount", out.shockwave.enragedSpokeCount));
+    out.shockwave.spokeHalfWidthMeters = std::max(
+        0.1f, s.value("spokeHalfWidthMeters", out.shockwave.spokeHalfWidthMeters));
+    out.shockwave.bandHalfWidthMeters = std::max(
+        0.05f, s.value("bandHalfWidthMeters", out.shockwave.bandHalfWidthMeters));
+  }
+  if (b.contains("dash") && b.at("dash").is_object()) {
+    const auto &d = b.at("dash");
+    out.dash.telegraphSeconds =
+        std::max(0.1f, d.value("telegraphSeconds", out.dash.telegraphSeconds));
+    out.dash.speedMetersPerSecond =
+        std::max(0.1f, d.value("speedMetersPerSecond", out.dash.speedMetersPerSecond));
+    out.dash.durationSeconds =
+        std::max(0.1f, d.value("durationSeconds", out.dash.durationSeconds));
+    out.dash.stunSeconds =
+        std::max(0.0f, d.value("stunSeconds", out.dash.stunSeconds));
+  }
+}
+
 bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {
   if (!json.is_object()) {
     return false;
@@ -238,6 +317,7 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   arena_ = ArenaParameters{};
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
+  boss_ = BossParameters{};
   camera_ = CombatCameraParameters{};
 
   std::ifstream stream(path);
@@ -266,6 +346,7 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
 
   player_ = parsedPlayer;
   enemy_ = parsedEnemy;
+  ApplyBossFromJson(json, boss_);
   ApplyArenaFromJson(json, arena_);
   ApplyCombatCameraFromJson(json, camera_);
   loaded_ = true;
@@ -277,6 +358,7 @@ void ParametersRuntime::Unload() {
   arena_ = ArenaParameters{};
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
+  boss_ = BossParameters{};
   camera_ = CombatCameraParameters{};
 }
 

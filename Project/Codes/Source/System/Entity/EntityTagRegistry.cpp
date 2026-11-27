@@ -26,10 +26,12 @@ EntityTagRegistry &EntityTagRegistry::Instance() {
 }
 
 void EntityTagRegistry::ApplyDefaults() {
-  tagCatalog_ = {"PLAYER",       "ENEMY",        "PLAYER_WEAPON",
-                 "ENEMY_WEAPON", "PLAYER_ITEM",  "ENEMY_ITEM"};
+  tagCatalog_ = {"PLAYER",       "ENEMY",        "BOSS",
+                 "PLAYER_WEAPON", "ENEMY_WEAPON", "PLAYER_ITEM",
+                 "ENEMY_ITEM"};
   rolesByKey_ = {{"player", "PLAYER"},
                    {"enemy", "ENEMY"},
+                   {"boss", "BOSS"},
                    {"playerWeapon", "PLAYER_WEAPON"},
                    {"enemyWeapon", "ENEMY_WEAPON"},
                    {"playerItem", "PLAYER_ITEM"},

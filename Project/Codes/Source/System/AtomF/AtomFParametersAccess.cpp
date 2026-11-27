@@ -209,6 +209,15 @@ ResolveEnemyPeriodicChargeTimingParameters() {
   return kFallback;
 }
 
+const BossParameters &ResolveBossParameters() {
+  ParametersRuntime &runtime = ParametersRuntime::Instance();
+  if (runtime.IsLoaded()) {
+    return runtime.Boss();
+  }
+  static const BossParameters kFallback{};
+  return kFallback;
+}
+
 const EnemyChainExplosionParameters &ResolveEnemyChainExplosionParameters() {
   ParametersRuntime &runtime = ParametersRuntime::Instance();
   if (runtime.IsLoaded()) {

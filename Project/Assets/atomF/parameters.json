@@ -37,6 +37,27 @@
       "blinkMinAlpha": 0.2
     }
   },
+  "boss": {
+    "maxHp": 128,
+    "bodyRadiusMeters": 1.2,
+    "moveSpeedMetersPerSecond": 0.5,
+    "bulletDamage": 2,
+    "explosionDamage": 16,
+    "stunDamageMultiplier": 2.0,
+    "appearSeconds": 2.5,
+    "deathSeconds": 3.2,
+    "enrageHpRatio": 0.5,
+    "enrageSeconds": 2.0,
+    "enrageSpeedMultiplier": 1.6,
+    "skillIntervalSeconds": 3.2,
+    "enragedSkillIntervalMultiplier": 0.6,
+    "spawnZMeters": 9.0,
+    "appearDelayAfterMinionsSeconds": 1.5,
+    "color": [0.35, 0.2, 0.75],
+    "summon": { "telegraphSeconds": 1.0, "count": 3, "enragedCount": 5, "spawnRingRadiusMeters": 2.2 },
+    "shockwave": { "telegraphSeconds": 1.1, "expandSeconds": 0.9, "maxRadiusMeters": 7.5, "spokeCount": 6, "enragedSpokeCount": 8, "spokeHalfWidthMeters": 0.8, "bandHalfWidthMeters": 0.5 },
+    "dash": { "telegraphSeconds": 0.9, "speedMetersPerSecond": 6.0, "durationSeconds": 1.1, "stunSeconds": 2.2 }
+  },
   "camera": {
     "followEyeOffset": {
       "offsetXMeters": 0.0,

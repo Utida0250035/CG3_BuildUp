@@ -60,8 +60,9 @@ void SpreadEnemyExplosionKnockbackFromCenter(
     if (other == &explodingEnemy || !other->IsActive()) {
       continue;
     }
-    if (!tags.EntityHasRole(*other, "enemy")) {
-      continue;
+    if (!tags.EntityHasRole(*other, "enemy") ||
+        tags.EntityHasRole(*other, "boss")) {
+      continue; // ボスは吹き飛ばない（ダメージは別経路）。
     }
     if (other->HasUpdCmp<CmpAtomFEnemyChainExplosion>()) {
       if (CmpAtomFEnemyChainExplosion *chain =

@@ -2,6 +2,7 @@
 
 #include "System/AtomF/AtomFParametersAccess.h"
 #include "System/AtomF/AtomFPlayerBulletConsume.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFPlayerBulletMove.h"
 #include "System/Entity/Components/CmpHitSphere.h"
@@ -42,6 +43,16 @@ void CmpAtomFPlayerBulletEnemyHit::Update() {
   for (Entity *other : hitSphere_->GetHitEntitys()) {
     if (other == nullptr || !tags_->EntityHasRole(*other, "enemy")) {
       continue;
+    }
+
+    // ボスは吹き飛ばず、Hp を削られる。
+    if (tags_->EntityHasRole(*other, "boss")) {
+      if (CmpAtomFBoss *boss = other->GetUpdCmp<CmpAtomFBoss>();
+          boss != nullptr) {
+        boss->ApplyBulletHit();
+      }
+      DestroyBulletAfterHit();
+      return;
     }
 
     CmpAtomFEnemyKnockback *knockback = other->GetUpdCmp<CmpAtomFEnemyKnockback>();

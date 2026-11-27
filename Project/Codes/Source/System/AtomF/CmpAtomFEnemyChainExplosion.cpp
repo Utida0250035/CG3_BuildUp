@@ -63,6 +63,7 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
 
   AtomF::SpreadEnemyExplosionKnockbackFromCenter(RefOwner(), explosionCenter);
   AtomF::ApplyEnemyExplosionDamageToPlayer(explosionCenter);
+  AtomF::ApplyEnemyExplosionDamageToBoss(explosionCenter);
 
   if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
     if (CmpAtomFEnemyKnockback *knockback =

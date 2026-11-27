@@ -91,6 +91,61 @@ struct EnemyVariantParameters {
   float colorB = 0.25f;
 };
 
+/// ボス（Hp128・耐久系パッシブなし）。アクティブスキル 3 種と特殊アクション（激昂）を持つ。
+struct BossSummonParameters {
+  float telegraphSeconds = 1.0f;
+  int count = 3;
+  int enragedCount = 5;
+  float spawnRingRadiusMeters = 2.2f;
+};
+
+struct BossShockwaveParameters {
+  float telegraphSeconds = 1.1f;
+  float expandSeconds = 0.9f;
+  float maxRadiusMeters = 7.5f;
+  /// 放射状の「筋」の本数（筋と筋の間が安全地帯）。激昂中は enragedSpokeCount。
+  int spokeCount = 6;
+  int enragedSpokeCount = 8;
+  /// 筋の半幅。自機が筋の中で衝撃波の先端に追い越された瞬間だけ被弾する。
+  float spokeHalfWidthMeters = 0.8f;
+  /// 衝撃波の先端の厚み（半幅）。
+  float bandHalfWidthMeters = 0.5f;
+};
+
+struct BossDashParameters {
+  float telegraphSeconds = 0.9f;
+  float speedMetersPerSecond = 6.0f;
+  float durationSeconds = 1.1f;
+  /// 突進後に動けなくなる秒数。この間は自機弾のダメージが増える。
+  float stunSeconds = 2.2f;
+};
+
+struct BossParameters {
+  int maxHp = 128;
+  float bodyRadiusMeters = 1.2f;
+  float moveSpeedMetersPerSecond = 0.5f;
+  int bulletDamage = 2;
+  int explosionDamage = 16;
+  float stunDamageMultiplier = 2.0f;
+  float appearSeconds = 2.5f;
+  float deathSeconds = 3.2f;
+  /// 残り Hp 比率がこの値以下になると激昂（特殊アクション）に入る。
+  float enrageHpRatio = 0.5f;
+  float enrageSeconds = 2.0f;
+  float enrageSpeedMultiplier = 1.6f;
+  float skillIntervalSeconds = 3.2f;
+  float enragedSkillIntervalMultiplier = 0.6f;
+  float spawnZMeters = 9.0f;
+  /// 雑魚が全滅してからボスが現れるまでの間。
+  float appearDelayAfterMinionsSeconds = 1.5f;
+  float colorR = 0.35f;
+  float colorG = 0.2f;
+  float colorB = 0.75f;
+  BossSummonParameters summon{};
+  BossShockwaveParameters shockwave{};
+  BossDashParameters dash{};
+};
+
 struct EnemyParameters {
   float hitRadiusMeters = 0.25f;
   float moveSpeedMetersPerSecond = 0.3f;
@@ -143,6 +198,8 @@ public:
 
   const EnemyParameters &Enemy() const { return enemy_; }
 
+  const BossParameters &Boss() const { return boss_; }
+
   const CombatCameraParameters &Camera() const { return camera_; }
 
 private:
@@ -150,6 +207,7 @@ private:
   ArenaParameters arena_{};
   PlayerParameters player_{};
   EnemyParameters enemy_{};
+  BossParameters boss_{};
   CombatCameraParameters camera_{};
 };
 

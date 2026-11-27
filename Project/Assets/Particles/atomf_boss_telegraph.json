@@ -1,0 +1,64 @@
+[
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "CIRCLE_XZ",
+    "emitCircle": {
+      "center": {
+        "x": 0,
+        "y": 0.1,
+        "z": 0
+      },
+      "radius": 1.1
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 10,
+    "duration": 0.5,
+    "minLifeDuration": 0.35,
+    "maxLifeDuration": 0.6,
+    "baseVelocity": {
+      "x": 0,
+      "y": 1.6,
+      "z": 0
+    },
+    "velocityRandom": {
+      "x": 0.5,
+      "y": 0.5,
+      "z": 0.5
+    },
+    "acceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "startScale": {
+      "x": 0.14,
+      "y": 0.14,
+      "z": 0.14
+    },
+    "endScale": {
+      "x": 0.02,
+      "y": 0.02,
+      "z": 0.02
+    },
+    "startColor": {
+      "x": 1.0,
+      "y": 0.5,
+      "z": 1.4,
+      "w": 0.9
+    },
+    "endColor": {
+      "x": 0.6,
+      "y": 0.2,
+      "z": 1.0,
+      "w": 0.0
+    },
+    "renderMode": "BUILTIN_SPHERE",
+    "maxCount": 16,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  }
+]

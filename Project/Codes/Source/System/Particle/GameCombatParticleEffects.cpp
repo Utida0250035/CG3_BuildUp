@@ -91,6 +91,18 @@ void PlayEnemyPanicSweatEffect(const Math::Vector3 &worldPosition,
                     kEnemyPanicSweatParticleJson, worldPosition, sequenceId);
 }
 
+void PlayOneShotEffectByFileName(const char *particleJsonFileName,
+                                 const Math::Vector3 &worldPosition) {
+  if (particleJsonFileName == nullptr) {
+    return;
+  }
+  static uint32_t sequence = 0;
+  const std::string path =
+      std::string("./Assets/Particles/") + particleJsonFileName;
+  PlayOneShotEffect("combat_atomf_oneshot_", path.c_str(), worldPosition,
+                    ++sequence);
+}
+
 void SetEffectCamera(Camera *camera) {
   if (Particle::Emitter::EmitterManager *manager = CombatEmitterManager()) {
     manager->SetCamera(camera);

@@ -9,6 +9,7 @@
 #include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/DeltaTime.h"
 #include "System/Entity/Entity.h"
+#include "System/Particle/GameCombatParticleEffects.h"
 
 #include <cmath>
 
@@ -33,12 +34,17 @@ void CmpAtomFEnemyPeriodicCharge::BeginShaking() {
   phase_ = Phase::Shaking;
   phaseElapsedSeconds_ = 0.0f;
   anchorTranslate_ = RefOwner().RefTransform().translate;
+  // 予備動作: 突進の溜めを火の粉で見せる。
+  Particle::Combat::PlayOneShotEffectByFileName(
+      "atomf_enemy_charge_windup.json", RefOwner().GetWorldPosition());
 }
 
 void CmpAtomFEnemyPeriodicCharge::BeginCharging() {
   phase_ = Phase::Charging;
   phaseElapsedSeconds_ = 0.0f;
   anchorTranslate_ = RefOwner().RefTransform().translate;
+  Particle::Combat::PlayOneShotEffectByFileName(
+      "atomf_enemy_charge_windup.json", RefOwner().GetWorldPosition());
 }
 
 void CmpAtomFEnemyPeriodicCharge::Update() {

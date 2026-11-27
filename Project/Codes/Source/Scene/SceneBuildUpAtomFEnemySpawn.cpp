@@ -15,6 +15,7 @@
 #include "System/AtomF/CmpAtomFEnemyTargetedPanic.h"
 #include "System/AtomF/CmpAtomFEnemyVariant.h"
 #include "System/AtomF/CmpAtomFEnemyWalkToPlayer.h"
+#include "System/AtomF/CmpAtomFStageDirector.h"
 #include "System/AtomF/CmpDrawAtomFEnemyKnockbackPredictCapsule.h"
 #include "System/Entity/Components/CmpChildEntitys.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
@@ -30,10 +31,10 @@ namespace {
 
 constexpr int kAtomFEnemySpawnCount = 6;
 
-void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
-                        const float spawnAngleRadians,
-                        const float spawnRadiusMeters,
-                        const int index) {
+} // namespace
+
+std::unique_ptr<Entity> CreateAtomFEnemy(const Math::Vector3 &spawnPositionXZ,
+                                         const int index) {
   EntityTagRegistry &tags = EntityTagRegistry::Instance();
   tags.EnsureLoaded();
 
@@ -44,9 +45,8 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
   enemy->AddTag(tags.TagNameForRole("enemy"));
 
   Math::TransformLH initialTransform{};
-  initialTransform.translate = {std::cos(spawnAngleRadians) * spawnRadiusMeters,
-                                bodyRadius,
-                                std::sin(spawnAngleRadians) * spawnRadiusMeters};
+  initialTransform.translate = {spawnPositionXZ.x, bodyRadius,
+                                spawnPositionXZ.z};
   enemy->SetInitialTransform(initialTransform);
 
   // 種類（variants）を index % 件数 で割り当てる。未定義なら従来の単一種。
@@ -112,10 +112,8 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
 
   enemy->ResolveDependencies();
   enemy->Initialize();
-  entities.push_back(std::move(enemy));
+  return enemy;
 }
-
-} // namespace
 
 void AppendAtomFEnemyIfScene(
     const std::string &sceneJsonPath,
@@ -130,8 +128,19 @@ void AppendAtomFEnemyIfScene(
   for (int i = 0; i < kAtomFEnemySpawnCount; ++i) {
     const float angle =
         (kTwoPi * static_cast<float>(i)) / static_cast<float>(kAtomFEnemySpawnCount);
-    SpawnOneAtomFEnemy(entities, angle, kSpawnRadiusMeters, i);
+    entities.push_back(CreateAtomFEnemy(
+        Math::Vector3{std::cos(angle) * kSpawnRadiusMeters, 0.0f,
+                      std::sin(angle) * kSpawnRadiusMeters},
+        i));
   }
+
+  // 雑魚が全滅したらボスを出す進行役。
+  std::unique_ptr<Entity> director =
+      std::make_unique<Entity>("AtomFStageDirector");
+  director->AddUpdCmp<CmpAtomFStageDirector>();
+  director->ResolveDependencies();
+  director->Initialize();
+  entities.push_back(std::move(director));
 }
 
 } // namespace Atrum
