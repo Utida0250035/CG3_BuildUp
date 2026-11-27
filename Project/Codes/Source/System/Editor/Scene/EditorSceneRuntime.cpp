@@ -555,6 +555,17 @@ BuildEntitiesFromSceneDocument(const EditorSceneDocument &document,
   return entities;
 }
 
+std::unique_ptr<Entity>
+BuildEntityForRuntimeSpawn(const SceneEntityInstance &instance,
+                           EditorSceneRuntimeBuildWarnings *warnings) {
+  std::unique_ptr<Entity> entity =
+      BuildEntityFromDefinition(instance.definition, warnings);
+  ApplySceneInstanceName(*entity, instance);
+  entity->ResolveDependencies();
+  entity->Initialize();
+  return entity;
+}
+
 void DrawSceneDocumentEntities(
     const std::vector<std::unique_ptr<Entity>> &entities) {
   for (const std::unique_ptr<Entity> &entity : entities) {

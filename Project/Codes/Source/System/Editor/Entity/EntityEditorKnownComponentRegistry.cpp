@@ -36,6 +36,10 @@ constexpr std::array<std::string_view, 3> kGuidelineDrawExampleTypeNames = {
 
 } // namespace
 
+std::span<const std::string_view> TypeNames() {
+  return kEditorRuntimeComponentTypeNames;
+}
+
 bool Contains(const std::string &typeName) {
   for (const std::string_view registered : kEditorRuntimeComponentTypeNames) {
     if (typeName == registered) {

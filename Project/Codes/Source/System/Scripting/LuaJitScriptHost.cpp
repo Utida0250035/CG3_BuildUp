@@ -2,6 +2,7 @@
 
 #include "System/Entity/Entity.h"
 #include "System/Scripting/EngineLuaBinder.h"
+#include "System/Scripting/EntityLuaBinder.h"
 #include "System/Scripting/LuaSystem.h"
 
 #include <ForDebug/Log.h>
@@ -60,6 +61,7 @@ bool LuaJitScriptHost::Initialize() {
     return false;
   }
   vm_->AddBinder<EngineLuaBinder>();
+  vm_->AddBinder<EntityLuaBinder>();
   vm_->RegisterBinds();
 
   sol::state &state = vm_->GetState();
@@ -173,10 +175,11 @@ bool LuaJitScriptHost::Invoke(const std::string_view scriptPath,
 
   sol::protected_function fn = maybeFn;
   sol::protected_function_result callResult;
+  // 既存スクリプト互換のため self は末尾引数: onResolve(self) / onUpdate(dt, self)
   if (hook == LuaScriptHook::Update) {
-    callResult = fn(context.deltaTime);
+    callResult = fn(context.deltaTime, MakeEntityHandle(context.owner, false));
   } else {
-    callResult = fn();
+    callResult = fn(MakeEntityHandle(context.owner, true));
   }
 
   if (!callResult.valid()) {

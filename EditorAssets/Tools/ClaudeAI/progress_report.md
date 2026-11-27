@@ -2404,3 +2404,37 @@ release_scene_carousel.json の先頭を ./Assets/Scenes/atomF.json に変更。
   - 用途: 1 ステージを作り込むため、同じ「当たると爆発する玉」でも動きの癖で位置取りと連鎖爆発の狙い方を変えさせる
   - 使用場面: ランタイムのゲームプレイ（atomF）
   - 用途から決めた仕様: 全種 Hp1・耐久なし。差は速度・蛇行・突進間隔・色のみで、調整は JSON で行う
+
+## セッション 2026-11-27（Lua からエンティティ関連を一通り見えるようにする）
+
+ユーザー依頼「Lua 側からエンティティ関連の実装が全て見えるようにしたい」。ブランチは環境指定の `claude/awesome-wright-qtog34`。**ビルド未実施・静的矛盾チェック済み**（Linux 環境のため MSBuild 不可。宣言・実装・include・vcxproj 登録の照合のみ）。
+
+### 1. 実施内容
+
+- 新規 `EntityLuaBinder`（`ILuaBinder`、`LuaJitScriptHost::Initialize` で登録）。公開 API:
+  - 値型 `Vec3` / `Quat`（演算子・`length`/`normalized`/`dot`・`fromEuler`/`fromAxisAngle`/`lookRotation`/`slerp`）
+  - `Entities.find / findAll / findByTag / findFirstByTag / findByRole / findFirstByRole / all / count / spawn / destroy / componentTypes / tagCatalog`
+  - `Entity` ハンドル: 状態（`isValid/state/isActive/id/isNamed/destroy`）、ローカル位置・回転・スケール、ワールド位置、親子（`getParent/setParent/children`）、タグ・ロール、コンポーネント有無・一覧、`CmpHealthHit`（`getHealth/setHealth/damage/...`）
+  - `Entities.spawn(prefabPath, opts)`: プレハブ/シーン JSON の先頭エンティティを生成。`opts` で名前・位置・回転・スケール・親・タグ追加・コンポーネントパラメータ上書き（未保有型は既定値で追加）。更新走査中でも安全なよう `AtomF::EnqueueSceneEntityAdopt` 経由でシーンへ採用
+- フックに `self` を追加（互換のため末尾引数）: `onResolve(self)` / `onUpdate(dt, self)`
+- エンジン側: `EditorSceneRuntime` に `BuildEntityForRuntimeSpawn`、`EntityEditorKnownComponentRegistry::TypeNames()` を追加（いずれも Release 除外なし）
+- `Project/Assets/Scripts/_api/entity.d.lua`（LuaLS 型定義）と `Samples/entity_api_sample.lua` を追加
+- `CG2_BuildUp.vcxproj` に `EntityLuaBinder.cpp/.h` を登録
+
+### 2. 最終目標との査定（§6.7）
+
+- 査定: **有効（矛盾なし）**。根拠: 「[スクリプト]〇C++との連携・C++側のバインドができていて…」「[エディタ]〇エンティティ・ゲーム内のロジック(スクリプト)によって、保存したエンティティをゲーム内に生成することができる」。
+- `game-logic-via-script.md`: C++ 側は公開 API（バインド）のみ。ゲームロジックは Lua 側に残る。
+
+### 3. 制約・未対応（次の候補）
+
+- ハンドルは生ポインタで、参照のたびにシーン所有リスト（と子孫・採用待ち）を線形走査して有効性を確認する。エンティティ数が数千規模なら要最適化（id 採番＋索引化）。
+- コンポーネント個別の型付きバインドは `CmpHealthHit` のみ。他コンポーネントは有無確認と spawn 時のパラメータ上書きまで。生きているエンティティへのコンポーネント追加・パラメータ変更は、初期化順の保証が無いため未対応。
+- 名前は Hash64 のみ保持のため、エンティティ名文字列の取得は未対応（`isNamed` で照合）。
+
+## 推測した用途（§6.4）
+
+- **Lua からのエンティティ操作 API**
+  - 用途: ステージ進行・ウェーブ・ギミックを Lua で書き、敵や弾などをプレハブから生成・探索・破棄・移動させる
+  - 使用場面: ランタイムのゲームプレイ（スクリプト）
+  - 用途から決めた仕様: 生成は走査後採用（反復中の破壊を避ける）。破棄済みハンドルは安全に無害化（クラッシュさせない）。互換のため `self` は末尾引数

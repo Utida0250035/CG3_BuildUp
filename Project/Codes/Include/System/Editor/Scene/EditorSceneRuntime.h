@@ -24,6 +24,12 @@ BuildEntitiesFromSceneDocument(
     const EditorSceneDocument &document,
     EditorSceneRuntimeBuildWarnings *warnings = nullptr);
 
+/// 1 インスタンス分を Entity 化し、依存解決・Initialize まで行う（ゲーム中の動的生成用）。
+/// シーン文書の読込やメインカメラ補完は行わない。親子付けは呼び出し側で行う。
+std::unique_ptr<Entity>
+BuildEntityForRuntimeSpawn(const SceneEntityInstance &instance,
+                           EditorSceneRuntimeBuildWarnings *warnings = nullptr);
+
 /// ルート Entity の Draw と、親が非 Active な子のフォールバック描画。
 void DrawSceneDocumentEntities(
     const std::vector<std::unique_ptr<Entity>> &entities);
