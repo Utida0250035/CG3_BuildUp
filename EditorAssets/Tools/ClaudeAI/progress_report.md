@@ -2881,3 +2881,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128m`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 五芒星・六花・風車・薔薇窓・渦潮の専用バーストパーティクル・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。汎用の `atomf_boss_fan_burst.json` / `atomf_boss_ring_burst.json` を流用していた五芒星（金）・六花（氷青）・風車（緑）・薔薇窓（桃）・渦潮（青緑）の炸裂に、3 層構成（中心の閃光＋破片の殻＋残り火）の専用 `atomf_boss_{pentacle,snowflake,windmill,rosette,whirlpool}_burst.json` を追加し、各 `Fire*Shot` の再生先を差し替えた。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128n`（develop から作成）。

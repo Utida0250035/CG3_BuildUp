@@ -1299,7 +1299,7 @@ void CmpAtomFBoss::FirePentacleShot() {
     }
   }
   if ((wave % 3) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_pentacle_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
   }
@@ -1322,7 +1322,7 @@ void CmpAtomFBoss::FireSnowflakeShot() {
     }
   }
   if ((wave % 3) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_snowflake_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
   }
@@ -1344,7 +1344,7 @@ void CmpAtomFBoss::FireWindmillShot() {
                                 params_.ringBulletRadiusMeters, tint);
   }
   if ((wave % 6) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_windmill_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
   }
@@ -1364,7 +1364,7 @@ void CmpAtomFBoss::FireRosetteShot() {
                                 params_.ringBulletRadiusMeters, tint);
   }
   if ((wave % 6) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_rosette_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
   }
@@ -1405,7 +1405,7 @@ void CmpAtomFBoss::FireWhirlpoolShot() {
     AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed, params_.ringBulletRadiusMeters, tint);
   }
   if ((wave % 9) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_whirlpool_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
   }
