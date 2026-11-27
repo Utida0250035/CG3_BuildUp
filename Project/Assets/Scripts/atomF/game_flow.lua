@@ -23,6 +23,46 @@ local function startFlash()
   flashTime = 0.0
 end
 
+-- シーン開始の黒からのフェードイン / 被弾時の赤フラッシュ / 敗北時の赤黒い暗転。
+local FADE_IN_SECONDS = 0.8
+local HURT_SECONDS    = 0.35
+local sceneTime = 0.0
+local hurtTime = nil
+local lastHealth = nil
+
+local function drawFullScreen(r, g, b, a)
+  if a > 0.0 then
+    Ui.image(Paths.IMG_WHITE, 0.5, 0.5, { scale = 400.0, r = r, g = g, b = b, a = a })
+  end
+end
+
+local function drawOverlays(dt, playerHealth)
+  sceneTime = sceneTime + dt
+  if sceneTime < FADE_IN_SECONDS then
+    drawFullScreen(0.0, 0.0, 0.0, 1.0 - sceneTime / FADE_IN_SECONDS)
+  end
+
+  if lastHealth ~= nil and playerHealth >= 0 and playerHealth < lastHealth then
+    hurtTime = 0.0
+  end
+  if playerHealth >= 0 then
+    lastHealth = playerHealth
+  end
+  if hurtTime ~= nil then
+    hurtTime = hurtTime + dt
+    if hurtTime >= HURT_SECONDS then
+      hurtTime = nil
+    else
+      drawFullScreen(1.0, 0.1, 0.1, 0.45 * (1.0 - hurtTime / HURT_SECONDS))
+    end
+  end
+
+  -- 敗北の余韻: 赤黒く沈んでいく
+  if endTimer ~= nil and not Outcome.cleared and endDelay > 0.0 then
+    drawFullScreen(0.25, 0.0, 0.0, 0.6 * math.min(endTimer / endDelay, 1.0))
+  end
+end
+
 local function drawFlash(dt)
   if flashTime == nil then
     return
@@ -37,6 +77,7 @@ end
 
 function M.onUpdate(dt)
   drawFlash(dt)
+  drawOverlays(dt, SceneFlow.healthByRole("player"))
   if SceneFlow.isChanging() then
     return
   end
