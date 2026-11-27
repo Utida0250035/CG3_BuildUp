@@ -23,6 +23,10 @@ local function startFlash()
   flashTime = 0.0
 end
 
+-- ボス登場時の警告演出: 画面の上下に赤い帯が走り、点滅しながら引いていく。
+local warnTime = nil
+local WARN_SECONDS = 2.4
+
 local BOSS_MAX_HEALTH = 128 -- parameters.json の boss.maxHealth と合わせる
 
 -- シーン開始の黒からのフェードイン / 被弾時の赤フラッシュ / 敗北時の赤黒い暗転。
@@ -121,6 +125,29 @@ local function drawBossBar(dt, bossHealth)
   end
 end
 
+local function drawWarning(dt)
+  if warnTime == nil then
+    return
+  end
+  warnTime = warnTime + dt
+  if warnTime >= WARN_SECONDS then
+    warnTime = nil
+    return
+  end
+  local t = warnTime / WARN_SECONDS
+  local slide = math.min(warnTime / 0.25, 1.0)        -- 最初の 0.25 秒で帯が伸びる
+  local fade = t > 0.7 and (1.0 - (t - 0.7) / 0.3) or 1.0
+  local blink = 0.65 + 0.35 * math.sin(warnTime * 14.0)
+  local a = 0.7 * blink * fade
+  local thick = 0.07 * slide
+  -- Ui.image は一様スケールのため、細かい正方形を横に並べて帯にする
+  for i = 0, 24 do
+    local x = i / 24.0
+    Ui.image(Paths.IMG_WHITE, x, thick * 0.5, { scale = 4.0 + 60.0 * thick, r = 0.9, g = 0.05, b = 0.05, a = a })
+    Ui.image(Paths.IMG_WHITE, x, 1.0 - thick * 0.5, { scale = 4.0 + 60.0 * thick, r = 0.9, g = 0.05, b = 0.05, a = a })
+  end
+end
+
 local function drawFlash(dt)
   if flashTime == nil then
     return
@@ -135,6 +162,7 @@ end
 
 function M.onUpdate(dt)
   drawFlash(dt)
+  drawWarning(dt)
   drawBossBar(dt, SceneFlow.healthByRole("boss"))
   drawOverlays(dt, SceneFlow.healthByRole("player"), SceneFlow.healthByRole("boss"))
   if SceneFlow.isChanging() then
@@ -155,6 +183,7 @@ function M.onUpdate(dt)
   if bossCount > 0 and not seenBoss then
     seenBoss = true
     startFlash() -- ボス登場の白フラッシュ
+    warnTime = 0.0 -- 続けて警告の赤帯
   end
   if playerHealth >= 0 then
     seenPlayer = true
