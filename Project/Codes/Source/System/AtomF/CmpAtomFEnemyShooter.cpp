@@ -38,6 +38,8 @@ void CmpAtomFEnemyShooter::ResolveDependence() {
       telegraphSeconds_ = v.shotTelegraphSeconds;
       shotSpeed_ = v.shotSpeedMetersPerSecond;
       shotRadius_ = v.shotRadiusMeters;
+      // 種類ごとの色を弾と予告線に反映する（射手/狙撃手を見分けられるように）。
+      shotColor_ = Math::Vector3{v.colorR, v.colorG, v.colorB};
     }
   }
   // 最初の 1 発は出現後 intervalSeconds_ 経ってから。
@@ -65,7 +67,8 @@ void CmpAtomFEnemyShooter::Fire() {
   const Math::Vector3 muzzle = origin + lockedDirection_ * 0.35f;
   AtomF::SpawnEnemyProjectile(muzzle, lockedDirection_, shotSpeed_,
                               shotRadius_,
-                              Math::Vector4{1.0f, 0.35f, 0.3f, 1.0f});
+                              Math::Vector4{shotColor_.x, shotColor_.y,
+                                            shotColor_.z, 1.0f});
   Particle::Combat::PlayNamedOneShotEffect("atomf_shot_muzzle.json", muzzle);
   AtomF::PlayAtomFEnemyShotSe();
 }
@@ -151,8 +154,10 @@ void CmpAtomFEnemyShooter::Update() {
       telegraph->Clear();
       const bool locked = timerSeconds_ >= telegraphSeconds_ - kAimLockSeconds;
       const Math::Vector4 color =
-          locked ? Math::Vector4{1.0f, 0.15f, 0.1f, 0.75f}
-                 : Math::Vector4{1.0f, 0.55f, 0.2f, 0.35f + 0.3f * progress};
+          locked ? Math::Vector4{shotColor_.x, shotColor_.y, shotColor_.z, 0.8f}
+                 : Math::Vector4{shotColor_.x * 0.7f, shotColor_.y * 0.7f,
+                                 shotColor_.z * 0.7f,
+                                 0.3f + 0.3f * progress};
       telegraph->AddLine(origin, origin + lockedDirection_ * 7.0f,
                     shotRadius_ * (locked ? 2.0f : 1.2f), color);
     }

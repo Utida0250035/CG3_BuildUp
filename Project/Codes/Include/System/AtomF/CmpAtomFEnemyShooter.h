@@ -30,6 +30,7 @@ private:
   float telegraphSeconds_ = 0.7f;
   float shotSpeed_ = 2.4f;
   float shotRadius_ = 0.14f;
+  Math::Vector3 shotColor_{1.0f, 0.35f, 0.3f};
   Math::Vector3 lockedDirection_{0.0f, 0.0f, 1.0f};
 };
 
