@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Quake, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Quake, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -247,6 +247,15 @@ constexpr float kWhirlpoolTurnPerWaveRad = 0.22f;
 constexpr float kWhirlpoolStartSpeed = 4.2f;
 constexpr float kWhirlpoolSpeedDropPerWave = 0.06f;
 constexpr float kWhirlpoolTelegraphSeconds = 1.0f;
+/// 震脚: その場で 3 度足を踏み鳴らし、踏むたびに大きくなる衝撃波を放つ近接技（着地点は常にボスの足元）。
+constexpr int kQuakeStompCount = 3;
+constexpr float kQuakeStompIntervalSeconds = 0.62f;
+constexpr float kQuakeBaseRadius = 3.6f;
+constexpr float kQuakeRadiusStep = 2.0f;
+constexpr float kQuakeShockSpeed = 6.5f;
+constexpr float kQuakeShockBand = 0.3f;
+constexpr float kQuakeTelegraphSeconds = 1.1f;
+constexpr float kQuakeRecoverSeconds = 0.9f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -494,7 +503,7 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
   stateElapsed_ = 0.0f;
   lockedDirection_ = DirectionToPlayerXZ();
 
-  if (skill == Skill::Dash || skill == Skill::Slam || skill == Skill::Rampage) {
+  if (skill == Skill::Dash || skill == Skill::Slam || skill == Skill::Rampage || skill == Skill::Quake) {
     AtomF::PlayBossMeleeWarnSe();
   } else {
     AtomF::PlayBossBulletWarnSe();
@@ -1388,6 +1397,16 @@ void CmpAtomFBoss::FireWhirlpoolShot() {
   }
 }
 
+void CmpAtomFBoss::FireQuakeStomp() {
+  const int stomp = kQuakeStompCount - fanWavesLeft_;
+  const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
+  const float maxRadius = kQuakeBaseRadius + kQuakeRadiusStep * static_cast<float>(stomp);
+  AtomF::SpawnBossShockwave(ground, maxRadius, kQuakeShockSpeed, kQuakeShockBand);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_slam.json", ground);
+  AtomF::PlayBossDeathBoomSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.14f + 0.08f * static_cast<float>(stomp), 0.35f);
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1585,6 +1604,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Rosette: duration = kRosetteTelegraphSeconds; break;
   case Skill::Kaleidoscope: duration = kKaleidoscopeTelegraphSeconds; break;
   case Skill::Whirlpool: duration = kWhirlpoolTelegraphSeconds; break;
+  case Skill::Quake: duration = kQuakeTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -2120,6 +2140,19 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       break;
     }
+    case Skill::Quake: {
+      // 3 度の衝撃波の到達半径を同心円で予告する。確定後は赤く太くなり、足元の輪が脈打つ。
+      const Math::Vector3 ground = GroundPoint(origin);
+      for (int i = 0; i < kQuakeStompCount; ++i) {
+        const float r = kQuakeBaseRadius + kQuakeRadiusStep * static_cast<float>(i);
+        const Math::Vector4 tone = locked ? Math::Vector4{1.0f, 0.15f, 0.05f, 0.55f}
+                                          : Math::Vector4{1.0f, 0.55f, 0.15f, 0.2f + 0.05f * static_cast<float>(i)};
+        telegraph->AddRing(ground, r, locked ? 0.12f : 0.07f, tone);
+      }
+      telegraph->AddRing(ground, radius_ + 0.3f + 0.8f * pulse, 0.1f,
+                         Math::Vector4{1.0f, 0.3f, 0.1f, 0.3f + 0.4f * progress});
+      break;
+    }
     case Skill::Slam: {
       // 着地点を縮む輪と十字で示す。確定後は赤く太くなる。
       const Math::Vector4 tone = locked ? Math::Vector4{1.0f, 0.1f, 0.05f, 0.75f}
@@ -2273,6 +2306,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
     fanWavesLeft_ = kRosetteWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
+  case Skill::Quake:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kQuakeStompCount;
     volleyTimer_ = 0.0f;
     break;
   case Skill::Whirlpool:
@@ -2523,6 +2562,22 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     volleyTimer_ = kRosetteWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Quake) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireQuakeStomp();
+    --fanWavesLeft_;
+    volleyTimer_ = kQuakeStompIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      // 最後の踏み込みの後は硬直して隙を見せる。
+      state_ = State::Recover;
+      stateElapsed_ = 0.0f;
+      recoverOverrideSeconds_ = kQuakeRecoverSeconds;
     }
     return;
   }

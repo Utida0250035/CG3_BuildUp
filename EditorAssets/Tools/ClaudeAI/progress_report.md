@@ -2845,3 +2845,11 @@ develop を基に、ボスの新スキル **渦潮**（`Skill::Whirlpool`。3 �
 - 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
 - 推測した用途: 弾速差で時間とともに形が変わる渦を読ませ、安全地帯を探す状況判断を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/bold-lamport-p8d1c0`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス近接技「震脚」・quaker/fissure 追加・スケジュール実行）
+
+develop を基に、ボスの新しい近接スキル **震脚**（`Skill::Quake`。その場で 3 度足を踏み鳴らし、踏むたびに到達半径が 3.6→5.6→7.6m と大きくなる衝撃波を放った後に硬直する。予備動作は 3 つの到達半径を示す同心円と足元の脈打つ輪、確定後に赤く太くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の両行動順に組み込んだ。あわせて雑魚 **quaker**（突進型）/ **fissure**（遠距離型）を `parameters.json` に追加し、最終ウェーブへ 2 体ずつ配置した（いずれも最大 Hp 1、耐久系能力なし）。
+
+- 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。静的チェックとして宣言・実装・enum・switch 分岐の整合のみ確認した。
+- 推測した用途: 突進・跳躍と異なる「その場で連続して広がる衝撃波」を飛び越える／距離を取る判断を求め、近接技の種類を増やすため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。指定の develop 基点で作業ブランチ `claude/serene-hypatia-kfbrgp` を使用した。
