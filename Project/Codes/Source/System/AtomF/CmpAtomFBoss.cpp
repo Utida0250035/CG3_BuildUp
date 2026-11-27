@@ -1459,7 +1459,7 @@ void CmpAtomFBoss::FireCobwebShot() {
     const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
     AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed, params_.ringBulletRadiusMeters, tint);
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_cobweb_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
 }

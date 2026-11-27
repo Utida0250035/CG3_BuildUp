@@ -2874,3 +2874,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128l`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 万華鏡・蜘蛛の巣の専用バーストパーティクル・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。汎用の `atomf_boss_fan_burst.json` / `atomf_boss_ring_burst.json` を流用していた万華鏡（`FireKaleidoscopeShot`）と蜘蛛の巣（`FireCobwebShot`）に、3 層構成（中心の閃光＋破片/糸の殻＋残り火）の専用 `atomf_boss_kaleidoscope_burst.json`（紫）・`atomf_boss_cobweb_burst.json`（白銀）を追加し再生先を差し替えた。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128m`（develop から作成）。
