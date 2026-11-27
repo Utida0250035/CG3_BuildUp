@@ -2682,3 +2682,11 @@ develop を基に、ボスの新スキル **花弁**（`Skill::Bloom`。5 枚の
 - 未実施: 実機確認、ボス戦 BGM 切替。
 - 推測した用途: 回転する小扇の弾幕で、移動方向を波ごとに切り替える判断を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-27（atomF: ボス格子・drone/seeker 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **格子**（`Skill::Lattice`。速さの異なる 2 層のリング（遅い青・速い水色、半ピッチずらし）を 5 波交互に放ち、弾同士の間に格子状の隙間を作る弾幕。予備動作は外へ広がる 2 重リング、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **drone**（高速周回しつつ細かい弾を撃つ）と **seeker**（距離を保ち突進と射撃を併せ持つ）を `parameters.json` に追加し最終ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**ビルド・実機確認は未実施**（Linux 環境）。
+
+- 未実施: 実機確認、ボス戦 BGM 切替。
+- 推測した用途: 速度差のある 2 層リングで、弾の隙間を抜ける位置取りと間合いの判断を求めるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

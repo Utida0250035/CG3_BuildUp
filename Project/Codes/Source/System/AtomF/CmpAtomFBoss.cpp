@@ -48,7 +48,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
-    CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -62,7 +62,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
-    CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -108,6 +108,14 @@ constexpr float kBloomWaveTurnRad = 0.55f;
 constexpr float kBloomWaveIntervalSeconds = 0.5f;
 constexpr float kBloomTelegraphSeconds = 1.0f;
 constexpr float kBloomBulletSpeed = 2.3f;
+
+/// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
+constexpr int kLatticeWaveCount = 5;
+constexpr int kLatticeBulletCount = 24;
+constexpr float kLatticeWaveIntervalSeconds = 0.6f;
+constexpr float kLatticeTelegraphSeconds = 1.0f;
+constexpr float kLatticeSlowSpeed = 1.6f;
+constexpr float kLatticeFastSpeed = 2.8f;
 
 /// 連続突進: 自機を狙い直しながら 3 回突進する近接スキル（途中の再予告は短い）。
 constexpr int kRampageDashCount = 3;
@@ -355,7 +363,7 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     spiralAngle_ = Rand01() * kTwoPi;
   }
 
-  if (skill == Skill::Bloom) {
+  if (skill == Skill::Bloom || skill == Skill::Lattice) {
     spiralAngle_ = Rand01() * kTwoPi;
   }
 
@@ -768,6 +776,27 @@ void CmpAtomFBoss::FireBloomWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
 
+void CmpAtomFBoss::FireLatticeWave() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kLatticeWaveCount - fanWavesLeft_;
+  const bool fast = (wave % 2) == 1;
+  const float speed = fast ? kLatticeFastSpeed : kLatticeSlowSpeed;
+  const float step = kTwoPi / static_cast<float>(kLatticeBulletCount);
+  // 偶数波は半ピッチずらして、速い層と遅い層が互い違いに並ぶようにする。
+  const float base = spiralAngle_ + (fast ? 0.5f * step : 0.0f);
+  const Math::Vector4 color = fast ? Math::Vector4{0.5f, 0.9f, 1.0f, 1.0f}
+                                   : Math::Vector4{0.3f, 0.5f, 1.0f, 1.0f};
+  for (int i = 0; i < kLatticeBulletCount; ++i) {
+    const float angle = base + step * static_cast<float>(i);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, speed,
+                                params_.ringBulletRadiusMeters, color);
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+}
+
 void CmpAtomFBoss::FireConvergeWave() {
   // 波ごとに自機の現在位置を狙い直す。奇数波は発射点を半ピッチずらす。
   Math::Vector3 target = slamTarget_;
@@ -926,6 +955,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Crossfire: duration = kCrossfireTelegraphSeconds; break;
   case Skill::Echo: duration = kEchoTelegraphSeconds; break;
   case Skill::Bloom: duration = kBloomTelegraphSeconds; break;
+  case Skill::Lattice: duration = kLatticeTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1033,6 +1063,15 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       telegraph->AddRing(ground, radius_ + 2.0f * (1.0f - progress) + 0.3f, 0.1f,
                     Math::Vector4{1.0f, 0.5f, 0.65f, 0.35f + 0.35f * pulse});
+      break;
+    }
+    case Skill::Lattice: {
+      // 速い層（水色）と遅い層（青）の 2 重リングが外へ広がる様子を予告する。確定後は濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      telegraph->AddRing(ground, radius_ + 1.0f + 3.0f * progress, locked ? 0.16f : 0.1f,
+                    Math::Vector4{0.3f, 0.5f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse});
+      telegraph->AddRing(ground, radius_ + 0.5f + 5.0f * progress, locked ? 0.16f : 0.1f,
+                    Math::Vector4{0.5f, 0.9f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse});
       break;
     }
     case Skill::Converge: {
@@ -1276,6 +1315,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kBloomWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Lattice:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kLatticeWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Converge:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1357,6 +1402,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireConvergeWave();
     --fanWavesLeft_;
     volleyTimer_ = kConvergeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Lattice) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireLatticeWave();
+    --fanWavesLeft_;
+    volleyTimer_ = kLatticeWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
