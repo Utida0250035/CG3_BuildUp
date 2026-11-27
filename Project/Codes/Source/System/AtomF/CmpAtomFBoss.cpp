@@ -45,7 +45,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
-    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -55,8 +56,8 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
-    CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Crossfire,
-    CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -84,6 +85,14 @@ constexpr int kCrossfireArmCount = 8;
 constexpr float kCrossfireWaveIntervalSeconds = 0.5f;
 constexpr float kCrossfireTelegraphSeconds = 1.0f;
 constexpr float kCrossfireBulletSpeed = 2.6f;
+
+/// 包囲収束: 外周の等間隔の点から自機の現在位置へ向けて弾を撃つ。波ごとに半ピッチずらす。
+constexpr int kConvergeWaveCount = 3;
+constexpr int kConvergeSourceCount = 9;
+constexpr float kConvergeWaveIntervalSeconds = 0.7f;
+constexpr float kConvergeTelegraphSeconds = 1.1f;
+constexpr float kConvergeBulletSpeed = 2.0f;
+constexpr float kConvergeSourceRadiusRatio = 0.92f;
 
 /// 薙ぎ払い: 自機方向を中心に扇状へ弾列を振る。
 constexpr int kSweepShotCount = 22;
@@ -302,6 +311,15 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     // 自機の向きを基準に 8 方向を切る（自機はまっすぐ撃たれず、隣り合う線の間へ入る）。
     spiralAngle_ = std::atan2(lockedDirection_.z, lockedDirection_.x) +
                    kPi / static_cast<float>(kCrossfireArmCount);
+  }
+
+  if (skill == Skill::Converge) {
+    spiralAngle_ = Rand01() * kTwoPi;
+    slamTarget_ = GroundPoint(RefOwner().GetWorldPosition());
+    if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+        player != nullptr && player->IsActive()) {
+      slamTarget_ = GroundPoint(player->GetWorldPosition());
+    }
   }
 
   if (skill == Skill::Pinwheel) {
@@ -592,6 +610,38 @@ void CmpAtomFBoss::FireCrossfireWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
 
+void CmpAtomFBoss::FireConvergeWave() {
+  // 波ごとに自機の現在位置を狙い直す。奇数波は発射点を半ピッチずらす。
+  Math::Vector3 target = slamTarget_;
+  if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
+      player != nullptr && player->IsActive()) {
+    target = GroundPoint(player->GetWorldPosition());
+  }
+  const int wave = kConvergeWaveCount - fanWavesLeft_;
+  const float step = kTwoPi / static_cast<float>(kConvergeSourceCount);
+  const float offset = (wave % 2 == 0) ? 0.0f : step * 0.5f;
+  const float sourceRadius =
+      AtomF::ResolveArenaInnerRadiusMeters() * kConvergeSourceRadiusRatio;
+  for (int i = 0; i < kConvergeSourceCount; ++i) {
+    const float angle = spiralAngle_ + offset + step * static_cast<float>(i);
+    const Math::Vector3 source{std::cos(angle) * sourceRadius, 0.0f,
+                               std::sin(angle) * sourceRadius};
+    Math::Vector3 dir = target - source;
+    dir.y = 0.0f;
+    const float len = std::sqrt(dir.x * dir.x + dir.z * dir.z);
+    if (len < 0.001f) {
+      continue;
+    }
+    dir = dir * (1.0f / len);
+    AtomF::SpawnEnemyProjectile(source, dir, kConvergeBulletSpeed,
+                                params_.ringBulletRadiusMeters,
+                                Math::Vector4{0.55f, 0.4f, 1.0f, 1.0f});
+    Particle::Combat::PlayNamedOneShotEffect("atomf_shot_muzzle.json", source);
+  }
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+}
+
 void CmpAtomFBoss::FireFanWave() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   // 波ごとに自機を狙い直す。奇数波は弾数を 1 つ減らして隙間の位置をずらす。
@@ -713,6 +763,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Fan: duration = kFanTelegraphSeconds; break;
   case Skill::Pinwheel: duration = kPinwheelTelegraphSeconds; break;
   case Skill::Crossfire: duration = kCrossfireTelegraphSeconds; break;
+  case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
@@ -724,7 +775,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
 
-  if (skill_ == Skill::Slam && !locked) {
+  if ((skill_ == Skill::Slam || skill_ == Skill::Converge) && !locked) {
     if (Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
         player != nullptr && player->IsActive()) {
       slamTarget_ = GroundPoint(player->GetWorldPosition());
@@ -791,6 +842,27 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
       }
       telegraph->AddRing(ground, radius_ + 2.5f * (1.0f - progress) + 0.3f, 0.1f,
                     Math::Vector4{1.0f, 0.45f, 0.75f, 0.35f + 0.35f * pulse});
+      break;
+    }
+    case Skill::Converge: {
+      // 外周の発射点（紫の輪）から自機の位置へ伸びる線を予告する。確定後は線が太く濃くなる。
+      const float sourceRadius =
+          AtomF::ResolveArenaInnerRadiusMeters() * kConvergeSourceRadiusRatio;
+      const float step = kTwoPi / static_cast<float>(kConvergeSourceCount);
+      for (int i = 0; i < kConvergeSourceCount; ++i) {
+        const float angle = spiralAngle_ + step * static_cast<float>(i);
+        const Math::Vector3 source{std::cos(angle) * sourceRadius, 0.0f,
+                                   std::sin(angle) * sourceRadius};
+        const Math::Vector3 toTarget = slamTarget_ - source;
+        telegraph->AddLine(source, source + toTarget * (0.35f + 0.4f * progress),
+                      locked ? 0.2f : 0.1f,
+                      Math::Vector4{0.55f, 0.4f, 1.0f,
+                                    locked ? 0.7f : 0.25f + 0.25f * pulse});
+        telegraph->AddRing(source, 0.3f + 0.3f * pulse, 0.08f,
+                      Math::Vector4{0.55f, 0.4f, 1.0f, 0.5f});
+      }
+      telegraph->AddRing(slamTarget_, 0.8f * (1.0f - progress) + 0.3f, 0.1f,
+                    Math::Vector4{0.55f, 0.4f, 1.0f, 0.35f + 0.35f * pulse});
       break;
     }
     case Skill::Pinwheel: {
@@ -976,6 +1048,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCrossfireWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Converge:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kConvergeWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Pinwheel:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1020,6 +1098,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     --spiralShotsLeft_;
     volleyTimer_ = kPinwheelIntervalSeconds;
     if (spiralShotsLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Converge) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireConvergeWave();
+    --fanWavesLeft_;
+    volleyTimer_ = kConvergeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
     return;
