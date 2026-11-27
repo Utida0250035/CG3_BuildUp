@@ -2786,3 +2786,10 @@ develop を基に、ボスの新スキル **彗星**（`Skill::Comet`。自機�
 
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1127-auto`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス滝・rapids/weir 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **滝**（`Skill::Cascade`。自機方向へ平行な 7 本の弾の列を 0.38 秒間隔で 14 波放ち、1 本だけ抜ける隙間の列が三角波で左右に往復する。予備動作は平行な 7 本の青緑の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **rapids**（周回しつつ突進）と **weir**（距離を保ち横揺れしつつ射撃）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128f`（develop から作成）。

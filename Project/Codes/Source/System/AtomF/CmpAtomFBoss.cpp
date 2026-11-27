@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -184,6 +184,13 @@ constexpr float kCometShotIntervalSeconds = 0.1f;
 constexpr float kCometLaneSpreadRad = 0.3f;
 constexpr float kCometSpeed = 5.2f;
 constexpr float kCometTelegraphSeconds = 1.0f;
+/// 滝: 自機方向へ平行な 7 本の弾の列を一定間隔で放ち、1 本だけ抜ける隙間の列が波ごとに横へずれていく。
+constexpr int kCascadeWaveCount = 14;
+constexpr int kCascadeLaneHalfCount = 3;
+constexpr float kCascadeLaneSpacing = 1.1f;
+constexpr float kCascadeWaveIntervalSeconds = 0.38f;
+constexpr float kCascadeSpeed = 3.6f;
+constexpr float kCascadeTelegraphSeconds = 1.1f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1147,6 +1154,31 @@ void CmpAtomFBoss::FireCometShot() {
   }
 }
 
+void CmpAtomFBoss::FireCascadeShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kCascadeWaveCount - fanWavesLeft_;
+  const int laneCount = kCascadeLaneHalfCount * 2 + 1;
+  // 隙間の列は三角波で左右に往復する。
+  const int phase = wave % (laneCount * 2 - 2);
+  const int gapIndex = phase < laneCount ? phase : (laneCount * 2 - 2 - phase);
+  const Math::Vector3 forward = lockedDirection_;
+  const Math::Vector3 side{-forward.z, 0.0f, forward.x};
+  for (int i = 0; i < laneCount; ++i) {
+    if (i == gapIndex) {
+      continue;
+    }
+    const float offset = kCascadeLaneSpacing * static_cast<float>(i - kCascadeLaneHalfCount);
+    AtomF::SpawnEnemyProjectile(origin + forward * (radius_ + 0.1f) + side * offset, forward,
+                                kCascadeSpeed, params_.ringBulletRadiusMeters,
+                                Math::Vector4{0.4f, 0.9f, 0.8f, 1.0f});
+  }
+  if ((wave % 3) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1336,6 +1368,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Tide: duration = kTideTelegraphSeconds; break;
   case Skill::Zigzag: duration = kZigzagTelegraphSeconds; break;
   case Skill::Comet: duration = kCometTelegraphSeconds; break;
+  case Skill::Cascade: duration = kCascadeTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1343,7 +1376,8 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   const bool locked = stateElapsed_ >= duration - kAimLockSeconds;
 
   if ((skill_ == Skill::Volley || skill_ == Skill::Dash ||
-       skill_ == Skill::Rampage || skill_ == Skill::Fan || skill_ == Skill::Comet) &&
+       skill_ == Skill::Rampage || skill_ == Skill::Fan || skill_ == Skill::Comet ||
+       skill_ == Skill::Cascade) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1481,6 +1515,17 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
         const float angle = center + kCometLaneSpreadRad * static_cast<float>(lane);
         const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
         telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 9.0f, locked ? 0.2f : 0.1f, tint);
+      }
+      break;
+    }
+    case Skill::Cascade: {
+      // 平行な 7 本の進路を青緑の線で予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const Math::Vector3 side{-lockedDirection_.z, 0.0f, lockedDirection_.x};
+      const Math::Vector4 tint{0.4f, 0.9f, 0.8f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      for (int i = -kCascadeLaneHalfCount; i <= kCascadeLaneHalfCount; ++i) {
+        const Math::Vector3 start = ground + lockedDirection_ * (radius_ + 0.3f) + side * (kCascadeLaneSpacing * static_cast<float>(i));
+        telegraph->AddLine(start, start + lockedDirection_ * 9.0f, locked ? 0.15f : 0.08f, tint);
       }
       break;
     }
@@ -1887,6 +1932,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCometShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Cascade:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kCascadeWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Zigzag:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -2063,6 +2114,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireCometShot();
     --fanWavesLeft_;
     volleyTimer_ = kCometShotIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Cascade) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireCascadeShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kCascadeWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
