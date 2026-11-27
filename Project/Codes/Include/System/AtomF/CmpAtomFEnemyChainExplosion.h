@@ -23,6 +23,7 @@ public:
 private:
   void BeginDyingExplosion();
   void UpdateDying();
+  void UpdateDeathRings(float t);
 
   class FrameDeltaTime *frameDeltaTime_ = nullptr;
   bool isDying_ = false;
