@@ -2830,3 +2830,10 @@ develop を基に、ボスの新スキル **薔薇窓**（`Skill::Rosette`。3 �
 
 - 未実施: ビルド（Windows/DirectX 環境外のため）、実機確認、最終ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/epic-faraday-jpjk1k`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス万華鏡・kaleido/prism 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **万華鏡**（`Skill::Kaleidoscope`。4 方向の軸それぞれから、軸を挟んで鏡写しに逆回りする 2 発を 0.11 秒間隔で 28 波放ち、左右対称の青紫の模様を織る弾幕。予備動作は 4 本の軸を示す青紫の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の行動順へ組み込んだ。雑魚 `kaleido`（突進型）・`prism`（射撃型）を `parameters.json` に追加し最終ウェーブへ各 2 体配置（いずれも最大 Hp1・耐久能力なし）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機確認、最終ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128i`（develop から作成）。
