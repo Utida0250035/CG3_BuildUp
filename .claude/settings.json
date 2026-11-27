@@ -13,6 +13,13 @@
       "Bash(git diff *)",
       "Bash(git log *)",
       "Bash(pwsh *)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git push * --force*)",
+      "Bash(git push * master*)",
+      "Bash(git push origin +*)"
     ]
   }
 }
