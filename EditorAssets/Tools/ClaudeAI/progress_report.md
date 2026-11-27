@@ -2690,3 +2690,11 @@ develop を基に、ボスの新スキル **格子**（`Skill::Lattice`。速さ
 - 未実施: 実機確認、ボス戦 BGM 切替。
 - 推測した用途: 速度差のある 2 層リングで、弾の隙間を抜ける位置取りと間合いの判断を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。
+
+## セッション 2026-11-27（atomF: ボス振り子・swayer/pouncer 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **振り子**（`Skill::Pendulum`。自機方向を中心に弾列が左右へ約 1.5 往復しながら 30 発連射される弾幕。予備動作は振れ幅の両端と中央の橙の線＋円弧、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **swayer**（大きく横揺れしつつ距離を保って射撃）と **pouncer**（周回しながら短間隔で突進）を `parameters.json` に追加し最終ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**。
+
+- 未実施: 実機確認、ボス戦 BGM 切替。
+- 推測した用途: 連射の向きが時間で動く弾幕で、先読みと待ちの判断を求めるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。

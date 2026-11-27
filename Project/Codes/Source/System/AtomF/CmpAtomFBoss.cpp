@@ -48,7 +48,8 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
-    CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
+    CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -62,7 +63,8 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
-    CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
+    CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -116,6 +118,14 @@ constexpr float kLatticeWaveIntervalSeconds = 0.6f;
 constexpr float kLatticeTelegraphSeconds = 1.0f;
 constexpr float kLatticeSlowSpeed = 1.6f;
 constexpr float kLatticeFastSpeed = 2.8f;
+
+/// 振り子: 自機方向を中心に、弾列が左右へ往復しながら連射される弾幕。
+constexpr int kPendulumShotCount = 30;
+constexpr float kPendulumShotIntervalSeconds = 0.1f;
+constexpr float kPendulumHalfArcRad = 0.95f;
+constexpr float kPendulumSwingCycles = 1.5f;
+constexpr float kPendulumTelegraphSeconds = 1.0f;
+constexpr float kPendulumBulletSpeed = 3.2f;
 
 /// 連続突進: 自機を狙い直しながら 3 回突進する近接スキル（途中の再予告は短い）。
 constexpr int kRampageDashCount = 3;
@@ -797,6 +807,24 @@ void CmpAtomFBoss::FireLatticeWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
 
+void CmpAtomFBoss::FirePendulumShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int shot = kPendulumShotCount - fanWavesLeft_;
+  const float t = static_cast<float>(shot) / static_cast<float>(kPendulumShotCount - 1);
+  const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+  // 中央から振り始め、1.5 往復で反対側の端へ抜ける。
+  const float angle = center + kPendulumHalfArcRad * std::sin(kTwoPi * kPendulumSwingCycles * t);
+  const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+  AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, kPendulumBulletSpeed,
+                              params_.ringBulletRadiusMeters,
+                              Math::Vector4{1.0f, 0.75f, 0.25f, 1.0f});
+  if ((shot % 5) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FireConvergeWave() {
   // 波ごとに自機の現在位置を狙い直す。奇数波は発射点を半ピッチずらす。
   Math::Vector3 target = slamTarget_;
@@ -956,6 +984,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Echo: duration = kEchoTelegraphSeconds; break;
   case Skill::Bloom: duration = kBloomTelegraphSeconds; break;
   case Skill::Lattice: duration = kLatticeTelegraphSeconds; break;
+  case Skill::Pendulum: duration = kPendulumTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1072,6 +1101,31 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                     Math::Vector4{0.3f, 0.5f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse});
       telegraph->AddRing(ground, radius_ + 0.5f + 5.0f * progress, locked ? 0.16f : 0.1f,
                     Math::Vector4{0.5f, 0.9f, 1.0f, locked ? 0.75f : 0.3f + 0.3f * pulse});
+      break;
+    }
+    case Skill::Pendulum: {
+      // 振れ幅の両端（橙の線）と中央線、振り幅を示す円弧状の点列を予告する。確定後は線が太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      constexpr int kArcSegments = 8;
+      Math::Vector3 prev{};
+      for (int i = 0; i <= kArcSegments; ++i) {
+        const float u = static_cast<float>(i) / static_cast<float>(kArcSegments);
+        const float angle = center + kPendulumHalfArcRad * (2.0f * u - 1.0f);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        const Math::Vector3 point = ground + dir * (radius_ + 5.0f);
+        const bool edge = (i == 0 || i == kArcSegments || i == kArcSegments / 2);
+        if (edge) {
+          telegraph->AddLine(ground + dir * (radius_ + 0.2f), point,
+                        locked ? 0.24f : 0.12f,
+                        Math::Vector4{1.0f, 0.7f, 0.2f, locked ? 0.75f : 0.3f + 0.3f * pulse});
+        }
+        if (i > 0) {
+          telegraph->AddLine(prev, point, 0.08f,
+                        Math::Vector4{1.0f, 0.7f, 0.2f, locked ? 0.6f : 0.25f});
+        }
+        prev = point;
+      }
       break;
     }
     case Skill::Converge: {
@@ -1321,6 +1375,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kLatticeWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Pendulum:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kPendulumShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Converge:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1415,6 +1475,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireLatticeWave();
     --fanWavesLeft_;
     volleyTimer_ = kLatticeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Pendulum) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FirePendulumShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kPendulumShotIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

@@ -43,7 +43,8 @@ public:
     Echo,
     Rampage,
     Bloom,
-    Lattice
+    Lattice,
+    Pendulum
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -108,6 +109,7 @@ private:
   void FireEchoWave();
   void FireBloomWave();
   void FireLatticeWave();
+  void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();
   void MoveToward(const Math::Vector3 &targetXZ, float speed, float dt);
