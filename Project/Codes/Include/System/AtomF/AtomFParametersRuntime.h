@@ -91,6 +91,46 @@ struct EnemyVariantParameters {
   float colorB = 0.25f;
 };
 
+/// ボス（Hp128・耐久系パッシブなし）。アクティブスキル 3 種（輪衝撃・突進・召喚）と
+/// 特殊アクション（ダウン・怒り）を秒数・距離でデータ駆動にする。
+struct BossParameters {
+  int maxHealth = 128;
+  float bodyRadiusMeters = 1.1f;
+  float walkSpeedMetersPerSecond = 0.35f;
+  /// 自機弾 1 発の直撃ダメージ。
+  int bulletDamage = 2;
+  /// 吹き飛んだ雑魚（玉）の爆発が届いたときのダメージ。
+  int explosionDamage = 16;
+  float appearSeconds = 3.0f;
+  float deathSeconds = 3.5f;
+  float skillIntervalSeconds = 2.5f;
+  /// 怒り（体力が enrageHealthRatio 以下）時のスキル間隔。
+  float enragedSkillIntervalSeconds = 1.4f;
+  float enrageHealthRatio = 0.5f;
+  /// 輪衝撃: 予備動作のあと、ボス中心の半径内にいる自機にダメージ。
+  float ringBlastTelegraphSeconds = 1.1f;
+  float ringBlastRadiusMeters = 4.0f;
+  /// 突進: 予備動作で自機方向を固定し、一定時間まっすぐ突っ込む。
+  float dashTelegraphSeconds = 0.9f;
+  float dashSpeedMetersPerSecond = 7.0f;
+  float dashDurationSeconds = 0.8f;
+  /// 召喚: 予備動作のあと、周囲に雑魚を出す（怒り中は +enragedSummonBonus）。
+  float summonTelegraphSeconds = 1.0f;
+  int summonCount = 3;
+  int enragedSummonBonus = 2;
+  float summonRadiusMeters = 2.2f;
+  /// ダウン（特殊アクション）: 短時間に threshold 以上のダメージを受けると膝を突き、
+  /// staggerSeconds の間は動かず、受けるダメージが staggerDamageMultiplier 倍になる。
+  float staggerDamageThreshold = 32.0f;
+  float staggerWindowSeconds = 6.0f;
+  float staggerSeconds = 3.0f;
+  float staggerDamageMultiplier = 1.5f;
+  float staggerCooldownSeconds = 10.0f;
+  float colorR = 0.55f;
+  float colorG = 0.15f;
+  float colorB = 0.8f;
+};
+
 struct EnemyParameters {
   float hitRadiusMeters = 0.25f;
   float moveSpeedMetersPerSecond = 0.3f;
@@ -143,6 +183,8 @@ public:
 
   const EnemyParameters &Enemy() const { return enemy_; }
 
+  const BossParameters &Boss() const { return boss_; }
+
   const CombatCameraParameters &Camera() const { return camera_; }
 
 private:
@@ -150,6 +192,7 @@ private:
   ArenaParameters arena_{};
   PlayerParameters player_{};
   EnemyParameters enemy_{};
+  BossParameters boss_{};
   CombatCameraParameters camera_{};
 };
 

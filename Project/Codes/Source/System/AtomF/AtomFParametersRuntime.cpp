@@ -186,6 +186,61 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
   }
 }
 
+void ApplyBossFromJson(const nlohmann::json &json, BossParameters &out) {
+  if (!json.contains("boss") || !json.at("boss").is_object()) {
+    return;
+  }
+  const auto &b = json.at("boss");
+  out.maxHealth = std::max(1, b.value("maxHealth", out.maxHealth));
+  out.bodyRadiusMeters =
+      std::max(0.1f, b.value("bodyRadiusMeters", out.bodyRadiusMeters));
+  out.walkSpeedMetersPerSecond =
+      b.value("walkSpeedMetersPerSecond", out.walkSpeedMetersPerSecond);
+  out.bulletDamage = std::max(0, b.value("bulletDamage", out.bulletDamage));
+  out.explosionDamage =
+      std::max(0, b.value("explosionDamage", out.explosionDamage));
+  out.appearSeconds = std::max(0.1f, b.value("appearSeconds", out.appearSeconds));
+  out.deathSeconds = std::max(0.1f, b.value("deathSeconds", out.deathSeconds));
+  out.skillIntervalSeconds =
+      b.value("skillIntervalSeconds", out.skillIntervalSeconds);
+  out.enragedSkillIntervalSeconds = b.value(
+      "enragedSkillIntervalSeconds", out.enragedSkillIntervalSeconds);
+  out.enrageHealthRatio =
+      b.value("enrageHealthRatio", out.enrageHealthRatio);
+  out.ringBlastTelegraphSeconds = std::max(
+      0.1f, b.value("ringBlastTelegraphSeconds", out.ringBlastTelegraphSeconds));
+  out.ringBlastRadiusMeters =
+      b.value("ringBlastRadiusMeters", out.ringBlastRadiusMeters);
+  out.dashTelegraphSeconds = std::max(
+      0.1f, b.value("dashTelegraphSeconds", out.dashTelegraphSeconds));
+  out.dashSpeedMetersPerSecond =
+      b.value("dashSpeedMetersPerSecond", out.dashSpeedMetersPerSecond);
+  out.dashDurationSeconds =
+      b.value("dashDurationSeconds", out.dashDurationSeconds);
+  out.summonTelegraphSeconds = std::max(
+      0.1f, b.value("summonTelegraphSeconds", out.summonTelegraphSeconds));
+  out.summonCount = std::max(0, b.value("summonCount", out.summonCount));
+  out.enragedSummonBonus =
+      std::max(0, b.value("enragedSummonBonus", out.enragedSummonBonus));
+  out.summonRadiusMeters =
+      b.value("summonRadiusMeters", out.summonRadiusMeters);
+  out.staggerDamageThreshold =
+      b.value("staggerDamageThreshold", out.staggerDamageThreshold);
+  out.staggerWindowSeconds =
+      b.value("staggerWindowSeconds", out.staggerWindowSeconds);
+  out.staggerSeconds = b.value("staggerSeconds", out.staggerSeconds);
+  out.staggerDamageMultiplier =
+      b.value("staggerDamageMultiplier", out.staggerDamageMultiplier);
+  out.staggerCooldownSeconds =
+      b.value("staggerCooldownSeconds", out.staggerCooldownSeconds);
+  if (b.contains("color") && b.at("color").is_array() &&
+      b.at("color").size() >= 3) {
+    out.colorR = b.at("color").at(0).get<float>();
+    out.colorG = b.at("color").at(1).get<float>();
+    out.colorB = b.at("color").at(2).get<float>();
+  }
+}
+
 bool TryParseEnemy(const nlohmann::json &json, EnemyParameters &out) {
   if (!json.is_object()) {
     return false;
@@ -238,6 +293,7 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
   arena_ = ArenaParameters{};
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
+  boss_ = BossParameters{};
   camera_ = CombatCameraParameters{};
 
   std::ifstream stream(path);
@@ -266,6 +322,7 @@ bool ParametersRuntime::TryLoadFromJsonFile(const std::string &path) {
 
   player_ = parsedPlayer;
   enemy_ = parsedEnemy;
+  ApplyBossFromJson(json, boss_);
   ApplyArenaFromJson(json, arena_);
   ApplyCombatCameraFromJson(json, camera_);
   loaded_ = true;
@@ -277,6 +334,7 @@ void ParametersRuntime::Unload() {
   arena_ = ArenaParameters{};
   player_ = PlayerParameters{};
   enemy_ = EnemyParameters{};
+  boss_ = BossParameters{};
   camera_ = CombatCameraParameters{};
 }
 

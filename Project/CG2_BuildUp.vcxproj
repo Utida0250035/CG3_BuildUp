@@ -532,6 +532,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\AtomF\AtomFMeshModelAttach.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockback.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyKnockbackFx.cpp" />
+    <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFBoss.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\CmpAtomFEnemyChainExplosion.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyArenaWallContact.cpp" />
     <ClCompile Include="Codes\Source\System\AtomF\AtomFEnemyExplosionKnockbackSpread.cpp" />
@@ -1038,6 +1039,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpRotator.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\Components\CmpScriptUpd.cpp" />
     <ClCompile Include="Codes\Source\System\Entity\UpdCmpGroupUtil.cpp" />
+    <ClCompile Include="Codes\Source\System\Scripting\AtomFLuaBinder.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\EngineLuaBinder.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\EntityLuaBinder.cpp" />
     <ClCompile Include="Codes\Source\System\Scripting\ScriptSceneContext.cpp" />
@@ -1499,6 +1501,7 @@ xcopy /E /I /Y "$(ProjectDir)..\EditorAssets" "$(TargetDir)..\EditorAssets\"</Co
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpRotator.h" />
     <ClInclude Include="Codes\Include\System\Entity\Components\CmpScriptUpd.h" />
     <ClInclude Include="Codes\Include\System\Entity\UpdCmpGroupUtil.h" />
+    <ClInclude Include="Codes\Include\System\Scripting\AtomFLuaBinder.h" />
     <ClInclude Include="Codes\Include\System\Scripting\EngineLuaBinder.h" />
     <ClInclude Include="Codes\Include\System\Scripting\EntityLuaBinder.h" />
     <ClInclude Include="Codes\Include\System\Scripting\ScriptSceneContext.h" />

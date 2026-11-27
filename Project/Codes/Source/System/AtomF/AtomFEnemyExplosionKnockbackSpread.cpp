@@ -1,6 +1,7 @@
 #include "System/AtomF/AtomFEnemyExplosionKnockbackSpread.h"
 
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/Entity/Components/CmpHitSphere.h"
@@ -73,6 +74,14 @@ void SpreadEnemyExplosionKnockbackFromCenter(
 
     if (!IsExplosionSphereIntersectingTarget(centerWorld, radiusMeters, *other,
                                              *hitSphere)) {
+      continue;
+    }
+
+    // ボスは吹き飛ばず、爆発の直撃でダメージを受ける。
+    if (other->HasUpdCmp<CmpAtomFBoss>()) {
+      if (CmpAtomFBoss *boss = other->GetUpdCmp<CmpAtomFBoss>()) {
+        boss->TakeDamage(ResolveBossParameters().explosionDamage);
+      }
       continue;
     }
 

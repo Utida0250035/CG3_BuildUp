@@ -1,6 +1,7 @@
 #include "System/Scripting/LuaJitScriptHost.h"
 
 #include "System/Entity/Entity.h"
+#include "System/Scripting/AtomFLuaBinder.h"
 #include "System/Scripting/EngineLuaBinder.h"
 #include "System/Scripting/EntityLuaBinder.h"
 #include "System/Scripting/LuaSystem.h"
@@ -62,6 +63,7 @@ bool LuaJitScriptHost::Initialize() {
   }
   vm_->AddBinder<EngineLuaBinder>();
   vm_->AddBinder<EntityLuaBinder>();
+  vm_->AddBinder<AtomFLuaBinder>();
   vm_->RegisterBinds();
 
   sol::state &state = vm_->GetState();

@@ -6,7 +6,9 @@
 #include "System/AtomF/AtomFEnemyHitAttach.h"
 #include "System/AtomF/AtomFMeshModelAttach.h"
 #include "System/AtomF/AtomFParametersAccess.h"
+#include "System/AtomF/AtomFSceneEntityAdoptQueue.h"
 #include "System/AtomF/AtomFScenePath.h"
+#include "System/AtomF/CmpAtomFBoss.h"
 #include "System/AtomF/CmpAtomFEnemyChainExplosion.h"
 #include "System/AtomF/CmpAtomFEnemyKnockback.h"
 #include "System/AtomF/CmpAtomFEnemyKnockbackFx.h"
@@ -17,10 +19,13 @@
 #include "System/AtomF/CmpAtomFEnemyWalkToPlayer.h"
 #include "System/AtomF/CmpDrawAtomFEnemyKnockbackPredictCapsule.h"
 #include "System/Entity/Components/CmpChildEntitys.h"
+#include "System/Entity/Components/CmpHealthHit.h"
+#include "System/Entity/Components/CmpHitSphere.h"
 #include "System/Entity/Components/CmpMeshSphere.h"
 #include "System/Entity/Components/CmpParticleEmitter.h"
 #include "System/Entity/Entity.h"
 #include "System/Entity/EntityTagRegistry.h"
+#include "System/Particle/GameCombatParticleEffects.h"
 
 #include <cmath>
 
@@ -28,12 +33,16 @@ namespace Atrum {
 
 namespace {
 
-constexpr int kAtomFEnemySpawnCount = 6;
+int NextSpawnIndex() {
+  static int counter = 0;
+  return counter++;
+}
 
-void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
-                        const float spawnAngleRadians,
-                        const float spawnRadiusMeters,
-                        const int index) {
+/// 雑魚 1 体を組み立てて返す（ResolveDependencies / Initialize 済み）。
+std::unique_ptr<Entity> CreateAtomFEnemyEntity(const int variantIndex,
+                                               const float worldX,
+                                               const float worldZ) {
+  const int index = NextSpawnIndex();
   EntityTagRegistry &tags = EntityTagRegistry::Instance();
   tags.EnsureLoaded();
 
@@ -44,9 +53,7 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
   enemy->AddTag(tags.TagNameForRole("enemy"));
 
   Math::TransformLH initialTransform{};
-  initialTransform.translate = {std::cos(spawnAngleRadians) * spawnRadiusMeters,
-                                bodyRadius,
-                                std::sin(spawnAngleRadians) * spawnRadiusMeters};
+  initialTransform.translate = {worldX, bodyRadius, worldZ};
   enemy->SetInitialTransform(initialTransform);
 
   // 種類（variants）を index % 件数 で割り当てる。未定義なら従来の単一種。
@@ -54,7 +61,9 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
   if (AtomF::ParametersRuntime::Instance().IsLoaded()) {
     const auto &variants = AtomF::ParametersRuntime::Instance().Enemy().variants;
     if (!variants.empty()) {
-      variant = variants[static_cast<std::size_t>(index) % variants.size()];
+      const int count = static_cast<int>(variants.size());
+      const int wrapped = ((variantIndex % count) + count) % count;
+      variant = variants[static_cast<std::size_t>(wrapped)];
     }
   }
   enemy->AddUpdCmp<CmpAtomFEnemyVariant>();
@@ -112,26 +121,119 @@ void SpawnOneAtomFEnemy(std::vector<std::unique_ptr<Entity>> &entities,
 
   enemy->ResolveDependencies();
   enemy->Initialize();
-  entities.push_back(std::move(enemy));
+  return enemy;
+}
+
+/// ボス 1 体を組み立てて返す。Hp は CmpHealthHit、行動は CmpAtomFBoss が持つ。
+std::unique_ptr<Entity> CreateAtomFBossEntity(const float worldX,
+                                              const float worldZ) {
+  EntityTagRegistry &tags = EntityTagRegistry::Instance();
+  tags.EnsureLoaded();
+
+  const AtomF::BossParameters &params = AtomF::ResolveBossParameters();
+  const float radius = params.bodyRadiusMeters;
+
+  std::unique_ptr<Entity> boss = std::make_unique<Entity>("AtomFBoss");
+  // 自機の接触ダメージ・敵同士の衝突爆発・予測判定の対象にするため enemy 役を付ける。
+  boss->AddTag(tags.TagNameForRole("enemy"));
+
+  Math::TransformLH initialTransform{};
+  // 出現演出で地面下から湧き上がるため、初期 Y は沈めておく。
+  initialTransform.translate = {worldX, -radius * 1.2f, worldZ};
+  boss->SetInitialTransform(initialTransform);
+
+  boss->AddUpdCmp<CmpHitSphere>();
+  if (CmpHitSphere *hit = boss->GetUpdCmp<CmpHitSphere>()) {
+    hit->SetSpheres({{{}, radius}});
+  }
+
+  boss->AddUpdCmp<CmpHealthHit>();
+  if (CmpHealthHit *health = boss->GetUpdCmp<CmpHealthHit>()) {
+    // 被弾の判定は CmpAtomFBoss::TakeDamage が行うため、攻撃元タグは登録しない。
+    health->SetInitialHealthCount(static_cast<uint32_t>(params.maxHealth));
+    health->SetHealthCount(static_cast<uint32_t>(params.maxHealth));
+    health->SetInvincibleTime(0.0f);
+  }
+
+  boss->AddUpdCmp<CmpAtomFBoss>();
+
+  boss->AddDrawCmp<CmpMeshSphere>();
+  if (CmpMeshSphere *mesh = boss->GetDrawCmp<CmpMeshSphere>()) {
+    mesh->SetRadius(radius * 0.4f);
+    mesh->SetColor(Math::Vector4{params.colorR, params.colorG, params.colorB,
+                                 1.0f});
+    mesh->SetSubdivision(20);
+    mesh->SetLightingEnabled(false);
+  }
+
+  AtomF::AttachArenaContainment(*boss, radius);
+
+  boss->ResolveDependencies();
+  boss->Initialize();
+  return boss;
 }
 
 } // namespace
 
+namespace AtomF {
+
+int EnemyVariantCount() {
+  if (!ParametersRuntime::Instance().IsLoaded()) {
+    return 1;
+  }
+  const int count =
+      static_cast<int>(ParametersRuntime::Instance().Enemy().variants.size());
+  return count > 0 ? count : 1;
+}
+
+int FindEnemyVariantIndex(const std::string &name) {
+  if (!ParametersRuntime::Instance().IsLoaded()) {
+    return -1;
+  }
+  const auto &variants = ParametersRuntime::Instance().Enemy().variants;
+  for (std::size_t i = 0; i < variants.size(); ++i) {
+    if (variants[i].name == name) {
+      return static_cast<int>(i);
+    }
+  }
+  return -1;
+}
+
+bool SpawnEnemyAtWorld(const int variantIndex, const float worldX,
+                       const float worldZ) {
+  std::unique_ptr<Entity> enemy =
+      CreateAtomFEnemyEntity(variantIndex, worldX, worldZ);
+  if (enemy == nullptr) {
+    return false;
+  }
+  // 出現の合図（小さな煙）。
+  Particle::Combat::PlayOneShotParticleFile(
+      "./Assets/Particles/enemy_spawn.json",
+      Math::Vector3{worldX, 0.1f, worldZ});
+  EnqueueSceneEntityAdopt(std::move(enemy));
+  return true;
+}
+
+bool SpawnBossAtWorld(const float worldX, const float worldZ) {
+  std::unique_ptr<Entity> boss = CreateAtomFBossEntity(worldX, worldZ);
+  if (boss == nullptr) {
+    return false;
+  }
+  EnqueueSceneEntityAdopt(std::move(boss));
+  return true;
+}
+
+} // namespace AtomF
+
 void AppendAtomFEnemyIfScene(
     const std::string &sceneJsonPath,
     std::vector<std::unique_ptr<Entity>> &entities) {
+  (void)entities;
   if (!AtomF::PathEndsWithAtomFJson(sceneJsonPath)) {
     return;
   }
-
-  // 円周上に複数配置し、連鎖爆発が起きやすい配置にする。
-  constexpr float kSpawnRadiusMeters = 8.0f;
-  constexpr float kTwoPi = 6.28318530718f;
-  for (int i = 0; i < kAtomFEnemySpawnCount; ++i) {
-    const float angle =
-        (kTwoPi * static_cast<float>(i)) / static_cast<float>(kAtomFEnemySpawnCount);
-    SpawnOneAtomFEnemy(entities, angle, kSpawnRadiusMeters, i);
-  }
+  // 敵・ボスの出現はステージスクリプト（Assets/Scripts/atomF/stage.lua）が
+  // AtomF.spawnEnemy / AtomF.spawnBoss で行う。入場時には何も置かない。
 }
 
 } // namespace Atrum

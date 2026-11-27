@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Vector4.h"
 #include "System/Entity/ComponentUpd.h"
 
 namespace Atrum {
@@ -25,6 +26,8 @@ private:
   float shrinkElapsedSeconds_ = 0.0f;
   float shrinkDurationSeconds_ = 0.6f;
   float initialMeshRadius_ = 0.25f;
+  /// 縮小消滅中に使う元の色（種類ごとの色を保つ）。
+  Math::Vector4 dyingBaseColor_{0.92f, 0.28f, 0.25f, 1.0f};
 };
 
 } // namespace Atrum
