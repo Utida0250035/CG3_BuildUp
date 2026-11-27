@@ -1387,7 +1387,7 @@ void CmpAtomFBoss::FireKaleidoscopeShot() {
     }
   }
   if ((wave % 7) == 0) {
-    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_kaleidoscope_burst.json", origin);
     AtomF::PlayBossShotSe();
     CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
   }
