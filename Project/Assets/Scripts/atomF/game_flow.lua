@@ -23,6 +23,8 @@ local function startFlash()
   flashTime = 0.0
 end
 
+local BOSS_MAX_HEALTH = 128 -- parameters.json の boss.maxHealth と合わせる
+
 -- シーン開始の黒からのフェードイン / 被弾時の赤フラッシュ / 敗北時の赤黒い暗転。
 local FADE_IN_SECONDS = 0.8
 local HURT_SECONDS    = 0.35
@@ -36,7 +38,7 @@ local function drawFullScreen(r, g, b, a)
   end
 end
 
-local function drawOverlays(dt, playerHealth)
+local function drawOverlays(dt, playerHealth, bossHealth)
   sceneTime = sceneTime + dt
   if sceneTime < FADE_IN_SECONDS then
     drawFullScreen(0.0, 0.0, 0.0, 1.0 - sceneTime / FADE_IN_SECONDS)
@@ -57,6 +59,19 @@ local function drawOverlays(dt, playerHealth)
     end
   end
 
+  -- ボスが狂暴化（Hp 40% 以下）している間、画面全体を薄い赤で脈動させて危機感を出す
+  if bossHealth > 0 and endTimer == nil and bossHealth / BOSS_MAX_HEALTH <= 0.4 then
+    drawFullScreen(0.9, 0.05, 0.05, 0.05 + 0.04 * math.sin(sceneTime * 6.0))
+  end
+
+  -- クリアの余韻: 後半に白へ溶けてリザルトへつなぐ
+  if endTimer ~= nil and Outcome.cleared and endDelay > 0.0 then
+    local t = endTimer / endDelay
+    if t > 0.5 then
+      drawFullScreen(1.0, 1.0, 1.0, math.min((t - 0.5) * 2.0, 1.0) * 0.9)
+    end
+  end
+
   -- 敗北の余韻: 赤黒く沈んでいく
   if endTimer ~= nil and not Outcome.cleared and endDelay > 0.0 then
     drawFullScreen(0.25, 0.0, 0.0, 0.6 * math.min(endTimer / endDelay, 1.0))
@@ -66,7 +81,6 @@ end
 -- ボスの Hp ゲージ（画面上部）。白 4x4 画像を並べた分割バー。
 -- Ui.image は一様スケールのみのため、細かい正方形セグメントで長さを表す。
 -- ボス最大 Hp は parameters.json の boss.maxHealth（128）に合わせる。
-local BOSS_MAX_HEALTH = 128
 local BAR_SEGMENTS    = 32
 local BAR_SEG_STEP    = 0.0115
 local BAR_SEG_SCALE   = 3.4
@@ -122,7 +136,7 @@ end
 function M.onUpdate(dt)
   drawFlash(dt)
   drawBossBar(dt, SceneFlow.healthByRole("boss"))
-  drawOverlays(dt, SceneFlow.healthByRole("player"))
+  drawOverlays(dt, SceneFlow.healthByRole("player"), SceneFlow.healthByRole("boss"))
   if SceneFlow.isChanging() then
     return
   end
