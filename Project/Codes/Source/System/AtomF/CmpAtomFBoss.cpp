@@ -48,7 +48,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Pinwheel,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
-    CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Converge, CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -62,7 +62,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Pinwheel, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
-    CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -98,6 +98,16 @@ constexpr float kEchoWaveIntervalSeconds = 0.45f;
 constexpr float kEchoTelegraphSeconds = 1.0f;
 constexpr float kEchoBaseBulletSpeed = 1.5f;
 constexpr float kEchoSpeedStepPerWave = 0.45f;
+
+/// 花弁: 5 枚の花弁（各 3 発の小扇）を放ち、波ごとに花弁の向きを回して咲かせる弾幕。
+constexpr int kBloomWaveCount = 6;
+constexpr int kBloomPetalCount = 5;
+constexpr int kBloomBulletsPerPetal = 3;
+constexpr float kBloomPetalSpreadRad = 0.16f;
+constexpr float kBloomWaveTurnRad = 0.55f;
+constexpr float kBloomWaveIntervalSeconds = 0.5f;
+constexpr float kBloomTelegraphSeconds = 1.0f;
+constexpr float kBloomBulletSpeed = 2.3f;
 
 /// 連続突進: 自機を狙い直しながら 3 回突進する近接スキル（途中の再予告は短い）。
 constexpr int kRampageDashCount = 3;
@@ -342,6 +352,10 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
   }
 
   if (skill == Skill::Echo) {
+    spiralAngle_ = Rand01() * kTwoPi;
+  }
+
+  if (skill == Skill::Bloom) {
     spiralAngle_ = Rand01() * kTwoPi;
   }
 
@@ -729,6 +743,31 @@ void CmpAtomFBoss::FireEchoWave() {
   CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
 }
 
+void CmpAtomFBoss::FireBloomWave() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kBloomWaveCount - fanWavesLeft_;
+  const float petalStep = kTwoPi / static_cast<float>(kBloomPetalCount);
+  const float base = spiralAngle_ + kBloomWaveTurnRad * static_cast<float>(wave);
+  // 咲くほど桃色から黄へ寄せ、波の進行を見分けやすくする。
+  const float t = static_cast<float>(wave) / static_cast<float>(kBloomWaveCount - 1);
+  const Math::Vector4 color{1.0f, 0.45f + 0.45f * t, 0.7f - 0.4f * t, 1.0f};
+  for (int petal = 0; petal < kBloomPetalCount; ++petal) {
+    for (int i = 0; i < kBloomBulletsPerPetal; ++i) {
+      const float local =
+          (static_cast<float>(i) - 0.5f * static_cast<float>(kBloomBulletsPerPetal - 1)) *
+          kBloomPetalSpreadRad;
+      const float angle = base + petalStep * static_cast<float>(petal) + local;
+      const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+      AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                  kBloomBulletSpeed,
+                                  params_.ringBulletRadiusMeters, color);
+    }
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_ring_burst.json", origin);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+}
+
 void CmpAtomFBoss::FireConvergeWave() {
   // 波ごとに自機の現在位置を狙い直す。奇数波は発射点を半ピッチずらす。
   Math::Vector3 target = slamTarget_;
@@ -886,6 +925,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Helix: duration = kHelixTelegraphSeconds; break;
   case Skill::Crossfire: duration = kCrossfireTelegraphSeconds; break;
   case Skill::Echo: duration = kEchoTelegraphSeconds; break;
+  case Skill::Bloom: duration = kBloomTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -976,6 +1016,23 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                       Math::Vector4{0.3f + 0.2f * static_cast<float>(i), 0.9f, 1.0f,
                                     locked ? 0.7f : 0.3f + 0.3f * pulse});
       }
+      break;
+    }
+    case Skill::Bloom: {
+      // 5 枚の花弁の軸（桃色の線）と縮む外周リングを予告する。確定後は線が太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float petalStep = kTwoPi / static_cast<float>(kBloomPetalCount);
+      for (int petal = 0; petal < kBloomPetalCount; ++petal) {
+        const float angle = spiralAngle_ + petalStep * static_cast<float>(petal);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f),
+                      ground + dir * (radius_ + 2.0f + 4.0f * progress),
+                      locked ? 0.22f : 0.1f,
+                      Math::Vector4{1.0f, 0.5f, 0.65f,
+                                    locked ? 0.7f : 0.25f + 0.25f * pulse});
+      }
+      telegraph->AddRing(ground, radius_ + 2.0f * (1.0f - progress) + 0.3f, 0.1f,
+                    Math::Vector4{1.0f, 0.5f, 0.65f, 0.35f + 0.35f * pulse});
       break;
     }
     case Skill::Converge: {
@@ -1213,6 +1270,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kEchoWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Bloom:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kBloomWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Converge:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -1294,6 +1357,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireConvergeWave();
     --fanWavesLeft_;
     volleyTimer_ = kConvergeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Bloom) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireBloomWave();
+    --fanWavesLeft_;
+    volleyTimer_ = kBloomWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
