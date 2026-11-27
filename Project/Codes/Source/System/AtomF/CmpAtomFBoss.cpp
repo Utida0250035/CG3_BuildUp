@@ -43,6 +43,20 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::Volley};
 
+/// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
+constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
+    CmpAtomFBoss::Skill::Spiral, CmpAtomFBoss::Skill::Dash,
+    CmpAtomFBoss::Skill::Volley, CmpAtomFBoss::Skill::Ring,
+    CmpAtomFBoss::Skill::Summon, CmpAtomFBoss::Skill::Spiral,
+    CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::Ring};
+
+/// スパイラル: 回転しながら撃つ弾幕。
+constexpr int kSpiralShotCount = 36;
+constexpr float kSpiralIntervalSeconds = 0.07f;
+constexpr float kSpiralTurnPerShot = 0.38f;
+constexpr float kSpiralTelegraphSeconds = 1.0f;
+constexpr float kSpiralBulletSpeed = 2.4f;
+
 float Rand01() {
   static uint32_t state = 0x1234ABCDu;
   state = state * 1664525u + 1013904223u;
@@ -216,6 +230,10 @@ void CmpAtomFBoss::BeginTelegraph(const Skill skill) {
     AtomF::PlayBossBulletWarnSe();
   }
 
+  if (skill == Skill::Spiral) {
+    spiralAngle_ = Rand01() * kTwoPi;
+  }
+
   if (skill == Skill::Summon) {
     summonPoints_.clear();
     Entity *player = AtomF::ScenePlayerLocator::Instance().PlayerEntity();
@@ -310,6 +328,25 @@ void CmpAtomFBoss::FireVolleyShot() {
   AtomF::PlayBossShotSe();
 }
 
+void CmpAtomFBoss::FireSpiralShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  // 対向 2 方向へ同時に撃ち、回転しながら渦を描く。
+  for (int arm = 0; arm < 2; ++arm) {
+    const float angle = spiralAngle_ + kPi * static_cast<float>(arm);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                kSpiralBulletSpeed,
+                                params_.ringBulletRadiusMeters,
+                                Math::Vector4{1.0f, 0.55f, 0.1f, 1.0f});
+  }
+  spiralAngle_ += kSpiralTurnPerShot;
+  if ((spiralShotsLeft_ % 6) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_shot_muzzle.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.06f, 0.15f);
+  }
+}
+
 void CmpAtomFBoss::UpdateEntrance(const float dt) {
   (void)dt;
   const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
@@ -359,8 +396,12 @@ void CmpAtomFBoss::UpdateIdle(const float dt) {
   }
   idleTimer_ -= dt;
   if (idleTimer_ <= 0.0f) {
-    const std::size_t count = sizeof(kSkillSequence) / sizeof(kSkillSequence[0]);
-    BeginTelegraph(kSkillSequence[skillCursor_ % count]);
+    const bool enraged = enraged_;
+    const Skill *sequence = enraged ? kEnragedSkillSequence : kSkillSequence;
+    const std::size_t count =
+        enraged ? sizeof(kEnragedSkillSequence) / sizeof(kEnragedSkillSequence[0])
+                : sizeof(kSkillSequence) / sizeof(kSkillSequence[0]);
+    BeginTelegraph(sequence[skillCursor_ % count]);
     ++skillCursor_;
   }
 }
@@ -373,6 +414,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Volley: duration = params_.volleyTelegraphSeconds; break;
   case Skill::Summon: duration = params_.summonTelegraphSeconds; break;
   case Skill::Dash: duration = params_.dashTelegraphSeconds; break;
+  case Skill::Spiral: duration = kSpiralTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
@@ -409,6 +451,21 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                     locked ? Math::Vector4{1.0f, 0.1f, 0.1f, 0.7f}
                            : Math::Vector4{1.0f, 0.55f, 0.2f, 0.35f});
       break;
+    case Skill::Spiral: {
+      // 回り始める 3 本の腕を予告する（実行時と同じ向きから）。
+      const Math::Vector3 ground = GroundPoint(origin);
+      for (int arm = 0; arm < 3; ++arm) {
+        const float angle = spiralAngle_ + stateElapsed_ * 3.0f +
+                            kTwoPi * static_cast<float>(arm) / 3.0f;
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f),
+                      ground + dir * (radius_ + 1.5f + 3.0f * progress), 0.12f,
+                      Math::Vector4{1.0f, 0.45f, 0.1f, 0.4f + 0.4f * pulse});
+      }
+      telegraph->AddRing(ground, radius_ + 0.3f + 1.2f * progress, 0.1f,
+                    Math::Vector4{1.0f, 0.5f, 0.15f, 0.35f + 0.35f * pulse});
+      break;
+    }
     case Skill::Summon:
       for (const Math::Vector3 &point : summonPoints_) {
         telegraph->AddRing(point, 0.9f - 0.5f * progress, 0.08f,
@@ -450,11 +507,30 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Dash:
     BeginDash();
     break;
+  case Skill::Spiral:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    spiralShotsLeft_ = kSpiralShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   }
 }
 
 void CmpAtomFBoss::UpdateExecute(const float dt) {
-  // 現状 Execute に長く留まるのは連射のみ。
+  if (skill_ == Skill::Spiral) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireSpiralShot();
+    --spiralShotsLeft_;
+    volleyTimer_ = kSpiralIntervalSeconds;
+    if (spiralShotsLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  // Execute に長く留まるのは連射とスパイラル。
   volleyTimer_ -= dt;
   if (volleyTimer_ > 0.0f) {
     return;
