@@ -44,7 +44,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Ring,   CmpAtomFBoss::Skill::Dash,
     CmpAtomFBoss::Skill::SummonFlank, CmpAtomFBoss::Skill::GapRing,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::Slam,
-    CmpAtomFBoss::Skill::Volley};
+    CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
 constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
@@ -53,7 +53,8 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::SummonSurround, CmpAtomFBoss::Skill::Spiral,
     CmpAtomFBoss::Skill::Dash,   CmpAtomFBoss::Skill::SummonFlank,
     CmpAtomFBoss::Skill::Sweep,  CmpAtomFBoss::Skill::GapRing,
-    CmpAtomFBoss::Skill::Slam,   CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Fan,    CmpAtomFBoss::Skill::Slam,
+    CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -74,6 +75,14 @@ constexpr float kSweepIntervalSeconds = 0.06f;
 constexpr float kSweepHalfArcRadians = 1.05f;
 constexpr float kSweepTelegraphSeconds = 1.0f;
 constexpr float kSweepBulletSpeed = 2.6f;
+
+/// 扇弾3連: 自機狙いの扇状の弾を、毎波狙い直して連続で撃つ。
+constexpr int kFanWaveCount = 3;
+constexpr int kFanBulletsPerWave = 7;
+constexpr float kFanHalfArcRadians = 0.55f;
+constexpr float kFanWaveIntervalSeconds = 0.55f;
+constexpr float kFanTelegraphSeconds = 0.9f;
+constexpr float kFanBulletSpeed = 3.0f;
 
 /// 跳躍叩きつけ: 自機の足元へ跳び、着地点で小さな衝撃波を起こす（近接）。
 constexpr float kSlamTelegraphSeconds = 1.0f;
@@ -515,6 +524,28 @@ void CmpAtomFBoss::FireSpiralShot() {
   }
 }
 
+void CmpAtomFBoss::FireFanWave() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  // 波ごとに自機を狙い直す。奇数波は弾数を 1 つ減らして隙間の位置をずらす。
+  const Math::Vector3 aim = DirectionToPlayerXZ();
+  const float center = std::atan2(aim.z, aim.x);
+  const int wave = kFanWaveCount - fanWavesLeft_;
+  const int count = (wave % 2 == 0) ? kFanBulletsPerWave : kFanBulletsPerWave - 1;
+  for (int i = 0; i < count; ++i) {
+    const float t = count > 1 ? static_cast<float>(i) / static_cast<float>(count - 1)
+                              : 0.5f;
+    const float angle = center + (t * 2.0f - 1.0f) * kFanHalfArcRadians;
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                kFanBulletSpeed, params_.ringBulletRadiusMeters,
+                                Math::Vector4{0.7f, 1.0f, 0.2f, 1.0f});
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json",
+                                           origin + aim * (radius_ + 0.3f));
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.05f, 0.12f);
+}
+
 void CmpAtomFBoss::UpdateEntrance(const float dt) {
   (void)dt;
   const Math::Vector3 ground = GroundPoint(RefOwner().GetWorldPosition());
@@ -611,12 +642,15 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::GapRing: duration = kGapRingTelegraphSeconds; break;
   case Skill::Sweep: duration = kSweepTelegraphSeconds; break;
   case Skill::Slam: duration = kSlamTelegraphSeconds; break;
+  case Skill::Fan: duration = kFanTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
   const float progress = std::clamp(stateElapsed_ / duration, 0.0f, 1.0f);
   const bool locked = stateElapsed_ >= duration - kAimLockSeconds;
 
-  if ((skill_ == Skill::Volley || skill_ == Skill::Dash) && !locked) {
+  if ((skill_ == Skill::Volley || skill_ == Skill::Dash ||
+       skill_ == Skill::Fan) &&
+      !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
 
@@ -654,6 +688,24 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
                     locked ? Math::Vector4{1.0f, 0.1f, 0.1f, 0.7f}
                            : Math::Vector4{1.0f, 0.55f, 0.2f, 0.35f});
       break;
+    case Skill::Fan: {
+      // 扇の両端と中央を黄緑の線で示す。確定後は中央線が太くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      for (int side = -1; side <= 1; ++side) {
+        const float angle = center + static_cast<float>(side) * kFanHalfArcRadians;
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        const bool mid = side == 0;
+        telegraph->AddLine(ground + dir * (radius_ + 0.2f),
+                      ground + dir * (mid ? 10.0f : 8.0f),
+                      mid ? (locked ? 0.28f : 0.14f) : 0.1f,
+                      Math::Vector4{0.7f, 1.0f, 0.2f,
+                                    locked ? 0.7f : 0.25f + 0.2f * pulse});
+      }
+      telegraph->AddRing(ground, radius_ + 0.3f + 1.0f * progress, 0.1f,
+                    Math::Vector4{0.7f, 1.0f, 0.2f, 0.35f + 0.3f * pulse});
+      break;
+    }
     case Skill::Spiral: {
       // 回り始める 3 本の腕を予告する（実行時と同じ向きから）。
       const Math::Vector3 ground = GroundPoint(origin);
@@ -808,6 +860,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Slam:
     BeginLeap();
     break;
+  case Skill::Fan:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kFanWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Spiral:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -833,6 +891,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     --spiralShotsLeft_;
     volleyTimer_ = kSpiralIntervalSeconds;
     if (spiralShotsLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Fan) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireFanWave();
+    --fanWavesLeft_;
+    volleyTimer_ = kFanWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }
     return;
