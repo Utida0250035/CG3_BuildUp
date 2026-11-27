@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Cobweb, CmpAtomFBoss::Skill::Quake, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Cobweb, CmpAtomFBoss::Skill::Fireworks, CmpAtomFBoss::Skill::Quake, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Cobweb, CmpAtomFBoss::Skill::Quake, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Snowflake, CmpAtomFBoss::Skill::Windmill, CmpAtomFBoss::Skill::Rosette, CmpAtomFBoss::Skill::Kaleidoscope, CmpAtomFBoss::Skill::Whirlpool, CmpAtomFBoss::Skill::Cobweb, CmpAtomFBoss::Skill::Fireworks, CmpAtomFBoss::Skill::Quake, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -254,6 +254,13 @@ constexpr float kCobwebWaveIntervalSeconds = 0.5f;
 constexpr float kCobwebBulletSpeed = 2.6f;
 constexpr float kCobwebTurnPerWaveRad = 0.1f;
 constexpr float kCobwebTelegraphSeconds = 1.0f;
+/// 花火: ボスの周囲 5 点を星形の順に 0.45 秒間隔で打ち上げ、各点で全方位リングを炸裂させる弾幕。
+constexpr int kFireworksBurstCount = 5;
+constexpr int kFireworksBurstBullets = 14;
+constexpr float kFireworksBurstIntervalSeconds = 0.45f;
+constexpr float kFireworksBurstDistance = 7.0f;
+constexpr float kFireworksBulletSpeed = 3.0f;
+constexpr float kFireworksTelegraphSeconds = 1.1f;
 /// 震脚: その場で 3 度足を踏み鳴らし、踏むたびに大きくなる衝撃波を放つ近接技（着地点は常にボスの足元）。
 constexpr int kQuakeStompCount = 3;
 constexpr float kQuakeStompIntervalSeconds = 0.62f;
@@ -1414,6 +1421,31 @@ void CmpAtomFBoss::FireQuakeStomp() {
   CombatCameraShake::Instance().RequestCustomShake(0.14f + 0.08f * static_cast<float>(stomp), 0.35f);
 }
 
+namespace {
+/// 花火の第 burst 発の炸裂位置（ボス基準。向きは lockedDirection を起点に 144° ずつ回す星形の順）。
+Math::Vector3 FireworksBurstPoint(const Math::Vector3 &origin, const Math::Vector3 &lockedDir, const int burst) {
+  const float angle = std::atan2(lockedDir.z, lockedDir.x) + 4.0f * kPi * static_cast<float>(burst) / static_cast<float>(kFireworksBurstCount);
+  return origin + Math::Vector3{std::cos(angle), 0.0f, std::sin(angle)} * kFireworksBurstDistance;
+}
+} // namespace
+
+void CmpAtomFBoss::FireFireworksShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int burst = kFireworksBurstCount - fanWavesLeft_;
+  const Math::Vector3 point = FireworksBurstPoint(origin, lockedDirection_, burst);
+  const Math::Vector3 center{point.x, origin.y, point.z};
+  const Math::Vector4 tint{1.0f, 0.75f, 0.2f, 1.0f};
+  const float offset = 0.5f * static_cast<float>(burst);
+  for (int i = 0; i < kFireworksBurstBullets; ++i) {
+    const float angle = offset + 2.0f * kPi * static_cast<float>(i) / static_cast<float>(kFireworksBurstBullets);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(center + dir * 0.2f, dir, kFireworksBulletSpeed, params_.ringBulletRadiusMeters, tint);
+  }
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_bloom_burst.json", center);
+  AtomF::PlayBossShotSe();
+  CombatCameraShake::Instance().RequestCustomShake(0.04f, 0.1f);
+}
+
 void CmpAtomFBoss::FireCobwebShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int wave = kCobwebWaveCount - fanWavesLeft_;
@@ -1630,6 +1662,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Kaleidoscope: duration = kKaleidoscopeTelegraphSeconds; break;
   case Skill::Whirlpool: duration = kWhirlpoolTelegraphSeconds; break;
   case Skill::Cobweb: duration = kCobwebTelegraphSeconds; break;
+  case Skill::Fireworks: duration = kFireworksTelegraphSeconds; break;
   case Skill::Quake: duration = kQuakeTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
@@ -1643,7 +1676,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
        skill_ == Skill::Pentacle || skill_ == Skill::Snowflake ||
        skill_ == Skill::Windmill || skill_ == Skill::Rosette ||
        skill_ == Skill::Kaleidoscope || skill_ == Skill::Whirlpool ||
-       skill_ == Skill::Cobweb) &&
+       skill_ == Skill::Cobweb || skill_ == Skill::Fireworks) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1886,6 +1919,15 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
         const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
         telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 8.0f,
                            locked ? 0.15f : 0.08f, tint);
+      }
+      break;
+    }
+    case Skill::Fireworks: {
+      // 5 つの炸裂点を打ち上げ順に濃くなる橙の輪で予告する。確定後は太く濃くなる。
+      for (int i = 0; i < kFireworksBurstCount; ++i) {
+        const Math::Vector3 p = GroundPoint(FireworksBurstPoint(origin, lockedDirection_, i));
+        const float a = locked ? 0.75f : 0.2f + 0.1f * static_cast<float>(i);
+        telegraph->AddRing(p, 1.0f + 0.3f * pulse, locked ? 0.12f : 0.06f, Math::Vector4{1.0f, 0.7f, 0.15f, a});
       }
       break;
     }
@@ -2354,6 +2396,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kQuakeStompCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Fireworks:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kFireworksBurstCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Cobweb:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -2624,6 +2672,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
       state_ = State::Recover;
       stateElapsed_ = 0.0f;
       recoverOverrideSeconds_ = kQuakeRecoverSeconds;
+    }
+    return;
+  }
+  if (skill_ == Skill::Fireworks) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireFireworksShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kFireworksBurstIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
     }
     return;
   }
