@@ -2779,3 +2779,10 @@ develop を基に、ボスの新スキル **稲妻**（`Skill::Zigzag`。自機�
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
 - 推測した用途: 向きが急反転する弾列で、直線的な回避を封じ小刻みな位置調整を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128e`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス彗星・meteor/stargazer 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **彗星**（`Skill::Comet`。自機方向へ ±約 17° の 3 本の高速な橙の弾の尾を 0.1 秒間隔で 24 回同時発射し、直線的な逃げ道を塞ぐ。予備動作は 3 本の進路線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の両行動順へ組み込んだ。雑魚 **meteor**（周回しつつ突進）と **stargazer**（距離を保ち横揺れしつつ射撃）を `parameters.json` に追加し第 12 ウェーブへ配置した（全種 Hp1・耐久系なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**（switch・宣言/実装を静的確認）。
+
+- 未実施: ビルド、実機確認、ボス戦 BGM 切替、第 12 ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1127-auto`（develop から作成）。

@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -178,6 +178,12 @@ constexpr float kZigzagHalfArcRad = 0.7f;
 constexpr int kZigzagPeriodShots = 8;
 constexpr float kZigzagSpeed = 3.4f;
 constexpr float kZigzagTelegraphSeconds = 1.0f;
+/// 彗星: 自機方向へ 3 本の高速な弾の尾を扇状に同時発射し、直線的な逃げ道を塞ぐ。
+constexpr int kCometShotCount = 24;
+constexpr float kCometShotIntervalSeconds = 0.1f;
+constexpr float kCometLaneSpreadRad = 0.3f;
+constexpr float kCometSpeed = 5.2f;
+constexpr float kCometTelegraphSeconds = 1.0f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1123,6 +1129,24 @@ void CmpAtomFBoss::FireZigzagShot() {
   }
 }
 
+void CmpAtomFBoss::FireCometShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int shot = kCometShotCount - fanWavesLeft_;
+  const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+  for (int lane = -1; lane <= 1; ++lane) {
+    const float angle = center + kCometLaneSpreadRad * static_cast<float>(lane);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir, kCometSpeed,
+                                params_.ringBulletRadiusMeters,
+                                Math::Vector4{1.0f, 0.6f, 0.25f, 1.0f});
+  }
+  if ((shot % 4) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1311,6 +1335,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Carousel: duration = kCarouselTelegraphSeconds; break;
   case Skill::Tide: duration = kTideTelegraphSeconds; break;
   case Skill::Zigzag: duration = kZigzagTelegraphSeconds; break;
+  case Skill::Comet: duration = kCometTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1318,7 +1343,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   const bool locked = stateElapsed_ >= duration - kAimLockSeconds;
 
   if ((skill_ == Skill::Volley || skill_ == Skill::Dash ||
-       skill_ == Skill::Rampage || skill_ == Skill::Fan) &&
+       skill_ == Skill::Rampage || skill_ == Skill::Fan || skill_ == Skill::Comet) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1444,6 +1469,18 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
         const Math::Vector3 point = ground + Math::Vector3{std::cos(angle), 0.0f, std::sin(angle)} * dist;
         telegraph->AddLine(prev, point, locked ? 0.2f : 0.1f, tint);
         prev = point;
+      }
+      break;
+    }
+    case Skill::Comet: {
+      // 3 本の尾の進路を橙の線で予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const float center = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      const Math::Vector4 tint{1.0f, 0.6f, 0.25f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      for (int lane = -1; lane <= 1; ++lane) {
+        const float angle = center + kCometLaneSpreadRad * static_cast<float>(lane);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 9.0f, locked ? 0.2f : 0.1f, tint);
       }
       break;
     }
@@ -1844,6 +1881,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kCarouselShotCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Comet:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kCometShotCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Zigzag:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -2007,6 +2050,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireCarouselShot();
     --fanWavesLeft_;
     volleyTimer_ = kCarouselShotIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Comet) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FireCometShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kCometShotIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

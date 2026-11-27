@@ -54,7 +54,8 @@ public:
     Pincer,
     Carousel,
     Tide,
-    Zigzag
+    Zigzag,
+    Comet
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -127,6 +128,7 @@ private:
   void FireCarouselShot();
   void FireTideShot();
   void FireZigzagShot();
+  void FireCometShot();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();
