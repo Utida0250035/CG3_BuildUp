@@ -2815,3 +2815,11 @@ develop を基に、ボスの新スキル **六花**（`Skill::Snowflake`。6 �
 
 - 未実施: ビルド、実機確認、最終ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1127-develop`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス風車・windmill/vane 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **風車**（`Skill::Windmill`。4 本の腕が回りながら 0.09 秒間隔で 36 波・橙の弾を連射し、中盤で回転方向を反転して渦巻きを織る弾幕。予備動作は初期の 4 本の腕を示す橙の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の両行動順へ組み込んだ。雑魚は突進型 `windmill` と射撃型 `vane`（いずれも最大 Hp1・耐久系能力なし）を `parameters.json` に追加し、最終ウェーブへ各 2 体を加えた。
+
+- 未実施: ビルド（Windows/DirectX 環境外のため）、実機確認、最終ウェーブの難度確認。
+- 推測した用途: 回転方向が反転する渦で、安全地帯の読みを途中で切り替えさせるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128h`（develop から作成）。
