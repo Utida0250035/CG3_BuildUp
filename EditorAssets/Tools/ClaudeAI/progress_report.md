@@ -2808,3 +2808,10 @@ develop を基に、ボスの新スキル **五芒星**（`Skill::Pentacle`。5 
 - 未実施: ビルド（Windows/DirectX 環境外のため）、実機確認、最終ウェーブの難度確認。
 - 推測した用途: 回転する放射状の弾列で、安全地帯が波ごとに移動する状況判断を求めるため。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1127-d`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス六花・frostling/glacier 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **六花**（`Skill::Snowflake`。6 方向へ中央 1 発＋左右の枝 2 発（±約 16°）を 0.45 秒間隔で 10 波放ち、波ごとに 15° 回して雪の結晶状の水色の弾幕を作る。予備動作は初波の 6 本の腕を示す水色の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し通常・狂暴化の行動順へ組み込んだ。雑魚 `frostling`（突進型）・`glacier`（射撃型）を `parameters.json` に追加し最終ウェーブへ各 2 体配置（いずれも最大 Hp1・耐久能力なし）。JSON 構文のみ検証、**Linux 環境のためビルド・実機確認は未実施**（switch・宣言/実装を静的確認）。
+
+- 未実施: ビルド、実機確認、最終ウェーブの難度確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1127-develop`（develop から作成）。
