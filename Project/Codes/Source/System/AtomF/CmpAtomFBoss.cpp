@@ -50,7 +50,7 @@ constexpr CmpAtomFBoss::Skill kSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo,   CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom,  CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Converge,
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Converge,
     CmpAtomFBoss::Skill::Volley};
 
 /// 狂暴化（Hp 40% 以下）後の行動順。スパイラルを織り込み、密度を上げる。
@@ -67,7 +67,7 @@ constexpr CmpAtomFBoss::Skill kEnragedSkillSequence[] = {
     CmpAtomFBoss::Skill::Crossfire, CmpAtomFBoss::Skill::Helix,
     CmpAtomFBoss::Skill::Echo, CmpAtomFBoss::Skill::Rampage,
     CmpAtomFBoss::Skill::Bloom, CmpAtomFBoss::Skill::Lattice, CmpAtomFBoss::Skill::Pendulum,
-    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Ring};
+    CmpAtomFBoss::Skill::Curtain, CmpAtomFBoss::Skill::Scatter, CmpAtomFBoss::Skill::Crescent, CmpAtomFBoss::Skill::Downpour, CmpAtomFBoss::Skill::Pincer, CmpAtomFBoss::Skill::Carousel, CmpAtomFBoss::Skill::Tide, CmpAtomFBoss::Skill::Zigzag, CmpAtomFBoss::Skill::Comet, CmpAtomFBoss::Skill::Cascade, CmpAtomFBoss::Skill::Hourglass, CmpAtomFBoss::Skill::Pentacle, CmpAtomFBoss::Skill::Ring};
 
 /// スパイラル: 回転しながら撃つ弾幕。
 constexpr int kSpiralShotCount = 36;
@@ -199,6 +199,14 @@ constexpr float kHourglassSwayRad = 0.35f;
 constexpr float kHourglassWaveIntervalSeconds = 0.3f;
 constexpr float kHourglassSpeed = 3.4f;
 constexpr float kHourglassTelegraphSeconds = 1.1f;
+/// 五芒星: 5 方向へ 3 発ずつ速さの異なる弾の列を放ち、波ごとに 36° 回して星形の隙間を作る弾幕。
+constexpr int kPentacleWaveCount = 12;
+constexpr int kPentacleArms = 5;
+constexpr int kPentacleBulletsPerArm = 3;
+constexpr float kPentacleWaveIntervalSeconds = 0.4f;
+constexpr float kPentacleBaseSpeed = 2.6f;
+constexpr float kPentacleSpeedStep = 0.7f;
+constexpr float kPentacleTelegraphSeconds = 1.1f;
 
 /// 格子: 速さの異なる 2 層のリングを交互に放ち、重なる弾の間に格子状の隙間を作る弾幕。
 constexpr int kLatticeWaveCount = 5;
@@ -1211,6 +1219,29 @@ void CmpAtomFBoss::FireHourglassShot() {
   }
 }
 
+void CmpAtomFBoss::FirePentacleShot() {
+  const Math::Vector3 origin = RefOwner().GetWorldPosition();
+  const int wave = kPentacleWaveCount - fanWavesLeft_;
+  // 毎波 36° ずつ回すと、奇数波と偶数波で五芒星の頂点が互い違いになる。
+  const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x) +
+                          static_cast<float>(wave) * (kPi / static_cast<float>(kPentacleArms));
+  for (int arm = 0; arm < kPentacleArms; ++arm) {
+    const float angle = baseAngle + 2.0f * kPi * static_cast<float>(arm) / static_cast<float>(kPentacleArms);
+    const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+    for (int i = 0; i < kPentacleBulletsPerArm; ++i) {
+      AtomF::SpawnEnemyProjectile(origin + dir * (radius_ + 0.1f), dir,
+                                  kPentacleBaseSpeed + kPentacleSpeedStep * static_cast<float>(i),
+                                  params_.ringBulletRadiusMeters,
+                                  Math::Vector4{1.0f, 0.85f, 0.3f, 1.0f});
+    }
+  }
+  if ((wave % 3) == 0) {
+    Particle::Combat::PlayNamedOneShotEffect("atomf_boss_fan_burst.json", origin);
+    AtomF::PlayBossShotSe();
+    CombatCameraShake::Instance().RequestCustomShake(0.03f, 0.08f);
+  }
+}
+
 void CmpAtomFBoss::FirePendulumShot() {
   const Math::Vector3 origin = RefOwner().GetWorldPosition();
   const int shot = kPendulumShotCount - fanWavesLeft_;
@@ -1402,6 +1433,7 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
   case Skill::Comet: duration = kCometTelegraphSeconds; break;
   case Skill::Cascade: duration = kCascadeTelegraphSeconds; break;
   case Skill::Hourglass: duration = kHourglassTelegraphSeconds; break;
+  case Skill::Pentacle: duration = kPentacleTelegraphSeconds; break;
   case Skill::Converge: duration = kConvergeTelegraphSeconds; break;
   }
   duration = std::max(0.1f, duration);
@@ -1410,7 +1442,8 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
 
   if ((skill_ == Skill::Volley || skill_ == Skill::Dash ||
        skill_ == Skill::Rampage || skill_ == Skill::Fan || skill_ == Skill::Comet ||
-       skill_ == Skill::Cascade || skill_ == Skill::Hourglass) &&
+       skill_ == Skill::Cascade || skill_ == Skill::Hourglass ||
+       skill_ == Skill::Pentacle) &&
       !locked) {
     lockedDirection_ = DirectionToPlayerXZ();
   }
@@ -1575,6 +1608,19 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
           telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 8.0f,
                              locked ? 0.15f : 0.08f, tint);
         }
+      }
+      break;
+    }
+    case Skill::Pentacle: {
+      // 初波の 5 本の腕を黄色の線で予告する。確定後は太く濃くなる。
+      const Math::Vector3 ground = GroundPoint(origin);
+      const Math::Vector4 tint{1.0f, 0.85f, 0.3f, locked ? 0.75f : 0.3f + 0.3f * pulse};
+      const float baseAngle = std::atan2(lockedDirection_.z, lockedDirection_.x);
+      for (int arm = 0; arm < kPentacleArms; ++arm) {
+        const float angle = baseAngle + 2.0f * kPi * static_cast<float>(arm) / static_cast<float>(kPentacleArms);
+        const Math::Vector3 dir{std::cos(angle), 0.0f, std::sin(angle)};
+        telegraph->AddLine(ground + dir * (radius_ + 0.3f), ground + dir * 8.0f,
+                           locked ? 0.15f : 0.08f, tint);
       }
       break;
     }
@@ -1993,6 +2039,12 @@ void CmpAtomFBoss::UpdateTelegraph(const float dt) {
     fanWavesLeft_ = kHourglassWaveCount;
     volleyTimer_ = 0.0f;
     break;
+  case Skill::Pentacle:
+    state_ = State::Execute;
+    stateElapsed_ = 0.0f;
+    fanWavesLeft_ = kPentacleWaveCount;
+    volleyTimer_ = 0.0f;
+    break;
   case Skill::Zigzag:
     state_ = State::Execute;
     stateElapsed_ = 0.0f;
@@ -2182,6 +2234,19 @@ void CmpAtomFBoss::UpdateExecute(const float dt) {
     FireCascadeShot();
     --fanWavesLeft_;
     volleyTimer_ = kCascadeWaveIntervalSeconds;
+    if (fanWavesLeft_ <= 0) {
+      FinishSkill();
+    }
+    return;
+  }
+  if (skill_ == Skill::Pentacle) {
+    volleyTimer_ -= dt;
+    if (volleyTimer_ > 0.0f) {
+      return;
+    }
+    FirePentacleShot();
+    --fanWavesLeft_;
+    volleyTimer_ = kPentacleWaveIntervalSeconds;
     if (fanWavesLeft_ <= 0) {
       FinishSkill();
     }

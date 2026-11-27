@@ -2800,3 +2800,11 @@ develop を基に、ボスの新スキル **砂時計**（`Skill::Hourglass`。�
 
 - 未実施: ビルド、実機確認、ボス戦 BGM 切替、最終ウェーブの難度確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128g`（develop から作成）。
+
+## セッション 2026-11-27（atomF: ボス五芒星・starling/astral 追加・スケジュール実行）
+
+develop を基に、ボスの新スキル **五芒星**（`Skill::Pentacle`。5 方向へ速さの異なる 3 発ずつの弾列を 0.4 秒間隔で 12 波放ち、波ごとに 36° 回して星形の隙間を作る黄色の弾幕。予備動作は初波の 5 本の腕を示す黄色の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常／狂暴化の行動順へ組み込んだ。雑魚 `starling`（突進型）・`astral`（射撃型）を `parameters.json` に追加し最終ウェーブへ各 2 体配置（いずれも最大 Hp1・耐久能力なし）。
+
+- 未実施: ビルド（Windows/DirectX 環境外のため）、実機確認、最終ウェーブの難度確認。
+- 推測した用途: 回転する放射状の弾列で、安全地帯が波ごとに移動する状況判断を求めるため。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず、`EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1127-d`（develop から作成）。
