@@ -2945,3 +2945,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 残り: `boss_hit_reflected` / `parry_reflect` / `player_hit_enemy_bullet`（各 2 層）は未多層化。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128r`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 被弾/反射系パーティクルの 4 層化・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。2 層だった `boss_hit_reflected.json` / `parry_reflect.json` / `player_hit_enemy_bullet.json` に、中心の閃光（短命・拡大）と落ちる残り火の 2 層を加え 4 層構成へ作り直した（各色味に合わせた。再生コードは変更なし）。JSON 構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128s`（develop から作成）。
