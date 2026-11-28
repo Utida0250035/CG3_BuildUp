@@ -2997,3 +2997,10 @@ develop 上で雑魚（86 種、全種 Hp1・耐久系なし）・ボス（Hp128
 - 未実施: ビルド・実機確認（Linux 環境のため）。ウェーブ総数が増えたため最終ウェーブの難度は実機で要調整。
 - 次の候補: 新規ムーブ/攻撃パターン（C++ 拡張）、ボスの行動派生。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128v2`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス車輪・Spokes 追加・スケジュール実行）
+
+develop 上で雑魚（全種 Hp1・耐久系なし）・ボス（Hp128、スキル多数・特殊アクション）・演出（全パーティクル多層化、タイトル/リザルト演出）・1 ステージが実装済みのため、ボスの行動バリエーションとして新スキル **車輪**（`Skill::Spokes`。8 本の放射状スポークを、速さの異なる 3 発の列として 10 波放つ。奇数波は半スポーク分ずらして車輪状の隙間を作る緑の弾幕。予備動作は 8 本の緑の線、確定後に太く濃くなる）を `CmpAtomFBoss` に追加し、通常・狂暴化の両行動順へ組み込んだ。バースト演出は既存の `atomf_boss_windmill_burst.json` を流用。
+
+- 未実施: ビルド・実機確認（Linux 環境のため。既存スキルと同形のコードだが未コンパイル）、専用パーティクル、難度調整。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128y`（develop から作成）。

@@ -66,7 +66,8 @@ public:
     Whirlpool,
     Cobweb,
     Fireworks,
-    Quake
+    Quake,
+    Spokes
   };
 
   constexpr UpdCmpGroup UpdGroup() const override {
@@ -151,6 +152,7 @@ private:
   void FireCobwebShot();
   void FireFireworksShot();
   void FireQuakeStomp();
+  void FireSpokesShot();
   void FirePendulumShot();
   void FireCrossfireWave();
   void FireConvergeWave();
