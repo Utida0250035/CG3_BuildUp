@@ -3011,3 +3011,10 @@ develop 上で雑魚（全種 Hp1・耐久系なし）・ボス（Hp128、スキ
 
 - 未実施: ビルド・実機確認（Linux 環境のため。未コンパイル）。壁際で後退した際の挙動（円形フィールド外周のクランプに任せている）は実機で要確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/tender-ritchie-h30qdi`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 車輪スキル専用パーティクル・スケジュール実行）
+
+雑魚・ボス・演出・1 ステージは develop で実装済みのため、前回未実施だった車輪（Spokes）の専用バースト演出 `atomf_boss_spokes_burst.json`（windmill をベースに粒数増・黄緑寄りの色・拡大率増の 3 層）を追加し、`FireSpokesShot` の参照を差し替えた。
+
+- 未実施: ビルド・実機確認（Linux 環境のため。参照名の変更のみでコードは未コンパイル）。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/serene-hypatia-ymjk6a`（develop から作成）。

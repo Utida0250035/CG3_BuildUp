@@ -1282,7 +1282,7 @@ void CmpAtomFBoss::FireSpokesShot() {
                                   params_.ringBulletRadiusMeters, tint);
     }
   }
-  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_windmill_burst.json", origin);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_boss_spokes_burst.json", origin);
   AtomF::PlayBossShotSe();
   CombatCameraShake::Instance().RequestCustomShake(0.02f, 0.06f);
 }
