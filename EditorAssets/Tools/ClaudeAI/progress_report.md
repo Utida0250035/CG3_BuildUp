@@ -2973,3 +2973,11 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド・実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128v`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 雑魚種類名の重複修正・スケジュール実行）
+
+develop 上で雑魚（86 種、全種 Hp1・耐久系なし）・ボス（Hp128、スキル多数・特殊アクション）・演出（全パーティクル多層化、タイトル/リザルト演出）が実装済みのため、今回は新規実装でなく不具合修正のみ行った。`parameters.json` の `enemy.variants` に `weaver` が 2 つあり、名前検索（`AtomFEnemyFactory`）が先頭の紫の蛇行型に解決するため、最終ウェーブで意図した白い周回突進型が出現しなかった。後者を `shuttle` に改名し、最終ウェーブの指定を差し替えた（重複名・未定義名・未使用名が無いことを確認）。
+
+- 未実施: ビルド・実機確認（Linux 環境のため）。
+- 次の候補: 後半の種類は数値がほぼ同一のクローン（色違い）なので、挙動を実際に変える新規ムーブ/攻撃パターンの導入（要 C++ 側の拡張）。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128w`（develop から作成）。
