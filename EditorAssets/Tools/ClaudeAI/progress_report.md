@@ -3074,3 +3074,13 @@ develop 上で雑魚（全種 Hp1・耐久系なし）・ボス（Hp128、スキ
 - 未実施: ビルド・実機確認（Linux 環境のため）。
 - 次の候補: Windows 環境で `buildDevelopment.cmd` によるビルド確認と難度・描画負荷の調整 → その後にボス行動派生・新ムーブ追加。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128ae`（develop から作成）。
+
+---
+
+## セッション 2026-11-28（atomF: 整合性点検のみ・スケジュール実行）
+
+develop 上で雑魚・ボス（Hp128）・演出・1 ステージが実装済みであることを再確認。atomF 関連 JSON は全て構文エラーなし。ボスのスキル追加はパラメータ JSON だけでは足りず C++/Lua 拡張が必要で、ビルド不可の環境では未コンパイル変更の蓄積になるため、今回も新規実装は見送った。
+
+- 未実施: ビルド・実機確認（Linux 環境のため）。
+- 次の候補: Windows 環境で `buildDevelopment.cmd` によるビルド確認と難度・描画負荷の調整 → その後にボス行動派生・新ムーブ追加。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128af`（develop から作成）。
