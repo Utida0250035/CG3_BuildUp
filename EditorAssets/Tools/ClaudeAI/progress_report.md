@@ -2989,3 +2989,11 @@ develop 上で雑魚（86 種、全種 Hp1・耐久系なし）・ボス（Hp128
 - 次の候補: 挙動が実際に異なる新規ムーブ/攻撃パターン（C++ 拡張が必要）、ボスの召喚・近接行動のさらなる派生。いずれもビルド可能な環境での確認が望ましい。
 - 未実施: ビルド・実機確認（Linux 環境のため）。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128x`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 雑魚バリエーション 4 種追加・スケジュール実行）
+
+雑魚・ボス・演出・1 ステージは develop で実装済みだったため、「バリエーション追加」として既存の数値設計に無い組み合わせの雑魚を 4 種（raider: 速い蛇行突進、ambusher: 遠距離から撃ちつつ時々突進、gyrator: 広い軌道で高速周回、harrier: 激しく蛇行する近距離射撃）を `parameters.json` に追加し、最終ウェーブに各 2 体を加えた。データのみの変更で、全種 Hp1・耐久系なし。JSON 構文、種類名の重複なし、ステージ参照の未定義なしを確認。
+
+- 未実施: ビルド・実機確認（Linux 環境のため）。ウェーブ総数が増えたため最終ウェーブの難度は実機で要調整。
+- 次の候補: 新規ムーブ/攻撃パターン（C++ 拡張）、ボスの行動派生。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128v2`（develop から作成）。
