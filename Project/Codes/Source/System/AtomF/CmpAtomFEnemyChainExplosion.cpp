@@ -64,9 +64,8 @@ void CmpAtomFEnemyChainExplosion::BeginDyingSilently() {
       initialMeshColor_ = mesh->GetColor();
     }
   }
-  static uint32_t silentSequence = 100000U;
-  Particle::Combat::PlayBossDeathExplosionEffect(RefOwner().GetWorldPosition(),
-                                                 ++silentSequence);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_enemy_explosion.json",
+                                           RefOwner().GetWorldPosition());
   if (RefOwner().HasUpdCmp<CmpAtomFEnemyKnockback>()) {
     if (CmpAtomFEnemyKnockback *knockback =
             RefOwner().GetUpdCmp<CmpAtomFEnemyKnockback>()) {
@@ -93,10 +92,8 @@ void CmpAtomFEnemyChainExplosion::BeginDyingExplosion() {
   }
 
   const Math::Vector3 explosionCenter = RefOwner().GetWorldPosition();
-  static uint32_t explosionSequence = 0U;
-  ++explosionSequence;
-  Particle::Combat::PlayBossDeathExplosionEffect(explosionCenter,
-                                                 explosionSequence);
+  Particle::Combat::PlayNamedOneShotEffect("atomf_enemy_explosion.json",
+                                           explosionCenter);
 
   AtomF::SpreadEnemyExplosionKnockbackFromCenter(RefOwner(), explosionCenter);
   AtomF::ApplyEnemyExplosionDamageToPlayer(explosionCenter);

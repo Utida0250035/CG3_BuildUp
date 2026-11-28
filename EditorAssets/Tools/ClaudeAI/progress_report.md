@@ -2959,3 +2959,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128t`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 雑魚爆発の専用パーティクル・演出の複雑化・スケジュール実行）
+
+雑魚の爆発（連鎖爆発・静かな消滅）がボス死亡用の大きな `boss_death_explosion.json` を流用していたため、雑魚サイズの専用 `atomf_enemy_explosion.json`（4 層: 破裂の閃光＋火花の殻＋煙の塊＋地を走る衝撃）を追加し、`CmpAtomFEnemyChainExplosion.cpp` の 2 箇所の再生先を差し替えた。ボス側の死亡演出は変更なし。JSON は Python で生成し構文のみ検証。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128u`（develop から作成）。
