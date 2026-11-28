@@ -4,7 +4,11 @@
     "emitMode": "BURST",
     "emitShape": "CIRCLE_XZ",
     "emitCircle": {
-      "center": { "x": 0.0, "y": 0.05, "z": 0.0 },
+      "center": {
+        "x": 0.0,
+        "y": 0.05,
+        "z": 0.0
+      },
       "radius": 0.08
     },
     "movementMode": "RADIAL_SPREAD",
@@ -13,15 +17,169 @@
     "duration": 0.45,
     "minLifeDuration": 0.25,
     "maxLifeDuration": 0.42,
-    "baseVelocity": { "x": 0.0, "y": 1.45, "z": 0.0 },
-    "velocityRandom": { "x": 0.35, "y": 0.45, "z": 0.35 },
-    "acceleration": { "x": 0.0, "y": -5.8, "z": 0.0 },
-    "startScale": { "x": 0.075, "y": 0.075, "z": 0.075 },
-    "endScale": { "x": 0.015, "y": 0.015, "z": 0.015 },
-    "startColor": { "x": 0.45, "y": 0.92, "z": 1.35, "w": 1.0 },
-    "endColor": { "x": 0.25, "y": 0.72, "z": 1.15, "w": 0.0 },
+    "baseVelocity": {
+      "x": 0.0,
+      "y": 1.45,
+      "z": 0.0
+    },
+    "velocityRandom": {
+      "x": 0.35,
+      "y": 0.45,
+      "z": 0.35
+    },
+    "acceleration": {
+      "x": 0.0,
+      "y": -5.8,
+      "z": 0.0
+    },
+    "startScale": {
+      "x": 0.075,
+      "y": 0.075,
+      "z": 0.075
+    },
+    "endScale": {
+      "x": 0.015,
+      "y": 0.015,
+      "z": 0.015
+    },
+    "startColor": {
+      "x": 0.45,
+      "y": 0.92,
+      "z": 1.35,
+      "w": 1.0
+    },
+    "endColor": {
+      "x": 0.25,
+      "y": 0.72,
+      "z": 1.15,
+      "w": 0.0
+    },
     "renderMode": "BUILTIN_SPHERE",
     "maxCount": 6,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  },
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "CIRCLE_XZ",
+    "emitCircle": {
+      "center": {
+        "x": 0,
+        "y": 0.12,
+        "z": 0
+      },
+      "radius": 0.03
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 1,
+    "duration": 0.18,
+    "minLifeDuration": 0.1,
+    "maxLifeDuration": 0.16,
+    "baseVelocity": {
+      "x": 0,
+      "y": 0.1,
+      "z": 0
+    },
+    "velocityRandom": {
+      "x": 0.05,
+      "y": 0.05,
+      "z": 0.05
+    },
+    "acceleration": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "startScale": {
+      "x": 0.06,
+      "y": 0.06,
+      "z": 0.06
+    },
+    "endScale": {
+      "x": 0.2,
+      "y": 0.2,
+      "z": 0.2
+    },
+    "startColor": {
+      "x": 1.2,
+      "y": 1.6,
+      "z": 1.9,
+      "w": 0.8
+    },
+    "endColor": {
+      "x": 0.6,
+      "y": 1.1,
+      "z": 1.6,
+      "w": 0.0
+    },
+    "renderMode": "BUILTIN_SPHERE",
+    "maxCount": 2,
+    "objDirectoryPath": "./Assets/Objects/unitSphere",
+    "objFileName": "unitSphere.obj",
+    "mtlDirectoryPath": "./Assets/Objects/unitSphere",
+    "mtlFileName": "unitSphere.mtl"
+  },
+  {
+    "simulationSpaceFromEmitter": "WORLD",
+    "emitMode": "BURST",
+    "emitShape": "CIRCLE_XZ",
+    "emitCircle": {
+      "center": {
+        "x": 0,
+        "y": 0.08,
+        "z": 0
+      },
+      "radius": 0.1
+    },
+    "movementMode": "RADIAL_SPREAD",
+    "emitRate": 1.0,
+    "burstCount": 5,
+    "duration": 0.35,
+    "minLifeDuration": 0.2,
+    "maxLifeDuration": 0.34,
+    "baseVelocity": {
+      "x": 0,
+      "y": 0.6,
+      "z": 0
+    },
+    "velocityRandom": {
+      "x": 1.1,
+      "y": 0.3,
+      "z": 1.1
+    },
+    "acceleration": {
+      "x": 0,
+      "y": -4.0,
+      "z": 0
+    },
+    "startScale": {
+      "x": 0.04,
+      "y": 0.04,
+      "z": 0.04
+    },
+    "endScale": {
+      "x": 0.01,
+      "y": 0.01,
+      "z": 0.01
+    },
+    "startColor": {
+      "x": 0.7,
+      "y": 1.1,
+      "z": 1.5,
+      "w": 0.9
+    },
+    "endColor": {
+      "x": 0.35,
+      "y": 0.75,
+      "z": 1.2,
+      "w": 0.0
+    },
+    "renderMode": "BUILTIN_SPHERE",
+    "maxCount": 8,
     "objDirectoryPath": "./Assets/Objects/unitSphere",
     "objFileName": "unitSphere.obj",
     "mtlDirectoryPath": "./Assets/Objects/unitSphere",

@@ -2952,3 +2952,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128s`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 雑魚の冷や汗パーティクルの 3 層化・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。最後の単層だった `enemy_panic_sweat.json` に、中心の小さな閃光と横へ弾ける水滴の 2 層を加え 3 層構成へ作り直した（再生コードは変更なし）。JSON 構文のみ検証。これで未参照の `atomf_boss_ring_burst.json` と編集テスト用 `editTest.json` を除き、全パーティクルが多層化済み。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128t`（develop から作成）。
