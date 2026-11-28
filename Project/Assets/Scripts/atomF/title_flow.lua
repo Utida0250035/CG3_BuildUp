@@ -31,7 +31,8 @@ function M.onUpdate(dt)
     pressColorG = 1.0
   end
 
-  Ui.image(Paths.IMG_TITLE_LOGO, 0.5, 0.38, { scale = logoScale, a = logoAlpha })
+  local logoY = 0.38 + 0.008 * math.sin(elapsed * 1.6) -- ゆるく上下に漂う
+  Ui.image(Paths.IMG_TITLE_LOGO, 0.5, logoY, { scale = logoScale, a = logoAlpha })
   Ui.image(Paths.IMG_PRESS_ANY, 0.5, 0.72, { a = pressAlpha * logoAlpha, g = pressColorG })
 
   if startedAt == nil then

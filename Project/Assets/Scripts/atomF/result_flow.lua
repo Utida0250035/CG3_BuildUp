@@ -51,11 +51,24 @@ function M.onUpdate(dt)
     end
   end
 
+  -- 見出しは大きく出現して収まる（オーバーシュート）。クリア時はその後ゆるく脈動する
+  local pop = math.min(elapsed / FADE_IN_SECONDS, 1.0)
+  local headScale = 1.0 + 0.6 * (1.0 - pop) * (1.0 - pop) * math.cos(pop * 6.0)
+  local headY = 0.25
+  if Outcome.cleared then
+    headScale = headScale + 0.03 * math.sin(elapsed * 2.5)
+    headY = headY - 0.008 * math.sin(elapsed * 2.0)
+  else
+    -- 敗北時は出現直後だけ小刻みに横ブレして沈む
+    headY = headY + 0.02 * (1.0 - pop)
+  end
+
   -- 勝敗で見出しを切り替える（クリア: 金色 / 敗北: 赤）
   if Outcome.cleared then
-    Ui.image(Paths.IMG_CLEAR, 0.5, 0.25, { scale = 1.0, r = 1.0, g = 0.88, b = 0.35, a = alpha })
+    Ui.image(Paths.IMG_CLEAR, 0.5, headY, { scale = headScale, r = 1.0, g = 0.88, b = 0.35, a = alpha })
   else
-    Ui.image(Paths.IMG_GAME_OVER, 0.5, 0.25, { scale = 1.0, r = 1.0, g = 0.3, b = 0.3, a = alpha })
+    local shake = 0.012 * (1.0 - pop) * math.sin(elapsed * 60.0)
+    Ui.image(Paths.IMG_GAME_OVER, 0.5 + shake, headY, { scale = headScale, r = 1.0, g = 0.3, b = 0.3, a = alpha })
   end
 
   for index, option in ipairs(OPTIONS) do

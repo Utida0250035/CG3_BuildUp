@@ -2966,3 +2966,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128u`（develop から作成）。
+
+## セッション 2026-11-28（atomF: タイトル/リザルトの見出し演出・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き（シーン遷移まわり）。リザルトの見出しがオーバーシュート付きで拡大出現するようにし、クリア時は金色の見出しがゆるく脈動・上下、敗北時は出現直後に横ブレしつつ沈むようにした。タイトルのロゴはゆるく上下に漂う。いずれも Lua のみ（`Ui.image` の既存オプション使用）。Lua 処理系が無く構文実行は未確認。
+
+- 未実施: ビルド・実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128v`（develop から作成）。
