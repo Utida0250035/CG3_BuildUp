@@ -3026,3 +3026,11 @@ develop 上で雑魚（全種 Hp1・耐久系なし）・ボス（Hp128、スキ
 - 未実施: ビルド・実機確認（Linux 環境のため）。最終ウェーブの総数が増えたため難度は実機で要調整。
 - 次の候補: 新規ムーブ/攻撃パターン（C++ 拡張）、ボスの行動派生。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128z`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 雑魚バリエーション 2 種追加・スケジュール実行）
+
+雑魚・ボス・演出・1 ステージは develop で実装済みのため、既存パラメータの組み合わせで雑魚を 2 種追加した（tracer: 遠距離から後退しつつ遅くて重い弾を撃つ、ramshackle: 短周期で蛇行しながら突進）。データのみの変更（`parameters.json`）で、全種 Hp1・耐久系なし。最終ウェーブへ各 2 体を追加。JSON 構文、種類名の重複なし、ステージ参照の未定義なしを確認。
+
+- 未実施: ビルド・実機確認（Linux 環境のため）。最終ウェーブは既に 98 体規模で、これ以上の種類追加は難度・描画負荷の観点から実機確認後が望ましい。
+- 次の候補: 新規ムーブ/攻撃パターン（C++ 拡張）、ボスの行動派生。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128aa`（develop から作成）。
