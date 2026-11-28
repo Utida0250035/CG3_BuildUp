@@ -2930,3 +2930,10 @@ develop を基に、ボスの新スキル **花火**（`Skill::Fireworks`。ボ�
 
 - 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1127-run0b`（develop から作成）。
+
+## セッション 2026-11-28（atomF: ボス出現・叩きつけ・花弁バーストの多層化・演出の複雑化・スケジュール実行）
+
+演出の複雑化の続き。層数の少なかった `atomf_boss_spawn.json`（2→5 層: 中心の閃光＋立ち上る火の粉＋地を走る衝撃輪を追加）、`atomf_boss_slam.json`（2→4 層: 閃光＋舞い上がる火の粉を追加）、`atomf_boss_bloom_burst.json`（1→3 層: 閃光＋落ちる残り火を追加）を多層化した（再生コードは変更なし）。JSON 構文のみ検証。`atomf_boss_ring_burst.json` は未参照のため据え置き。
+
+- 未実施: ビルド（Linux 環境のため）、実機での見た目確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/serene-hypatia-zhgevs`（develop から作成）。
