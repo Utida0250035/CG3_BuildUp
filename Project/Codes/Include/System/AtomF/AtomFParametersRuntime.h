@@ -95,6 +95,8 @@ struct EnemyVariantParameters {
   float orbitMinRadiusMeters = 0.8f;
   /// >0 でこの距離まで近づいたら立ち止まる（射手用）。
   float keepDistanceMeters = 0.0f;
+  /// >0 でこの距離より自機に近づかれたら後ずさって間合いを保つ（撃ち下がり用）。
+  float retreatDistanceMeters = 0.0f;
   /// >0 で射手になる。予備動作（震え＋照準線）の後、自機へ向けて弾を撃つ間隔。
   float shotIntervalSeconds = 0.0f;
   float shotTelegraphSeconds = 0.7f;

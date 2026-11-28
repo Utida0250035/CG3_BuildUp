@@ -3004,3 +3004,10 @@ develop 上で雑魚（全種 Hp1・耐久系なし）・ボス（Hp128、スキ
 
 - 未実施: ビルド・実機確認（Linux 環境のため。既存スキルと同形のコードだが未コンパイル）、専用パーティクル、難度調整。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/atomf-work-1128y`（develop から作成）。
+
+## セッション 2026-11-28（atomF: 雑魚の新ムーブ「後退」追加・スケジュール実行）
+
+雑魚・ボス・演出・1 ステージは develop で実装済みのため、雑魚のバリエーション拡張として新しい動き **後退**（`retreatDistanceMeters`: 自機に近づかれたら離れる向きへ後ずさる）を `EnemyVariantParameters` / パラメータ読み込み / `CmpAtomFEnemyWalkToPlayer` に追加した。これを使う雑魚 2 種（kiter: 撃ち下がりつつ射撃、backstepper: 後ずさりつつ蛇行して突進）を `parameters.json` に追加し最終ウェーブに各 2 体を加えた。全種 Hp1・耐久系なし。JSON 構文確認済み。
+
+- 未実施: ビルド・実機確認（Linux 環境のため。未コンパイル）。壁際で後退した際の挙動（円形フィールド外周のクランプに任せている）は実機で要確認。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `claude/tender-ritchie-h30qdi`（develop から作成）。

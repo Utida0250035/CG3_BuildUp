@@ -100,7 +100,10 @@ void CmpAtomFEnemyWalkToPlayer::Update() {
     speed *= v.moveSpeedMultiplier;
     move = toPlayer * speed;
     const float dist = std::sqrt(distSq);
-    if (v.keepDistanceMeters > 0.0f && dist <= v.keepDistanceMeters) {
+    if (v.retreatDistanceMeters > 0.0f && dist < v.retreatDistanceMeters) {
+      // 撃ち下がり: 近づかれたら自機から離れる向きへ後ずさる（横の蛇行は下で加算）。
+      move = -toPlayer * speed;
+    } else if (v.keepDistanceMeters > 0.0f && dist <= v.keepDistanceMeters) {
       // 射手: 射程に入ったら立ち止まって狙う。
       return;
     }

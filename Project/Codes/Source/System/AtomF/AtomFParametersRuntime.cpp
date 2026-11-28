@@ -187,6 +187,7 @@ void ApplyEnemyPresentationFromJson(const nlohmann::json &enemyJson,
       variant.orbitMinRadiusMeters =
           v.value("orbitMinRadiusMeters", variant.orbitMinRadiusMeters);
       variant.keepDistanceMeters = v.value("keepDistanceMeters", 0.0f);
+      variant.retreatDistanceMeters = v.value("retreatDistanceMeters", 0.0f);
       variant.shotIntervalSeconds = v.value("shotIntervalSeconds", 0.0f);
       variant.shotTelegraphSeconds =
           v.value("shotTelegraphSeconds", variant.shotTelegraphSeconds);
