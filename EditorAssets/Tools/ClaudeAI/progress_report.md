@@ -3094,3 +3094,13 @@ develop 上で雑魚（96 種、全種 Hp1・耐久系なし）・ボス（Hp128
 - 未実施: ビルド・実機確認（Linux 環境のため）。
 - 次の候補: Windows 環境で `buildDevelopment.cmd` によるビルド確認と難度・描画負荷の調整 → その後にボス行動派生・新ムーブ追加。
 - 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128ag`（develop から作成）。
+
+---
+
+## セッション 2026-11-28（atomF: 整合性点検のみ・スケジュール実行）
+
+develop 上で雑魚（全種 Hp1・耐久系なし）・ボス（Hp128、スキル多数・特殊アクション）・演出・1 ステージが実装済みであることを再確認。atomF 関連 JSON（`Project/Assets/atomF/*.json`・`atomf_*` パーティクル）は全て構文エラーなし。未コンパイル変更が蓄積している Linux 環境のため、今回も新規実装は見送った。
+
+- 未実施: ビルド・実機確認（Linux 環境のため）。
+- 次の候補: Windows 環境で `buildDevelopment.cmd` によるビルド確認と難度・描画負荷の調整 → その後にボス行動派生・新ムーブ追加。
+- 備考: 指定の `.claude/ideas/game_atomF.md` は存在せず `EditorAssets/Tools/ClaudeAI/docs/ideas/game_atomF.md` を参照した。作業ブランチは `work/atomf-1128ah`（develop から作成）。
